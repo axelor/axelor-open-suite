@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRResponse" lang="java">
+
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
+    <datetime name="creationDT" title="Creation Date Time"/>
+    <integer name="responseStatusSelect" title="Response Status Select"
+      selection="gdpr.response.status.select"/>
+    <datetime name="sendingDT" title="Sending date"/>
+    <datetime name="dueSendingDT" title="Due sending date"/>
+    <one-to-one name="gdprRequest" ref="com.axelor.apps.gdpr.db.GDPRRequest"/>
+  </entity>
+
+</domain-models>

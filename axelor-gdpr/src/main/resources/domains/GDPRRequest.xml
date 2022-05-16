@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRRequest" lang="java">
+    <integer name="typeSelect" title="Type" selection="gdpr.request.type.select"/>
+    <many-to-one name="gdprRequestOrigin" title="GDPR request origin"
+      ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"/>
+    <datetime name="requestDT" title="Request date"/>
+    <integer name="statusSelect" title="Status" selection="gdpr.request.status.select"/>
+    <string name="firstName" title="First Name"/>
+    <string name="lastName" title="Last Name"/>
+    <string name="email" title="Email"/>
+    <string name="phoneNumber" title="Phone Number"/>
+    <one-to-one name="identityProof" title="Identity Proof"
+      ref="com.axelor.meta.db.MetaFile"/>
+    <long name="modelId" title="Model Id"/>
+    <integer name="modelSelect" title="Model Select" selection="gdpr.request.model.select"/>
+    <string name="requestComment" title="Comment" multiline="true"/>
+    <string name="rgpdResponseFormat" title="Response Format"/>
+  </entity>
+
+</domain-models>

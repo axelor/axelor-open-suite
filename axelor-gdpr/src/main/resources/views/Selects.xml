@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <selection name="gdpr.request.type.select">
+    <option value="0">Access</option>
+    <option value="1">Erasure</option>
+  </selection>
+
+  <selection name="gdpr.request.status.select">
+    <option value="0">received</option>
+    <option value="1">confirmed</option>
+    <option value="2">realized</option>
+    <option value="3">not recognized</option>
+  </selection>
+
+  <selection name="gdpr.request.model.select">
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.hr.db.Employee">Employee</option>
+  </selection>
+
+  <selection name="gdpr.response.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In progress</option>
+    <option value="2">Response created</option>
+  </selection>
+
+</object-views>
