@@ -677,18 +677,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     BigDecimal difference = total.subtract(totalToMatch);
-    if (difference.compareTo(BigDecimal.ZERO) > 0) {
-      if (isCredit) {
-        moveLine.setCredit(moveLine.getCredit().subtract(difference));
-      } else {
-        moveLine.setDebit(moveLine.getDebit().subtract(difference));
-      }
+    if (isCredit) {
+      moveLine.setCredit(moveLine.getCredit().subtract(difference));
     } else {
-      if (isCredit) {
-        moveLine.setCredit(moveLine.getCredit().add(difference));
-      } else {
-        moveLine.setDebit(moveLine.getDebit().add(difference));
-      }
+      moveLine.setDebit(moveLine.getDebit().subtract(difference));
     }
 
     return moveLine;

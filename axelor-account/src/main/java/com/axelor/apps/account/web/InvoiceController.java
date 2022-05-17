@@ -359,7 +359,8 @@ public class InvoiceController {
   public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationTypeSelect() == null) {
+      int operation = invoice.getOperationTypeSelect();
+      if (operation == 0) {
         return;
       }
       PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
@@ -933,6 +934,10 @@ public class InvoiceController {
         Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
         response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
         response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+
+        if (isDuplicate) {
+          response.setAttr("$supplierInvoiceNbStatic", "value", invoice.getSupplierInvoiceNb());
+        }
       }
 
     } catch (Exception e) {

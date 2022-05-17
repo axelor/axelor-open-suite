@@ -1255,4 +1255,6 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
 
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+  static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
+      "Capital Depreciation Derogatory Account" /*)*/;
 }

@@ -535,10 +535,10 @@
         onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
-        <viewer>
+        <viewer depends="$supplierInvoiceNbStatic">
                 <![CDATA[
                	  <h4>
-               	    <span class="label label-default" style="background-color: #B6473F; color: #FFFFFF;"> <span x-translate>Watch out, an invoice with the same number</span> ({{record.supplierInvoiceNb}}) <span x-translate>already exists for this supplier</span> {{record.partner.fullName}} <span x-translate>and the year</span> {{record.originDate|date:'YYYY'}} </span>
+               	    <span class="label label-default" style="background-color: #B6473F; color: #FFFFFF;"> <span x-translate>Watch out, an invoice with the same number</span> ({{record.$supplierInvoiceNbStatic}}) <span x-translate>already exists for this supplier</span> {{record.partner.fullName}} <span x-translate>and the year</span> {{record.originDate|date:'YYYY'}} </span>
                   </h4>
               	]]>
         </viewer>
@@ -546,6 +546,7 @@
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
+      <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
