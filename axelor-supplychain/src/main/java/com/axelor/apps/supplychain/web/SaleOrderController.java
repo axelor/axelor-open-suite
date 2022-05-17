@@ -53,7 +53,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -889,35 +888,6 @@ public class SaleOrderController {
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called from sale order form view when confirming sale order and analytic distribution is
-   * required from company's sale config.
-   *
-   * @param request
-   * @param response
-   */
-  public void checkSaleOrderAnalyticDistributionTemplate(
-      ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<String> productList = new ArrayList<>();
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE
-            && saleOrderLine.getAnalyticDistributionTemplate() == null) {
-          productList.add(saleOrderLine.getProductName());
-        }
-      }
-      if (!productList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
-            productList);
-      }
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
