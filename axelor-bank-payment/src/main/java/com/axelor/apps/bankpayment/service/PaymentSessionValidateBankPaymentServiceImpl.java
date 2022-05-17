@@ -202,7 +202,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     return super.generatePaymentsFirst(paymentSession)
         || (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_ONGOING
             && paymentSession.getPaymentMode().getGenerateBankOrder()
-            && paymentSession.getPaymentMode().getAccountingTriggerSelect()
+            && paymentSession.getAccountingTriggerSelect()
                 != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
   }
 
