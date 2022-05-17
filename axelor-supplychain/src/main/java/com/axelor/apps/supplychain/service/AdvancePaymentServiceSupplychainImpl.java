@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -149,7 +150,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName(),
           saleOrder.getSaleOrderSeq());

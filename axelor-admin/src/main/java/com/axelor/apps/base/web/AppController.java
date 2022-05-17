@@ -20,7 +20,6 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.apps.base.service.app.AccessConfigImportService;
 import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AppService;

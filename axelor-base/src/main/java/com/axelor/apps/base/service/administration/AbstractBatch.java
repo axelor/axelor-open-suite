@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.administration;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
@@ -95,7 +95,7 @@ public abstract class AbstractBatch {
   public Batch run(AuditableModel model) {
     Preconditions.checkNotNull(model);
     if (threadBatchId.get() != null) {
-      throw new IllegalStateException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_2));
+      throw new IllegalStateException(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_2));
     }
 
     if (isRunnable(model)) {
@@ -112,7 +112,7 @@ public abstract class AbstractBatch {
         unarchived();
       }
     } else {
-      throw new RuntimeException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_1));
+      throw new RuntimeException(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_1));
     }
   }
 

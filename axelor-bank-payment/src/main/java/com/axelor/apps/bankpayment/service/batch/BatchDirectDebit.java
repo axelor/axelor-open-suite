@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -48,8 +47,7 @@ public abstract class BatchDirectDebit extends com.axelor.apps.account.service.b
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT))
-        .append(" ");
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
     sb.append(
         String.format(
             I18n.get(

@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -68,7 +68,7 @@ public class PeriodServiceImpl implements PeriodService {
     if (period == null || (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PERIOD_1),
+          I18n.get(BaseExceptionMessage.PERIOD_1),
           company.getName(),
           L10n.getInstance().format(date));
     }
@@ -104,7 +104,7 @@ public class PeriodServiceImpl implements PeriodService {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PERIOD_1),
+          I18n.get(BaseExceptionMessage.PERIOD_1),
           period.getYear().getCompany().getName());
     }
     LOG.debug("Next Period : {}", nextPeriod);
@@ -116,7 +116,7 @@ public class PeriodServiceImpl implements PeriodService {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PERIOD_2));
+          I18n.get(BaseExceptionMessage.PERIOD_2));
     }
   }
 
@@ -211,7 +211,7 @@ public class PeriodServiceImpl implements PeriodService {
     if (period != null && period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED),
+          I18n.get(BaseExceptionMessage.PAY_PERIOD_CLOSED),
           period.getName());
     }
   }
@@ -233,7 +233,7 @@ public class PeriodServiceImpl implements PeriodService {
             && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
+              I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
         }
       }
     }
@@ -259,7 +259,7 @@ public class PeriodServiceImpl implements PeriodService {
         if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
+              I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
         }
       }
     }

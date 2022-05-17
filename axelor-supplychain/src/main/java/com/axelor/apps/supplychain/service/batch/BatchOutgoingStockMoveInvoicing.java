@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -109,8 +110,8 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());

@@ -13,7 +13,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -308,8 +307,7 @@ public class BatchBillOfExchange extends AbstractBatch {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT))
-        .append(" ");
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
     sb.append(
         String.format(
             I18n.get(

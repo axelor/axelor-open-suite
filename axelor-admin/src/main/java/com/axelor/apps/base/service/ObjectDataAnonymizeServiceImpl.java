@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;

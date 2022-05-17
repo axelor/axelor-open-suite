@@ -19,7 +19,6 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -179,17 +178,13 @@ public class BankReconciliationLineService {
           throw new AxelorException(
               bankReconciliationLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(
-                  BankPaymentExceptionMessage
-                      .BANK_RECONCILIATION_MISSING_JOURNAL));
+              I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MISSING_JOURNAL));
         }
         if (bankReconciliationLine.getBankReconciliation().getCashAccount() == null) {
           throw new AxelorException(
               bankReconciliationLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(
-                      BankPaymentExceptionMessage
-                      .BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
+              I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
         }
       }
     }

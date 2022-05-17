@@ -27,7 +27,6 @@ import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;

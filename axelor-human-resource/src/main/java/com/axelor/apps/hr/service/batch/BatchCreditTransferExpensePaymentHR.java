@@ -20,12 +20,12 @@ package com.axelor.apps.hr.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -95,8 +95,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());

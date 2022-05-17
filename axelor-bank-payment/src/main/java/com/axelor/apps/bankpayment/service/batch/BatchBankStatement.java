@@ -24,7 +24,6 @@ import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -131,7 +130,8 @@ public class BatchBankStatement extends AbstractBatch {
     sb.append("\n");
     sb.append(
         String.format(
-            I18n.get(BankPaymentExceptionMessage.BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT),
+            I18n.get(
+                BankPaymentExceptionMessage.BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT),
             bankStatementCount));
     addComment(sb.toString());
     super.stop();

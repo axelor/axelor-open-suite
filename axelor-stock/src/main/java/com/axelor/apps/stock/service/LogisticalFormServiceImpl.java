@@ -20,6 +20,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -546,7 +547,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       throw new AxelorException(
           StockMove.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_UNSAVED));
+          I18n.get(BaseExceptionMessage.RECORD_UNSAVED));
     }
 
     TypedQuery<LogisticalForm> query =

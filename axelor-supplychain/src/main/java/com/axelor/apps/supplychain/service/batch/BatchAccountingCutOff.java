@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
@@ -151,8 +152,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
             batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

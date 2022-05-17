@@ -21,7 +21,6 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
@@ -525,7 +524,9 @@ public class AppServiceImpl implements AppService {
     if (!children.isEmpty()) {
       List<String> childrenNames = getNames(children);
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, AdminExceptionMessage.APP_IN_USE, childrenNames);
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AdminExceptionMessage.APP_IN_USE,
+          childrenNames);
     }
 
     app.setActive(false);

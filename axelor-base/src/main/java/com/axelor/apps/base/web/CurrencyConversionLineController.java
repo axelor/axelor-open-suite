@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
@@ -131,7 +131,7 @@ public class CurrencyConversionLineController {
             currencyConversionService.getRateWithDate(fromCurrency, toCurrency);
         rate = pair.getRight();
         if (rate.compareTo(new BigDecimal(-1)) == 0)
-          response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
+          response.setFlash(I18n.get(BaseExceptionMessage.CURRENCY_6));
         else {
           response.setValue("variations", "0");
           if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
@@ -165,7 +165,7 @@ public class CurrencyConversionLineController {
           if (!rateRetrieveDate.equals(todayDate)) {
             response.setFlash(
                 String.format(
-                    I18n.get(IExceptionMessage.CURRENCY_10), todayDate, rateRetrieveDate));
+                    I18n.get(BaseExceptionMessage.CURRENCY_10), todayDate, rateRetrieveDate));
           }
         }
       } catch (AxelorException axelorException) {

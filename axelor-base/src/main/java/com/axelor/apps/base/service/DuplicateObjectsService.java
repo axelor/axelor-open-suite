@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -203,14 +203,14 @@ public class DuplicateObjectsService {
       if (property == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.GENERAL_8),
+            I18n.get(BaseExceptionMessage.GENERAL_8),
             field,
             modelClass.getSimpleName());
       }
       if (property.isCollection()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.GENERAL_9),
+            I18n.get(BaseExceptionMessage.GENERAL_9),
             field);
       }
       if (count != 0) {

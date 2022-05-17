@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
@@ -124,8 +125,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
             batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

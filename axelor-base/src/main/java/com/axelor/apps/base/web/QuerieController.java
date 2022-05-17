@@ -18,7 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Querie;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.querie.QuerieService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -34,7 +34,7 @@ public class QuerieController {
 
     try {
       Beans.get(QuerieService.class).checkQuerie(request.getContext().asType(Querie.class));
-      response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
+      response.setFlash(I18n.get(BaseExceptionMessage.QUERIE_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

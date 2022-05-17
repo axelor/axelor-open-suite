@@ -33,7 +33,6 @@ import com.axelor.apps.bankpayment.ebics.client.KeyManagement;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;

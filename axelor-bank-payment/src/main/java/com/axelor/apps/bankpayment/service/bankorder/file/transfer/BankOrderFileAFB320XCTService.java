@@ -24,7 +24,6 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.Bank;
@@ -410,7 +409,9 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
           e,
           senderBankDetails,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD) + ": " + e.getMessage(),
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD)
+              + ": "
+              + e.getMessage(),
           bankOrderSeq);
     }
   }
@@ -781,7 +782,9 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
           e,
           bankOrderLine,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD) + ": " + e.getMessage(),
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD)
+              + ": "
+              + e.getMessage(),
           bankOrderLine.getSequence());
     }
   }
@@ -1254,7 +1257,9 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD) + ": " + e.getMessage(),
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD)
+              + ": "
+              + e.getMessage(),
           bankOrderSeq);
     }
   }

@@ -33,7 +33,6 @@ import com.axelor.apps.bankpayment.ebics.certificate.CertificateManager;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.report.engine.ReportSettings;

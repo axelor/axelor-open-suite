@@ -32,7 +32,6 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;

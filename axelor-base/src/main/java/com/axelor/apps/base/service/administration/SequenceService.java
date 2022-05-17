@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.SequenceTypeSelect;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
@@ -321,7 +321,7 @@ public class SequenceService {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+          I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
     return String.format("%s%d", DRAFT_PREFIX, model.getId());
   }
@@ -338,7 +338,7 @@ public class SequenceService {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+          I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
     return String.format(
         "%s%s",

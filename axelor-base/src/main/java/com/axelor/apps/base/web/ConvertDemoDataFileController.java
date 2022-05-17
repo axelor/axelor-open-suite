@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -51,7 +51,7 @@ public class ConvertDemoDataFileController {
           "$csvMetaFile",
           Beans.get(ConvertDemoDataFileService.class).convertDemoDataExcelFile(dataFile));
     } else {
-      response.setError(I18n.get(IExceptionMessage.VALIDATE_FILE_TYPE));
+      response.setError(I18n.get(BaseExceptionMessage.VALIDATE_FILE_TYPE));
     }
   }
 }

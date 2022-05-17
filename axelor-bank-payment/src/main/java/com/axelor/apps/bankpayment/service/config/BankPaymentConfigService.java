@@ -20,7 +20,6 @@ package com.axelor.apps.bankpayment.service.config;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;

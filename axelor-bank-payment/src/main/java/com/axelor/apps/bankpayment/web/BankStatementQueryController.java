@@ -20,7 +20,6 @@ package com.axelor.apps.bankpayment.web;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryFetchService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;

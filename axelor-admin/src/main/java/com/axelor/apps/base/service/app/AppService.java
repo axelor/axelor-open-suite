@@ -19,7 +19,6 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;

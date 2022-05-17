@@ -56,8 +56,7 @@ public class PaymentScheduleLineController {
       }
 
       if (idList.isEmpty()) {
-        response.setError(
-            I18n.get(BaseExceptionMessage.RECORD_NONE_SELECTED));
+        response.setError(I18n.get(BaseExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 

@@ -9,7 +9,6 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
@@ -86,8 +85,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(
-                      AccountExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
+              I18n.get(AccountExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
               I18n.get(BaseExceptionMessage.EXCEPTION),
               batch.getAccountingBatch().getCompany().getName()),
           "Batch bill of exchange send billing",
@@ -286,8 +284,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT))
-        .append(" ");
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
     sb.append(
         String.format(
             I18n.get(

@@ -25,7 +25,6 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
@@ -418,7 +417,8 @@ public class BankOrderLineService {
           .checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
       }
     }
   }

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
@@ -163,9 +164,7 @@ public class EventController {
           response.setView(mapView);
         } else
           response.setFlash(
-              String.format(
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),
-                  event.getLocation()));
+              String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), event.getLocation()));
       } else response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

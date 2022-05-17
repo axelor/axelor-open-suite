@@ -129,9 +129,7 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
     super.checkErrors(fieldErrors, result);
     if (getCommonFields(result).getCommonProject() == null
         && getChecks(result).isExistProjectDiff()) {
-      fieldErrors.add(
-          I18n.get(
-                  AccountExceptionMessage.INVOICE_MERGE_ERROR_PROJECT));
+      fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_PROJECT));
     }
   }
 

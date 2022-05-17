@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
@@ -110,8 +111,7 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     addComment(comment);
     super.stop();

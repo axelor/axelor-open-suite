@@ -24,7 +24,6 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.tool.date.DateTool;

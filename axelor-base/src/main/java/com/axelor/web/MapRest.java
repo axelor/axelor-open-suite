@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.service.TranslationService;
@@ -132,7 +132,7 @@ public class MapRest {
         throw new AxelorException(
             Partner.class,
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.PARTNER_NOT_FOUND));
+            I18n.get(BaseExceptionMessage.PARTNER_NOT_FOUND));
       }
 
       ArrayNode arrayNode = nodeFactory.arrayNode();

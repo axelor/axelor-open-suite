@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.FileTabRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
@@ -100,14 +100,14 @@ public class ValidatorService {
     if (advancedImport.getImportFile() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
     }
 
     if (advancedImport.getAttachment() != null
         && !Files.getFileExtension(advancedImport.getAttachment().getFileName()).equals("zip")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_ATTACHMENT_FORMAT));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_ATTACHMENT_FORMAT));
     }
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
@@ -116,7 +116,7 @@ public class ValidatorService {
         || (!extension.equals("xlsx") && !extension.equals("xls") && !extension.equals("csv"))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
     DataReaderService reader = dataReaderFactory.getDataReader(extension);
@@ -204,7 +204,7 @@ public class ValidatorService {
     if (!CollectionUtils.containsAny(tabList, sheetList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_TAB_ERR));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_TAB_ERR));
     }
   }
 
@@ -212,7 +212,8 @@ public class ValidatorService {
     if (fileTab.getMetaModel() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_OBJECT), fileTab.getName()));
+          String.format(
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT), fileTab.getName()));
     }
   }
 
@@ -227,14 +228,15 @@ public class ValidatorService {
     if (row == null || (StringUtils.isBlank(row[rowIndex]))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
     String object = row[rowIndex].trim();
     if (StringUtils.containsIgnoreCase(object, "Object")) {
       String model = object.split("\\:")[1].trim();
       if (fileTab.getMetaModel() != null && !fileTab.getMetaModel().getName().equals(model)) {
-        logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
+        logService.addLog(
+            LogService.COMMON_KEY, BaseExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
       }
     }
   }
@@ -245,7 +247,8 @@ public class ValidatorService {
     if (CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_FIELDS), fileTab.getName()));
+          String.format(
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_FIELDS), fileTab.getName()));
     }
 
     List<String> fieldList = new ArrayList<String>();
@@ -256,7 +259,7 @@ public class ValidatorService {
 
       } else {
         logService.addLog(
-            IExceptionMessage.ADVANCED_IMPORT_LOG_2, fileField.getColumnTitle(), null);
+            BaseExceptionMessage.ADVANCED_IMPORT_LOG_2, fileField.getColumnTitle(), null);
       }
     }
 
@@ -278,7 +281,7 @@ public class ValidatorService {
           if (obj != null && mapper.get(obj, prop.getName()) != null) {
             continue;
           }
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_3, prop.getName(), null);
+          logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_3, prop.getName(), null);
         }
       }
     }
@@ -352,7 +355,8 @@ public class ValidatorService {
 
       if (importField != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
         if (importField.getRelationship() != null) {
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
+          logService.addLog(
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
         }
 
         this.validateImportRequiredField(
@@ -399,7 +403,7 @@ public class ValidatorService {
       if (Strings.isNullOrEmpty(fileField.getDateFormat())
           && Strings.isNullOrEmpty(fileField.getExpression())) {
 
-        logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_6, field, rowNum);
+        logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_6, field, rowNum);
       }
     }
   }
@@ -423,7 +427,7 @@ public class ValidatorService {
         if (prop.getName().equals(fieldName)
             && importType == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
 
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_5, field, rowNum);
+          logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_5, field, rowNum);
 
         } else if ((importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
                 || importType == FileFieldRepository.IMPORT_TYPE_NEW)
@@ -434,7 +438,7 @@ public class ValidatorService {
           newField = newField + "." + prop.getName();
 
           if (!relationalFieldList.contains(newField)) {
-            logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_3, newField, null);
+            logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_3, newField, null);
           }
         }
       }
@@ -541,7 +545,7 @@ public class ValidatorService {
           && Strings.isNullOrEmpty(row[cell])
           && importType != FileFieldRepository.IMPORT_TYPE_FIND) {
 
-        logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_8, field, line);
+        logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_8, field, line);
 
       } else if (importType == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
         flag = true;
@@ -578,7 +582,7 @@ public class ValidatorService {
 
       if (childProp == null) {
         if (!isLog) {
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_7, field, rowNum);
+          logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_7, field, rowNum);
         }
       }
 
@@ -589,7 +593,7 @@ public class ValidatorService {
         } else {
           subProperty = childProp;
           if (!isLog) {
-            logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_4, field, rowNum);
+            logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, field, rowNum);
           }
         }
       } else {
@@ -628,7 +632,7 @@ public class ValidatorService {
 
         if (!value.matches(boolPat)) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
 
@@ -638,7 +642,7 @@ public class ValidatorService {
             new BigInteger(value);
           } catch (Exception e) {
             logService.addLog(
-                IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+                BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
           }
         }
         break;
@@ -653,7 +657,7 @@ public class ValidatorService {
           Integer.parseInt(value);
         } catch (NumberFormatException e) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
 
@@ -662,7 +666,7 @@ public class ValidatorService {
           Long.parseLong(value);
         } catch (NumberFormatException e) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
 
@@ -671,7 +675,7 @@ public class ValidatorService {
           new BigDecimal(value);
         } catch (NumberFormatException e) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
     }
@@ -706,7 +710,9 @@ public class ValidatorService {
         }
       } catch (DateTimeParseException e) {
         logService.addLog(
-            IExceptionMessage.ADVANCED_IMPORT_LOG_9, getField(fileField) + "(" + type + ")", line);
+            BaseExceptionMessage.ADVANCED_IMPORT_LOG_9,
+            getField(fileField) + "(" + type + ")",
+            line);
       }
     }
   }
@@ -719,7 +725,7 @@ public class ValidatorService {
     if (!actionService.validate(actions)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getName()),
+          String.format(BaseExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getName()),
           1);
     }
   }
@@ -729,7 +735,7 @@ public class ValidatorService {
     if (!searchCallService.validate(searchCall)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getName()),
+          String.format(BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getName()),
           1);
     }
   }
@@ -830,7 +836,7 @@ public class ValidatorService {
           && StringUtils.isBlank(fileTab.getSearchCall())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_6), fileTab.getName()));
+            String.format(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6), fileTab.getName()));
       }
       this.validateSearchCall(fileTab);
     }

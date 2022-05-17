@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -37,8 +38,8 @@ public abstract class BatchOrderInvoicing extends AbstractBatch {
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());

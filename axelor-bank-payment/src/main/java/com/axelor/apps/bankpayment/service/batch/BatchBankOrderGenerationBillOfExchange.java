@@ -9,7 +9,6 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
@@ -221,8 +220,7 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT))
-        .append(" ");
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
     sb.append(
         String.format(
             I18n.get(

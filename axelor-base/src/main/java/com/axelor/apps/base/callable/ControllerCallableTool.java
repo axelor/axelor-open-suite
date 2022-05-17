@@ -18,7 +18,7 @@
 package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -61,7 +61,7 @@ public class ControllerCallableTool<V> {
       // cause already traced in traceback
       response.setFlash(e.getCause().getMessage());
     } catch (TimeoutException e) {
-      response.setNotify(I18n.get(IExceptionMessage.PROCESS_BEING_COMPUTED));
+      response.setNotify(I18n.get(ToolExceptionMessage.PROCESS_BEING_COMPUTED));
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
       Thread.currentThread().interrupt();

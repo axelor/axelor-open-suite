@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
@@ -214,7 +214,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           } else {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(IExceptionMessage.PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN));
+                I18n.get(BaseExceptionMessage.PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN));
           }
         }
 
@@ -269,7 +269,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       } catch (Exception e) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE),
+            I18n.get(BaseExceptionMessage.PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE),
             printTemplateLine.getSequence(),
             printTemplateLine.getTitle());
       }

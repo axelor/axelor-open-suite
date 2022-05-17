@@ -23,7 +23,6 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;

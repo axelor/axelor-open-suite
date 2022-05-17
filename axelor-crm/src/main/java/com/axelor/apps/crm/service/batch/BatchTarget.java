@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.service.batch;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
@@ -102,8 +103,7 @@ public class BatchTarget extends BatchStrategy {
             "\t* %s " + I18n.get(IExceptionMessage.BATCH_TARGET_3) + "\n", batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

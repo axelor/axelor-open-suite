@@ -162,18 +162,13 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
       if (getCommonFields(result).getCommonSaleOrder() == null
           && getChecks(result).isExistSaleOrderDiff()) {
-        fieldErrors.add(
-            I18n.get(
-                AccountExceptionMessage.INVOICE_MERGE_ERROR_SALEORDER));
+        fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_SALEORDER));
       }
     }
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
       if (getCommonFields(result).getCommonPurchaseOrder() == null
           && getChecks(result).isExistPurchaseOrderDiff()) {
-        fieldErrors.add(
-            I18n.get(
-                    AccountExceptionMessage
-                    .INVOICE_MERGE_ERROR_PURCHASEORDER));
+        fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_PURCHASEORDER));
       }
     }
   }

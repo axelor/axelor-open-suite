@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.BranchAndFinancialInstitutionIdentification3;

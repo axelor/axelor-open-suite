@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.batch;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -113,9 +114,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
         String.format(I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION), batch.getDone());
     comment += "\n";
     comment +=
-        String.format(
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+        String.format(I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     addComment(comment);
     super.stop();

@@ -35,7 +35,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;

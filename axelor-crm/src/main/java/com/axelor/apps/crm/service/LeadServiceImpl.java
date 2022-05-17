@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -120,7 +120,8 @@ public class LeadServiceImpl implements LeadService {
     String seq = sequenceService.getSequenceNumber(SequenceRepository.PARTNER);
     if (seq == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PARTNER_1));
     }
     return seq;
   }

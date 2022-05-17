@@ -30,7 +30,6 @@ import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;

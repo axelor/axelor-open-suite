@@ -18,7 +18,6 @@
 package com.axelor.apps.bankpayment.service.cfonb;
 
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;

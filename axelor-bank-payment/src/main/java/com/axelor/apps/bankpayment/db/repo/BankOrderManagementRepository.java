@@ -19,7 +19,6 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;

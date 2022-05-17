@@ -20,7 +20,6 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;

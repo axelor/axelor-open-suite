@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.service.batch;
 
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.repo.EventReminderRepository;
@@ -260,8 +261,7 @@ public class BatchEventReminder extends BatchStrategy {
             "\t* %s " + I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_3) + "\n", batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
