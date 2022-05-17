@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -36,7 +39,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
