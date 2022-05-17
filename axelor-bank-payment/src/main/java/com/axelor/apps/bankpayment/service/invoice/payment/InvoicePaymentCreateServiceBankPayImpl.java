@@ -63,7 +63,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber)
+      String chequeNumber,
+      boolean applyDiscount)
       throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList =
@@ -73,7 +74,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
             companyBankDetails,
             paymentDate,
             bankDepositDate,
-            chequeNumber);
+            chequeNumber,
+            applyDiscount);
 
     if (!appBaseService.isApp("bank-payment")) {
       return invoicePaymentList;

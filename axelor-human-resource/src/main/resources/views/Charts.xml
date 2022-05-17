@@ -12,7 +12,7 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.timesheet.id= :timesheet_id
+			self.timesheet.id= :id
 		GROUP BY
 			self.date,
 			self.project.fullName

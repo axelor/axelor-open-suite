@@ -1,6 +1,0 @@
----
-title: "Operation order : fix stock move and consumed product panels displaying"
-type: fix
-description: |
-  From Operation orders menu item, stock move and consumed product panels where never displayed even if they should be.
-  Fix the hidden displaying rule.

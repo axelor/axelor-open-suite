@@ -122,10 +122,12 @@ public class PaymentVoucherLoadService {
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
-
+    int sequence = 0;
     for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
 
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(moveLine);
+      payVoucherDueElement.setSequence(sequence++);
+      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
@@ -190,7 +192,11 @@ public class PaymentVoucherLoadService {
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-
+    paymentVoucher
+        .getPayVoucherDueElementList()
+        .sort(
+            (payVoucherDueElem1, payVoucherDueElem2) ->
+                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
     for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {

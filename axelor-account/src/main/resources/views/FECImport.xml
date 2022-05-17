@@ -7,6 +7,7 @@
     <field name="name"/>
     <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="company"/>
     <field name="createdOn"/>
   </grid>
 
@@ -15,18 +16,26 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="dataMetaFile" widget="binary-link"
-        onSelect="action-fec-import-attr-set-data-meta-file-domain" canNew="true"
+        onSelect="action-fec-import-attr-set-data-meta-file-domain"
+        onChange="action-groupd-account-fec-import-set-company-on-change" canNew="true"
         form-view="meta-files-form" grid-view="meta-files-grid"/>
-      <field name="bindMetaFile" widget="binary-link" hidden="true"/>
+      <field name="importFECType"/>
+      <field name="validGeneratedMove"/>
+      <field name="moveDescription"/>
+      <field name="company"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="Run FEC import"
         onClick="save,action-fec-import-validate-import,action-fec-import-method-run"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">
         <field name="description" colSpan="12" showTitle="false" widget="html"/>
       </panel>
+      <panel-dashlet action="action-view-account-fec-import-moves-panel-dashlet"
+        title="Generated moves" canSearch="true" showIf="id"/>
+      <panel-dashlet action="action-view-account-fec-import-anomalies-panel-dashlet"
+        title="Anomalies" canSearch="true" showIf="id"/>
     </panel-tabs>
   </form>
 
@@ -44,9 +53,33 @@
       expr="eval: &quot;self.fileType='text/csv'&quot;"/>
   </action-attrs>
 
+  <action-method name="action-method-account-fec-import-set-company">
+    <call class="com.axelor.apps.account.web.FECImportController" method="setCompany"/>
+  </action-method>
+
+  <action-group name="action-groupd-account-fec-import-set-company-on-change">
+    <action name="action-method-account-fec-import-set-company" if="dataMetaFile != null"/>
+  </action-group>
+
   <action-validate name="action-fec-import-validate-import">
     <alert
       message="Warning : This will import move lines even if they have already been imported through this feature. Be careful not to import the same elements several times."/>
   </action-validate>
+
+  <action-view name="action-view-account-fec-import-anomalies-panel-dashlet"
+    title="Anomalies" model="com.axelor.exception.db.TraceBack">
+    <view type="grid" name="trace-back-lite-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.refId = :id AND self.ref = 'com.axelor.apps.account.db.FECImport'</domain>
+  </action-view>
+
+  <action-view name="action-view-account-fec-import-moves-panel-dashlet"
+    title="Generated moves" model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>self.fecImport = :fecImport</domain>
+    <context name="fecImport" expr="eval: __this__"/>
+
+  </action-view>
 
 </object-views>

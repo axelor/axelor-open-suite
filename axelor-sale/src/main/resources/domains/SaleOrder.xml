@@ -20,6 +20,7 @@
     <boolean name="blockedOnCustCreditExceed" title="Blocked"/>
     <boolean name="manualUnblock" title="Manual Unblock"/>
     <string name="title" title="Title"/>
+    <boolean name="oneoffSale" title="One-off sale"/>
 
     <!-- Onglet Coordonnées client -->
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
@@ -153,6 +154,15 @@
       large="true"/>
 
     <string name="proformaComments" title="Comment to display on proforma" large="true"/>
+
+    <date name="lastReminderDate" title="Last reminder"/>
+    <string name="lastReminderComments" title="Comment" large="true"/>
+
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
+
+    <many-to-one name="taxNumber" title="Tax number"
+      ref="com.axelor.apps.account.db.TaxNumber"/>
 
     <unique-constraint columns="saleOrderSeq,company"/>
 

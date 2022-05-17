@@ -68,18 +68,18 @@
       readonlyIf="statusSelect == 4">
       <field name="company" colSpan="12" form-view="company-form" grid-view="company-grid"
         canEdit="false"/>
-      <panel colSpan="12" name="relatedTo1SelectPanel">
-        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId"
-          colSpan="12"/>
-      </panel>
-      <panel colSpan="12" name="relatedTo2SelectPanel">
-        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId"
-          colSpan="12" showIf="relatedTo1Select != null"/>
-      </panel>
+      <field name="multiRelatedList">
+        <editor>
+          <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
+            colSpan="12" showTitle="false"/>
+          <field name="relatedToSelectId" hidden="true"/>
+        </editor>
+      </field>
     </panel>
   </form>
 
   <action-group name="action-group-base-message-onnew">
+    <action name="action-message-method-display-generate-message" if="_message != null"/>
     <action name="action-message-record-default"/>
     <action name="action-message-record-mail-account"/>
     <action name="action-message-record-get-signature"/>
