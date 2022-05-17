@@ -21,6 +21,7 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -44,15 +45,19 @@ public class InventoryLineController {
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
-    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-    Inventory inventory =
-        request.getContext().getParent() != null
-            ? request.getContext().getParent().asType(Inventory.class)
-            : inventoryLine.getInventory();
-    inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
-    response.setValue("unit", inventoryLine.getUnit());
-    response.setValue("gap", inventoryLine.getGap());
-    response.setValue("gapValue", inventoryLine.getGapValue());
-    response.setValue("realValue", inventoryLine.getRealValue());
+    try {
+      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+      Inventory inventory =
+          request.getContext().getParent() != null
+              ? request.getContext().getParent().asType(Inventory.class)
+              : inventoryLine.getInventory();
+      inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
+      response.setValue("unit", inventoryLine.getUnit());
+      response.setValue("gap", inventoryLine.getGap());
+      response.setValue("gapValue", inventoryLine.getGapValue());
+      response.setValue("realValue", inventoryLine.getRealValue());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
