@@ -6,6 +6,10 @@
   <grid title="Debt Recoveries" name="debt-recovery-grid"
     model="com.axelor.apps.account.db.DebtRecovery" canNew="false"
     orderBy="-debtRecoveryDate,company,accountingSituation.partner">
+    <toolbar>
+      <button onClick="action-method-block-customer-with-late-payments"
+        name="blockCustomersWithLatePayments" title="Block customer with late payments"/>
+    </toolbar>
     <hilite if="waitDebtRecoveryMethodLine" color="warning"/>
     <hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     <field name="company"/>
@@ -55,6 +59,7 @@
       <field name="setToIrrecoverableOk" widget="boolean-switch" colSpan="3"/>
       <field name="deceasedPartnerOk" widget="boolean-switch" colSpan="3"/>
       <field name="unknownAddressOk" widget="boolean-switch" colSpan="3"/>
+      <field name="respiteDateBeforeAccountBlocking" colSpan="3"/>
     </panel>
     <panel-tabs>
       <panel-related name="debtRecoveryHistoryListPanel"
@@ -74,18 +79,19 @@
           form-view="partner-address-form">
           <field name="address" form-view="address-form" grid-view="address-grid"/>
         </panel-related>
-        <field name="accountingSituation.partner.fixedPhone" colSpan="6" hidden="true"
-          showIf="accountingSituation != null"/>
-        <field name="accountingSituation.partner.fax" colSpan="6" hidden="true"
+        <field name="accountingSituation.partner.fixedPhone" widget="phone" colSpan="6"
+          hidden="true" showIf="accountingSituation != null" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="accountingSituation.partner.fax" widget="phone" colSpan="6" hidden="true"
           showIf="accountingSituation != null"/>
         <field name="accountingSituation.partner.emailAddress" colSpan="6" hidden="true"
           showIf="accountingSituation != null"/>
         <field name="accountingSituation.partner.webSite" colSpan="6" hidden="true"
           showIf="accountingSituation != null"/>
-        <field name="tradingNameAccountingSituation.partner.fixedPhone" colSpan="6"
+        <field name="tradingNameAccountingSituation.partner.fixedPhone" widget="phone"
+          colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"
+          x-placeholder-number-type="FIXED_LINE"/>
+        <field name="tradingNameAccountingSituation.partner.fax" widget="phone" colSpan="6"
           hidden="true" showIf="tradingNameAccountingSituation != null"/>
-        <field name="tradingNameAccountingSituation.partner.fax" colSpan="6" hidden="true"
-          showIf="tradingNameAccountingSituation != null"/>
         <field name="tradingNameAccountingSituation.partner.emailAddress" colSpan="6"
           hidden="true" showIf="tradingNameAccountingSituation != null"/>
         <field name="tradingNameAccountingSituation.partner.webSite" colSpan="6" hidden="true"
@@ -118,13 +124,18 @@
       expr="eval: &quot;self.debtRecoveryMethod.id = ${debtRecoveryMethod.id}&quot;"/>
   </action-attrs>
 
+  <action-method name="action-method-block-customer-with-late-payments">
+    <call class="com.axelor.apps.account.web.DebtRecoveryController"
+      method="blockCustomersWithLatePayments"/>
+  </action-method>
+
   <action-method name="action-debt-recovery-method-validate-debtRecovery">
     <call class="com.axelor.apps.account.web.DebtRecoveryController" method="runDebtRecovery"/>
   </action-method>
 
   <action-view name="action-debt-recovery-view-recovery-invoices"
     model="com.axelor.apps.account.db.Invoice" title="Invoice concerned by the debt recovery">
-    <view name="invoice-grid" type="grid"/>
+    <view name="invoice-with-payment-delay-grid" type="grid"/>
     <view name="invoice-form" type="form"/>
     <domain>self.debtRecoveryBlockingOk = false and self.id IN (:_ids)</domain>
     <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}"/>
@@ -132,7 +143,7 @@
 
   <action-view name="action-debt-recovery-view-blocked-invoices"
     model="com.axelor.apps.account.db.Invoice" title="Blocked invoices">
-    <view name="invoice-grid" type="grid"/>
+    <view name="invoice-with-payment-delay-grid" type="grid"/>
     <view name="invoice-form" type="form"/>
     <domain>self.debtRecoveryBlockingOk = true and self.id IN (:_ids)</domain>
     <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}"/>

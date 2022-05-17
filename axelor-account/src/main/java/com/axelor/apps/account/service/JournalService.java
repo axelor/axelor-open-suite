@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
@@ -69,15 +70,24 @@ public class JournalService {
     return resultMap;
   }
 
-  public Set<Long> getCompatiblePartnerIds(Journal journal) {
-    Set<Long> compatiblePartnerIds = null;
+  public String filterJournalPartnerCompatibleType(Move move) {
+    Journal journal = move.getJournal();
     if (journal.getCompatiblePartnerTypeSelect() != null) {
+      StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
       String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
-      compatiblePartnerIds = new HashSet<>();
+      Set<Long> compatiblePartnerIds = new HashSet<>();
       for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
         compatiblePartnerIds.addAll(partnerService.getPartnerIdsByType(compatiblePartnerType));
       }
+      if (compatiblePartnerIds.size() > 0) {
+        for (Long id : compatiblePartnerIds) {
+          compatiblePartnerDomain.append(id.toString() + ",");
+        }
+        compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
+        compatiblePartnerDomain.append(")");
+        return compatiblePartnerDomain.toString();
+      } else return null;
     }
-    return compatiblePartnerIds;
+    return null;
   }
 }

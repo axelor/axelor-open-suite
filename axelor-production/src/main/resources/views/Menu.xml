@@ -33,7 +33,11 @@
     <view type="grid" name="bill-of-material-grid"/>
     <view type="form" name="bill-of-material-form"/>
     <view-param name="search-filters" value="bill-of-material-filters"/>
-    <domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
+    <domain><![CDATA[
+      self.defineSubBillOfMaterial = true
+      AND self.personalized = false
+      AND self.typeSelect != 3
+    ]]></domain>
   </action-view>
 
   <menuitem name="manufacturing-root-personalized-bill-of-material"
@@ -417,6 +421,16 @@
     title="Configurator Phase" model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
     <view type="grid" name="configurator-prod-process-line-grid"/>
     <view type="form" name="configurator-prod-process-line-form"/>
+  </action-view>
+
+  <menuitem name="manufacturing-conf-configurators-prod-product"
+    parent="manufacturing-conf-configurators" order="60" title="Configurator prod product"
+    action="manufacturing.conf.configurator.prod.product"/>
+
+  <action-view name="manufacturing.conf.configurator.prod.product"
+    title="Configurator prod product" model="com.axelor.apps.production.db.ConfiguratorProdProduct">
+    <view type="grid" name="configurator-prod-product-grid"/>
+    <view type="form" name="configurator-prod-product-form"/>
   </action-view>
 
   <menuitem title="Product approvals" name="manufacturing-conf-product-approvals"

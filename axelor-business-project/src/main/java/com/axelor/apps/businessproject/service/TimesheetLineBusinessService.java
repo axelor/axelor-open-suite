@@ -18,6 +18,8 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -27,4 +29,10 @@ public interface TimesheetLineBusinessService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine);
+
+  public TimesheetLine setTimesheet(TimesheetLine timesheetLine);
+
+  public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter();
+
+  public void timsheetLineInvoicing(Project project);
 }

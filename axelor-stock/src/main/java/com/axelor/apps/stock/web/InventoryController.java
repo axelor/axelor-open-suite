@@ -133,6 +133,39 @@ public class InventoryController {
     }
   }
 
+  public void planInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).planInventory(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void startInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).startInventory(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void completeInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).completeInventory(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void validateInventory(ActionRequest request, ActionResponse response) {
     try {
       Long id = request.getContext().asType(Inventory.class).getId();
@@ -149,6 +182,17 @@ public class InventoryController {
       Inventory inventory = request.getContext().asType(Inventory.class);
       inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
       Beans.get(InventoryService.class).cancel(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void draftInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).draftInventory(inventory);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -229,7 +273,7 @@ public class InventoryController {
     Query query =
         JPA.em()
             .createQuery(
-                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.trackingNumber HAVING COUNT(self) > 1");
+                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.stockLocation, self.trackingNumber HAVING COUNT(self) > 1");
 
     try {
       query.setParameter("invent", inventory.getId()).getSingleResult();

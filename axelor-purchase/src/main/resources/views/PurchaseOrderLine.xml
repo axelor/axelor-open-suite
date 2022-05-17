@@ -255,6 +255,10 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
   <form name="purchase-order-line-menu-form" title="PO line"
@@ -302,7 +306,7 @@
 
   <action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('supplychain') || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
+      expr="eval: !__config__.app.isApp('supplychain') || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-attrs
