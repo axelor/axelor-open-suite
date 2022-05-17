@@ -18,7 +18,7 @@
 package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.TrainingSession;
-import com.axelor.apps.talent.exception.IExceptionMessage;
+import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingSessionService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -32,7 +32,7 @@ public class TrainingSessionTalentRepository extends TrainingSessionRepository {
   public TrainingSession save(TrainingSession trainingSession) {
 
     if (trainingSession.getFromDate().isAfter(trainingSession.getToDate())) {
-      throw new ValidationException(I18n.get(IExceptionMessage.INVALID_DATE_RANGE));
+      throw new ValidationException(I18n.get(TalentExceptionMessage.INVALID_DATE_RANGE));
     }
 
     trainingSession.setFullName(trainingSessionService.computeFullName(trainingSession));

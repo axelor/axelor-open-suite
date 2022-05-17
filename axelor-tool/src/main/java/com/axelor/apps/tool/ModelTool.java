@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
@@ -101,7 +101,7 @@ public final class ModelTool {
 
     for (Field field : fields) {
       String message =
-          messages.getOrDefault(field.getName(), IExceptionMessage.RECORD_UNIQUE_FIELD);
+          messages.getOrDefault(field.getName(), ToolExceptionMessage.RECORD_UNIQUE_FIELD);
       errors.put(field.getName(), message);
     }
 

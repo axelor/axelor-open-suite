@@ -18,6 +18,7 @@
 package com.axelor.apps.tool.exception;
 
 /** @author axelor */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Period service */

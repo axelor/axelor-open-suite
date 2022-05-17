@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool.net;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.i18n.I18n;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,10 +32,10 @@ public class TestURLService {
 
     url = "www.google.com";
     Assert.assertEquals(
-        String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
+        String.format(I18n.get(ToolExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
 
     url = "http://testnotfound.axelor.com/";
     Assert.assertEquals(
-        String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
+        String.format(I18n.get(ToolExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
   }
 }

@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -51,7 +51,7 @@ public class MetaTool {
     if (typeName == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.ERROR_CONVERT_JSON_TYPE_TO_TYPE),
+          I18n.get(ToolExceptionMessage.ERROR_CONVERT_JSON_TYPE_TO_TYPE),
           nameType);
     }
     return typeName;
@@ -72,7 +72,7 @@ public class MetaTool {
     if (jsonTypeName == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.ERROR_CONVERT_TYPE_TO_JSON_TYPE),
+          I18n.get(ToolExceptionMessage.ERROR_CONVERT_TYPE_TO_JSON_TYPE),
           nameType);
     }
     return jsonTypeName;

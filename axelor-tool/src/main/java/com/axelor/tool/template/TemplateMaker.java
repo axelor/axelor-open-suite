@@ -17,7 +17,7 @@
  */
 package com.axelor.tool.template;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -112,7 +112,7 @@ public class TemplateMaker {
   public void setTemplate(File file) throws FileNotFoundException {
     if (!file.isFile()) {
       throw new FileNotFoundException(
-          I18n.get(IExceptionMessage.TEMPLATE_MAKER_1) + ": " + file.getName());
+          I18n.get(ToolExceptionMessage.TEMPLATE_MAKER_1) + ": " + file.getName());
     }
 
     String text;
@@ -153,7 +153,7 @@ public class TemplateMaker {
 
   public String make() {
     if (Strings.isNullOrEmpty(this.template)) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.TEMPLATE_MAKER_2));
+      throw new IllegalArgumentException(I18n.get(ToolExceptionMessage.TEMPLATE_MAKER_2));
     }
 
     Map<String, Object> ctx = context == null ? new HashMap<>() : context;
