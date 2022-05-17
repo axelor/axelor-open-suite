@@ -21,6 +21,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -44,6 +45,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     entity.setRealEndDateT(null);
     entity.setWasteStockMove(null);
     entity.setCostPrice(null);
+    entity.setBarCode(null);
     if (deep) {
       entity.clearInStockMoveList();
       entity.clearOutStockMoveList();
@@ -67,6 +69,9 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       if (Strings.isNullOrEmpty(entity.getManufOrderSeq())
           && entity.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT) {
         entity.setManufOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(entity));
+      }
+      if (entity.getBarCode() == null) {
+        Beans.get(ManufOrderService.class).createBarcode(entity);
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

@@ -51,15 +51,6 @@
     <view-param name="search-filters" value="forecast-generator-filters"/>
   </action-view>
 
-  <menuitem name="forecast-conf-forecast-reason" order="20" parent="forecast-conf"
-    title="Forecast Reasons" action="forecast.conf.forecast.reason"/>
-
-  <action-view name="forecast.conf.forecast.reason" title="Forecast Reasons"
-    model="com.axelor.apps.cash.management.db.ForecastReason">
-    <view type="grid" name="forecast-reason-grid"/>
-    <view type="form" name="forecast-reason-form"/>
-  </action-view>
-
   <menuitem name="forecast-conf-forecast-recap-line-type" parent="forecast-conf"
     title="Forecast Recap line Types" action="forecast.conf.forecast.recap.line.type"/>
 

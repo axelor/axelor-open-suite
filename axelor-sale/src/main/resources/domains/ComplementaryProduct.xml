@@ -12,6 +12,15 @@
     <decimal name="qty" title="Qty" precision="20" scale="10"/>
     <boolean name="optional" title="Optional"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+    <integer name="generationTypeSelect" title="Generation type" default="2"
+      selection="sale.complementary.product.generation.type.select"/>
+
+    <extra-code>
+            <![CDATA[
+                public static final int GENERATION_TYPE_SALE_ORDER = 1;
+                public static final int GENERATION_TYPE_SALE_ORDER_LINE = 2;
+            ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

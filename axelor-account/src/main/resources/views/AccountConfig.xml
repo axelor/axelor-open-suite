@@ -10,7 +10,9 @@
   </grid>
 
   <form name="account-config-form" title="Account configuration"
-    model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-record-default"
+    model="com.axelor.apps.account.db.AccountConfig"
+    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
+    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
     width="large">
     <toolbar>
       <button name="showInvoiceBtn" title="Invoices"
@@ -28,8 +30,9 @@
 
       <field name="hasChartImported"/>
       <field name="allowRemovalValidatedMove"/>
-      <field name="generateMoveForAdvancePayment"/>
-      <field name="accountingDaybook"/>
+      <field name="generateMoveForAdvancePayment" colSpan="4"/>
+      <field name="accountingDaybook" colSpan="4"/>
+      <field name="isActivateSimulatedMove" colSpan="4"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -64,6 +67,9 @@
               domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
               grid-view="account-grid" form-view="account-form"
               help="Select the default supplier account to be used in purchase invoices. It will also be used as parent account if automatic account creation is enabled."/>
+            <field name="supplierAdvancePaymentAccount"
+              domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+              grid-view="account-grid" form-view="account-form"/>
             <field name="supplierAccountPrefix"
               help="Prefix to be prepended on supplier accounts' codes, the code will be [prefix]PARTNERNAME"
               showIf="partnerAccountGenerationModeSelect == 1"
@@ -73,6 +79,16 @@
               canEdit="true" showIf="partnerAccountGenerationModeSelect == 2"
               requiredIf="partnerAccountGenerationModeSelect == 2"
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
+          </panel>
+          <panel name="discountPanel" title="Discount Accounts" colSpan="12">
+            <field name="purchFinancialDiscountAccount" domain="self.company = :company"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+            <field name="saleFinancialDiscountAccount" domain="self.company = :company"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+            <field name="purchFinancialDiscountTax"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+            <field name="saleFinancialDiscountTax"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
           </panel>
           <panel title="AccountConfig.Employees" colSpan="12">
             <field name="employeeAccount" domain="self.company = :company"
@@ -122,6 +138,9 @@
         </panel>
         <panel name="exportsPanel" title="Exports" colSpan="12">
           <field name="exportPath"/>
+          <field name="dasContactPartner"
+            domain="self.isEmployee = true AND :company member of self.companySet"
+            form-view="partner-form" grid-view="partner-grid"/>
           <!-- <field name="exportFileName"/> -->
         </panel>
         <panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">
@@ -149,6 +168,9 @@
         </panel>
         <panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
           <field name="lineMinBeforeLongReportGenerationMessageNumber"/>
+        </panel>
+        <panel name="moveLinesPanel" title="Move lines" colSpan="12">
+          <field name="isDescriptionRequired" widget="boolean-switch"/>
         </panel>
       </panel>
 
@@ -190,6 +212,7 @@
             form-view="product-form" grid-view="product-grid"/>
         </panel>
 
+
         <panel name="printingSettingsPanel" title="Printing settings" colSpan="12">
           <field name="displayDelAddrOnPrinting" widget="boolean-switch"/>
           <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
@@ -203,6 +226,8 @@
             if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
+          <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch" colSpan="12"
+            if="__config__.app.isApp('supplychain')"/>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
           <field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
@@ -298,6 +323,8 @@
         </panel>
       </panel>
       <panel name="receivablesRecoveryPanel" title="Receivables recovery">
+        <field name="hasLatePaymentAccountBlocking"/>
+        <field name="numberOfDaysBeforeAccountBlocking" showIf="hasLatePaymentAccountBlocking"/>
         <field name="factorPartner"
           domain="self.isFactor = TRUE AND :company member of self.companySet"
           if="__config__.app.getApp('account')?.manageFactors" form-view="partner-form"
@@ -353,6 +380,22 @@
           domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
           grid-view="account-grid" form-view="account-form"/>
       </panel>
+      <panel name="analyticPanel"
+        if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
+        <field name="manageAnalyticAccounting"
+          onChange="action-attrs-account-config-set-is-can-new"/>
+        <field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting"
+          requiredIf="manageAnalyticAccounting"
+          onChange="action-attrs-account-config-set-is-can-new"/>
+        <field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
+        <field name="analyticJournal" domain="self.company = :company"
+          showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
+        <field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew"
+          showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"
+          onChange="action-attrs-account-config-set-is-can-new"
+          form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+        <field name="$isCanNew" type="boolean" hidden="true"/>
+      </panel>
 
     </panel-tabs>
 
@@ -395,5 +438,37 @@
     <context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
     <context name="_company" expr="eval: __this__"/>
   </action-view>
+
+  <action-validate name="action-validate-account-config-on-save-analytic">
+    <error
+      if="manageAnalyticAccounting &amp;&amp; nbrOfAnalyticAxisSelect != analyticAxisByCompanyList.size"
+      message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
+  </action-validate>
+
+  <action-group name="action-account-config-group-on-save">
+    <action name="action-account-config-validate-is-activate-simulated-move"/>
+    <action name="action-account-config-method-deactivate-simulated-moves"/>
+    <action name="action-validate-account-config-on-save-analytic"/>
+  </action-group>
+
+  <action-validate name="action-account-config-validate-is-activate-simulated-move"
+    model="com.axelor.apps.account.db.AccountConfig">
+    <alert
+      message="By deactivating simulated moves, all moves (including move lines) in this status will be deleted for the company ${company.name}. Do you wish to continue ?"
+      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+  </action-validate>
+
+  <action-method name="action-account-config-method-deactivate-simulated-moves">
+    <call class="com.axelor.apps.account.web.AccountConfigController"
+      method="deactivateSimulatedMoves"
+      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-account-config-set-is-can-new">
+    <attribute name="value" for="$isCanNew"
+      expr="eval: analyticAxisByCompanyList.size() &lt; nbrOfAnalyticAxisSelect"
+      if="analyticAxisByCompanyList != null &amp;&amp; manageAnalyticAccounting"/>
+  </action-attrs>
+
 
 </object-views>

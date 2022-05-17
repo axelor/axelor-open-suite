@@ -18,13 +18,19 @@
 package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
@@ -36,8 +42,23 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject
   public ConfiguratorServiceProductionImpl(
-      AppBaseService appBaseService, MetaFieldRepository metaFieldRepository) {
-    super(appBaseService, metaFieldRepository);
+      AppBaseService appBaseService,
+      ConfiguratorFormulaService configuratorFormulaService,
+      ProductRepository productRepository,
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      MetaFieldRepository metaFieldRepository,
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
+    super(
+        appBaseService,
+        configuratorFormulaService,
+        productRepository,
+        saleOrderLineService,
+        saleOrderLineRepository,
+        saleOrderComputeService,
+        metaFieldRepository,
+        configuratorMetaJsonFieldService);
   }
 
   /**
@@ -46,14 +67,18 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
    * @param configurator
    * @param jsonAttributes
    * @param jsonIndicators
+   * @param saleOrderId
    * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generate(
-      Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
+  public void generateProduct(
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
       throws AxelorException {
-    super.generate(configurator, jsonAttributes, jsonIndicators);
+    super.generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrderId);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Product generatedProduct = configurator.getProduct();

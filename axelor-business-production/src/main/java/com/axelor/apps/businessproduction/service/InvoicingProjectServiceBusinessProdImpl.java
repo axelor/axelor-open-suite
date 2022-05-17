@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -44,6 +45,12 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       super.setLines(invoicingProject, project, counter);
       return;
+    }
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (appBusinessProject.getAutomaticInvoicing()) {
+      projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
+      timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {

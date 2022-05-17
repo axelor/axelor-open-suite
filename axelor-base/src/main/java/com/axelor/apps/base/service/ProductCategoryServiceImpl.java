@@ -97,6 +97,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
   }
 
+  @Override
   public List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
@@ -121,6 +122,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     return parentProductCategoryList;
   }
 
+  @Override
   public List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
@@ -153,7 +155,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
   }
 
   /**
-   * Find child of given category, and recursively parents of found parent that have a max discount.
+   * Find parent of given category, and recursively parents of found parents that have a max
+   * discount.
    *
    * @param productCategory a product category
    * @return filtered parents of the category
