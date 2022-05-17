@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.csv.script.ImportLeadConfiguration;
@@ -105,7 +105,7 @@ public class LeadController {
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
+      response.setFlash(I18n.get(CrmExceptionMessage.LEAD_1));
     }
   }
 
@@ -152,10 +152,10 @@ public class LeadController {
     logger.debug("ImportConfig for lead: {}", leadImportConfig);
 
     if (leadImportConfig == null) {
-      response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
+      response.setFlash(I18n.get(CrmExceptionMessage.LEAD_4));
     } else {
       response.setView(
-          ActionView.define(I18n.get(IExceptionMessage.LEAD_5))
+          ActionView.define(I18n.get(CrmExceptionMessage.LEAD_5))
               .model("com.axelor.apps.base.db.ImportConfiguration")
               .add("form", "import-configuration-form")
               .param("popup", "reload")

@@ -22,7 +22,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.AbstractContractVersionRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -68,7 +68,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         || version.getStatusSelect() != AbstractContractVersionRepository.DRAFT_VERSION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_WAITING_WRONG_STATUS));
+          I18n.get(ContractExceptionMessage.CONTRACT_WAITING_WRONG_STATUS));
     }
 
     Contract contract =
@@ -79,14 +79,14 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
                 () ->
                     new AxelorException(
                         TraceBackRepository.CATEGORY_MISSING_FIELD,
-                        I18n.get(IExceptionMessage.CONTRACT_MISSING_FROM_VERSION)));
+                        I18n.get(ContractExceptionMessage.CONTRACT_MISSING_FROM_VERSION)));
 
     if (contract.getIsInvoicingManagement()
         && version.getIsPeriodicInvoicing()
         && (contract.getFirstPeriodEndDate() == null || version.getInvoicingDuration() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
+          I18n.get(ContractExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
     }
     version.setStatusSelect(WAITING_VERSION);
   }
@@ -113,7 +113,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         || !authorizedStatus.contains(version.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_ONGOING_WRONG_STATUS));
+          I18n.get(ContractExceptionMessage.CONTRACT_ONGOING_WRONG_STATUS));
     }
 
     version.setActivationDate(date);
@@ -161,7 +161,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         || version.getStatusSelect() != AbstractContractVersionRepository.ONGOING_VERSION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_TERMINATE_WRONG_STATUS));
+          I18n.get(ContractExceptionMessage.CONTRACT_TERMINATE_WRONG_STATUS));
     }
 
     version.setEndDate(date);

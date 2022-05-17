@@ -20,7 +20,7 @@ package com.axelor.apps.cash.management.web;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
-import com.axelor.apps.cash.management.exception.IExceptionMessage;
+import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.exception.AxelorException;
@@ -46,7 +46,7 @@ public class ForecastRecapController {
       if (forecastRecap.getCompany() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.FORECAST_COMPANY));
+            I18n.get(CashManagementExceptionMessage.FORECAST_COMPANY));
       }
       Beans.get(ForecastRecapService.class)
           .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));

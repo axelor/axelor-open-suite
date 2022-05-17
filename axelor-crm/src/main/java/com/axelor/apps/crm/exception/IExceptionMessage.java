@@ -19,6 +19,7 @@
 package com.axelor.apps.crm.exception;
 
 /** @author axelor */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Target service */

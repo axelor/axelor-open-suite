@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.exception;
 
+@Deprecated
 public interface IExceptionMessage {
 
   String CONTRACT_MISSING_TERMINATE_DATE = /*$$(*/

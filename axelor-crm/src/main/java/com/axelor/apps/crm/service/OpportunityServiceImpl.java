@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -55,7 +55,7 @@ public class OpportunityServiceImpl implements OpportunityService {
       throw new AxelorException(
           opportunity,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAD_PARTNER));
+          I18n.get(CrmExceptionMessage.LEAD_PARTNER));
     }
 
     String name = lead.getFullName();
@@ -105,7 +105,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.OPPORTUNITY_1),
+          I18n.get(CrmExceptionMessage.OPPORTUNITY_1),
           company != null ? company.getName() : null);
     }
     opportunity.setOpportunitySeq(seq);

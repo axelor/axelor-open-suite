@@ -25,7 +25,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractVersionService;
@@ -88,7 +88,7 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       if (contractVersion.getNextContract() == null) {
-        response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
+        response.setError(I18n.get(ContractExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
         return;
       }
       Beans.get(ContractService.class)
@@ -113,7 +113,7 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       if (contractVersion.getNextContract() == null) {
-        response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
+        response.setError(I18n.get(ContractExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
         return;
       }
       Beans.get(ContractService.class)

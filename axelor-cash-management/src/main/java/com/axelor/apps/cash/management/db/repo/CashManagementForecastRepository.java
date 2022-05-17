@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.cash.management.db.Forecast;
-import com.axelor.apps.cash.management.exception.IExceptionMessage;
+import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -47,7 +47,7 @@ public class CashManagementForecastRepository extends ForecastRepository {
           throw new AxelorException(
               company,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.FORECAST_SEQUENCE_ERROR),
+              I18n.get(CashManagementExceptionMessage.FORECAST_SEQUENCE_ERROR),
               company.getName());
 
         } else {

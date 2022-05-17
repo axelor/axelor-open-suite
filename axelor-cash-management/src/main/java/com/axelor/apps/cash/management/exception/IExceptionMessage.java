@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.cash.management.exception;
 
+@Deprecated
 public interface IExceptionMessage {
 
   static final String FORECAST_COMPANY = /*$$(*/ "Please select a company" /*)*/;
