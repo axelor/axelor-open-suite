@@ -60,6 +60,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -404,7 +405,10 @@ public class ReconcileServiceImpl implements ReconcileService {
         && otherMove.getFunctionalOriginSelect()
             != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
       if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
-        invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
+        invoicePayment =
+            Optional.of(reconcile)
+                .map(Reconcile::getInvoicePayment)
+                .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
       if (invoicePayment == null) {
@@ -531,9 +535,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     return invoice.getInvoicePaymentList().stream()
         .filter(
             it ->
-                it.getMove() != null
+                (it.getMove() != null
                     && it.getMove().equals(move)
-                    && CollectionUtils.isEmpty(it.getReconcileList()))
+                    && CollectionUtils.isEmpty(it.getReconcileList())))
         .findFirst()
         .orElse(null);
   }
@@ -565,9 +569,22 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
+    return this.reconcile(
+        debitMoveLine, creditMoveLine, null, canBeZeroBalanceOk, updateInvoicePayments);
+  }
+
+  public Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException {
     BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
     Reconcile reconcile =
         this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
+    reconcile.setInvoicePayment(invoicePayment);
+
     if (reconcile != null) {
       this.confirmReconcile(reconcile, updateInvoicePayments, true);
       return reconcile;

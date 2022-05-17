@@ -329,14 +329,15 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Transactional
-  public InvoicePayment createInvoicePayment(
+  protected InvoicePayment createInvoicePayment(
       Invoice invoice,
       InvoiceTerm invoiceTerm,
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber) {
+      String chequeNumber,
+      PaymentSession paymentSession) {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoiceTerm.getInvoice(),
@@ -349,11 +350,51 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
+    invoicePayment.setPaymentSession(paymentSession);
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoiceTermPaymentService.initInvoiceTermPayments(
         invoicePayment, Collections.singletonList(invoiceTerm));
 
     return invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Override
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber) {
+    return this.createInvoicePayment(
+        invoice,
+        invoiceTerm,
+        paymentMode,
+        companyBankDetails,
+        paymentDate,
+        bankDepositDate,
+        chequeNumber,
+        null);
+  }
+
+  @Override
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      PaymentSession paymentSession) {
+    return this.createInvoicePayment(
+        invoice,
+        invoiceTerm,
+        paymentMode,
+        companyBankDetails,
+        paymentDate,
+        null,
+        null,
+        paymentSession);
   }
 
   @Override

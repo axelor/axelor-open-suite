@@ -255,4 +255,20 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         .bind("_inversedInOrOut", inversedInOrOut)
         .fetchOne();
   }
+
+  @Override
+  public boolean isPendingPayment(PaymentMode paymentMode) {
+    if (paymentMode == null) {
+      return false;
+    }
+
+    int typeSelect = paymentMode.getTypeSelect();
+    int inOutSelect = paymentMode.getInOutSelect();
+
+    return (typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
+        || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
+            && inOutSelect == PaymentModeRepository.OUT)
+        || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
+            && inOutSelect == PaymentModeRepository.IN);
+  }
 }
