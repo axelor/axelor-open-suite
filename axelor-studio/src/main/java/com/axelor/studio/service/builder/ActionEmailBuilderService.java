@@ -20,7 +20,7 @@ package com.axelor.studio.service.builder;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
@@ -102,7 +102,7 @@ public class ActionEmailBuilderService {
       messageService.sendByEmail(message);
     } else {
       response.setView(
-          ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
+          ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_3))
               .model(Message.class.getName())
               .add("form", "message-form")
               .param("forceEdit", "true")

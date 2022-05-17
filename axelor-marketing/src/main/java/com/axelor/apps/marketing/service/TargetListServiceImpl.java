@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.TargetList;
-import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -82,7 +82,7 @@ public class TargetListServiceImpl implements TargetListService {
         } catch (Exception e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.CAMPAIGN_PARTNER_FILTER));
+              I18n.get(MarketingExceptionMessage.CAMPAIGN_PARTNER_FILTER));
         }
       }
       for (Partner partner : target.getPartnerSet()) {
@@ -104,7 +104,7 @@ public class TargetListServiceImpl implements TargetListService {
         } catch (Exception e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.CAMPAIGN_LEAD_FILTER));
+              I18n.get(MarketingExceptionMessage.CAMPAIGN_LEAD_FILTER));
         }
       }
       for (Lead lead : target.getLeadSet()) {

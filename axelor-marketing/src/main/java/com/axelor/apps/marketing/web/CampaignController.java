@@ -23,7 +23,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
-import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.apps.marketing.service.CampaignService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -44,15 +44,15 @@ public class CampaignController {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
       if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
+        response.setFlash(I18n.get(MarketingExceptionMessage.EMPTY_TARGET));
         return;
       }
       MetaFile logFile = Beans.get(CampaignService.class).sendEmail(campaign);
 
       if (logFile == null) {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
       }
 
       response.setValue("emailLog", logFile);
@@ -69,16 +69,16 @@ public class CampaignController {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
       if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(IExceptionMessage.REMINDER_EMAIL1));
+        response.setFlash(I18n.get(MarketingExceptionMessage.REMINDER_EMAIL1));
         return;
       }
 
       MetaFile logFile = Beans.get(CampaignService.class).sendReminderEmail(campaign);
 
       if (logFile == null) {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
       }
 
       response.setValue("emailLog", logFile);

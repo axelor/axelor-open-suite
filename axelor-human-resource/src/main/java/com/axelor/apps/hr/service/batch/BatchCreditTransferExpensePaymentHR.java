@@ -86,10 +86,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     sb.append(
         String.format(
             I18n.get(
-                    HumanResourceExceptionMessage
-                        .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
-                    HumanResourceExceptionMessage
-                        .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
+                    HumanResourceExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
+                    HumanResourceExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
                     batch.getDone())
                 + " ",
             batch.getDone()));

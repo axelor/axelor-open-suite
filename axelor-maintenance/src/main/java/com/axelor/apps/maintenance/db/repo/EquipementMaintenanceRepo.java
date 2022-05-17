@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.maintenance.db.EquipementMaintenance;
 import com.axelor.apps.maintenance.db.Imaintenance;
-import com.axelor.apps.maintenance.exception.IExceptionMessage;
+import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -54,7 +54,7 @@ public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
       throw new AxelorException(
           Sequence.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EQUIPEMENT_MAINTENANCE_MISSING_SEQUENCE));
+          I18n.get(MaintenanceExceptionMessage.EQUIPEMENT_MAINTENANCE_MISSING_SEQUENCE));
     }
 
     entity.setCode(code);

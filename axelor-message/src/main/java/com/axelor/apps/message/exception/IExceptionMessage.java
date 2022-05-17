@@ -19,6 +19,7 @@
 package com.axelor.apps.message.exception;
 
 /** @author axelor */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Mail account service and controller */
