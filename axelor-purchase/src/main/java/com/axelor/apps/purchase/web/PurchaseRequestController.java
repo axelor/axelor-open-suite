@@ -20,7 +20,7 @@ package com.axelor.apps.purchase.web;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.tool.StringTool;
@@ -94,7 +94,7 @@ public class PurchaseRequestController {
         if (purchaseRequestSeqs != null && !purchaseRequestSeqs.isEmpty()) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PURCHASE_REQUEST_MISSING_SUPPLIER_USER),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_MISSING_SUPPLIER_USER),
               purchaseRequestSeqs.toString());
         }
         response.setCanClose(true);

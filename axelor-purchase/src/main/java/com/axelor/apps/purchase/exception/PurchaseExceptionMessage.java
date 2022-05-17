@@ -1,31 +1,13 @@
-/*
- * Axelor Business Solutions
- *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
- *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-/** */
 package com.axelor.apps.purchase.exception;
 
-/** @author axelor */
-@Deprecated
-public interface IExceptionMessage {
+public final class PurchaseExceptionMessage {
 
-  static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
-  static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
+  private PurchaseExceptionMessage() {}
+
+  public static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
+  public static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
       "The minimum order quantity of %s to the supplier is not respected." /*)*/;
-  static final String PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG = /*$$(*/
+  public static final String PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG = /*$$(*/
       "This product is not available from the supplier." /*)*/;
 
   /** Purchase order service impl */
@@ -58,16 +40,16 @@ public interface IExceptionMessage {
       "Can only return to draft from cancelled purchase order." /*)*/;
 
   /** Blocking supplier */
-  String SUPPLIER_BLOCKED = /*$$(*/ "This supplier is blocked:" /*)*/;
+  public static final String SUPPLIER_BLOCKED = /*$$(*/ "This supplier is blocked:" /*)*/;
 
   /*
    * Purchase order printing
    */
-  String NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING = /*$$(*/
+  public static final String NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING = /*$$(*/
       "Please select the purchase order(s) to print." /*)*/;
-  String PURCHASE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
+  public static final String PURCHASE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on purchase order %s" /*)*/;
-  String PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS = /*$$(*/
+  public static final String PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on following purchase orders: %s" /*)*/;
 
   public static final String PURCHASE_REQUEST_1 = /*$$(*/

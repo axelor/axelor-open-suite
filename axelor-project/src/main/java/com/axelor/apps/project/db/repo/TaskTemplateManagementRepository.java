@@ -18,7 +18,7 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,7 +33,7 @@ public class TaskTemplateManagementRepository extends TaskTemplateRepository {
         && Beans.get(TaskTemplateService.class)
             .isParentTaskTemplateCreatedLoop(taskTemplate, taskTemplate.getParentTaskTemplate())) {
       throw new PersistenceException(
-          I18n.get(IExceptionMessage.TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP));
+          I18n.get(ProjectExceptionMessage.TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP));
     }
 
     return super.save(taskTemplate);

@@ -37,7 +37,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
@@ -284,7 +284,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (price == null || inTaxPrice == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
     TaxEquiv taxEquiv =
@@ -634,7 +634,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
 
     if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
-      String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+      String msg =
+          String.format(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
 
       if (request.getAction().endsWith("onchange")) {
         response.setFlash(msg);
@@ -688,7 +689,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (supplierOnPurchaseOrder != defaultSupplierOnProduct) {
 
-      String message = String.format(I18n.get(IExceptionMessage.DIFFERENT_SUPPLIER));
+      String message = String.format(I18n.get(PurchaseExceptionMessage.DIFFERENT_SUPPLIER));
       String title =
           String.format(
               "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);

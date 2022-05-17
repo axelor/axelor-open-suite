@@ -18,6 +18,7 @@
 package com.axelor.apps.projectdms.exception;
 
 /** @author axelor */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String LOCKED_BY_USER_EMAIL_NOT_CONFIGURED = /*$$(*/

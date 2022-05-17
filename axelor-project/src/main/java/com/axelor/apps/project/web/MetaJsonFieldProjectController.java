@@ -19,7 +19,7 @@ package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
@@ -55,7 +55,7 @@ public class MetaJsonFieldProjectController {
     }
 
     if (modelName == null) {
-      response.setError(I18n.get(IExceptionMessage.JSON_FIELD_MODEL_INVALID));
+      response.setError(I18n.get(ProjectExceptionMessage.JSON_FIELD_MODEL_INVALID));
       return;
     }
 

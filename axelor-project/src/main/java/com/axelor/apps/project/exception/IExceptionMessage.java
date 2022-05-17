@@ -22,6 +22,7 @@ package com.axelor.apps.project.exception;
  *
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String PROJECT_PLANNING_NO_TASK = /*$$(*/

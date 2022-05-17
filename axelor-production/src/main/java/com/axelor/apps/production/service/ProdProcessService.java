@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -75,7 +75,7 @@ public class ProdProcessService {
         if (!bomMap.containsKey(prodProduct.getProduct())) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT),
+              I18n.get(ProductionExceptionMessage.PROD_PROCESS_USELESS_PRODUCT),
               prodProduct.getProduct().getName());
         }
         bomMap.put(
@@ -95,7 +95,7 @@ public class ProdProcessService {
     if (!copyMap.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_MISS_PRODUCT),
           Joiner.on(",").join(nameProductList));
     }
   }

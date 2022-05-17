@@ -28,7 +28,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -84,7 +84,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         != ProductRepository.COST_TYPE_STANDARD) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
+          I18n.get(ProductionExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
     }
 
     productCompanyService.set(
@@ -129,7 +129,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (depth > 1000) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MAX_DEPTH_REACHED));
+          I18n.get(ProductionExceptionMessage.MAX_DEPTH_REACHED));
     }
 
     if (billOfMaterial != null) {
@@ -138,7 +138,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       personalizedBOM.setName(
           personalizedBOM.getName()
               + " ("
-              + I18n.get(IExceptionMessage.BOM_1)
+              + I18n.get(ProductionExceptionMessage.BOM_1)
               + " "
               + personalizedBOM.getId()
               + ")");
@@ -395,7 +395,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (rawMaterial.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
+          I18n.get(ProductionExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
           rawMaterial.getFullName());
     }
     newBom.setUnit(rawMaterial.getUnit());

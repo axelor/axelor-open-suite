@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionBatch;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
@@ -111,7 +111,8 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
   protected void stop() {
 
     String comment =
-        String.format(I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION), batch.getDone());
+        String.format(
+            I18n.get(ProductionExceptionMessage.BATCH_COMPUTE_VALUATION), batch.getDone());
     comment += "\n";
     comment +=
         String.format(I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());

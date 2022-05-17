@@ -18,7 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.service.TraceBackService;
@@ -41,7 +41,7 @@ public class SaleOrderLineController {
       if (copyBillOfMaterial != null) {
 
         response.setValue("billOfMaterial", copyBillOfMaterial);
-        response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
+        response.setFlash(I18n.get(ProductionExceptionMessage.SALE_ORDER_LINE_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

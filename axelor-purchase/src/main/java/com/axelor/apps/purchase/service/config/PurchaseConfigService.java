@@ -19,7 +19,7 @@ package com.axelor.apps.purchase.service.config;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.PurchaseConfig;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -33,7 +33,7 @@ public class PurchaseConfigService {
     if (purchaseConfig == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PURCHASE_CONFIG_1),
+          I18n.get(PurchaseExceptionMessage.PURCHASE_CONFIG_1),
           company.getName());
     }
 
