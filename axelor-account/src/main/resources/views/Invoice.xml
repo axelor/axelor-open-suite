@@ -493,8 +493,6 @@
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
         readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
-      <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-        grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
@@ -585,6 +583,8 @@
             onSelect="action-invoice-attrs-domain-delivery-address"
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
+          <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
+            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer>{{record.addressStr}}</viewer>
