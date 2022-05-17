@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveReason;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -35,7 +35,7 @@ public class HRConfigService {
     if (hrConfig == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG),
           company.getName());
     }
     return hrConfig;
@@ -46,7 +46,7 @@ public class HRConfigService {
     if (sequence == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE),
           hrConfig.getCompany().getName());
     }
     return sequence;
@@ -57,7 +57,7 @@ public class HRConfigService {
     if (leaveReason == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_LEAVE_REASON),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_LEAVE_REASON),
           hrConfig.getCompany().getName());
     }
     return leaveReason;
@@ -68,7 +68,7 @@ public class HRConfigService {
     if (kilometricExpenseProduct == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_EXPENSE_TYPE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_EXPENSE_TYPE),
           hrConfig.getCompany().getName());
     }
     return kilometricExpenseProduct;
@@ -81,7 +81,7 @@ public class HRConfigService {
     if (sentExpenseTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_SENT_EXPENSE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_SENT_EXPENSE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return sentExpenseTemplate;
@@ -92,7 +92,7 @@ public class HRConfigService {
     if (validatedExpenseTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_VALIDATED_EXPENSE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_VALIDATED_EXPENSE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return validatedExpenseTemplate;
@@ -103,7 +103,7 @@ public class HRConfigService {
     if (refusedExpenseTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_REFUSED_EXPENSE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_REFUSED_EXPENSE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return refusedExpenseTemplate;
@@ -114,7 +114,7 @@ public class HRConfigService {
     if (refusedExpenseTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_EXPENSE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_CANCELED_EXPENSE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return refusedExpenseTemplate;
@@ -127,7 +127,7 @@ public class HRConfigService {
     if (sentLeaveTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_SENT_LEAVE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_SENT_LEAVE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return sentLeaveTemplate;
@@ -138,7 +138,7 @@ public class HRConfigService {
     if (validatedLeaveTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_VALIDATED_LEAVE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_VALIDATED_LEAVE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return validatedLeaveTemplate;
@@ -149,7 +149,7 @@ public class HRConfigService {
     if (refusedLeaveTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_REFUSED_LEAVE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_REFUSED_LEAVE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return refusedLeaveTemplate;
@@ -160,7 +160,7 @@ public class HRConfigService {
     if (refusedLeaveTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_LEAVE_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_CANCELED_LEAVE_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return refusedLeaveTemplate;
@@ -173,7 +173,7 @@ public class HRConfigService {
     if (sentExtraHoursTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_SENT_EXTRA_HOURS_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_SENT_EXTRA_HOURS_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return sentExtraHoursTemplate;
@@ -184,7 +184,7 @@ public class HRConfigService {
     if (validatedExtraHoursTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return validatedExtraHoursTemplate;
@@ -195,7 +195,7 @@ public class HRConfigService {
     if (refusedExtraHoursTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return refusedExtraHoursTemplate;
@@ -206,7 +206,7 @@ public class HRConfigService {
     if (refusedExtraHoursTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE),
           hrConfig.getCompany().getName());
     }
     return refusedExtraHoursTemplate;

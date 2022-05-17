@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.helpdesk.exceptions;
 
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String SELECT_TICKETS = /*$$(*/ "Please select tickets" /*)*/;

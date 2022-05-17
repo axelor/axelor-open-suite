@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.exception;
 
 /** Interface of Exceptions. Enum all exception of axelor-human-resource. */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String HR_CONFIG = /*$$(*/

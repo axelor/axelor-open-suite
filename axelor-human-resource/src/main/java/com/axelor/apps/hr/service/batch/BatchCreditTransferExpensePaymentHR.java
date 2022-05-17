@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -85,9 +86,9 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     sb.append(
         String.format(
             I18n.get(
-                    com.axelor.apps.hr.exception.IExceptionMessage
+                    HumanResourceExceptionMessage
                         .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
-                    com.axelor.apps.hr.exception.IExceptionMessage
+                    HumanResourceExceptionMessage
                         .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
                     batch.getDone())
                 + " ",

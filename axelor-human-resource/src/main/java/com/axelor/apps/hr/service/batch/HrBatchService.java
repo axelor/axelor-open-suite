@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -103,7 +104,7 @@ public class HrBatchService extends AbstractBatchService {
     if (hrBatch.getTemplate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          com.axelor.apps.hr.exception.IExceptionMessage.BATCH_TIMESHEET_MISSING_TEMPLATE);
+          HumanResourceExceptionMessage.BATCH_TIMESHEET_MISSING_TEMPLATE);
     }
 
     return Beans.get(BatchTimesheetReminder.class).run(hrBatch);

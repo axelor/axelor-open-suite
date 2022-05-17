@@ -34,7 +34,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.message.db.Message;
@@ -182,7 +182,7 @@ public class LeaveServiceImpl implements LeaveService {
           throw new AxelorException(
               leave.getLeaveReason(),
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessage.LEAVE_REASON_NO_UNIT),
+              I18n.get(HumanResourceExceptionMessage.LEAVE_REASON_NO_UNIT),
               leave.getLeaveReason().getName());
       }
     }
@@ -342,7 +342,7 @@ public class LeaveServiceImpl implements LeaveService {
     if (weeklyPlanning == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
     return weeklyPlanning;
@@ -369,7 +369,7 @@ public class LeaveServiceImpl implements LeaveService {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
     }
@@ -386,7 +386,7 @@ public class LeaveServiceImpl implements LeaveService {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
     }
@@ -397,7 +397,7 @@ public class LeaveServiceImpl implements LeaveService {
         throw new AxelorException(
             leave,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE),
             employee.getName());
       }
       if (leaveLine.getQuantity().signum() == -1
@@ -405,7 +405,7 @@ public class LeaveServiceImpl implements LeaveService {
         throw new AxelorException(
             leave,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
             leave.getLeaveReason().getName());
       }
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
@@ -426,7 +426,7 @@ public class LeaveServiceImpl implements LeaveService {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
     }
@@ -443,7 +443,7 @@ public class LeaveServiceImpl implements LeaveService {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
     }
@@ -502,7 +502,7 @@ public class LeaveServiceImpl implements LeaveService {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
 
@@ -897,7 +897,7 @@ public class LeaveServiceImpl implements LeaveService {
         throw new AxelorException(
             leaveRequest,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+            I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
       }
     }
   }

@@ -29,7 +29,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -247,7 +247,7 @@ public class LeaveController {
       if (employee == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
             AuthUtils.getUser().getName());
       }
       response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
@@ -267,7 +267,7 @@ public class LeaveController {
       if (leaveRequest.getEmployee().getWeeklyPlanning() == null) {
         response.setAlert(
             String.format(
-                I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+                I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
                 leaveRequest.getEmployee().getName()));
         return;
       }
@@ -283,7 +283,7 @@ public class LeaveController {
           }
           response.setAlert(
               String.format(
-                      I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
+                      I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
                       leaveRequest.getLeaveReason().getName())
                   + " "
                   + instruction);
@@ -291,7 +291,7 @@ public class LeaveController {
         } else {
           response.setNotify(
               String.format(
-                  I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
+                  I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
                   leaveRequest.getLeaveReason().getName()));
         }
       }

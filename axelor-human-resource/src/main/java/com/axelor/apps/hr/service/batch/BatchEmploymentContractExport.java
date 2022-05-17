@@ -21,7 +21,7 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmploymentContractService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.service.TraceBackService;
@@ -112,7 +112,8 @@ public class BatchEmploymentContractExport extends BatchStrategy {
 
     String comment =
         String.format(
-            I18n.get(IExceptionMessage.BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP) + '\n', total);
+            I18n.get(HumanResourceExceptionMessage.BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP) + '\n',
+            total);
 
     addComment(comment);
     super.stop();
