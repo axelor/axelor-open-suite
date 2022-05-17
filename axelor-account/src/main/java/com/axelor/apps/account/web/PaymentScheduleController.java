@@ -20,7 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.base.db.BankDetails;
@@ -88,7 +88,7 @@ public class PaymentScheduleController {
         if (Strings.isNullOrEmpty(num)) {
           response.setError(
               String.format(
-                  I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
+                  I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_5),
                   paymentSchedule.getCompany().getName()));
         } else {
           response.setValue("paymentScheduleSeq", num);

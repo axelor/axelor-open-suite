@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankorder.file;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -26,6 +27,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.apps.tool.xml.Marschaller;
@@ -142,8 +144,8 @@ public class BankOrderFileService {
           throw new AxelorException(
               e.getCause(),
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2),
-              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              I18n.get(AccountExceptionMessage.CFONB_EXPORT_2),
+              I18n.get(BaseExceptionMessage.EXCEPTION),
               e);
         }
 

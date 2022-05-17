@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DepositSlip;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -56,7 +56,7 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
       throw new AxelorException(
           Sequence.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE),
+          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE),
           entity.getCompany().getName());
     }
 
@@ -66,7 +66,7 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
   @Override
   public void remove(DepositSlip entity) {
     if (entity.getPublicationDate() != null) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.DEPOSIT_SLIP_CANNOT_DELETE));
+      throw new PersistenceException(I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_CANNOT_DELETE));
     }
 
     entity.clearPaymentVoucherList();

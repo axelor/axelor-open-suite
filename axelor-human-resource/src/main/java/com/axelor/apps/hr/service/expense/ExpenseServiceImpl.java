@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -396,7 +397,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(com.axelor.apps.account.exception.IExceptionMessage.EMPLOYEE_PARTNER),
+          I18n.get(AccountExceptionMessage.EMPLOYEE_PARTNER),
           expense.getEmployee().getName());
     }
 
@@ -448,7 +449,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         throw new AxelorException(
             expense,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_4),
             expenseLineId,
             company.getName());
       }

@@ -18,10 +18,12 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -118,8 +120,8 @@ public class BankReconciliationLineService {
       throw new AxelorException(
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BANK_STATEMENT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankReconciliationLine.getReference() != null
               ? bankReconciliationLine.getReference()
               : "");
@@ -136,8 +138,8 @@ public class BankReconciliationLineService {
       throw new AxelorException(
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BANK_STATEMENT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankReconciliationLine.getReference() != null
               ? bankReconciliationLine.getReference()
               : "");

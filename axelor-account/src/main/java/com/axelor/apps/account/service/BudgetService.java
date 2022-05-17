@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.BudgetLineRepository;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -152,7 +152,7 @@ public class BudgetService {
       if (budgetLineNumber != 1 && duration != 0) fromDate = fromDate.plusMonths(duration);
       if (c >= loopLimit) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BUDGET_1));
+            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(AccountExceptionMessage.BUDGET_1));
       }
       c += 1;
       budgetLineToDate = duration == 0 ? toDate : fromDate.plusMonths(duration).minusDays(1);

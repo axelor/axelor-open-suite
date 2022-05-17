@@ -23,10 +23,11 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -171,20 +172,19 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     StringBuilder sbComment =
         new StringBuilder(
             String.format(
-                "\t* %s " + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET) + "\n",
+                "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_PROCESSED_FIXED_ASSET) + "\n",
                 fixedAssetSet.size()));
 
     sbComment.append(
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_REALIZED_FIXED_ASSET_LINE) + "\n",
+            "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_REALIZED_FIXED_ASSET_LINE) + "\n",
             batch.getDone()));
 
     appendTypeComments(sbComment);
 
     sbComment.append(
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly()));
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly()));
 
     addComment(sbComment.toString());
     super.stop();
@@ -198,7 +198,8 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
               sbComment.append(
                   String.format(
                       "\t* %s "
-                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC)
+                          + I18n.get(
+                              AccountExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC)
                           + "\n",
                       count));
               break;
@@ -206,7 +207,8 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
               sbComment.append(
                   String.format(
                       "\t* %s "
-                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL)
+                          + I18n.get(
+                              AccountExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL)
                           + "\n",
                       count));
               break;
@@ -214,7 +216,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
               sbComment.append(
                   String.format(
                       "\t* %s "
-                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS)
+                          + I18n.get(AccountExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS)
                           + "\n",
                       count));
               break;
@@ -222,7 +224,8 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
               sbComment.append(
                   String.format(
                       "\t* %s "
-                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE)
+                          + I18n.get(
+                              AccountExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE)
                           + "\n",
                       count));
               break;

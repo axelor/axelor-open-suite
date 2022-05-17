@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -43,7 +43,7 @@ public class AccountManagementAccountRepository extends AccountManagementReposit
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS));
+            I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
         throw new PersistenceException(e.getMessage(), e);

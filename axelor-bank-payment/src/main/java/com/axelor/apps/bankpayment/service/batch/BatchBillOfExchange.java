@@ -12,6 +12,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -205,7 +206,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     if (accountConfig.getBillOfExchReceivAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING),
+          I18n.get(AccountExceptionMessage.BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING),
           I18n.get("Bill of exchange receivable account"));
     }
     Move move =

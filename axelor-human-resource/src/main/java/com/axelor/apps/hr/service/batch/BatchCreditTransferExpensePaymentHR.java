@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
@@ -80,7 +81,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
+    sb.append(I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
     sb.append(
         String.format(
             I18n.get(

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.service.cfonb;
 
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
@@ -45,7 +46,7 @@ public class CfonbToolService {
     if (!StringTool.isDigital(value)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT),
+          I18n.get(AccountExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT),
           zone,
           value);
     }
@@ -73,7 +74,7 @@ public class CfonbToolService {
     if (s.length() != size) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE),
+          I18n.get(AccountExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE),
           size);
     }
   }
@@ -108,7 +109,7 @@ public class CfonbToolService {
     if (Strings.isNullOrEmpty(value)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_TOOL_EMPTY_ZONE),
+          I18n.get(AccountExceptionMessage.CFONB_TOOL_EMPTY_ZONE),
           numZone);
     }
   }

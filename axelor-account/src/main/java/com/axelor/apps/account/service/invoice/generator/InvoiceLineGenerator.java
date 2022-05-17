@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -287,7 +287,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (companyCurrency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),
+          I18n.get(AccountExceptionMessage.INVOICE_LINE_GENERATOR_2),
           company.getName());
     }
 

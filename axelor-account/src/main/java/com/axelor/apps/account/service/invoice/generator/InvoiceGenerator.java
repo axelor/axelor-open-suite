@@ -27,7 +27,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
@@ -170,8 +171,8 @@ public abstract class InvoiceGenerator {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_GENERATOR_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_1),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
     }
   }
 
@@ -188,15 +189,15 @@ public abstract class InvoiceGenerator {
     if (partner == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     if (Beans.get(BlockingService.class)
             .getBlocking(partner, company, BlockingRepository.INVOICING_BLOCKING)
         != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+          I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
     invoice.setPartner(partner);
 
@@ -233,8 +234,8 @@ public abstract class InvoiceGenerator {
     if (currency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     invoice.setCurrency(currency);
 

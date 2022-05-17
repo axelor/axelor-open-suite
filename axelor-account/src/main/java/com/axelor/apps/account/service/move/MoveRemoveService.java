@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -84,7 +84,7 @@ public class MoveRemoveService {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_4));
     }
 
     move.setStatusSelect(MoveRepository.STATUS_CANCELED);
@@ -134,7 +134,7 @@ public class MoveRemoveService {
     if (moveModelError != null) {
       errorMessage +=
           String.format(
-              I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
               move.getReference(),
               moveModelError);
     }
@@ -157,7 +157,7 @@ public class MoveRemoveService {
       if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
         errorMessage +=
             String.format(
-                I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
                 moveLine.getName(),
                 modelName);
       }

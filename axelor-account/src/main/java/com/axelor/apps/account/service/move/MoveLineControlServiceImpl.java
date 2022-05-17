@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -65,7 +65,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         throw new AxelorException(
             line,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
             account.getCode(),
             line.getName(),
             journal.getCode());
@@ -81,7 +81,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_7),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_7),
           moveLine.getAccount().getCode());
     }
     controlAccountingAccount(moveLine);

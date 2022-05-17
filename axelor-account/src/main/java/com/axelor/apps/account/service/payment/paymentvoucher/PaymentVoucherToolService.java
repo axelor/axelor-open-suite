@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -54,7 +54,7 @@ public class PaymentVoucherToolService {
         throw new AxelorException(
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1),
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_TOOL_1),
             paymentVoucher.getRef());
     }
 
@@ -90,7 +90,7 @@ public class PaymentVoucherToolService {
         throw new AxelorException(
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1),
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_TOOL_1),
             paymentVoucher.getRef());
     }
 

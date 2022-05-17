@@ -20,7 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Irrecoverable;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.exception.AxelorException;
@@ -77,11 +77,11 @@ public class IrrecoverableController {
       response.setReload(true);
 
       response.setFlash(
-          I18n.get(IExceptionMessage.IRRECOVERABLE_5)
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_5)
               + " - "
               + anomaly
               + " "
-              + I18n.get(IExceptionMessage.IRRECOVERABLE_6));
+              + I18n.get(AccountExceptionMessage.IRRECOVERABLE_6));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -93,7 +93,7 @@ public class IrrecoverableController {
     Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
 
     if (irrecoverable.getExportTypeSelect() == null) {
-      response.setFlash(I18n.get(IExceptionMessage.IRRECOVERABLE_7));
+      response.setFlash(I18n.get(AccountExceptionMessage.IRRECOVERABLE_7));
     } else {
 
       String name = I18n.get("Irrecoverable reporting") + " " + irrecoverable.getName();

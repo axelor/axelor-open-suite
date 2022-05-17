@@ -22,6 +22,7 @@ package com.axelor.apps.base.exceptions;
  *
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;

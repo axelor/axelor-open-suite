@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -330,14 +330,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_1),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_1),
           invoice.getInvoiceId());
     }
     if (partnerAccount == null) {
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_2),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_2),
           invoice.getInvoiceId());
     }
 
@@ -380,7 +380,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           throw new AxelorException(
               move,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.MOVE_LINE_4),
+              I18n.get(AccountExceptionMessage.MOVE_LINE_4),
               invoiceLine.getName(),
               company.getName());
         }
@@ -399,7 +399,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           throw new AxelorException(
               move,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_MISSING),
+              I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_MISSING),
               invoiceLine.getName(),
               company.getName());
         }
@@ -471,7 +471,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             throw new AxelorException(
                 move,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.MOVE_LINE_6),
+                I18n.get(AccountExceptionMessage.MOVE_LINE_6),
                 tax.getName(),
                 company.getName());
           }
@@ -505,7 +505,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             throw new AxelorException(
                 move,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.MOVE_LINE_6),
+                I18n.get(AccountExceptionMessage.MOVE_LINE_6),
                 tax.getName(),
                 company.getName());
           }
@@ -588,7 +588,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_8),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_8),
             taxLine.getName(),
             fiscalPosition.getName(),
             company.getName());
@@ -596,7 +596,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_6),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_6),
             taxLine.getName(),
             company.getName());
       }

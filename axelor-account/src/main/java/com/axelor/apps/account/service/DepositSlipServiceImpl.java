@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -45,7 +45,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_ALREADY_PUBLISHED));
+          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_ALREADY_PUBLISHED));
     }
 
     depositSlip.clearPaymentVoucherList();
@@ -88,7 +88,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         throw new AxelorException(
             depositSlip,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
+            AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
     }
 
     return String.format("%s - %s", name, depositSlip.getDepositNumber());
@@ -104,7 +104,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         throw new AxelorException(
             depositSlip,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
+            AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
     }
   }
 

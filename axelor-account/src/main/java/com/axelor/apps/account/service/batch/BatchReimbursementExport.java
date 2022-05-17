@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -118,7 +119,7 @@ public class BatchReimbursementExport extends BatchStrategy {
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1),
+                I18n.get(AccountExceptionMessage.BATCH_PAYMENT_SCHEDULE_1),
                 batch.getAccountingBatch().getActionSelect()),
             ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
@@ -351,7 +352,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
       } catch (Exception e) {
 
-      	TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), TraceBackRepository.REIMBURSEMENT, batch.getId());
+      	TraceBackService.trace(new Exception(String.format(I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), TraceBackRepository.REIMBURSEMENT, batch.getId());
 
       	incrementAnomaly();
 
@@ -372,7 +373,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 
         TraceBackService.trace(
             new Exception(
-                String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e),
+                String.format(
+                    I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()),
+                e),
             ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
@@ -396,27 +399,27 @@ public class BatchReimbursementExport extends BatchStrategy {
     batch = batchRepo.find(batch.getId());
     switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
       case AccountingBatchRepository.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
-        comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
+        comment = I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
         comment +=
             String.format(
-                "\t* %s " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_3) + "\n",
+                "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_3) + "\n",
                 batch.getDone());
         comment +=
             String.format(
-                "\t* " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
+                "\t* " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
                 this.totalAmount);
 
         break;
 
       case AccountingBatchRepository.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
-        comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
+        comment = I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
         comment +=
             String.format(
-                "\t* %s " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_5) + "\n",
+                "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_5) + "\n",
                 batch.getDone());
         comment +=
             String.format(
-                "\t* " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
+                "\t* " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
                 this.totalAmount);
 
         comment += String.format("\t* ------------------------------- \n");
@@ -429,9 +432,7 @@ public class BatchReimbursementExport extends BatchStrategy {
     }
 
     comment +=
-        String.format(
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_5),
-            batch.getAnomaly());
+        String.format(I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_5), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -163,7 +164,7 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           && getChecks(result).isExistSaleOrderDiff()) {
         fieldErrors.add(
             I18n.get(
-                com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_SALEORDER));
+                AccountExceptionMessage.INVOICE_MERGE_ERROR_SALEORDER));
       }
     }
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
@@ -171,7 +172,7 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           && getChecks(result).isExistPurchaseOrderDiff()) {
         fieldErrors.add(
             I18n.get(
-                com.axelor.apps.account.exception.IExceptionMessage
+                    AccountExceptionMessage
                     .INVOICE_MERGE_ERROR_PURCHASEORDER));
       }
     }
