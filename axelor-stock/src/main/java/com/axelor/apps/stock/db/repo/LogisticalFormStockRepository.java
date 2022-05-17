@@ -24,7 +24,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -51,7 +51,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
             throw new AxelorException(
                 Sequence.class,
                 TraceBackRepository.CATEGORY_NO_VALUE,
-                I18n.get(IExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE),
+                I18n.get(StockExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE),
                 logisticalForm.getCompany().getName());
           }
           logisticalForm.setDeliveryNumberSeq(sequenceNumber);
@@ -64,7 +64,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
             if (template == null) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  I18n.get(IExceptionMessage.LOGISTICAL_FORM_MISSING_TEMPLATE),
+                  I18n.get(StockExceptionMessage.LOGISTICAL_FORM_MISSING_TEMPLATE),
                   logisticalForm);
             }
 

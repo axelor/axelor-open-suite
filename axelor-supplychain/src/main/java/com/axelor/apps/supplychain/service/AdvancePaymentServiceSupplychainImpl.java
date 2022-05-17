@@ -40,7 +40,7 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -149,7 +149,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName(),

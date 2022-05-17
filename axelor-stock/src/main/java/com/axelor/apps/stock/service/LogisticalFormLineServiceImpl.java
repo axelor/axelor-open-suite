@@ -22,8 +22,8 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -99,7 +99,7 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
     if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
       throw new LogisticalFormError(
           logisticalFormLine,
-          I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
+          I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
           logisticalFormLine.getSequence() + 1);
     }
   }

@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -99,12 +99,12 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT));
+    sb.append(I18n.get(SupplychainExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT));
     sb.append(
         String.format(
             I18n.get(
-                IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR,
-                IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL,
+                SupplychainExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR,
+                SupplychainExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL,
                 batch.getDone()),
             batch.getDone()));
     sb.append(

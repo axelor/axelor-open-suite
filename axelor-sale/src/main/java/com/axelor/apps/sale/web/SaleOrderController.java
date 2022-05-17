@@ -40,7 +40,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -189,7 +189,7 @@ public class SaleOrderController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.SALE_ORDER_PRINT));
+            I18n.get(SaleExceptionMessage.SALE_ORDER_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -459,19 +459,19 @@ public class SaleOrderController {
 
     StringBuilder fieldErrors = new StringBuilder();
     if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
+      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
     }
     if (commonClientPartner == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
+      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
     }
     if (commonCompany == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
     }
 
     if (existTaxNumberDiff) {
@@ -480,17 +480,15 @@ public class SaleOrderController {
       }
       fieldErrors.append(
           I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+              com.axelor.apps.sale.exception.SaleExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
     }
 
     if (existFiscalPositionDiff) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
-                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
+      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
     if (fieldErrors.length() > 0) {
@@ -631,7 +629,7 @@ public class SaleOrderController {
           Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
       if (checkAvailabiltyRequest) {
-        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+        response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

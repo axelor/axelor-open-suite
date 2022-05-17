@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.exception;
 
 /** @author axelor */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Inventory service and controller */

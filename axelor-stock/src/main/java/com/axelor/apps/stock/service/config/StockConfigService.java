@@ -20,7 +20,7 @@ package com.axelor.apps.stock.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -35,7 +35,7 @@ public class StockConfigService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CONFIG_1),
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_1),
           company.getName());
     }
 
@@ -50,7 +50,7 @@ public class StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CONFIG_2),
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_2),
           stockConfig.getCompany().getName());
     }
 
@@ -64,7 +64,7 @@ public class StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CONFIG_3),
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_3),
           stockConfig.getCompany().getName());
     }
 
@@ -78,7 +78,7 @@ public class StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CONFIG_4),
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_4),
           stockConfig.getCompany().getName());
     }
 
@@ -92,7 +92,7 @@ public class StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CONFIG_RECEIPT),
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_RECEIPT),
           stockConfig.getCompany().getName());
     }
 
@@ -105,7 +105,7 @@ public class StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CONFIG_PICKUP),
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_PICKUP),
           stockConfig.getCompany().getName());
     }
     return stockConfig.getPickupDefaultStockLocation();

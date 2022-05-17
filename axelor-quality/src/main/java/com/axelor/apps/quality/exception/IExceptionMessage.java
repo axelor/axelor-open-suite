@@ -19,6 +19,7 @@
 package com.axelor.apps.quality.exception;
 
 /** @author axelor */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/

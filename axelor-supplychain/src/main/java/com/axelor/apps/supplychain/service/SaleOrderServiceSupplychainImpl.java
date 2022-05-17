@@ -44,7 +44,7 @@ import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -154,7 +154,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         throw new AxelorException(
             appSupplychain,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
+            SupplychainExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
@@ -205,14 +205,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           throw new AxelorException(
               saleOrder,
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SO_CANT_DECREASE_QTY_ON_DELIVERED_LINE),
+              I18n.get(SupplychainExceptionMessage.SO_CANT_DECREASE_QTY_ON_DELIVERED_LINE),
               saleOrderLine.getFullName());
         }
       } else {
         throw new AxelorException(
             saleOrder,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE),
+            I18n.get(SupplychainExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE),
             saleOrderLine.getFullName());
       }
     }
@@ -242,7 +242,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS));
     }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);

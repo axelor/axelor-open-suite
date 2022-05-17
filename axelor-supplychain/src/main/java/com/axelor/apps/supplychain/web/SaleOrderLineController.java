@@ -29,7 +29,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
@@ -136,7 +136,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
     } catch (Exception e) {
@@ -170,7 +170,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
       response.setReload(true);
@@ -194,7 +194,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
       response.setReload(true);
@@ -313,7 +313,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
       response.setReload(true);

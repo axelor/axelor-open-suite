@@ -38,7 +38,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -299,7 +299,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
+              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
                   + "\n"
                   + e.getMessage());
         }
@@ -309,7 +309,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
+              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
         }
       } else {
         // set qty invoiced to the maximum (or emptying it if refund) for all stock move lines

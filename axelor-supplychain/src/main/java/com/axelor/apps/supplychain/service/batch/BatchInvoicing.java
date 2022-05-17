@@ -19,7 +19,7 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
@@ -84,10 +84,11 @@ public class BatchInvoicing extends BatchStrategy {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1) + " ";
+    String comment = I18n.get(SupplychainExceptionMessage.BATCH_INVOICING_1) + " ";
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_INVOICING_2) + "\n", batch.getDone());
+            "\t* %s " + I18n.get(SupplychainExceptionMessage.BATCH_INVOICING_2) + "\n",
+            batch.getDone());
     comment +=
         String.format(
             "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());

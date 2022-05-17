@@ -32,7 +32,7 @@ import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.Filter;
-import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.exception.StudioExceptionMessage;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterCommonService;
 import com.axelor.studio.service.filter.FilterSqlService;
@@ -92,7 +92,8 @@ public class ChartBuilderService {
 
     if (chartBuilder.getName().contains(" ")) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.CHART_BUILDER_1));
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(StudioExceptionMessage.CHART_BUILDER_1));
     }
 
     searchFields = new ArrayList<String>();

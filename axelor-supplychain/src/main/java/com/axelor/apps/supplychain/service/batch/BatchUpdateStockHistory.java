@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -107,7 +107,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
           new AxelorException(
               e,
               e.getCategory(),
-              I18n.get(IExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_1),
+              I18n.get(SupplychainExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_1),
               batch.getId()),
           ExceptionOriginRepository.REIMBURSEMENT,
           batch.getId());
@@ -118,10 +118,10 @@ public class BatchUpdateStockHistory extends BatchStrategy {
 
   @Override
   protected void stop() {
-    String comment = I18n.get(IExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_1) + " ";
+    String comment = I18n.get(SupplychainExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_1) + " ";
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_2) + "\n",
+            "\t* %s " + I18n.get(SupplychainExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_2) + "\n",
             batch.getDone());
     comment +=
         String.format(

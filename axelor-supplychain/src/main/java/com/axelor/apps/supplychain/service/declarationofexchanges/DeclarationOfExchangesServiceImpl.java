@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service.declarationofexchanges;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.EconomicArea;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
@@ -55,7 +55,7 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
       throw new AxelorException(
           declarationOfExchanges.getCountry(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING),
+          I18n.get(StockExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING),
           declarationOfExchanges.getCountry().getName());
     }
 
@@ -65,7 +65,8 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
       throw new AxelorException(
           declarationOfExchanges,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK));
+          I18n.get(
+              StockExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK));
     }
     exportServiceClassMap = getExportServiceClassMap(economicArea);
     map =
@@ -74,7 +75,7 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
       throw new AxelorException(
           declarationOfExchanges,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_UNSUPPORTED),
+          I18n.get(StockExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_UNSUPPORTED),
           declarationOfExchanges.getCountry().getEconomicArea().getName());
     }
 

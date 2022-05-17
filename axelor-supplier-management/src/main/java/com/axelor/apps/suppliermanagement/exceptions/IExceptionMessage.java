@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.suppliermanagement.exceptions;
 
+@Deprecated
 public interface IExceptionMessage {
 
   /** Purchase order supplier line service */

@@ -30,7 +30,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -104,7 +104,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_1),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_1),
               company.getName());
         }
         break;
@@ -114,7 +114,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_2),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_2),
               company.getName());
         }
         break;
@@ -124,7 +124,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_3),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_3),
               company.getName());
         }
         break;
@@ -132,7 +132,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.STOCK_MOVE_4),
+            I18n.get(StockExceptionMessage.STOCK_MOVE_4),
             company.getName());
     }
 
