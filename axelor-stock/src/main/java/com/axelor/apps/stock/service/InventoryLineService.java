@@ -25,18 +25,29 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class InventoryLineService {
+
+  protected StockConfigService stockConfigService;
+
+  @Inject
+  public InventoryLineService(StockConfigService stockConfigService) {
+    this.stockConfigService = stockConfigService;
+  }
 
   public InventoryLine createInventoryLine(
       Inventory inventory,
       Product product,
       BigDecimal currentQty,
       String rack,
-      TrackingNumber trackingNumber) {
+      TrackingNumber trackingNumber)
+      throws AxelorException {
 
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
@@ -84,7 +95,8 @@ public class InventoryLineService {
     return inventoryLine;
   }
 
-  public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory) {
+  public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory)
+      throws AxelorException {
 
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
@@ -102,8 +114,12 @@ public class InventoryLineService {
       inventoryLine.setGap(gap);
 
       BigDecimal price;
-      int value = stockLocation.getCompany().getStockConfig().getInventoryValuationTypeSelect();
-      switch (value) {
+      int inventoryValuationTypeSelect =
+          stockConfigService
+              .getStockConfig(stockLocation.getCompany())
+              .getInventoryValuationTypeSelect();
+
+      switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
           break;

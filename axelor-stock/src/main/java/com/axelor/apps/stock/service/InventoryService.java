@@ -708,8 +708,8 @@ public class InventoryService {
     return stockLocationLineRepository.all().filter(query, params.toArray()).fetch();
   }
 
-  public InventoryLine createInventoryLine(
-      Inventory inventory, StockLocationLine stockLocationLine) {
+  public InventoryLine createInventoryLine(Inventory inventory, StockLocationLine stockLocationLine)
+      throws AxelorException {
 
     return inventoryLineService.createInventoryLine(
         inventory,
