@@ -300,6 +300,11 @@
           readonlyIf="$isReadOnly !== false">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
+        <panel name="lineProductionCommentPanel" title="Line production commentary"
+          colSpan="12" readonlyIf="$isReadOnly !== false">
+          <field name="lineProductionComment" showTitle="false" colSpan="12" widget="Html"
+            x-lite="true"/>
+        </panel>
         <field name="$isReadOnly" hidden="true"/>
         <field name="product.productTypeSelect" hidden="true"/>
       </panel>
@@ -449,6 +454,11 @@
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
       </panel>
+      <panel name="lineProductionCommentPanel" title="Line production commentary" colSpan="12"
+        if="__config__.app.isApp('production')">
+        <field name="lineProductionComment" showTitle="false" colSpan="12" widget="Html"
+          x-lite="true" if="__config__.app.isApp('production')"/>
+      </panel>
     </panel>
     <panel-tabs hideIf="typeSelect == 1" name="allPanelTab">
       <panel name="marginPanel" title="Margin">
@@ -565,7 +575,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-view name="action-sale-order-line-view-show-invoice-lines"
@@ -658,6 +668,7 @@
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">
+    <action name="action-sale-order-line-method-compute-pricing-scale"/>
     <action name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/>
     <action name="action-sale-order-line-method-get-discount"/>
@@ -818,6 +829,10 @@
       expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
   </action-record>
   <!-- ACTION METHOD -->
+
+  <action-method name="action-sale-order-line-method-compute-pricing-scale">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computePricingScale"/>
+  </action-method>
 
   <action-method name="action-sale-order-line-method-compute">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>

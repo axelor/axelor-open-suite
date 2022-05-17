@@ -32,7 +32,9 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -66,13 +68,29 @@ import java.util.stream.Collectors;
 public class SubrogationReleaseServiceImpl implements SubrogationReleaseService {
 
   protected AppBaseService appBaseService;
+  protected AccountConfigService accountConfigService;
   protected InvoiceRepository invoiceRepository;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
+  protected MoveRepository moveRepository;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public SubrogationReleaseServiceImpl(
-      AppBaseService appBaseService, InvoiceRepository invoiceRepository) {
+      AppBaseService appBaseService,
+      AccountConfigService accountConfigService,
+      InvoiceRepository invoiceRepository,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveLineCreateService moveLineCreateService,
+      MoveRepository moveRepository) {
     this.appBaseService = appBaseService;
+    this.accountConfigService = accountConfigService;
     this.invoiceRepository = invoiceRepository;
+    this.moveValidateService = moveValidateService;
+    this.moveCreateService = moveCreateService;
+    this.moveRepository = moveRepository;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -205,7 +223,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       allMoveLineData.add(items);
     }
 
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     String filePath =
         accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
     filePath = filePath == null ? dataExportDir : dataExportDir + filePath;
@@ -229,9 +246,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Transactional(rollbackOn = {Exception.class})
   public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease)
       throws AxelorException {
-    MoveService moveService = Beans.get(MoveService.class);
-    MoveRepository moveRepository = Beans.get(MoveRepository.class);
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
     Company company = subrogationRelease.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
@@ -252,56 +266,56 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
         isRefund = true;
       }
 
+      String origin = subrogationRelease.getSequenceNumber();
+      String description = invoice.getInvoiceId();
       LocalDate date = subrogationRelease.getAccountingDate();
       Move move =
-          moveService
-              .getMoveCreateService()
-              .createMove(
-                  journal,
-                  company,
-                  company.getCurrency(),
-                  invoice.getPartner(),
-                  date,
-                  null,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+          moveCreateService.createMove(
+              journal,
+              company,
+              company.getCurrency(),
+              invoice.getPartner(),
+              date,
+              date,
+              null,
+              invoice.getFiscalPosition(),
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+              origin,
+              description);
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =
-          moveService
-              .getMoveLineService()
-              .createMoveLine(
-                  move,
-                  invoice.getPartner(),
-                  factorDebitAccount,
-                  invoice.getCompanyInTaxTotalRemaining(),
-                  !isRefund,
-                  date,
-                  null,
-                  1,
-                  subrogationRelease.getSequenceNumber(),
-                  invoice.getInvoiceId());
+          moveLineCreateService.createMoveLine(
+              move,
+              invoice.getPartner(),
+              factorDebitAccount,
+              invoice.getCompanyInTaxTotalRemaining(),
+              !isRefund,
+              date,
+              null,
+              1,
+              origin,
+              description);
 
       creditMoveLine =
-          moveService
-              .getMoveLineService()
-              .createMoveLine(
-                  move,
-                  invoice.getPartner(),
-                  factorCreditAccount,
-                  invoice.getCompanyInTaxTotalRemaining(),
-                  isRefund,
-                  date,
-                  null,
-                  2,
-                  subrogationRelease.getSequenceNumber(),
-                  invoice.getInvoiceId());
+          moveLineCreateService.createMoveLine(
+              move,
+              invoice.getPartner(),
+              factorCreditAccount,
+              invoice.getCompanyInTaxTotalRemaining(),
+              isRefund,
+              date,
+              null,
+              2,
+              origin,
+              description);
 
       move.addMoveLineListItem(debitMoveLine);
       move.addMoveLineListItem(creditMoveLine);
 
       move = moveRepository.save(move);
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.validate(move);
 
       invoice.setSubrogationRelease(subrogationRelease);
       invoice.setSubrogationReleaseMove(move);

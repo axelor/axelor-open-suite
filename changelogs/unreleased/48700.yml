@@ -1,3 +1,0 @@
----
-title: "Stock move: Fixed a bug where switching to the next stock move from unsaved record could result in a unsaved record exception"
-type: fix

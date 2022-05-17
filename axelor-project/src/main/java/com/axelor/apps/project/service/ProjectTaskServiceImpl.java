@@ -22,14 +22,24 @@ import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPriority;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 
@@ -37,6 +47,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyRepository frequencyRepo;
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
+
+  private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
   @Inject
   public ProjectTaskServiceImpl(
@@ -90,7 +102,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   protected void updateModuleFields(ProjectTask projectTask, ProjectTask nextProjectTask) {
     nextProjectTask.setName(projectTask.getName());
-    nextProjectTask.setTeam(projectTask.getTeam());
     nextProjectTask.setPriority(projectTask.getPriority());
     nextProjectTask.setStatus(projectTask.getStatus());
     nextProjectTask.setTaskDuration(projectTask.getTaskDuration());
@@ -151,9 +162,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     ProjectTask task = new ProjectTask();
     task.setName(subject);
     task.setAssignedTo(assignedTo);
-    task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
-    task.setStatus(ProjectTaskRepository.STATUS_NEW);
-    task.setPriority(ProjectTaskRepository.PRIORITY_NORMAL);
+    task.setTaskDate(appBaseService.getTodayDate(null));
+    task.setStatus(getStatus(project));
+    task.setPriority(getPriority(project));
     project.addProjectTaskListItem(task);
     projectTaskRepo.save(task);
     return task;
@@ -175,8 +186,70 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  public ProjectStatus getDefaultCompletedStatus(Project project) {
+    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
+        ? null
+        : project.getProjectTaskStatusSet().stream()
+            .filter(ProjectStatus::getIsDefaultCompleted)
+            .findAny()
+            .orElse(null);
+  }
+
+  @Override
+  public ProjectStatus getStatus(Project project) {
+    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
+        ? null
+        : project.getProjectTaskStatusSet().stream()
+            .min(Comparator.comparingInt(ProjectStatus::getSequence))
+            .orElse(null);
+  }
+
+  @Override
+  public ProjectPriority getPriority(Project project) {
+    if (project == null) {
+      return null;
+    }
+
+    project = Beans.get(ProjectRepository.class).find(project.getId());
+
+    return ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
+        ? null
+        : project.getProjectTaskPrioritySet().stream()
+            .filter(
+                priority ->
+                    priority.getTechnicalTypeSelect()
+                        == ProjectPriorityRepository.PROJECT_PRIORITY_NORMAL)
+            .findAny()
+            .orElse(null);
+  }
+
   @Transactional
   public void deleteProjectTask(ProjectTask projectTask) {
     projectTaskRepo.remove(projectTask);
+  }
+
+  @Override
+  public String getTaskLink(String value) {
+    if (StringUtils.isEmpty(value)) {
+      return value;
+    }
+    StringBuffer buffer = new StringBuffer();
+    Matcher matcher = Pattern.compile("@([^\\s]+)").matcher(value);
+    Matcher nonMatcher = Pattern.compile("@([^\\s]+)(?=<\\/a>)").matcher(value);
+    while (matcher.find()) {
+      String matchedValue = matcher.group(1);
+      String ticketNumber = matchedValue.replaceAll("\\<.*?\\>", "");
+      if (nonMatcher.find() && ticketNumber.equals(nonMatcher.group(1))) {
+        continue;
+      }
+      ProjectTask task =
+          projectTaskRepo.all().filter("self.ticketNumber = ?1", ticketNumber).fetchOne();
+      if (task != null) {
+        matcher.appendReplacement(buffer, String.format(TASK_LINK, task.getId(), matchedValue));
+      }
+    }
+
+    String result = buffer.toString();
+    return StringUtils.isEmpty(result) ? value : result;
   }
 }

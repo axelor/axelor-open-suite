@@ -20,6 +20,8 @@
       // APPLICATION PRICE SELECT
       public static final int APPLICATION_SALE_PRICE = 0;
       public static final int APPLICATION_COST_PRICE = 1;
+      public static final int
+      APPLICATION_PURCHASE_PRICE = 2;
     </extra-code>
 
   </entity>

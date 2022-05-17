@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.common.StringUtils;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
@@ -215,8 +216,11 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
       String newAttributeName) {
 
     formulas.forEach(
-        configuratorFormula ->
+        configuratorFormula -> {
+          if (!StringUtils.isEmpty(configuratorFormula.getFormula())) {
             configuratorFormula.setFormula(
-                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName)));
+                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName));
+          }
+        });
   }
 }

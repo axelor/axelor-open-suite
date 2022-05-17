@@ -18,6 +18,12 @@
       title="Supplier account"/>
     <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account"
       title="Employee account"/>
+    <many-to-one name="defaultExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Default expense account"
+      help="When inputing moves on an expense journal, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
+    <many-to-one name="defaultIncomeAccount" ref="com.axelor.apps.account.db.Account"
+      title="Default income account"
+      help="When inputing moves on a sale jounral, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
 
     <!-- PAGE Compte Client -->
     <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
@@ -78,6 +84,10 @@
 			return name;
 	    ]]>
     </string>
+    <track>
+      <field name="defaultExpenseAccount"/>
+      <field name="defaultIncomeAccount"/>
+    </track>
 
   </entity>
 </domain-models>

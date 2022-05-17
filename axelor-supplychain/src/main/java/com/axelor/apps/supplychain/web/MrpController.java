@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
@@ -60,10 +61,15 @@ public class MrpController {
         response.setFlash(I18n.get(IExceptionMessage.MRP_ALREADY_STARTED));
         return;
       }
-      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+      mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
+
+      // Tool class that does not need to be injected
+      ControllerCallableTool<Mrp> mrpControllerCallableTool = new ControllerCallableTool<>();
+
+      mrpControllerCallableTool.runInSeparateThread(mrpService, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      mrpService.onError(mrpRepository.find(mrp.getId()), e);
+      mrpService.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);
     } finally {
       response.setReload(true);
     }
