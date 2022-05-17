@@ -23,6 +23,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -179,7 +180,7 @@ public class BankReconciliationLineService {
               bankReconciliationLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(
-                  com.axelor.apps.bankpayment.exception.IExceptionMessage
+                  BankPaymentExceptionMessage
                       .BANK_RECONCILIATION_MISSING_JOURNAL));
         }
         if (bankReconciliationLine.getBankReconciliation().getCashAccount() == null) {
@@ -187,7 +188,7 @@ public class BankReconciliationLineService {
               bankReconciliationLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(
-                  com.axelor.apps.bankpayment.exception.IExceptionMessage
+                      BankPaymentExceptionMessage
                       .BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
         }
       }

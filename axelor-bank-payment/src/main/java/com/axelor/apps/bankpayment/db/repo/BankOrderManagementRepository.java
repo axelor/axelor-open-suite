@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.service.TraceBackService;
@@ -70,6 +71,6 @@ public class BankOrderManagementRepository extends BankOrderRepository {
       super.remove(entity);
       return;
     }
-    throw new PersistenceException(I18n.get(IExceptionMessage.BANK_ORDER_CANNOT_REMOVE));
+    throw new PersistenceException(I18n.get(BankPaymentExceptionMessage.BANK_ORDER_CANNOT_REMOVE));
   }
 }

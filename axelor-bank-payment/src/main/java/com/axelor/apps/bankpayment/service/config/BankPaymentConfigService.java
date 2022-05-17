@@ -19,9 +19,11 @@ package com.axelor.apps.bankpayment.service.config;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -35,8 +37,8 @@ public class BankPaymentConfigService {
     if (bankPaymentConfig == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
     return bankPaymentConfig;
@@ -48,8 +50,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getExternalBankToBankAccount();
@@ -61,8 +63,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getInternalBankToBankAccount();
@@ -75,8 +77,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getSepaCreditTransSequence();
@@ -88,8 +90,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getSepaDirectDebitSequence();
@@ -101,8 +103,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_7),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_7),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getIntCreditTransSequence();
@@ -114,8 +116,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_8),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_8),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getIntDirectDebitSequence();
@@ -127,8 +129,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getNatTreasuryTransSequence();
@@ -140,8 +142,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getIntTreasuryTransSequence();
@@ -153,8 +155,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_12),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_12),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getBillOfExchangeSequence();
@@ -166,8 +168,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_11),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_11),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getOtherBankOrderSequence();
@@ -179,8 +181,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_41),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getDefaultSignatoryUser();
@@ -198,8 +200,8 @@ public class BankPaymentConfigService {
       throw new AxelorException(
           bankPaymentConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_ICS_NUMBER),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BankPaymentExceptionMessage.ACCOUNT_CONFIG_MISSING_ICS_NUMBER),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getIcsNumber();

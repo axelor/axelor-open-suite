@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -90,7 +91,7 @@ public class HttpRequestSender {
     if (url == null || !url.startsWith("http://") && !url.startsWith("https://")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.EBICS_INVALID_BANK_URL));
+          I18n.get(BankPaymentExceptionMessage.EBICS_INVALID_BANK_URL));
     }
 
     if (bank.getProtocolSelect().equals("ssl")) {

@@ -22,6 +22,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -100,7 +101,7 @@ public class BankOrderFileService {
     if (senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS),
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS),
           senderCompany.getName());
     }
 
@@ -114,7 +115,7 @@ public class BankOrderFileService {
     if (Strings.isNullOrEmpty(folderPath)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH),
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH),
           paymentMode.getName());
     }
     return Beans.get(AppService.class).getDataExportDir() + folderPath;
@@ -152,7 +153,7 @@ public class BankOrderFileService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT),
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT),
             paymentMode.getName());
     }
   }

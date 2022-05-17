@@ -22,6 +22,7 @@ package com.axelor.apps.bankpayment.exception;
  *
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Bank statement service */

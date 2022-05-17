@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
@@ -71,13 +72,13 @@ public class BankStatementService {
     if (bankStatement.getBankStatementFile() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_MISSING_FILE));
     }
 
     if (bankStatement.getBankStatementFileFormat() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT));
     }
 
     BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
@@ -93,7 +94,7 @@ public class BankStatementService {
         if (alertIfFormatNotSupported) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
+              I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
         }
     }
   }
@@ -123,7 +124,7 @@ public class BankStatementService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
     }
 
     return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
@@ -271,7 +272,7 @@ public class BankStatementService {
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
     }
   }
 
@@ -326,7 +327,7 @@ public class BankStatementService {
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_INCOHERENT_BALANCE));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_INCOHERENT_BALANCE));
     }
   }
 
@@ -362,7 +363,7 @@ public class BankStatementService {
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
     }
   }
 }

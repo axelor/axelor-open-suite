@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.directdebit;
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.AccountIdentification4Choice;
@@ -315,7 +316,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
     }
     paymentTypeInformation20.setLclInstrm(localInstrument2Choice);
 
@@ -466,7 +467,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       if (receiverUmr == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
       }
 
       /*
