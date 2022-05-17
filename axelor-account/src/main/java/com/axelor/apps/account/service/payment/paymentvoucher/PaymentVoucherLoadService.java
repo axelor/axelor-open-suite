@@ -122,18 +122,19 @@ public class PaymentVoucherLoadService {
       query += " and self.moveLine.credit > 0 ";
     }
 
-    return invoiceTermRepo
-        .all()
-        .filter(query)
-        .bind("partner", paymentVoucher.getPartner())
-        .bind("company", paymentVoucher.getCompany())
-        .bind("statusDaybook", MoveRepository.STATUS_DAYBOOK)
-        .bind("statusAccounted", MoveRepository.STATUS_ACCOUNTED)
-        .bind("tradingName", paymentVoucher.getTradingName())
-        .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
-        .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
-        .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
-        .fetch();
+    return invoiceTermService.filterNotAwaitingPayment(
+        invoiceTermRepo
+            .all()
+            .filter(query)
+            .bind("partner", paymentVoucher.getPartner())
+            .bind("company", paymentVoucher.getCompany())
+            .bind("statusDaybook", MoveRepository.STATUS_DAYBOOK)
+            .bind("statusAccounted", MoveRepository.STATUS_ACCOUNTED)
+            .bind("tradingName", paymentVoucher.getTradingName())
+            .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
+            .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
+            .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+            .fetch());
   }
 
   public List<PayVoucherDueElement> searchDueElements(PaymentVoucher paymentVoucher)

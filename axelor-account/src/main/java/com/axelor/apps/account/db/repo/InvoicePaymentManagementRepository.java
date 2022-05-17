@@ -28,7 +28,9 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
   @Override
   public InvoicePayment save(InvoicePayment invoicePayment) {
     try {
-      Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
+      if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_DRAFT) {
+        Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
+      }
       return super.save(invoicePayment);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

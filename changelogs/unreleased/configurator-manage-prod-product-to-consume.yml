@@ -1,8 +1,0 @@
----
-title: Configurator - Manage prod product to consume
-type: feature
-description: |
-  Add consumed products management on Configurator Prod Process.
-  Add new Configurator Prod Product model.
-  Add a list of Configurator Prod Product on Configurator Prod Process Line in order to emulate current behaviour and feature on Prod Process Line.
-  Apply and update all processes related to these changes in order to correctly generate Prod Process / Prod Process Line / Prod Product.

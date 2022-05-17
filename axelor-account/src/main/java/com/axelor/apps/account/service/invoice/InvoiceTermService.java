@@ -261,11 +261,19 @@ public interface InvoiceTermService {
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
+  BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
+
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList) throws AxelorException;
 
   void reconcileAndUpdateInvoiceTermsAmounts(
       InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
+
+  List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
+
+  boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
+
+  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
 
   BigDecimal computeParentTotal(Context context);
 }

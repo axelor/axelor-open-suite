@@ -78,8 +78,8 @@
     <panel>
       <panel-related name="paymentVoucherListPanel" field="paymentVoucherList"
         grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
-        readonlyIf="isBankDepositMoveGenerated" canNew="false" canRemove="false" colSpan="12"
-        editable="true"/>
+        readonlyIf="isBankDepositMoveGenerated" canNew="false" canRemove="true" colSpan="12"
+        editable="true" onChange="save,action-deposit-slip-load-payment-voucher-due-list"/>
       <panel colSpan="5" hidden="true"
         hideIf="companyBankDetails || isBankDepositMoveGenerated">
         <field name="__depositDate" type="Date" title="Deposit date"/>

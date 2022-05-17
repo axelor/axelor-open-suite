@@ -46,8 +46,7 @@
         readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="fa-print"
-        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"
-        showIf="statusSelect == 2"/>
+        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
@@ -162,6 +161,9 @@
     <action name="action-pv-attrs-auto-imputation"/>
     <action name="action-payment-voucher-from-invoice" if="_invoice"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
+    <action name="action-payment-voucher-record-value-for-collection-account"/>
+    <action name="action-payment-voucher-record-cheque-owner"/>
+    <action name="action-payment-voucher-record-cheque-due-date"/>
   </action-group>
 
   <action-group name="action-account-payment-voucher-onload-group">
@@ -275,13 +277,13 @@
   <action-record name="action-payment-voucher-record-cheque-due-date"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <field name="chequeDueDate"
-      expr="eval: paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1?paymentDate:null"/>
+      expr="eval: paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1? paymentDate : null"/>
   </action-record>
 
   <action-record name="action-payment-voucher-record-cheque-owner"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <field name="chequeOwner"
-      expr="eval: paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1?partner?.fullName:null"/>
+      expr="eval: paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1? partner?.fullName : null"/>
   </action-record>
 
   <action-record name="action-payment-voucher-record-value-for-collection-account"

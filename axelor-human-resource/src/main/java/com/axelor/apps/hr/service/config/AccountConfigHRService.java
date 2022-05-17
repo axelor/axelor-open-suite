@@ -20,21 +20,13 @@ package com.axelor.apps.hr.service.config;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.repo.JournalRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
 
 public class AccountConfigHRService extends AccountConfigService {
-
-  @Inject
-  public AccountConfigHRService(MoveRepository moveRepo, JournalRepository journalRepo) {
-    super(moveRepo, journalRepo);
-  }
 
   public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException {
     if (accountConfig.getExpenseJournal() == null) {

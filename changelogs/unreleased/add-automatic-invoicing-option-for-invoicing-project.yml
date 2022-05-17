@@ -1,5 +1,0 @@
-title: "INVOICING PROJECT: status taken into account for invoicing"
-type: feature
-description: |
-  Added a boolean field and if it is true then update tasks from project invoicing assistant batch and invoicing tasks and timesheet lines on creation of an invoicing project.
-  The previous behavior for update tasks and invoicing tasks and timesheet lines from project invoicing assistant batch that is remain same if new added boolean is false.

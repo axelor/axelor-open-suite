@@ -1,3 +1,0 @@
----
-title: "LeaveRequest: Leave quantity is now by default 0 if there is no leave reason configured"
-type: fix
