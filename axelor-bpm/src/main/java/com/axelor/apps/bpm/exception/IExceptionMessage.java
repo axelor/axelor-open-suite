@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bpm.exception;
 
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String MISSING_INPUT_LABEL = /*$$(*/ "Missing input label" /*)*/;

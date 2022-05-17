@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -59,7 +59,7 @@ public class SaleOrderLineProjectController {
     List<Map<String, Object>> saleOrderLineSet =
         (List<Map<String, Object>>) request.getContext().get("salesOrderLineSet");
     if (saleOrderLineSet == null || saleOrderLineSet.isEmpty()) {
-      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           saleOrderLineSet.stream()

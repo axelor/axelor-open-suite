@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproject.service.projectgenerator;
 
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryAlone;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryPhase;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTask;
@@ -69,7 +69,7 @@ public interface ProjectGeneratorFactory {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.FACTORY_NO_FOUND));
+            I18n.get(BusinessProjectExceptionMessage.FACTORY_NO_FOUND));
     }
   }
 

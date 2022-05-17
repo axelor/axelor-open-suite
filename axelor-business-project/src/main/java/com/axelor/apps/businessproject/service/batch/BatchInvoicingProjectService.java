@@ -21,7 +21,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -91,7 +91,8 @@ public class BatchInvoicingProjectService extends AbstractBatch {
         TraceBackService.trace(
             new Exception(
                 String.format(
-                    I18n.get(IExceptionMessage.BATCH_INVOICING_PROJECT_1), project.getId()),
+                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                    project.getId()),
                 e),
             ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
@@ -106,7 +107,7 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
     String comment =
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_INVOICING_PROJECT_2) + "\n",
+            "\t* %s " + I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_2) + "\n",
             batch.getDone());
 
     comment +=

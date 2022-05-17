@@ -22,6 +22,7 @@ package com.axelor.apps.businessproject.exception;
  *
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;
