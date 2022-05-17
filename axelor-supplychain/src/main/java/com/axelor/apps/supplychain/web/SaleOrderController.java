@@ -903,9 +903,10 @@ public class SaleOrderController {
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<String> productList = new ArrayList<String>();
+      List<String> productList = new ArrayList<>();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.getAnalyticDistributionTemplate() == null) {
+        if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE
+            && saleOrderLine.getAnalyticDistributionTemplate() == null) {
           productList.add(saleOrderLine.getProductName());
         }
       }
