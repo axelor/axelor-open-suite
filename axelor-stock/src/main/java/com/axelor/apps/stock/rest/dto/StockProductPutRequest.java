@@ -6,7 +6,7 @@ import com.axelor.apps.tool.api.RequestStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockProductPutRequest implements RequestStructure {
+public class StockProductPutRequest extends RequestStructure {
 
   @NotNull
   @Min(0)

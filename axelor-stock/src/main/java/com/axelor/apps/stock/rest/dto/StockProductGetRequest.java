@@ -7,7 +7,7 @@ import com.axelor.apps.tool.api.RequestStructure;
 import java.util.Objects;
 import javax.validation.constraints.Min;
 
-public class StockProductGetRequest implements RequestStructure {
+public class StockProductGetRequest extends RequestStructure {
 
   @Min(0)
   private Long companyId;

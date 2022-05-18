@@ -1417,7 +1417,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
     StockMoveLine line = stockMove.getStockMoveLineList().get(0);
     if (unit != null) {
-      BigDecimal convertQty = Beans.get(UnitConversionService.class).convert(line.getUnit(), unit, line.getQty(), line.getQty().scale() , line.getProduct());
+      BigDecimal convertQty =
+          Beans.get(UnitConversionService.class)
+              .convert(
+                  line.getUnit(), unit, line.getQty(), line.getQty().scale(), line.getProduct());
       line.setUnit(unit);
       line.setQty(convertQty);
       line.setRealQty(convertQty);

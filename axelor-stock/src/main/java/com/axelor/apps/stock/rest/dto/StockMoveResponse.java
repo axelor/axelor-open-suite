@@ -1,15 +1,16 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.tool.api.ApiStructure;
+import com.axelor.apps.tool.api.ResponseStructure;
 
-public class StockMoveResponse implements ApiStructure {
+public class StockMoveResponse extends ResponseStructure {
   private final long id;
   private final int typeSelect;
   private final long idFromLocation;
   private final long idToLocation;
 
   public StockMoveResponse(StockMove stockMove) {
+    super(stockMove.getVersion());
     this.id = stockMove.getId();
     this.typeSelect = stockMove.getTypeSelect();
     this.idFromLocation = stockMove.getFromStockLocation().getId();

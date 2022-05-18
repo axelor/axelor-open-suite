@@ -43,9 +43,11 @@ public class StockMoveRestController {
   public Response updateInternalStockMove(
       @PathParam("id") long stockCorrectionId, StockMovePutRequest requestBody) throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockCorrectionId);
+
+    ConflictChecker.checkVersion(stockmove, requestBody.getVersion());
 
     Beans.get(StockMoveService.class)
         .updateStockMoveMobility(stockmove, requestBody.getMovedQty(), requestBody.fetchUnit());

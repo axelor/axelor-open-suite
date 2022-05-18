@@ -6,13 +6,13 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestStructure;
+import com.axelor.apps.tool.api.RequestPostStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockCorrectionPostRequest implements RequestStructure {
+public class StockCorrectionPostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)

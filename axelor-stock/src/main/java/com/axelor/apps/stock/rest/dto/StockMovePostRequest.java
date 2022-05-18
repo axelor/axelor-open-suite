@@ -6,12 +6,12 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestStructure;
+import com.axelor.apps.tool.api.RequestPostStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockMovePostRequest implements RequestStructure {
+public class StockMovePostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
