@@ -163,6 +163,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DEPRECIATED);
     }
 
+    fixedAsset.setCorrectedAccountingValue(BigDecimal.ZERO);
     fixedAssetLineRepo.save(fixedAssetLine);
 
     if (fixedAsset != null) {
