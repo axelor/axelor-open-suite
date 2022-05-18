@@ -786,7 +786,7 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
         </panel>
-        <field name="financialDiscount" readonlyIf="amountPaid > 0"
+        <field name="financialDiscount" readonlyIf="amountPaid > 0" showIf="statusSelect > 2"
           onChange="action-invoice-group-financial-discount"/>
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
@@ -794,13 +794,11 @@ InvoiceSet.length > 0))"
           <field name="financialDiscountTotalAmount" readonly="true"/>
           <field name="remainingAmountAfterFinDiscount" readonly="true"/>
         </panel>
+        <panel-related name="invoicePaymentListPanel" title="Payments details"
+          field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
+          form-view="invoice-payment-form" canNew="false" canRemove="false"/>
         <field name="amountPaid" hidden="true"/>
       </panel>
-
-
-      <panel-related name="invoicePaymentListPanel" title="Payments details"
-        field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
-        form-view="invoice-payment-form" canNew="false" canRemove="false"/>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
         <field name="$isValidPfpValidatorUser" type="boolean"/>
