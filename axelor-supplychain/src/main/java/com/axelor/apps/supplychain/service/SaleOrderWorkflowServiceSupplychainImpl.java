@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -53,6 +54,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AppSupplychain appSupplychain;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
+  protected SaleConfigService saleConfigService;
+
+  protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
+
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
       SequenceService sequenceService,
@@ -63,7 +68,9 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      SaleConfigService saleConfigService,
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
 
     super(sequenceService, partnerRepo, saleOrderRepo, appSaleService, userService);
 
@@ -71,17 +78,26 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.saleConfigService = saleConfigService;
+    this.saleOrderCheckAnalyticService = saleOrderCheckAnalyticService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-    super.confirmSaleOrder(saleOrder);
-
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.confirmSaleOrder(saleOrder);
       return;
     }
+
+    if (saleConfigService
+        .getSaleConfig(saleOrder.getCompany())
+        .getIsAnalyticDistributionRequired()) {
+      saleOrderCheckAnalyticService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
+    }
+
+    super.confirmSaleOrder(saleOrder);
 
     if (appSupplychain.getPurchaseOrderGenerationAuto()) {
       saleOrderPurchaseService.createPurchaseOrders(saleOrder);
