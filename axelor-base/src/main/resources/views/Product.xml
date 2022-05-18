@@ -828,7 +828,7 @@
 
   <action-validate name="action-product-validate-end-date">
     <alert message="The product pulled-off date must be greater than the launch date."
-      if="endDate &lt; startDate"/>
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; endDate &lt; startDate"/>
   </action-validate>
 
   <action-record name="action-product-record-reset-end-date"
