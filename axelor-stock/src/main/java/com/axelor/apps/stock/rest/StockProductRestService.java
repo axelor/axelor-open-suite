@@ -8,5 +8,6 @@ import javax.ws.rs.core.Response;
 
 public interface StockProductRestService {
 
-    Response getProductIndicators(Product product, Company company, StockLocation stockLocation) throws AxelorException;
+  Response getProductIndicators(Product product, Company company, StockLocation stockLocation)
+      throws AxelorException;
 }

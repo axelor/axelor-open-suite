@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class StockMovePutRequest implements RequestStructure {
+public class StockMovePutRequest extends RequestStructure {
 
   @Min(0)
   private Long unitId;

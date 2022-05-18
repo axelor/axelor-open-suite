@@ -6,10 +6,19 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.tool.api.*;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.tool.api.ConflictChecker;
+import com.axelor.apps.tool.api.HttpExceptionHandler;
+import com.axelor.apps.tool.api.ObjectFinder;
+import com.axelor.apps.tool.api.RequestValidator;
+import com.axelor.apps.tool.api.ResponseConstructor;
+import com.axelor.apps.tool.api.SecurityCheck;
 import com.axelor.inject.Beans;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -27,10 +36,14 @@ public class StockProductRestController {
     new SecurityCheck().readAccess(Product.class).check();
 
     Product product = ObjectFinder.find(Product.class, productId);
+
+    ConflictChecker.checkVersion(product, requestBody.getVersion());
+
     Company company = requestBody.getCompany();
     StockLocation stockLocation = requestBody.getStockLocation();
 
-    return Beans.get(StockProductRestService.class).getProductIndicators(product, company, stockLocation);
+    return Beans.get(StockProductRestService.class)
+        .getProductIndicators(product, company, stockLocation);
   }
 
   @Path("/modify-locker/{productId}")
@@ -42,6 +55,8 @@ public class StockProductRestController {
     new SecurityCheck().writeAccess(Product.class).check();
 
     Product product = ObjectFinder.find(Product.class, productId);
+
+    ConflictChecker.checkVersion(product, requestBody.getVersion());
 
     Beans.get(StockLocationService.class)
         .changeProductLocker(requestBody.fetchStockLocation(), product, requestBody.getNewLocker());
