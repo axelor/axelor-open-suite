@@ -241,13 +241,17 @@ public class PeriodServiceImpl implements PeriodService {
 
   @Override
   public void validateClosure(Period period) throws AxelorException {
-    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+    if (period != null
+        && period.getYear() != null
+        && period.getYear().getCompany() != null
+        && period.getYear().getTypeSelect() != null) {
       Query resultQuery =
           JPA.em()
               .createQuery(
-                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company AND self.year.typeSelect = :type");
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
+      resultQuery.setParameter("type", period.getYear().getTypeSelect());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
         Period previousPeriod =
             periodRepo.find(
