@@ -155,7 +155,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         .all()
         .filter(
             "self.accountingExport = ?1 AND self.excludeFromDas2Report != true "
-                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.serviceType.n4dsCode is not null",
+                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.account.serviceType.n4dsCode is not null",
             accountingExport)
         .fetch();
   }
@@ -461,7 +461,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     String queryStr =
         "SELECT "
-            + "MOVELINE.DAS2ACTIVITY_NAME AS ACTIVITY,  "
+            + "PARTNER.DAS2ACTIVITY.NAME AS ACTIVITY,  "
             + "PARTNER.PARTNER_TYPE_SELECT AS TYPE,  "
             + "PARTNER.NAME AS NAME,  "
             + "PARTNER.FIRST_NAME AS FIRST_NAME,  "
@@ -480,15 +480,15 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)  "
             + "LEFT OUTER JOIN BASE_COUNTRY AS COUNTRY ON (ADDRESS.ADDRESSL7COUNTRY = COUNTRY.ID)  "
             + "LEFT OUTER JOIN BASE_CITY AS CITY ON (ADDRESS.CITY = CITY.ID)  "
-            + "LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID)  "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNT AS ACCOUNT ON (MOVELINE.ACCOUNT = ACCOUNT.ID) "
+            + "LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (ACCOUNT.SERVICE_TYPE = SERVICETYPE.ID)  "
             + "WHERE HISTORY.ACCOUNTING_EXPORT =  "
             + accountingExport.getId()
             + " AND HISTORY.EXCLUDE_FROM_DAS2REPORT != true  "
             + "AND SERVICETYPE.IS_DAS2DECLARABLE = true  "
             + "AND SERVICETYPE.N4DS_CODE IS NOT NULL "
-            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY_NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE,  "
+            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY.NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE,  "
             + "ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,CITY.ZIP,CITY.NAME,COUNTRY.ALPHA2CODE,SERVICETYPE.N4DS_CODE";
-
     Query query = JPA.em().createNativeQuery(queryStr);
     return query.getResultList();
   }

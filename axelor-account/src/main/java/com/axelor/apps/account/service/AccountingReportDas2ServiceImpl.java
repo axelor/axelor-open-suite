@@ -125,6 +125,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVE_LINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVE_LINE.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVE_LINE.MOVE = DMOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNT ACCOUNT ON MOVELINE.ACCOUNT = ACCOUNT.ID "
             + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
             + "AND DMOVE.STATUS_SELECT = 3 "
             + "AND MOVE.STATUS_SELECT = 3 "
@@ -134,8 +135,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND PMVLD.OPERATION_DATE <= '"
             + accountingReport.getDateTo()
             + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
+            + "AND ACCOUNT.SERVICE_TYPE IS NOT NULL "
+            + "AND PARTNER.DAS2ACTIVITY IS NOT NULL "
             + "AND JOURNAL_TYPE.CODE = 'ACH' "
             + "AND COMPANY.ID = "
             + accountingReport.getCompany().getId()
@@ -169,6 +170,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVE_LINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVE_LINE.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVE_LINE.MOVE = DMOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNT ACCOUNT ON MOVELINE.ACCOUNT = ACCOUNT.ID "
             + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
             + "AND DMOVE.STATUS_SELECT = 3 "
             + "AND MOVE.STATUS_SELECT = 3 "
@@ -178,8 +180,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND PMVLD.OPERATION_DATE <= '"
             + accountingReport.getDateTo()
             + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
+            + "AND ACCOUNT.SERVICE_TYPE IS NOT NULL "
+            + "AND PARTNER.DAS2ACTIVITY IS NOT NULL "
             + "AND JOURNAL_TYPE.CODE = 'ACH' "
             + "AND COMPANY.ID = "
             + accountingReport.getCompany().getId()
