@@ -9,7 +9,8 @@ public class ConflictChecker {
 
   public static void checkVersion(AuditableModel currentObject, Integer versionProvided) {
     if (!Objects.equals(currentObject.getVersion(), versionProvided)) {
-      throw new ClientErrorException("Object provided has been updated by another user", Response.Status.CONFLICT);
+      throw new ClientErrorException(
+          "Object provided has been updated by another user", Response.Status.CONFLICT);
     }
   }
 }
