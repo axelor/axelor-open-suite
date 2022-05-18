@@ -133,13 +133,6 @@
                     <text-property name="heading">partner_seq</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ref</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">ref</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">ref</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">invoice_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_name</text-property>
@@ -222,51 +215,46 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">ref</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
                         <property name="name">invoice_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">4</property>
                         <property name="name">&lt;30days</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                         <property name="name">30&lt;days&lt;60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">60&lt;days&lt;90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">90&lt;days&lt;120</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">120&lt;days&lt;150</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">150&lt;days&lt;180</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">180&lt;days</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">SoldeClient</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -291,69 +279,62 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">ref</property>
-                    <property name="nativeName">ref</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">4</property>
                     <property name="name">&lt;30days</property>
                     <property name="nativeName">&lt;30days</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">5</property>
                     <property name="name">30&lt;days&lt;60</property>
                     <property name="nativeName">30&lt;days&lt;60</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">60&lt;days&lt;90</property>
                     <property name="nativeName">60&lt;days&lt;90</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">90&lt;days&lt;120</property>
                     <property name="nativeName">90&lt;days&lt;120</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">120&lt;days&lt;150</property>
                     <property name="nativeName">120&lt;days&lt;150</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">150&lt;days&lt;180</property>
                     <property name="nativeName">150&lt;days&lt;180</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">180&lt;days</property>
                     <property name="nativeName">180&lt;days</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">SoldeClient</property>
                     <property name="nativeName">SoldeClient</property>
                     <property name="dataType">decimal</property>
@@ -362,7 +343,6 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
 MoveLine.partner_seq,
-AccountingReport.ref,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
 SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date  <= 30
 then
@@ -455,7 +435,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-group by MoveLine.partner_full_name,MoveLine.partner_seq,AccountingReport.ref,Invoice.invoice_id,MoveLine.name]]></xml-property>
+group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1538,12 +1518,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">ref</property>
-                                <text-property name="displayName">ref</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">invoice_name</property>
                                 <text-property name="displayName">invoice_name</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["invoice_name"]</expression>
@@ -1714,6 +1688,171 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">dataSetRow["&lt;30days"] + dataSetRow["120&lt;days&lt;150"] + dataSetRow["150&lt;days&lt;180"] +dataSetRow["180&lt;days"] +dataSetRow["30&lt;days&lt;60"] +dataSetRow["60&lt;days&lt;90"] +dataSetRow["90&lt;days&lt;120"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumSoldeClientByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["SoldeClient"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumSolde&lt;30daysByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["&lt;30days"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumSolde30&lt;days&lt;60ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["30&lt;days&lt;60"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumSolde60&lt;days&lt;90ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["60&lt;days&lt;90"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum&lt;30daysByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["&lt;30days"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum30&lt;days&lt;60ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["30&lt;days&lt;60"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum60&lt;days&lt;90ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["60&lt;days&lt;90"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum90&lt;days&lt;120ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["90&lt;days&lt;120"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum120&lt;days&lt;150ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["120&lt;days&lt;150"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum150&lt;days&lt;180ByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["150&lt;days&lt;180"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum180&lt;daysByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["180&lt;days"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2456,14 +2595,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6344">
+                                        <data id="6420">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
                                                 <property name="pattern">###,##0.00</property>
                                             </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">SoldeClient</property>
+                                            <property name="resultSetColumn">SumSoldeClientByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="1763">
@@ -2487,7 +2626,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6330">
+                                        <data id="6425">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2500,7 +2639,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">&lt;30days</property>
+                                            <property name="resultSetColumn">Sum&lt;30daysByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="6294">
@@ -2513,7 +2652,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6331">
+                                        <data id="6426">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2526,7 +2665,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">30&lt;days&lt;60</property>
+                                            <property name="resultSetColumn">Sum30&lt;days&lt;60ByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="1652">
@@ -2539,7 +2678,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6332">
+                                        <data id="6427">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2552,7 +2691,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">60&lt;days&lt;90</property>
+                                            <property name="resultSetColumn">Sum60&lt;days&lt;90ByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="1654">
@@ -2565,7 +2704,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6333">
+                                        <data id="6428">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2578,7 +2717,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">90&lt;days&lt;120</property>
+                                            <property name="resultSetColumn">Sum90&lt;days&lt;120ByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="1656">
@@ -2591,7 +2730,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6334">
+                                        <data id="6429">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2604,7 +2743,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">120&lt;days&lt;150</property>
+                                            <property name="resultSetColumn">Sum120&lt;days&lt;150ByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="1658">
@@ -2617,7 +2756,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6335">
+                                        <data id="6431">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2630,7 +2769,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">150&lt;days&lt;180</property>
+                                            <property name="resultSetColumn">Sum150&lt;days&lt;180ByPartner</property>
                                         </data>
                                     </cell>
                                     <cell id="1660">
@@ -2643,7 +2782,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="6336">
+                                        <data id="6432">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2656,7 +2795,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">180&lt;days</property>
+                                            <property name="resultSetColumn">Sum180&lt;daysByPartner</property>
                                         </data>
                                     </cell>
                                 </row>
