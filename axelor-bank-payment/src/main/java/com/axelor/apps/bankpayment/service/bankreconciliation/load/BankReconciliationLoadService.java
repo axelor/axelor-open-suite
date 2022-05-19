@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation.load;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
@@ -26,6 +27,7 @@ import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationLoadService {
 
@@ -108,17 +110,42 @@ public class BankReconciliationLoadService {
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-    return JPA.all(BankStatementLine.class)
-        .filter(
-            getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
-        .bind("bankDetails", bankReconciliation.getBankDetails())
-        .bind("currency", bankReconciliation.getCurrency())
-        .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
-        .bind("bankStatement", bankStatement)
-        .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
-        .order("valueDate")
-        .order("sequence")
-        .fetch();
+    List<BankStatementLine> bankStatementLines =
+        JPA.all(BankStatementLine.class)
+            .filter(
+                getBankStatementLinesFilter(
+                    bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
+            .bind("bankDetails", bankReconciliation.getBankDetails())
+            .bind("currency", bankReconciliation.getCurrency())
+            .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
+            .bind("bankStatement", bankStatement)
+            .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
+            .order("valueDate")
+            .order("sequence")
+            .fetch();
+    return filterBankStatementLines(bankReconciliation, bankStatementLines);
+  }
+
+  protected List<BankStatementLine> filterBankStatementLines(
+      BankReconciliation bankReconciliation, List<BankStatementLine> bankStatementLines) {
+    List<BankReconciliationLine> bankReconciliationLines =
+        bankReconciliation.getBankReconciliationLineList();
+    if (CollectionUtils.isEmpty(bankReconciliationLines)
+        || CollectionUtils.isEmpty(bankStatementLines)) {
+      return bankStatementLines;
+    }
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      BankStatementLine bankStatementLineToRemove = null;
+      for (BankStatementLine bankStatementLine : bankStatementLines) {
+        if (bankStatementLine.equals(bankReconciliationLine.getBankStatementLine())) {
+          bankStatementLineToRemove = bankStatementLine;
+          break;
+        }
+      }
+      if (bankStatementLineToRemove != null) {
+        bankStatementLines.remove(bankStatementLineToRemove);
+      }
+    }
+    return bankStatementLines;
   }
 }
