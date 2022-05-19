@@ -5,11 +5,4 @@
 4;"Consommables";"CONS"
 5;"Services";"SERV"
 6;"Notes de frais";"TEXP"
-1000;"Etudes";"ETUD"
-1100;"Fourniture non stockées";"FRNS"
-1200;"Redevances";"REDV"
-1300;"Locations";"LOCA"
-1400;"Charges Locatives";"CHGL"
-1500;"Commissions";"COMM"
-1600;"Honoraires";"HONO"
-1700;"Immobilisations";"IMMO"
+
