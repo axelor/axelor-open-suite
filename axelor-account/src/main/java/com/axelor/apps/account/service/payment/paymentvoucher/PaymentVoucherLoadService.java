@@ -49,7 +49,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -441,19 +440,20 @@ public class PaymentVoucherLoadService {
       return;
     }
 
-    int sequence = 0;
+    PayVoucherDueElement payVoucherDueElement =
+        paymentVoucher.getPayVoucherDueElementList().stream()
+            .sorted(Comparator.comparing(PayVoucherDueElement::getSequence))
+            .filter(
+                it ->
+                    invoice.equals(it.getMoveLine().getMove().getInvoice())
+                        && paymentVoucher.getCurrency().equals(it.getCurrency()))
+            .findFirst()
+            .orElse(null);
 
-    for (Iterator<PayVoucherDueElement> it =
-            paymentVoucher.getPayVoucherDueElementList().iterator();
-        it.hasNext(); ) {
-      PayVoucherDueElement payVoucherDueElement = it.next();
-
-      if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
-          && paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
-        paymentVoucher.addPayVoucherElementToPayListItem(
-            createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, ++sequence));
-        it.remove();
-      }
+    if (payVoucherDueElement != null) {
+      paymentVoucher.addPayVoucherElementToPayListItem(
+          createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, 1));
+      paymentVoucher.getPayVoucherDueElementList().remove(payVoucherDueElement);
     }
   }
 
