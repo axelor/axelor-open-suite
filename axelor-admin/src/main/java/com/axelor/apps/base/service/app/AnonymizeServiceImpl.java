@@ -54,15 +54,19 @@ public class AnonymizeServiceImpl implements AnonymizeService {
 
   @Override
   public Object anonymizeValue(Object object, Property property) throws AxelorException {
-    if (property.isJson()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.JSON_FIELD_CAN_NOT_BE_ANONYMIZED));
-    }
-    if (property.getMaxSize() != null && (int) property.getMaxSize() > 0) {
-      return anonymize(object, property.getType().toString(), (int) property.getMaxSize());
-    } else {
-      return anonymize(object, property.getType().toString(), 0);
+    try {
+      if (property.isJson()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessages.JSON_FIELD_CAN_NOT_BE_ANONYMIZED));
+      }
+      if (property.getMaxSize() != null && (int) property.getMaxSize() > 0) {
+        return anonymize(object, property.getType().toString(), (int) property.getMaxSize());
+      } else {
+        return anonymize(object, property.getType().toString(), 0);
+      }
+    } catch (NoSuchAlgorithmException e) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -99,14 +103,14 @@ public class AnonymizeServiceImpl implements AnonymizeService {
         }
       }
       return anonymizedJson;
-    } catch (JSONException e) {
+    } catch (JSONException | NoSuchAlgorithmException e) {
       throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
   protected Object anonymizeJsonValue(
       HashMap<MetaJsonField, FakerApiField> fakerMap, String fieldName, String objectValue)
-      throws AxelorException {
+      throws AxelorException, NoSuchAlgorithmException {
     MetaJsonField metaJsonField =
         fakerMap.keySet().stream()
             .filter(metaJsonField1 -> fieldName.equals(metaJsonField1.getName()))
@@ -120,11 +124,12 @@ public class AnonymizeServiceImpl implements AnonymizeService {
     }
   }
 
-  protected Object anonymize(Object object, String type, int maxSize) {
+  protected Object anonymize(Object object, String type, int maxSize)
+      throws NoSuchAlgorithmException {
     switch (type.toLowerCase()) {
       case "text":
       case "string":
-        byte[] shaInBytes = hashString(object.toString());
+        byte[] shaInBytes = hashString(object.toString(), getSalt());
 
         if (maxSize != 0 && shaInBytes.length > maxSize) {
           return bytesToHex(shaInBytes).substring(0, maxSize);
@@ -157,11 +162,15 @@ public class AnonymizeServiceImpl implements AnonymizeService {
     }
   }
 
-  protected byte[] hashString(String data) {
+  public String hashValue(String data, byte[] salt) {
+    return bytesToHex(hashString(data, salt));
+  }
+
+  protected byte[] hashString(String data, byte[] salt) {
     MessageDigest md;
     try {
-      md = MessageDigest.getInstance("SHA-256");
-      md.update(getSalt());
+      md = MessageDigest.getInstance("SHA-224");
+      md.update(salt);
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalArgumentException(e);
     }
@@ -169,7 +178,7 @@ public class AnonymizeServiceImpl implements AnonymizeService {
     return result;
   }
 
-  protected byte[] getSalt() throws NoSuchAlgorithmException {
+  public byte[] getSalt() {
     SecureRandom random = new SecureRandom();
     byte[] salt = new byte[16];
     random.nextBytes(salt);
