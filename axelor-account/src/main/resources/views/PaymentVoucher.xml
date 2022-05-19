@@ -30,7 +30,7 @@
       <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"
         canNew="false" canEdit="false" canView="false"/>
       <field name="paymentDate" colSpan="4" required="true"
-        onChange="action-group-payment-voucher-reset-imputation"/>
+        onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="company" canEdit="false" widget="SuggestBox" colSpan="4"
         form-view="company-form" grid-view="company-grid"
         onChange="action-payment-voucher-method-fill-bank-details,action-payment-voucher-record-value-for-collection-account"/>
