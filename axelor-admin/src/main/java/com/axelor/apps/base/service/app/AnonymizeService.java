@@ -57,4 +57,20 @@ public interface AnonymizeService {
    */
   JSONObject createAnonymizedJson(Object object, HashMap<MetaJsonField, FakerApiField> fakerMap)
       throws AxelorException;
+
+  /**
+   * Return a hash of the value given with the given salt.
+   *
+   * @param data
+   * @param salt
+   * @return
+   */
+  String hashValue(String data, byte[] salt);
+
+  /**
+   * Generate a random salt.
+   *
+   * @return
+   */
+  byte[] getSalt();
 }

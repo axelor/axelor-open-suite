@@ -151,6 +151,7 @@ public class DataBackupCreateService {
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
     int errorsCount = 0;
+    byte[] salt = null;
 
     fileNameList = new ArrayList<>();
     List<MetaModel> metaModelList = getMetaModels(dataBackup.getAnonymizer() != null);
@@ -167,6 +168,10 @@ public class DataBackupCreateService {
 
       dataBackup.setFetchLimit(fetchLimit);
       fileNameList.clear();
+    }
+
+    if (dataBackup.getAnonymizer() != null) {
+      salt = anonymizeService.getSalt();
     }
 
     if (errorsCount == 0) {
@@ -190,7 +195,13 @@ public class DataBackupCreateService {
                   QUOTE_CHAR);
           CSVInput csvInput =
               writeCSVData(
-                  metaModel, csvWriter, dataBackup, totalRecord, subClasses, tempDirectoryPath);
+                  metaModel,
+                  csvWriter,
+                  dataBackup,
+                  totalRecord,
+                  subClasses,
+                  tempDirectoryPath,
+                  salt);
           csvWriter.close();
 
           if (notNullReferenceFlag) {
@@ -426,7 +437,8 @@ public class DataBackupCreateService {
       DataBackup dataBackup,
       long totalRecord,
       List<String> subClasses,
-      String dirPath)
+      String dirPath,
+      byte[] salt)
       throws AxelorException {
 
     CSVInput csvInput = new CSVInput();
@@ -488,6 +500,10 @@ public class DataBackupCreateService {
                 dataArr = csvComputeAnonymizedFullname(dataArr, headerArr);
               }
 
+              if (dataBackup.getAnonymizer() != null) {
+                csvAnonymizeImportId(dataArr, headerArr, salt);
+              }
+
               csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
             }
           }
@@ -520,6 +536,37 @@ public class DataBackupCreateService {
           e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return csvInput;
+  }
+
+  protected List<String> csvAnonymizeImportId(
+      List<String> dataArr, List<String> headerArr, byte[] salt) {
+
+    headerArr.stream()
+        .filter(
+            header ->
+                header.contains("importId")
+                    && dataArr.get(headerArr.indexOf(header)) != null
+                    && !"".equals(dataArr.get(headerArr.indexOf(header))))
+        .forEach(
+            header ->
+                dataArr.set(
+                    headerArr.indexOf(header),
+                    anonymizeImportId(dataArr, headerArr, header, salt)));
+    return dataArr;
+  }
+
+  protected String anonymizeImportId(
+      List<String> dataArr, List<String> headerArr, String header, byte[] salt) {
+    String anoImportId = "";
+    if (dataArr.get(headerArr.indexOf(header)).contains("|")) {
+      String[] importIds = dataArr.get(headerArr.indexOf(header)).split("\\|");
+      for (String importId : importIds) {
+        anoImportId += anonymizeService.hashValue(importId, salt) + "|";
+      }
+    } else {
+      anoImportId = anonymizeService.hashValue(dataArr.get(headerArr.indexOf(header)), salt);
+    }
+    return anoImportId;
   }
 
   protected List<String> csvComputeAnonymizedFullname(
@@ -942,7 +989,14 @@ public class DataBackupCreateService {
                   new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
                   SEPARATOR,
                   QUOTE_CHAR);
-          writeCSVData(metaModel, csvWriter, dataBackup, 1, subClasses, tempDirectoryPath);
+          writeCSVData(
+              metaModel,
+              csvWriter,
+              dataBackup,
+              1,
+              subClasses,
+              tempDirectoryPath,
+              anonymizeService.getSalt());
           csvWriter.close();
         }
       } catch (ClassNotFoundException e) {
