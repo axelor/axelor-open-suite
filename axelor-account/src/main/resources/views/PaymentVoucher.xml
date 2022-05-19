@@ -164,6 +164,7 @@
     <action name="action-payment-voucher-record-value-for-collection-account"/>
     <action name="action-payment-voucher-record-cheque-owner"/>
     <action name="action-payment-voucher-record-cheque-due-date"/>
+    <action name="save" if="_invoice"/>
   </action-group>
 
   <action-group name="action-account-payment-voucher-onload-group">
