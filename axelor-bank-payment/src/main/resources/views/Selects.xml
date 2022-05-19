@@ -276,7 +276,7 @@
     <option value="0">Accounting auto</option>
     <option value="1">Reconciliation auto</option>
     <option value="2">Partner's fetching</option>
-    <option value="3">Invoice's fetching</option>
+    <option value="3">Move line's fetching</option>
   </selection>
 
   <selection name="bank.payment.bank.statement.query.confidence.index.select">

@@ -50,7 +50,7 @@
         onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
       <field name="searchLabel"/>
       <field name="letterToInvoice"/>
-      <field name="invoiceFetchQuery" requiredIf="letterToInvoice" showIf="letterToInvoice"
+      <field name="moveLineFetchQuery" requiredIf="letterToInvoice" showIf="letterToInvoice"
         hidden="true" domain="self.ruleTypeSelect = 3"/>
     </panel>
   </form>

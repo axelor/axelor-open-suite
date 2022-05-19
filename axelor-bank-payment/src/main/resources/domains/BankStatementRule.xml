@@ -25,7 +25,7 @@
       name="partnerFetchQuery" title="Partner's fetch query"/>
     <boolean name="letterToInvoice" title="Lettering to invoice"/>
     <many-to-one ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
-      name="invoiceFetchQuery" title="Invoice's fetch query"/>
+      name="moveLineFetchQuery" title="Move line's fetch query"/>
 
     <extra-code><![CDATA[
 
@@ -33,7 +33,7 @@
     public static final int RULE_TYPE_ACCOUNTING_AUTO = 0;
     public static final int RULE_TYPE_RECONCILIATION_AUTO = 1;
     public static final int RULE_TYPE_PARTNER_FETCHING = 2;
-    public static final int RULE_TYPE_INVOICE_FETCHING = 3;
+    public static final int RULE_TYPE_MOVE_LINE_FETCHING = 3;
 
     //PARTNER FETCH METHOD
     public static final int PARTNER_FETCH_METHOD_NONE = 0;

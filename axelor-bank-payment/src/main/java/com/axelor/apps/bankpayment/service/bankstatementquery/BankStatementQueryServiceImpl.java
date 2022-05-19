@@ -1,11 +1,14 @@
 package com.axelor.apps.bankpayment.service.bankstatementquery;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -16,14 +19,9 @@ import java.util.Objects;
 
 public class BankStatementQueryServiceImpl implements BankStatementQueryService {
 
-  public static final String INVOICE_QUERY_FORMULA_NOT_EVALUATED_TO_INVOICE =
-      "Invoice's query formula has not been evaluated to a Invoice";
-  public static final String PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER =
-      "Partner's query formula has not been evaluated to a Partner";
-
   @Override
   public Object evalQuery(
-      BankStatementQuery bankStatementQuery, BankStatementLine bankStatementLine)
+      BankStatementQuery bankStatementQuery, BankStatementLine bankStatementLine, Move move)
       throws AxelorException {
     Objects.requireNonNull(bankStatementQuery);
     Objects.requireNonNull(bankStatementLine);
@@ -31,8 +29,8 @@ public class BankStatementQueryServiceImpl implements BankStatementQueryService 
     switch (bankStatementQuery.getRuleTypeSelect()) {
       case BankStatementRuleRepository.RULE_TYPE_PARTNER_FETCHING:
         return evalPartner(bankStatementQuery, bankStatementLine);
-      case BankStatementRuleRepository.RULE_TYPE_INVOICE_FETCHING:
-        return evalInvoice(bankStatementQuery, bankStatementLine);
+      case BankStatementRuleRepository.RULE_TYPE_MOVE_LINE_FETCHING:
+        return evalMoveLine(bankStatementQuery, bankStatementLine, move);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -40,24 +38,27 @@ public class BankStatementQueryServiceImpl implements BankStatementQueryService 
     }
   }
 
-  protected Invoice evalInvoice(
-      BankStatementQuery bankStatementQuery, BankStatementLine bankStatementLine)
+  protected MoveLine evalMoveLine(
+      BankStatementQuery bankStatementQuery, BankStatementLine bankStatementLine, Move move)
       throws AxelorException {
+    Objects.requireNonNull(move);
     Context scriptContext =
         new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
-    Object invoice = new GroovyScriptHelper(scriptContext).eval(bankStatementQuery.getQuery());
+    scriptContext.put("generatedMove", EntityHelper.getEntity(move));
+    Object moveLine = new GroovyScriptHelper(scriptContext).eval(bankStatementQuery.getQuery());
 
-    if (invoice == null) {
+    if (moveLine == null) {
       return null;
     }
 
-    if (!(invoice instanceof Invoice)) {
+    if (!(moveLine instanceof MoveLine)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(INVOICE_QUERY_FORMULA_NOT_EVALUATED_TO_INVOICE));
+          I18n.get(
+              IExceptionMessage.BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE));
     }
 
-    return (Invoice) invoice;
+    return (MoveLine) moveLine;
   }
 
   protected Partner evalPartner(
@@ -74,7 +75,8 @@ public class BankStatementQueryServiceImpl implements BankStatementQueryService 
     if (!(partner instanceof Partner)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER));
+          I18n.get(
+              IExceptionMessage.BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER));
     }
 
     return (Partner) partner;

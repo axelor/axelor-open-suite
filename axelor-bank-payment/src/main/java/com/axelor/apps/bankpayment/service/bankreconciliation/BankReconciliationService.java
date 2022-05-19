@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -33,6 +32,7 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -122,6 +122,7 @@ public class BankReconciliationService {
   protected AccountConfigRepository accountConfigRepository;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected BankStatementRuleService bankStatementRuleService;
+  protected ReconcileService reconcileService;
 
   @Inject
   public BankReconciliationService(
@@ -149,7 +150,8 @@ public class BankReconciliationService {
       AccountRepository accountRepository,
       AccountConfigRepository accountConfigRepository,
       BankPaymentConfigService bankPaymentConfigService,
-      BankStatementRuleService bankStatementRuleService) {
+      BankStatementRuleService bankStatementRuleService,
+      ReconcileService reconcileService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -176,6 +178,7 @@ public class BankReconciliationService {
     this.accountConfigRepository = accountConfigRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.bankStatementRuleService = bankStatementRuleService;
+    this.reconcileService = reconcileService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -249,17 +252,24 @@ public class BankReconciliationService {
       BankStatementRule bankStatementRule, BankReconciliationLine bankReconciliationLine, Move move)
       throws AxelorException {
 
-    Move invoiceMove =
+    MoveLine fetchedMoveLine =
         bankStatementRuleService
-            .getInvoice(bankStatementRule, bankReconciliationLine)
-            .map(Invoice::getMove)
+            .getMoveLine(bankStatementRule, bankReconciliationLine, move)
             .orElse(null);
-    if (invoiceMove != null) {
-      List<MoveLine> toReconcileMoveList = new ArrayList<>();
-      toReconcileMoveList.addAll(move.getMoveLineList());
-      toReconcileMoveList.addAll(invoiceMove.getMoveLineList());
-
-      moveLineService.reconcileMoveLines(toReconcileMoveList);
+    // Will reconcile move line that has as account the counterpart account specified in
+    // bankstatementrule
+    MoveLine generatedMoveLineToLetter =
+        move.getMoveLineList().stream()
+            .filter(
+                moveLine -> moveLine.getAccount().equals(bankStatementRule.getCounterpartAccount()))
+            .findFirst()
+            .orElse(null);
+    if (fetchedMoveLine != null && generatedMoveLineToLetter != null) {
+      if (generatedMoveLineToLetter.getDebit().signum() > 0) {
+        reconcileService.reconcile(generatedMoveLineToLetter, fetchedMoveLine, false, true);
+      } else {
+        reconcileService.reconcile(fetchedMoveLine, generatedMoveLineToLetter, false, true);
+      }
     }
   }
 
