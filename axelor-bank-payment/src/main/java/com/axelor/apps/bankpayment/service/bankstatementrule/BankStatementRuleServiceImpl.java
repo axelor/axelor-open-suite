@@ -1,6 +1,7 @@
 package com.axelor.apps.bankpayment.service.bankstatementrule;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
@@ -36,7 +37,8 @@ public class BankStatementRuleServiceImpl implements BankStatementRuleService {
         Object result =
             bankStatementQueryService.evalQuery(
                 bankStatementRule.getPartnerFetchQuery(),
-                bankReconciliationLine.getBankStatementLine());
+                bankReconciliationLine.getBankStatementLine(),
+                null);
         if (result != null) {
           return Optional.of((Partner) result);
         }
@@ -49,17 +51,18 @@ public class BankStatementRuleServiceImpl implements BankStatementRuleService {
   }
 
   @Override
-  public Optional<Invoice> getInvoice(
-      BankStatementRule bankStatementRule, BankReconciliationLine bankReconciliationLine)
+  public Optional<MoveLine> getMoveLine(
+      BankStatementRule bankStatementRule, BankReconciliationLine bankReconciliationLine, Move move)
       throws AxelorException {
     Objects.requireNonNull(bankStatementRule);
 
     Object result =
         bankStatementQueryService.evalQuery(
-            bankStatementRule.getInvoiceFetchQuery(),
-            bankReconciliationLine.getBankStatementLine());
+            bankStatementRule.getMoveLineFetchQuery(),
+            bankReconciliationLine.getBankStatementLine(),
+            move);
     if (result != null) {
-      return Optional.of((Invoice) result);
+      return Optional.of((MoveLine) result);
     }
     return Optional.empty();
   }

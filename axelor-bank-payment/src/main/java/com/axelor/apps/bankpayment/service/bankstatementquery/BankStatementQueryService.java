@@ -15,7 +15,7 @@ public interface BankStatementQueryService {
    * @param bankStatementQuery: can not be null
    * @param bankStatementLine : will be used as context, can not be null
    * @param move: will be usable in context, can be null if type 2
-   * @return the generated object (either a Invoice or Partner)
+   * @return the generated object (either a MoveLine or Partner)
    * @throws AxelorException
    */
   Object evalQuery(
