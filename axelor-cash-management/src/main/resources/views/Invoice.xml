@@ -47,8 +47,7 @@
   </action-method>
 
   <action-group name="action-group-cash-management-invoice-partner-onchange">
-    <action name="action-group-account-invoice-partner-onchange"/>
-    <action name="action-method-invoice-address-str"/>
+    <action name="action-invoice-group-partner-onchange"/>
     <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 
