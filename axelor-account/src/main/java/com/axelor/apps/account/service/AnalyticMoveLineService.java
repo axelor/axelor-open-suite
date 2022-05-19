@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.meta.CallMethod;
+import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -47,4 +48,6 @@ public interface AnalyticMoveLineService {
 
   @CallMethod
   boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticDistributionLineList);
+
+  LocalDate getDateFromParent(Context parent);
 }

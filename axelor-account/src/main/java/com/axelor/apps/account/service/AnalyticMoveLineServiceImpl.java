@@ -22,12 +22,16 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.AppAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,14 +45,17 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
+  protected AppBaseService appBaseService;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
       AppAccountService appAccountService,
-      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl) {
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
+      AppBaseService appBaseService) {
 
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -175,5 +182,23 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       }
     }
     return true;
+  }
+
+  @Override
+  public LocalDate getDateFromParent(Context parent) {
+    if (MoveLine.class.equals(parent.getContextClass())) {
+      MoveLine line = parent.asType(MoveLine.class);
+      if (line.getDate() != null) {
+        return line.getDate();
+      } else if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+        return appBaseService.getTodayDate(line.getAccount().getCompany());
+      }
+    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
+      InvoiceLine line = parent.asType(InvoiceLine.class);
+      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+        return appBaseService.getTodayDate(line.getAccount().getCompany());
+      }
+    }
+    return LocalDate.now();
   }
 }
