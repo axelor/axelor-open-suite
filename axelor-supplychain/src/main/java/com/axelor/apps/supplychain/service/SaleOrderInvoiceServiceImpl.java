@@ -670,7 +670,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     saleOrder.setAmountInvoiced(amountInvoiced);
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
-        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0) {
+        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       saleOrderWorkflowServiceImpl.completeSaleOrder(saleOrder);
     }
   }
