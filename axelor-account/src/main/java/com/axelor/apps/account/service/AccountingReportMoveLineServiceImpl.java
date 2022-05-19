@@ -359,7 +359,11 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
               "S70.G10.00.001", StringUtils.stripAccents(listObj[0].toString().toUpperCase())));
       String title = listObj[1].toString();
       String countryAlpha2code = listObj[9].toString();
-      String zip = compileAddressValue(listObj[7].toString());
+      String zip = "0";
+      if (listObj[7] != null) {
+        zip = compileAddressValue(listObj[7].toString());
+        zip = StringUtils.isEmpty(zip) ? "0" : zip;
+      }
 
       if (title.equals(String.valueOf(PartnerRepository.PARTNER_TYPE_COMPANY))) {
         String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
@@ -387,7 +391,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
                 compileStringValue(regexForCity, listObj[8].toString(), " ")));
       } else {
         lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
-        lines.add(setN4DSLine("S70.G10.00.004.016", StringUtils.isEmpty(zip) ? "0" : zip));
+        lines.add(setN4DSLine("S70.G10.00.004.016", zip));
       }
       String serviceTypeCode = listObj[10].toString();
       String amount = listObj[11].toString();
