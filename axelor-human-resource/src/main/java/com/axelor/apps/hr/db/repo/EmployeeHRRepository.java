@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
@@ -62,15 +63,20 @@ public class EmployeeHRRepository extends EmployeeRepository {
   @Override
   public Employee save(Employee entity) {
     Partner partner = entity.getContactPartner();
-    if (!partner.getIsContact() && partner.getPartnerTypeSelect() == 0) {
+    if (Strings.isNullOrEmpty(partner.getFullName())
+        || Strings.isNullOrEmpty(partner.getSimpleFullName())) {
+      Beans.get(PartnerService.class).setPartnerFullName(partner);
+    }
+    EmploymentContract employmentContract = entity.getMainEmploymentContract();
+    if ((partner.getCompanySet() == null || partner.getCompanySet().isEmpty())
+        && employmentContract != null) {
+      partner.addCompanySetItem(employmentContract.getPayCompany());
+    }
+    if (!partner.getIsEmployee()) {
       partner.setIsContact(true);
       partner.setIsEmployee(true);
       Beans.get(PartnerHRRepository.class).save(partner);
-    } else {
-      Beans.get(PartnerService.class).setPartnerFullName(partner);
     }
-
-    EmploymentContract employmentContract = entity.getMainEmploymentContract();
     if (employmentContract != null && employmentContract.getEmployee() == null) {
       employmentContract.setEmployee(entity);
     }
