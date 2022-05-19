@@ -671,7 +671,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public void addPayment(Expense expense) throws AxelorException {
-    addPayment(expense, expense.getCompany().getDefaultBankDetails());
+    addPayment(expense, expense.getBankDetails());
   }
 
   @Override
