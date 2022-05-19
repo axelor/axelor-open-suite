@@ -440,7 +440,6 @@ public class PaymentVoucherLoadService {
       return;
     }
 
-    int sequence = 0;
     PayVoucherDueElement payVoucherDueElement =
         paymentVoucher.getPayVoucherDueElementList().stream()
             .sorted(Comparator.comparing(PayVoucherDueElement::getSequence))
@@ -453,7 +452,7 @@ public class PaymentVoucherLoadService {
 
     if (payVoucherDueElement != null) {
       paymentVoucher.addPayVoucherElementToPayListItem(
-          createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, ++sequence));
+          createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, 1));
       paymentVoucher.getPayVoucherDueElementList().remove(payVoucherDueElement);
     }
   }
