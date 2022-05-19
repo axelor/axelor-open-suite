@@ -101,7 +101,7 @@
         showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
         onClick="action-bank-reconciliation-method-automatic-reconciliation"/>
       <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
-        onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
+        onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
       <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
         onClick="save,action-bank-reconciliation-method-unreconcile"/>
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
@@ -172,9 +172,9 @@
       <panel-related name="$toReconcileMoveLineSetPanel"
         field="$toReconcileMoveLineSet" title="Select move lines to reconciles" colSpan="12"
         type="many-to-many" target="com.axelor.apps.account.db.MoveLine"
-        onSelect="action-bank-reconciliation-attrs-move-line-domain-on-wizard" canNew="false"
+        onSelect="action-bank-reconciliation-method-move-line-domain-on-wizard" canNew="false"
         canEdit="false" form-view="move-line-form" grid-view="move-line-grid"
-        onChange="action-bank-reconciliation-attrs-multiple-reconcile-wizard-compute-total-of-selected-move-lines"/>
+        onChange="action-bank-reconciliation-method-multiple-reconcile-wizard-compute-total-of-selected-move-lines"/>
       <field name="$selectedMoveLineTotal" title="Total of selected move lines" type="decimal"
         readonly="true"/>
       <button name="validateBtn" title="Validate" hideIf="statusSelect == 2"
@@ -352,9 +352,17 @@
 
   <action-attrs
     name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-compute-total-of-selected-move-lines">
+    <attribute name="value" for="$selectedMoveLineTotal" expr="eval: 0"/>
     <attribute name="value" for="$selectedMoveLineTotal"
-      expr="eval: toReconcileMoveLineSet.collect{new BigDecimal(it.debit).add(new BigDecimal(it.credit))}.sum()"/>
+      expr="eval: toReconcileMoveLineSet.collect{new BigDecimal((String) it?.debit).add(new BigDecimal((String) it?.credit))}.sum()"
+      if="toReconcileMoveLineSet != null"/>
   </action-attrs>
+
+  <action-validate name="action-bank-reconciliation-validate-lines-selected">
+    <error message="Please select bank reconciliation lines for multiple reconciles"
+      if="__this__.bankReconciliationLineList.find{it.isSelected()} == null"/>
+  </action-validate>
+
 
   <action-method name="action-bank-reconciliation-method-validate-multiple-reconciles">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
@@ -413,6 +421,17 @@
     name="action-bank-payment-bank-reconciliation-method-on-change-bank-statement">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
       method="onChangeBankStatement"/>
+  </action-method>
+
+  <action-method name="action-bank-reconciliation-method-move-line-domain-on-wizard">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="getDomainForWizard"/>
+  </action-method>
+
+  <action-method
+    name="action-bank-reconciliation-method-multiple-reconcile-wizard-compute-total-of-selected-move-lines">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="computeTotalOfSelectedMoveLines"/>
   </action-method>
 
   <search-filters name="bank-reconciliation-filters"

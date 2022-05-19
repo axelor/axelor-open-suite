@@ -1087,4 +1087,35 @@ public class BankReconciliationService {
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
   }
+
+  public String getDomainForWizard(
+      BankReconciliation bankReconciliation,
+      BigDecimal bankStatementCredit,
+      BigDecimal bankStatementDebit) {
+    if (bankReconciliation != null
+        && bankReconciliation.getCompany() != null
+        && bankStatementCredit != null
+        && bankStatementDebit != null) {
+      String query =
+          "(self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)"
+              + " AND ((self.debit > 0 and "
+              + bankStatementCredit.compareTo(BigDecimal.ZERO)
+              + " > 0)"
+              + " OR (self.credit > 0 and "
+              + bankStatementDebit.compareTo(BigDecimal.ZERO)
+              + " > 0))"
+              + " AND self.move.company.id = "
+              + bankReconciliation.getCompany().getId();
+      if (bankReconciliation.getCashAccount() != null) {
+        query =
+            query.concat(" AND self.account.id = " + bankReconciliation.getCashAccount().getId());
+      }
+      if (bankReconciliation.getJournal() != null) {
+        query =
+            query.concat(" AND self.move.journal.id = " + bankReconciliation.getJournal().getId());
+      }
+      return query;
+    }
+    return "self id in (0)";
+  }
 }

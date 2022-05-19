@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -48,7 +49,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -434,6 +438,48 @@ public class BankReconciliationController {
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getDomainForWizard(ActionRequest request, ActionResponse response) {
+    try {
+      Long bankReconciliationId =
+          Long.valueOf(
+              (Integer)
+                  ((LinkedHashMap<?, ?>) request.getContext().get("_bankReconciliation"))
+                      .get("id"));
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliationId);
+      BigDecimal credit = new BigDecimal((String) request.getContext().get("bankStatementCredit"));
+      BigDecimal debit = new BigDecimal((String) request.getContext().get("bankStatementDebit"));
+      response.setAttr(
+          "$toReconcileMoveLineSet",
+          "domain",
+          Beans.get(BankReconciliationService.class)
+              .getDomainForWizard(bankReconciliation, credit, debit));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotalOfSelectedMoveLines(ActionRequest request, ActionResponse response) {
+    try {
+      List<LinkedHashMap> toReconcileMoveLineSet =
+          (List<LinkedHashMap>) (request.getContext().get("toReconcileMoveLineSet"));
+      BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
+      MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+      List<MoveLine> moveLineList = new ArrayList<>();
+      toReconcileMoveLineSet.forEach(
+          m ->
+              moveLineList.add(
+                  moveLineRepo.find(Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
+      for (MoveLine moveLine : moveLineList) {
+        selectedMoveLineTotal =
+            selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
+      }
+      response.setValue("$selectedMoveLineTotal", selectedMoveLineTotal);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
