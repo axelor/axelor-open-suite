@@ -45,7 +45,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -225,7 +224,7 @@ public class SaleOrderController {
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     try {
-      Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
+      Beans.get(SaleOrderWorkflowService.class).completeSaleOrder(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
