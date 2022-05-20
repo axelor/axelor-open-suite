@@ -1,0 +1,3 @@
+---
+title: "Menu builder: context isn't set by default when overriding an existing menu"
+type: fix
