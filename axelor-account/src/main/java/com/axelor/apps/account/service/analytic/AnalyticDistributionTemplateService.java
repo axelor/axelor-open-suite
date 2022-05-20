@@ -41,11 +41,4 @@ public interface AnalyticDistributionTemplateService {
 
   void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
       throws AxelorException;
-
-  AnalyticDistributionTemplate createOrPersonalizeTemplate(
-      boolean isAnalyticDistributionAuthorized,
-      Company company,
-      String name,
-      AnalyticDistributionTemplate analyticDistributionTemplate)
-      throws AxelorException;
 }

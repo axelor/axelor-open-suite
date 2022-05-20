@@ -211,13 +211,17 @@ public class BankReconciliationService {
 
         for (BankStatementRule bankStatementRule : bankStatementRules) {
 
-          if (Boolean.TRUE.equals(
-              new GroovyScriptHelper(scriptContext)
-                  .eval(
-                      bankStatementRule
-                          .getBankStatementQuery()
-                          .getQuery()
-                          .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+          if (bankStatementRule != null
+              && bankStatementRule.getBankStatementQuery() != null
+              && !Strings.isNullOrEmpty(bankStatementRule.getBankStatementQuery().getQuery())
+              && Boolean.TRUE.equals(
+                  new GroovyScriptHelper(scriptContext)
+                      .eval(
+                          bankStatementRule
+                              .getBankStatementQuery()
+                              .getQuery()
+                              .replaceAll(
+                                  "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
