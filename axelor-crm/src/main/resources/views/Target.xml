@@ -12,7 +12,7 @@
   </grid>
 
   <form name="target-form" title="Objective" model="com.axelor.apps.crm.db.Target"
-    width="large" onLoad="action-target-method-update,save" onSave="action-target-validate">
+    width="large" onLoad="action-target-group-on-load" onSave="action-target-validate">
     <panel name="informationPanel">
       <field name="$fullName" showTitle="false" colSpan="12">
         <viewer depends="name,code">
@@ -28,10 +28,16 @@
           <field name="name" colSpan="8" css="label-bold bold large" required="true"/>
         </editor>
       </field>
-      <field name="user" colSpan="6" showIf="team == null" canNew="false" canView="false"
-        canEdit="false" form-view="user-form" grid-view="user-grid"/>
+      <field name="fromDate" colSpan="6" required="true"/>
+      <field name="toDate" colSpan="6" required="true"/>
+      <field name="user" colSpan="6"
+        showIf="fromDate != null &amp;&amp; toDate != null &amp;&amp; team == null " canNew="false"
+        canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"
+        onChange="action-target-method-update" hidden="true"/>
       <field if="__config__.app.getApp('base').getTeamManagement()" colSpan="6" name="team"
-        showIf="user == null" canEdit="false" form-view="team-form" grid-view="team-grid"/>
+        showIf="fromDate != null &amp;&amp; toDate != null &amp;&amp; user == null" canEdit="false"
+        form-view="team-form" grid-view="team-grid" onChange="action-target-method-update"
+        hidden="true"/>
       <static/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -63,11 +69,13 @@
     <panel sidebar="true" name="characteristicsPanel" title="Characteristics"
       canCollapse="true">
       <field name="periodTypeSelect"/>
-      <field name="fromDate" colSpan="6" required="true"/>
-      <field name="toDate" colSpan="6" required="true"/>
     </panel>
   </form>
 
+  <action-group name="action-target-group-on-load">
+    <action name="action-target-method-update"/>
+    <action name="save"/>
+  </action-group>
 
   <action-method name="action-target-method-update">
     <call class="com.axelor.apps.crm.web.TargetController" method="update"/>

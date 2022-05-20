@@ -55,7 +55,7 @@ public class TargetService {
               targetConfiguration.getFromDate(),
               targetConfiguration.getToDate());
 
-      this.update(target);
+      this.updateAndSave(target);
     } else {
 
       LocalDate oldDate = targetConfiguration.getFromDate();
@@ -92,7 +92,7 @@ public class TargetService {
                       ? date.minusDays(1)
                       : targetConfiguration.getToDate());
 
-          this.update(target);
+          this.updateAndSave(target);
 
           oldDate = date;
         } else {
@@ -146,15 +146,18 @@ public class TargetService {
     return targetRepo.save(target);
   }
 
-  @Transactional
-  public void update(Target target) {
+  public Target update(Target target) {
     User user = target.getUser();
     Team team = target.getTeam();
     LocalDate fromDate = target.getFromDate();
     LocalDate toDate = target.getToDate();
+    LocalDateTime fromDateTime = null;
+    LocalDateTime toDateTime = null;
 
-    LocalDateTime fromDateTime = fromDate.atStartOfDay();
-    LocalDateTime toDateTime = toDate.atTime(23, 59);
+    if (fromDate != null && toDate != null) {
+      fromDateTime = fromDate.atStartOfDay();
+      toDateTime = toDate.atTime(23, 59);
+    }
 
     if (user != null) {
       Query q =
@@ -237,7 +240,7 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
+                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
                   EventRepository.TYPE_CALL,
                   team,
                   fromDateTime,
@@ -287,6 +290,12 @@ public class TargetService {
       target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
     }
 
+    return target;
+  }
+
+  @Transactional
+  public void updateAndSave(Target target) {
+    update(target);
     targetRepo.save(target);
   }
 }
