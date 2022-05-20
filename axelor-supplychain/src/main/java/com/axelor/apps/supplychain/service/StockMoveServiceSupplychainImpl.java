@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -70,6 +71,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected SaleOrderRepository saleOrderRepo;
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
+  protected SaleOrderWorkflowService saleOrderWorkflowService;
 
   @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
@@ -86,7 +88,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
-      ProductRepository productRepository) {
+      ProductRepository productRepository,
+      SaleOrderWorkflowService saleOrderWorkflowService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -100,6 +103,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.saleOrderRepo = saleOrderRepo;
     this.unitConversionService = unitConversionService;
     this.reservedQtyService = reservedQtyService;
+    this.saleOrderWorkflowService = saleOrderWorkflowService;
   }
 
   @Override
@@ -240,11 +244,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    *
    * @param saleOrder
    */
-  protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) {
-    if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
-      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
-    } else {
-      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+  protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      saleOrderWorkflowService.completeSaleOrder(saleOrder);
+    } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      saleOrderWorkflowService.confirmSaleOrder(saleOrder);
     }
   }
 
