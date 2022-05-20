@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -50,7 +49,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -466,18 +464,10 @@ public class BankReconciliationController {
     try {
       List<LinkedHashMap> toReconcileMoveLineSet =
           (List<LinkedHashMap>) (request.getContext().get("toReconcileMoveLineSet"));
-      BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
-      MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
-      List<MoveLine> moveLineList = new ArrayList<>();
-      toReconcileMoveLineSet.forEach(
-          m ->
-              moveLineList.add(
-                  moveLineRepo.find(Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
-      for (MoveLine moveLine : moveLineList) {
-        selectedMoveLineTotal =
-            selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
-      }
-      response.setValue("$selectedMoveLineTotal", selectedMoveLineTotal);
+      response.setValue(
+          "$selectedMoveLineTotal",
+          Beans.get(BankReconciliationService.class)
+              .getSelectedMoveLineTotal(toReconcileMoveLineSet));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
