@@ -90,8 +90,10 @@ public interface StockMoveInvoiceService {
    * StockMoveLine#qtyInvoiced} in stock move lines and set it in the stock move.
    *
    * @param stockMove a stock move
+   * @param invoice: the invoice of the stock move
+   * @throws AxelorException
    */
-  void computeStockMoveInvoicingStatus(StockMove stockMove);
+  void computeStockMoveInvoicingStatus(StockMove stockMove) throws AxelorException;
 
   /**
    * Checks if the given invoice is a refund of a stock move. Either the stock move is not a
@@ -106,4 +108,13 @@ public interface StockMoveInvoiceService {
    */
   void checkSplitSalePartiallyInvoicedStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+  /**
+   * Method that checks if a stock move can be partially invoiced with the invoice.
+   *
+   * @param invoice
+   * @return true if it can be partially invoice, else false
+   * @throws AxelorException
+   */
+  boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException;
 }

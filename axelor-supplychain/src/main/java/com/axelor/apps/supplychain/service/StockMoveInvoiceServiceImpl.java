@@ -670,4 +670,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean isReversionStockMove = stockMove.getIsReversion();
     return isRefundInvoice != isReversionStockMove;
   }
+
+  @Override
+  public boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
+    SupplyChainConfig supplyChainConfig =
+        supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    return !isPurchase && supplyChainConfig.getActivateOutStockMovePartialInvoicing()
+        || isPurchase && supplyChainConfig.getActivateIncStockMovePartialInvoicing();
+  }
 }

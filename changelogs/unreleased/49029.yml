@@ -1,0 +1,3 @@
+---
+title: "Stock move: fixed a bug where ventilating a refund before a invoice would set the stock move invoice status to invoiced"
+type: fix
