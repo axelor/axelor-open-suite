@@ -286,7 +286,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
     // update stock moves invoicing status
     for (StockMove stockMove : invoice.getStockMoveSet()) {
-      stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove);
+      stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove, invoice);
     }
   }
 
@@ -340,8 +340,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       // it depends on if the invoice is linked to refund.
       if (!CollectionUtils.isEmpty(invoice.getRefundInvoiceList())
           && invoice.getRefundInvoiceList().stream()
-              .anyMatch(inv -> inv.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED)) {
-        // If it is linked to any refund that is ventilated then set to 0.
+              .filter(inv -> inv.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED)
+              .flatMap(inv -> inv.getInvoiceLineList().stream())
+              .anyMatch(invoiceLine -> stockMoveLine.equals(invoiceLine.getStockMoveLine()))) {
+        // If it is linked to any refund that is ventilated related to the stock move then set to 0.
         stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
       } else {
         stockMoveLine.setQtyInvoiced(stockMoveLine.getRealQty());

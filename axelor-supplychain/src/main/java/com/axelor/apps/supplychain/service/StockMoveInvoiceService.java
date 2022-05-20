@@ -93,7 +93,7 @@ public interface StockMoveInvoiceService {
    * @param invoice: the invoice of the stock move
    * @throws AxelorException
    */
-  void computeStockMoveInvoicingStatus(StockMove stockMove) throws AxelorException;
+  void computeStockMoveInvoicingStatus(StockMove stockMove, Invoice invoice) throws AxelorException;
 
   /**
    * Checks if the given invoice is a refund of a stock move. Either the stock move is not a
