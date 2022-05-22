@@ -1,1003 +1,1083 @@
-"importId";"code";"parent_code";"name";"accountType.technicalTypeSelect";"reconcileOk";"company.importId";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine"
-1;0;;"Racine PCG";"view";;1;;;;
-2;"CL1_5";0;"Comptes de bilan";"view";;1;;;;
-3;"CL6_7";0;"Comptes de gestion";"view";;1;;;;
-4;"CL1";"CL1_5";"Comptes de capitaux";"view";;1;;;;
-5;"CL2";"CL1_5";"Comptes d'immobilisations";"view";;1;;;;
-6;"CL3";"CL1_5";"Comptes de stocks et d'en-cours";"view";;1;;;;
-7;"CL4";"CL1_5";"Comptes de tiers";"view";;1;;;;
-8;"CL5";"CL1_5";"Comptes financiers";"view";;1;;;;
-9;"CL6";"CL6_7";"Comptes de charges";"view";;1;;;;
-10;"CL7";"CL6_7";"Comptes de produits";"view";;1;;;;
-11;"CL8";0;"Comptes spéciaux";"view";;1;;;;
-12;100;"CL1";"Capital et réserves";"view";;1;;;;
-13;101000;100;"Capital";"equity";;1;;;;
-14;101100;101000;"Capital souscrit - non appelé";"equity";;1;;;;
-15;101200;101000;"Capital souscrit - appelé non versé";"equity";;1;;;;
-16;101300;101000;"Capital souscrit - appelé versé";"equity";;1;;;;
-17;101310;101300;"Capital non amorti";"equity";;1;;;;
-18;101320;101300;"Capital amorti";"equity";;1;;;;
-19;101800;101000;"Capital souscrit soumis à des réglementations particulières";"equity";;1;;;;
-20;104000;100;"Primes liées au capital social";"equity";;1;;;;
-21;104100;104000;"Primes d'émission";"equity";;1;;;;
-22;104200;104000;"Primes de fusion";"equity";;1;;;;
-23;104300;104000;"Primes d'apport";"equity";;1;;;;
-24;104400;104000;"Primes de conversion d'obligations en actions";"equity";;1;;;;
-25;104500;104000;"Bons de souscription d'actions";"equity";;1;;;;
-26;105000;100;"Écarts de réévaluation";"equity";;1;;;;
-27;105100;105000;"Réserve spéciale de réévaluation";"equity";;1;;;;
-28;105200;105000;"Écart de réévaluation libre";"equity";;1;;;;
-29;105300;105000;"Réserve de réévaluation";"equity";;1;;;;
-30;105500;105000;"Écarts de réévaluation (autres opérations légales)";"equity";;1;;;;
-31;105700;105000;"Autres écarts de réévaluation en France";"equity";;1;;;;
-32;105800;105000;"Autres écarts de réévaluation à l'étranger";"equity";;1;;;;
-33;106000;100;"Réserves";"equity";;1;;;;
-34;106100;106000;"Réserve légale";"equity";;1;;;;
-35;106110;106100;"Réserve légale proprement dite";"equity";;1;;;;
-36;106120;106100;"Plus-values nettes à long terme";"equity";;1;;;;
-37;106200;106000;"Réserves indisponibles";"equity";;1;;;;
-38;106300;106000;"Réserves statutaires ou contractuelles";"equity";;1;;;;
-39;106400;106000;"Réserves réglementées";"equity";;1;;;;
-40;106410;106400;"Plus-values nettes à long terme";"equity";;1;;;;
-41;106430;106400;"Réserves consécutives à l'octroi de subventions d'investissement";"equity";;1;;;;
-42;106480;106400;"Autres réserves réglementées";"equity";;1;;;;
-43;106800;106000;"Autres réserves";"equity";;1;;;;
-44;106810;106800;"Réserve de propre assureur";"equity";;1;;;;
-45;106880;106800;"Réserves diverses";"equity";;1;;;;
-46;107000;100;"Écarts d'équivalence";"equity";;1;;;;
-47;108000;100;"Compte de l'exploitant";"equity";;1;;;;
-48;109000;100;"Actionnaires: capital souscrit - non appelé";"asset";;1;;;;
-49;110;"CL1";"Report à nouveau (solde créditeur ou débiteur)";"view";;1;;;;
-50;110000;110;"Report à nouveau (solde créditeur)";"equity";;1;;;;
-51;119000;110;"Report à nouveau (solde débiteur)";"equity";;1;;;;
-52;120;"CL1";"Résultat de l'exercice (bénéfice ou perte)";"view";;1;;;;
-53;120000;120;"Résultat de l'exercice (bénéfice)";"equity";;1;;;;
-54;129000;120;"Résultat de l'exercice (perte)";"equity";;1;;;;
-55;130;"CL1";"Subventions d'investissement";"view";;1;;;;
-56;131000;130;"Subventions d'équipement";"equity";;1;;;;
-57;131100;131000;"État";"equity";;1;;;;
-58;131200;131000;"Régions";"equity";;1;;;;
-59;131300;131000;"Départements";"equity";;1;;;;
-60;131400;131000;"Communes";"equity";;1;;;;
-61;131500;131000;"Collectivités publiques";"equity";;1;;;;
-62;131600;131000;"Entreprises publiques";"equity";;1;;;;
-63;131700;131000;"Entreprises et organismes privés";"equity";;1;;;;
-64;131800;131000;"Autres";"equity";;1;;;;
-65;138000;130;"Autres subventions d'investissement (même ventilation que celle du compte 131)";"equity";;1;;;;
-66;139000;130;"Subventions d'investissement inscrites au compte de résultat";"equity";;1;;;;
-67;139100;139000;"Subventions d'équipement";"equity";;1;;;;
-68;139110;139100;"Etat";"equity";;1;;;;
-69;139120;139100;"Régions";"equity";;1;;;;
-70;139130;139100;"Départements";"equity";;1;;;;
-71;139140;139100;"Communes";"equity";;1;;;;
-72;139150;139100;"Collectivités publiques";"equity";;1;;;;
-73;139160;139100;"Entreprises publiques";"equity";;1;;;;
-74;139170;139100;"Entreprises et organismes privés ";"equity";;1;;;;
-75;139180;139100;"Autres";"equity";;1;;;;
-76;139800;139000;"Autres subventions d'investissement (même ventilation que celle du compte 1391)";"equity";;1;;;;
-77;140;"CL1";"Provisions réglementées";"view";;1;;;;
-78;142000;140;"Provisions réglementées relatives aux immobilisations";"equity";;1;;;;
-79;142300;142000;"Provisions reconstitution des gisements miniers et pétroliers";"equity";;1;;;;
-80;142400;142000;"Provisions pour investissement (participation des salariés)";"equity";;1;;;;
-81;143000;140;"Provisions réglementées relatives aux stocks";"equity";;1;;;;
-82;143100;143000;"Hausse des prix";"equity";;1;;;;
-83;143200;143000;"Fluctuation des cours";"equity";;1;;;;
-84;144000;140;"Provisions réglementées relatives aux autres éléments de l'actif";"equity";;1;;;;
-85;145000;140;"Amortissements dérogatoires";"equity";;1;;;;
-86;146000;140;"Provision spéciale de réévaluation";"equity";;1;;;;
-87;147000;140;"Plus-values réinvesties";"equity";;1;;;;
-88;148000;140;"Autres provisions réglementées";"equity";;1;;;;
-89;150;"CL1";"Provisions";"view";;1;;;;
-90;151000;150;"Provisions pour risques";"provision";;1;;;;
-91;151100;151000;"Provisions pour litiges";"provision";;1;;;;
-92;151200;151000;"Provisions pour garanties données aux clients";"provision";;1;;;;
-93;151300;151000;"Provisions pour pertes sur marchés à terme";"provision";;1;;;;
-94;151400;151000;"Provisions pour amendes et pénalités";"provision";;1;;;;
-95;151500;151000;"Provisions pour pertes de change";"provision";;1;;;;
-96;151600;151000;"Provisions pour pertes sur contrats";"provision";;1;;;;
-97;151800;151000;"Autres provisions pour risques";"provision";;1;;;;
-98;153000;150;"Provisions pour pensions et obligations similaires";"provision";;1;;;;
-99;154000;150;"Provisions pour restructurations";"provision";;1;;;;
-100;155000;150;"Provisions pour impôts";"provision";;1;;;;
-101;156000;150;"Provisions pour renouvellement des immobilisations (entreprises concessionnaires)";"provision";;1;;;;
-102;157000;150;"Provisions pour charges à répartir sur plusieurs exercices";"provision";;1;;;;
-103;157200;157000;"Provisions pour gros entretien ou grandes révisions ";"provision";;1;;;;
-104;158000;150;"Autres provisions pour charges";"provision";;1;;;;
-105;158100;158000;"Provisions pour remises en état";"provision";;1;;;;
-106;160;"CL1";"Emprunts et dettes assimilées";"view";;1;;;;
-107;161000;160;"Emprunts obligataires convertibles";"debt";;1;;;;
-108;163000;160;"Autres emprunts obligataires ";"debt";;1;;;;
-109;164000;160;"Emprunts auprès des établissements de crédit";"debt";;1;;;;
-110;165000;160;"Dépôts et cautionnements reçus";"debt";;1;;;;
-111;165100;165000;"Dépôts";"debt";;1;;;;
-112;165500;165000;"Cautionnements";"debt";;1;;;;
-113;166000;160;"Participation des salariés aux résultats";"debt";;1;;;;
-114;166100;166000;"Comptes bloqués";"debt";;1;;;;
-115;166200;166000;"Fonds de participation";"debt";;1;;;;
-116;167000;160;"Emprunts et dettes assortis de conditions particulières";"debt";;1;;;;
-117;167100;167000;"Emissions de titres participatifs";"debt";;1;;;;
-118;167400;167000;"Avances conditionnées de l'État";"debt";;1;;;;
-119;167500;167000;"Emprunts participatifs";"debt";;1;;;;
-120;168000;160;"Autres emprunts et dettes assimilées";"debt";;1;;;;
-121;168100;168000;"Autres emprunts";"debt";;1;;;;
-122;168500;168000;"Rentes viagères capitalisées";"debt";;1;;;;
-123;168700;168000;"Autres dettes";"debt";;1;;;;
-124;168800;168000;"Intérêts courus";"debt";;1;;;;
-125;168810;168800;"Sur emprunts obligataires convertibles ";"debt";;1;;;;
-126;168830;168800;"Sur autres emprunts obligataires";"debt";;1;;;;
-127;168840;168800;"Sur emprunts auprès des établissements de crédit";"debt";;1;;;;
-128;168850;168800;"Sur dépôts et cautionnements reçus";"debt";;1;;;;
-129;168860;168800;"Sur participation des salariés aux résultats";"debt";;1;;;;
-130;168870;168800;"Sur emprunts et dettes assortis de conditions particulières";"debt";;1;;;;
-131;168880;168800;"Sur autres emprunts et dettes assimilées";"debt";;1;;;;
-132;169000;160;"Primes de remboursement des obligations";"debt";;1;;;;
-133;170;"CL1";"Dettes rattachées à des participations";"view";;1;;;;
-134;171000;170;"Dettes rattachées à des participations (groupe)";"debt";;1;;;;
-135;174000;170;"Dettes rattachées à des participations (hors groupe)";"debt";;1;;;;
-136;178000;170;"Dettes rattachées à des sociétés en participation";"debt";;1;;;;
-137;178100;178000;"Principal";"debt";;1;;;;
-138;178800;178000;"Intérêts courus";"debt";;1;;;;
-139;180;"CL1";"Comptes de liaison des établissements et sociétés en participation";"view";;1;;;;
-140;181000;180;"Comptes de liaison des établissements";"debt";;1;;;;
-141;186000;180;"Biens et prestations de services échangés entre établissements (charges)";"debt";;1;;;;
-142;187000;180;"Biens et prestations de services échangés entre établissements (produits)";"debt";;1;;;;
-143;188000;180;"Comptes de liaison des sociétés en participation";"debt";;1;;;;
-144;200;"CL2";"Immobilisations incorporelles";"view";;1;;;;
-145;201000;200;"Frais d'établissement";"immobilisation";;1;;;;
-146;201100;201000;"Frais de constitution";"immobilisation";;1;;;;
-147;201200;201000;"Frais de premier établissement";"immobilisation";;1;;;;
-148;201210;201200;"Frais de prospection";"immobilisation";;1;;;;
-149;201220;201200;"Frais de publicité";"immobilisation";;1;;;;
-150;201300;201000;"Frais d'augmentation de capital et d'opérations diverses (fusions, scissions, transformations)";"immobilisation";;1;;;;
-151;203000;200;"Frais de recherche et de développement";"immobilisation";;1;;;;
-152;205000;200;"Concessions et droits similaires, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"immobilisation";;1;;;;
-153;206000;200;"Droit au bail";"immobilisation";;1;;;;
-154;207000;200;"Fonds commercial";"immobilisation";;1;;;;
-155;208000;200;"Autres immobilisations incorporelles";"immobilisation";;1;;;;
-156;210;"CL2";"Immobilisations corporelles";"view";;1;;;;
-157;211000;210;"Terrains";"immobilisation";;1;;;;
-158;211100;211000;"Terrains nus";"immobilisation";;1;;;;
-159;211200;211000;"Terrains aménagés";"immobilisation";;1;;;;
-160;211300;211000;"Sous-sols et sur-sols";"immobilisation";;1;;;;
-161;211400;211000;"Terrains de gisement";"immobilisation";;1;;;;
-162;211410;211400;"Carrières";"immobilisation";;1;;;;
-163;211500;211000;"Terrains bâtis";"immobilisation";;1;;;;
-164;211510;211500;"Ensembles immobiliers industriels (A, B, ...)";"immobilisation";;1;;;;
-165;211550;211500;"Ensembles immobiliers administratifs et commerciaux (A, B, ...)";"immobilisation";;1;;;;
-166;211580;211500;"Autres ensembles immobiliers";"immobilisation";;1;;;;
-167;211581;211580;"Affectés aux opérations professionnelles (A, B, ...)";"immobilisation";;1;;;;
-168;211588;211580;"Affectés aux opérations non professionnelles (A, B, ...)";"immobilisation";;1;;;;
-169;211600;211000;"Compte d'ordre sur immobilisations";"immobilisation";;1;;;;
-170;212000;210;"Agencements et aménagements de terrains (même ventilation que celle du compte 211)";"immobilisation";;1;;;;
-171;213000;210;"Constructions";"immobilisation";;1;;;;
-172;213100;213000;"Bâtiments";"immobilisation";;1;;;;
-173;213110;213100;"Ensembles immobiliers industriels (A, B, ...)";"immobilisation";;1;;;;
-174;213150;213100;"Ensembles immobiliers administratifs et commerciaux (A, B, ...)";"immobilisation";;1;;;;
-175;213180;213100;"Autres ensembles immobiliers";"immobilisation";;1;;;;
-176;213181;213180;"Affectés aux opérations professionnelles (A, B, ...)";"immobilisation";;1;;;;
-177;213188;213180;"Affectés aux opérations non professionnelles (A, B, ...)";"immobilisation";;1;;;;
-178;213500;213000;"Installations générales agencements aménagements des constructions (même ventilation que celle du compte 2131)";"immobilisation";;1;;;;
-179;213800;213000;"Ouvrages d'infrastructure";"immobilisation";;1;;;;
-180;213810;213800;"Voies de terre";"immobilisation";;1;;;;
-181;213820;213800;"Voies de fer";"immobilisation";;1;;;;
-182;213830;213800;"Voies d'eau";"immobilisation";;1;;;;
-183;213840;213800;"Barrages";"immobilisation";;1;;;;
-184;213850;213800;"Pistes d'aérodromes";"immobilisation";;1;;;;
-185;214000;210;"Constructions sur sol d'autrui (même ventilation que celle du compte 213)";"immobilisation";;1;;;;
-186;215000;210;"Installations techniques matériels et outillages industriels";"immobilisation";;1;;;;
-187;215100;215000;"Installations complexes spécialisées";"immobilisation";;1;;;;
-188;215110;215100;"Sur sol propre";"immobilisation";;1;;;;
-189;215140;215100;"Sur sol d'autrui";"immobilisation";;1;;;;
-190;215300;215000;"Installations à caractère spécifique";"immobilisation";;1;;;;
-191;215310;215300;"Sur sol propre";"immobilisation";;1;;;;
-192;215340;215300;"Sur sol d'autrui";"immobilisation";;1;;;;
-193;215400;215000;"Matériel industriel";"immobilisation";;1;;;;
-194;215500;215000;"Outillage industriel";"immobilisation";;1;;;;
-195;215700;215000;"Agencements et aménagements du matériel et outillage industriels";"immobilisation";;1;;;;
-196;218000;210;"Autres immobilisations corporelles";"immobilisation";;1;;;;
-197;218100;218000;"Installations générales agencements aménagements divers";"immobilisation";;1;;;;
-198;218200;218000;"Matériel de transport";"immobilisation";;1;;;;
-199;218300;218000;"Matériel de bureau et matériel informatique ";"immobilisation";;1;;;;
-200;218400;218000;"Mobilier";"immobilisation";;1;;;;
-201;218500;218000;"Cheptel";"immobilisation";;1;;;;
-202;218600;218000;"Emballages récupérables";"immobilisation";;1;;;;
-203;220;"CL2";"Immobilisations mises en concession";"view";;1;;;;
-204;230;"CL2";"Immobilisations en cours";"view";;1;;;;
-205;231000;230;"Immobilisations corporelles en cours";"immobilisation";;1;;;;
-206;231200;231000;"Terrains";"immobilisation";;1;;;;
-207;231300;231000;"Constructions";"immobilisation";;1;;;;
-208;231500;231000;"Installations techniques matériel et outillage industriels";"immobilisation";;1;;;;
-209;231800;231000;"Autres immobilisations corporelles";"immobilisation";;1;;;;
-210;232000;230;"Immobilisations incorporelles en cours ";"immobilisation";;1;;;;
-211;237000;230;"Avances et acomptes versés sur commandes d'immobilisations incorporelles";"immobilisation";;1;;;;
-212;238000;230;"Avances et acomptes versés sur commandes d'immobilisations corporelles";"immobilisation";;1;;;;
-213;238200;238000;"Terrains";"immobilisation";;1;;;;
-214;238300;238000;"Constructions";"immobilisation";;1;;;;
-215;238500;238000;"Installations techniques matériel et outillage industriels";"immobilisation";;1;;;;
-216;238800;238000;"Autres immobilisations corporelles";"immobilisation";;1;;;;
-217;250;"CL2";"Parts dans des entreprises liées et créances dans des entreprises liées";"view";;1;;;;
-218;260;"CL2";"Participations et créances rattachées à des participations";"view";;1;;;;
-219;261000;260;"Titres de participation";"immobilisation";;1;;;;
-220;261100;261000;"Actions";"immobilisation";;1;;;;
-221;261800;261000;"Autres titres";"immobilisation";;1;;;;
-222;262000;260;"Titres évalués par équivalence";"immobilisation";;1;;;;
-223;266000;260;"Autres formes de participation";"immobilisation";;1;;;;
-224;267000;260;"Créances rattachées à des participations";"immobilisation";;1;;;;
-225;267100;267000;"Créances rattachées à des participations (groupe)";"immobilisation";;1;;;;
-226;267400;267000;"Créances rattachées à des participations (hors groupe)";"immobilisation";;1;;;;
-227;267500;267000;"Versements représentatifs d'apports non capitalisés (appel de fonds)";"immobilisation";;1;;;;
-228;267600;267000;"Avances consolidables";"immobilisation";;1;;;;
-229;267700;267000;"Autres créances rattachées à des participations ";"immobilisation";;1;;;;
-230;267800;267000;"Intérêts courus";"immobilisation";;1;;;;
-231;268000;260;"Créances rattachées à des sociétés en participation";"immobilisation";;1;;;;
-232;268100;268000;"Principal";"immobilisation";;1;;;;
-233;268800;268000;"Intérêts courus";"immobilisation";;1;;;;
-234;269000;260;"Versements restant à effectuer sur titres de participation non libérés";"immobilisation";;1;;;;
-235;270;"CL2";"Autres immobilisations financières";"view";;1;;;;
-236;271000;270;"Titres immobilisés autres que les titres immobilisés de l'activité de portefeuille (droit de propriété)";"immobilisation";;1;;;;
-237;271100;271000;"Actions";"immobilisation";;1;;;;
-238;271800;271000;"Autres titres";"immobilisation";;1;;;;
-239;272000;270;"Titres immobilisés (droit de créance)";"immobilisation";;1;;;;
-240;272100;272000;"Obligations";"immobilisation";;1;;;;
-241;272200;272000;"Bons";"immobilisation";;1;;;;
-242;273000;270;"Titres immobilisés de l'activité de portefeuille (TIAP)";"immobilisation";;1;;;;
-243;274000;270;"Prêts";"immobilisation";;1;;;;
-244;274100;274000;"Prêts participatifs";"immobilisation";;1;;;;
-245;274200;274000;"Prêts aux associés";"immobilisation";;1;;;;
-246;274300;274000;"Prêts au personnel";"immobilisation";;1;;;;
-247;274800;274000;"Autres prêts";"immobilisation";;1;;;;
-248;275000;270;"Dépôts et cautionnements versés";"immobilisation";;1;;;;
-249;275100;275000;"Dépôts";"immobilisation";;1;;;;
-250;275500;275000;"Cautionnements";"immobilisation";;1;;;;
-251;276000;270;"Autres créances immobilisées";"immobilisation";;1;;;;
-252;276100;276000;"Créances diverses";"immobilisation";;1;;;;
-253;276800;276000;"Intérêts courus";"immobilisation";;1;;;;
-254;276820;276800;"Sur titres immobilisés (droits de créance)";"immobilisation";;1;;;;
-255;276840;276800;"Sur prêts";"immobilisation";;1;;;;
-256;276850;276800;"Sur dépôts et cautionnements";"immobilisation";;1;;;;
-257;276880;276800;"Sur créances diverses";"immobilisation";;1;;;;
-258;277000;270;"Actions propres ou parts propres";"immobilisation";;1;;;;
-259;277100;277000;"Actions propres ou parts propres";"immobilisation";;1;;;;
-260;277200;277000;"Actions propres ou parts propres en voie d'annulation";"immobilisation";;1;;;;
-261;279000;270;"Versements restant à effectuer sur titres immobilisés non libérés";"immobilisation";;1;;;;
-262;280;"CL2";"Amortissement des immobilisations";"view";;1;;;;
-263;280000;280;"Amortissements des immobilisations incorporelles";"immobilisation";;1;;;;
-264;280100;280000;"Frais d'établissement (même ventilation que celle du compte 201) ";"immobilisation";;1;;;;
-265;280300;280000;"Frais de recherche et de développement ";"immobilisation";;1;;;;
-266;280500;280000;"Concessions et droits similaires, brevets, licences, logiciels, droits et valeurs similaires";"immobilisation";;1;;;;
-267;280700;280000;"Fonds commercial";"immobilisation";;1;;;;
-268;280800;280000;"Autres immobilisations incorporelles";"immobilisation";;1;;;;
-269;281000;280;"Amortissements des immobilisations corporelles";"immobilisation";;1;;;;
-270;281100;281000;"Terrains de gisement";"immobilisation";;1;;;;
-271;281200;281000;"Agencements aménagements de terrains (même ventilation que celle du compte 212)";"immobilisation";;1;;;;
-272;281300;281000;"Constructions (même ventilation que celle du compte 213)";"immobilisation";;1;;;;
-273;281400;281000;"Constructions sur sol d'autrui (même ventilation que celle du compte 214)";"immobilisation";;1;;;;
-274;281500;281000;"Installations matériel et outillage industriels (même ventilation que celle du compte 215)";"immobilisation";;1;;;;
-275;281800;281000;"Autres immobilisations corporelles (même ventilation que celle du compte 218)";"immobilisation";;1;;;;
-276;282000;280;"Amortissements des immobilisations mises en concession";"immobilisation";;1;;;;
-277;290;"CL2";"Dépréciation des immobilisations";"view";;1;;;;
-278;290000;290;"Dépréciations des immobilisations incorporelles";"immobilisation";;1;;;;
-279;290500;290000;"Marques, procédés, droits et valeurs similaires";"immobilisation";;1;;;;
-280;290600;290000;"Droit au bail";"immobilisation";;1;;;;
-281;290700;290000;"Fonds commercial";"immobilisation";;1;;;;
-282;290800;290000;"Autres immobilisations incorporelles";"immobilisation";;1;;;;
-283;291000;290;"Dépréciations des immobilisations corporelles (même ventilation que celle du compte 21)";"immobilisation";;1;;;;
-284;291100;291000;"Terrains (autres que terrains de gisement)";"immobilisation";;1;;;;
-285;292000;290;"Dépréciations des immobilisations mises en concession";"immobilisation";;1;;;;
-286;293000;290;"Dépréciations des immobilisations en cours";"immobilisation";;1;;;;
-287;293100;293000;"Immobilisations corporelles en cours";"immobilisation";;1;;;;
-288;293200;293000;"Immobilisations incorporelles en cours";"immobilisation";;1;;;;
-289;296000;290;"Provisions pour dépréciation des participations et créances rattachées à des participations";"immobilisation";;1;;;;
-290;296100;296000;"Titres de participation";"immobilisation";;1;;;;
-291;296600;296000;"Autres formes de participation";"immobilisation";;1;;;;
-292;296700;296000;"Créances rattachées à des participations (même ventilation que celle du compte 267)";"immobilisation";;1;;;;
-293;296800;296000;"Créances rattachées à des sociétés en participation (même ventilation que celle du compte 268)";"immobilisation";;1;;;;
-294;297000;290;"Dépréciations des autres immobilisations financières";"immobilisation";;1;;;;
-295;297100;297000;"Titres immobilisés autres que les titres immobilisés de l'activité de portefeuille - droit de propriété (ventilation : 271)";"immobilisation";;1;;;;
-296;297200;297000;"Titres immobilisés - droit de créance (même ventilation que celle du compte 272) ";"immobilisation";;1;;;;
-297;297300;297000;"Titres immobilisés de l'activité de portefeuille";"immobilisation";;1;;;;
-298;297400;297000;"Prêts (même ventilation que celle du compte 274)";"immobilisation";;1;;;;
-299;297500;297000;"Dépôts et cautionnements versés (même ventilation que celle du compte 275)";"immobilisation";;1;;;;
-300;297600;297000;"Autres créances immobilisées (même ventilation que celle du compte 276)";"immobilisation";;1;;;;
-301;310;"CL3";"Matières premières (et fourniture)";"view";;1;;;;
-302;311000;310;"Matière (ou groupe) A";"currentAsset";;1;;;;
-303;312000;310;"Matière (ou groupe) B";"currentAsset";;1;;;;
-304;317000;310;"Fournitures A, B, C, ..";"currentAsset";;1;;;;
-305;320;"CL3";"Autres approvisionnements";"view";;1;;;;
-306;321000;320;"Matières consommables";"currentAsset";;1;;;;
-307;321100;321000;"Matière (ou groupe) C";"currentAsset";;1;;;;
-308;321200;321000;"Matière (ou groupe) D";"currentAsset";;1;;;;
-309;322000;320;"Fournitures consommables";"currentAsset";;1;;;;
-310;322100;322000;"Combustibles";"currentAsset";;1;;;;
-311;322200;322000;"Produits d'entretien";"currentAsset";;1;;;;
-312;322300;322000;"Fournitures d'atelier et d usine";"currentAsset";;1;;;;
-313;322400;322000;"Fournitures de magasin";"currentAsset";;1;;;;
-314;322500;322000;"Fournitures de bureau";"currentAsset";;1;;;;
-315;326000;320;"Emballages";"currentAsset";;1;;;;
-316;326100;326000;"Emballages perdus";"currentAsset";;1;;;;
-317;326500;326000;"Emballages récupérables non identifiables";"currentAsset";;1;;;;
-318;326700;326000;"Emballages à usage mixte";"currentAsset";;1;;;;
-319;330;"CL3";"En-cours de production de biens";"view";;1;;;;
-320;331000;330;"Produits en cours";"currentAsset";;1;;;;
-321;331100;331000;"Produit en cours P 1";"currentAsset";;1;;;;
-322;331200;331000;"Produit en cours P 2";"currentAsset";;1;;;;
-323;335000;330;"Travaux en cours";"currentAsset";;1;;;;
-324;335100;335000;"Travaux en cours T 1";"currentAsset";;1;;;;
-325;335200;335000;"Travaux en cours T 2";"currentAsset";;1;;;;
-326;340;"CL3";"En-cours de production de services";"view";;1;;;;
-327;341000;340;"Études en cours";"currentAsset";;1;;;;
-328;341100;341000;"Études en cours E 1";"currentAsset";;1;;;;
-329;341200;341000;"Études en cours E 2";"currentAsset";;1;;;;
-330;345000;340;"Prestations de services en cours";"currentAsset";;1;;;;
-331;345100;345000;"Prestations de services S 1";"currentAsset";;1;;;;
-332;345200;345000;"Prestations de services S 2";"currentAsset";;1;;;;
-333;350;"CL3";"Stocks de produits";"view";;1;;;;
-334;351000;350;"Produits intermédiaires";"currentAsset";;1;;;;
-335;351100;351000;"Produits intermédiaires (ou groupe) A ";"currentAsset";;1;;;;
-336;351200;351000;"Produits intermédiaires (ou groupe) B";"currentAsset";;1;;;;
-337;355000;350;"Produits finis";"currentAsset";;1;;;;
-338;355100;355000;"Produits finis (ou groupe) A";"currentAsset";;1;;;;
-339;355200;355000;"Produits finis (ou groupe) B";"currentAsset";;1;;;;
-340;358000;350;"Produits résiduels (ou matières de récupération)";"currentAsset";;1;;;;
-341;358100;358000;"Déchets";"currentAsset";;1;;;;
-342;358500;358000;"Rebuts";"currentAsset";;1;;;;
-343;358600;358000;"Matières de récupération";"currentAsset";;1;;;;
-344;360;"CL3";"Stocks provenant d'immobilisations";"view";;1;;;;
-345;370;"CL3";"Stocks de marchandises";"view";;1;;;;
-346;371000;370;"Marchandises (ou groupe) A";"currentAsset";;1;;;;
-347;372000;370;"Marchandises (ou groupe) B";"currentAsset";;1;;;;
-348;380;"CL3";"Stocks en voie d'acheminement";"view";;1;;;;
-349;390;"CL3";"Provisions pour dépréciation des stocks et en-cours";"view";;1;;;;
-350;391000;390;"Provisions pour dépréciation des matières premières (et fournitures)";"currentAsset";;1;;;;
-351;391100;391000;"Matières (ou groupe) A";"currentAsset";;1;;;;
-352;391200;391000;"Matières (ou groupe) B";"currentAsset";;1;;;;
-353;391700;391000;"Fournitures A, B, C, ..";"currentAsset";;1;;;;
-354;392000;390;"Provisions pour dépréciation des autres approvisionnements";"currentAsset";;1;;;;
-355;392100;392000;"Matières consommables (même ventilation que celle du compte 321)";"currentAsset";;1;;;;
-356;392200;392000;"Fournitures consommables (même ventilation que celle du compte 322)";"currentAsset";;1;;;;
-357;392600;392000;"Emballages (même ventilation que celle du compte 326)";"currentAsset";;1;;;;
-358;393000;390;"Provisions pour dépréciation des en-cours de production de biens";"currentAsset";;1;;;;
-359;393100;393000;"Produits en cours (même ventilation que celle du compte 331)";"currentAsset";;1;;;;
-360;393500;393000;"Travaux en cours (même ventilation que celle du compte 335)";"currentAsset";;1;;;;
-361;394000;390;"Provisions pour dépréciation des en-cours de production de services";"currentAsset";;1;;;;
-362;394100;394000;"Études en cours (même ventilation que celle du compte 341)";"currentAsset";;1;;;;
-363;394500;394000;"Prestations de services en cours (même ventilation que celle du compte 345)";"currentAsset";;1;;;;
-364;395000;390;"Provisions pour dépréciation des stocks de produits";"currentAsset";;1;;;;
-365;395100;395000;"Produits intermédiaires (même ventilation que celle du compte 351)";"currentAsset";;1;;;;
-366;395500;395000;"Produits finis (même ventilation que celle du compte 355)";"currentAsset";;1;;;;
-367;397000;390;"Provisions pour dépréciation des stocks de marchandises";"currentAsset";;1;;;;
-368;397100;397000;"Marchandises (ou groupe) A";"currentAsset";;1;;;;
-369;397200;397000;"Marchandises (ou groupe) B";"currentAsset";;1;;;;
-370;400;"CL4";"Fournisseurs et comptes rattachés";"view";;1;;;;
-371;400000;400;"Fournisseurs et comptes rattachés ";"payable";"true";1;;;;
-372;401;400;"Fournisseurs";"payable";"true";1;;"true";;
-373;401100;401;"Fournisseurs - Achats de biens et prestations de services";"payable";"true";1;"411100|411700|416000";"true";;
-374;401700;401;"Fournisseurs - Retenues de garantie";"payable";"true";1;"411100|411700|416000";"true";;
-375;403000;400;"Fournisseurs - Effets à payer";"payable";"true";1;;;;
-376;404000;400;"Fournisseurs d'immobilisations";"payable";"true";1;;;;
-377;404100;404000;"Fournisseurs - Achats d'immobilisations";"payable";"true";1;;;;
-378;404700;404000;"Fournisseurs d'immobilisations - Retenues de garantie";"payable";"true";1;;;;
-379;405000;400;"Fournisseurs d'immobilisations - Effets à payer";"payable";"true";1;;;;
-380;408000;400;"Fournisseurs - Factures non parvenues";"payable";"true";1;;;;
-381;408100;408000;"Fournisseurs";"payable";"true";1;;;;
-382;408400;408000;"Fournisseurs d'immobilisations ";"payable";"true";1;;;;
-383;408800;408000;"Fournisseurs - Intérêts courus";"payable";"true";1;;;;
-384;409;400;"Fournisseurs débiteurs";"payable";;1;;;;
-385;409100;409;"Fournisseurs - Avances et acomptes versés sur commandes";"currentAsset";"true";1;;;;
-386;409600;409;"Fournisseurs - Créances pour emballages et matériel à rendre";"currentAsset";"true";1;;;;
-387;409700;409;"Fournisseurs - Autres avoirs";"currentAsset";"true";1;;;;
-388;409710;409700;"Fournisseurs d'exploitation";"currentAsset";"true";1;;;;
-389;409740;409700;"Fournisseurs d'immobilisations";"currentAsset";"true";1;;;;
-390;409800;409;"Rabais, remises, ristournes à obtenir et autres avoirs non encore reçus";"currentAsset";"true";1;;;;
-391;410;"CL4";"Clients et comptes rattachés";"view";;1;;;;
-392;410000;410;"Clients et comptes rattachés ";"receivable";"true";1;;;;
-393;411;410;"Clients";"receivable";"true";1;;"true";;
-394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true";;
-395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true";;
-396;413000;410;"Clients - Effets à recevoir";"receivable";;1;;;;
-397;416000;410;"Clients douteux ou litigieux";"receivable";"true";1;"401100|401700|411100|411700";"true";;
-398;418000;410;"Clients - Produits non encore facturés";"receivable";"true";1;;;;
-399;418100;418000;"Clients - Factures à établir ";"receivable";"true";1;;;;
-400;418800;418000;"Clients - Intérêts courus";"receivable";"true";1;;;;
-401;419000;410;"Clients créditeurs";"receivable";"true";1;;"true";;
-402;419100;419000;"Clients - Avances et acomptes reçus sur commandes";"debt";"true";1;;"true";;
-403;419600;419000;"Clients - Dettes pour emballages et matériels consignés ";"debt";"true";1;;"true";;
-404;419700;419000;"Clients - Autres avoirs ";"debt";"true";1;;"true";;
-405;419800;419000;"Rabais, remises, ristournes à accorder et autres avoirs à établir";"debt";"true";1;;"true";;
-406;420;"CL4";"Personnel et comptes rattachés";"view";;1;;;;
-407;421000;420;"Personnel - Rémunérations dues";"debt";;1;;;;
-408;422000;420;"Comités d'entreprise d'établissement ";"debt";;1;;;;
-409;424000;420;"Participation des salariés aux résultats";"debt";;1;;;;
-410;424600;424000;"Réserve spéciale";"debt";;1;;;;
-411;424800;424000;"Comptes courants";"debt";;1;;;;
-412;425000;420;"Personnel - Avances et acomptes";"receivable";;1;;;;
-413;426000;420;"Personnel - Dépôts";"debt";;1;;;;
-414;427000;420;"Personnel - Oppositions";"debt";;1;;;;
-415;428000;420;"Personnel - Charges à payer et produits à recevoir";"debt";;1;;;;
-416;428200;428000;"Dettes provisionnées pour congés à payer";"debt";;1;;;;
-417;428400;428000;"Dettes provisionnées pour participation des salariés aux résultats";"debt";;1;;;;
-418;428600;428000;"Autres charges à payer";"debt";;1;;;;
-419;428700;428000;"Produits à recevoir";"receivable";;1;;;;
-420;430;"CL4";"Sécurité Sociale et autres organismes sociaux";"view";;1;;;;
-421;431000;430;"Sécurité Sociale";"debt";;1;;;;
-422;437000;430;"Autres organismes sociaux";"debt";;1;;;;
-423;438000;430;"Organismes sociaux - Charges à payer et produits à recevoir";"debt";;1;;;;
-424;438200;438000;"Charges sociales sur congés à payer ";"debt";;1;;;;
-425;438600;438000;"Autres charges à payer";"debt";;1;;;;
-426;438700;438000;"Produits à recevoir";"receivable";;1;;;;
-427;440;"CL4";"Etat et autres collectivités publiques";"view";;1;;;;
-428;441000;440;"État - Subventions à recevoir";"receivable";;1;;;;
-429;441100;441000;"Subventions d'investissement";"receivable";;1;;;;
-430;441700;441000;"Subventions d'exploitation";"receivable";;1;;;;
-431;441800;441000;"Subventions d'équilibre";"receivable";;1;;;;
-432;441900;441000;"Avances sur subventions";"receivable";;1;;;;
-433;442000;440;"État -Impôts et taxes recouvrables sur des tiers ";"tax";;1;;;;
-434;442400;442000;"Obligataires";"tax";;1;;;;
-435;442500;442000;"Associés";"tax";;1;;;;
-436;443000;440;"Opérations particulières avec l'État, les collectivités publiques, les organismes internationaux";"tax";;1;;;;
-437;443100;443000;"Créances sur l'État résultant de la suppression de la règle du décalage d'un mois en matière de TVA";"receivable";;1;;;;
-438;443800;443000;"Intérêts courus sur créances figurant au compte 4431";"tax";;1;;;;
-439;444000;440;"État - Impôts sur les bénéfices";"tax";;1;;;;
-440;445000;440;"État - Taxes sur le chiffre d'affaires";"tax";;1;;;;
-441;445200;445000;"TVA due intracommunautaire";"tax";;1;;;;
-442;445201;445000;"TVA due intracommunautaire taux normal";"tax";;1;;;;
-443;445202;445000;"TVA due intracommunautaire taux réduit";"tax";;1;;;;
-444;445203;445000;"TVA due intracommunautaire (autre taux)";"tax";;1;;;;
-445;445500;445000;"Taxes sur le chiffre d'affaires à décaisser";"tax";;1;;;;
-446;445510;445500;"TVA à décaisser";"tax";;1;;;;
-447;445511;445510;"TVA N à décaisser taux normal";"tax";;1;;;;
-448;445512;445510;"TVA R1 à décaisser taux intermédiaire";"tax";;1;;;;
-449;445513;445510;"TVA R2 à décaisser taux réduit";"tax";;1;;;;
-450;445514;445510;"TVA décaissée (autre taux : U...)";"tax";;1;;;;
-451;445580;445500;"Taxes assimilées à la TVA";"tax";;1;;;;
-452;445600;445000;"Taxes sur le chiffre d'affaires déductibles";"tax";;1;;;;
-453;445620;445600;"TVA sur immobilisations";"tax";;1;;;;
-454;445630;445600;"TVA transférée par d'autres entreprises";"tax";;1;;;;
-455;445660;445600;"TVA sur autres biens et services";"tax";;1;;;;
-456;445662;445600;"TVA déductible intracommunautaire";"tax";;1;;;;
-457;445670;445600;"Crédit de TVA à reporter";"tax";;1;;;;
-458;445680;445600;"Taxes assimilées à la TVA";"tax";;1;;;;
-459;445700;445000;"Taxes sur le chiffre d'affaires collectées par l'entreprise";"tax";;1;;;;
-460;445710;445700;"TVA collectée";"tax";;1;;;;
-461;445711;445710;"TVA N collectée taux normal";"tax";;1;;;;
-462;445712;445710;"TVA R1 collectée taux intermédiaire";"tax";;1;;;;
-463;445713;445710;"TVA R2 collectée taux réduit";"tax";;1;;;;
-464;445714;445710;"TVA collectée (autre taux : U...)";"tax";;1;;;;
-465;445780;445700;"Taxes assimilées à la TVA";"tax";;1;;;;
-466;445800;445000;"Taxes sur le chiffre d'affaires à régulariser ou en attente";"tax";;1;;;;
-467;445810;445800;"Acomptes - Régime simplifié d'imposition";"tax";;1;;;;
-468;445820;445800;"Acomptes - Régime du forfait";"tax";;1;;;;
-469;445830;445800;"Remboursement de taxes sur le chiffre d'affaires demandé";"tax";;1;;;;
-470;445840;445800;"TVA récupérée d'avance";"tax";;1;;;;
-471;445860;445800;"Taxes sur le chiffre d'affaires sur factures non parvenues";"tax";;1;;;;
-472;445870;445800;"Taxes sur le chiffre d'affaires sur factures à établir";"tax";;1;;;;
-473;446000;440;"Obligations cautionnées";"tax";;1;;;;
-474;447000;440;"Autres impôts, taxes et versements assimilés";"tax";;1;;;;
-475;448000;440;"État - Charges à payer et produits à recevoir";"tax";;1;;;;
-476;448200;448000;"Charges fiscales sur congés à payer ";"tax";;1;;;;
-477;448600;448000;"Charges à payer";"tax";;1;;;;
-478;448700;448000;"Produits à recevoir";"tax";;1;;;;
-479;449000;440;"Quotas d'émission à restituer à l'État";"tax";;1;;;;
-480;450;"CL4";"Groupe et associés";"view";;1;;;;
-481;451000;450;"Groupe";"receivable";;1;;;;
-482;455000;450;"Associés - Comptes courants";"receivable";;1;;;;
-483;455100;455000;"Principal";"receivable";;1;;;;
-484;455800;455000;"Intérêts courus";"receivable";;1;;;;
-485;456000;450;"Associés - Opérations sur le capital";"receivable";;1;;;;
-486;456100;456000;"Associés - Comptes d'apport en société";"receivable";;1;;;;
-487;456110;456100;"Apports en nature";"receivable";;1;;;;
-488;456150;456100;"Apports en numéraire";"receivable";;1;;;;
-489;456200;456000;"Apporteurs - Capital appelé, non versé";"receivable";;1;;;;
-490;456210;456200;"Actionnaires - Capital souscrit et appelé, non versé";"receivable";;1;;;;
-491;456250;456200;"Associés - Capital appelé, non versé";"receivable";;1;;;;
-492;456300;456000;"Associés - Versements reçus sur augmentation de capital";"receivable";;1;;;;
-493;456400;456000;"Associés - Versements anticipés";"receivable";;1;;;;
-494;456600;456000;"Actionnaires défaillants";"receivable";;1;;;;
-495;456700;456000;"Associés - Capital à rembourser";"receivable";;1;;;;
-496;457000;450;"Associés - Dividendes à payer";"debt";;1;;;;
-497;458000;450;"Associés - Opérations faites en commun et en GIE";"receivable";;1;;;;
-498;458100;458000;"Opérations courantes";"receivable";;1;;;;
-499;458800;458000;"Intérêts courus";"receivable";;1;;;;
-500;460;"CL4";"Débiteurs divers et créditeurs divers";"view";;1;;;;
-501;462000;460;"Créances sur cessions d'immobilisations";"receivable";;1;;;;
-502;464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"debt";;1;;;;
-503;465000;460;"Créances sur cessions de valeurs mobilières de placement";"receivable";;1;;;;
-504;467000;460;"Autres comptes débiteurs ou créditeurs";"view";"true";1;;;;
-505;468000;460;"Divers - Charges à payer et produits à recevoir";"receivable";;1;;;;
-506;468600;468000;"Charges à payer";"debt";;1;;;;
-507;468700;468000;"Produits à recevoir";"receivable";;1;;;;
-508;470;"CL4";"Comptes transitoires ou d'attente";"view";;1;;;;
-509;471000;470;"Comptes d'attente 1";"receivable";;1;;;;
-510;472000;470;"Comptes d'attente 2";"receivable";;1;;;;
-511;473000;470;"Comptes d'attente 3";"receivable";;1;;;;
-512;474000;470;"Comptes d'attente 4";"receivable";;1;;;;
-513;475000;470;"Comptes d'attente 5";"receivable";;1;;;;
-514;476000;470;"Différences de conversion - ACTIF";"receivable";;1;;;;
-515;476100;476000;"Diminution des créances";"receivable";;1;;;;
-516;476200;476000;"Augmentation des dettes";"receivable";;1;;;;
-517;476800;476000;"Différences compensées par couverture de change";"receivable";;1;;;;
-518;477000;470;"Différences de conversion - PASSIF";"debt";;1;;;;
-519;477100;477000;"Augmentation des créances";"debt";;1;;;;
-520;477200;477000;"Diminution des dettes";"debt";;1;;;;
-521;477800;477000;"Différences compensées par couverture de change";"debt";;1;;;;
-522;478000;470;"Autres comptes transitoires";"view";;1;;;;
-523;480;"CL4";"Comptes de régularisation";"view";;1;;;;
-524;481000;480;"Charges à répartir sur plusieurs exercices ";"receivable";;1;;;;
-525;481600;481000;"Frais d'émission des emprunts";"receivable";;1;;;;
-526;486000;480;"Charges constatées d'avance";"receivable";;1;;;;
-527;487000;480;"Produits constatés d'avance";"debt";;1;;;;
-528;488000;480;"Comptes de répartition périodique des charges et des produits";"view";;1;;;;
-529;488600;488000;"Charges";"debt";;1;;;;
-530;488700;488000;"Produits";"receivable";;1;;;;
-531;489000;480;"Quotas d'émission alloués par l'État";"receivable";;1;;;;
-532;490;"CL4";"Dépréciations des comptes de tiers";"view";;1;;;;
-533;491000;490;"Dépréciation des comptes de clients";"debt";;1;;;;
-534;495000;490;"Dépréciation des comptes du groupe et des associés";"debt";;1;;;;
-535;495100;495000;"Comptes du groupe";"debt";;1;;;;
-536;495500;495000;"Comptes courants des associés";"debt";;1;;;;
-537;495800;495000;"Opérations faites en commun et en GIE";"debt";;1;;;;
-538;496000;490;"Dépréciations des comptes de débiteurs divers";"receivable";;1;;;;
-539;496200;496000;"Créances sur cessions d'immobilisations";"receivable";;1;;;;
-540;496500;496000;"Créances sur cessions de valeurs mobilières de placement";"receivable";;1;;;;
-541;496700;496000;"Autres comptes débiteurs";"receivable";;1;;;;
-542;500;"CL5";"Valeurs mobilières de placement";"view";;1;;;;
-543;501000;500;"Parts dans entreprises liées";"cash";;1;;;;
-544;502000;500;"Actions propres";"cash";;1;;;;
-545;503000;500;"Actions";"cash";;1;;;;
-546;503100;503000;"Titres cotés";"cash";;1;;;;
-547;503500;503000;"Titres non cotés";"cash";;1;;;;
-548;504000;500;"Autres titres conférant un droit de propriété";"cash";;1;;;;
-549;505000;500;"Obligations et bons émis par la société et rachetés par elle";"cash";;1;;;;
-550;506000;500;"Obligations";"cash";;1;;;;
-551;506100;506000;"Titres cotés";"cash";;1;;;;
-552;506500;506000;"Titres non cotés";"cash";;1;;;;
-553;507000;500;"Bons du Trésor et bons de caisse à court terme";"cash";;1;;;;
-554;508000;500;"Autres valeurs mobilières de placement et autres créances assimilées";"cash";;1;;;;
-555;508100;508000;"Autres valeurs mobilières";"cash";;1;;;;
-556;508200;508000;"Bons de souscription";"cash";;1;;;;
-557;508800;508000;"Intérêts courus sur obligations, bons et valeurs assimilées";"cash";;1;;;;
-558;509000;500;"Versements restant à effectuer sur valeurs mobilières de placement non libérées";"cash";;1;;;;
-559;510;"CL5";"Banques établissements financiers et assimilés";"view";;1;;;;
-560;511000;510;"Valeurs à l'encaissement";"cash";;1;;;;
-561;511100;511000;"Coupons échus à l'encaissement";"cash";;1;;;;
-562;511200;511000;"Chèques à encaisser";"cash";;1;;;;
-563;511300;511000;"Effets à l'encaissement";"cash";;1;;;;
-564;511400;511000;"Effets à l'escompte";"cash";;1;;;;
-565;511500;511000;"CB encaissées";"cash";;1;;;;
-566;512;510;"Banques";"cash";;1;;;;
-567;512100;512;"Comptes en monnaie nationale";"cash";;1;;;;
-568;512400;512;"Comptes en devises";"cash";;1;;;;
-569;514000;510;"Chèques postaux";"cash";;1;;;;
-570;515000;510;"Caisses du Trésor et des établissements publics";"cash";;1;;;;
-571;516000;510;"Sociétés de bourse";"cash";;1;;;;
-572;517000;510;"Autres organismes financiers";"cash";;1;;;;
-573;518000;510;"Intérêts courus";"cash";;1;;;;
-574;518100;518000;"Intérêts courus à payer";"cash";;1;;;;
-575;518800;518000;"Intérêts courus à recevoir";"cash";;1;;;;
-576;519000;510;"Concours bancaires courants";"cash";;1;;;;
-577;519100;519000;"Crédit de mobilisation de créances commerciales (CMCC)";"cash";;1;;;;
-578;519300;519000;"Mobilisation de créances nées à l'étranger";"cash";;1;;;;
-579;519800;519000;"Intérêts courus sur concours bancaires courants";"cash";;1;;;;
-580;520;"CL5";"Instruments de trésorerie";"view";;1;;;;
-581;530;"CL5";"Caisse";"view";;1;;;;
-582;531000;530;"Caisse siège social";"cash";;1;;;;
-583;531100;531000;"Caisse en monnaie nationale";"cash";;1;;;;
-584;531400;531000;"Caisse en devises";"cash";;1;;;;
-585;532000;530;"Caisse succursale (ou usine) A";"cash";;1;;;;
-586;533000;530;"Caisse succursale (ou usine) B";"cash";;1;;;;
-587;540;"CL5";"Régies d'avances et accréditifs";"view";;1;;;;
-588;580;"CL5";"Virements internes";"view";;1;;;;
-589;580100;580;"Virements internes";"cash";;1;;;;
-590;580200;580;"Différence de caisse";"cash";;1;;;;
-591;580300;580;"Ecarts de règlement";"cash";;1;;;;
-592;590;"CL5";"Provisions pour dépréciation des comptes financiers";"view";;1;;;;
-593;590000;590;"Provisions pour dépréciation des valeurs mobilières de placement";"cash";;1;;;;
-594;590300;590;"Actions";"cash";;1;;;;
-595;590400;590;"Autres titres conférant un droit de propriété ";"cash";;1;;;;
-596;590600;590;"Obligations";"cash";;1;;;;
-597;590800;590;"Autres valeurs mobilières de placement et créances assimilées (provisions)";"cash";;1;;;;
-598;600;"CL6";"Achats(sauf 603)";"view";;1;;;true;true
-599;601000;600;"Achats stockés - Matières premières (et fournitures)";"charge";;1;;;true;true
-600;601100;601000;"Matières (ou groupe) A";"charge";;1;;;true;true
-601;601200;601000;"Matières (ou groupe) B";"charge";;1;;;true;true
-602;601700;601000;"Fournitures A, B, C, ..";"charge";;1;;;true;true
-603;602000;600;"Achats stockés - Autres approvisionnements";"charge";;1;;;true;true
-604;602100;602000;"Matières consommables";"charge";;1;;;true;true
-605;602110;602100;"Matières (ou groupe) C";"charge";;1;;;true;true
-606;602120;602100;"Matières (ou groupe) D";"charge";;1;;;true;true
-607;602200;602000;"Fournitures consommables";"charge";;1;;;true;true
-608;602210;602200;"Combustibles";"charge";;1;;;true;true
-609;602220;602200;"Produits d'entretien";"charge";;1;;;true;true
-610;602230;602200;"Fournitures d'atelier et d'usine";"charge";;1;;;true;true
-611;602240;602200;"Fournitures de magasin";"charge";;1;;;true;true
-612;602250;602200;"Fournitures de bureau";"charge";;1;;;true;true
-613;602600;602000;"Emballages";"charge";;1;;;true;true
-614;602610;602600;"Emballages perdus";"charge";;1;;;true;true
-615;602650;602600;"Emballages récupérables non identifiables";"charge";;1;;;true;true
-616;602670;602600;"Emballages à usage mixte";"charge";;1;;;true;true
-617;603000;600;"Variation des stocks (approvisionnements et marchandises)";"charge";;1;;;true;true
-618;603100;603000;"Variation des stocks de matières premières (et fournitures)";"charge";;1;;;true;true
-619;603200;603000;"Variation des stocks des autres approvisionnements";"charge";;1;;;true;true
-620;603700;603000;"Variation des stocks de marchandises";"charge";;1;;;true;true
-621;604000;600;"Achats d'études et prestations de services";"charge";;1;;;true;true
-622;605000;600;"Achats de matériel équipements et travaux";"charge";;1;;;true;true
-623;606000;600;"Achats non stockés de matières et fournitures";"charge";;1;;;true;true
-624;606100;606000;"Fournitures non stockables (eau, énergie...) ";"charge";;1;;;true;true
-625;606300;606000;"Fournitures d'entretien et de petit équipement";"charge";;1;;;true;true
-626;606400;606000;"Fournitures administratives";"charge";;1;;;true;true
-627;606800;606000;"Autres matières et fournitures";"charge";;1;;;true;true
-628;607000;600;"Achats de marchandises";"charge";;1;;;true;true
-629;607100;607000;"Marchandise (ou groupe) A";"charge";;1;;;true;true
-630;607200;607000;"Marchandise (ou groupe) B";"charge";;1;;;true;true
-631;608000;600;"Frais accessoires incorporés aux achats";"charge";;1;;;true;true
-632;609000;600;"Rabais, remises et ristournes obtenus sur achats";"charge";;1;;;true;true
-633;609100;609000;"- de matières premières (et fournitures)";"charge";;1;;;true;true
-634;609200;609000;"- d'autres approvisionnements stockés";"charge";;1;;;true;true
-635;609400;609000;"- d'études et prestations de services";"charge";;1;;;true;true
-636;609500;609000;"- de matériel, équipements et travaux";"charge";;1;;;true;true
-637;609600;609000;"- d'approvisionnements non stockés";"charge";;1;;;true;true
-638;609700;609000;"- de marchandises";"charge";;1;;;true;true
-639;609800;609000;"Rabais, remises et ristournes non affectés";"charge";;1;;;true;true
-640;610;"CL6";"Services extérieurs";"view";;1;;;true;true
-641;611000;610;"Sous-traitance générale";"charge";;1;;;true;true
-642;612000;610;"Redevances de crédit-bail";"charge";;1;;;true;true
-643;612200;612000;"Crédit-bail mobilier";"charge";;1;;;true;true
-644;612500;612000;"Crédit-bail immobilier";"charge";;1;;;true;true
-645;613000;610;"Locations";"charge";;1;;;true;true
-646;613200;613000;"Locations immobilières";"charge";;1;;;true;true
-647;613500;613000;"Locations mobilières";"charge";;1;;;true;true
-648;613600;613000;"Malis sur emballages";"charge";;1;;;true;true
-649;614000;610;"Charges locatives et de copropriété";"charge";;1;;;true;true
-650;615000;610;"Entretien et réparations";"charge";;1;;;true;true
-651;615200;615000;"- sur biens immobiliers";"charge";;1;;;true;true
-652;615500;615000;"- sur biens mobiliers";"charge";;1;;;true;true
-653;615600;615000;"Maintenance";"charge";;1;;;true;true
-654;616000;610;"Primes d'assurance";"charge";;1;;;true;true
-655;616100;616000;"Multirisques";"charge";;1;;;true;true
-656;616200;616000;"Assurance obligatoire dommage construction ";"charge";;1;;;true;true
-657;616300;616000;"Assurance transport";"charge";;1;;;true;true
-658;616360;616300;"Assurance transport sur achats";"charge";;1;;;true;true
-659;616370;616300;"Assurance transportsur ventes";"charge";;1;;;true;true
-660;616380;616300;"Assurance transport sur autres biens";"charge";;1;;;true;true
-661;616400;616000;"Risques d'exploitation";"charge";;1;;;true;true
-662;616500;616000;"Insolvabilité clients";"charge";;1;;;true;true
-663;617000;610;"Études et recherches";"charge";;1;;;true;true
-664;618000;610;"Divers";"charge";;1;;;true;true
-665;618100;618000;"Documentation générale";"charge";;1;;;true;true
-666;618300;618000;"Documentation technique";"charge";;1;;;true;true
-667;618500;618000;"Frais de colloques, séminaires, conférences";"charge";;1;;;true;true
-668;619000;610;"Rabais, remises et ristournes obtenus sur services extérieurs";"charge";;1;;;true;true
-669;620;"CL6";"Autres services extérieurs";"view";;1;;;true;true
-670;621000;620;"Personnel extérieur à l'entreprise";"charge";;1;;;true;true
-671;621100;621000;"Personnel intérimaire";"charge";;1;;;true;true
-672;621400;621000;"Personnel détaché ou prêté à l'entreprise";"charge";;1;;;true;true
-673;622000;620;"Rémunérations d'intermédiaires et honoraires ";"charge";;1;;;true;true
-674;622100;622000;"Commissions et courtages sur achats ";"charge";;1;;;true;true
-675;622200;622000;"Commissions et courtages sur ventes";"charge";;1;;;true;true
-676;622400;622000;"Rémunérations des transitaires";"charge";;1;;;true;true
-677;622500;622000;"Rémunérations d'affacturage";"charge";;1;;;true;true
-678;622600;622000;"Honoraires";"charge";;1;;;true;true
-679;622700;622000;"Frais d'actes et de contentieux";"charge";;1;;;true;true
-680;622800;622000;"Divers";"charge";;1;;;true;true
-681;623000;620;"Publicité, publications, relations publiques";"charge";;1;;;true;true
-682;623100;623000;"Annonces et insertions";"charge";;1;;;true;true
-683;623200;623000;"Échantillons";"charge";;1;;;true;true
-684;623300;623000;"Foires et expositions";"charge";;1;;;true;true
-685;623400;623000;"Cadeaux à la clientèle";"charge";;1;;;true;true
-686;623500;623000;"Primes";"charge";;1;;;true;true
-687;623600;623000;"Catalogues et imprimés";"charge";;1;;;true;true
-688;623700;623000;"Publications";"charge";;1;;;true;true
-689;623800;623000;"Divers (pourboires, dons courants...)";"charge";;1;;;true;true
-690;624000;620;"Transports de biens et transports collectifs du personnel";"charge";;1;;;true;true
-691;624100;624000;"Transports sur achats";"charge";;1;;;true;true
-692;624200;624000;"Transports sur ventes";"charge";;1;;;true;true
-693;624300;624000;"Transports entre établissements ou chantiers";"charge";;1;;;true;true
-694;624400;624000;"Transports administratifs";"charge";;1;;;true;true
-695;624700;624000;"Transports collectifs du personnel";"charge";;1;;;true;true
-696;624800;624000;"Divers";"charge";;1;;;true;true
-697;625000;620;"Déplacements missions et réceptions";"charge";;1;;;true;true
-698;625100;625000;"Voyages et déplacements";"charge";;1;;;true;true
-699;625500;625000;"Frais de déménagement";"charge";;1;;;true;true
-700;625600;625000;"Missions";"charge";;1;;;true;true
-701;625700;625000;"Réceptions";"charge";;1;;;true;true
-702;626000;620;"Frais postaux et frais de télécommunications";"charge";;1;;;true;true
-703;627000;620;"Services bancaires et assimilés";"charge";;1;;;true;true
-704;627100;627000;"Frais sur titres (achat, vente, garde)";"charge";;1;;;true;true
-705;627200;627000;"Commissions et frais sur émission d'emprunts";"charge";;1;;;true;true
-706;627500;627000;"Frais sur effets";"charge";;1;;;true;true
-707;627600;627000;"Location de coffres";"charge";;1;;;true;true
-708;627800;627000;"Autres frais et commissions sur prestations de services";"charge";;1;;;true;true
-709;628000;620;"Divers";"charge";;1;;;true;true
-710;628100;628000;"Concours divers (cotisations...)";"charge";;1;;;true;true
-711;628400;628000;"Frais de recrutement de personnel";"charge";;1;;;true;true
-712;629000;620;"Rabais, remises et ristournes obtenus sur autres services extérieurs";"charge";;1;;;true;true
-713;630;"CL6";"Impôts, taxes et versements assimilés";"view";;1;;;true;true
-714;631000;630;"Impôts, taxes et versements assimilés sur rémunérations (administration des impôts)";"charge";;1;;;true;true
-715;631100;631000;"Taxe sur les salaires";"charge";;1;;;true;true
-716;631200;631000;"Taxe d'apprentissage";"charge";;1;;;true;true
-717;631300;631000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;true;true
-718;631400;631000;"Cotisation pour défaut d'investissement obligatoire dans la construction";"charge";;1;;;true;true
-719;631800;631000;"Autres";"charge";;1;;;true;true
-720;633000;630;"Impôts, taxes et versements assimilés sur rémunérations (autres organismes)";"charge";;1;;;true;true
-721;633100;633000;"Versement de transport";"charge";;1;;;true;true
-722;633200;633000;"Allocation logement";"charge";;1;;;true;true
-723;633300;633000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;true;true
-724;633400;633000;"Participation des employeurs à l'effort de construction";"charge";;1;;;true;true
-725;633500;633000;"Versements libératoires ouvrant droit à l'exonération de la taxe d'apprentissage";"charge";;1;;;true;true
-726;633800;633000;"Autres";"charge";;1;;;true;true
-727;635000;630;"Autres impôts, taxes et versements assimilés (administration des impôts)";"charge";;1;;;true;true
-728;635100;635000;"Impôts directs (sauf impôts sur les bénéfices)";"charge";;1;;;true;true
-729;635110;635100;"Taxe professionnelle";"charge";;1;;;true;true
-730;635120;635100;"Taxes foncières";"charge";;1;;;true;true
-731;635130;635100;"Autres impôts locaux";"charge";;1;;;true;true
-732;635140;635100;"Taxe sur les véhicules des sociétés";"charge";;1;;;true;true
-733;635200;635000;"Taxes sur le chiffre d'affaires non récupérables ";"charge";;1;;;true;true
-734;635300;635000;"Impôts indirects";"charge";;1;;;true;true
-735;635400;635000;"Droits d'enregistrement et de timbre";"charge";;1;;;true;true
-736;635410;635400;"Droits de mutation";"charge";;1;;;true;true
-737;635800;635000;"Autres droits";"charge";;1;;;true;true
-738;637000;630;"Autres impôts, taxes et versements assimilés (autres organismes)";"charge";;1;;;true;true
-739;637100;637000;"Contribution sociale de solidarité à la charge des sociétés";"charge";;1;;;true;true
-740;637200;637000;"Taxes perçues par les organismes publics internationaux";"charge";;1;;;true;true
-741;637400;637000;"Impôts et taxes exigibles à l'étranger";"charge";;1;;;true;true
-742;637800;637000;"Taxes diverses";"charge";;1;;;true;true
-743;640;"CL6";"Charges de personnel";"view";;1;;;true;true
-744;641000;640;"Rémunérations du personnel";"charge";;1;;;true;true
-745;641100;641000;"Salaires et appointements";"charge";;1;;;true;true
-746;641200;641000;"Congés payés";"charge";;1;;;true;true
-747;641300;641000;"Primes et gratifications";"charge";;1;;;true;true
-748;641400;641000;"Indemnités et avantages divers";"charge";;1;;;true;true
-749;641500;641000;"Supplément familial";"charge";;1;;;true;true
-750;644000;640;"Rémunération du travail de l'exploitant";"charge";;1;;;true;true
-751;645;640;"Charges de Sécurité sociale et de prévoyance";"charge";;1;;;true;true
-752;645100;645;"Cotisations à l'URSSAF";"charge";;1;;;true;true
-753;645200;645;"Cotisations aux mutuelles";"charge";;1;;;true;true
-754;645300;645;"Cotisations aux caisses de retraites";"charge";;1;;;true;true
-755;645400;645;"Cotisations aux ASSEDIC";"charge";;1;;;true;true
-756;645800;645;"Cotisations aux autres organismes sociaux";"charge";;1;;;true;true
-757;646;640;"Cotisations sociales personnelles de l'exploitant";"charge";;1;;;true;true
-758;647000;640;"Autres charges sociales";"charge";;1;;;true;true
-759;647100;647000;"Prestations directes";"charge";;1;;;true;true
-760;647200;647000;"Versements aux comités d'entreprise et d'établissement";"charge";;1;;;true;true
-761;647300;647000;"Versements aux comités d'hygiène et de sécurité";"charge";;1;;;true;true
-762;647400;647000;"Versements aux autres oeuvres sociales";"charge";;1;;;true;true
-763;647500;647000;"Médecine du travail pharmacie";"charge";;1;;;true;true
-764;648000;640;"Autres charges de personnel";"charge";;1;;;true;true
-765;650;"CL6";"Autres charges de gestion courante";"view";;1;;;true;true
-766;651000;650;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"charge";;1;;;true;true
-767;651100;651000;"Redevances pour concessions brevets, licences, marques, procédés, logiciels ";"charge";;1;;;true;true
-768;651600;651000;"Droits d'auteur et de reproduction";"charge";;1;;;true;true
-769;651800;651000;"Autres droits et valeurs similaires";"charge";;1;;;true;true
-770;653000;650;"Jetons de présence";"charge";;1;;;true;true
-771;654000;650;"Pertes sur créances irrécouvrables";"charge";;1;;;true;true
-772;654100;654000;"Créances de l'exercice";"charge";;1;;;true;true
-773;654400;654000;"Créances des exercices antérieurs";"charge";;1;;;true;true
-774;655000;650;"Quotes-parts de résultat sur opérations faites en commun";"charge";;1;;;true;true
-775;655100;655000;"Quote-part de bénéfice transférée (comptabilité du gérant)";"charge";;1;;;true;true
-776;655500;655000;"Quote-part de perte supportée (comptabilité des associés non gérants)";"charge";;1;;;true;true
-777;658000;650;"Charges diverses de gestion courante";"charge";;1;;;true;true
-778;660;"CL6";"Charges financières";"view";;1;;;true;true
-779;661000;660;"Charges d'intérêt";"charge";;1;;;true;true
-780;661100;661000;"Intérêts des emprunts et dettes";"charge";;1;;;true;true
-781;661160;661100;"Intérêts des emprunts et dettes assimilées";"charge";;1;;;true;true
-782;661170;661100;"Intérêts des dettes rattachées à des participations";"charge";;1;;;true;true
-783;661500;661000;"Intérêts des comptes courants et des dépôts créditeurs";"charge";;1;;;true;true
-784;661600;661000;"Intérêts bancaires et sur opérations de financement (escompte, ...)";"charge";;1;;;true;true
-785;661700;661000;"Intérêts des obligations cautionnées";"charge";;1;;;true;true
-786;661800;661000;"Intérêts des autres dettes";"charge";;1;;;true;true
-787;661810;661800;"Intérêts des dettes commerciales";"charge";;1;;;true;true
-788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;true;true
-789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;true;true
-790;665000;660;"Escomptes accordés";"charge";;1;;;true;true
-791;666000;660;"Pertes de change";"charge";;1;;;true;true
-792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;true;true
-793;668000;660;"Autres charges financières";"charge";;1;;;true;true
-794;670;"CL6";"Charges exceptionnelles";"view";;1;;;true;true
-795;671000;670;"Charges exceptionnelles sur opérations de gestion";"charge";;1;;;true;true
-796;671100;671000;"Pénalités sur marchés (et dédits payés sur achats et ventes)";"charge";;1;;;true;true
-797;671200;671000;"Pénalités, amendes fiscales et pénales ";"charge";;1;;;true;true
-798;671300;671000;"Dons, libéralités";"charge";;1;;;true;true
-799;671400;671000;"Créances devenues irrécouvrables dans l'exercice";"charge";;1;;;true;true
-800;671500;671000;"Subventions accordées";"charge";;1;;;true;true
-801;671700;671000;"Rappels d'impôts (autres qu'impôts sur les bénéfices)";"charge";;1;;;true;true
-802;671800;671000;"Autres charges exceptionnelles sur opération de gestion";"charge";;1;;;true;true
-803;672000;670;"Charges sur exercices antérieurs (en cours d'exercice seulement)";"charge";;1;;;true;true
-804;675000;670;"Valeurs comptables des éléments d'actif cédés";"charge";;1;;;true;true
-805;675100;675000;"Immobilisations incorporelles";"charge";;1;;;true;true
-806;675200;675000;"Immobilisations corporelles";"charge";;1;;;true;true
-807;675600;675000;"Immobilisations financières";"charge";;1;;;true;true
-808;675800;675000;"Autres éléments d'actif";"charge";;1;;;true;true
-809;678000;670;"Autres charges exceptionnelles";"charge";;1;;;true;true
-810;678100;678000;"Malis provenant de clauses d'indexation ";"charge";;1;;;true;true
-811;678200;678000;"Lots";"charge";;1;;;true;true
-812;678300;678000;"Malis provenant du rachat par l'entreprise d'actions et obligations émises par elle-même";"charge";;1;;;true;true
-813;678800;678000;"Charges exceptionnelles diverses";"charge";;1;;;true;true
-814;680;"CL6";"Dotations aux amortissements, dépréciations et provisions";"view";;1;;;true;true
-815;681000;680;"Dotations aux amortissements, dépréciations et provisions - Charges d'exploitation, Amortisation, depreciation and provisions - Operating expenses";"charge";;1;;;true;true
-816;681100;681000;"Dotations aux amortissements des immobilisations incorporelles et corporelles ";"charge";;1;;;true;true
-817;681110;681100;"Immobilisations incorporelles";"charge";;1;;;true;true
-818;681120;681100;"Immobilisations corporelles";"charge";;1;;;true;true
-819;681200;681000;"Dotations aux amortissements des charges d'exploitation à répartir";"charge";;1;;;true;true
-820;681500;681000;"Dotations aux provisions pour risques et charges d'exploitation";"charge";;1;;;true;true
-821;681600;681000;"Dotations pour dépréciations des immobilisations incorporelles et corporelles";"charge";;1;;;true;true
-822;681610;681600;"Immobilisations incorporelles";"charge";;1;;;true;true
-823;681620;681600;"Immobilisations corporelles";"charge";;1;;;true;true
-824;681700;681000;"Dotations aux provisions pour dépréciation des actifs circulants";"charge";;1;;;true;true
-825;681730;681700;"Stocks et en-cours";"charge";;1;;;true;true
-826;681740;681700;"Créances";"charge";;1;;;true;true
-827;686000;680;"Dotations aux amortissements, dépréciations et provisions - Charges financières";"charge";;1;;;true;true
-828;686100;686000;"Dotations aux amortissements des primes de remboursement des obligations";"charge";;1;;;true;true
-829;686500;686000;"Dotations aux provisions pour risques et charges financiers";"charge";;1;;;true;true
-830;686600;686000;"Dotations aux dépréciation des éléments financiers";"charge";;1;;;true;true
-831;686620;686600;"Immobilisations financières";"charge";;1;;;true;true
-832;686650;686600;"Valeurs mobilières de placement";"charge";;1;;;true;true
-833;686800;686000;"Autres dotations";"charge";;1;;;true;true
-834;687000;680;"Dotations aux amortissements, dépréciations et provisions - Charges exceptionnelles";"charge";;1;;;true;true
-835;687100;687000;"Dotations aux amortissements exceptionnels des immobilisations";"charge";;1;;;true;true
-836;687200;687000;"Dotations aux provisions réglementées (immobilisations)";"charge";;1;;;true;true
-837;687250;687200;"Amortissements dérogatoires";"charge";;1;;;true;true
-838;687300;687000;"Dotations aux provisions réglementées (stocks)";"charge";;1;;;true;true
-839;687400;687000;"Dotations aux autres provisions réglementées";"charge";;1;;;true;true
-840;687500;687000;"Dotations aux provisions exceptionnelles";"charge";;1;;;true;true
-841;687600;687000;"Dotations aux dépréciations exceptionnelles";"charge";;1;;;true;true
-842;690;"CL6";"Participation des salariés - Impôts sur les bénéfices et assimilés";"view";;1;;;true;true
-843;691000;690;"Participation des salariés aux résultats";"charge";;1;;;true;true
-844;695000;690;"Impôts sur les bénéfices";"charge";;1;;;true;true
-845;695100;695000;"Impôts dus en France";"charge";;1;;;true;true
-846;695200;695000;"Contribution additionnelle à l'impôt sur les bénéfices";"charge";;1;;;true;true
-847;695400;695000;"Impôts dus à l'étranger";"charge";;1;;;true;true
-848;696000;690;"Supplément d'impôt sur les sociétés lié aux distributions";"charge";;1;;;true;true
-849;697000;690;"Imposition forfaitaire annuelle des sociétés";"charge";;1;;;true;true
-850;698000;690;"Intégration fiscale";"charge";;1;;;true;true
-851;698100;698000;"Intégration fiscale - Charges";"charge";;1;;;true;true
-852;698900;698000;"Intégration fiscale - Produits";"charge";;1;;;true;true
-853;699000;690;"Produits, Reports en arrière des déficits";"charge";;1;;;true;true
-854;700;"CL7";"Ventes de produits fabriqués - Prestations de service - Marchandises";"view";;1;;;true;true
-855;701000;700;"Ventes de produits finis";"income";;1;;;true;true
-856;701200;701000;"Produits finis (ou groupe) B";"income";;1;;;true;true
-857;702000;700;"Ventes de produits intermédiaires";"income";;1;;;true;true
-858;703000;700;"Ventes de produits résiduels";"income";;1;;;true;true
-859;704000;700;"Travaux";"income";;1;;;true;true
-860;704100;704000;"Travaux de catégorie (ou activité) A";"income";;1;;;true;true
-861;704200;704000;"Travaux de catégorie (ou activité) B";"income";;1;;;true;true
-862;705000;700;"Études";"income";;1;;;true;true
-863;706000;700;"Prestations de services";"income";;1;;;true;true
-864;707000;700;"Ventes de marchandises";"income";;1;;;true;true
-865;707100;707000;"Marchandises (ou groupe) A";"income";;1;;;true;true
-866;707200;707000;"Marchandises (ou groupe) B";"income";;1;;;true;true
-867;707210;707200;"Ventes de produits textiles";"income";;1;;;true;true
-868;707300;707000;"Marchandises à l'exportation";"income";;1;;;true;true
-869;708000;700.;"Produits des activités annexes";"income";;1;;;true;true
-870;708100;708000;"Produits des services exploités dans l'intérêt du personnel";"income";;1;;;true;true
-871;708200;708000;"Commissions et courtages";"income";;1;;;true;true
-872;708300;708000;"Locations diverses";"income";;1;;;true;true
-873;708400;708000;"Mise à disposition de personnel facturée ";"income";;1;;;true;true
-874;708500;708000;"Ports et frais accessoires facturés";"income";;1;;;true;true
-875;708600;708000;"Bonis sur reprises d'emballages consignés";"income";;1;;;true;true
-876;708700;708000;"Bonifications obtenues des clients et primes sur ventes";"income";;1;;;true;true
-877;708800;708000;"Autres produits d'activités annexes (cessions d'approvisionnements...)";"income";;1;;;true;true
-878;709000;700;"Rabais, remises et ristournes accordés par l'entreprise";"income";;1;;;true;true
-879;709100;709000;"- sur ventes de produits finis";"income";;1;;;true;true
-880;709200;709000;"- sur ventes de produits intermédiaires ";"income";;1;;;true;true
-881;709400;709000;"- sur travaux";"income";;1;;;true;true
-882;709500;709000;"- sur études";"income";;1;;;true;true
-883;709600;709000;"- sur prestations de services";"income";;1;;;true;true
-884;709700;709000;"- sur ventes de marchandises";"income";;1;;;true;true
-885;709800;709000;"- sur produits des activités annexes";"income";;1;;;true;true
-886;710;"CL7";"Production stockée (ou déstockage)";"view";;1;;;true;true
-887;713000;710;"Variation des stocks (en-cours de production, produits)";"income";;1;;;true;true
-888;713300;713000;"Variation des en-cours de production de biens";"income";;1;;;true;true
-889;713310;713300;"Produits en cours";"income";;1;;;true;true
-890;713350;713300;"Travaux en cours";"income";;1;;;true;true
-891;713400;713000;"Variation des en-cours de production de services";"income";;1;;;true;true
-892;713410;713400;"Études en cours";"income";;1;;;true;true
-893;713450;713400;"Prestations de services en cours";"income";;1;;;true;true
-894;713500;713000;"Variation des stocks de produits";"income";;1;;;true;true
-895;713510;713500;"Produits intermédiaires ";"income";;1;;;true;true
-896;713550;713500;"Produits finis";"income";;1;;;true;true
-897;713580;713500;"Produits résiduels";"income";;1;;;true;true
-898;720;"CL7";"Production immobilisée";"view";;1;;;true;true
-899;721000;720;"Immobilisations incorporelles ";"income";;1;;;true;true
-900;722000;720;"Immobilisations corporelles";"income";;1;;;true;true
-901;740;"CL7";"Subventions d'exploitation";"view";;1;;;true;true
-902;750;"CL7";"Autres produits de gestion courante";"view";;1;;;true;true
-903;751000;750;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"income";;1;;;true;true
-904;751100;751000;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels ";"income";;1;;;true;true
-905;751600;751000;"Droits d'auteur et de reproduction";"income";;1;;;true;true
-906;751800;751000;"Autres droits et valeurs similaires";"income";;1;;;true;true
-907;752000;750;"Revenus des immeubles non affectés aux activités professionnelles";"income";;1;;;true;true
-908;753000;750;"Jetons de présence et rémunérations d'administrateurs, gérants...";"income";;1;;;true;true
-909;754000;750;"Ristournes perçues des coopératives (provenant des excédents)";"income";;1;;;true;true
-910;755000;750;"Quotes-parts de résultats sur opérations faites en commun";"income";;1;;;true;true
-911;755100;755000;"Quote-part de perte transférée (comptabilité du gérant)";"income";;1;;;true;true
-912;755500;755000;"Quote-part de bénéfice attribuée (comptabilité des associés non-gérants)";"income";;1;;;true;true
-913;758000;750;"Produits divers de gestion courante";"income";;1;;;true;true
-914;760;"CL7";"Produits financiers";"view";;1;;;true;true
-915;761000;760;"Produits de participations";"income";;1;;;true;true
-916;761100;761000;"Revenus des titres de participation";"income";;1;;;true;true
-917;761600;761000;"Revenus sur autres formes de participation ";"income";;1;;;true;true
-918;761700;761000;"Revenus des créances rattachées à des participations";"income";;1;;;true;true
-919;762000;760;"Produits des autres immobilisations financières";"income";;1;;;true;true
-920;762100;762000;"Revenus des titres immobilisés";"income";;1;;;true;true
-921;762600;762000;"Revenus des prêts";"income";;1;;;true;true
-922;762700;762000;"Revenus des créances immobilisées";"income";;1;;;true;true
-923;763000;760;"Revenus des autres créances";"income";;1;;;true;true
-924;763100;763000;"Revenus des créances commerciales ";"income";;1;;;true;true
-925;763800;763000;"Revenus des créances diverses";"income";;1;;;true;true
-926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;true;true
-927;765000;760;"Escomptes obtenus";"income";;1;;;true;true
-928;766000;760;"Gains de change";"income";;1;;;true;true
-929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;true;true
-930;768000;760;"Autres produits financiers";"income";;1;;;true;true
-931;770;"CL7";"Produits exceptionnels";"view";;1;;;true;true
-932;771000;770;"Produits exceptionnels sur opérations de gestion";"income";;1;;;true;true
-933;771100;771000;"Dédits et pénalités perçus sur achats et sur ventes";"income";;1;;;true;true
-934;771300;771000;"Libéralités reçues";"income";;1;;;true;true
-935;771400;771000;"Rentrées sur créances amorties";"income";;1;;;true;true
-936;771500;771000;"Subventions d'équilibre";"income";;1;;;true;true
-937;771700;771000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"income";;1;;;true;true
-938;771800;771000;"Autres produits exceptionnels sur opérations de gestion";"income";;1;;;true;true
-939;772000;770;"Produits sur exercices antérieurs (en cours d'exercice seulement)";"income";;1;;;true;true
-940;775000;770;"Produits des cessions d'éléments d'actif";"income";;1;;;true;true
-941;775100;775000;"Immobilisations incorporelles";"income";;1;;;true;true
-942;775200;775000;"Immobilisations corporelles";"income";;1;;;true;true
-943;775600;775000;"Immobilisations financières";"income";;1;;;true;true
-944;775800;775000;"Autres éléments d'actif";"income";;1;;;true;true
-945;777000;770;"Quote-part des subventions d'investissement virée au résultat de l'exercice";"income";;1;;;true;true
-946;778000;770;"Autres produits exceptionnels";"income";;1;;;true;true
-947;778100;778000;"Bonis provenant de clauses d'indexation ";"income";;1;;;true;true
-948;778200;778000;"Lots";"income";;1;;;true;true
-949;778300;778000;"Bonis provenant du rachat par l'entreprise d'actions et d'obligations émises par elle-même";"income";;1;;;true;true
-950;778800;778000;"Produits exceptionnels divers";"income";;1;;;true;true
-951;780;"CL7";"Reprises sur amortissements, dépréciations et provisions";"view";;1;;;true;true
-952;781000;780;"Reprises sur amortissements, dépréciations et provisions (à inscrire dans les produits d'exploitation)";"income";;1;;;true;true
-953;781100;781000;"Reprises sur amortissements des immobilisations incorporelles et corporelles ";"income";;1;;;true;true
-954;781110;781100;"Immobilisations incorporelles";"income";;1;;;true;true
-955;781120;781100;"Immobilisations corporelles";"income";;1;;;true;true
-956;781500;781000;"Reprises sur provisions d'exploitation";"income";;1;;;true;true
-957;781600;781000;"Reprises sur dépréciations des immobilisations corporelles et incorporelles";"income";;1;;;true;true
-958;781610;781600;"Immobilisations incorporelles";"income";;1;;;true;true
-959;781620;781600;"Immobilisations corporelles";"income";;1;;;true;true
-960;781700;781000;"Reprises sur dépréciations des actifs circulants";"income";;1;;;true;true
-961;781730;781700;"Stocks et en-cours";"income";;1;;;true;true
-962;781740;781700;"Créances";"income";;1;;;true;true
-963;786000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits financiers)";"income";;1;;;true;true
-964;786500;786000;"Reprises sur provisions financiers";"income";;1;;;true;true
-965;786600;786000;"Reprises sur dépréciations des éléments financiers";"income";;1;;;true;true
-966;786620;786600;"Immobilisations financières";"income";;1;;;true;true
-967;786650;786600;"Valeurs mobilières de placement";"income";;1;;;true;true
-968;787000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits exceptionnels)";"income";;1;;;true;true
-969;787200;787000;"Reprises sur provisions réglementées (immobilisations)";"income";;1;;;true;true
-970;787250;787200;"Amortissements dérogatoires";"income";;1;;;true;true
-971;787260;787200;"Provision spéciale de réévaluation";"income";;1;;;true;true
-972;787270;787200;"Plus-values réinvesties";"income";;1;;;true;true
-973;787300;787000;"Reprises sur provisions réglementées (stocks) ";"income";;1;;;true;true
-974;787400;787000;"Reprises sur autres provisions réglementées ";"income";;1;;;true;true
-975;787500;787000;"Reprises sur provisions exceptionnelles";"income";;1;;;true;true
-976;787600;787000;"Reprises pour dépréciations exceptionnelles";"income";;1;;;true;true
-977;790;"CL7";"Transferts de charges";"view";;1;;;true;true
-978;791000;790;"Transferts de charges d'exploitation";"income";;1;;;true;true
-979;796000;790;"Transferts de charges financières";"income";;1;;;true;true
-980;797000;790;"Transferts de charges exceptionnelles";"income";;1;;;true;true
-981;800;"CL8";"Engagements";"view";;1;;;;
-982;801000;800;"Engagements donnés par l'entité";"commitment";;1;;;;
-983;801100;801000;"Avals, cautions, garanties";"commitment";;1;;;;
-984;801400;801000;"Effets circulant sous l'endos de l'entité";"commitment";;1;;;;
-985;801600;801000;"Redevances crédit-bail restant à courir";"commitment";;1;;;;
-986;801610;801600;"Crédit-bail mobilier";"commitment";;1;;;;
-987;801650;801600;"Crédit-bail immobilier";"commitment";;1;;;;
-988;801800;801000;"Autres engagements donnés";"commitment";;1;;;;
-989;802000;800;"Engagements reçus par l'entité";"commitment";;1;;;;
-990;802100;802000;"Avals, cautions, garanties";"commitment";;1;;;;
-991;802400;802000;"Créances escomptées non échues";"commitment";;1;;;;
-992;802600;802000;"Engagements reçus pour utilisation en crédit-bail";"commitment";;1;;;;
-993;802610;802600;"Crédit-bail mobilier";"commitment";;1;;;;
-994;802650;802600;"Crédit-bail immobilier";"commitment";;1;;;;
-995;802800;802000;"Autres engagements reçus";"commitment";;1;;;;
-996;809;800;"Contrepartie des engagements";"view";;1;;;;
-997;809100;809;"Contrepartie 801";"commitment";;1;;;;
-998;809200;809;"Contrepartie 802";"commitment";;1;;;;
-999;880;"CL8";"Résultats en instance d'affectation";"view";;1;;;;
-1000;890;"CL8";"Bilan";"view";;1;;;;
-1001;890000;890;"Bilan d'ouverture";"special";;1;;;;
-1002;891000;890;"Bilan de clôture";"special";;1;;;;
+importId;code;parent_code;name;accountType.technicalTypeSelect;reconcileOk;useForPartnerBalance;isTaxAuthorizedOnMoveLine;isTaxRequiredOnMoveLine;company.importId
+99999;0;;Racine Plan Comptable;view;;;;;1
+0;101000;0;CAPITAL SOCIAL;equity;;;;;1
+1;104100;0;PRIMES D'EMISSION;equity;;;;;1
+2;106110;0;RESERVE LEGALE;equity;;;;;1
+3;106800;0;RESERVE FACULTATIVE;equity;;;;;1
+4;120000;0;RESULTAT BENEFICIAIRE;equity;;;;;1
+5;129000;0;RESULTAT DEFICITAIRE;equity;;;;;1
+6;151100;0;PROVISION POUR RISQUE;provision;;;;;1
+7;153000;0;PROVISION FIN CARRIERE;provision;;;;;1
+8;158000;0;PROVISION POUR CHARGES;provision;;;;;1
+9;158200;0;AUTRES PROVISIONS;provision;;;;;1
+10;158500;0;PREAVIS;provision;;;;;1
+11;164000;0;EMPRUNT HSBC 2015;debt;;;;;1
+12;164001;0;CREDIT CATALOG 2013;debt;;;;;1
+13;164002;0;CREDIT CAT.HSBC 2015;debt;;;;;1
+14;164003;0;CREDIT CCF LOG 2005;debt;;;;;1
+15;164004;0;CREDIT CATALOG 2004;debt;;;;;1
+16;164005;0;AGENCEMENT LONRAI C A;debt;;;;;1
+17;164006;0;CREDIT CATALOG;debt;;;;;1
+18;164007;0;CREDIT CATALOG;debt;;;;;1
+19;164008;0;CREDIT AGENCEMENT;debt;;;;;1
+20;164009;0;HSBC PRET CAT.2016;debt;;;;;1
+21;164010;0;CREDIT CCF RESTUCTURATION;debt;;;;;1
+22;164011;0;CREDIT BFCC RESTRUCTURATION;debt;;;;;1
+23;164012;0;CREDIT SG RESTUCTURATION;debt;;;;;1
+24;164013;0;BUREAU LONRAI 2014;debt;;;;;1
+25;164014;0;HSBC CIL;debt;;;;;1
+26;164015;0;PRET HSBC CAT 2017;debt;;;;;1
+27;164016;0;PRET CAT.2018-2019;debt;;;;;1
+28;164017;0;PRET SG DOUCHETTES;debt;;;;;1
+29;164018;0;EMPRUNT CR 100000;debt;;;;;1
+30;164019;0;CF 164020;debt;;;;;1
+31;164020;0;CATALOGUE 2020-2021;debt;;;;;1
+32;164021;0;PRET BFCC PGE 1500000E;debt;;;;;1
+33;164030;0;BILLET ORDRE C AGRICOLE;debt;;;;;1
+34;164031;0;BILLET SOCIETE GENERALE;debt;;;;;1
+35;164100;0;EMP.BFCC CAT \(59166,67\);debt;;;;;1
+36;164200;0;EMPRUNT CCF 980000F;debt;;;;;1
+37;164300;0;CREDIT CCF 800000\(2001\);debt;;;;;1
+38;164400;0;CREDIT CCF 107000;debt;;;;;1
+39;164500;0;CREDIT TRES BFCC 300000,00;debt;;;;;1
+40;164501;0;CREDIT BFCC MEZZANINE;debt;;;;;1
+41;164600;0;CREDIT CCF 313000,00;debt;;;;;1
+42;164601;0;CREDIT CCF 670000,00;debt;;;;;1
+43;168800;0;INTERETS COURUS;debt;;;;;1
+44;168840;0;INTERETS COURUS;debt;;;;;1
+45;203000;0;FRAIS DE RECHERCHES;immobilisation;;;;;1
+46;205000;0;LOGICIEL ST DENIS;immobilisation;;;;;1
+47;205100;0;LOGICIEL ALENCON;immobilisation;;;;;1
+48;213500;0;AGENCEMENTS INSTALLATIONS;immobilisation;;;;;1
+49;213501;0;AGENCEMENT ALENCON;immobilisation;;;;;1
+50;215400;0;MATERIEL ET OUTILLAGE;immobilisation;;;;;1
+51;215401;0;MAT OUTI ALENCON;immobilisation;;;;;1
+52;215402;0;MAT OUT ALENCON 2;immobilisation;;;;;1
+53;218100;0;AGENCEMENT BURO LONRAI;immobilisation;;;;;1
+54;218110;0;AGENCEMENT ALENCON;immobilisation;;;;;1
+55;218200;0;MATERIEL DE TRANSPORT;immobilisation;;;;;1
+56;218300;0;MATERIEL INFORMATIQUE;immobilisation;;;;;1
+57;218301;0;MAT IMFORMA ALENCON;immobilisation;;;;;1
+58;218400;0;MOBILIER DE BUREAU;immobilisation;;;;;1
+59;218401;0;MOBILIER ALENCON;immobilisation;;;;;1
+60;218500;0;LOGICIELS;immobilisation;;;;;1
+61;218501;0;LOGICIEL ALENCON;immobilisation;;;;;1
+62;218502;0;LOGICIEL DUCROIRE;immobilisation;;;;;1
+63;218503;0;SITE INTERNET DALBE;immobilisation;;;;;1
+64;238800;0;IMMOBILISATIONS EN COURS;immobilisation;;;;;1
+65;261000;0;TITRES DE PARTICIPATION;immobilisation;;;;;1
+66;267000;0;CREANCES RATTACHEES A DES;immobilisation;;;;;1
+67;271000;0;TITRES IMMOBILISES;immobilisation;;;;;1
+68;271100;0;TITRES DE PARTICIPATION;immobilisation;;;;;1
+69;271110;0;TITRES SCI IMMO DALBE;immobilisation;;;;;1
+70;275000;0;DEPOTS ET CAUTIONNEMENTS;immobilisation;;;;;1
+71;280300;0;AMORTISS.FR.DE RECHERCHES;immobilisation;;;;;1
+72;280500;0;AMORTISS INTRA INTERNET AHD;immobilisation;;;;;1
+73;280510;0;AMORT ALENCON;immobilisation;;;;;1
+74;281000;0;AMORTISSEMENT;immobilisation;;;;;1
+75;281350;0;AMORTISS.AGENCEM.INSTALL;immobilisation;;;;;1
+76;281540;0;AMORTISS.MATERIEL OUTILL;immobilisation;;;;;1
+77;281541;0;AMORT ALENCON;immobilisation;;;;;1
+78;281542;0;AMORT ALENCON 2;immobilisation;;;;;1
+79;281810;0;AGENCEMENT ST DENIS;immobilisation;;;;;1
+80;281811;0;AGENCEMENT ALENCON;immobilisation;;;;;1
+81;281820;0;AMORTISS.MATERIEL TRANSP;immobilisation;;;;;1
+82;281830;0;AMORTISS MAT INFOR;immobilisation;;;;;1
+83;281831;0;AMORT ALENCON;immobilisation;;;;;1
+84;281840;0;AMORTISS.MOBILIER BUREAU;immobilisation;;;;;1
+85;281841;0;AMORT ALENCON;immobilisation;;;;;1
+86;281850;0;AMORTISS.LOGICIELS;immobilisation;;;;;1
+87;296100;0;PROVI DEPRE TITRES;immobilisation;;;;;1
+88;370000;0;STOCKS MARCHANDISES;view;;;;;1
+89;390000;0;PROV.DEPRECIATION STOCK;view;;;;;1
+90;397000;0;DOTATION PROVI STOCK;currentAsset;;;;;1
+91;4010;0;COLLECTIF FOURNISSEURS;payable;;;;;1
+92;151300;0;Provisions pour pertes sur marchés à terme;provision;;;;;1
+93;403000;0;EFFET A PAYER;payable;True;True;;;1
+94;151500;0;Provisions pour pertes de change;provision;;;;;1
+95;408100;0;FAC FRS NON PARVENUS;payable;True;True;;;1
+96;4091;0;COLLECTIF FOURNISSEURS;payable;;;;;1
+97;409100;0;ACOMPTE FOURNISSEUR;currentAsset;True;True;;;1
+98;409700;0;AVOIR A RECEVOIR;currentAsset;True;True;;;1
+99;409800;0;RISTOURNES A RECEVOIR;currentAsset;True;True;;;1
+100;4110;0;COLLECTIF CLIENTS;receivable;;;;;1
+101;4113;0;COLLECTIF F. DE GARANTIE;receivable;;;;;1
+102;413000;0;EFFET A RECEVOIR;receivable;;;;;1
+103;413001;0;EFFETS ESC.ECH.01 BFCC;receivable;;;;;1
+104;413002;0;EFFETS ESC.ECH.02 BFCC;receivable;;;;;1
+105;413003;0;EFFETS ESC.ECH.03 BFCC;receivable;;;;;1
+106;413004;0;EFFETS ESC.ECH.04 BFCC;receivable;;;;;1
+107;413005;0;EFFETS ESC.ECH.05 BFCC;receivable;;;;;1
+108;413006;0;EFFETS ESC.ECH.06 BFCC;receivable;;;;;1
+109;413007;0;EFFETS ESC.ECH.07 BFCC;receivable;;;;;1
+110;413008;0;EFFETS ESC.ECH.08 BFCC;receivable;;;;;1
+111;413009;0;EFFETS ESC.ECH.09 BFCC;receivable;;;;;1
+112;413010;0;EFFETS ESC.ECH.10 BFCC;receivable;;;;;1
+113;413011;0;EFFETS ESC.ECH.11 BFCC;receivable;;;;;1
+114;413012;0;EFFETS ESC.ECH.12 BFCC;receivable;;;;;1
+127;416000;0;CLIENTS DOUTEUX;receivable;True;True;;;1
+128;418100;0;FACTURE A ETABLIR;receivable;True;True;;;1
+129;419100;0;CREANECOCE;debt;True;True;;;1
+130;419700;0;AVOIRS A ETABLIR;debt;True;True;;;1
+131;419800;0;AVOIR A ETABLIR;debt;True;True;;;1
+132;421000;0;REMUNERATIONS DUES;debt;;;;;1
+134;425000;0;AVANCE ET ACOMPTE;receivable;True;True;;;1
+135;427000;0;SAISIE ARRET;debt;True;True;;;1
+136;428200;0;PROVISION CONGES PAYES;debt;;;;;1
+137;428600;0;PROVI PRIME;debt;;;;;1
+138;428610;0;PROVI LICENCIEMENT;debt;;;;;1
+139;428701;0;ACTIVITﾉ PARTIELLE;receivable;;;;;1
+147;438000;0;CHARGES SUR PRIMES;debt;;;;;1
+148;438200;0;CH. SUR CONGES A PAYER;debt;;;;;1
+149;438600;0;PROVI AUTRES CHARGES A PAYER;debt;;;;;1
+150;438610;0;RETRAITE;debt;;;;;1
+151;438700;0;PRODUIT ﾀ RECEVOIR;receivable;;;;;1
+152;206000;0;Droit au bail;immobilisation;;;;;1
+153;443000;0;CHOMAGE PARTIEL;tax;;;;;1
+154;444000;0;IMPOT SOCIETE;tax;;;;;1
+155;445510;0;RECEVEUR TVA;tax;;;;;1
+156;445650;0;CREDIT TVA \(DE REFERENCE\);tax;;;;;1
+157;445660;0;TVA RECUPERABLE;tax;;;;;1
+158;445661;0;TVA DEDUCTIBLE ENCTS;tax;;;;;1
+159;445662;0;TVA DEDUCTIBLE DUCROIRE;tax;;;;;1
+160;445663;0;TVA ABANDON;tax;;;;;1
+161;445670;0;CREDIT DE TVA A REPORTER;tax;;;;;1
+162;445710;0;TVA A REGULARISER;tax;;;;;1
+163;445711;0;TVA A 5,5%;tax;;;;;1
+164;445712;0;TVA IRRECOUVRABLE;tax;;;;;1
+165;445713;0;TVA A 7%;tax;;;;;1
+166;445714;0;TVA 5,5% DUCROIRE;tax;;;;;1
+167;445715;0;TVA 20% DUCROIRE;tax;;;;;1
+168;445716;0;TVA COLLECT 20% ENCTS;tax;;;;;1
+169;445717;0;TVA COLLECTEE 20%;tax;;;;;1
+170;445718;0;TVA INTRACOMMUNAUTAIRE;tax;;;;;1
+171;445719;0;TVA COLL.S.PERTE HORDOIR;tax;;;;;1
+172;445720;0;TVA DUCROIRE 7%;tax;;;;;1
+173;445721;0;TVA SUR IMPORT;tax;;;;;1
+174;445800;0;TVA A REGULARISER;tax;;;;;1
+175;445860;0;TVA S.FACT. A RECEVOIR;tax;;;;;1
+176;445870;0;TVA SUR FACT.A ETABLIR;tax;;;;;1
+177;445871;0;TVA AV A ETABLIR;tax;;;;;1
+178;448600;0;IMPOTS DIVERS A PAYER;tax;;;;;1
+179;448700;0;ETAT PRODUITS A RECEVOIR;tax;;;;;1
+180;451000;0;CT CT SCI IMMO;receivable;;;;;1
+181;213830;0;Voies d'eau;immobilisation;;;;;1
+182;455000;0;COMPTE COURANT ASSOCIES;receivable;True;True;;;1
+183;213850;0;Pistes d'aérodromes;immobilisation;;;;;1
+184;456200;0;ACTIONNAIRES CAP.A VERSER;receivable;True;True;;;1
+185;4563ABCD;0;ABCD PRO VERS. CAPITAL;receivable;True;True;;;1
+186;4563ABCDM;0;ABCD B.A.VERS.CAPITAL;receivable;True;True;;;1
+187;4563ADA14;0;ADAM 14 VERSEMENT CAPITAL;receivable;True;True;;;1
+188;4563ADA18;0;ADAM 18 VERSEMENT CAPITAL;receivable;True;True;;;1
+189;4563AERAT;0;AERAT VERSEMENT CAPITAL;receivable;True;True;;;1
+190;4563AIRE;0;L'AIRE DES ARTS CAPITAL;receivable;True;True;;;1
+191;4563AMANC;0;LES COMPTOIRS CREATIFS;receivable;True;True;;;1
+192;4563AMBRE;0;AMBRE LE MANS;receivable;True;True;;;1
+193;4563AMIEN;0;AMIENS;receivable;True;True;;;1
+194;4563AQUAR;0;AQUARELLE VERS.CAPITAL;receivable;True;True;;;1
+195;4563ARAGO;0;TIREPLAN MALHERBE;receivable;True;True;;;1
+196;4563ARCAN;0;ARCANES CHATEAUROUX;receivable;True;True;;;1
+197;4563ARMAG;0;ARMAG VERSEMENT CAPITAL;receivable;True;True;;;1
+198;4563ARTDE;0;ARTIS DECO CAPITAL;receivable;True;True;;;1
+199;4563ARTIC;0;ARTISTICA CAPITAL;receivable;True;True;;;1
+200;4563ARTIM;0;ARTISSIMO CAPITAL;receivable;True;True;;;1
+201;4563ARTIS;0;ARTISTE PEINTRE D E;receivable;True;True;;;1
+202;4563ARTLE;0;ARTS ET LETTRES CAPITAL;receivable;True;True;;;1
+203;4563ARTPA;0;ART PASSION CREATION;receivable;True;True;;;1
+204;4563ARTTE;0;ART ET TECHN.VERS.CAPITAL;receivable;True;True;;;1
+205;4563ASTRA;0;ASTRA VERSEMENT CAPITAL;receivable;True;True;;;1
+206;4563ATARM;0;L'ATELIER DES ARTS MANUELS    CAPITAL;receivable;True;True;;;1
+207;4563ATART;0;ATELIER ART TOURS;receivable;True;True;;;1
+208;4563ATECO;0;L'ATELIER DES COULEURS CAPITAL;receivable;True;True;;;1
+209;4563ATOUT;0;ATOUTS CREATION;receivable;True;True;;;1
+210;4563AUBEN;0;CULTURELA AUBENAS;receivable;True;True;;;1
+211;4563AUDUN;0;AUDUN LE TICHE;receivable;True;True;;;1
+212;4563AURAY;0;AURAY;receivable;True;True;;;1
+213;4563AURIL;0;AURILLAC INTERACTIVE PAP.;receivable;True;True;;;1
+214;4563AUTRE;0;AUTREMENT DIT;receivable;True;True;;;1
+215;4563BARRI;0;BARRIERE VERS.CAPITAL;receivable;True;True;;;1
+216;4563BAYEU;0;DALBE BAYEUX;receivable;True;True;;;1
+217;4563BAZEI;0;TENDANCE TISSUS               MARMANDE;receivable;True;True;;;1
+218;4563BEREC;0;BERGERAC;receivable;True;True;;;1
+219;4563BERNH;0;BERNHART VERS.CAPITAL;receivable;True;True;;;1
+220;4563BERTY;0;nan;receivable;True;True;;;1
+221;4563BESAN;0;L'INTRANQUILLE PLAZZA;receivable;True;True;;;1
+222;4563BIGAN;0;ABCB SARL;receivable;True;True;;;1
+223;4563BORSA;0;BORSATO VERS.CAPITAL;receivable;True;True;;;1
+224;4563BRIEU;0;ST BRIEUC;receivable;True;True;;;1
+225;4563BRIVE;0;SARL NOIR IVOIRE;receivable;True;True;;;1
+226;4563CALYP;0;CALYPSO VERS.CAPITAL;receivable;True;True;;;1
+227;4563CARCA;0;LACOSTE CARCASSONNE;receivable;True;True;;;1
+228;4563CARPA;0;CARPAP;receivable;True;True;;;1
+229;4563CASAB;0;DALBE CASABLANCA;receivable;True;True;;;1
+230;4563CHAMP;0;CHAMPAGNE PLAN VERS.CAPIT;receivable;True;True;;;1
+231;4563CHARL;0;CREA-LOISIR;receivable;True;True;;;1
+232;4563CHATO;0;CHARLEMAGNE TOULON;receivable;True;True;;;1
+233;4563CHEMI;0;LE CHEMIN DES ARTS CAPITAL;receivable;True;True;;;1
+234;4563CHERB;0;CHERBOURG JORET;receivable;True;True;;;1
+235;4563CHEVAL;0;LE CHEVALET CAPITAL;receivable;True;True;;;1
+236;4563CHOPA;0;GROUPE DELTA OUEST CHOLET;receivable;True;True;;;1
+237;4563COGNE;0;PAPETERIE COGNET;receivable;True;True;;;1
+238;4563COIN;0;COIN DES ARTS;receivable;True;True;;;1
+239;4563COLOR;0;COLOR;receivable;True;True;;;1
+240;4563COUVR;0;COUVREUR VERS.CAPITAL;receivable;True;True;;;1
+241;4563CULTU;0;CULTURE PLUS;receivable;True;True;;;1
+242;4563DATOU;0;CREALAND;receivable;True;True;;;1
+243;4563DELOU;0;DELOUBES VERS.CAPITAL;receivable;True;True;;;1
+244;4563DEMEY;0;SA DEMEY;receivable;True;True;;;1
+245;4563DIJON;0;DIJON VERS.CAPITAL;receivable;True;True;;;1
+246;4563DISAU;0;DISTRE;receivable;True;True;;;1
+247;4563DIVER;0;DIVERS;receivable;True;True;;;1
+248;4563DLM;0;DLM VERS.CAPITAL;receivable;True;True;;;1
+249;4563DUBOI;0;DUBOIS VERS.CAPITAL;receivable;True;True;;;1
+250;4563DUPON;0;DUPONT VERS.CAPITTAL;receivable;True;True;;;1
+251;4563DUPRE;0;DUPRE D E;receivable;True;True;;;1
+252;4563EDV;0;ECLAT DE VERRE;receivable;True;True;;;1
+253;4563EGLY;0;ESPACE TEMPS SIMBAC;receivable;True;True;;;1
+254;4563ELLI;0;ELLI;receivable;True;True;;;1
+255;4563EPS33;0;EPS CAPITAL;receivable;True;True;;;1
+256;4563EVREU;0;DALBE EVREUX;receivable;True;True;;;1
+257;4563EXBER;0;EXPL.BERTY VERS.CAPITAL;receivable;True;True;;;1
+258;4563FOIX;0;SURRE MAJUSCULE;receivable;True;True;;;1
+259;4563FONTE;0;BOUTIN FONTENAY LE COMTE;receivable;True;True;;;1
+260;4563FORME;0;FORMES ET COULEURS;receivable;True;True;;;1
+261;4563FORUM;0;FORUM DES ARTS;receivable;True;True;;;1
+262;4563FOTOP;0;FOTOPLAN  VERS.CAPITAL;receivable;True;True;;;1
+263;4563GALLER;0;GALLERIE 16 CAPITAL;receivable;True;True;;;1
+264;4563GAMBE;0;PAPETERIE GAMBETTA;receivable;True;True;;;1
+265;4563GAP;0;GAP;receivable;True;True;;;1
+266;4563GER;0;GER VERS. CAPITAL;receivable;True;True;;;1
+267;4563GIOFF;0;GIOFFREDO VERS.CAPITAL;receivable;True;True;;;1
+268;4563GRAPH;0;GRAPHI PLAN VERS.CAPITAL;receivable;True;True;;;1
+269;4563GRASS;0;CENTRAL DECOR GRASSIN CAPITAL;receivable;True;True;;;1
+270;4563GRENO;0;GRENOBLE VERS.CAPITAL;receivable;True;True;;;1
+271;4563GSCOO;0;GRAPHISCOOP VERS.CAPITAL;receivable;True;True;;;1
+272;4563HELCO;0;HELIOCOP VERS.CAPITAL;receivable;True;True;;;1
+273;4563HELIO;0;HELIO;receivable;True;True;;;1
+274;4563HELNA;0;HELNA VERS.CAPITAL;receivable;True;True;;;1
+275;4563HUGUE;0;HUGUENIOT VERS.CAPITAL;receivable;True;True;;;1
+276;4563IMAGE;0;L'IMAGE EN MARCHE CAPITAL;receivable;True;True;;;1
+277;4563ISSOI;0;ISSOIRE;receivable;True;True;;;1
+278;4563JASLI;0;JASLIN VERS.CAPITAL;receivable;True;True;;;1
+279;4563JUDEL;0;LE COIN DES BEAUX ARTS;receivable;True;True;;;1
+280;4563LACOS;0;LACOSTE;receivable;True;True;;;1
+281;4563LAMAI;0;MAISON ARTS VERS.CAPITAL;receivable;True;True;;;1
+282;4563LANGO;0;PAP LAGUERIE;receivable;True;True;;;1
+283;4563LANGU;0;BUROLIKE LANGUEUX;receivable;True;True;;;1
+284;4563LANNI;0;LANNION;receivable;True;True;;;1
+285;4563LAPAP;0;LA PAPETERIE VERS.CAPITAL;receivable;True;True;;;1
+286;4563LAURI;0;L'HIRONDELLE CREATIVE         SALON DE PROVENCE;receivable;True;True;;;1
+287;4563LAVAL;0;LA TETE DANS LE CADRE;receivable;True;True;;;1
+288;4563LAVAU;0;LAVAUR;receivable;True;True;;;1
+289;4563LAVRU;0;LAVRUT VERS.CAPITAL;receivable;True;True;;;1
+290;4563LEFEB;0;LEFEBVRE VERS.CAPITAL;receivable;True;True;;;1
+291;4563LEGEN;0;PAPETERIE LEGENDRE            75017 PARIS;receivable;True;True;;;1
+292;4563LEPAS;0;LE PASSAGE CAPITAL;receivable;True;True;;;1
+293;4563LEPOR;0;EKIMAG;receivable;True;True;;;1
+294;4563LESBE;0;LES BEAUX ARTS CAPITAL;receivable;True;True;;;1
+295;4563LIBOU;0;SARL VALMI;receivable;True;True;;;1
+296;4563LIBRA;0;LIBRAIRIE DES ARTS CAPITAL;receivable;True;True;;;1
+297;4563LILLE;0;RART LILLE;receivable;True;True;;;1
+298;4563LIPBA;0;LIPS B ARTS CAPITAL;receivable;True;True;;;1
+299;4563LIPS;0;LIPS ARTS.CAPITAL;receivable;True;True;;;1
+300;4563LISIE;0;DALBE LISIEUX \(B S P C\);receivable;True;True;;;1
+301;4563LORIO;0;KING JOUET LORIOL;receivable;True;True;;;1
+302;4563LOUAR;0;LOUARD VERS.CAPITAL;receivable;True;True;;;1
+303;4563LTM;0;LTM RENNES;receivable;True;True;;;1
+304;4563MADEC;0;MADEC CAPITAL;receivable;True;True;;;1
+305;4563MADIS;0;MADISON LIBOURNE;receivable;True;True;;;1
+306;4563MAEDE;0;SAS H.N MAEDER;receivable;True;True;;;1
+307;4563MAGIS;0;MAGIS VERS.CAPITAL;receivable;True;True;;;1
+308;4563MAISO;0;MAISON DESS.VERS.CAPITAL;receivable;True;True;;;1
+309;4563MARCH;0;MARCHAND DE COULEURS CAPITAL;receivable;True;True;;;1
+310;4563MARTI;0;MARTIN-DELBERT AGEN;receivable;True;True;;;1
+311;4563MEAUX;0;BUREAU CENTER MEAUX;receivable;True;True;;;1
+312;4563MEIST;0;MEISTRE VERS.CAPITAL;receivable;True;True;;;1
+313;4563MENDE;0;O'BURO MENDE;receivable;True;True;;;1
+314;4563MENON;0;BURO POLE                     FOUGERES;receivable;True;True;;;1
+315;4563METZH;0;HISLER EVEN METZ;receivable;True;True;;;1
+316;4563MIDDL;0;MIDDLETON & ART;receivable;True;True;;;1
+317;4563MODER;0;BUREAU MODERNE;receivable;True;True;;;1
+318;4563MONTB;0;DALBE MONTBRISON;receivable;True;True;;;1
+319;4563MONTR;0;CABRERA MONTREUIL;receivable;True;True;;;1
+320;4563MOUAN;0;MOUANS SARTOUX;receivable;True;True;;;1
+321;4563MULHO;0;DIX JUILLET                   MULHOUSE/BELFORT;receivable;True;True;;;1
+322;4563NANCY;0;DALBE NANCY \(FROUARD\);receivable;True;True;;;1
+323;4563NANLC;0;LOISIRS ET COULEURS;receivable;True;True;;;1
+324;4563NATUR;0;NATURE CREATIVE;receivable;True;True;;;1
+325;4563NELLA;0;NELLA;receivable;True;True;;;1
+326;4563NIORT;0;SECOF NIORT;receivable;True;True;;;1
+327;4563NMGIN;0;NMG INV.ROANNE;receivable;True;True;;;1
+328;4563OCEP;0;OCEP COUTANCES;receivable;True;True;;;1
+329;4563ODYSS;0;ODYSSEY TAHITI;receivable;True;True;;;1
+330;4563OFFIC;0;OFFICE ONE DEPOT;receivable;True;True;;;1
+331;4563ORLEA;0;nan;receivable;True;True;;;1
+332;4563OUEST;0;OUEST GRAP.VERS.CAPITAL;receivable;True;True;;;1
+333;4563PALAP;0;PALAPA LISIEUX;receivable;True;True;;;1
+334;4563PALET;0;LA PALETTE ST LUC CAPITAL;receivable;True;True;;;1
+335;4563PAPCH;0;PAPETERIE CHAMBERY;receivable;True;True;;;1
+336;4563PAPIR;0;PAPIRUS VERS.CAPITAL;receivable;True;True;;;1
+337;4563PAPON;0;PAPON VERS CAPITAL;receivable;True;True;;;1
+338;4563PAPRA;0;PAP CHAMBERY;receivable;True;True;;;1
+339;4563PASSI;0;PASSION CREATION;receivable;True;True;;;1
+340;4563PERFO;0;PERFORMANCE;receivable;True;True;;;1
+341;4563PIERA;0;PIERA;receivable;True;True;;;1
+342;4563PLENI;0;PLENITUDE;receivable;True;True;;;1
+343;4563PLUME;0;PLUMEAU ROUGE;receivable;True;True;;;1
+344;4563POINT;0;POINT VIRGULE;receivable;True;True;;;1
+345;4563POLE;0;BUREAU POLE;receivable;True;True;;;1
+346;4563PROBU;0;PROBUREAU;receivable;True;True;;;1
+347;4563QUADR;0;QUADRIMOVEL;receivable;True;True;;;1
+348;4563REGAR;0;REG ART CAPITAL;receivable;True;True;;;1
+349;4563REMON;0;CASTEAL RENNES;receivable;True;True;;;1
+350;4563RENNE;0;RENNES;receivable;True;True;;;1
+351;4563RIBOU;0;RIBOULET VERS.CAPITAL;receivable;True;True;;;1
+352;4563RIMBA;0;LIB.RIMBAUD                   CHARLEVILLE MEZIERES;receivable;True;True;;;1
+353;4563ROANN;0;MIROSE ROANNE;receivable;True;True;;;1
+354;4563RODEZ;0;RODEZ;receivable;True;True;;;1
+355;4563RORBA;0;RORBA;receivable;True;True;;;1
+356;4563ROUEN;0;ROUEN VERS.CAPITAL;receivable;True;True;;;1
+357;4563SALON;0;SALON;receivable;True;True;;;1
+358;4563SARLA;0;SARLAT BATAILLON;receivable;True;True;;;1
+359;4563SAUMU;0;SAUMUR ELEMIAS;receivable;True;True;;;1
+360;4563SAVOI;0;ATELIER SAVOIR FAIRE;receivable;True;True;;;1
+361;4563SCLM;0;SCLM MARTINIQUE;receivable;True;True;;;1
+362;4563SEDIC;0;SEDIC VERS.CAPITAL;receivable;True;True;;;1
+363;4563SETE;0;DALBE SETE;receivable;True;True;;;1
+364;4563SETTG;0;SETT GRUP VERS.CAPITAL;receivable;True;True;;;1
+365;4563SEYNO;0;PAP SEYNOD;receivable;True;True;;;1
+366;4563SOGEC;0;SOGECAL;receivable;True;True;;;1
+367;4563STBAR;0;SASU MARCHAND COULEUR         SAINT BARTHELEMY;receivable;True;True;;;1
+368;4563STBRI;0;FORUM DES CHAMPS ST BRIEUC;receivable;True;True;;;1
+369;4563STIRP;0;STIRP VERS.CAPITAL;receivable;True;True;;;1
+370;4563STLO;0;PLANET R;receivable;True;True;;;1
+371;4563TAXIA;0;TAXI ART;receivable;True;True;;;1
+372;4563TECHN;0;TECHNO PLANN VERS.CAPITAL;receivable;True;True;;;1
+373;4563THEIE;0;ATELIE DU SAVOIR FAIRE;receivable;True;True;;;1
+374;4563THONO;0;THONON;receivable;True;True;;;1
+375;4563TIRE;0;TIREPLAN VERS.CAPITAL;receivable;True;True;;;1
+376;4563TIREP;0;TIREP VERS.CAPITAL;receivable;True;True;;;1
+377;4563TONNE;0;TONNERE VERS.CAPITAL;receivable;True;True;;;1
+378;4563TOUCH;0;CHARLEMAGNE TOULON;receivable;True;True;;;1
+379;4563TOULO;0;LAGRENE;receivable;True;True;;;1
+380;4563TOVAL;0;TOVAL;receivable;True;True;;;1
+381;4563TPLD;0;TPLD VERS.CAPITAL;receivable;True;True;;;1
+382;4563TREFL;0;L'AS DE TREFLE;receivable;True;True;;;1
+383;4563TRILL;0;TRILLAUD;receivable;True;True;;;1
+384;4563ULTRA;0;ULTRAMARINE CAPITAL;receivable;True;True;;;1
+385;4563VANCH;0;VANNES CHEMINANT;receivable;True;True;;;1
+386;4563VERGE;0;VERGER DES MUSES;receivable;True;True;;;1
+387;4563VERRI;0;VERRIER LES HERBOER;receivable;True;True;;;1
+388;4563VIAL;0;VIAL VERS.CAPITTAL;receivable;True;True;;;1
+389;4563YSSIN;0;SARL NIVAR YSSINGEAUX;receivable;True;True;;;1
+390;4564ABCDP;0;D.ENTREE ABCD PRO;receivable;True;True;;;1
+391;4564ARTIS;0;ARTISTE PEINTRE;receivable;True;True;;;1
+392;4564AUTRE;0;AUTRE DIT;receivable;True;True;;;1
+393;4564BASER;0;BASER CAPITAL;receivable;True;True;;;1
+394;4564CHAMP;0;D.ENTREE CHAMPAGNE;receivable;True;True;;;1
+395;4564DUPON;0;D.ENTREE DUPONT;receivable;True;True;;;1
+396;4564DUPRE;0;DUPRE;receivable;True;True;;;1
+397;4564FOTOP;0;D.ENTREE FOTOPLAN;receivable;True;True;;;1
+398;4564MEIST;0;D.ENTREE MEISTRE;receivable;True;True;;;1
+399;4564OUEST;0;D.ENTREE OUEST GRAPHIQUE;receivable;True;True;;;1
+400;4564PAPON;0;DROIT D ENTREE PAPON;receivable;True;True;;;1
+401;4564RIBOU;0;D.ENTREE RIBOULET;receivable;True;True;;;1
+402;4564ROLLA;0;DROIT D'ENTREE ROLLAND;receivable;True;True;;;1
+403;4564RORBA;0;ROR BEAUX ART;receivable;True;True;;;1
+404;4564TIRE;0;D.ENTREE TIREPLAN;receivable;True;True;;;1
+405;4564VIAL;0;D.ENTREE VIAL;receivable;True;True;;;1
+406;460000;0;DEBITEURS DIVERS;view;;;;;1
+514;467001;0;MARCHAND COULEUR;view;True;True;;;1
+515;467002;0;STIRP;view;True;True;;;1
+516;467003;0;DALBE TOURS;view;True;True;;;1
+517;467004;0;CT CT ARTEO / ARTACREA;view;True;True;;;1
+518;467010;0;RBST CPTE PIVOT;view;True;True;;;1
+523;468600;0;CHARGES A PAYER;debt;;;;;1
+524;468700;0;PRODUITS A RECEVOIR;receivable;;;;;1
+525;47010RPCD;0;RPCD;view;;;;;1
+526;471000;0;COMPTE D'ATTENTE;receivable;;;;;1
+528;486000;0;CH.CONSTATEES D'AVANCE;receivable;;;;;1
+529;487000;0;PRODUITS CONST.D'AVANCE;debt;;;;;1
+530;487003;0;PRODUITS CONST.D'AVANCE;debt;;;;;1
+531;488612;0;LOCATION AS400;debt;;;;;1
+532;488613;0;JUMPER;debt;;;;;1
+533;488614;0;LOYER ST DENIS;debt;;;;;1
+534;488615;0;LOYER LONRAI;debt;;;;;1
+535;488616;0;LOCATIONS DIVERSES;debt;;;;;1
+536;488617;0;FRAIS MR JAMET;debt;;;;;1
+537;488618;0;ENTRETIEN PELOUSE LONRAI;debt;;;;;1
+538;488619;0;ENTRETIEN GAL ST DENIS;debt;;;;;1
+539;488620;0;ENTRETIEN LONRAI;debt;;;;;1
+540;488621;0;ENTRETIEN MATERIEL TRANSPORT;debt;;;;;1
+541;488622;0;CONTRAT NESPRESSO;debt;;;;;1
+542;488623;0;CTT ENTRETIEN INFORMATIK;debt;;;;;1
+543;488624;0;CONTRAT ENTRETIEN CANON;debt;;;;;1
+544;488625;0;MAINTENANCE LISM;debt;;;;;1
+545;488626;0;SURVEILLANCE ST DENIS;debt;;;;;1
+546;488627;0;SURVEILLANCE LONRAI;debt;;;;;1
+547;488628;0;ENTRETIEN BUREAU ST DENIS;debt;;;;;1
+548;488629;0;ENTRETIEN BUREAU ALENCON;debt;;;;;1
+549;488630;0;ENTRETIEN MAT.OUT.LONRAI;debt;;;;;1
+550;488631;0;HEBERGEMENT/MAINTENANCE SITE;debt;;;;;1
+551;488632;0;ASSURANCES;debt;;;;;1
+552;488633;0;COMMISSIONS;debt;;;;;1
+553;488634;0;HONORAIRES;debt;;;;;1
+554;488635;0;REUNION ASSEMBLEE GENERALE;debt;;;;;1
+555;488636;0;TELEPHONE ST DENIS;debt;;;;;1
+556;488637;0;TELEPHONE LONRAI;debt;;;;;1
+557;488638;0;AFFRANCHISSEMENT LONRAI;debt;;;;;1
+558;488639;0;AFFRANCHISSMENT ST DENIS;debt;;;;;1
+559;488640;0;LIAISON INTERNET;debt;;;;;1
+560;488641;0;COTISATIONS DIVERSES;debt;;;;;1
+561;488642;0;TAXE PROFESSIONNELLE;debt;;;;;1
+562;488643;0;IMPOTS LOCAUX LONRAI;debt;;;;;1
+563;488644;0;TAXE BUREAU FONCIERE ST DENIS;debt;;;;;1
+564;488645;0;ORGANIC;debt;;;;;1
+565;488646;0;EDF ST DENIS;debt;;;;;1
+566;488647;0;EDF LONRAI;debt;;;;;1
+567;488648;0;PETITS EQUIP LONRAI;debt;;;;;1
+568;488649;0;FOURNI BUREAU ST DENIS;debt;;;;;1
+569;488650;0;PROVI CPAYES;debt;;;;;1
+570;488651;0;PROVI 13ﾉ MOIS;debt;;;;;1
+571;488652;0;PROVI AMORTISSEMENTS;debt;;;;;1
+572;488653;0;PROVI RFA;debt;;;;;1
+573;488654;0;ABT PARTICIPATION;debt;;;;;1
+574;488655;0;FOURNI BUREAU LONRAI;debt;;;;;1
+575;488656;0;ABT RFA EXO;debt;;;;;1
+576;488657;0;COPIEUR CANON;debt;;;;;1
+577;488658;0;LOCAM MAT SURVEILLANCE;debt;;;;;1
+578;488659;0;HEBERGEMENT CLOUD;debt;;;;;1
+579;491000;0;PROV.CLIENTS DOUTEUX;debt;;;;;1
+580;496700;0;PROVI CAPITAL SACFOM;receivable;;;;;1
+581;500000;0;VAL MOB.DE PLACEMENT CCF;view;;;;;1
+582;504000;0;BPCC COMPTE A TERME;cash;;;;;1
+583;508000;0;CT A TERME CCF 9360;cash;;;;;1
+584;508100;0;CT TERME BFCC;cash;;;;;1
+585;508101;0;CPTE SICAV HSBC 1;cash;;;;;1
+586;508102;0;CT TERME \(1\) CA;cash;;;;;1
+587;508103;0;CPTE TERME \(2\)CA;cash;;;;;1
+588;511000;0;CREDIT AGRICOLE;cash;;;;;1
+589;511100;0;CREDIT AGRICOLE FDG;cash;;;;;1
+590;511200;0;CHEQUES A ENCAISSER;cash;;;;;1
+591;512000;0;HSBC;cash;;;;;1
+592;512200;0;HSBC FDG;cash;;;;;1
+593;512300;0;HSBC CAUTION 1851;cash;;;;;1
+594;512400;0;HSBC CPTE TERME 9360;cash;;;;;1
+595;590600;0;Obligations;cash;;;;;1
+597;514000;0;CREDIT COOP;cash;;;;;1
+598;514001;0;BFCC PRET;cash;;;;;1
+600;515000;0;CAISSE D'EPARGNE;cash;;;;;1
+601;601700;0;Fournitures A, B, C, ..;charge;;;True;True;1
+602;516000;0;CIC;cash;;;;;1
+605;531000;0;CAISSE SIEGE;cash;;;;;1
+606;580000;0;VIREMENTS DE FONDS;view;;;;;1
+607;590008;0;PROV.TITRES DE PARTICIP.;cash;;;;;1
+608;603100;0;VARIATION DE STOCKS;charge;;;True;True;1
+609;603700;0;VARIATION DE STOCK;charge;;;True;True;1
+610;604000;0;PRESTATION DIVERSE;charge;;;True;True;1
+611;604001;0;PRESTATION SUPER U;charge;;;True;True;1
+612;604002;0;PRESTA LISM PR EDV;charge;;;True;True;1
+613;602610;0;Emballages perdus;charge;;;True;True;1
+614;606100;0;EDF EAU ST DENIS;charge;;;True;True;1
+615;606101;0;EDF EAU LONRAI;charge;;;True;True;1
+616;606300;0;PETITS EQUIPEMENTS;charge;;;True;True;1
+617;606400;0;FOURNITURES DE BUREAU;charge;;;True;True;1
+618;606401;0;FOURNI BUREAU LONRAI;charge;;;True;True;1
+619;606410;0;COPIE COPIEUR;charge;;;True;True;1
+620;606800;0;FOURNITURES AUTRES;charge;;;True;True;1
+621;607007;0;BAC DUCROIRE;charge;;;True;True;1
+622;607017;0;BAC DUCROI IMPORT;charge;;;True;True;1
+623;607100;0;ACHATS PRODUITS DALBE;charge;;;True;True;1
+624;607101;0;DALBE DUCROIRE IMPORT;charge;;;True;True;1
+625;607102;0;DALBE DUCROIRE;charge;;;True;True;1
+626;607103;0;CATALOGUE DIVERS;charge;;;True;True;1
+627;607104;0;ACH.CALENDRIER-SOUS MAINS;charge;;;True;True;1
+628;607105;0;ACHATS EMBALLAGES;charge;;;True;True;1
+629;607106;0;ACHAT SACS;charge;;;True;True;1
+630;607108;0;ACHATS SACFOM;charge;;;True;True;1
+631;607109;0;ACHATS LISM;charge;;;True;True;1
+632;607110;0;ACHATS PRODUITS SANS MARGE;charge;;;True;True;1
+633;607112;0;ACHATS PROD.IMPORT CEE;charge;;;True;True;1
+634;607113;0;ACHAT DUCROIRE CEE;charge;;;True;True;1
+635;607120;0;ACHATS PROMOTIONNELS;charge;;;True;True;1
+636;607200;0;ACHATS DIVERS;charge;;;True;True;1
+637;607210;0;CATALOGUE TECHNIQUE;charge;;;True;True;1
+645;608000;0;DROITS DE DOUANE;charge;;;True;True;1
+646;609019;0;PP CAT.GENERAL;charge;;;True;True;1
+647;609700;0;R.R.R.DUCROIRE;charge;;;True;True;1
+648;609701;0;R R R FIN D ANNEE;charge;;;True;True;1
+649;609790;0;RRR DUCROIRE EXO;charge;;;True;True;1
+650;609791;0;R R R  EXO;charge;;;True;True;1
+652;611000;0;SOUS TRAITANT;charge;;;True;True;1
+655;612200;0;SOGELEASE;charge;;;True;True;1
+656;612201;0;LOCATION AS400;charge;;;True;True;1
+657;612202;0;JUMPER;charge;;;True;True;1
+658;612203;0;NEOPOST;charge;;;True;True;1
+659;612204;0;ELYS BAIL;charge;;;True;True;1
+660;612205;0;BT LIXXBAIL;charge;;;True;True;1
+661;612206;0;LIXXBAIL;charge;;;True;True;1
+662;612207;0;CREDIPAR CAMION;charge;;;True;True;1
+663;612208;0;LIXXBAIL COPIEUR CANON;charge;;;True;True;1
+664;612209;0;LEASING PICASSO;charge;;;True;True;1
+665;612210;0;LEASING C3;charge;;;True;True;1
+666;612211;0;LEASING COPIEUR 05/2014;charge;;;True;True;1
+667;612212;0;LEASING CACTUS;charge;;;True;True;1
+668;613200;0;LOYERS;charge;;;True;True;1
+669;613201;0;LOYER LONRAI;charge;;;True;True;1
+670;613204;0;LOCATION AS400;charge;;;True;True;1
+671;613205;0;HEBERGEMENT CLOUD;charge;;;True;True;1
+672;613208;0;COPIEUR CANON;charge;;;True;True;1
+673;613209;0;LOCATION C5 AIRCROSS;charge;;;True;True;1
+674;613210;0;LOCATION C3;charge;;;True;True;1
+675;613211;0;LOCATION COPIEUR;charge;;;True;True;1
+676;613212;0;LOCATION CACTUS;charge;;;True;True;1
+677;613213;0;LEASING TRANSPALETTES;charge;;;True;True;1
+678;613214;0;LOCATION BERLINGO;charge;;;True;True;1
+679;613250;0;LOCATIONS DIVERSES;charge;;;True;True;1
+680;613251;0;LOCATION AS400;charge;;;True;True;1
+681;613252;0;LOC VIDEO SURVEILLANCE MATERIEL DE SURVEILLANCE;charge;;;True;True;1
+682;613253;0;LOC.MUSIC MATIC=613500;charge;;;True;True;1
+683;613254;0;LOCATION VEHICULE;charge;;;True;True;1
+684;613255;0;LOC.VIDEO SURVEILLANCE;charge;;;True;True;1
+685;613500;0;LOC MUSIC MATIC;charge;;;True;True;1
+686;615200;0;FRAIS CHARTIER;charge;;;True;True;1
+687;615210;0;FRAIS MR JAMET;charge;;;True;True;1
+688;615211;0;FRAIS FABRE;charge;;;True;True;1
+689;615212;0;ESSENCE;charge;;;True;True;1
+690;615213;0;FRAIS LOUCHE;charge;;;True;True;1
+691;615214;0;FRAIS CORINNE HARMANGE;charge;;;True;True;1
+692;615215;0;FRAIS GORMAND;charge;;;True;True;1
+693;615216;0;FRAIS BEGUIN;charge;;;True;True;1
+694;624700;0;Transports collectifs du personnel;charge;;;True;True;1
+695;615500;0;ENTRETIEN GAL ST DENIS;charge;;;True;True;1
+696;615501;0;ENT.DIVERS SOPHIA;charge;;;True;True;1
+697;615502;0;ENTRETIEN MAT :ADHERENTS;charge;;;True;True;1
+698;615503;0;ELIS;charge;;;True;True;1
+699;615510;0;ENT.MATERIEL DE TRANSPORT;charge;;;True;True;1
+700;615520;0;CONTRATS D'ENTRETIEN;charge;;;True;True;1
+701;615521;0;CTT ENTRETIEN INFORMATIK;charge;;;True;True;1
+702;615522;0;=606410 CANON;charge;;;True;True;1
+703;615529;0;PETIT DEV LISM;charge;;;True;True;1
+704;615530;0;MAINTENANCE LISM;charge;;;True;True;1
+705;615531;0;CLUB INFORMATIQUE LISM;charge;;;True;True;1
+706;615532;0;MAINTENANCE DESERT;charge;;;True;True;1
+707;615540;0;SURVEILLANCE;charge;;;True;True;1
+708;615541;0;SURVEILLANCE;charge;;;True;True;1
+709;615550;0;ENTRETIEN BUREAU ST DENIS;charge;;;True;True;1
+710;615551;0;ENTRETIEN BUREAU LONRAI;charge;;;True;True;1
+711;615600;0;ENTETIEN IMMEUBLE LONRAI;charge;;;True;True;1
+712;615601;0;ENTRE.MAT OUT.LONRAI;charge;;;True;True;1
+713;615602;0;ENTRETIEN INFORMATIQUE LONRAI;charge;;;True;True;1
+714;615603;0;CAP ANTIGONE;charge;;;True;True;1
+715;616000;0;ASSURANCES;charge;;;True;True;1
+716;617000;0;EXTRANET;charge;;;True;True;1
+717;617001;0;CREAWORLD REFERENCEMENT;charge;;;True;True;1
+718;617002;0;CREAWORLD DEVELOPPEMENT;charge;;;True;True;1
+719;617003;0;GAMME CITY;charge;;;True;True;1
+720;617004;0;PROJET RADIO;charge;;;True;True;1
+721;617005;0;GAMME BREHAT;charge;;;True;True;1
+722;617006;0;GAMME LOISIRS;charge;;;True;True;1
+723;617007;0;GAMME FANA;charge;;;True;True;1
+724;617008;0;FICHE CONSEIL;charge;;;True;True;1
+725;617009;0;GAMME CLOUET;charge;;;True;True;1
+726;617010;0;CHEQUE CADEAUX;charge;;;True;True;1
+727;617011;0;GAMME CROKO;charge;;;True;True;1
+728;617012;0;GAMME COLLE;charge;;;True;True;1
+729;617013;0;GAMME CAHIER DESSIN;charge;;;True;True;1
+730;617014;0;GAMME CALLIGRAPHIE;charge;;;True;True;1
+731;617015;0;ETIQUETTE BREHAT;charge;;;True;True;1
+732;617016;0;GAMME PRISMO;charge;;;True;True;1
+733;617017;0;GAMME ADJUVANTS;charge;;;True;True;1
+734;617018;0;GAMME BLOC LOW COST;charge;;;True;True;1
+735;617019;0;DALBE&MOI EXTRACTION;charge;;;True;True;1
+736;617020;0;DALBE&MOI SITE;charge;;;True;True;1
+737;617021;0;GAMME MAGNUM;charge;;;True;True;1
+738;617022;0;GAMME DALBEGUM;charge;;;True;True;1
+739;617023;0;GALERIES AMIENS;charge;;;True;True;1
+740;617024;0;SEAU DE PERLES;charge;;;True;True;1
+741;617025;0;GAMME ENFANT;charge;;;True;True;1
+742;617026;0;GAMME COLLE BLEUE;charge;;;True;True;1
+743;617027;0;GAMME SAC;charge;;;True;True;1
+744;617028;0;CREACOLLE;charge;;;True;True;1
+745;617029;0;GAMME PANNEAU TOILE;charge;;;True;True;1
+746;617030;0;GAMME VERNIS;charge;;;True;True;1
+747;617031;0;GAMME ACRYLIA;charge;;;True;True;1
+748;617032;0;ETIQUETTES COLLE BLANCHE;charge;;;True;True;1
+749;617033;0;GAMME POCH DESSIN;charge;;;True;True;1
+750;617034;0;GAMME PALLIO;charge;;;True;True;1
+751;617035;0;GAMME POCH PINCEAUX;charge;;;True;True;1
+752;617036;0;GAMME COLLE BLANCHE;charge;;;True;True;1
+753;617037;0;NUANCIER ACRYLIA;charge;;;True;True;1
+754;617038;0;GAMME DALBE JET;charge;;;True;True;1
+755;617039;0;PLAQUETTE DALBE;charge;;;True;True;1
+756;617040;0;CARTE FIDELITE D&M;charge;;;True;True;1
+757;617041;0;GAMME PLANCHE ETUDIANT;charge;;;True;True;1
+758;617042;0;3 VOLETS MAGASIN;charge;;;True;True;1
+759;617043;0;GAMME GESSO;charge;;;True;True;1
+760;617044;0;LOGO DALBE;charge;;;True;True;1
+761;617045;0;GAMME ATELIER;charge;;;True;True;1
+762;617046;0;GAMME MOSAIQUE;charge;;;True;True;1
+763;617047;0;GAMME PEINTURE;charge;;;True;True;1
+764;617048;0;GAMME BLOC GRAND ART-CROKO;charge;;;True;True;1
+765;617049;0;PUB TELE RADIO;charge;;;True;True;1
+766;617050;0;GAMME CHASSIS;charge;;;True;True;1
+767;617051;0;ENCART DALBE LATTES;charge;;;True;True;1
+768;617052;0;NUANCIER PALLIO;charge;;;True;True;1
+769;617053;0;NUANCIER PRISMO;charge;;;True;True;1
+770;617054;0;ACRYLIQUE WINGO;charge;;;True;True;1
+771;617055;0;ETIQUETTE PRISMO;charge;;;True;True;1
+772;617056;0;CARTES PINCEAUX;charge;;;True;True;1
+773;617057;0;GAMME PERLES;charge;;;True;True;1
+774;617058;0;GAMME COLLE PUZZLE;charge;;;True;True;1
+775;617059;0;NUANCIER PERLES;charge;;;True;True;1
+776;617060;0;PERLES ET MOI;charge;;;True;True;1
+777;617061;0;DALBISATION MAGASINS;charge;;;True;True;1
+778;617062;0;GAMME TERRE;charge;;;True;True;1
+779;617063;0;GAMME LOISIR ET DECO;charge;;;True;True;1
+780;617064;0;GAMME PIGMENTS;charge;;;True;True;1
+781;617065;0;ETUDE CARTE DALBE ET MOI;charge;;;True;True;1
+782;617066;0;GAMME AGOUA;charge;;;True;True;1
+783;617067;0;SPOT MUSICMATIC;charge;;;True;True;1
+784;617068;0;NUANCIER LOISIR & DECO;charge;;;True;True;1
+785;617069;0;ETIQUETTE CHASSIS;charge;;;True;True;1
+786;617070;0;ESPACE ENCADREMENT;charge;;;True;True;1
+787;617071;0;ETIQUETTE PALLIO;charge;;;True;True;1
+788;617072;0;COIN BOUTCHOU;charge;;;True;True;1
+789;617073;0;LA PAPETERIE DALBE;charge;;;True;True;1
+790;617074;0;GAMME CRAYODALBE;charge;;;True;True;1
+791;617075;0;DALBISATION DES VOITURES;charge;;;True;True;1
+792;617076;0;GAMME PALETTE PELABLE;charge;;;True;True;1
+793;617077;0;GAMME MOULAGE;charge;;;True;True;1
+794;617078;0;DEVELOPPEMENT COMPTA;charge;;;True;True;1
+795;617079;0;GAMME LX&DECO TISSU;charge;;;True;True;1
+796;617080;0;GAMME BLOC;charge;;;True;True;1
+797;617081;0;NUANCIER AGOUA;charge;;;True;True;1
+798;617082;0;KAKEMONO;charge;;;True;True;1
+799;617083;0;VITROPHANIE;charge;;;True;True;1
+800;617084;0;RECHERCHE MDD;charge;;;True;True;1
+801;617085;0;CHARTRE GRAPHIQUE/CONSOMMATEUR;charge;;;True;True;1
+802;617086;0;GAMME WINGO;charge;;;True;True;1
+803;617087;0;GAMME PASTEL WINGO;charge;;;True;True;1
+804;617088;0;DVPT MARQUEUR DALBE;charge;;;True;True;1
+805;617089;0;D&M COUPONS REDUC;charge;;;True;True;1
+806;617090;0;GAMME AEROSOL PEINTURE;charge;;;True;True;1
+807;617091;0;DALBE MINI;charge;;;True;True;1
+808;617092;0;BANDEAUX MEUBLE;charge;;;True;True;1
+809;617093;0;GAMME FEUTRE DB;charge;;;True;True;1
+810;617094;0;CAT PAQUES;charge;;;True;True;1
+811;617095;0;GAMME GOUACHE;charge;;;True;True;1
+812;617096;0;GAMME START;charge;;;True;True;1
+813;617097;0;CREATION PRESSE LAGNY;charge;;;True;True;1
+814;617098;0;GAMME GOUACHE DB 20 ET 100ML;charge;;;True;True;1
+815;617099;0;CREATION DES PINCEAUX;charge;;;True;True;1
+839;618100;0;DOCUMENTATION GENERALE;charge;;;True;True;1
+840;618500;0;FORMATION SALARIﾉ;charge;;;True;True;1
+841;621100;0;PERSONNEL INTERIMAIRE;charge;;;True;True;1
+842;691000;0;Participation des salariés aux résultats;charge;;;True;True;1
+843;622200;0;COMMISSIONS;charge;;;True;True;1
+844;622600;0;HONORAIRES;charge;;;True;True;1
+845;622601;0;DEMO;charge;;;True;True;1
+846;622610;0;REDEVANCE ARTEO;charge;;;True;True;1
+847;622620;0;COMMISSIONS ARTEO;charge;;;True;True;1
+848;622700;0;FR.D'ACTES ET DE CONTENT;charge;;;True;True;1
+849;622800;0;FORMATION DALBE ACADEMIE;charge;;;True;True;1
+850;623300;0;ECRITURE INVENTAIRE;charge;;;True;True;1
+851;623301;0;ASSEMBLEE GENERALE;charge;;;True;True;1
+852;623302;0;CARTE DALBE&MOI;charge;;;True;True;1
+853;623303;0;CHEQUE CADEAU D&M;charge;;;True;True;1
+854;623304;0;CARTE D&M PRO;charge;;;True;True;1
+855;623305;0;SHOW ROOM;charge;;;True;True;1
+856;623306;0;LISAA;charge;;;True;True;1
+857;623400;0;CADEAUX;charge;;;True;True;1
+858;623401;0;TICKET CADEAU;charge;;;True;True;1
+859;623600;0;CAT.LEZARD CREATIF;charge;;;True;True;1
+860;623601;0;DEPLIANT URBAN ART;charge;;;True;True;1
+861;623602;0;DEPLIANT BTK INTERNET;charge;;;True;True;1
+862;623700;0;PP PUB>623769;charge;;;True;True;1
+863;623701;0;CAT NOEL KDO;charge;;;True;True;1
+864;623702;0;CAT NOEL DECO;charge;;;True;True;1
+865;623703;0;CARRE JAUNE;charge;;;True;True;1
+866;623704;0;CATALOGUE GENERAL;charge;;;True;True;1
+867;623705;0;CAT AG ET DESSIN TECHNIQUE;charge;;;True;True;1
+868;623706;0;IMPRIME DALBE&MOI;charge;;;True;True;1
+869;623707;0;TARIF ILLUSTRE;charge;;;True;True;1
+870;623708;0;CAVALIER PRIX;charge;;;True;True;1
+871;623709;0;PP PUB ADH EXO CEE;charge;;;True;True;1
+872;623710;0;ANNONCE PRESSE;charge;;;True;True;1
+873;623711;0;CAT BUREAU ETUDE;charge;;;True;True;1
+874;623712;0;VIDEO/PHOTO DIVERS;charge;;;True;True;1
+875;623713;0;PLAQUETTE DESSIN TECHNIQUE;charge;;;True;True;1
+876;623714;0;PUB PANNEAU;charge;;;True;True;1
+877;623715;0;LANCEMENT NOUVEAUX ADHERENTS;charge;;;True;True;1
+878;623716;0;CATALOGUE MDD;charge;;;True;True;1
+879;623717;0;CAT TECHNIQUE;charge;;;True;True;1
+880;623718;0;PACKAGING;charge;;;True;True;1
+881;623719;0;PUB.PROMO 3M;charge;;;True;True;1
+882;623720;0;PUB.CAT BEAUX ARTS;charge;;;True;True;1
+883;623721;0;SITES ADHERENTS;charge;;;True;True;1
+884;623722;0;SITE DALBE&MOI;charge;;;True;True;1
+885;623723;0;CAT PRODUIT DALBE 2008;charge;;;True;True;1
+886;623724;0;DALBEXPO;charge;;;True;True;1
+887;623725;0;PUB.PROMO AQUAR+PASTEL;charge;;;True;True;1
+888;623726;0;AFFICHES MENSUELLLES;charge;;;True;True;1
+889;623727;0;PUB.WINGO;charge;;;True;True;1
+890;623728;0;PUB.AQUARELLE BREHAT;charge;;;True;True;1
+891;623729;0;PUB.FETE DES MERES;charge;;;True;True;1
+892;623730;0;CHEQUE CADEAUX;charge;;;True;True;1
+893;623731;0;PUB.NUANCIER CITY;charge;;;True;True;1
+894;623732;0;LOGO DALBE;charge;;;True;True;1
+895;623733;0;CARTE ETUDIANT ECOLE D'ART;charge;;;True;True;1
+896;623734;0;NUANCIER VERITABLE;charge;;;True;True;1
+897;623735;0;PUB FIDELYS;charge;;;True;True;1
+898;623736;0;SALON ARTS CREATION;charge;;;True;True;1
+899;623737;0;PUB FOURREAU CITY;charge;;;True;True;1
+900;623738;0;FAITES DE LA PEINTURE;charge;;;True;True;1
+901;623739;0;PRINTEMPS BEAUX ARTS;charge;;;True;True;1
+902;623740;0;PUB.CARTE VOEUX;charge;;;True;True;1
+903;623741;0;PROMO NOUVEAU MAGASIN;charge;;;True;True;1
+904;623742;0;PP CONFERENCE DIGITALE;charge;;;True;True;1
+905;623743;0;MEUBLES;charge;;;True;True;1
+906;623744;0;PUB CONVENTION DALBE;charge;;;True;True;1
+907;623745;0;REUNION FRS 2020;charge;;;True;True;1
+908;623746;0;ETIQUETTE RAMETTE;charge;;;True;True;1
+909;623747;0;GOUACHE DALBE;charge;;;True;True;1
+910;623748;0;AFFICHE PASTEL;charge;;;True;True;1
+911;623749;0;OPERATION SMAC;charge;;;True;True;1
+912;623750;0;PRINTEMPS LOISIRS;charge;;;True;True;1
+913;623751;0;ETIQUETTE MAGICOLLE;charge;;;True;True;1
+914;623752;0;CAT ENCADREMENT;charge;;;True;True;1
+915;623753;0;ZEPHIR;charge;;;True;True;1
+916;623754;0;TABLEAUX TOILES;charge;;;True;True;1
+917;623755;0;CARTONS TOILES;charge;;;True;True;1
+918;623756;0;CHASSIS MIXTES;charge;;;True;True;1
+919;623757;0;KIT CHASSIS;charge;;;True;True;1
+920;623758;0;CD ROM;charge;;;True;True;1
+921;623759;0;CAT ARTS GRAPHIQUES;charge;;;True;True;1
+922;623760;0;CAT RENTRﾉE DES ARTS;charge;;;True;True;1
+923;623761;0;CAT RENTRﾉE SCOLAIRE;charge;;;True;True;1
+924;623762;0;PACKAGING PIGMENTS;charge;;;True;True;1
+925;623763;0;PUB NUANCIER MAGNUM;charge;;;True;True;1
+926;623764;0;CATALOGUE ARTEO;charge;;;True;True;1
+927;623765;0;AFFICHES FIN D 'ANNEE;charge;;;True;True;1
+928;623766;0;PUB NUANCIER ACRYLIA;charge;;;True;True;1
+929;623767;0;CAT SUPPORT ET CONSOM;charge;;;True;True;1
+930;623768;0;CATALOG NOEL DECO;charge;;;True;True;1
+931;623769;0;PP PUB EXTERIEUR;charge;;;True;True;1
+932;623770;0;AFFICHE ABRIS BUS-4X3;charge;;;True;True;1
+933;623771;0;CAT PERLES ET MOI;charge;;;True;True;1
+934;623772;0;PROMO MARIAGE;charge;;;True;True;1
+935;623773;0;DALBISATION DES VOITURES;charge;;;True;True;1
+936;623774;0;ESPACE ENCADREMENT;charge;;;True;True;1
+937;623775;0;GAMME DB TWIN;charge;;;True;True;1
+938;623776;0;TOP DE DALBE;charge;;;True;True;1
+939;623777;0;PUB RADIO;charge;;;True;True;1
+940;623778;0;CAT BOOK;charge;;;True;True;1
+941;623779;0;PROMO ACRYLIQUE;charge;;;True;True;1
+942;623780;0;PUB.PROMO FIN D ANNEE;charge;;;True;True;1
+943;623781;0;CAT PRINTEMPS LOISIRS;charge;;;True;True;1
+944;623782;0;PUB.CATALOGUE FIN  ANNEE;charge;;;True;True;1
+945;623783;0;PUB.PROMO TECHNIQUE;charge;;;True;True;1
+946;623784;0;AFFICHES PROMO DESSIN;charge;;;True;True;1
+947;623785;0;PROMO SCRAPBOOKING;charge;;;True;True;1
+948;623786;0;MAILING DALBE & MOI;charge;;;True;True;1
+949;623787;0;L'ART ET LA MATIERE \(MAI\);charge;;;True;True;1
+950;623790;0;AFFICHES LOISIRS CREATIFS;charge;;;True;True;1
+951;623791;0;PROMO BLC 623795;charge;;;True;True;1
+952;623792;0;PLAQUETTE DALBE;charge;;;True;True;1
+953;623793;0;PUB. HALLOWEEN;charge;;;True;True;1
+954;623794;0;AFFICHES PROMO BOOKS;charge;;;True;True;1
+955;623795;0;CAT MOIS DU BLANC;charge;;;True;True;1
+956;623796;0;CAT COLLECTIVITE;charge;;;True;True;1
+957;623797;0;PROMO AQUARELLE;charge;;;True;True;1
+958;623798;0;GAMME CRAYODALBE;charge;;;True;True;1
+959;623799;0;GAMME AGOUA;charge;;;True;True;1
+960;623800;0;DONS POURBOIRES;charge;;;True;True;1
+961;623898;0;PORTAIL;charge;;;True;True;1
+962;623899;0;PROMO DIGIDALBE/CARTOUCHE;charge;;;True;True;1
+967;624000;0;PERSONNEL EXTERIEUR;charge;;;True;True;1
+968;624099;0;DEMENAGEMENT ST OUEN;charge;;;True;True;1
+969;624100;0;PORTS SUR ACHATS;charge;;;True;True;1
+970;624101;0;PORT SUR ACHAT GD IMPORT;charge;;;True;True;1
+971;624102;0;PORT ACHAT SUPER U;charge;;;True;True;1
+972;624200;0;PORTS SUR VENTES;charge;;;True;True;1
+973;624800;0;TRANSPORTS DIVERS;charge;;;True;True;1
+975;625100;0;VOY.DEPL.A LA CH.DE DALBE;charge;;;True;True;1
+976;625101;0;PARKING;charge;;;True;True;1
+977;625110;0;DEPLACEMENT SALARIE;charge;;;True;True;1
+978;625120;0;DALBE EXPO;charge;;;True;True;1
+979;625500;0;FRAIS REUNION/CA;charge;;;True;True;1
+980;625700;0;REUNIONS EXECUTIFS;charge;;;True;True;1
+981;625701;0;REUNIONS PLEINIERES;charge;;;True;True;1
+982;625702;0;VOYAGE JORDANIE;charge;;;True;True;1
+983;625703;0;FRAIS REUNIONS REGIONS;charge;;;True;True;1
+984;625704;0;CONVENTION;charge;;;True;True;1
+985;625710;0;RECEPT. A LA CH.DE DALBE;charge;;;True;True;1
+986;625711;0;REUNION ASSEMBLEE GENERAL;charge;;;True;True;1
+987;625712;0;FRAIS RECEPT;charge;;;True;True;1
+988;625713;0;CONVENTION VENDEURS;charge;;;True;True;1
+989;626000;0;TELEPHONE ST DENIS;charge;;;True;True;1
+990;626001;0;TELECOM LONRAI;charge;;;True;True;1
+991;626009;0;AFFRAN LONRAI;charge;;;True;True;1
+992;626010;0;AFFRANCH STDENIS;charge;;;True;True;1
+993;626011;0;ROUTAGE CATALOG DESSIN;charge;;;True;True;1
+994;626012;0;AFFRANCHISSEMENT CEV;charge;;;True;True;1
+998;627000;0;SERVICES BANCAIRES;charge;;;True;True;1
+999;627100;0;FRAIS REGLEMENTS IMPORT.;charge;;;True;True;1
+1000;627200;0;FRAIS PGE;charge;;;True;True;1
+1001;628100;0;COTISATIONS DIVERSES;charge;;;True;True;1
+1002;628101;0;COTISATION CEV;charge;;;True;True;1
+1003;628109;0;COTISATION HORS CEE;charge;;;True;True;1
+1004;631200;0;TAXE D'APPRENTISSAGE;charge;;;True;True;1
+1005;631201;0;TAXE APP ALENCON;charge;;;True;True;1
+1006;631300;0;FONGECIF;charge;;;True;True;1
+1007;631301;0;FORMATION CONTINUE;charge;;;True;True;1
+1008;631400;0;AGEFIPH;charge;;;True;True;1
+1009;633300;0;FORMATION CONTINUE;charge;;;True;True;1
+1010;633301;0;FORMATION CONTINUE LONRAI;charge;;;True;True;1
+1011;633400;0;1% LOGEMENT;charge;;;True;True;1
+1012;633401;0;1% LOGEMENT LONRAI;charge;;;True;True;1
+1013;633800;0;TAXES DIVERSES;charge;;;True;True;1
+1014;635100;0;DECHETS COMMERCIAUX;charge;;;True;True;1
+1015;635110;0;TAXE PROFESSIONNELLE;charge;;;True;True;1
+1016;635111;0;CFE VAE;charge;;;True;True;1
+1017;635112;0;CFE CVAE;charge;;;True;True;1
+1018;635130;0;TAXES FONCIERES LONRAI;charge;;;True;True;1
+1019;635131;0;TAXES FONCIER & BUREAU 93;charge;;;True;True;1
+1020;635132;0;TAXE SUR BUREAUX;charge;;;True;True;1
+1021;635140;0;TAXE BUREAUX ST DENIS;charge;;;True;True;1
+1022;635141;0;TVS;charge;;;True;True;1
+1023;635150;0;IFA;charge;;;True;True;1
+1024;635160;0;VIGNETTES;charge;;;True;True;1
+1025;635400;0;C GRISE;charge;;;True;True;1
+1026;637100;0;ORGANIC;charge;;;True;True;1
+1027;637800;0;IMPOTS DIVERS;charge;;;True;True;1
+1028;637810;0;TAXE ENSEIGNE;charge;;;True;True;1
+1029;641100;0;APPOINTEMENTS;charge;;;True;True;1
+1030;641101;0;APPOINTEMENTS LONRAI;charge;;;True;True;1
+1031;641110;0;CONGES A PAYER;charge;;;True;True;1
+1032;641130;0;PROVI LICENCIEMENT;charge;;;True;True;1
+1033;641200;0;PROVI SUR PRIMES;charge;;;True;True;1
+1034;641210;0;PROVI PRIME;charge;;;True;True;1
+1035;641300;0;13E MOIS;charge;;;True;True;1
+1036;641400;0;INDEMNITES TRANSPORT;charge;;;True;True;1
+1037;641401;0;INDEMNITE LICENCIEMENT;charge;;;True;True;1
+1038;641402;0;INDEMNITﾉ TRANSPORT;charge;;;True;True;1
+1039;641410;0;ACTIVIﾉ PARTIELLE;charge;;;True;True;1
+1040;641420;0;CHOMAGE PARTIEL;charge;;;True;True;1
+1041;641450;0;INDEMNITE CONVENTIONNEELLE;charge;;;True;True;1
+1042;641460;0;IFC;charge;;;True;True;1
+1043;641500;0;INDEM.TRSPT+IJSS;charge;;;True;True;1
+1044;645100;0;URSSAF;charge;;;True;True;1
+1045;645101;0;URSSAF LONRAI;charge;;;True;True;1
+1046;645200;0;PREVOYANCE;charge;;;True;True;1
+1047;645300;0;REUNICA;charge;;;True;True;1
+1048;645301;0;REUNICA LONRAI;charge;;;True;True;1
+1049;645310;0;B2V CADRES;charge;;;True;True;1
+1050;645311;0;B2V CADRES LONRAI;charge;;;True;True;1
+1051;645400;0;POLE EMPLOI;charge;;;True;True;1
+1052;645401;0;POLE EMPLOI LONRAI;charge;;;True;True;1
+1053;645500;0;RETRAITE GENERALI;charge;;;True;True;1
+1054;645501;0;GENERALI LONRAI;charge;;;True;True;1
+1055;645510;0;CHARGES S. CONGES A PAYER;charge;;;True;True;1
+1056;645600;0;IND. DE LICENCIEMENT;charge;;;True;True;1
+1057;645800;0;PROVI CHARGES SUR C PAYES;charge;;;True;True;1
+1058;645810;0;PROVI CHARGES SUR PRIME;charge;;;True;True;1
+1059;645812;0;PROVI LICE CS;charge;;;True;True;1
+1060;647100;0;STAGIAIRES;charge;;;True;True;1
+1061;647400;0;OEUVRES SOCIALES;charge;;;True;True;1
+1062;647500;0;MEDECINE DU TRAVAIL;charge;;;True;True;1
+1063;648000;0;AUTRES CHARGES DE PERSONNEL;charge;;;True;True;1
+1064;651000;0;REDEVANCES MARQUES;charge;;;True;True;1
+1065;654000;0;CREANCES IRRECOUVRABLE;charge;;;True;True;1
+1066;654100;0;CREANCES IRRECOUVRABLE;charge;;;True;True;1
+1067;658000;0;CHARGES DIVERSES DE GESTION;charge;;;True;True;1
+1068;661000;0;INTERET PRET 150000E;charge;;;True;True;1
+1069;661002;0;INTERET CAT.2015;charge;;;True;True;1
+1070;661005;0;PRET CA 53000;charge;;;True;True;1
+1071;661006;0;CREDIT CAT 2013;charge;;;True;True;1
+1072;661007;0;INTERET CATLOG 2007;charge;;;True;True;1
+1073;661008;0;CREDIT 200000 HSBC;charge;;;True;True;1
+1074;661009;0;INTERETS PRET CAT.2016;charge;;;True;True;1
+1075;661010;0;INTERETS CCF100000;charge;;;True;True;1
+1076;661011;0;INTERETS BFCC 100000;charge;;;True;True;1
+1077;661012;0;INTERETS SG 100000;charge;;;True;True;1
+1078;661013;0;AGIOS BILLET C AGRICOLE;charge;;;True;True;1
+1079;661014;0;AGIOS PRET 900000EUROS;charge;;;True;True;1
+1080;661015;0;AGIOS BILLET SG;charge;;;True;True;1
+1081;661016;0;INT.PRET CAT.2017;charge;;;True;True;1
+1082;661017;0;INTERET CAT.2018-2019;charge;;;True;True;1
+1083;661018;0;PRET SG DOUCHETTES;charge;;;True;True;1
+1084;661019;0;INT.PRET CRCA 100000 EUROS;charge;;;True;True;1
+1085;661020;0;INTERET CATALOGUE 2020-2021;charge;;;True;True;1
+1086;661030;0;BUREAU LONRAI;charge;;;True;True;1
+1087;661040;0;INTERETS PGE;charge;;;True;True;1
+1088;661100;0;INT.SUR EMP.DE 350 000;charge;;;True;True;1
+1089;661110;0;INTERETS CATALOG 2004;charge;;;True;True;1
+1090;661111;0;CREDIT CATALOG 2005;charge;;;True;True;1
+1091;661120;0;CREDIT CCF 2003;charge;;;True;True;1
+1092;661500;0;PERTE DE CHANGE;charge;;;True;True;1
+1093;661501;0;INTERETS CREDIT TRESO BFCC;charge;;;True;True;1
+1094;661502;0;CCF CREDIT 313000;charge;;;True;True;1
+1095;661503;0;CREDIT 670000;charge;;;True;True;1
+1096;661504;0;INTERETS BFCC 300000;charge;;;True;True;1
+1097;661600;0;FRAIS ESCOMPTES LCR;charge;;;True;True;1
+1098;661601;0;INTERETS BANC ARRETE CPTE;charge;;;True;True;1
+1099;661602;0;INTERETS BFCC 300000;charge;;;True;True;1
+1100;661603;0;CREDIT 800000\(2001\);charge;;;True;True;1
+1101;661604;0;INTERETS 107000;charge;;;True;True;1
+1102;661610;0;FRAIS ENCAISS.REGL.ADHER.;charge;;;True;True;1
+1103;661620;0;FR.ENC.96 TR CAT TECHNIQU;charge;;;True;True;1
+1104;661630;0;FR ENC 97 TR CAT TECHNIQU;charge;;;True;True;1
+1105;661810;0;FR.RECOUVREMENT;charge;;;True;True;1
+1106;665000;0;ESCOMPTES ACCORDES;charge;;;True;True;1
+1107;666000;0;PERTE DE CHANGE;charge;;;True;True;1
+1108;671200;0;PENAL.AMENDES FISCALES;charge;;;True;True;1
+1109;671800;0;CHARGES EXCEPTIONNEL;charge;;;True;True;1
+1110;671801;0;CONTROL URSSAF;charge;;;True;True;1
+1111;671802;0;INDEMNITE TRANSACTION;charge;;;True;True;1
+1112;675000;0;V C  ACTIFS CEDES;charge;;;True;True;1
+1113;675200;0;SORTIE AGENCEMENT;charge;;;True;True;1
+1114;678800;0;CHARGES EXCEPTIONNELLES;charge;;;True;True;1
+1115;681100;0;DOTATION AMORTISSEMENT;charge;;;True;True;1
+1116;681110;0;DAP IMMO INCORPOREL;charge;;;True;True;1
+1117;681120;0;DOTATION IMMO CORP;charge;;;True;True;1
+1118;681200;0;CHARGES A ETALER;charge;;;True;True;1
+1119;681500;0;INDEMNITﾉ FIN CARRIERE;charge;;;True;True;1
+1120;681510;0;PROV.IFC;charge;;;True;True;1
+1121;681730;0;PROVI DEPRECIATION STOCK;charge;;;True;True;1
+1122;681740;0;DOTATION PROVISION CLTS;charge;;;True;True;1
+1123;686620;0;PROVI DEPRE TITRES;charge;;;True;True;1
+1124;687100;0;DOTATION AMORT EXCEPTIONNELLE;charge;;;True;True;1
+1125;687500;0;PROVISION POUR RISQUE;charge;;;True;True;1
+1126;695000;0;IMPOTS SUR LES BENEFICES;charge;;;True;True;1
+1127;695100;0;IFA;charge;;;True;True;1
+1128;701000;0;MAILING EXO.;income;;;True;True;1
+1129;701005;0;MAILING A 20,6%;income;;;True;True;1
+1130;701201;0;VENTES DIVERSES EXO.;income;;;True;True;1
+1131;701202;0;VENTES DIVERSES 20,6%;income;;;True;True;1
+1132;702000;0;HONORAIRES EXO.;income;;;True;True;1
+1133;702005;0;HONORAIRES A 19,6%;income;;;True;True;1
+1134;703000;0;PUBLICITE SPECIALE EXO.;income;;;True;True;1
+1135;703005;0;PUB.SPECIALE A 19,6%;income;;;True;True;1
+1136;704000;0;SACS DALBE EXO.;income;;;True;True;1
+1137;704005;0;SACS DALBE A 20,6%;income;;;True;True;1
+1138;705000;0;ASSEMBLEE GENERALE 20%;income;;;True;True;1
+1139;705001;0;ASSEMBLEE GENERALE 7%;income;;;True;True;1
+1140;705005;0;REUNION REGION A 20%;income;;;True;True;1
+1141;705006;0;REUNION REGION A 7%;income;;;True;True;1
+1142;706000;0;PP CANSON;income;;;True;True;1
+1143;706001;0;PP SAUER;income;;;True;True;1
+1144;706002;0;PP COLART;income;;;True;True;1
+1145;706003;0;PP TALENS;income;;;True;True;1
+1146;706004;0;PP FIN ANNEE;income;;;True;True;1
+1147;706005;0;COTISATIONS A 20%;income;;;True;True;1
+1148;706006;0;HONORAIRES REFACTURES;income;;;True;True;1
+1149;706007;0;PUB SPECIALES A 19,6%;income;;;True;True;1
+1150;706008;0;CARTE FIDELITE DALBE & MOI;income;;;True;True;1
+1151;706009;0;COTISATION CARTE FIDELITE     DALBE & MOI;income;;;True;True;1
+1152;706010;0;PP INTERIM ALENCON;income;;;True;True;1
+1153;706011;0;VENTE DIVERSE 5,5%;income;;;True;True;1
+1154;706012;0;CANSON SALON CREATIVA;income;;;True;True;1
+1155;706013;0;SAUER CREATIVA;income;;;True;True;1
+1156;706014;0;LISM:CLUB INFORMATIQUE;income;;;True;True;1
+1157;706015;0;PRESTATIONS EXO;income;;;True;True;1
+1158;706016;0;CONVENTION VENDEURS;income;;;True;True;1
+1159;706017;0;COTISATIONS RP;income;;;True;True;1
+1160;706018;0;PRESTA LOG DALBE;income;;;True;True;1
+1161;706019;0;PP CAT GENERAL;income;;;True;True;1
+1162;706020;0;COTISATION MUSIC MATIC;income;;;True;True;1
+1163;706021;0;CHEQUE FIDELITE 20%;income;;;True;True;1
+1164;706022;0;PRESTA LOG CREA;income;;;True;True;1
+1165;706023;0;CARTE D&M PRO;income;;;True;True;1
+1166;706024;0;AFFICHE 4X3;income;;;True;True;1
+1167;706025;0;PRESTA ROSETTA;income;;;True;True;1
+1168;706026;0;PRESTA LOG EDV;income;;;True;True;1
+1169;706027;0;PRESTA INFO EDV;income;;;True;True;1
+1170;706028;0;PRESTA PERSONNEL EDV;income;;;True;True;1
+1171;706029;0;CHEQUE FIDELITE EXO;income;;;True;True;1
+1172;706030;0;ARTEO FRAIS ADMINISTRATIFS;income;;;True;True;1
+1173;706031;0;PRESTATION SUPER U;income;;;True;True;1
+1174;706032;0;FRAIS ADMINISTRATIFS;income;;;True;True;1
+1175;706033;0;PRESTA ARTEO SITE INTERNET;income;;;True;True;1
+1176;706034;0;PRESTATION DIVERS;income;;;True;True;1
+1177;707000;0;VENTES PRODUITS EXO.;income;;;True;True;1
+1178;707001;0;VENTES PRODUITS A 5,5%;income;;;True;True;1
+1179;707002;0;VENTES PRODUIT DIVERS 20%;income;;;True;True;1
+1180;707003;0;VENTES TROTINETTES;income;;;True;True;1
+1181;707004;0;VENTES PRODUITS A 2,10 %;income;;;True;True;1
+1182;707005;0;VENTES PRODUITS A 20%;income;;;True;True;1
+1183;707006;0;VENTE SUPER U;income;;;True;True;1
+1184;707007;0;VTES DUCROIRE BAC 19,6%;income;;;True;True;1
+1185;707008;0;VTES SACFOM AUX ADH\(20,6\);income;;;True;True;1
+1186;707010;0;VENTE PRODUITS DIVERS 5,5%;income;;;True;True;1
+1187;707011;0;VTES PRODUITS DIVERS EXO;income;;;True;True;1
+1188;707012;0;VTE GROSSISTE 5,5%;income;;;True;True;1
+1189;707013;0;VTE GROSSISTE 20%;income;;;True;True;1
+1190;707014;0;VT INTERNET 5,5%;income;;;True;True;1
+1191;707015;0;VT INTERNET 20%;income;;;True;True;1
+1192;707017;0;VTES DUCROIRE BAC 5,5%;income;;;True;True;1
+1193;707018;0;PRODUIT HORS STOCK 20%;income;;;True;True;1
+1194;707019;0;PRODUIT HORS STOCK 5,5%;income;;;True;True;1
+1195;707020;0;VT ARTACREA 5,5%;income;;;True;True;1
+1196;707021;0;VT ARTACREA 20%;income;;;True;True;1
+1197;707022;0;VT EDV 5,5%;income;;;True;True;1
+1198;707023;0;VT EDV 20%;income;;;True;True;1
+1199;707100;0;VENTES CATAL.DALBE EXO.;income;;;True;True;1
+1200;707101;0;CAT.TECHN.DALBE 1998 EXO.;income;;;True;True;1
+1201;707102;0;CAT GENERAL;income;;;True;True;1
+1202;707103;0;CAT.TECHN.DALBE 2000 20,6%;income;;;True;True;1
+1203;707104;0;CAHIER BEAUX ARTS EXO.;income;;;True;True;1
+1204;707105;0;VENTE CATALOG DALBE 19,6%;income;;;True;True;1
+1205;707106;0;VENTES DIVERS 19,6%;income;;;True;True;1
+1206;707107;0;VENTES FOURNITURES DIVERSES;income;;;True;True;1
+1207;707108;0;VTE CAT COLLECTIVITES 2006;income;;;True;True;1
+1208;707109;0;VENTE CATALOGUE GENERAL EXO;income;;;True;True;1
+1209;707112;0;VENTE CAT DIVERS 18,6%;income;;;True;True;1
+1210;707115;0;VENTE CAT.DIVERS A 19,6%;income;;;True;True;1
+1211;707200;0;VENTE CALENDRIERS EXO.;income;;;True;True;1
+1212;707205;0;VENTE CALENDRIERS A 19,6%;income;;;True;True;1
+1213;707206;0;VENTE FIN DE BUDGET 2000;income;;;True;True;1
+1214;707207;0;VENTE PROMO FIN D ANNEE 2000;income;;;True;True;1
+1215;707208;0;OPERATION ETE 2002;income;;;True;True;1
+1216;707225;0;CAT RENTREE BEAUX ARTS;income;;;True;True;1
+1217;707310;0;VENTE DUCROIRE DALBE;income;;;True;True;1
+1218;707311;0;VENTE DUCROIRE 20%;income;;;True;True;1
+1219;707312;0;VENTE DUCROIRE 5,5%;income;;;True;True;1
+1220;707313;0;VTE DUCROIRE 7%;income;;;True;True;1
+1221;707319;0;VTE DUCROIRE EXO;income;;;True;True;1
+1222;708300;0;LOCATION DIVERSE;income;;;True;True;1
+1223;708500;0;REFACTURATION DEPLACEMENT;income;;;True;True;1
+1224;708501;0;VENTE CATALOG;income;;;True;True;1
+1225;708502;0;VENTE CATALOG EXO;income;;;True;True;1
+1226;708503;0;VENTE CAT RENTREE;income;;;True;True;1
+1227;708504;0;VENTE CATALOG DIVERS;income;;;True;True;1
+1228;708505;0;PORT FACTURE A 20%;income;;;True;True;1
+1229;709700;0;CHQ KDO SUR VT;income;;;True;True;1
+1230;709701;0;RFA VT BTK;income;;;True;True;1
+1231;740000;0;SUBVENTIONS;view;;;True;True;1
+1232;758000;0;PRODUIT DIVERS GESTION;income;;;True;True;1
+1233;761000;0;FRAIS COM /EFFETS CATAL;income;;;True;True;1
+1234;761100;0;PRODUITS PARTICIPATION;income;;;True;True;1
+1235;761700;0;INTERETS ARTEO;income;;;True;True;1
+1236;762100;0;REVENUS VAL.MOB.PLACEMENT;income;;;True;True;1
+1237;764000;0;GAINS DE CHANGE;income;;;True;True;1
+1238;764001;0;REVENUS DE VALEURS MOBILI;income;;;True;True;1
+1239;765000;0;ESCPTES OBTENUES;income;;;True;True;1
+1240;767000;0;PROD.CESSION V.M.P.;income;;;True;True;1
+1241;768000;0;PRODUITS FINANCIERS EXO.;income;;;True;True;1
+1242;768004;0;INTERETS CREANCE TVA;income;;;True;True;1
+1243;768005;0;PROD.FINANCIERS A 20%;income;;;True;True;1
+1244;771800;0;AUTRE PRODUITS EXCEP;income;;;True;True;1
+1245;772000;0;PRODUIT/EXE ANTERIEUR;income;;;True;True;1
+1246;775000;0;PROD.CESSION IMMOBILISAT;income;;;True;True;1
+1247;778800;0;PRODUITS EXCEPT DIVERS;income;;;True;True;1
+1248;781500;0;REPRISE PROV.POUR CHARGES;income;;;True;True;1
+1249;781510;0;REPRISE PROVISION IFC;income;;;True;True;1
+1250;781730;0;REPRISE PROVI STOCK;income;;;True;True;1
+1251;781740;0;REPRISE SUR PROVISION;income;;;True;True;1
+1252;781784;0;REPRISE PROVISIONS DOUTEUX;income;;;True;True;1
+1253;786500;0;REPRISE PROVISION TITRES ARTEO;income;;;True;True;1
+1254;787500;0;REPRISE SUR PROVISION;income;;;True;True;1
+1255;791000;0;TRANSFER DE CHARGES;income;;;True;True;1
+1256;411000;0;Compte clients;income;;;True;True;1
+1257;401100;0;Compte fournisseur;charge;;;True;True;1
