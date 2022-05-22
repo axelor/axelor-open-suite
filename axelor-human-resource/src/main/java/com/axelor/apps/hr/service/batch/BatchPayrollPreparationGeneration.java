@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -141,11 +141,11 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      employee = employeeRepository.find(employee.getId());
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {
-        employee = employeeRepository.find(employee.getId());
         hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
         if (hrBatch.getCompany() != null) {
           company = companyRepository.find(hrBatch.getCompany().getId());

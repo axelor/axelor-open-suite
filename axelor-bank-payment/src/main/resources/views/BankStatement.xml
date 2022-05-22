@@ -75,15 +75,13 @@
       canAttach="false"/>
   </form>
 
+  <!-- ACTION VIEW -->
+
   <action-view name="account-bank-statement-view-bank-statement-lines"
     title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine">
     <view type="grid" name="bank-statement-line-grid"/>
     <view type="form" name="bank-statement-line-form"/>
   </action-view>
-
-  <action-method name="action-bank-statement-method-run-import">
-    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport"/>
-  </action-method>
 
   <action-view name="action-bank-statement-view-bank-statement-lines"
     title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine">
@@ -117,6 +115,12 @@
     <context name="_id" expr="eval: id"/>
   </action-view>
 
+  <!-- ACTION METHOD -->
+
+  <action-method name="action-bank-statement-method-run-import">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport"/>
+  </action-method>
+
   <action-method name="action-bank-statement-method-print">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>
   </action-method>
@@ -125,6 +129,8 @@
     <call class="com.axelor.apps.bankpayment.web.BankStatementController"
       method="runBankReconciliation"/>
   </action-method>
+
+  <!-- SEARCH FILTERS -->
 
   <search-filters name="bank-statement-filters"
     model="com.axelor.apps.bankpayment.db.BankStatement" title="Bank Statement filters">

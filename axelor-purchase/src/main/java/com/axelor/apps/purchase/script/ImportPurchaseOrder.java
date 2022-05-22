@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.script;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.google.inject.Inject;
 import java.util.Map;
@@ -39,6 +40,8 @@ public class ImportPurchaseOrder {
     if (purchaseOrder.getStatusSelect() == 1) {
       purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
     } else {
+      // Setting the status to draft or else we can't request it
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
       purchaseOrderService.requestPurchaseOrder(purchaseOrder);
     }
 

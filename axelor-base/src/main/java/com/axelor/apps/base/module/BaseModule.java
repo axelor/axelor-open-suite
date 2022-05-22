@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,6 +79,8 @@ import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.ModelEmailLinkService;
+import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -93,6 +95,8 @@ import com.axelor.apps.base.service.PrintTemplateLineService;
 import com.axelor.apps.base.service.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateService;
 import com.axelor.apps.base.service.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.ProductCategoryDomainCreatorService;
+import com.axelor.apps.base.service.ProductCategoryDomainCreatorServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -101,6 +105,8 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -132,9 +138,12 @@ import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
+import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.apps.base.service.pricing.PricingServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -166,6 +175,7 @@ public class BaseModule extends AxelorModule {
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);
     bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
+    bind(MessageBaseService.class).to(MessageServiceBaseImpl.class);
     bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
     bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
     bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
@@ -236,5 +246,10 @@ public class BaseModule extends AxelorModule {
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+    bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
+    bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
+    bind(ProductCategoryDomainCreatorService.class)
+        .to(ProductCategoryDomainCreatorServiceImpl.class);
+    bind(PricingService.class).to(PricingServiceImpl.class);
   }
 }

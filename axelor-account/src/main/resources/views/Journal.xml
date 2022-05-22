@@ -68,6 +68,9 @@
           <field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
           <field name="descriptionModel"/>
           <field name="descriptionIdentificationOk"/>
+          <field name="authorizeSimulatedMove"
+            showIf="company.accountConfig.isActivateSimulatedMove"/>
+          <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
         </panel>
         <spacer name="moveLineSpacer"/>
         <panel name="paymentsPanel" title="Payments" colSpan="12">
@@ -112,7 +115,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-record name="account-journal-record-status-active"

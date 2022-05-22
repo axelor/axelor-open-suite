@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,13 +62,9 @@ public class BatchInvoicingProjectService extends AbstractBatch {
         projectRepo
             .all()
             .filter(
-                "self.isBusinessProject = :isBusinessProject "
-                    + "AND self.toInvoice = :toInvoice AND "
-                    + "(self.statusSelect != :statusCanceled AND self.statusSelect != :statusFinished)")
-            .bind("isBusinessProject", true)
-            .bind("toInvoice", true)
-            .bind("statusCanceled", ProjectRepository.STATE_CANCELED)
-            .bind("statusFinished", ProjectRepository.STATE_FINISHED)
+                "self.isBusinessProject = true "
+                    + "AND self.toInvoice = true AND "
+                    + "self.projectStatus.isCompleted = false")
             .fetch();
 
     for (Project project : projectList) {

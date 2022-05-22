@@ -19,9 +19,13 @@
       <spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
       <field name="viewType" selection-in="['chart','grid', 'custom']"/>
       <field name="name"/>
-      <field name="metaView" requiredIf="action == null" domain="self.type = :viewType"/>
-      <field name="action" requiredIf="metaView == null" domain="self.type = 'action-view'"/>
+      <field name="metaView" requiredIf="action == null" domain="self.type = :viewType"
+        showIf="action == null"/>
+      <field name="action" requiredIf="metaView == null" domain="self.type = 'action-view'"
+        showIf="metaView == null"/>
       <field name="colspan"/>
+      <field name="canSearch" showIf="viewType == 'grid'"/>
+      <field name="height"/>
       <field name="paginationLimit" showIf="viewType == 'grid'"/>
     </panel>
   </form>

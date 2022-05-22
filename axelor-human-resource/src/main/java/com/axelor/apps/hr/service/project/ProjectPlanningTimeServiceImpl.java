@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -148,8 +148,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    if (datas.get("task") != null) {
-      objMap = (Map) datas.get("task");
+    if (datas.get("projectTask") != null) {
+      objMap = (Map) datas.get("projectTask");
       projectTask = projectTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 

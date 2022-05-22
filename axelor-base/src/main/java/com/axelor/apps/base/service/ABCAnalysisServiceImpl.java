@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -122,12 +122,21 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
   @Override
   public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
+    checkOnGoing(abcAnalysis);
     reset(abcAnalysis);
     start(abcAnalysis);
     getAbcAnalysisClassList(abcAnalysis);
     createAllABCAnalysisLine(abcAnalysis);
     doAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
     finish(abcAnalysisRepository.find(abcAnalysis.getId()));
+  }
+
+  protected void checkOnGoing(ABCAnalysis abcAnalysis) throws AxelorException {
+    if (abcAnalysis.getStatusSelect() == ABCAnalysisRepository.STATUS_ANALYZING) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.ABC_ANALYSIS_ALREADY_STARTED));
+    }
   }
 
   @Transactional

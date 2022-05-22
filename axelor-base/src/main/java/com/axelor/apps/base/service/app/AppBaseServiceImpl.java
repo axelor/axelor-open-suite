@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
@@ -89,18 +88,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public LocalDate getTodayDate(Company company) {
 
     return getTodayDateTime(company).toLocalDate();
-  }
-
-  @Override
-  public Unit getUnit() {
-
-    AppBase appBase = getAppBase();
-
-    if (appBase != null) {
-      return appBase.getDefaultProjectUnit();
-    }
-
-    return null;
   }
 
   @Override
@@ -233,5 +220,15 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     }
 
     return style;
+  }
+
+  @Override
+  public int getProcessTimeout() {
+    int processTimeout = getAppBase().getProcessTimeout();
+    if (processTimeout < 1) {
+      return 10;
+    } else {
+      return processTimeout;
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -186,6 +186,49 @@ public class LeadController {
       Beans.get(LeadService.class)
           .loseLead(Beans.get(LeadRepository.class).find(lead.getId()), lead.getLostReason());
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void startLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class).startLead(Beans.get(LeadRepository.class).find(lead.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recycleLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class).recycleLead(Beans.get(LeadRepository.class).find(lead.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void assignToMeLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class)
+          .assignToMeLead(Beans.get(LeadRepository.class).find(lead.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void assignToMeMultipleLead(ActionRequest request, ActionResponse response) {
+    try {
+      LeadRepository leadRepo = Beans.get(LeadRepository.class);
+      Beans.get(LeadService.class)
+          .assignToMeMultipleLead(
+              leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

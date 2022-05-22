@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -61,6 +62,8 @@ public class ImportSaleOrder {
       saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
       saleOrderRepo.computeFullName(saleOrder);
     } else {
+      // Setting the status to draft or else we can't finalize it.
+      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
       saleOrderWorkflowService.finalizeQuotation(saleOrder);
     }
 

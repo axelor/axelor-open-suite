@@ -94,6 +94,7 @@
         readonlyIf="!$reportTypeSelect" colSpan="3"/>
     </panel>
   </form>
+
   <action-view name="action-abc-analysis-reports-wizard" title="Select Report Format"
     model="com.axelor.apps.base.db.ABCAnalysis">
     <view type="form" name="abc-analysis-reports-wizard-form"/>
@@ -109,7 +110,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="typeSelect" expr="eval: _type"/>
   </action-record>
 

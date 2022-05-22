@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -120,4 +120,19 @@ public interface LeaveService {
    * @return
    */
   public List<LeaveRequest> getLeaves(User user, LocalDate date);
+
+  /**
+   * Get the LeaveLine associated with the leaveRequest
+   *
+   * @param leaveRequest
+   * @return
+   */
+  LeaveLine getLeaveLine(LeaveRequest leaveRequest);
+
+  /**
+   * Update daysToValidate field of leaveLine
+   *
+   * @param leaveLine
+   */
+  void updateDaysToValidate(LeaveLine leaveLine);
 }

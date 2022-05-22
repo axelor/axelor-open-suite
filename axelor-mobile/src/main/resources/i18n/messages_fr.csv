@@ -1,10 +1,13 @@
 "key","message","comment","context"
+"App",,,
 "App Mobile",,,
+"App mobile",,,
 "CRM",,,
 "Contacts",,,
 "Customers",,,
 "Expense","Note de frais",,
 "Expenses","Notes de frais",,
+"Inventories statuses to be taken into account","Statuts des inventaires à prendre en compte",,
 "Leads",,,
 "Leave",,,
 "Leaves",,,

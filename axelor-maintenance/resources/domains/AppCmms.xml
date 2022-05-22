@@ -5,6 +5,6 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="AppCmms" lang="java" cachable="true"/>
+  <entity name="AppCmms" lang="java" cacheable="true"/>
 
 </domain-models>

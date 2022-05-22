@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,15 +49,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class AccessConfigImportServiceImpl implements AccessConfigImportService {
 
-  @Inject private AppService appService;
+  protected AccessConfigRepository accessConfigRepo;
+  protected PermissionRepository permissionRepo;
+  protected RoleRepository roleRepo;
+  protected MetaMenuRepository metaMenuRepo;
 
-  @Inject private AccessConfigRepository accessConfigRepo;
-
-  @Inject private PermissionRepository permissionRepo;
-
-  @Inject private RoleRepository roleRepo;
-
-  @Inject private MetaMenuRepository metaMenuRepo;
+  @Inject
+  public AccessConfigImportServiceImpl(
+      AccessConfigRepository accessConfigRepo,
+      PermissionRepository permissionRepo,
+      RoleRepository roleRepo,
+      MetaMenuRepository metaMenuRepo) {
+    this.accessConfigRepo = accessConfigRepo;
+    this.permissionRepo = permissionRepo;
+    this.roleRepo = roleRepo;
+    this.metaMenuRepo = metaMenuRepo;
+  }
 
   @Override
   public void importAccessConfig(MetaFile metaFile) throws AxelorException {
@@ -139,7 +146,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value) || invalidValue(value)) {
+      if (Strings.isNullOrEmpty(value) || invalidValue(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());
@@ -246,7 +253,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value)) {
+      if (Strings.isNullOrEmpty(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());

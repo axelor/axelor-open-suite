@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -66,7 +66,7 @@ public interface ContractVersionService {
    * @param version of the contract will be terminate.
    */
   @Transactional
-  void terminate(ContractVersion version);
+  void terminate(ContractVersion version) throws AxelorException;
 
   /**
    * Terminate version at the specific date.
@@ -75,7 +75,7 @@ public interface ContractVersionService {
    * @param date of terminate.
    */
   @Transactional
-  void terminate(ContractVersion version, LocalDate date);
+  void terminate(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
    * Create new version from contract but don't save it. There will be use for set values from form

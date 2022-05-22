@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -270,24 +271,17 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
-      return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
-    }
-    return computeSimpleFullName(partner);
+    return ComputeNameTool.computeFullName(
+        partner.getName(),
+        partner.getFirstName(),
+        partner.getPartnerSeq(),
+        String.valueOf(partner.getId()));
   }
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getName())
-        && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getName() + " " + partner.getFirstName();
-    } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      return partner.getName();
-    } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getFirstName();
-    } else {
-      return "" + partner.getId();
-    }
+    return ComputeNameTool.computeSimpleFullName(
+        partner.getName(), partner.getFirstName(), String.valueOf(partner.getId()));
   }
 
   @Override
@@ -366,14 +360,12 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {
+
     String query =
-        "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
-            + partner.getId()
-            + ") "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
-            + partner.getId()
-            + ")";
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     if (partner.getEmailAddress() != null) {
       query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
@@ -581,9 +573,8 @@ public class PartnerServiceImpl implements PartnerService {
       return null;
     }
     LocalDate today =
-        Beans.get(AppBaseService.class)
-            .getTodayDate(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
@@ -625,7 +616,7 @@ public class PartnerServiceImpl implements PartnerService {
       return locale;
     }
 
-    return Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLanguageCode();
   }
 
   /**
@@ -748,7 +739,7 @@ public class PartnerServiceImpl implements PartnerService {
     String filter =
         "lower(self.simpleFullName) = lower(:newName) "
             + "and self.partnerTypeSelect = :_partnerTypeSelect ";
-    if (partner != null) {
+    if (partnerId != null) {
       filter += "and self.id != :partnerId ";
     }
     if (isInArchived) {
@@ -763,7 +754,7 @@ public class PartnerServiceImpl implements PartnerService {
             .filter(filter)
             .bind("newName", newName)
             .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
-    if (partner != null) {
+    if (partnerId != null) {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();

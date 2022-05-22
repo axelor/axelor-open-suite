@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,11 +22,36 @@ import com.axelor.exception.AxelorException;
 
 public interface PurchaseOrderWorkflowService {
 
-  void draftPurchaseOrder(PurchaseOrder purchaseOrder);
+  /**
+   * Set the purchase order status to draft.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  void draftPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
+  /**
+   * Set the the validator and the validation date to the purchase and change the order status to
+   * validated.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
   void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  void finishPurchaseOrder(PurchaseOrder purchaseOrder);
+  /**
+   * Set the purchase order status to finished.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  void finishPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
+  /**
+   * Set the purchase order status to canceled.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 }

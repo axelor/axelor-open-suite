@@ -149,7 +149,10 @@
         onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
       <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21"
         onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
-
+      <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
+        showIf="actionSelect == 23"
+        onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
+        colSpan="12"/>
     </panel>
   </form>
 
@@ -178,12 +181,12 @@
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
       expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-record name="action-accounting-batch-record-default-currency"
@@ -193,6 +196,12 @@
   </action-record>
 
   <!-- ACTION METHOD -->
+  <action-method
+    name="action-accounting-batch-method-block-customers-with-late-payments">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="blockCustomersWithLatePayments"/>
+  </action-method>
+
   <action-method name="action-accounting-batch-method-action-reimbursement">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionReimbursement"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -567,6 +567,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
+    if (logisticalForm.getStatusSelect() == null
+        || logisticalForm.getStatusSelect() != LogisticalFormRepository.STATUS_CARRIER_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LOGISTICAL_FORM_COLLECT_WRONG_STATUS));
+    }
+
     if (logisticalForm.getLogisticalFormLineList() == null) {
       return;
     }
@@ -679,5 +686,32 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       }
       logisticalForm.setTotalNetMass(totalNetMass);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void carrierValidate(LogisticalForm logisticalForm) throws AxelorException {
+    if (logisticalForm.getStatusSelect() == null
+        || logisticalForm.getStatusSelect() != LogisticalFormRepository.STATUS_PROVISION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LOGISTICAL_FORM_CARRIER_VALIDATE_WRONG_STATUS));
+    }
+    logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_CARRIER_VALIDATED);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backToProvision(LogisticalForm logisticalForm) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(LogisticalFormRepository.STATUS_CARRIER_VALIDATED);
+    authorizedStatus.add(LogisticalFormRepository.STATUS_COLLECTED);
+    if (logisticalForm.getStatusSelect() == null
+        || !authorizedStatus.contains(logisticalForm.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LOGISTICAL_FORM_PROVISION_WRONG_STATUS));
+    }
+    logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_PROVISION);
   }
 }

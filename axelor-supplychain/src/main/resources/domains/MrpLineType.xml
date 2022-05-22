@@ -25,6 +25,8 @@
 
     <string name="applicationFieldSelect" title="Field of application"
       selection="supplychain.mrp.line.type.application.field.select"/>
+    <integer name="includeOneOffSalesSelect"
+      selection="supplychain.mrp.line.off.of.sales.select" title="One-off sales"/>
 
     <extra-code><![CDATA[
 
@@ -51,6 +53,11 @@
 		// APPLICATION FIELD SELECT
 		public static final int APPLICATION_FIELD_MRP = 1;
 		public static final int APPLICATION_FIELD_MPS = 2;
+
+		//ONE-OFF SALES
+		public static final int ONE_OFF_SALES_INCLUDED = 0;
+		public static final int ONE_OFF_SALES_EXCLUDED = 1;
+		public static final int ONE_OFF_SALES_ONLY = 2;
 
 
 	]]></extra-code>
