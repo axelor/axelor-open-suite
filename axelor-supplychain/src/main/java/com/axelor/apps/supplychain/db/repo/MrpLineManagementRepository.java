@@ -33,6 +33,16 @@ public class MrpLineManagementRepository extends MrpLineRepository {
     MrpLine mrpLine = find(mrpLineId);
 
     Map<String, Object> mrpLineMap = super.populate(json, context);
+    if (mrpLine.getEstimatedDeliveryMrpLine() != null
+        && mrpLine.getMaturityDate() != null
+        && !mrpLine.getMaturityDate().isEqual(mrpLine.getDeliveryDelayDate())) {
+      json.put("respectDeliveryDelayDate", mrpLine.getDeliveryDelayDate());
+    } else if (mrpLine.getMrpLineType().getElementSelect()
+            == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY
+        && mrpLine.getMaturityDate() != null
+        && !mrpLine.getMaturityDate().isEqual(mrpLine.getEstimatedDeliveryDate())) {
+      json.put("respectDeliveryDelayDate", mrpLine.getEstimatedDeliveryDate());
+    }
     if (PurchaseOrder.class.getName().equals(mrpLine.getProposalSelect())) {
       PurchaseOrder purchaseOrder =
           Beans.get(PurchaseOrderRepository.class).find(mrpLine.getProposalSelectId());
@@ -62,6 +72,10 @@ public class MrpLineManagementRepository extends MrpLineRepository {
       mrpLine.setMaturityDate(entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
       mrpLine.setQty(entity.getQty());
       mrpLine.setIsEditedByUser(true);
+      mrpLine.setEstimatedDeliveryDate(
+          entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
+      entity.setDeliveryDelayDate(
+          mrpLine.getMaturityDate().minusDays(product.getSupplierDeliveryTime()));
     }
     return super.save(entity);
   }

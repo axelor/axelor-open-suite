@@ -577,8 +577,14 @@ public class MrpServiceImpl implements MrpService {
                   stockLocation,
                   null);
           createdEstimatedDeliveryMrpLine.setRelatedToSelectName(relatedToSelectName);
+          createdEstimatedDeliveryMrpLine.setEstimatedDeliveryDate(
+              maturityDate.plusDays(product.getSupplierDeliveryTime()));
+          createdEstimatedDeliveryMrpLine.setWarnDelayFromSupplier(
+              createdmrpLine.getWarnDelayFromSupplier());
           this.copyMrpLineOrigins(createdEstimatedDeliveryMrpLine, mrpLineOriginList);
           createdmrpLine.setEstimatedDeliveryMrpLine(createdEstimatedDeliveryMrpLine);
+          createdmrpLine.setDeliveryDelayDate(
+              initialMaturityDate.minusDays(product.getSupplierDeliveryTime()));
         }
       }
 

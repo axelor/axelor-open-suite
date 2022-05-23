@@ -29,8 +29,16 @@
     <field name="mrpLineType" width="300"/>
     <field name="qty" x-scale="2"/>
     <field name="maturityDate" width="100">
-      <hilite if="warnDelayFromSupplier" color="danger"/>
+      <hilite if="warnDelayFromSupplier &amp;&amp; !estimatedDeliveryDate" color="danger"/>
     </field>
+    <field name="respectDeliveryDelayDate" title="Date to respect delays" type="date"
+      readonly="true">
+      <hilite if="warnDelayFromSupplier &amp;&amp; estimatedDeliveryDate" color="danger"/>
+    </field>
+
+    <field name="deliveryDelayDate" hidden="true"/>
+    <field name="estimatedDeliveryDate" hidden="true"/>
+
     <field name="cumulativeQty" css="bold" x-scale="2"/>
     <field name="product.unit"/>
     <field name="minQty" x-scale="2"/>
@@ -81,6 +89,8 @@
       <field name="partner" showIf="partner"/>
       <field name="estimatedDeliveryMrpLine" readonly="true" showIf="estimatedDeliveryMrpLine"
         form-view="mrp-line-form"/>
+      <field name="deliveryDelayDate" showIf="deliveryDelayDate"/>
+      <field name="estimatedDeliveryDate" showIf="estimatedDeliveryDate"/>
       <button name="generateProposalBtn" title="Generate proposal"
         onClick="action-mrp-line-method-generate-proposal"
         showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>
