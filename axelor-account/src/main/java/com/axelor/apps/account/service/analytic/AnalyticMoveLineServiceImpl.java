@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -229,46 +228,15 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     return analyticMoveLine;
   }
 
-  protected BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  protected BigDecimal getAnalyticAmount(
-      InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
-    if (invoiceLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(invoiceLine.getCompanyExTaxTotal())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
   @Override
   public BigDecimal getAnalyticAmountFromParent(
       AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
 
-    if (parent instanceof MoveLine) {
-      MoveLine line = (MoveLine) parent;
-      if (analyticMoveLine != null) {
-        return getAnalyticAmount(line, analyticMoveLine);
-      }
-    } else if (parent instanceof InvoiceLine) {
-      InvoiceLine line = (InvoiceLine) parent;
-      if (analyticMoveLine != null) {
-        return getAnalyticAmount(line, analyticMoveLine);
-      }
+    if (parent.getLineAmount().signum() > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(parent.getLineAmount())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
   }
