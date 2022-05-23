@@ -35,6 +35,19 @@
   <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile"
     search="self.fileName = :fileName"/>
 
+  <input file="meta_permission.csv" separator=";" type="com.axelor.meta.db.MetaPermission"
+    search="self.name = :name"/>
+
+  <input file="meta_permission_rule.csv" separator=";"
+    type="com.axelor.meta.db.MetaPermissionRule" search="self.field = :field">
+    <bind column="metaPermission" to="metaPermission" search="self.name = :metaPermission"/>
+  </input>
+
+  <input file="auth_role_metaPermission.csv" separator=";" type="com.axelor.auth.db.Role"
+    search="self.name = :name">
+    <bind column="metaPermissions" to="metaPermissions" search="self.name = :metaPermissions"
+      eval="metaPermissions.split('\\|') as List"/>
+  </input>
 
   <!-- IMPORT DU PACKAGE 'BASE' -->
 

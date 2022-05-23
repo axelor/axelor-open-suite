@@ -42,3 +42,7 @@
 "perm.stock.location.line.r";"com.axelor.apps.stock.db.StockLocationLine";"true";"false";"false";"false";"false";;
 "perm.stock.rules.r";"com.axelor.apps.stock.db.StockRules";"true";"false";"false";"false";"false";;
 "perm.bill.of.material.r";"com.axelor.apps.production.db.BillOfMaterial";"true";"false";"false";"false";"false";;
+"supplier.wizard.view.r";"com.axelor.apps.base.db.Wizard";"true";"false";"false";"false";"false";;
+"supplier.perm.purchase.purchaseOrder.r";"com.axelor.apps.purchase.db.PurchaseOrder";"true";"false";"false";"false";"false";"self.supplierPartner = ?";"__user__?.partner"
+"supplier.perm.purchase.purchaseOrderLine.r";"com.axelor.apps.purchase.db.PurchaseOrderLine";"true";"false";"false";"false";"false";"self.purchaseOrder.supplierPartner = ?";"__user__?.partner"
+"supplier.supplier.request.r";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"true";"false";"false";"false";"false";"self.supplierPartner = ?";"__user__?.partner"

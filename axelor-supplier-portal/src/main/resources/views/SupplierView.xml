@@ -112,9 +112,6 @@
     title="My purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
-    <domain>self.supplierPartner = :_myPartner</domain>
-    <context name="_myPartner"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
   </action-view>
 
   <action-view name="wizard-supplier-form-open-my-invoices" title="My invoices"
