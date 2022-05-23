@@ -289,14 +289,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       MoveLine line = (MoveLine) parent;
       if (line.getDate() != null) {
         return line.getDate();
-      } else if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return appBaseService.getTodayDate(line.getAccount().getCompany());
       }
-    } else if (parent instanceof InvoiceLine) {
-      InvoiceLine line = (InvoiceLine) parent;
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return appBaseService.getTodayDate(line.getAccount().getCompany());
-      }
+    }
+    if (parent.getAccount() != null && parent.getAccount().getCompany() != null) {
+      return appBaseService.getTodayDate(parent.getAccount().getCompany());
     }
     return LocalDate.now();
   }
