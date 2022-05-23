@@ -1100,10 +1100,10 @@ public class BankReconciliationService {
       String query =
           "(self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)"
               + " AND ((self.debit > 0 and "
-              + bankStatementCredit.compareTo(BigDecimal.ZERO)
+              + bankStatementCredit.signum()
               + " > 0)"
               + " OR (self.credit > 0 and "
-              + bankStatementDebit.compareTo(BigDecimal.ZERO)
+              + bankStatementDebit.signum()
               + " > 0))"
               + " AND self.move.company.id = "
               + bankReconciliation.getCompany().getId();
