@@ -559,7 +559,8 @@ public class MrpServiceImpl implements MrpService {
       mrpLine = mrpLineRepository.save(createdmrpLine);
 
       if (createdmrpLine != null) {
-        createdmrpLine.setWarnDelayFromSupplier(getWarnDelayFromSupplier(createdmrpLine));
+        createdmrpLine.setWarnDelayFromSupplier(
+            getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
 
         MrpLineType mrpLineTypeEstimatedDelivery =
             this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY);
@@ -571,7 +572,7 @@ public class MrpServiceImpl implements MrpService {
                   product,
                   mrpLineTypeEstimatedDelivery,
                   reorderQty,
-                  this.getEstimatedDeliveryMaturityDate(createdmrpLine),
+                  initialMaturityDate,
                   BigDecimal.ZERO,
                   stockLocation,
                   null);
@@ -587,10 +588,10 @@ public class MrpServiceImpl implements MrpService {
     this.copyMrpLineOrigins(mrpLine, mrpLineOriginList);
   }
 
-  protected boolean getWarnDelayFromSupplier(MrpLine mrpLine) {
+  protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
     return mrpLine.getMrpLineType().getElementSelect()
             == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-        && DAYS.between(mrpLine.getMaturityDate(), this.getEstimatedDeliveryMaturityDate(mrpLine))
+        && DAYS.between(mrpLine.getMaturityDate(), initialMaturityDate)
             < mrpLine.getProduct().getSupplierDeliveryTime();
   }
 
@@ -1713,33 +1714,5 @@ public class MrpServiceImpl implements MrpService {
 
       JPA.clear();
     }
-  }
-
-  @Override
-  public LocalDate getEstimatedDeliveryMaturityDate(MrpLine mrpLine) {
-    Product product = mrpLine.getProduct();
-    if (product != null) {
-      List<MrpLine> nextOutgoingLines =
-          mrpLineRepository
-              .all()
-              .filter(
-                  "self.mrp.id = ?1 AND self.product = ?2 AND self.maturityDate >= ?3 AND self.maturityDate <= ?4 AND self.mrpLineType.typeSelect = ?5",
-                  mrpLine.getMrp().getId(),
-                  product,
-                  mrpLine.getMaturityDate(),
-                  mrpLine.getMaturityDate().plusDays(product.getSupplierDeliveryTime()),
-                  MrpLineTypeRepository.TYPE_OUT)
-              .order("maturityDate")
-              .fetch();
-
-      for (MrpLine nextLine : nextOutgoingLines) {
-        BigDecimal futureQty = nextLine.getCumulativeQty().subtract(mrpLine.getReOrderQty());
-        if (futureQty.compareTo(mrpLine.getMinQty()) < 0) {
-          return nextLine.getMaturityDate();
-        }
-      }
-      return mrpLine.getMaturityDate().plusDays(product.getSupplierDeliveryTime());
-    }
-    return mrpLine.getMaturityDate();
   }
 }

@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
-import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -57,10 +57,11 @@ public class MrpLineManagementRepository extends MrpLineRepository {
     if (entity.getIsEditedByUser()
         && entity.getMaturityDate() != null
         && entity.getEstimatedDeliveryMrpLine() != null) {
-      MrpService mrpService = Beans.get(MrpService.class);
-      entity
-          .getEstimatedDeliveryMrpLine()
-          .setMaturityDate(mrpService.getEstimatedDeliveryMaturityDate(entity));
+      Product product = entity.getProduct();
+      MrpLine mrpLine = entity.getEstimatedDeliveryMrpLine();
+      mrpLine.setMaturityDate(entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
+      mrpLine.setQty(entity.getQty());
+      mrpLine.setIsEditedByUser(true);
     }
     return super.save(entity);
   }
