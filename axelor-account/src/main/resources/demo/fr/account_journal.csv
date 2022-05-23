@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "importId";"code";"name";"journalType.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId";"sequence.importId"
 1;"VTE";"Ventes";1;"false";"false";"Facture client";"true";"false";;"1";1;110
 2;"AVR";"Avoirs";2;"false";"false";"Avoir client";"true";"false";;"1";1;111
@@ -29,3 +30,22 @@
 28;"IRRECOUV";"Irrécouvrables";4;"false";"false";;"false";"false";;"1";1;109
 29;"NDF";"Notes de frais";4;"false";"false";"NDF ";"true";"false";;"1";1;180
 30;"ANOUV";"A nouveaux";5;"false";"false";;"false";"false";;"1";1;181
+=======
+importId;code;name;journalType.importId;excessPaymentOk;editReceiptOk;descriptionModel;descriptionIdentificationOk;notExportOk;exportCode;statusSelect;company.importId;sequence.importId
+1;VT;VENTES;1;false;false;Facture client;true;false;;1;1;110
+3;AC;ACHATS;4;false;false;Facture fournisseur;true;false;;1;1;112
+5;CA;CAISSE SIEGE;3;true;true;;true;false;;1;1;115
+6;CC;CIC;3;true;false;;true;false;;1;1;116
+7;CE;CAISSE EPARGNE;3;true;false;;true;false;;1;1;117
+8;CF;HSBC;3;true;false;;true;false;;1;1;118
+9;CR;CREDIT AGRICOLE;3;true;false;;true;false;;1;1;119
+10;ER;EFFETS A RECEVOIR;3;true;false;;true;false;;1;1;120
+11;FA;FOND DE GARANTIE DUCROIRE;3;false;false;;true;false;;1;1;121
+12;FG;FONDS DE GARANTIE;3;false;false;;true;false;;1;1;122
+14;RA;RELEVE ADHERENT DUCROIRE;3;false;false;;true;false;;1;1;125
+15;RF;RELEVE FOURNISSEUR DUCROIRE;3;false;true;;true;false;;1;1;126
+16;SG;SOCIETE GENERALE;3;true;false;;true;false;;1;1;127
+24;OD;OPERATIONS DIVERSES;3;false;false;;false;false;;1;1;134
+26;AB;ABONNEMENT;3;false;false;Echéance ;true;false;;1;1;
+30;AN;A NOUVEAUX;5;false;false;;false;false;;1;1;181
+>>>>>>> 797fb98a54 (Added base accounts for dalbe in demo data (#2))
