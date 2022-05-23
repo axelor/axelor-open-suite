@@ -494,12 +494,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
     }
     Optional<FixedAssetLine> fixedAssetLine =
-        fixedAssetLineService.findNewestFixedAssetLine(
+        fixedAssetLineService.findOldestFixedAssetLine(
             fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
-    System.err.println(disposalDate + " " + fixedAssetLine.get().getDepreciationDate());
     if (fixedAssetLine.isPresent()
-        && (disposalDate.isBefore(fixedAssetLine.get().getDepreciationDate())
-            || disposalDate.isEqual(fixedAssetLine.get().getDepreciationDate()))) {
+        && !disposalDate.isAfter(fixedAssetLine.get().getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
