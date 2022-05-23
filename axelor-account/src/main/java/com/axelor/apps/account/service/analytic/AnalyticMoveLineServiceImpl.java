@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -36,7 +37,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -256,15 +256,17 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public BigDecimal getAnalyticAmountFromParent(Context parent, AnalyticMoveLine analyticMoveLine) {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (analyticMoveLine != null && line != null) {
+  public BigDecimal getAnalyticAmountFromParent(
+      AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
+
+    if (parent instanceof MoveLine) {
+      MoveLine line = (MoveLine) parent;
+      if (analyticMoveLine != null) {
         return getAnalyticAmount(line, analyticMoveLine);
       }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (analyticMoveLine != null && line != null) {
+    } else if (parent instanceof InvoiceLine) {
+      InvoiceLine line = (InvoiceLine) parent;
+      if (analyticMoveLine != null) {
         return getAnalyticAmount(line, analyticMoveLine);
       }
     }
@@ -272,36 +274,26 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public AnalyticJournal getAnalyticJournalFromParent(Context parent) throws AxelorException {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return accountConfigService
-            .getAccountConfig(line.getAccount().getCompany())
-            .getAnalyticJournal();
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return accountConfigService
-            .getAccountConfig(line.getAccount().getCompany())
-            .getAnalyticJournal();
-      }
+  public AnalyticJournal getAnalyticJournalFromParent(AnalyticLine line) throws AxelorException {
+    if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+      return accountConfigService
+          .getAccountConfig(line.getAccount().getCompany())
+          .getAnalyticJournal();
     }
     return null;
   }
 
   @Override
-  public LocalDate getDateFromParent(Context parent) {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
+  public LocalDate getDateFromParent(AnalyticLine parent) {
+    if (parent instanceof MoveLine) {
+      MoveLine line = (MoveLine) parent;
       if (line.getDate() != null) {
         return line.getDate();
       } else if (line.getAccount() != null && line.getAccount().getCompany() != null) {
         return appBaseService.getTodayDate(line.getAccount().getCompany());
       }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
+    } else if (parent instanceof InvoiceLine) {
+      InvoiceLine line = (InvoiceLine) parent;
       if (line.getAccount() != null && line.getAccount().getCompany() != null) {
         return appBaseService.getTodayDate(line.getAccount().getCompany());
       }
