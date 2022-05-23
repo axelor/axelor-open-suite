@@ -15,6 +15,10 @@
     <boolean name="useFakeData" title="Use fake data"/>
     <many-to-one name="fakerApiField" ref="com.axelor.apps.base.db.FakerApiField"
       title="Faker API field"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="metaJsonField"
+      title="Meta Json"/>
+
+    <unique-constraint columns="dataBackup,metaModel,metaField,metaJsonField"/>
   </entity>
 
 </domain-models>
