@@ -1,0 +1,3 @@
+---
+title: "SaleOrderLine: fixed npe that occured when changing quantity without product"
+type: fix
