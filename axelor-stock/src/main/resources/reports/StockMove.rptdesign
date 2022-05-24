@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -40,9 +40,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -168,9 +165,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="isRequired">false</property>
             <property name="dataType">boolean</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">False</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">check-box</property>
@@ -3553,6 +3547,9 @@ row["first_name"]
                             <structure>
                                 <property name="name">total_qty_per_product</property>
                                 <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>

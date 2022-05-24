@@ -1,0 +1,12 @@
+---
+title: Quantity is the same for all products in internal stock movement print
+type: fix
+desscription: |
+  When option "Display line details on printing" in stock configuration, 
+  identical products are regrouped in the printed file.
+  Instead of summing identical products, 
+  the application makes the sum of all products and allocate this number to 
+  the quantity of each product.
+  
+  Corrected birt report to get rid of the anomaly.
+  Quantity is now displayed correctly by product type. 
