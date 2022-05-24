@@ -52,6 +52,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -591,7 +593,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   public void generateSaleMove(
       FixedAsset fixedAsset, TaxLine taxLine, BigDecimal disposalAmount, LocalDate disposalDate)
       throws AxelorException {
-
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
     Partner partner = fixedAsset.getPartner();
@@ -625,14 +626,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BigDecimal creditAmountOne =
           disposalAmount.divide(
               denominator, FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
-      Account creditAccountTwo =
+      List<Account> creditAccountTwoList =
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
                   accountManagement ->
-                      accountManagement.getCompany().getName().equals(company.getName()))
+                      accountManagement
+                          .getCompany()
+                          .getName()
+                          .equals(fixedAsset.getCompany().getName()))
               .map(accountManagement -> accountManagement.getSaleAccount())
-              .findFirst()
-              .orElse(null);
+              .collect(Collectors.toList());
+      Account creditAccountTwo =
+          !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
       BigDecimal creditAmountTwo =
           creditAmountOne
               .multiply(taxLine.getValue())
