@@ -21,12 +21,15 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -34,12 +37,17 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.TypedQuery;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentSessionValidateServiceImpl implements PaymentSessionValidateService {
   protected AppBaseService appBaseService;
@@ -50,6 +58,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected InvoiceTermService invoiceTermService;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected InvoicePaymentValidateService invoicePaymentValidateService;
   protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveRepository moveRepo;
@@ -67,6 +77,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
@@ -80,6 +92,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.invoiceTermService = invoiceTermService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.invoicePaymentValidateService = invoicePaymentValidateService;
     this.paymentSessionRepo = paymentSessionRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveRepo = moveRepo;
@@ -88,11 +102,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
-  public boolean validateInvoiceTerms(PaymentSession paymentSession) {
-    if (paymentSession.getNextSessionDate() == null) {
-      return true;
-    }
-
+  public int validateInvoiceTerms(PaymentSession paymentSession) {
     LocalDate nextSessionDate;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
@@ -101,8 +111,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .all()
             .filter(
                 "self.paymentSession = :paymentSession "
-                    + "AND self.isSelectedOnPaymentSession IS TRUE "
-                    + "AND self.financialDiscount IS NOT NULL")
+                    + "AND self.isSelectedOnPaymentSession IS TRUE")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -113,31 +122,41 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
 
-        if ((invoiceTerm.getInvoice() != null
-                && !invoiceTerm
-                    .getInvoice()
-                    .getFinancialDiscountDeadlineDate()
-                    .isAfter(nextSessionDate))
-            || (invoiceTerm.getMoveLine() != null
-                && invoiceTerm.getMoveLine().getPartner() != null
-                && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
-                && !invoiceTerm
-                    .getDueDate()
-                    .minusDays(
-                        invoiceTerm
-                            .getMoveLine()
-                            .getPartner()
-                            .getFinancialDiscount()
-                            .getDiscountDelay())
-                    .isAfter(nextSessionDate))) {
-          return false;
+        if (nextSessionDate != null
+            && invoiceTerm.getFinancialDiscount() != null
+            && this.checkNextSessionDate(invoiceTerm, nextSessionDate)) {
+          return 1;
+        } else if (invoiceTerm.getIsPaid()
+            || invoiceTerm.getPaymentAmount().compareTo(invoiceTerm.getAmountRemaining()) > 0
+            || !invoiceTermService.isNotAwaitingPayment(invoiceTerm)) {
+          return 2;
         }
       }
 
       JPA.clear();
     }
 
-    return true;
+    return 0;
+  }
+
+  protected boolean checkNextSessionDate(InvoiceTerm invoiceTerm, LocalDate nextSessionDate) {
+    return (invoiceTerm.getInvoice() != null
+            && !invoiceTerm
+                .getInvoice()
+                .getFinancialDiscountDeadlineDate()
+                .isAfter(nextSessionDate))
+        || (invoiceTerm.getMoveLine() != null
+            && invoiceTerm.getMoveLine().getPartner() != null
+            && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
+            && !invoiceTerm
+                .getDueDate()
+                .minusDays(
+                    invoiceTerm
+                        .getMoveLine()
+                        .getPartner()
+                        .getFinancialDiscount()
+                        .getDiscountDelay())
+                .isAfter(nextSessionDate));
   }
 
   protected LocalDate fetchNextSessionDate(PaymentSession paymentSession) {
@@ -198,11 +217,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
 
-        if (invoiceTerm.getIsSelectedOnPaymentSession()) {
-          this.processInvoiceTerm(
-              paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+        if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
+            || this.shouldBeProcessed(invoiceTerm)) {
+          offset++;
+
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+            this.processInvoiceTerm(
+                paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+          }
         } else {
           this.releaseInvoiceTerm(invoiceTerm);
         }
@@ -210,6 +233,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       JPA.clear();
     }
+  }
+
+  protected boolean shouldBeProcessed(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getIsSelectedOnPaymentSession()
+        && !invoiceTerm.getIsPaid()
+        && invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getPaymentAmount()) >= 0
+        && invoiceTermService.isNotAwaitingPayment(invoiceTerm);
   }
 
   protected PaymentSession processInvoiceTerm(
@@ -220,7 +250,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-    if (paymentSession.getAccountingTriggerSelect()
+    if (this.generatePaymentsFirst(paymentSession)) {
+      this.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+    } else if (paymentSession.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.generateMoveFromInvoiceTerm(
@@ -228,6 +260,30 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return paymentSession;
+  }
+
+  protected boolean generatePaymentsFirst(PaymentSession paymentSession) {
+    return false;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() == null) {
+      return null;
+    }
+
+    InvoicePayment invoicePayment =
+        invoicePaymentCreateService.createInvoicePayment(
+            invoiceTerm.getInvoice(),
+            invoiceTerm,
+            paymentSession.getPaymentMode(),
+            paymentSession.getBankDetails(),
+            paymentSession.getPaymentDate(),
+            paymentSession);
+
+    invoiceTerm.getInvoice().addInvoicePaymentListItem(invoicePayment);
+    return invoicePaymentRepo.save(invoicePayment);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -385,7 +441,38 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.generateInvoiceTerm(debitMoveLine);
     this.generateInvoiceTerm(creditMoveLine);
 
-    return reconcileService.reconcile(debitMoveLine, creditMoveLine, false, true);
+    InvoicePayment invoicePayment = this.findInvoicePayment(paymentSession, invoiceTerm);
+    if (invoicePayment != null) {
+      invoicePayment.setMove(moveLine.getMove());
+
+      if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+        try {
+          invoicePaymentValidateService.validate(invoicePayment, true);
+        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+        }
+      }
+    }
+
+    return reconcileService.reconcile(debitMoveLine, creditMoveLine, invoicePayment, false, true);
+  }
+
+  protected InvoicePayment findInvoicePayment(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() == null
+        || CollectionUtils.isEmpty(invoiceTerm.getInvoice().getInvoicePaymentList())) {
+      return null;
+    }
+
+    return invoiceTerm.getInvoice().getInvoicePaymentList().stream()
+        .filter(
+            it ->
+                it.getPaymentSession().equals(paymentSession)
+                    && it.getInvoiceTermPaymentList().stream()
+                        .anyMatch(itp -> itp.getInvoiceTerm().equals(invoiceTerm)))
+        .findFirst()
+        .orElse(null);
   }
 
   protected void generateInvoiceTerm(MoveLine moveLine) {
@@ -624,5 +711,80 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return flashMessage;
+  }
+
+  @Override
+  public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
+      throws AxelorException {
+    TypedQuery<Partner> partnerQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT Partner FROM Partner Partner "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true"
+                    + " GROUP BY Partner.id "
+                    + " HAVING SUM(InvoiceTerm.paymentAmount) < 0 ",
+                Partner.class);
+
+    partnerQuery.setParameter("paymentSession", paymentSession);
+
+    return partnerQuery.getResultList();
+  }
+
+  @Override
+  public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException {
+
+    TypedQuery<InvoiceTerm> invoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
+                InvoiceTerm.class);
+    invoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> invoiceTermList = invoiceTermQuery.getResultList();
+
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      invoiceTermList =
+          invoiceTermService.reconcileMoveLineInvoiceTermsWithFullRollBack(invoiceTermList);
+    }
+  }
+
+  @Override
+  public boolean checkIsHoldBackWithRefund(PaymentSession paymentSession) throws AxelorException {
+    boolean isHoldBackWithRefund = false;
+    TypedQuery<InvoiceTerm> holdbackInvoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " AND InvoiceTerm.isHoldBack = true ",
+                InvoiceTerm.class);
+    holdbackInvoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> holdbackInvoiceTermList = holdbackInvoiceTermQuery.getResultList();
+
+    TypedQuery<InvoiceTerm> refundInvoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " AND InvoiceTerm.amountPaid < 0",
+                InvoiceTerm.class);
+    refundInvoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> refundInvoiceTermList = refundInvoiceTermQuery.getResultList();
+
+    if (!ObjectUtils.isEmpty(holdbackInvoiceTermList)
+        && !ObjectUtils.isEmpty(refundInvoiceTermList)) {
+      isHoldBackWithRefund = true;
+    }
+
+    return isHoldBackWithRefund;
   }
 }

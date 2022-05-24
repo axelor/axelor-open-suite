@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -528,7 +529,14 @@ public class MoveToolServiceImpl implements MoveToolService {
         if (period.getYear().getCompany() != null && user.getGroup() != null) {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(period.getYear().getCompany());
-          for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+          Set<Role> roleSet =
+              accountConfigService
+                  .getAccountConfig(period.getYear().getCompany())
+                  .getClosureAuthorizedRoleList();
+          if (CollectionUtils.isEmpty(roleSet)) {
+            return false;
+          }
+          for (Role role : roleSet) {
             if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
               return false;
             }
@@ -593,7 +601,23 @@ public class MoveToolServiceImpl implements MoveToolService {
         }
       }
     }
-
     return moveLineList;
+  }
+
+  @Override
+  public void exceptionOnGenerateCounterpart(Move move) throws AxelorException {
+    if (move.getPaymentMode() == null
+        && (move.getJournal()
+                .getJournalType()
+                .getTechnicalTypeSelect()
+                .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+            || move.getJournal()
+                .getJournalType()
+                .getTechnicalTypeSelect()
+                .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+    }
   }
 }

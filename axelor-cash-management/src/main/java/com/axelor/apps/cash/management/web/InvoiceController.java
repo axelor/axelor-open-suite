@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class InvoiceController {
 
-  public void computeEstimatedPaymentDates(ActionRequest request, ActionResponse response) {
+  public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
       if (invoice.getDueDate() == null) {

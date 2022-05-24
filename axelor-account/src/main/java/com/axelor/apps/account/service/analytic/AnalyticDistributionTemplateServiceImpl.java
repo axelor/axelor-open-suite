@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -141,14 +140,17 @@ public class AnalyticDistributionTemplateServiceImpl
         boolean checkJournal = false;
         for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
           if (analyticDistributionLine.getAnalyticAxis() != null
-              && (analyticDistributionTemplate.getCompany()
-                      != analyticDistributionLine.getAnalyticAxis().getCompany()
-                  || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
+              && analyticDistributionLine.getAnalyticAxis().getCompany() != null
+              && !analyticDistributionTemplate
+                  .getCompany()
+                  .equals(analyticDistributionLine.getAnalyticAxis().getCompany())) {
             checkAxis = true;
           }
-          if (analyticDistributionTemplate.getCompany()
-                  != analyticDistributionLine.getAnalyticJournal().getCompany()
-              || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
+          if (analyticDistributionLine.getAnalyticJournal() != null
+              && analyticDistributionLine.getAnalyticJournal().getCompany() != null
+              && !analyticDistributionTemplate
+                  .getCompany()
+                  .equals(analyticDistributionLine.getAnalyticJournal().getCompany())) {
             checkJournal = true;
           }
         }
@@ -198,6 +200,7 @@ public class AnalyticDistributionTemplateServiceImpl
                 BigDecimal.valueOf(100)));
       }
       analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
+      analyticDistributionTemplate.setName(name + " - " + analyticDistributionTemplate.getId());
       return analyticDistributionTemplate;
     }
     return null;
@@ -331,24 +334,5 @@ public class AnalyticDistributionTemplateServiceImpl
         }
       }
     }
-  }
-
-  @Override
-  public AnalyticDistributionTemplate createOrPersonalizeTemplate(
-      boolean isAnalyticDistributionAuthorized,
-      Company company,
-      String name,
-      AnalyticDistributionTemplate analyticDistributionTemplate)
-      throws AxelorException {
-    if (analyticDistributionTemplate == null && isAnalyticDistributionAuthorized) {
-      return Beans.get(AnalyticDistributionTemplateService.class)
-          .createSpecificDistributionTemplate(company, name);
-    } else if (company != null
-        && isAnalyticDistributionAuthorized
-        && analyticDistributionTemplate != null) {
-      return Beans.get(AnalyticDistributionTemplateService.class)
-          .personalizeAnalyticDistributionTemplate(analyticDistributionTemplate, company);
-    }
-    return null;
   }
 }

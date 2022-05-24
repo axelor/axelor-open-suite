@@ -24,12 +24,18 @@ import com.axelor.apps.account.service.PaymentSessionCancelService;
 import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionValidateService;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class PaymentSessionController {
@@ -70,9 +76,23 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      response.setValue("hasReleasePopup", false);
 
-      if (!Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
+      int errorCode =
+          Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
+      if (errorCode == 1) {
         response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+      } else if (errorCode == 2) {
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Invoice terms"))
+                .model(PaymentSession.class.getName())
+                .add("form", "payment-session-validate-confirm-wizard")
+                .param("popup", "true")
+                .param("popup-save", "false")
+                .context("_showRecord", paymentSession.getId());
+
+        response.setValue("hasReleasePopup", true);
+        response.setView(actionViewBuilder.map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -142,6 +162,50 @@ public class PaymentSessionController {
       response.setValue("$hasUnselectedInvoiceTerm", hasUnselectedInvoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void reconciledInvoiceTermMoves(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionValidateService.class).reconciledInvoiceTermMoves(paymentSession);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkSession(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      List<Partner> partnerWithNegativeAmountList =
+          Beans.get(PaymentSessionValidateService.class)
+              .getPartnersWithNegativeAmount(paymentSession);
+
+      if (!ObjectUtils.isEmpty(partnerWithNegativeAmountList)) {
+        StringBuilder partnerFullNames = new StringBuilder("");
+        partnerFullNames.append(
+            partnerWithNegativeAmountList.stream()
+                .map(partner -> partner.getFullName())
+                .collect(Collectors.joining(",")));
+        response.setError(
+            String.format(
+                I18n.get(IExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
+                partnerFullNames.toString(),
+                paymentSession.getPaymentMode().getCode()));
+      }
+
+      boolean isHoldBackWithRefund =
+          Beans.get(PaymentSessionValidateService.class).checkIsHoldBackWithRefund(paymentSession);
+      if (isHoldBackWithRefund) {
+        response.setError(
+            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

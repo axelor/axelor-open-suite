@@ -34,9 +34,9 @@
         <field name="description" colSpan="12" showTitle="false" widget="html"/>
       </panel>
       <panel-dashlet action="action-view-account-fec-import-moves-panel-dashlet"
-        title="Generated moves" canSearch="true"/>
+        title="Generated moves" canSearch="true" showIf="id"/>
       <panel-dashlet action="action-view-account-fec-import-anomalies-panel-dashlet"
-        title="Anomalies" canSearch="true"/>
+        title="Anomalies" canSearch="true" showIf="id"/>
     </panel-tabs>
   </form>
 
@@ -71,7 +71,7 @@
     title="Anomalies" model="com.axelor.exception.db.TraceBack">
     <view type="grid" name="trace-back-lite-grid"/>
     <view type="form" name="trace-back-form"/>
-    <domain>self.refId = :id</domain>
+    <domain>self.refId = :id AND self.ref = 'com.axelor.apps.account.db.FECImport'</domain>
   </action-view>
 
   <action-view name="action-view-account-fec-import-moves-panel-dashlet"

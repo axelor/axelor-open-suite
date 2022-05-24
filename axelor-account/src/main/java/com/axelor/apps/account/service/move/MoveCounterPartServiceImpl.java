@@ -63,7 +63,11 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
-    move.addMoveLineListItem(createCounterpartMoveLine(move));
+    MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
+    if (counterPartMoveLine == null) {
+      return;
+    }
+    move.addMoveLineListItem(counterPartMoveLine);
     moveRepository.save(move);
   }
 
@@ -72,6 +76,9 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     Account accountingAccount = getAccountingAccountFromJournal(move);
     boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
+    if (amount.signum() == 0) {
+      return null;
+    }
     isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
