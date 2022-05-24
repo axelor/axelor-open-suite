@@ -259,7 +259,7 @@
       <field name="correctedAccountingValue"
         readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
       <field name="numberOfDepreciation"
-        readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
+        readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2 || isEqualToFiscalDepreciation"/>
     </panel>
     <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true"
       hidden="true">
@@ -295,11 +295,12 @@
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
       <field name="assetDisposalReason" domain="self.disposalTypeSelect = :disposalTypeSelect"
         widget="SuggestBox" target="com.axelor.apps.account.db.AssetDisposalReason"/>
-      <field name="disposalQtySelect"
+      <field name="disposalQtySelect" showIf="disposalTypeSelect == 2"
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
       <field name="qty"
         onChange="action-validate-account-fixed-asset-wizard-form-validate-qty"
-        showIf="disposalQtySelect == 2" min="0.01" type="decimal" hidden="true"/>
+        showIf="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 2" min="0.01" type="decimal"
+        hidden="true"/>
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01" hidden="true"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
@@ -357,6 +358,8 @@
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
     <attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue"
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
+    <attribute name="value" for="disposalQtySelect" expr="eval: 1"
+      if="disposalTypeSelect != 2"/>
   </action-attrs>
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
     model="com.axelor.apps.base.db.Wizard">

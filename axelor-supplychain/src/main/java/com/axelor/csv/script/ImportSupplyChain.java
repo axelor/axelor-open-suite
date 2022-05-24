@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -208,7 +209,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  public Object importInventory(Object bean, Map<String, Object> values) {
+  public Object importInventory(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof Inventory;
 

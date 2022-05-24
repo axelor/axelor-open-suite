@@ -211,13 +211,17 @@ public class BankReconciliationService {
 
         for (BankStatementRule bankStatementRule : bankStatementRules) {
 
-          if (Boolean.TRUE.equals(
-              new GroovyScriptHelper(scriptContext)
-                  .eval(
-                      bankStatementRule
-                          .getBankStatementQuery()
-                          .getQuery()
-                          .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+          if (bankStatementRule != null
+              && bankStatementRule.getBankStatementQuery() != null
+              && !Strings.isNullOrEmpty(bankStatementRule.getBankStatementQuery().getQuery())
+              && Boolean.TRUE.equals(
+                  new GroovyScriptHelper(scriptContext)
+                      .eval(
+                          bankStatementRule
+                              .getBankStatementQuery()
+                              .getQuery()
+                              .replaceAll(
+                                  "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
@@ -701,7 +705,8 @@ public class BankReconciliationService {
             + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
             + " AND self.move.statusSelect != :statusSelect"
             + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
-            + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))";
+            + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))"
+            + " AND self.move.company = :company";
     if (bankReconciliation.getJournal() != null) {
       query = query + " AND self.move.journal = :journal";
     }
@@ -724,6 +729,7 @@ public class BankReconciliationService {
     params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
     params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    params.put("company", bankReconciliation.getCompany());
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
     }

@@ -51,16 +51,20 @@ public class InventoryLineController {
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
-    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-    Inventory inventory =
-        request.getContext().getParent() != null
-            ? request.getContext().getParent().asType(Inventory.class)
-            : inventoryLine.getInventory();
-    inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
-    response.setValue("unit", inventoryLine.getUnit());
-    response.setValue("gap", inventoryLine.getGap());
-    response.setValue("gapValue", inventoryLine.getGapValue());
-    response.setValue("realValue", inventoryLine.getRealValue());
+    try {
+      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+      Inventory inventory =
+          request.getContext().getParent() != null
+              ? request.getContext().getParent().asType(Inventory.class)
+              : inventoryLine.getInventory();
+      inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
+      response.setValue("unit", inventoryLine.getUnit());
+      response.setValue("gap", inventoryLine.getGap());
+      response.setValue("gapValue", inventoryLine.getGapValue());
+      response.setValue("realValue", inventoryLine.getRealValue());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setStockLocationDomain(ActionRequest request, ActionResponse response) {

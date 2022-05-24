@@ -20,6 +20,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -218,6 +219,31 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         generateComputedPlannedFixedAssetLines(
             fixedAsset,
             initialFixedAssetLine.get(),
+            fixedAsset.getFixedAssetLineList(),
+            fixedAssetLineComputationService);
+      }
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAsset is null
+   */
+  @Override
+  public void generateAndComputeFixedAssetLinesStartingWith(
+      FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAsset);
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      FixedAssetLineComputationService fixedAssetLineComputationService =
+          Beans.get(FixedAssetLineEconomicRecomputationServiceImpl.class);
+      if (fixedAssetLine != null) {
+        generateComputedPlannedFixedAssetLines(
+            fixedAsset,
+            fixedAssetLine,
             fixedAsset.getFixedAssetLineList(),
             fixedAssetLineComputationService);
       }

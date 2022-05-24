@@ -236,7 +236,7 @@ public class InvoiceController {
   public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationTypeSelect() == null) {
+      if (invoice.getOperationTypeSelect() == null || invoice.getOperationTypeSelect() == 0) {
         return;
       }
       PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
@@ -366,7 +366,7 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null) {
+      } else if (context.get("id") != null && Invoice.class.equals(context.getContextClass())) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
         Integer reportType =
             context.get("reportType") != null
@@ -459,7 +459,8 @@ public class InvoiceController {
       List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
       if (ObjectUtils.isEmpty(ids)) {
-        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+        response.setError(
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 
@@ -812,6 +813,10 @@ public class InvoiceController {
         Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
         response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
         response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+
+        if (isDuplicate) {
+          response.setAttr("$supplierInvoiceNbStatic", "value", invoice.getSupplierInvoiceNb());
+        }
       }
 
     } catch (Exception e) {
@@ -850,6 +855,46 @@ public class InvoiceController {
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Customer Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (3,4) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Supplier Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (1,2) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
