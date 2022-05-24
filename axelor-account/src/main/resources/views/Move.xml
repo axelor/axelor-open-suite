@@ -75,8 +75,7 @@
             canView="false" readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
           <field name="date"
             readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-move-method-get-period,action-move-method-check-period-permissions,action-move-method-set-moveline-dates"
-            hideIf="statusSelect == 3" colSpan="3"/>
+            onChange="action-group-move-date-onchange" hideIf="statusSelect == 3" colSpan="3"/>
           <field name="originDate" colSpan="3"
             onChange="action-move-method-set-moveline-origin-dates"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
@@ -558,6 +557,13 @@
     <action name="action-move-method-get-period"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+  </action-group>
+
+  <action-group name="action-group-move-date-onchange">
+    <action name="action-move-method-get-period"/>
+    <action name="action-record-initialize-permission-validation-move"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-set-moveline-dates"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
