@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -355,5 +356,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  public boolean applyFinancialDiscount(InvoicePayment invoicePayment) {
+    LocalDate deadLineDate = invoicePayment.getFinancialDiscountDeadlineDate();
+    return (invoicePayment != null
+        && Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()
+        && deadLineDate != null
+        && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
   }
 }
