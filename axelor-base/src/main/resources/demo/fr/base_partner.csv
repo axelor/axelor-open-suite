@@ -1,2 +1,43 @@
-"importId";"partnerTypeSelect";"isContact";"isCustomer";"isSupplier";"isEmployee";"name";"firstName";"titleSelect";"languageCode";"address";"email";"fixedPhone";"mobilePhone";"invoiceSendingFormatSelect";"paymentMode.importId";"paymentCondition.importId";"partnerCategory.code";"currency.code";"blocking.importId";"rejectCounter";"companySet_importId";"customerAccount_code";"supplierAccount_code";"mainPartner_importId";"customerTypeSelect";"supplierTypeSelect";"industrySector.importId";"user.importId";"team.importId";"source.id";"fiscalPosition.importId";"picture_fileName";"invoicesCopySelect";"registrationCode"
-1;1;"false";"true";"true";"false";"Dalbe";;;"fr";90000;"contact@dalbe.fr";"02.33.81.16.55";;"emailpaper";6;6;"SME";"EUR";;;1;411100;401100;;1;1;;;;;;"img//partner/90000_128px.png";2;"30825583500057"
+importId;partnerTypeSelect;isContact;isCustomer;isSupplier;isEmployee;isFactor;name;firstName;titleSelect;languageCode;address;email;fixedPhone;mobilePhone;invoiceSendingFormatSelect;paymentMode.importId;inPaymentMode.importId;outPaymentMode.importId;paymentCondition.importId;partnerCategory.code;currency.code;blocking.importId;rejectCounter;companySet_importId;customerAccount_code;supplierAccount_code;mainPartner_importId;customerTypeSelect;supplierTypeSelect;industrySector.importId;user.importId;team.importId;source.id;fiscalPosition.importId;picture_fileName;invoicesCopySelect;registrationCode
+1;1;False;True;True;False;False;Dalbe;;1;fr;90000;contact@dalbe.fr;02.33.81.16.55;;emailpaper;6;;;6;SME;EUR;;;1;411100;401100;;1;1;;;;;;img//partner/90000_128px.png;2;30825583500057
+2;1;False;False;True;False;False;MOLOTOW FEURSTEIN GMBH        ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+3;1;False;False;True;False;False;CANSON                        ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+4;1;False;False;True;False;False;FABER-CASTELL                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+5;1;False;False;True;False;False;PRINCE AUGUST                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+6;1;False;False;True;False;False;L'ATELIER DU TOTE BAG         ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+7;1;False;False;True;False;False;SAS MILHE ET AVONS            ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+8;1;False;False;True;False;False;VETEMENT-PUBLICITAIRE.COM     ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+9;1;False;False;True;False;False;ASSOUN DISTRIBUTION           ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+10;1;False;False;True;False;False;SAUER                         ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+11;1;False;False;True;False;False;ALFI JULLIAN SA               ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+12;1;False;False;True;False;False;HL DISPLAY                    ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+13;1;False;False;True;False;False;COLART FRANCE                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+14;1;False;False;True;False;False;LE SCRIPT                     ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+15;1;False;False;True;False;False;SAEP                          ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+16;1;False;False;True;False;False;DILISCO                       ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+17;1;False;False;True;False;False;EDITIONS CARPENTIER           ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+18;1;False;False;True;False;False;EDITIONS MILA                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+19;1;False;False;True;False;False;MILLEPAGES                    ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+20;1;False;False;True;False;False;GRAINE CREATIVE               ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+21;1;False;False;True;False;False;SODIS                         ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+22;1;False;False;True;False;False;FLAMMARION SA                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+23;1;False;False;True;False;False;CLEOPATRE                     ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+24;1;False;False;True;False;False;DAUDIN DISTRIBUTION           ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+25;1;False;False;True;False;False;NEVA EDITIONS                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+26;1;False;False;True;False;False;INTERFORUM                    ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+27;1;False;False;True;False;False;OZ INTERNATIONAL              ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+28;1;False;False;True;False;False;ARTIST ART MATERIALS SA       ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+29;1;False;False;True;False;False;SEMA                          ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+30;1;False;False;True;False;False;CHAMPAGNE DESSIN SEMD         ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+31;1;False;False;True;False;False;STAEDTLER FRANCE              ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+32;1;False;False;True;False;False;MIRKENTA                      ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+33;1;False;False;True;False;False;JPC CREATIONS                 ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+34;1;False;False;True;False;False;MINERVA                       ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+35;1;False;False;True;False;False;LENIAR SP.Z.O.O.              ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+36;1;False;False;True;False;False;CORECTOR                      ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+37;1;False;False;True;False;False;MÖBIUS&RUPPERT GMBH & CO. KG  ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+38;1;False;False;True;False;False;NWL FRANCE SAS                ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+39;1;False;False;True;False;False;CONDA                         ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+40;1;False;False;True;False;False;FACOM STANLEY BLACK&DECKER    ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+41;1;False;False;True;False;False;PROCURA KTC SPRL              ;;1;fr;;;;;emailpaper;;;;;WHSAL;EUR;;;1;411100;401000;;3;1;;;;;;;;
+42;1;False;True;False;False;False;DALBE BESANÇON;;1;fr;;;;;emailpaper;;;;;ADHE;EUR;;;1;411000;401000;;3;1;;;;;;;;
