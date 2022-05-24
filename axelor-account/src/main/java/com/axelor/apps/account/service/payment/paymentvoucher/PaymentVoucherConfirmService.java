@@ -48,6 +48,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -595,10 +596,28 @@ public class PaymentVoucherConfirmService {
 
     LocalDate dueDate =
         moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
-    Account financialDiscountAccount =
-        isPurchase
-            ? accountConfig.getPurchFinancialDiscountAccount()
-            : accountConfig.getSaleFinancialDiscountAccount();
+    Account financialDiscountAccount = null;
+
+    if (isPurchase) {
+      if (ObjectUtils.isEmpty(accountConfig)
+          || ObjectUtils.isEmpty(accountConfig.getPurchFinancialDiscountAccount())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT),
+            company.getName());
+      }
+      financialDiscountAccount = accountConfig.getPurchFinancialDiscountAccount();
+    } else {
+      if (ObjectUtils.isEmpty(accountConfig)
+          || ObjectUtils.isEmpty(accountConfig.getSaleFinancialDiscountAccount())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT),
+            company.getName());
+      }
+      financialDiscountAccount = accountConfig.getSaleFinancialDiscountAccount();
+    }
+
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
 
     MoveLine financialDiscountMoveLine =
