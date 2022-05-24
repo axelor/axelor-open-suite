@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,12 +25,9 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectTaskController {
-
-  @Inject private ProjectTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -87,9 +84,11 @@ public class ProjectTaskController {
     ProjectTask task = request.getContext().asType(ProjectTask.class);
     ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
     try {
-      task = businessProjectService.resetProjectTaskValues(task);
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
+          Beans.get(ProjectTaskBusinessProjectService.class);
+      task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
       if (projectTaskCategory != null) {
-        task = businessProjectService.updateTaskFinancialInfo(task);
+        task = projectTaskBusinessProjectService.updateTaskFinancialInfo(task);
       }
 
       if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {

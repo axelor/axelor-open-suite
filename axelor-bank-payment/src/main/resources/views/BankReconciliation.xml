@@ -42,7 +42,7 @@
           onChange="action-bank-payment-bank-reconciliation-method-on-change-bank-statement"/>
         <field name="includeOtherBankStatements" colSpan="2"/>
         <field name="company" colSpan="3" widget="SuggestBox" canEdit="false"
-          onChange="action-bank-reconciliation-set-currency" required="true"
+          onChange="action-bank-reconciliation-group-onchange-company" required="true"
           form-view="company-form" grid-view="company-grid"/>
         <field name="currency" colSpan="3" canEdit="false" required="true"
           form-view="currency-form" grid-view="currency-grid"/>
@@ -106,8 +106,9 @@
         onClick="save,action-bank-reconciliation-method-unreconcile"/>
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
         onClick="save,action-bank-reconciliation-method-reconcile-selected"/>
-      <panel-dashlet name="showUnreconciledMoveLinesPanel" colSpan="12"
-        canSearch="true" action="action-bank-reconciliation-method-show-unreconciled-move-lines"/>
+      <panel-dashlet name="showUnreconciledMoveLinesPanel"
+        title="Accounting Move Line(s) to reconcile" colSpan="12" canSearch="true"
+        action="action-bank-reconciliation-method-show-unreconciled-move-lines"/>
     </panel>
     <panel name="mainBalancePanel" colSpan="12" showIf="bankReconciliationLineList.length > 0">
       <spacer colSpan="6"/>
@@ -188,11 +189,15 @@
     <action name="action-bank-reconciliation-set-currency"/>
   </action-group>
 
+  <action-group name="action-bank-reconciliation-group-onchange-company">
+    <action name="action-bank-reconciliation-set-currency"/>
+    <action name="action-bank-reconciliation-remove-fields-company"/>
+  </action-group>
+
   <action-group name="action-group-bankreconciliation-validate-click">
     <action name="save"/>
     <action name="action-bank-reconciliation-method-compute"/>
-    <action
-      name="action-bank-reconciliation-method-check-incomplete-bank-reconciliation-line"/>
+    <action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line"/>
     <action name="action-bank-reconciliation-method-validate"/>
     <action name="action-bank-reconciliation-method-compute-balances"/>
     <action name="action-bank-reconciliation-method-set-bank-statement-is-fully-reconciled"/>
@@ -208,7 +213,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -221,6 +226,13 @@
   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation"
     name="action-bank-reconciliation-set-currency">
     <field name="currency" expr="eval: company?.currency"/>
+  </action-record>
+
+  <action-record name="action-bank-reconciliation-remove-fields-company"
+    model="com.axelor.apps.bankpayment.db.BankReconciliation">
+    <field name="bankDetails" expr="eval: null"/>
+    <field name="journal" expr="eval: null"/>
+    <field name="cashAccount" expr="eval: null"/>
   </action-record>
 
   <action-method name="action-bank-reconciliation-method-set-bank-details-domain">
@@ -363,6 +375,13 @@
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
       method="unreconcile"/>
   </action-method>
+
+  <action-validate
+    name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
+    <alert
+      message="There is at least one incomplete bank reconciliation. Are you sure you want to continue?"
+      if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null"/>
+  </action-validate>
 
   <action-method
     name="action-bank-reconciliation-method-check-incomplete-bank-reconciliation-line">

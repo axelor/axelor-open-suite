@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -299,7 +300,13 @@ public class BankReconciliationController {
       if (Strings.isNullOrEmpty(journalIds)) {
         response.setAttr("journal", "domain", "self.id IN (0)");
       } else {
-        response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+        response.setAttr(
+            "journal",
+            "domain",
+            "self.id IN("
+                + journalIds
+                + ") AND self.statusSelect = "
+                + JournalRepository.STATUS_ACTIVE);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -413,11 +420,18 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       BankReconciliationService bankReconciliationService =
           Beans.get(BankReconciliationService.class);
-      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(
+              I18n.get(
+                  com.axelor.apps.bankpayment.translation.ITranslation
+                      .BANK_RECONCILIATION_UNRECONCILED_MOVE_LINE_LIST_PANEL_TITLE));
       actionViewBuilder.model(MoveLine.class.getName());
       actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
       actionViewBuilder.add("form", "move-line-form");
       actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+      if (bankReconciliation.getCompany() == null) {
+        return;
+      }
       Map<String, Object> params =
           bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
       Set<String> keys = params.keySet();

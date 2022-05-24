@@ -21,7 +21,7 @@
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="partner.partnerSeq"/>
     <field name="partner.simpleFullName"/>
-    <field name="partner.fixedPhone" widget="phone"/>
+    <field name="partner.fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="partner.emailAddress.address"/>
     <field name="partner.mainAddress"/>
     <field name="partner.companyStr"/>
@@ -44,19 +44,19 @@
         onSelect="action-account-accounting-situation-set-outbd-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="customerAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
         canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
         canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
       <field name="defaultIncomeAccount" canNew="true"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="defaultExpenseAccount" canNew="true"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
         canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="pfpValidatorUser" showIf="company.accountConfig.isManagePassedForPayment"
@@ -68,9 +68,9 @@
         name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
-      <field name="balanceCustAccount"/>
-      <field name="balanceDueCustAccount"/>
-      <field name="balanceDueDebtRecoveryCustAccount"/>
+      <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueDebtRecoveryCustAccount" domain="self.statusSelect = 1"/>
     </panel>
     <panel name="automaticMailPanel" title="Automatic mail">
       <field name="invoiceAutomaticMailOnValidate"/>
@@ -137,13 +137,13 @@
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="customerAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
         form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
         form-view="supplier-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
@@ -154,9 +154,9 @@
     </panel>
 
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
-      <field name="balanceCustAccount"/>
-      <field name="balanceDueCustAccount"/>
-      <field name="balanceDueDebtRecoveryCustAccount"/>
+      <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueDebtRecoveryCustAccount" domain="self.statusSelect = 1"/>
     </panel>
     <panel name="debtRecoveryProcessPanel" title="Debt recovery process">
       <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
@@ -237,7 +237,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-method name="action-accounting-situation-method-set-default-mail">

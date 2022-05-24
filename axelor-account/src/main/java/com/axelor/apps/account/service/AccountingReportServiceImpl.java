@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +56,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -281,8 +283,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     List<Integer> statusSelects = new ArrayList<>();
+    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
     statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    statusSelects.add(MoveRepository.STATUS_VALIDATED);
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
             .getIsActivateSimulatedMove()
@@ -668,9 +670,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_ACCOUNTED
+            + MoveRepository.STATUS_DAYBOOK
             + " OR self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_VALIDATED
+            + MoveRepository.STATUS_ACCOUNTED
             + ")");
 
     log.debug("Query : {}", this.query);
@@ -743,9 +745,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_ACCOUNTED
+            + MoveRepository.STATUS_DAYBOOK
             + " OR self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_VALIDATED
+            + MoveRepository.STATUS_ACCOUNTED
             + ")");
 
     this.addParams("self.originTaxLine.tax.typeSelect = ?%d", TaxRepository.TAX_TYPE_COLLECTION);
@@ -790,5 +792,30 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     setStatus(accountingExport);
     return accountingExport;
+  }
+
+  @Override
+  public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
+      AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport.getReportType() != null) {
+      AccountingReportType accountingReportType =
+          Beans.get(AccountingReportTypeRepository.class)
+              .find(accountingReport.getReportType().getId());
+
+      if (accountingReportType.getModelAccountingReport() != null) {
+        AccountingReport modelAccountingReportCopy =
+            JPA.copy(accountingReportType.getModelAccountingReport(), false);
+        modelAccountingReportCopy.setRef(null);
+        modelAccountingReportCopy.setPublicationDateTime(null);
+        modelAccountingReportCopy.setTotalCredit(null);
+        modelAccountingReportCopy.setTotalDebit(null);
+        modelAccountingReportCopy.setBalance(null);
+        modelAccountingReportCopy.setDate(accountingReport.getDate());
+        modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
+        Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
+        return modelAccountingReportCopyMap;
+      }
+    }
+    return null;
   }
 }

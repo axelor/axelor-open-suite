@@ -4,6 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="journalType"/>
@@ -14,13 +18,14 @@
   </grid>
 
   <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"
-    onNew="account-journal-record-default" width="large"
-    onLoad="action-journal-group-on-load-actions">
+    onNew="account-journal-record-default,action-method-account-journal-readonly-if-journal-in-move"
+    width="large" onLoad="action-journal-group-on-load-actions">
     <panel name="statusPanel" title="Status">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
-      <button name="activeStatusBtn" title="Active" hideIf="statusSelect == 1"
-        onClick="account-journal-record-status-active,save" colSpan="2"/>
+      <button name="activeStatusBtn" title="Set Active"
+        onClick="save,account-journal-method-status-active,action-method-account-journal-readonly-if-journal-in-move,action-attrs-account-journal-status-show-title"
+        colSpan="2"/>
     </panel>
     <panel name="mainPanel">
       <field name="name"/>
@@ -70,7 +75,10 @@
           <field name="descriptionIdentificationOk"/>
           <field name="authorizeSimulatedMove"
             showIf="company.accountConfig.isActivateSimulatedMove"/>
+          <field name="allowAccountingDaybook"
+            showIf="company.accountConfig.accountingDaybook"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
+          <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
         <spacer name="moveLineSpacer"/>
         <panel name="paymentsPanel" title="Payments" colSpan="12">
@@ -94,6 +102,8 @@
 
     </panel-tabs>
 
+
+
   </form>
 
   <action-view name="action-journal-view-move-line" title="Move lines"
@@ -115,13 +125,19 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
-  <action-record name="account-journal-record-status-active"
-    model="com.axelor.apps.account.db.Journal">
-    <field name="statusSelect" expr="eval: 1"/>
-  </action-record>
+  <action-method name="account-journal-method-status-active">
+    <call class="com.axelor.apps.account.web.JournalController" method="toggleStatus"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-account-journal-status-show-title">
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval: com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval: com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
+  </action-attrs>
 
   <action-record name="account-journal-on-change-not-export-ok"
     model="com.axelor.apps.account.db.Journal">
@@ -129,8 +145,15 @@
   </action-record>
 
   <action-group name="action-journal-group-on-load-actions">
-    <action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
+    <action name="action-journal-method-set-totals"
+      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+    <action name="action-method-account-journal-readonly-if-journal-in-move"/>
+    <action name="action-attrs-account-journal-status-show-title"/>
   </action-group>
+
+  <action-method name="action-method-account-journal-readonly-if-journal-in-move">
+    <call class="com.axelor.apps.account.web.JournalController" method="setReadOnly"/>
+  </action-method>
 
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>

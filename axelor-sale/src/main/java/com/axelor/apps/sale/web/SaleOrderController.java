@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -47,7 +48,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -197,17 +197,20 @@ public class SaleOrderController {
   }
 
   public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderWorkflowService.class)
+          .cancelSaleOrder(
+              Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
+              saleOrder.getCancelReason(),
+              saleOrder.getCancelReasonStr());
 
-    Beans.get(SaleOrderWorkflowService.class)
-        .cancelSaleOrder(
-            Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
-            saleOrder.getCancelReason(),
-            saleOrder.getCancelReasonStr());
-
-    response.setFlash(I18n.get("The sale order was canceled"));
-    response.setCanClose(true);
+      response.setFlash(I18n.get("The sale order was canceled"));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void finalizeQuotation(ActionRequest request, ActionResponse response) {
@@ -228,7 +231,7 @@ public class SaleOrderController {
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     try {
-      Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
+      Beans.get(SaleOrderWorkflowService.class).completeSaleOrder(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -747,9 +750,14 @@ public class SaleOrderController {
   public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
+      Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void addPack(ActionRequest request, ActionResponse response) {
@@ -846,12 +854,68 @@ public class SaleOrderController {
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form")
             .add("grid", "sale-order-grid")
             .param("forceEdit", "true")
             .context("_showRecord", copiedSO.getId())
             .map());
+  }
+
+  /**
+   * Empty the fiscal position field if its value is no longer compatible with the new taxNumber
+   * after a change
+   *
+   * @param request
+   * @param response
+   */
+  public void emptyFiscalPositionIfNotCompatible(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      FiscalPosition soFiscalPosition = saleOrder.getFiscalPosition();
+      if (soFiscalPosition == null) {
+        return;
+      }
+      if (saleOrder.getTaxNumber() == null) {
+        if (saleOrder.getClientPartner() != null
+            && saleOrder.getFiscalPosition() == saleOrder.getClientPartner().getFiscalPosition()) {
+          return;
+        }
+      } else {
+        for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+          if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
+            return;
+          }
+        }
+      }
+      response.setValue("fiscalPosition", null);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
+   * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
+   * SaleOrderLineService#fillPrice(SaleOrderLine, SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      SaleOrderLineService saleOrderLineServiceSupplyChain = Beans.get(SaleOrderLineService.class);
+      if (saleOrder.getSaleOrderLineList() != null) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          saleOrderLineServiceSupplyChain.computeProductInformation(saleOrderLine, saleOrder);
+          saleOrderLineServiceSupplyChain.computeValues(saleOrder, saleOrderLine);
+        }
+        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

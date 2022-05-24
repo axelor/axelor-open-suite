@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -115,6 +115,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
+
     ContractVersion currentVersion = contract.getCurrentContractVersion();
     versionService.waiting(currentVersion, date);
   }
@@ -122,6 +123,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
+
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     if (currentVersion.getSupposedActivationDate() != null) {
@@ -336,7 +338,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .isBefore(
                 durationService.computeDuration(
                     version.getPriorNoticeDuration(),
-                    Beans.get(AppBaseService.class).getTodayDate(contract.getCompany())))) {
+                    appBaseService.getTodayDate(contract.getCompany())))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
@@ -369,7 +371,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   @Override
   @Transactional
-  public void close(Contract contract, LocalDate terminationDate) {
+  public void close(Contract contract, LocalDate terminationDate) throws AxelorException {
     LocalDate today = appBaseService.getTodayDate(contract.getCompany());
 
     ContractVersion currentVersion = contract.getCurrentContractVersion();

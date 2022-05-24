@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -196,8 +196,8 @@ public class BatchReimbursementExport extends BatchStrategy {
                     "self.account.useForPartnerBalance = 'true' "
                         + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
                         + "self.reimbursementStatusSelect = ?5 ",
-                    MoveRepository.STATUS_VALIDATED,
                     MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
                     partnerRepository.find(partner.getId()),
                     companyRepo.find(company.getId()),
                     MoveLineRepository.REIMBURSEMENT_STATUS_NULL)

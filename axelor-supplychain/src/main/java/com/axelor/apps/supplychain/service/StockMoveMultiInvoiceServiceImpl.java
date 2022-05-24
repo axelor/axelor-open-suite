@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -209,6 +209,13 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
       }
+
+      if (firstDummyInvoice.getIncoterm() != null
+          && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
+      }
     }
   }
 
@@ -300,6 +307,12 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
       }
+      if (firstDummyInvoice.getIncoterm() != null
+          && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
+      }
     }
   }
 
@@ -380,13 +393,14 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
+    invoice.setIncoterm(dummyInvoice.getIncoterm());
 
     StringBuilder deliveryAddressStr = new StringBuilder();
     AddressService addressService = Beans.get(AddressService.class);
 
     for (Address address : deliveryAddressSet) {
       deliveryAddressStr.append(
-          addressService.computeAddressStr(address).replaceAll("\n", ", ") + "\n");
+          addressService.computeAddressStr(address).replace("\n", ", ") + "\n");
     }
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());
@@ -491,6 +505,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
+    invoice.setIncoterm(dummyInvoice.getIncoterm());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -600,6 +615,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
       dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
+      dummyInvoice.setIncoterm(saleOrder.getIncoterm());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -608,6 +624,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setAddress(stockMove.getToAddress());
       dummyInvoice.setAddressStr(stockMove.getToAddressStr());
       dummyInvoice.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
+      dummyInvoice.setIncoterm(stockMove.getIncoterm());
     }
     return dummyInvoice;
   }
@@ -634,12 +651,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(purchaseOrder.getPriceList());
       dummyInvoice.setInAti(purchaseOrder.getInAti());
     } else {
+      if (stockMove.getOriginId() != null
+          && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+        dummyInvoice.setIncoterm(saleOrderRepository.find(stockMove.getOriginId()).getIncoterm());
+      }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getFromAddress());
       dummyInvoice.setAddressStr(stockMove.getFromAddressStr());
+      dummyInvoice.setIncoterm(stockMove.getIncoterm());
     }
     return dummyInvoice;
   }

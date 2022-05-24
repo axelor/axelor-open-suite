@@ -11,7 +11,8 @@
     </toolbar>
     <field name="contactPartner.partnerSeq" width="120"/>
     <field name="contactPartner.simpleFullName"/>
-    <field name="contactPartner.fixedPhone" widget="phone"/>
+    <field name="contactPartner.fixedPhone" widget="phone"
+      x-placeholder-number-type="FIXED_LINE"/>
     <field name="contactPartner.mobilePhone" widget="phone"/>
     <field name="managerUser" form-view="user-form" grid-view="user-grid"/>
     <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form"
@@ -72,17 +73,13 @@
 
             <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
               canSelect="false"/>
-            <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"
-              placeholder="http://www.url.com"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
-            <field name="fixedPhone" widget="phone"
-              onChange="action-partner-method-normalize-fixedPhone" colSpan="4"
-              pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
-            <field name="mobilePhone" widget="phone"
-              onChange="action-partner-method-normalize-mobilePhone" colSpan="4"
-              pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-            <field name="fax" widget="phone" onChange="action-partner-method-normalize-fax"
-              colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
+            <field name="fixedPhone" widget="phone" colSpan="4"
+              x-placeholder-number-type="FIXED_LINE"/>
+            <field name="mobilePhone" widget="phone" colSpan="4"/>
+            <field name="fax" widget="phone" colSpan="4"/>
           </panel>
         </editor>
       </field>
@@ -90,15 +87,10 @@
 
     <!-- Basic info -->
     <panel name="phoneProSBSPanel" title="Work phones" showIf="stepByStepSelect == 1">
-      <field name="fixedProPhone" widget="phone"
-        onChange="action-employee-method-normalize-fixedProPhone" colSpan="4"
-        pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
-      <field name="mobileProPhone" widget="phone"
-        onChange="action-employee-method-normalize-mobileProPhone" colSpan="4"
-        pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-      <field name="phoneAtCustomer" widget="phone"
-        onChange="action-employee-method-normalize-phoneAtCustomer" colSpan="4"
-        pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+      <field name="fixedProPhone" widget="phone" colSpan="4"
+        x-placeholder-number-type="FIXED_LINE"/>
+      <field name="mobileProPhone" widget="phone" colSpan="4"/>
+      <field name="phoneAtCustomer" widget="phone" colSpan="4"/>
     </panel>
 
     <panel name="personalInfoSBSPanel" title="Personal information"
@@ -122,9 +114,7 @@
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency"
       showIf="stepByStepSelect == 1">
       <field name="emergencyContact" colSpan="4"/>
-      <field name="emergencyNumber" widget="phone"
-        onChange="action-employee-method-normalize-emergencyNumber" colSpan="4"
-        pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+      <field name="emergencyNumber" widget="phone" colSpan="4"/>
       <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
     </panel>
 
@@ -270,17 +260,13 @@
 
               <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
                 canSelect="false"/>
-              <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"
-                placeholder="http://www.url.com"/>
+              <field name="webSite" placeholder="http://www.url.com" widget="url"
+                pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
-              <field name="fixedPhone" widget="phone"
-                onChange="action-partner-method-normalize-fixedPhone" colSpan="4"
-                pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
-              <field name="mobilePhone" widget="phone"
-                onChange="action-partner-method-normalize-mobilePhone" colSpan="4"
-                pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-              <field name="fax" widget="phone" onChange="action-partner-method-normalize-fax"
-                colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
+              <field name="fixedPhone" widget="phone" colSpan="4"
+                x-placeholder-number-type="FIXED_LINE"/>
+              <field name="mobilePhone" widget="phone" colSpan="4"/>
+              <field name="fax" widget="phone" colSpan="4"/>
             </panel>
           </editor>
         </field>
@@ -304,15 +290,10 @@
     <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="informationPanel" title="Information">
         <panel name="phoneProPanel" title="Work phones" colSpan="12">
-          <field name="fixedProPhone" widget="phone"
-            onChange="action-employee-method-normalize-fixedProPhone" colSpan="4"
-            pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
-          <field name="mobileProPhone" widget="phone"
-            onChange="action-employee-method-normalize-mobileProPhone" colSpan="4"
-            pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-          <field name="phoneAtCustomer" widget="phone"
-            onChange="action-employee-method-normalize-phoneAtCustomer" colSpan="4"
-            pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+          <field name="fixedProPhone" widget="phone" colSpan="4"
+            x-placeholder-number-type="FIXED_LINE"/>
+          <field name="mobileProPhone" widget="phone" colSpan="4"/>
+          <field name="phoneAtCustomer" widget="phone" colSpan="4"/>
         </panel>
 
         <panel name="personalInfoPanel" title="Personal information" colSpan="12">
@@ -334,9 +315,7 @@
 
         <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
           <field name="emergencyContact" colSpan="4"/>
-          <field name="emergencyNumber" widget="phone"
-            onChange="action-employee-method-normalize-emergencyNumber" colSpan="4"
-            pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+          <field name="emergencyNumber" widget="phone" colSpan="4"/>
           <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
         </panel>
 
@@ -662,7 +641,7 @@
     model="com.axelor.apps.hr.db.Timesheet">
     <view type="grid" name="my-timesheets-grid"/>
     <view type="form" name="timesheet-form"/>
-    <domain>self.user.employee = :id</domain>
+    <domain>self.employee = :id</domain>
   </action-view>
 
   <action-method name="action-employee-method-show-annual-report">
@@ -676,22 +655,6 @@
 
   <action-method name="action-employee-contact-method-set-social-network-url">
     <call class="com.axelor.apps.hr.web.EmployeeController" method="setContactSocialNetworkUrl"/>
-  </action-method>
-
-  <action-method name="action-employee-method-normalize-fixedProPhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-employee-method-normalize-mobileProPhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-employee-method-normalize-phoneAtCustomer">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-employee-method-normalize-emergencyNumber">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
   </action-method>
 
   <action-method name="action-print-employee-phonebook">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,6 +89,9 @@ public interface IExceptionMessage {
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
   static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
+
+  String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
+  String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/ "Error when closing period %s" /*)*/;
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
@@ -98,6 +101,12 @@ public interface IExceptionMessage {
   String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully," /*)*/;
   String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
   String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+  String ABSTRACT_BATCH_FINISHED_SUBJECT = /*$$(*/ "Batch %s is now finished" /*)*/;
+  String ABSTRACT_BATCH_FINISHED_DEFAULT_MESSAGE = /*$$(*/ "Batch execution is now finished" /*)*/;
+  String ABSTRACT_BATCH_MESSAGE_ON_EXCEPTION = /*$$(*/
+      "Error happened during batch execution" /*)*/;
+
   /** Indicator generator grouping service */
   public static final String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/
       "Error : no export path has been set" /*)*/;
@@ -356,6 +365,8 @@ public interface IExceptionMessage {
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
+  public static final String ABC_ANALYSIS_ALREADY_STARTED = /*$$(*/
+      "Analysis is already on going." /*)*/;
 
   /* DMS Import */
   public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
@@ -453,4 +464,16 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String PRICING_3 = /*$$(*/
+      "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
+      "The previous period is not closed or temporarily closed." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
+      "The previous period is not closed." /*)*/;
+
+  public static final String CITIES_IMPORT_FAILED = /*$$(*/
+      "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 }

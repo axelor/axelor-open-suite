@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,7 +50,8 @@ public interface InvoicePaymentCreateService {
    * @param companyBankDetails
    * @return
    */
-  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails);
+  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+      throws AxelorException;
 
   /**
    * Create an invoice payment for each invoice
@@ -66,8 +67,13 @@ public interface InvoicePaymentCreateService {
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber)
+      String chequeNumber,
+      boolean applyDiscount)
       throws AxelorException;
 
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException;
+
+  InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException;
 }

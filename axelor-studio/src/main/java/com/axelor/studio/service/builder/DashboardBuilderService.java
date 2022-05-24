@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -91,7 +91,12 @@ public class DashboardBuilderService {
       }
 
       dashlet.setAction(actionName);
-      dashlet.setHeight("350");
+      Integer height = dashletBuilder.getHeight();
+      if (height == 0) {
+        height = 350;
+      }
+      dashlet.setHeight(height.toString());
+      dashlet.setCanSearch(dashletBuilder.getCanSearch());
 
       Integer colSpan = dashletBuilder.getColspan();
       if (colSpan > 12) {

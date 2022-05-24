@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -253,12 +253,14 @@ public class BankStatementService {
               .order("-sequence")
               .fetchOne();
       if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
-          && !(initialBankStatementLineAFB120
-                  .getCredit()
-                  .equals(finalBankStatementLineAFB120.getCredit())
-              && initialBankStatementLineAFB120
-                  .getDebit()
-                  .equals(finalBankStatementLineAFB120.getDebit()))) {
+          && (initialBankStatementLineAFB120
+                      .getDebit()
+                      .compareTo(finalBankStatementLineAFB120.getDebit())
+                  != 0
+              || initialBankStatementLineAFB120
+                      .getCredit()
+                      .compareTo(finalBankStatementLineAFB120.getCredit())
+                  != 0)) {
         deleteLines = true;
       }
     }

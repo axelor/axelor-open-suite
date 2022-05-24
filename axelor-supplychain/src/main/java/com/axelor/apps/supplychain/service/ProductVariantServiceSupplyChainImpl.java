@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,11 @@ import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class ProductVariantServiceSupplyChainImpl extends ProductVariantServiceStockImpl {
 
+  @Inject
   public ProductVariantServiceSupplyChainImpl(
       ProductRepository productRepo, ProductVariantRepository productVariantRepo) {
     super(productRepo, productVariantRepo);

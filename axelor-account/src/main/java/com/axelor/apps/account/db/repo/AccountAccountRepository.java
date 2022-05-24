@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,7 +58,16 @@ public class AccountAccountRepository extends AccountRepository {
       return super.save(account);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Account copy(Account entity, boolean deep) {
+    Account account = super.copy(entity, deep);
+    account.setCode(String.format("%s (copy)", account.getCode()));
+    account.setName(String.format("%s (copy)", account.getName()));
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
+    return account;
   }
 }

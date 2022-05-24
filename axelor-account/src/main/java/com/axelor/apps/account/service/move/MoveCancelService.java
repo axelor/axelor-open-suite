@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,7 +69,7 @@ public class MoveCancelService {
           I18n.get(IExceptionMessage.MOVE_CANCEL_2));
     }
 
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

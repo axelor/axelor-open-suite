@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -188,6 +188,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             moveDate,
             originDate,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,
             false,
@@ -209,7 +210,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;
@@ -278,7 +279,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);
     q.setParameter(1, year);
     q.setParameter(2, account);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     if (partner != null) {
       q.setParameter(4, partner);
@@ -331,7 +332,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountIdList);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 
@@ -367,7 +368,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountId);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 

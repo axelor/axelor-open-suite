@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -87,6 +89,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Currency currency,
       Partner partner,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -100,6 +103,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         appAccountService.getTodayDate(company),
         null,
         paymentMode,
+        fiscalPosition,
         technicalOriginSelect,
         functionalOriginSelect,
         origin,
@@ -115,6 +119,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param partner
    * @param date
    * @param paymentMode
+   * @param fiscalPosition
    * @param technicalOriginSelect
    * @return
    * @throws AxelorException
@@ -128,6 +133,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate date,
       LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -141,6 +147,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         date,
         originDate,
         paymentMode,
+        fiscalPosition,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
@@ -159,6 +166,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param partner
    * @param date
    * @param paymentMode
+   * @param fiscalPosition
    * @param technicalOriginSelect
    * @param ignoreInDebtRecoveryOk
    * @param ignoreInAccountingOk
@@ -174,6 +182,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate date,
       LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -202,7 +211,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.PERIOD_1),
             company.getName(),
-            date.toString());
+            L10n.getInstance().format(date));
       }
     } else {
       move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
@@ -230,6 +239,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setDescription(description);
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
+    move.setFiscalPosition(fiscalPosition);
     move.setTechnicalOriginSelect(technicalOriginSelect);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
@@ -259,6 +269,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -273,6 +284,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             date,
             null,
             paymentMode,
+            fiscalPosition,
             technicalOriginSelect,
             functionalOriginSelect,
             origin,
@@ -289,6 +301,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -308,6 +321,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             date,
             null,
             paymentMode,
+            fiscalPosition,
             technicalOriginSelect,
             functionalOriginSelect,
             ignoreInDebtRecoveryOk,

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,8 +50,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderLineController {
 
-  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
@@ -63,8 +62,8 @@ public class SaleOrderLineController {
     }
   }
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     saleOrderLine =
         Beans.get(SaleOrderLineServiceSupplyChain.class)

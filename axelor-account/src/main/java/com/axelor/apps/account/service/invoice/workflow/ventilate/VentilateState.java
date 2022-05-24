@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,16 +17,13 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -68,7 +65,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
-  protected FixedAssetService fixedAssetService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
 
   @Inject
   public VentilateState(
@@ -79,7 +76,7 @@ public class VentilateState extends WorkflowInvoice {
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetService fixedAssetService) {
+      FixedAssetGenerationService fixedAssetGenerationService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -87,7 +84,7 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
-    this.fixedAssetService = fixedAssetService;
+    this.fixedAssetGenerationService = fixedAssetGenerationService;
   }
 
   @Override
@@ -137,9 +134,8 @@ public class VentilateState extends WorkflowInvoice {
       }
 
       if (invoice.getPartner() != null) {
-        account =
-            Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), account);
+        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+        account = Beans.get(FiscalPositionAccountService.class).getAccount(fiscalPosition, account);
       }
       invoice.setPartnerAccount(account);
     }
@@ -277,7 +273,7 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("Generate fixed asset");
     // Create fixed asset
-    fixedAssetService.createFixedAssets(invoice);
+    fixedAssetGenerationService.createFixedAssets(invoice);
   }
 
   /**
