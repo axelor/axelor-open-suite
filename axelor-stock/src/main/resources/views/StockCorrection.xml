@@ -9,8 +9,6 @@
     <field name="product"/>
     <field name="trackingNumber"/>
     <field name="realQty" x-scale="2"/>
-    <field name="futureQty" x-scale="2"/>
-    <field name="reservedQty" x-scale="2"/>
     <field name="validationDateT"/>
     <field name="stockCorrectionReason"/>
     <field name="statusSelect"/>
@@ -88,10 +86,6 @@
 
   <action-attrs name="action-stock-correction-attrs-scale">
     <attribute name="scale" for="realQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="futureQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="reservedQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 

@@ -1434,7 +1434,7 @@
 "First depreciation date cannot be before Acquisition date.","La date du premier amortissement ne peut être antérieure à la date d'acquisition",,
 "Fiscal",,,
 "Fiscal Computation Method Select","Méthode de calcul (F)",,
-"Fiscal Degressive Coef","Coeffcient de dégressivité (F)",,
+"Fiscal Degressive Coef","Coefficient de dégressivité (F)",,
 "Fiscal Depreciation Amount","Amort. fiscal",,
 "Fiscal Duration In Month","Durée en mois (F)",,
 "Fiscal Fixed Asset Line List","Tableau d'amortissement fiscal",,
