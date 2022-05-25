@@ -88,4 +88,7 @@ public interface AccountingSituationService {
    * @return
    */
   Account getHoldBackSupplierAccount(Partner partner, Company company) throws AxelorException;
+
+  void setHoldBackAccounts(AccountingSituation accountingSituation, Partner partner)
+      throws AxelorException;
 }
