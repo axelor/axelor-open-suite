@@ -17,7 +17,7 @@
     <boolean name="isStartModel" title="Start model ?"/>
     <string name="model" title="Model" index="true"/>
     <string name="userDefaultPath" title="User default path"/>
-    <boolean name="isDirectCreation" title="Direct creation" default="true"/>
+    <boolean name="isDirectCreation" title="Direct creation ?" default="true"/>
     <entity-listener class="com.axelor.apps.bpm.listener.WkfProcessConfigListener"/>
 
   </entity>
