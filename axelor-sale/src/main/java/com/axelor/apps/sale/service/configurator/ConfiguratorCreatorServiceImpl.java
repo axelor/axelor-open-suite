@@ -64,12 +64,12 @@ import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
-  private ConfiguratorCreatorRepository configuratorCreatorRepo;
-  private AppBaseService appBaseService;
-  private MetaFieldRepository metaFieldRepository;
-  private MetaJsonFieldRepository metaJsonFieldRepository;
-  private MetaModelRepository metaModelRepository;
-  private SaleOrderRepository saleOrderRepository;
+  protected ConfiguratorCreatorRepository configuratorCreatorRepo;
+  protected AppBaseService appBaseService;
+  protected MetaFieldRepository metaFieldRepository;
+  protected MetaJsonFieldRepository metaJsonFieldRepository;
+  protected MetaModelRepository metaModelRepository;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public ConfiguratorCreatorServiceImpl(
@@ -98,12 +98,24 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     for (MetaJsonField field : creator.getAttributes()) {
       setContextToJsonField(creator, field);
 
-      // fill onChange if empty
-      if (Strings.isNullOrEmpty(field.getOnChange())) {
+      // fill onChange if empty and relevant
+      if (Strings.isNullOrEmpty(field.getOnChange()) && isEditable(field)) {
         field.setOnChange("action-configurator-update-indicators");
       }
     }
     configuratorCreatorRepo.save(creator);
+  }
+
+  protected boolean isEditable(MetaJsonField field) {
+    switch (field.getType()) {
+      case MetaJsonFieldRepository.TYPE_PANEL:
+      case MetaJsonFieldRepository.TYPE_LABEL:
+      case MetaJsonFieldRepository.TYPE_SPACER:
+      case MetaJsonFieldRepository.TYPE_SEPARATOR:
+        return false;
+      default:
+        return true;
+    }
   }
 
   @Transactional

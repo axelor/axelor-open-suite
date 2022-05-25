@@ -1,0 +1,3 @@
+---
+title: "ConfiguratorCreator: Don't add default value to onChange tag when it's useless"
+type: fix

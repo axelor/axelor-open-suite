@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="meta" package="com.axelor.meta.db"/>
+
+  <entity name="MetaJsonField" table="META_JSON_FIELD">
+
+    <!-- XXX Delete once the constants are provided by AOP -->
+    <extra-code><![CDATA[
+      // type
+      public static final String TYPE_STRING = "string";
+      public static final String TYPE_INTEGER = "integer";
+      public static final String TYPE_DECIMAL = "decimal";
+      public static final String TYPE_BOOLEAN = "boolean";
+      public static final String TYPE_DATETIME = "datetime";
+      public static final String TYPE_DATE = "date";
+      public static final String TYPE_TIME = "time";
+      public static final String TYPE_PANEL = "panel";
+      public static final String TYPE_ENUM = "enum";
+      public static final String TYPE_BUTTON = "button";
+      public static final String TYPE_LABEL = "label";
+      public static final String TYPE_SPACER = "spacer";
+      public static final String TYPE_SEPARATOR = "separator";
+      public static final String TYPE_MANY_TO_ONE = "many-to-one";
+      public static final String TYPE_MANY_TO_MANY = "many-to-many";
+      public static final String TYPE_ONE_TO_MANY = "one-to-many";
+      public static final String TYPE_JSON_MANY_TO_ONE = "custom-many-to-one";
+      public static final String TYPE_JSON_MANY_TO_MANY = "custom-many-to-many";
+      public static final String TYPE_JSON_ONE_TO_MANY = "custom-one-to-many";
+
+    ]]></extra-code>
+
+  </entity>
+
+</domain-models>
