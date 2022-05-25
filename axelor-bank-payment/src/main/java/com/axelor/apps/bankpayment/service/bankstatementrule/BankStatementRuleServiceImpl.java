@@ -36,7 +36,7 @@ public class BankStatementRuleServiceImpl implements BankStatementRuleService {
       case BankStatementRuleRepository.PARTNER_FETCH_METHOD_QUERY:
         Object result =
             bankStatementQueryService.evalQuery(
-                bankStatementRule.getPartnerFetchQuery(),
+                bankStatementRule.getPartnerBankStatementQuery(),
                 bankReconciliationLine.getBankStatementLine(),
                 null);
         if (result != null) {
@@ -58,7 +58,7 @@ public class BankStatementRuleServiceImpl implements BankStatementRuleService {
 
     Object result =
         bankStatementQueryService.evalQuery(
-            bankStatementRule.getMoveLineFetchQuery(),
+            bankStatementRule.getMoveLineBankStatementQuery(),
             bankReconciliationLine.getBankStatementLine(),
             move);
     if (result != null) {

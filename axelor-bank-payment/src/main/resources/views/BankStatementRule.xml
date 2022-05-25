@@ -42,7 +42,7 @@
         requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect == 0 &amp;&amp; partnerFetchMethoSelect == 1"
         form-view="partner-form" grid-view="partner-grid" showIf="partnerFetchMethodSelect == 1"
         hidden="true"/>
-      <field name="partnerFetchQuery" requiredIf="partnerFetchMethodSelect == 2"
+      <field name="partnerBankStatementQuery" requiredIf="partnerFetchMethodSelect == 2"
         showIf="partnerFetchMethodSelect == 2" hidden="true" domain="self.ruleTypeSelect = 2"/>
       <field name="bankStatementQuery" domain="self.ruleTypeSelect = :ruleTypeSelect"
         form-view="bank-statement-query-form" grid-view="bank-statement-query-grid"/>
@@ -50,8 +50,8 @@
         onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
       <field name="searchLabel"/>
       <field name="letterToInvoice"/>
-      <field name="moveLineFetchQuery" requiredIf="letterToInvoice" showIf="letterToInvoice"
-        hidden="true" domain="self.ruleTypeSelect = 3"/>
+      <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
+        showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
     </panel>
   </form>
 
