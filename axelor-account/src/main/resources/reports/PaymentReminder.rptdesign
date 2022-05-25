@@ -1021,9 +1021,10 @@ join account_invoice_term InvoiceTerm  on DebtRecoveryInvoiceTermSet.invoice_ter
 join account_move_line MoveLine on MoveLine.id = InvoiceTerm.move_line
 join account_move Move on Move.id = MoveLine.move
 join base_currency Currency on Move.currency = Currency.id
+left join account_account_config AccConf on AccConf.company = Move.company
 where DebtRecoveryHistory.id = ?
 and Currency.code is not null
-and InvoiceTerm.due_date + INTERVAL '1 day' * (select mail_transit_time FROM account_account_config) < coalesce ((select today from base_app_base), NOW()) )
+and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today from base_app_base), NOW()) )
 order by InvoiceTerm.sequence]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
