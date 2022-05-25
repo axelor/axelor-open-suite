@@ -17,10 +17,10 @@
     <field name="description"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
     <field name="debit" aggregate="sum">
-      <hilite if="credit > 0" color="red"/>
+      <hilite if="debit > 0" color="green"/>
     </field>
     <field name="credit" aggregate="sum">
-      <hilite if="debit > 0" color="green"/>
+      <hilite if="credit > 0" color="red"/>
     </field>
     <field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
     <field name="move.statusSelect"/>
