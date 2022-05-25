@@ -15,6 +15,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -63,6 +64,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected MoveRepository moveRepo;
   protected PartnerRepository partnerRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
+  protected AccountConfigService accountConfigService;
   protected int counter = 0;
 
   @Inject
@@ -80,7 +82,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      AccountConfigService accountConfigService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -95,6 +98,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.moveRepo = moveRepo;
     this.partnerRepo = partnerRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -672,10 +676,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return moveLine;
   }
 
-  protected Account getFinancialDiscountAccount(Company company, boolean out) {
+  protected Account getFinancialDiscountAccount(Company company, boolean out)
+      throws AxelorException {
     return out
-        ? company.getAccountConfig().getPurchFinancialDiscountAccount()
-        : company.getAccountConfig().getSaleFinancialDiscountAccount();
+        ? accountConfigService.getPurchFinancialDiscountAccount(
+            accountConfigService.getAccountConfig(company))
+        : accountConfigService.getSaleFinancialDiscountAccount(
+            accountConfigService.getAccountConfig(company));
   }
 
   protected Tax getFinancialDiscountTax(Company company, boolean out) {
