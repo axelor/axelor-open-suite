@@ -316,7 +316,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-                "provisionTangibleFixedAssetAccount/wbProvisionTangibleFixedAssetAccount");
+                I18n.get("Provision Tangible Fixed Asset Account")
+                    + " / "
+                    + I18n.get("WB Provision Tangible Fixed Asset Account"));
           }
 
           debitLineAccount = fixedAssetCategory.getChargeAccount();
@@ -418,7 +420,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
-              "ifrsChargeAccount/ifrsDepreciationAccount");
+              I18n.get("IFRS Charge Account") + " / " + I18n.get("IFRS Depreciation Account"));
         }
       } else {
         debitLineAccount = fixedAssetCategory.getChargeAccount();
@@ -427,7 +429,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
-              "chargeAccount/depreciationAccount");
+              I18n.get("Charge account") + " / " + I18n.get("Depreciation account"));
         }
       }
       BigDecimal amount = fixedAssetLine.getDepreciation();
@@ -516,7 +518,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               I18n.get(
                   IExceptionMessage
                       .IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING),
-              "RealisedAssetsValueAccount");
+              I18n.get("Realised Assets Value Account"));
         }
         chargeAccount = fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount();
       } else {
@@ -654,7 +656,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(
                 IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING),
-            "realisedAssetsIncomeAccount / debtReceivableAccount / taxLine.tax.AccountManagementList.saleAccount");
+            I18n.get("Realised Assets Income Account")
+                + " / "
+                + I18n.get("Debt Receivable Account")
+                + " / "
+                + I18n.get("Sale account of tax config"));
       }
 
       MoveLine creditMoveLine1 =
