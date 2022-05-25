@@ -946,8 +946,12 @@ public class BankReconciliationService {
   public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
     BankReconciliationLine bankReconciliationLine =
         bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
-    bankReconciliationLine.setIsSelectedBankReconciliation(
-        !bankReconciliationLineContext.getIsSelectedBankReconciliation());
+    if (bankReconciliationLine.getIsSelectedBankReconciliation() != null) {
+      bankReconciliationLine.setIsSelectedBankReconciliation(
+          !bankReconciliationLineContext.getIsSelectedBankReconciliation());
+    } else {
+      bankReconciliationLine.setIsSelectedBankReconciliation(true);
+    }
     return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 
