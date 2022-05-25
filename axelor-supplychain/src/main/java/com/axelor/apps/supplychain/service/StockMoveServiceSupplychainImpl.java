@@ -94,8 +94,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
       ProductRepository productRepository,
-      PartnerSupplychainService partnerSupplychainService,
-      SaleOrderWorkflowService saleOrderWorkflowService) {
+      PartnerSupplychainService partnerSupplychainService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -110,7 +109,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.unitConversionService = unitConversionService;
     this.reservedQtyService = reservedQtyService;
     this.partnerSupplychainService = partnerSupplychainService;
-    this.saleOrderWorkflowService = saleOrderWorkflowService;
   }
 
   @Override
@@ -254,6 +252,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    * @param saleOrder
    */
   protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) throws AxelorException {
+    // have to use Beans.get because of circular dependency
+    SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
     if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
