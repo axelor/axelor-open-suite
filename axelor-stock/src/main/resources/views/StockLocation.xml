@@ -56,9 +56,8 @@
   </tree>
 
   <form name="stock-location-form" title="Stock location"
-    model="com.axelor.apps.stock.db.StockLocation"
-    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large"
-    onLoad="action-stock-location-method-set-stock-location-value">
+    model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-group-onnew"
+    width="large" onLoad="action-stock-location-group-onload">
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
@@ -68,7 +67,7 @@
     <panel name="mainPanel">
       <field name="name"
         onChange="action-stock-location-attrs-set-default-serial-number-with-name"/>
-      <field name="typeSelect" colSpan="3"
+      <field name="typeSelect" colSpan="3" readonly="true"
         onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
       <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
         grid-view="stock-location-grid"/>
@@ -167,6 +166,14 @@
       if="typeSelect==1"/>
   </action-attrs>
 
+  <action-attrs name="action-stock-location-attrs-readonly-type">
+    <attribute for="typeSelect" name="readonly" expr="!stockLocationLineList.isEmpty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-stock-location-attrs-readonly-type-onnew">
+    <attribute for="typeSelect" name="readonly" expr="false"/>
+  </action-attrs>
+
   <action-attrs name="action-stock-set-partner-domain-attrs"
     model="com.axelor.apps.stock.db.StockLocation">
     <attribute name="domain" for="partner"
@@ -215,6 +222,17 @@
     <call class="com.axelor.apps.stock.web.StockLocationController"
       method="setStocklocationValue"/>
   </action-method>
+
+  <action-group name="action-stock-location-group-onload">
+    <action name="action-stock-location-method-set-stock-location-value"/>
+    <action name="action-stock-location-attrs-readonly-type"/>
+  </action-group>
+
+  <action-group name="action-stock-location-group-onnew">
+    <action name="action-stock-location-record-new"/>
+    <action name="action-stock-location-attrs-set-is-valued"/>
+    <action name="action-stock-location-attrs-readonly-type-onnew"/>
+  </action-group>
 
   <action-view name="action-stock-location-view-show-form-view" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation">
