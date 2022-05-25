@@ -1385,6 +1385,7 @@
 "Enter release in the accounts","Comptabiliser la quittance",,
 "Entry","Saisie",,
 "Equity","Capitaux",,
+"Error : Missing accounting report type for %s","Erreur : Type de rapport comptable manque pour le type %s",,
 "Error - You are not authorized to perform this action","Erreur : vous n’êtes pas autorisé(e) à effectuer cette action.",,
 "Error in account chart import please check the log","Erreur lors de l'import du plan comptable. Veuillez regarder les logs.",,
 "Error in move deleting or archiving, please check the log","Erreur dans la suppression ou l'archivage d'un mouvement, veuillez vérifier le journal.",,
