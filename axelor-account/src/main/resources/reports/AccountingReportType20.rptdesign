@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202112301813</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -30,6 +30,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -43,6 +46,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor-open-suite-dev</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -55,6 +61,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -67,6 +76,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -125,7 +137,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite-dev</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -657,9 +671,9 @@ MoveLine.debit,
 MoveLine.credit,
 Account.code as account_code
 FROM account_move_line MoveLine
-LEFT JOIN account_service_type ServiceType ON (MoveLine.service_type = ServiceType.id)
-LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
 LEFT JOIN account_account Account ON (MoveLine.account = Account.id)
+LEFT JOIN account_service_type ServiceType ON (Account.service_type = ServiceType.id)
+LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
 LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
 LEFT JOIN account_journal_type JournalType ON (Journal.journal_type = JournalType.id)
 LEFT JOIN account_accounting_report AccountingReport on (AccountingReport.id = ?)
@@ -670,8 +684,8 @@ AND (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.d
 AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company
 AND (
-  ((MoveLine.service_type IS NULL OR ServiceType.code = 'NDAS') AND MoveLine.das2activity IS NOT NULL)
-  OR (MoveLine.das2activity IS NULL AND MoveLine.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
+  ((Account.service_type IS NULL OR ServiceType.code = 'NDAS') AND Partner.das2activity IS NOT NULL)
+  OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
 )
 AND Move.status_select = 3
 AND JournalType.code = 'ACH'

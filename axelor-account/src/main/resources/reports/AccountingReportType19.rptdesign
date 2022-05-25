@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -13,6 +13,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -27,7 +30,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite-dev</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -56,6 +59,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -114,8 +120,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite-dev</property>
             <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -659,9 +666,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
-MOVELINE.DAS2ACTIVITY_NAME,
-MOVELINE.SERVICE_TYPE_CODE,
-SERVICETYPE.NAME as service_name,
+DAS2_ACTIVITY.NAME AS DAS2ACTIVITY_NAME,
+SERVICETYPE.CODE AS SERVICE_TYPE_CODE,
+SERVICETYPE.NAME AS SERVICE_NAME,
 TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3,' ',ADDRESS.ADDRESSL4,' ',ADDRESS.ADDRESSL5)) as address,
 ADDRESS.ADDRESSL6 AS code_postal,
 PARTNER.REGISTRATION_CODE as registration_code ,
@@ -670,36 +677,18 @@ SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) AS amount
 FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY
 JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID
 LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON (PMVLD.MOVE_LINE = MOVELINE.ID)
-LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID)
+LEFT OUTER JOIN ACCOUNT_ACCOUNT AS ACCOUNT ON (MOVELINE.ACCOUNT = ACCOUNT.ID) 
+LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (ACCOUNT.SERVICE_TYPE = SERVICETYPE.ID)  
 LEFT OUTER JOIN BASE_PARTNER PARTNER ON (PMVLD.PARTNER = PARTNER.ID)
+LEFT OUTER JOIN ACCOUNT_DAS2_ACTIVITY DAS2_ACTIVITY ON (DAS2_ACTIVITY.ID = PARTNER.DAS2ACTIVITY)
 LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)
 WHERE ACCOUNTING_REPORT = ?
 AND HISTORY.EXCLUDE_FROM_DAS2REPORT != true
 AND SERVICETYPE.IS_DAS2DECLARABLE
-GROUP BY MOVELINE.PARTNER_FULL_NAME,MOVELINE.DAS2ACTIVITY_NAME,MOVELINE.SERVICE_TYPE_CODE,SERVICETYPE.NAME,ADDRESS.ADDRESSL6,ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,ADDRESS.ADDRESSL5,PARTNER.REGISTRATION_CODE]]></xml-property>
+GROUP BY MOVELINE.PARTNER_FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,ADDRESS.ADDRESSL6,ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,ADDRESS.ADDRESSL5,PARTNER.REGISTRATION_CODE]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -990,36 +979,6 @@ GROUP BY MOVELINE.PARTNER_FULL_NAME,MOVELINE.DAS2ACTIVITY_NAME,MOVELINE.SERVICE_
                                         <text-property name="displayName">report_date_edition</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
                                         <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">period_name</property>
-                                        <text-property name="displayName">period_name</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">journal_name</property>
-                                        <text-property name="displayName">journal_name</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["journal_name"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">global</property>
-                                        <text-property name="displayName">global</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                                        <property name="dataType">integer</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">global_by_date</property>
-                                        <text-property name="displayName">global_by_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
-                                        <property name="dataType">integer</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">payment_mode</property>
-                                        <text-property name="displayName">payment_mode</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["payment_mode"]</expression>
-                                        <property name="dataType">string</property>
                                     </structure>
                                     <structure>
                                         <property name="name">logo_path</property>

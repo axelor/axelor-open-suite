@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.db.JPA;
@@ -28,7 +30,7 @@ import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -86,8 +88,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
     accountingReport.clearAccountingReportMoveLineList();
 
-    List<BigInteger> paymentMoveLineDistributioneIds =
-        getAccountingReportDas2Pieces(accountingReport);
+    List<Long> paymentMoveLineDistributioneIds = getAccountingReportDas2Pieces(accountingReport);
     accountingReportMoveLineService.createAccountingReportMoveLines(
         paymentMoveLineDistributioneIds, accountingReport);
   }
@@ -110,97 +111,119 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport) {
+  public List<Long> getAccountingReportDas2Pieces(AccountingReport accountingReport) {
 
-    String queryStr =
-        "WITH PARTNERS AS (SELECT PARTNER.ID AS ID "
-            + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
-            + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
-            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
-            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVE_LINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVE_LINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVE_LINE.MOVE = DMOVE.ID "
-            + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
-            + "AND DMOVE.STATUS_SELECT = 3 "
-            + "AND MOVE.STATUS_SELECT = 3 "
-            + "AND PMVLD.OPERATION_DATE >= '"
-            + accountingReport.getDateFrom()
-            + "' "
-            + "AND PMVLD.OPERATION_DATE <= '"
-            + accountingReport.getDateTo()
-            + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
-            + "AND JOURNAL_TYPE.CODE = 'ACH' "
-            + "AND COMPANY.ID = "
-            + accountingReport.getCompany().getId()
-            + " AND CURRENCY.ID =  "
-            + accountingReport.getCurrency().getId()
-            + " AND MOVE.IGNORE_IN_ACCOUNTING_OK != true "
-            + "AND PMVLD.ID NOT IN (SELECT PMVLD.ID "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
-            + "LEFT OUTER JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON HISTORY.ACCOUNTING_REPORT = REPORT.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
-            + "WHERE  "
-            + "ACCOUNTING_REPORT != "
-            + accountingReport.getId()
-            + " AND REPORT_TYPE.TYPE_SELECT = "
-            + accountingReport.getReportType().getTypeSelect()
-            + " AND (HISTORY.EXCLUDE_FROM_DAS2REPORT != true OR HISTORY.EXPORTED != true) ) "
-            + "GROUP BY PARTNER.ID "
-            + "HAVING SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) >= "
-            + accountingReport.getMinAmountExcl()
-            + " ) "
-            + "SELECT PMVLD.ID AS PAYMENTMVLD "
-            + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
-            + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
-            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
-            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVE_LINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVE_LINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVE_LINE.MOVE = DMOVE.ID "
-            + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
-            + "AND DMOVE.STATUS_SELECT = 3 "
-            + "AND MOVE.STATUS_SELECT = 3 "
-            + "AND PMVLD.OPERATION_DATE >= '"
-            + accountingReport.getDateFrom()
-            + "' "
-            + "AND PMVLD.OPERATION_DATE <= '"
-            + accountingReport.getDateTo()
-            + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
-            + "AND JOURNAL_TYPE.CODE = 'ACH' "
-            + "AND COMPANY.ID = "
-            + accountingReport.getCompany().getId()
-            + " AND CURRENCY.ID =  "
-            + accountingReport.getCurrency().getId()
-            + " AND MOVE.IGNORE_IN_ACCOUNTING_OK != true "
-            + "AND PMVLD.ID NOT IN (SELECT PMVLD.ID "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
-            + "LEFT OUTER JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON HISTORY.ACCOUNTING_REPORT = REPORT.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
-            + "WHERE  "
-            + "ACCOUNTING_REPORT != "
-            + accountingReport.getId()
-            + " AND REPORT_TYPE.TYPE_SELECT = "
-            + accountingReport.getReportType().getTypeSelect()
-            + " AND (HISTORY.EXCLUDE_FROM_DAS2REPORT != true OR HISTORY.EXPORTED != true) ) "
-            + "AND PARTNER.ID IN (SELECT ID FROM PARTNERS) ";
+    List<Long> partnerIds = new ArrayList<Long>();
+    String sameQuery =
+        "FROM PaymentMoveLineDistribution pmvld "
+            + "LEFT OUTER JOIN pmvld.reconcile reconcile "
+            + "LEFT OUTER JOIN pmvld.moveLine moveLine "
+            + "LEFT OUTER JOIN pmvld.move move "
+            + "LEFT OUTER JOIN move.journal journal "
+            + "LEFT OUTER JOIN journal.journalType journalType "
+            + "LEFT OUTER JOIN move.partner partner "
+            + "LEFT OUTER JOIN move.company company "
+            + "LEFT OUTER JOIN move.companyCurrency currency "
+            + "LEFT OUTER JOIN reconcile.debitMoveLine dMoveLine "
+            + "LEFT OUTER JOIN dMoveLine.move dMove "
+            + "LEFT OUTER JOIN moveLine.account account "
+            + "WHERE reconcile.statusSelect IN (?1, ?2)  " // (STATUS_CONFIRMED, STATUS_CANCELED)
+            + "AND dMove.statusSelect = ?3 " // STATUS_VALIDATED
+            + "AND move.statusSelect = ?3 " // STATUS_VALIDATED
+            + "AND pmvld.operationDate >= ?4 " //  accountingReport.getDateFrom()
+            + "AND pmvld.operationDate <= ?5 " // accountingReport.getDateTo()
+            + "AND account.serviceType IS NOT NULL  "
+            + "AND partner.das2Activity IS NOT NULL  "
+            + "AND journalType = ?6 " // ACH
+            + "AND company = ?7 " // accountingReport.getCompany()
+            + "AND currency = ?8 " // accountingReport.getCurrency()
+            + "AND move.ignoreInAccountingOk != true "
+            + "AND pmvld NOT IN (SELECT pmvld "
+            + "FROM AccountingReportMoveLine history "
+            + "LEFT OUTER JOIN history.paymentMoveLineDistribution pmvld "
+            + "LEFT OUTER JOIN history.accountingReport report "
+            + "LEFT OUTER JOIN report.reportType reportType "
+            + "WHERE report != ?9 " // accountingReport
+            + "AND reportType.typeSelect = ?10 " // accountingReport.getReportType().getTypeSelect()
+            + "AND (history.excludeFromDas2Report != true OR history.exported != true) ) ";
 
-    Query query = JPA.em().createNativeQuery(queryStr);
+    String partnerQueryStr =
+        "SELECT DISTINCT partner.id AS id "
+            + sameQuery
+            + "GROUP BY partner.id "
+            + "HAVING SUM(pmvld.inTaxProratedAmount) >= ?11 "; // accountingReport.getMinAmountExcl()
 
+    Query partnerQuery =
+        JPA.em()
+            .createQuery(partnerQueryStr)
+            .setParameter(1, ReconcileRepository.STATUS_CONFIRMED)
+            .setParameter(2, ReconcileRepository.STATUS_CANCELED)
+            .setParameter(3, MoveRepository.STATUS_VALIDATED)
+            .setParameter(4, accountingReport.getDateFrom())
+            .setParameter(5, accountingReport.getDateTo())
+            .setParameter(6, accountingReport.getJournalType()) // TODO
+            .setParameter(7, accountingReport.getCompany())
+            .setParameter(8, accountingReport.getCurrency())
+            .setParameter(9, accountingReport)
+            .setParameter(10, accountingReport.getReportType().getTypeSelect())
+            .setParameter(11, accountingReport.getMinAmountExcl());
+    partnerIds = partnerQuery.getResultList();
+    if (partnerIds == null || partnerIds.isEmpty()) {
+      return new ArrayList<Long>();
+    }
+
+    // Check if one error persist
+    String exclusionQuery =
+        "AND NOT EXISTS (SELECT pmvld.id "
+            + "FROM PaymentMoveLineDistribution pmvld "
+            + "LEFT OUTER JOIN pmvld.reconcile reconcile "
+            + "LEFT OUTER JOIN pmvld.moveLine moveLine "
+            + "LEFT OUTER JOIN pmvld.move move1 "
+            + "LEFT OUTER JOIN move1.journal journal "
+            + "LEFT OUTER JOIN journal.journalType journalType "
+            + "LEFT OUTER JOIN move1.partner partner "
+            + "LEFT OUTER JOIN move1.company company "
+            + "LEFT OUTER JOIN move1.companyCurrency currency "
+            + "LEFT OUTER JOIN reconcile.debitMoveLine dMoveLine "
+            + "LEFT OUTER JOIN dMoveLine.move dMove "
+            + "LEFT OUTER JOIN moveLine.account account "
+            + "WHERE reconcile.statusSelect IN (?1, ?2)  " // (STATUS_CONFIRMED, STATUS_CANCELED)
+            + "AND dMove.statusSelect = ?3 " // STATUS_VALIDATED
+            + "AND move1.statusSelect = ?3 " // STATUS_VALIDATED
+            + "AND pmvld.operationDate >= ?4 " //  accountingReport.getDateFrom()
+            + "AND pmvld.operationDate <= ?5 " // accountingReport.getDateTo()
+            + "AND (account.serviceType IS NULL OR partner.das2Activity IS NULL) "
+            + "AND journalType = ?6 " // ACH
+            + "AND company = ?7 " // accountingReport.getCompany()
+            + "AND currency = ?8 " // accountingReport.getCurrency()
+            + "AND move1.ignoreInAccountingOk != true "
+            + "AND move = move1 " // Check on the same move
+            + "AND pmvld NOT IN (SELECT pmvld "
+            + "FROM AccountingReportMoveLine history "
+            + "LEFT OUTER JOIN history.paymentMoveLineDistribution pmvld "
+            + "LEFT OUTER JOIN history.accountingReport report "
+            + "LEFT OUTER JOIN report.reportType reportType "
+            + "WHERE report != ?9 " // accountingReport
+            + "AND reportType.typeSelect = ?10 " // accountingReport.getReportType().getTypeSelect()
+            + "AND (history.excludeFromDas2Report != true OR history.exported != true) ) ) ";
+
+    String pmvldQueryStr =
+        "SELECT pmvld.id AS paymentMvld " + sameQuery + "AND partner.id IN ?11 " + exclusionQuery;
+
+    Query query =
+        JPA.em()
+            .createQuery(pmvldQueryStr)
+            .setParameter(1, ReconcileRepository.STATUS_CONFIRMED)
+            .setParameter(2, ReconcileRepository.STATUS_CANCELED)
+            .setParameter(3, MoveRepository.STATUS_VALIDATED)
+            .setParameter(4, accountingReport.getDateFrom())
+            .setParameter(5, accountingReport.getDateTo())
+            .setParameter(6, accountingReport.getJournalType()) // TODO
+            .setParameter(7, accountingReport.getCompany())
+            .setParameter(8, accountingReport.getCurrency())
+            .setParameter(9, accountingReport)
+            .setParameter(10, accountingReport.getReportType().getTypeSelect())
+            .setParameter(11, partnerIds);
     return query.getResultList();
   }
 
