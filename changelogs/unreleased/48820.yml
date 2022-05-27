@@ -1,3 +1,0 @@
----
-title: "Employee: When creation a employee, the step 'user creation' is now hidden if employee is already associated with a user"
-type: fix
