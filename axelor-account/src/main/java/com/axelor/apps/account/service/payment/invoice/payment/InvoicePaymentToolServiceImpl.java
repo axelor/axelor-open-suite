@@ -55,6 +55,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigRepository accountConfigRepository;
   protected CurrencyService currencyService;
+  protected AppAccountService appAccountService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -63,12 +64,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
       InvoicePaymentRepository invoicePaymentRepo,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      AppAccountService appAccountService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.currencyService = currencyService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -230,7 +233,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public boolean applyFinancialDiscount(InvoicePayment invoicePayment) {
     LocalDate deadLineDate = invoicePayment.getFinancialDiscountDeadlineDate();
     return (invoicePayment != null
-        && Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()
+        && appAccountService.getAppAccount().getManageFinancialDiscount()
         && deadLineDate != null
         && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
   }
