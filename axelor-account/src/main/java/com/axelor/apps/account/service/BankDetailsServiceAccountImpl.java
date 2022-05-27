@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
@@ -50,7 +51,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
    */
   @Override
   public String createCompanyBankDetailsDomain(
-      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+          Currency currency, Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
       throws AxelorException {
 
     AppAccountService appAccountService = Beans.get(AppAccountService.class);
@@ -58,7 +59,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
     if (!appAccountService.isApp("account")
         || !appAccountService.getAppBase().getManageMultiBanks()) {
       return super.createCompanyBankDetailsDomain(
-          partner, company, paymentMode, operationTypeSelect);
+          currency, partner, company, paymentMode, operationTypeSelect);
     } else {
 
       if (partner != null) {
@@ -74,7 +75,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
               || operationTypeSelect.intValue()
                   == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
 
-        authorizedBankDetails = createCompanyBankDetailsDomainFromFactorPartner(company);
+        authorizedBankDetails = createCompanyBankDetailsDomainFromFactorPartner(currency, company);
       } else {
 
         if (paymentMode == null) {
@@ -86,7 +87,10 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
         for (AccountManagement accountManagement : accountManagementList) {
           if (accountManagement.getCompany() != null
-              && accountManagement.getCompany().equals(company)) {
+              && accountManagement.getBankDetails() != null
+              && accountManagement.getBankDetails().getCurrency() != null
+              && accountManagement.getCompany().equals(company)
+              && accountManagement.getBankDetails().getCurrency().equals(currency)) {
             authorizedBankDetails.add(accountManagement.getBankDetails());
           }
         }
@@ -102,13 +106,13 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
     }
   }
 
-  private List<BankDetails> createCompanyBankDetailsDomainFromFactorPartner(Company company)
+  private List<BankDetails> createCompanyBankDetailsDomainFromFactorPartner(Currency currency, Company company)
       throws AxelorException {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
     return bankDetailsList.stream()
-        .filter(bankDetails -> bankDetails.getActive())
+        .filter(bankDetails -> bankDetails.getActive() && bankDetails.getCurrency().equals(currency))
         .collect(Collectors.toList());
   }
 

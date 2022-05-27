@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -43,6 +44,7 @@ public class CompanyBankDetailsController {
     Partner partner = (Partner) request.getContext().get("partner");
     Company company = (Company) request.getContext().get("company");
     PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+    Currency currency = (Currency) request.getContext().get("currency");
     Integer operationTypeSelect = null;
     if (request.getContext().get("_operationTypeSelect") != null) {
       operationTypeSelect =
@@ -52,6 +54,6 @@ public class CompanyBankDetailsController {
         "companyBankDetails",
         "domain",
         Beans.get(BankDetailsServiceImpl.class)
-            .createCompanyBankDetailsDomain(partner, company, paymentMode, operationTypeSelect));
+            .createCompanyBankDetailsDomain(currency, partner, company, paymentMode, operationTypeSelect));
   }
 }
