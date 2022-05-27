@@ -1,0 +1,3 @@
+---
+title: "Bank reconciliation : fix of error when missing query in bank statement rule"
+type: fix

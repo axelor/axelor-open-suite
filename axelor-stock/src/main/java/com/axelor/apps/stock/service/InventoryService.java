@@ -787,8 +787,8 @@ public class InventoryService {
     return newStockLocationSet;
   }
 
-  public InventoryLine createInventoryLine(
-      Inventory inventory, StockLocationLine stockLocationLine) {
+  public InventoryLine createInventoryLine(Inventory inventory, StockLocationLine stockLocationLine)
+      throws AxelorException {
 
     return inventoryLineService.createInventoryLine(
         inventory,

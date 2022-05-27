@@ -137,7 +137,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
 
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
-    if (pricing.isPresent()) {
+    if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
           PricingComputer.of(
                   pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
@@ -152,7 +152,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return pricingService.getRandomPricing(
         saleOrder.getCompany(),
         saleOrderLine.getProduct(),
-        saleOrderLine.getProduct().getProductCategory(),
+        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
         SaleOrderLine.class.getSimpleName(),
         null);
   }
