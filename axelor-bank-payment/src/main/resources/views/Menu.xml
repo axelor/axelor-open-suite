@@ -135,13 +135,14 @@
     <context name="_linesDomain" expr="self.bankOrder.statusSelect = 2"/>
   </action-view>
 
-  <menuitem name="account-root-bank-statement" parent="account-root" title="Bank Statement"
-    order="17" if="__config__.app.isApp('bank-payment')"/>
+
+  <menuitem name="account-root-bank-statement" parent="account-root"
+    title="Bank Statements" order="17" if="__config__.app.isApp('bank-payment')"/>
 
   <menuitem name="account-root-bank-statement-bank-statement"
-    parent="account-root-bank-statement" title="Bank Statement" action="account.bank.statement"/>
+    parent="account-root-bank-statement" title="Bank Statements" action="account.bank.statement"/>
 
-  <action-view name="account.bank.statement" title="Bank Statement"
+  <action-view name="account.bank.statement" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement">
     <view type="grid" name="bank-statement-grid"/>
     <view type="form" name="bank-statement-form"/>
@@ -167,16 +168,16 @@
   </action-view>
 
   <menuitem name="account-root-bank-reconciliation-bank-reconciliation-line"
-    parent="account-root-bank-reconciliation" title="Bank Reconciliation Line"
+    parent="account-root-bank-reconciliation" title="Bank Reconciliation Lines"
     action="account.bank.reconciliation.line"/>
 
-  <action-view name="account.bank.reconciliation.line" title="Bank Reconciliation Line"
+  <action-view name="account.bank.reconciliation.line" title="Bank Reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <view type="grid" name="bank-reconciliation-line-grid"/>
     <view type="form" name="bank-reconciliation-line-form"/>
   </action-view>
 
-  <menuitem name="account-conf-bank-order" parent="account-conf" title="Bank order"/>
+  <menuitem name="account-conf-bank-order" parent="account-conf" title="Bank orders"/>
 
   <menuitem name="account-conf-bank-order-bank-order-file-format"
     parent="account-conf-bank-order" title="Bank order file formats"
@@ -287,6 +288,48 @@
       expr="eval: __repo__(PaymentSchedule).STATUS_CONFIRMED"/>
     <context name="statusValidated"
       expr="eval: __repo__(PaymentScheduleLine).STATUS_VALIDATED"/>
+  </action-view>
+
+  <!-- Bank statement rule -->
+
+  <menuitem name="account-conf-bank-accounting-reconciliation" parent="account-conf"
+    title="Bank Statement / Reconciliations"/>
+
+  <menuitem title="Bank statement rules" name="account-bank-statement-rule"
+    parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.rule"/>
+
+  <action-view name="account.bank.statement.rule" title="Bank statement rules"
+    model="com.axelor.apps.bankpayment.db.BankStatementRule">
+    <view type="grid" name="bank-statement-rule-grid"/>
+    <view type="form" name="bank-statement-rule-form"/>
+  </action-view>
+
+  <menuitem title="Bank statement queries" name="account-bank-statement-query"
+    parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.query"/>
+
+  <action-view name="account.bank.statement.query" title="Bank statement queries"
+    model="com.axelor.apps.bankpayment.db.BankStatementQuery">
+    <view type="grid" name="bank-statement-query-grid"/>
+    <view type="form" name="bank-statement-query-form"/>
+  </action-view>
+
+  <menuitem title="Bank details tree" name="bank-payment-bank-details"
+    parent="account-root-bank-statement" action="bank.payment.bank.detail.tree"/>
+
+  <action-view name="bank.payment.bank.detail.tree" title="Bank details tree"
+    model="com.axelor.apps.base.db.BankDetails">
+    <view type="tree" name="bank-details-bank-payment-tree"/>
+  </action-view>
+
+  <menuitem name="account-interbank-code-line" title="Interbank code/Payment mode"
+    parent="account-conf-bank-accounting-reconciliation"
+    action="account.account.management.interbank.code.payment.mode"/>
+
+  <action-view name="account.account.management.interbank.code.payment.mode"
+    title="Interbank code/Payment mode" model="com.axelor.apps.account.db.AccountManagement">
+    <view type="grid" name="account-management-editable-grid"/>
+    <view type="form" name="account-management-form"/>
+    <domain>self.typeSelect = 3</domain>
   </action-view>
 
 </object-views>

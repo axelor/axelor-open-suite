@@ -114,8 +114,7 @@ public class PurchaseOrderLineController {
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
             .getTaxEquiv(
-                purchaseOrder.getSupplierPartner().getFiscalPosition(),
-                purchaseOrderLine.getTaxLine().getTax()));
+                purchaseOrder.getFiscalPosition(), purchaseOrderLine.getTaxLine().getTax()));
   }
 
   public void updateProductInformation(ActionRequest request, ActionResponse response) {

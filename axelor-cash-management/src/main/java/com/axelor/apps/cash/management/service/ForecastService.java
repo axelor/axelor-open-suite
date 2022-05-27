@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.db.ForecastGenerator;
-import com.axelor.apps.cash.management.db.ForecastReason;
+import com.axelor.apps.cash.management.db.ForecastRecapLineType;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -53,7 +53,7 @@ public class ForecastService {
               forecastGenerator.getTypeSelect(),
               forecastGenerator.getAmount(),
               itDate,
-              forecastGenerator.getForecastReason(),
+              forecastGenerator.getForecastRecapLineType(),
               forecastGenerator.getComments());
       forecastRepo.save(forecast);
       itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
@@ -67,7 +67,7 @@ public class ForecastService {
       int typeSelect,
       BigDecimal amount,
       LocalDate estimatedDate,
-      ForecastReason reason,
+      ForecastRecapLineType lineType,
       String comments) {
 
     Forecast forecast = new Forecast();
@@ -76,7 +76,7 @@ public class ForecastService {
     forecast.setBankDetails(bankDetails);
     forecast.setAmount(amount);
     forecast.setEstimatedDate(estimatedDate);
-    forecast.setForecastReason(reason);
+    forecast.setForecastRecapLineType(lineType);
     forecast.setComments(comments);
     forecast.setTypeSelect(typeSelect);
 

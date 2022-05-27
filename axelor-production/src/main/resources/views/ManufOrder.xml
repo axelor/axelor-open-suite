@@ -252,9 +252,9 @@
       <panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3">
         <panel name="stockMoveListPanel" title="Moves In/Out" readonly="true" colSpan="12">
           <field name="inStockMoveList" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
+            grid-view="in-stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
           <field name="outStockMoveList" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" colSpan="12"/>
+            grid-view="out-stock-move-manuf-order-grid" colSpan="12"/>
         </panel>
         <panel name="productionWastePanel" title="Production waste" colSpan="12"
           showIf="statusSelect &gt;= 4">
@@ -262,7 +262,7 @@
             readonlyIf="wasteStockMove != null"
             onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
           <field name="wasteStockMove" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" readonly="true"/>
+            grid-view="out-stock-move-manuf-order-grid" readonly="true"/>
         </panel>
       </panel>
       <panel name="consumedProductsPanel" title="Consumed products"
@@ -275,6 +275,11 @@
         <button name="multiLevelPlanningBtn" title="Multi-level planning" colSpan="12"
           showIf="statusSelect != 6 &amp;&amp; !isPermanent"
           onClick="save,action-manuf-order-multi-level-planing-popup-form-view" css="btn-custom"/>
+        <field name="parentMO"/>
+        <button name="openMultilevelMOTreeBtn" title="Open MO tree"
+          onClick="save,action-manuf-order-view-mo-tree" colSpan="12" css="btn-custom"/>
+        <panel-dashlet name="childMOPanelDashlet"
+          action="action-manuf-order-view-all-child-mo" colSpan="12" title="Children MO"/>
         <panel-related name="toConsumeProdProductListPanel"
           field="toConsumeProdProductList" readonly="true" colSpan="12"
           grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
@@ -287,6 +292,18 @@
           onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid"/>
+        <panel name="allocationToolsPanel" colSpan="12"
+          showIf="$contains([3,4,5], statusSelect)"
+          if="__config__.app.getApp('supplychain')?.manageStockReservation">
+          <button name="allocateAllItem" colSpan="3" title="Allocate all"
+            onClick="save,action-manuf-order-method-allocate-all"/>
+          <button name="deallocateAllItem" colSpan="3" title="Deallocate all"
+            onClick="save,action-manuf-order-method-deallocate-all"/>
+          <button name="reserveAllItem" colSpan="3" title="Reserve all"
+            onClick="save,action-manuf-order-method-reserve-all"/>
+          <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
+            onClick="save,action-manuf-order-method-cancel-reservation"/>
+        </panel>
         <panel-related name="diffStockMoveLineListPanel"
           field="diffConsumeProdProductList" readonly="true" colSpan="12"
           grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
@@ -304,6 +321,18 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-dashlet name="operationOrderConsumedProductPanel" readonly="true"
           colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+        <panel name="allocationToolsPanel" colSpan="12"
+          showIf="$contains([3,4,5], statusSelect)"
+          if="__config__.app.getApp('supplychain')?.manageStockReservation">
+          <button name="allocateAllItem" colSpan="3" title="Allocate all"
+            onClick="save,action-manuf-order-method-allocate-all"/>
+          <button name="deallocateAllItem" colSpan="3" title="Deallocate all"
+            onClick="save,action-manuf-order-method-deallocate-all"/>
+          <button name="reserveAllItem" colSpan="3" title="Reserve all"
+            onClick="save,action-manuf-order-method-reserve-all"/>
+          <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
+            onClick="save,action-manuf-order-method-cancel-reservation"/>
+        </panel>
         <panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true"
           colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
       </panel>
@@ -347,6 +376,11 @@
         <panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order"
           colSpan="12">
           <field name="moCommentFromSaleOrder" showTitle="false" colSpan="12" widget="Html"/>
+        </panel>
+        <panel name="moCommentFromSaleOrderLinePanel"
+          title="MO's comment from sale order line" colSpan="12">
+          <field name="moCommentFromSaleOrderLine" showTitle="false" colSpan="12"
+            widget="Html"/>
         </panel>
       </panel>
       <panel name="residualProductsPanel" title="Residual products"
@@ -428,8 +462,31 @@
       <field name="$components" title="Products" type="one-to-many" canView="false"
         readonly="true" target="com.axelor.apps.production.db.ProdProduct"
         grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
-      <button name="generateMO" title="Generate MO"
+      <button name="generateMO" title="Generate MO."
         onClick="action-manuf-order-method-generate-multi-level" colSpan="4" colOffset="8"/>
+    </panel>
+  </form>
+
+  <grid name="draft-generated-manuf-order-grid" title="Manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
+    canEdit="false" canDelete="false">
+    <field name="manufOrderSeq" width="120"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+
+  </grid>
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Draft orders"
+    name="multi-level-generated-draft-manuf-order-wizard-form"
+    onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
+    <panel name="mainPanel">
+      <field name="$draftManufOrderList" type="one-to-many"
+        target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
+        canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
+
+      <button title="Plan selected orders and discard others" name="planSelectedOrders"
+        onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs,close"/>
     </panel>
   </form>
 
@@ -444,13 +501,21 @@
       onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
 
+  <action-attrs name="action-manuf-order-attrs-multi-level-wizard-onnew">
+    <attribute name="value" for="$draftManufOrderList" expr="eval:_moList"/>
+  </action-attrs>
+
+  <action-validate name="action-manuf-order-validate-order-selection">
+    <error message="Please select at least one MO"
+      if="draftManufOrderList &amp;&amp; !draftManufOrderList.any{it.get('selected')}"/>
+  </action-validate>
+
   <action-view name="action-manuf-order-view-open-form-view-onclick"
     title="Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
     <view type="form" name="manuf-order-form"/>
     <view type="grid" name="manuf-order-grid"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
-
   <action-view name="action-manuf-order-update-real-qty-popup-form-view"
     title="Update real quantities (Components and FP)"
     model="com.axelor.apps.production.db.ManufOrder">
@@ -714,6 +779,23 @@
       method="updateProducedStockMoveFromManufOrder"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-allocate-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-deallocate-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="deallocateAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-reserve-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="reserveAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-cancel-reservation">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="cancelReservation"/>
+  </action-method>
+
   <action-view name="action-manuf-order-view-operation-order-to-consume-product"
     title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
     <view type="grid" name="prod-product-consume-manuf-order-grid"/>
@@ -826,6 +908,50 @@
     <view type="form" name="manuf-order-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.statusSelect = 7 and self.manufOrderMergeResult = :id</domain>
+  </action-view>
+
+  <action-view name="action-manuf-order-view-mo-tree" title="Multi Level MO tree"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="tree" name="multi-level-mo-tree"/>
+    <context name="_moId" expr="eval: __self__.parentMO?__self__.parentMO?.id: id"/>
+  </action-view>
+
+  <tree name="multi-level-mo-tree" title="Multi level MO">
+    <column name="manufOrderSeq" type="string" title="MO"/>
+    <column name="product" type="reference"/>
+    <column name="qty" type="decimal"/>
+    <column name="statusSelect" type="integer" title="status"/>
+
+    <node model="com.axelor.apps.production.db.ManufOrder" domain="self.id = :_moId"
+      onClick="action-view-manuf-order-from-tree">
+      <field name="manufOrderSeq" as="manufOrderSeq"/>
+      <field name="product" as="product"/>
+      <field name="qty" as="qty"/>
+      <field name="statusSelect" as="statusSelect"/>
+    </node>
+
+    <node model="com.axelor.apps.production.db.ManufOrder" parent="parentMO" draggable="true"
+      onClick="action-view-manuf-order-from-tree">
+      <field name="manufOrderSeq" as="manufOrderSeq"/>
+      <field name="product" as="product"/>
+      <field name="qty" as="qty"/>
+      <field name="statusSelect" as="statusSelect"/>
+    </node>
+  </tree>
+
+  <action-view name="action-view-manuf-order-from-tree" title="Manufacturing order"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="form" name="manuf-order-form"/>
+    <view type="grid" name="manuf-order-grid"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-manuf-order-view-all-child-mo" title="All Child MO"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="grid" name="manuf-order-grid"/>
+    <view type="form" name="manuf-order-form"/>
+    <domain>self.parentMO.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <search-filters name="manuf-order-filters"

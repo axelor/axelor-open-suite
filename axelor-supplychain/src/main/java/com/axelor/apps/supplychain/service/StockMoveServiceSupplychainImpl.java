@@ -30,6 +30,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -74,6 +75,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected SaleOrderRepository saleOrderRepo;
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
+  protected PartnerSupplychainService partnerSupplychainService;
 
   @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
@@ -90,7 +92,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
-      ProductRepository productRepository) {
+      ProductRepository productRepository,
+      PartnerSupplychainService partnerSupplychainService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -104,11 +107,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.saleOrderRepo = saleOrderRepo;
     this.unitConversionService = unitConversionService;
     this.reservedQtyService = reservedQtyService;
+    this.partnerSupplychainService = partnerSupplychainService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && (stockMove.getPartner() != null
+            && partnerSupplychainService.isBlockedPartnerOrParent(stockMove.getPartner()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+    }
 
     if (!appSupplyChainService.isApp("supplychain")) {
       return super.realize(stockMove, check);
@@ -238,11 +250,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    *
    * @param saleOrder
    */
-  protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) {
-    if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
-      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
-    } else {
-      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+  protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) throws AxelorException {
+    // have to use Beans.get because of circular dependency
+    SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
+    if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      saleOrderWorkflowService.completeSaleOrder(saleOrder);
+    } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      saleOrderWorkflowService.confirmSaleOrder(saleOrder);
     }
   }
 

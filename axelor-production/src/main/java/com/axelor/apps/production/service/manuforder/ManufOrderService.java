@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
@@ -246,8 +247,11 @@ public interface ManufOrderService {
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException;
 
+  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
+      throws AxelorException;
+
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial bom, ManufOrder mo, List<Product> productList);
+      BillOfMaterial bom, ManufOrder mo, List<Product> productList) throws AxelorException;
 
   /**
    * Merge different manufacturing orders into a single one.
@@ -263,4 +267,12 @@ public interface ManufOrderService {
    * @param ids List of ids of manufacturing orders to merge
    */
   public boolean canMerge(List<Long> ids);
+
+  /**
+   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
+   * {@link ManufOrder} on the header of every page.
+   *
+   * @return
+   */
+  public void createBarcode(ManufOrder manufOrder);
 }

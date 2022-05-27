@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
@@ -121,7 +122,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
-    this.currencyService = new CurrencyService(this.today);
+    this.currencyService = new CurrencyService(this.appBaseService, this.today);
   }
 
   protected InvoiceLineGenerator(
@@ -187,7 +188,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           accountManagementService.getProductAccount(
               product,
               company,
-              partner.getFiscalPosition(),
+              invoice.getFiscalPosition(),
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
@@ -210,7 +211,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (product != null) {
       TaxEquiv taxEquiv =
           Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, company, partner.getFiscalPosition(), isPurchase);
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }
@@ -245,14 +246,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
       taxLine =
           accountManagementService.getTaxLine(
-              today,
-              product,
-              company,
-              partner.getFiscalPosition(),
-              InvoiceToolService.isPurchase(invoice));
+              today, product, company, fiscalPosition, InvoiceToolService.isPurchase(invoice));
     }
   }
 
@@ -371,7 +369,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    * Récupérer la bonne unité.
    *
    * @param unit Unité de base.
-   * @param unitDisplay Unité à afficher.
+   * @param displayUnit Unité à afficher.
    * @return L'unité à utiliser.
    */
   protected Unit unit(Unit unit, Unit displayUnit) {

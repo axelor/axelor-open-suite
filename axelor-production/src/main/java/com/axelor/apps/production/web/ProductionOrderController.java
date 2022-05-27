@@ -96,6 +96,7 @@ public class ProductionOrderController {
                 startDateT.toLocalDateTime(),
                 null,
                 productionOrder.getSaleOrder(),
+                null,
                 ManufOrderService.ORIGIN_TYPE_OTHER);
       } else {
         response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));

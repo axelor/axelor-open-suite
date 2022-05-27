@@ -40,7 +40,6 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -313,40 +312,12 @@ public class PartnerController {
     }
     if (!ibanInError.isEmpty()) {
 
-      Function<String, String> addLi =
-          new Function<String, String>() {
-            @Override
-            public String apply(String s) {
-              return "<li>".concat(s).concat("</li>").toString();
-            }
-          };
+      Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
 
       response.setAlert(
           String.format(
               IExceptionMessage.BANK_DETAILS_2,
               "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
-    }
-  }
-
-  public void normalizePhoneNumber(ActionRequest request, ActionResponse response) {
-    PartnerService partnerService = Beans.get(PartnerService.class);
-    try {
-      String phoneNumberFieldName = partnerService.getPhoneNumberFieldName(request.getAction());
-      String phoneNumber = (String) request.getContext().get(phoneNumberFieldName);
-
-      if (!StringUtils.isBlank(phoneNumber)) {
-        String normalizedPhoneNumber = partnerService.normalizePhoneNumber(phoneNumber);
-
-        if (!phoneNumber.equals(normalizedPhoneNumber)) {
-          response.setValue(phoneNumberFieldName, normalizedPhoneNumber);
-        }
-
-        if (!partnerService.checkPhoneNumber(normalizedPhoneNumber)) {
-          response.addError(phoneNumberFieldName, I18n.get("Invalid phone number"));
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
