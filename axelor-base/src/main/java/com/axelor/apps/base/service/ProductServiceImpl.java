@@ -27,11 +27,13 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -58,6 +60,8 @@ public class ProductServiceImpl implements ProductService {
   protected ProductRepository productRepo;
   protected ProductCompanyService productCompanyService;
   protected CompanyRepository companyRepo;
+  protected UnitConversionService unitConversionService;
+  protected UnitConversionRepository unitConversionRepository;
 
   @Inject
   public ProductServiceImpl(
@@ -66,13 +70,17 @@ public class ProductServiceImpl implements ProductService {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       ProductRepository productRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      UnitConversionService unitConversionService,
+      UnitConversionRepository unitConversionRepository) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
+    this.unitConversionService = unitConversionService;
+    this.unitConversionRepository = unitConversionRepository;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -158,18 +166,7 @@ public class ProductServiceImpl implements ProductService {
       }
     }
 
-    if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null
-        && managePriceCoef != null
-        && (Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
-
-      productCompanyService.set(
-          product,
-          "salePrice",
-          (((BigDecimal) productCompanyService.get(product, "costPrice", company))
-                  .multiply(managePriceCoef))
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
-          company);
-    }
+    computeAndUpdateSalePrice(product, company, managePriceCoef);
 
     if ((BigDecimal) productCompanyService.get(product, "salePrice", company) != null) {
 
@@ -189,6 +186,51 @@ public class ProductServiceImpl implements ProductService {
 
       this.updateSalePriceOfVariant(product);
     }
+  }
+
+  @Override
+  public void computeAndUpdateSalePrice(
+      Product product, Company company, BigDecimal managePriceCoef) throws AxelorException {
+    if (productCompanyService.get(product, "costPrice", company) != null
+        && managePriceCoef != null
+        && (Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
+      productCompanyService.set(
+          product,
+          "salePrice",
+          computeSalePrice(
+              (BigDecimal) productCompanyService.get(product, "managePriceCoef", company),
+              (BigDecimal) productCompanyService.get(product, "costPrice", company),
+              product,
+              company),
+          company);
+    }
+  }
+
+  @Override
+  public BigDecimal computeSalePrice(
+      BigDecimal managePriceCoef, BigDecimal costPrice, Product product, Company company)
+      throws AxelorException {
+    BigDecimal salePrice;
+    try {
+      salePrice = costPrice.multiply(managePriceCoef);
+      if (productCompanyService.get(product, "unit", company) != null
+          && productCompanyService.get(product, "salesUnit", company) != null
+          && !productCompanyService
+              .get(product, "unit", company)
+              .equals(productCompanyService.get(product, "salesUnit", company))) {
+        salePrice =
+            salePrice.multiply(
+                unitConversionService.getCoefficient(
+                    unitConversionRepository.all().fetch(),
+                    (Unit) productCompanyService.get(product, "salesUnit", company),
+                    (Unit) productCompanyService.get(product, "unit", company),
+                    product));
+      }
+    } catch (ClassNotFoundException | IOException e) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+    }
+    return salePrice.setScale(
+        appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
   }
 
   private void updateSalePriceOfVariant(Product product) throws AxelorException {

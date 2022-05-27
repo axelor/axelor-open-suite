@@ -35,6 +35,13 @@ public interface ProductService {
 
   public void updateSalePrice(Product product, Company company) throws AxelorException;
 
+  void computeAndUpdateSalePrice(Product product, Company company, BigDecimal managePriceCoef)
+      throws AxelorException;
+
+  BigDecimal computeSalePrice(
+      BigDecimal managePriceCoef, BigDecimal costPrice, Product product, Company company)
+      throws AxelorException;
+
   public boolean hasActivePriceList(Product product);
 
   @Transactional

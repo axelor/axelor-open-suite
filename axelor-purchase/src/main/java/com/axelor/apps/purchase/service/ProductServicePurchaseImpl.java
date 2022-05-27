@@ -20,9 +20,11 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -36,14 +38,18 @@ public class ProductServicePurchaseImpl extends ProductServiceImpl {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       ProductRepository productRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      UnitConversionService unitConversionService,
+      UnitConversionRepository unitConversionRepository) {
     super(
         productVariantService,
         productVariantRepo,
         sequenceService,
         appBaseService,
         productRepo,
-        productCompanyService);
+        productCompanyService,
+        unitConversionService,
+        unitConversionRepository);
   }
 
   @Override

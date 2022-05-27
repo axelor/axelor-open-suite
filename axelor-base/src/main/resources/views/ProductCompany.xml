@@ -15,9 +15,8 @@
   </grid>
 
   <form name="product-company-form" title="Product per company"
-    model="com.axelor.apps.base.db.ProductCompany"
-    onNew="action-product-company-record-init-product,action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain"
-    onLoad="action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain">
+    model="com.axelor.apps.base.db.ProductCompany" onNew="action-product-company-group-onnew"
+    onLoad="action-product-company-group-onload">
     <panel name="mainPanel" colSpan="12">
       <field name="product" readonly="true" form-view="product-form"/>
       <field name="company" required="true"/>
@@ -32,12 +31,14 @@
       <field name="purchasePrice"/>
       <field name="purchaseCurrency"/>
       <field name="costPrice" readonlyIf="costTypeSelect != 1"
-        onChange="action-product-record-compute-sale-price"/>
+        onChange="action-product-company-method-update-sale-price"/>
       <field name="costTypeSelect" onChange="action-product-group-cost-type-select-onchange"/>
-      <field name="managPriceCoef" colSpan="12"/>
+      <field name="managPriceCoef" colSpan="12"
+        onChange="action-product-company-method-update-sale-price"/>
       <field name="avgPrice" readonly="true"/>
       <field name="company.currency" title="Company currency" readonly="true"/>
-      <field name="autoUpdateSalePrice"/>
+      <field name="autoUpdateSalePrice"
+        onChange="action-product-company-group-auto-update-sale-price-onchange"/>
       <field name="lastPurchasePrice" readonly="true" colSpan="3"/>
       <field name="defaultBillOfMaterial" showIf="procurementMethodSelect != 'buy'"
         onSelect="action-product-company-attrs-bill-of-material-domain"
@@ -87,5 +88,32 @@
     <attribute name="domain" for="defaultBillOfMaterial"
       expr="eval: &quot;self.product.id = ${product?.id} AND self.company.id = ${company?.id} AND self.defineSubBillOfMaterial = true&quot;"/>
   </action-attrs>
+
+  <action-attrs name="action-product-company-attrs-sale-price-readonly">
+    <attribute for="salePrice" name="readonly" expr="autoUpdateSalePrice"/>
+  </action-attrs>
+
+  <action-group name="action-product-company-group-auto-update-sale-price-onchange">
+    <action name="action-product-company-attrs-sale-price-readonly"/>
+    <action name="action-product-company-method-update-sale-price"/>
+  </action-group>
+
+  <action-method name="action-product-company-method-update-sale-price">
+    <call class="com.axelor.apps.base.web.ProductCompanyController" method="updateSalePrice"/>
+  </action-method>
+
+  <action-group name="action-product-company-group-onnew">
+    <action name="action-product-company-record-init-product"/>
+    <action name="action-product-company-attrs-scale-and-precision"/>
+    <action name="action-product-company-attrs-change-title-based-on-inAti"/>
+    <action name="action-product-company-attrs-company-domain"/>
+  </action-group>
+
+  <action-group name="action-product-company-group-onload">
+    <action name="action-product-company-attrs-scale-and-precision,,,"/>
+    <action name="action-product-company-attrs-change-title-based-on-inAti"/>
+    <action name="action-product-company-attrs-company-domain"/>
+    <action name="action-product-company-attrs-sale-price-readonly"/>
+  </action-group>
 
 </object-views>
