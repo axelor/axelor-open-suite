@@ -595,10 +595,16 @@ public class PaymentVoucherConfirmService {
 
     LocalDate dueDate =
         moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
-    Account financialDiscountAccount =
-        isPurchase
-            ? accountConfig.getPurchFinancialDiscountAccount()
-            : accountConfig.getSaleFinancialDiscountAccount();
+    Account financialDiscountAccount = null;
+
+    if (isPurchase) {
+      financialDiscountAccount =
+          accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
+    } else {
+      financialDiscountAccount =
+          accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
+    }
+
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
 
     MoveLine financialDiscountMoveLine =

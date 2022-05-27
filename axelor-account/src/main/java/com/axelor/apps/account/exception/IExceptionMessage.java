@@ -1259,4 +1259,10 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
+      "Please select a purchase financial discount account in account config for company %s." /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
+      "Please select a sale financial discount account in account config for company %s." /*)*/;
 }
