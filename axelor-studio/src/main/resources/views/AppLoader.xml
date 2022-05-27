@@ -13,7 +13,7 @@
       <field name="name" required="true"/>
     </panel>
     <panel-tabs>
-      <panel name="importPanel" title="import.name" colSpan="12">
+      <panel name="importPanel" title="import.verb" colSpan="12">
         <field name="importMetaFile" widget="BinaryLink" colSpan="3"/>
         <spacer name="spacerImportBtn" colSpan="9"/>
         <button name="btnImportApps" title="import.verb"
