@@ -866,9 +866,11 @@ public class BankReconciliationService {
           bankStatementLineAFB120Repository
               .all()
               .filter(
-                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
+                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect "
+                      + "AND self.bankDetails = :bankDetails")
               .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
               .bind("bankStatement", bankReconciliation.getBankStatement())
+              .bind("bankDetails", bankDetails)
               .order("sequence")
               .fetchOne();
       startingBalance =
