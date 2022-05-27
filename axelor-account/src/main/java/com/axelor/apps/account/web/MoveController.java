@@ -550,8 +550,7 @@ public class MoveController {
     }
   }
 
-  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       String journalPartnerCompatibleDomain =
@@ -564,13 +563,12 @@ public class MoveController {
     }
   }
 
-  public void onChangeJournal(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void onChangeJournal(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       if (move.getPartner() != null) {
         boolean isPartnerNotCompatible =
-            Beans.get(MoveCreateFromInvoiceServiceImpl.class).isPartnerNotCompatible(move);
+            Beans.get(MoveCreateFromInvoiceService.class).isPartnerNotCompatible(move);
         if (isPartnerNotCompatible) {
           response.setValue("partner", null);
         }

@@ -800,8 +800,8 @@ public class PartnerServiceImpl implements PartnerService {
     query.append(type);
     query.append("=true");
     return (!StringUtils.isEmpty(type))
-        ? Query.of(Partner.class).filter(query.toString()).fetch().stream()
-            .map(partner -> partner.getId())
+        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
+            .map(m -> (long) m.get("id"))
             .collect(Collectors.toList())
         : new ArrayList<>();
   }

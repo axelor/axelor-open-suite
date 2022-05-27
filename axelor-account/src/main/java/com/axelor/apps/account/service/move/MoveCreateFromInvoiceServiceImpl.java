@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -60,7 +61,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected PaymentService paymentService;
   protected ReconcileService reconcileService;
   protected MoveExcessPaymentService moveExcessPaymentService;
-
+  protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
 
   @Inject
@@ -75,7 +76,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       PaymentService paymentService,
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      JournalRepository journalRepository) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
@@ -87,6 +89,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.reconcileService = reconcileService;
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
+    this.journalRepository = journalRepository;
   }
 
   /**
@@ -436,22 +439,22 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
       for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
         switch (compatiblePartnerType) {
-          case "isProspect":
+          case JournalRepository.IS_PROSPECT:
             if (partner.getIsProspect()) {
               return false;
             }
             break;
-          case "isCustomer":
+          case JournalRepository.IS_CUSTOMER:
             if (partner.getIsCustomer()) {
               return false;
             }
             break;
-          case "isSupplier":
+          case JournalRepository.IS_SUPPLIER:
             if (partner.getIsSupplier()) {
               return false;
             }
             break;
-          case "isFactor":
+          case JournalRepository.IS_FACTOR:
             if (!partner.getIsFactor()) {
               return false;
             }

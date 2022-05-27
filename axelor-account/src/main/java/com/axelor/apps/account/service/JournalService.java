@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 public class JournalService {
@@ -80,9 +81,8 @@ public class JournalService {
         compatiblePartnerIds.addAll(partnerService.getPartnerIdsByType(compatiblePartnerType));
       }
       if (compatiblePartnerIds.size() > 0) {
-        for (Long id : compatiblePartnerIds) {
-          compatiblePartnerDomain.append(id.toString() + ",");
-        }
+        compatiblePartnerDomain.append(
+            compatiblePartnerIds.stream().map(Object::toString).collect(Collectors.joining(",")));
         compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
         compatiblePartnerDomain.append(")");
         return compatiblePartnerDomain.toString();
