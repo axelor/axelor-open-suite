@@ -1,3 +1,0 @@
----
-title: "Invoice: Fixed an issue where a validated or ventilated invoice without trading name couldn't be saved"
-type: fix
