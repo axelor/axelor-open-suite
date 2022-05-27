@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -55,7 +56,9 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
+      PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService) {
+
     super(
         moveCreateService,
         moveValidateService,
@@ -69,6 +72,7 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         hrConfigService,
         templateMessageService,
         paymentModeService,
+        periodRepository,
         moveLineConsolidateService);
   }
 
