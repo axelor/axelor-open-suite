@@ -1,6 +1,0 @@
----
-title: "Manufacturing : outsourcing boolean management"
-type: fix
-description: |
-  Production process lines can now be managed without outsourcing even if the parent's outsourcing is true.
-  When created, Operation Orders now set their outsourcing boolean depending on their Production Process lines.
