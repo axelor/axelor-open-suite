@@ -76,7 +76,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
   protected PartnerSupplychainService partnerSupplychainService;
-  protected SaleOrderWorkflowService saleOrderWorkflowService;
 
   @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
