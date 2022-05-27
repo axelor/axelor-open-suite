@@ -79,7 +79,8 @@
       <panel-related name="paymentVoucherListPanel" field="paymentVoucherList"
         grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
         readonlyIf="isBankDepositMoveGenerated" canNew="false" canRemove="true" colSpan="12"
-        editable="true" onChange="save,action-deposit-slip-load-payment-voucher-due-list"/>
+        editable="true"
+        onChange="action-deposit-slip-record-total-amount-cheque-count,save,action-deposit-slip-load-payment-voucher-due-list"/>
       <panel colSpan="5" hidden="true"
         hideIf="companyBankDetails || isBankDepositMoveGenerated">
         <field name="__depositDate" type="Date" title="Deposit date"/>
@@ -133,6 +134,12 @@
       expr="eval: __paymentVoucherDueList?.findAll{ it.selected }?.size() + chequeCount"
       if="__paymentVoucherDueList?.findAll{ it.selected }"/>
   </action-attrs>
+
+  <action-record name="action-deposit-slip-record-total-amount-cheque-count"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <field name="totalAmount" expr="eval: paymentVoucherList?.sum{it.paidAmount}"/>
+    <field name="chequeCount" expr="eval: paymentVoucherList?.size()"/>
+  </action-record>
 
   <action-attrs name="action-cheque-deposit-slip-attrs-reset-payment-vouchers">
     <attribute name="value:del" for="paymentVoucherList" expr="eval: paymentVoucherList"/>
