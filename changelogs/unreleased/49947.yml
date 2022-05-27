@@ -1,3 +1,0 @@
----
-title: "InvoicePayment : fix applyFinancialDiscount value according to the paymentDate"
-type: fix

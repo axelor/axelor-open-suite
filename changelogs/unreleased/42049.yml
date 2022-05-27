@@ -1,3 +1,0 @@
----
-title: "Move: Fixed NPE when trying to access the grid view when there is no active company configured"
-type: fix
