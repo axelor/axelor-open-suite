@@ -242,9 +242,13 @@ public class InvoicePaymentController {
   }
 
   public void applyFinancialDiscount(ActionRequest request, ActionResponse response) {
-    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-    response.setValue(
-        "applyFinancialDiscount",
-        Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      response.setValue(
+          "applyFinancialDiscount",
+          Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

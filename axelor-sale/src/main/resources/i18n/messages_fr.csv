@@ -645,6 +645,7 @@
 "gives access to connected user.","donne accès à l'utilisateur connecté.",,
 "gives access to the id of parent sale order (when adding a sale order line with this configurator)","donne accès à l'id de la commande parent (quand ce configurateur est utilisé pour ajouter une ligne de devis)",,
 "gives access to today date and","donne accès à la date du jour et",,
+"import.verb","Importer",,
 "important",,,
 "info",,,
 "is used for concatenation","est utilisé pour la concaténation",,
