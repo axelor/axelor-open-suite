@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
