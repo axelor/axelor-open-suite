@@ -141,6 +141,8 @@
           <field name="dasContactPartner"
             domain="self.isEmployee = true AND :company member of self.companySet"
             form-view="partner-form" grid-view="partner-grid"/>
+          <field name="dasDefaultJournalType" form-view="journal-type-form"
+            grid-view="journal-type-grid"/>
           <!-- <field name="exportFileName"/> -->
         </panel>
         <panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">

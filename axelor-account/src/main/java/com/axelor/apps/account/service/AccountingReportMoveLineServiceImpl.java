@@ -154,7 +154,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         .all()
         .filter(
             "self.accountingExport = ?1 AND self.excludeFromDas2Report != true "
-                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.account.serviceType.n4dsCode is not null",
+                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.account.serviceType.isDas2Declarable != true AND self.paymentMoveLineDistribution.moveLine.account.serviceType.n4dsCode is null",
             accountingExport)
         .fetch();
   }
@@ -484,7 +484,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN address.addressL7Country country "
             + "LEFT OUTER JOIN address.city city "
             + "LEFT OUTER JOIN moveLine.account account "
-            + "LEFT OUTER JOIN accouny.serviceType serviceType "
+            + "LEFT OUTER JOIN account.serviceType serviceType "
             + "WHERE history.accountingExport =  ?1 " // accountingExport
             + "AND history.excludeFromDas2Report != true  "
             + "AND serviceType.isDas2Declarable = true  "

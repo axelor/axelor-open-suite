@@ -102,9 +102,10 @@
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
           grid-view="journal-grid" canEdit="false"
           onChange="action-accounting-report-record-reset-display-simulated-move"/>
-        <field name="journalType" showIf="reportType.typeSelect == 19"
+        <field name="journalType"
+          showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"
           form-view="journal-type-form" grid-view="journal-type-grid" canSelect="true"
-          canEdit="false" requiredIf="reportType.typeSelect == 19"/>
+          canEdit="false" requiredIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
         <field name="journalSet" if-module="axelor-bank-payment"
           if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect"
           canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
@@ -443,6 +444,8 @@
     <field name="detailed" expr="eval: true" if="reportType?.typeSelect in [4]"/>
     <field name="exportTypeSelect" expr="eval: 'pdf'"/>
     <field name="company" expr="reportType?.company"/>
+    <field name="journalType" if="reportType.typeSelect == 19 || reportType.typeSelect == 20"
+      expr="eval: __repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne())?.fetchOne().dasDefaultJournalType"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-default"
