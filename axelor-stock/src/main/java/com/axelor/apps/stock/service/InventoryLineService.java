@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -32,6 +29,8 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InventoryLineService {
 
@@ -47,9 +46,11 @@ public class InventoryLineService {
       Product product,
       BigDecimal currentQty,
       String rack,
-      TrackingNumber trackingNumber) throws AxelorException {
+      TrackingNumber trackingNumber)
+      throws AxelorException {
 
-    return createInventoryLine(inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
+    return createInventoryLine(
+        inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
   }
 
   public InventoryLine createInventoryLine(
@@ -61,7 +62,8 @@ public class InventoryLineService {
       BigDecimal realQty,
       String description,
       StockLocation stockLocation,
-      StockLocation detailsStockLocation) throws AxelorException {
+      StockLocation detailsStockLocation)
+      throws AxelorException {
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);

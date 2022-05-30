@@ -94,6 +94,8 @@ public class ImportInventoryLine {
                 inventoryLine.getCurrentQty(),
                 inventoryLine.getRack(),
                 trackingNumber,
+                null,
+                null,
                 inventoryLine.getInventory().getStockLocation(),
                 null);
 

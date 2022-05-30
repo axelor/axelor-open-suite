@@ -17,34 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
@@ -80,6 +52,32 @@ import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InventoryService {
 
@@ -204,7 +202,6 @@ public class InventoryService {
     List<String> headers = Arrays.asList(data.get(0));
 
     data.remove(0); /* Skip headers */
-    StockLocationRepository stockLocationRepo = Beans.get(StockLocationRepository.class);
 
     for (String[] line : data) {
       addToInventory(inventory, inventoryLineList, inventoryLineMap, headers, line);
@@ -238,14 +235,12 @@ public class InventoryService {
     StockLocation stockLocation = null;
     if (stockLocationName != null) {
       stockLocation = stockLocationRepository.findByName(stockLocationName);
-    }    
-    String key = code + trackingNumberSeq  + stockLocationName;
+    }
+    String key = code + trackingNumberSeq + stockLocationName;
     BigDecimal realQty = getRealQty(inventory, headers, line);
     BigDecimal currentQty = getCurrentQty(inventory, headers, line);
     Product product = getProduct(inventory, code);
-    
 
-    
     if (product == null
         || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
       throw new AxelorException(
@@ -259,7 +254,14 @@ public class InventoryService {
     } else {
       inventoryLineList.add(
           createInventoryLine(
-              inventory, rack, trackingNumberSeq, description, realQty, currentQty, product, stockLocation));
+              inventory,
+              rack,
+              trackingNumberSeq,
+              description,
+              realQty,
+              currentQty,
+              product,
+              stockLocation));
     }
   }
 
@@ -280,7 +282,8 @@ public class InventoryService {
       BigDecimal realQty,
       BigDecimal currentQty,
       Product product,
-      StockLocation stockLocation) throws AxelorException {
+      StockLocation stockLocation)
+      throws AxelorException {
 
     return inventoryLineService.createInventoryLine(
         inventory,
