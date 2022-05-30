@@ -294,14 +294,14 @@ public class MoveTemplateService {
 
   public boolean checkValidity(MoveTemplate moveTemplate) {
 
-    if (moveTemplate.getMoveTemplateType() == null) {
+    if (moveTemplate.getMoveTemplateTypeSelect() == null) {
       return false;
     }
 
-    if (moveTemplate.getMoveTemplateType()
+    if (moveTemplate.getMoveTemplateTypeSelect()
         == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_PERCENTAGE) {
       return this.checkValidityInPercentage(moveTemplate);
-    } else if (moveTemplate.getMoveTemplateType()
+    } else if (moveTemplate.getMoveTemplateTypeSelect()
         == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_AMOUNT) {
       return this.checkValidityInAmount(moveTemplate);
     } else {
