@@ -45,7 +45,8 @@
       <field name="currency"/>
       <field name="contentCurrencySelect" widget="MultiSelect"
         showIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"
-        hidden="true"/>
+        hidden="true"
+        requiredIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
