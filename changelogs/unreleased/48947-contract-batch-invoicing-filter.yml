@@ -1,0 +1,3 @@
+---
+title: "Contract batch : invoicing a batch of contracts don't take into account closed contract anymore"
+type: fix
