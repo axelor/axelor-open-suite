@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
@@ -46,7 +63,11 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
-    move.addMoveLineListItem(createCounterpartMoveLine(move));
+    MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
+    if (counterPartMoveLine == null) {
+      return;
+    }
+    move.addMoveLineListItem(counterPartMoveLine);
     moveRepository.save(move);
   }
 
@@ -55,6 +76,9 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     Account accountingAccount = getAccountingAccountFromJournal(move);
     boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
+    if (amount.signum() == 0) {
+      return null;
+    }
     isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(

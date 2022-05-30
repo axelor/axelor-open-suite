@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
@@ -61,7 +60,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
 
@@ -75,9 +74,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
     }
     int intercoPurchaseCreatingStatus =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getIntercoPurchaseCreatingStatusSelect();
+        appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
         && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
@@ -88,15 +85,19 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
   @Override
   @Transactional
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
 
-    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (appSupplychainService.isApp("supplychain") && appAccountService.isApp("budget")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
 
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
         purchaseOrder.getPurchaseOrderLineList().stream()
-            .forEach(PurchaseOrderLine::clearBudgetDistributionList);
+            .forEach(
+                poLine -> {
+                  poLine.clearBudgetDistributionList();
+                  poLine.setBudget(null);
+                });
       }
     }
   }

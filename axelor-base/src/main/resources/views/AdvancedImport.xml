@@ -47,7 +47,7 @@
       <button name="validateBtn" title="Validate"
         onClick="save,action-advanced-import-method-validate,save"
         showIf="fileTabList.length &gt; 0 &amp;&amp; statusSelect == 0"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         onClick="save,action-advanced-import-method-import,save" showIf="statusSelect == 1"/>
       <button name="resetImportBtn" title="Reset import"
         onClick="save,action-advanced-import-method-reset-import" showIf="statusSelect == 1"/>

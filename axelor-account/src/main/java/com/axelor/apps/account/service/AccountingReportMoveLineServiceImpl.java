@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -308,6 +308,20 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.add(
         setN4DSLine("S20.G01.00.004.002", accountingExport.getComplementaryExport() ? "52" : "51"));
     lines.add(setN4DSLine("S20.G01.00.005", "11"));
+    if (accountingExport.getComplementaryExport()) {
+      lines.add(
+          setN4DSLine(
+              "S20.G01.00.006.001",
+              accountingExport
+                  .getDateFrom()
+                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
+      lines.add(
+          setN4DSLine(
+              "S20.G01.00.006.002",
+              accountingExport
+                  .getDateTo()
+                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
+    }
     lines.add(setN4DSLine("S20.G01.00.007", "01"));
     lines.add(setN4DSLine("S20.G01.00.008", nic));
     if (!Strings.isNullOrEmpty(addressL2L3)) {
@@ -345,6 +359,12 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
               "S70.G10.00.001", StringUtils.stripAccents(listObj[0].toString().toUpperCase())));
       String title = listObj[1].toString();
       String countryAlpha2code = listObj[9].toString();
+      String zip = "0";
+      if (listObj[7] != null) {
+        zip = compileAddressValue(listObj[7].toString());
+        zip = StringUtils.isEmpty(zip) ? "0" : zip;
+      }
+
       if (title.equals(String.valueOf(PartnerRepository.PARTNER_TYPE_COMPANY))) {
         String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
 
@@ -364,13 +384,14 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         lines.add(setN4DSLine("S70.G10.00.004.006", compileAddressValue(listObj[6].toString())));
       }
       if (countryAlpha2code.equals("FR")) {
-        lines.add(setN4DSLine("S70.G10.00.004.010", compileAddressValue(listObj[7].toString())));
+        lines.add(setN4DSLine("S70.G10.00.004.010", zip));
         lines.add(
             setN4DSLine(
                 "S70.G10.00.004.012",
                 compileStringValue(regexForCity, listObj[8].toString(), " ")));
       } else {
         lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
+        lines.add(setN4DSLine("S70.G10.00.004.016", zip));
       }
       String serviceTypeCode = listObj[10].toString();
       String amount = listObj[11].toString();

@@ -25,6 +25,7 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,7 +112,8 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
         bankOrderMergeService.mergeFromInvoicePayments(
             invoicePaymentIdList.stream()
                 .map(id -> invoicePaymentRepository.find(id))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            accountingBatch.getDueDate());
       }
     } catch (Exception e) {
       incrementAnomaly();
@@ -136,7 +138,8 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       }
       for (Invoice invoice : invoicesList) {
         try {
-          createInvoicePayment(invoicePaymentIdList, companyBankDetails, invoice);
+          createInvoicePayment(
+              invoicePaymentIdList, companyBankDetails, invoice, accountingBatch.getDueDate());
         } catch (Exception e) {
           incrementAnomaly();
           anomalyList.add(invoice.getId());
@@ -152,11 +155,17 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void createInvoicePayment(
-      List<Long> invoicePaymentIdList, BankDetails companyBankDetails, Invoice invoice) {
+      List<Long> invoicePaymentIdList,
+      BankDetails companyBankDetails,
+      Invoice invoice,
+      LocalDate paymentDate)
+      throws AxelorException {
     log.debug("Creating Invoice payments from {}", invoice);
     invoiceRepository.find(invoice.getId());
     invoicePaymentIdList.add(
-        invoicePaymentCreateService.createInvoicePayment(invoice, companyBankDetails).getId());
+        invoicePaymentCreateService
+            .createInvoicePayment(invoice, companyBankDetails, paymentDate)
+            .getId());
     invoice.addBatchSetItem(batchRepo.find(batch.getId()));
 
     incrementDone();

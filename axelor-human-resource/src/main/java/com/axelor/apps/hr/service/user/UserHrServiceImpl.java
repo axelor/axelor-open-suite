@@ -85,13 +85,12 @@ public class UserHrServiceImpl implements UserHrService {
   }
 
   @Override
-  public Product getTimesheetProduct(User user) {
+  public Product getTimesheetProduct(Employee employee) {
 
-    if (user == null || user.getId() == null || user.getActiveCompany() == null) {
+    User user = employee.getUser();
+    if (user == null || user.getActiveCompany() == null) {
       return null;
     }
-
-    user = userRepo.find(user.getId());
 
     Product product = null;
     HRConfig hrConfig = user.getActiveCompany().getHrConfig();
@@ -99,8 +98,8 @@ public class UserHrServiceImpl implements UserHrService {
       product = hrConfig.getUniqueTimesheetProduct();
     }
 
-    if (product == null && user.getEmployee() != null) {
-      product = user.getEmployee().getProduct();
+    if (product == null && employee != null) {
+      product = employee.getProduct();
     }
 
     return product;

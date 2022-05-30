@@ -63,7 +63,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber)
+      String chequeNumber,
+      boolean applyDiscount)
       throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList =
@@ -73,9 +74,10 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
             companyBankDetails,
             paymentDate,
             bankDepositDate,
-            chequeNumber);
+            chequeNumber,
+            applyDiscount);
 
-    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+    if (!appBaseService.isApp("bank-payment")) {
       return invoicePaymentList;
     }
 
@@ -93,7 +95,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException {
     List<Long> invoiceToPay = super.getInvoiceIdsToPay(invoiceIdList);
 
-    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+    if (!appBaseService.isApp("bank-payment")) {
       return invoiceToPay;
     }
 

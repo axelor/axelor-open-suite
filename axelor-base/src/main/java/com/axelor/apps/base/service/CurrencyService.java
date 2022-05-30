@@ -28,7 +28,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -63,9 +62,9 @@ public class CurrencyService {
     this.currencyConversionLineRepo = currencyConversionLineRepo;
   }
 
-  public CurrencyService(LocalDate today) {
+  public CurrencyService(AppBaseService appBaseService, LocalDate today) {
 
-    this.appBaseService = Beans.get(AppBaseService.class);
+    this.appBaseService = appBaseService;
     this.today = today;
   }
 
