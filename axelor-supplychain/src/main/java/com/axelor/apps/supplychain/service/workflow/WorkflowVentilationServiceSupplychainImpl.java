@@ -300,7 +300,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  protected void updateOrderLineQtyInvoiced(StockMoveLine stockMoveLine, boolean invoiceIsRefund) {
+  protected void updateOrderLineQtyInvoiced(StockMoveLine stockMoveLine, BigDecimal qtyInvoiced) {
     if (stockMoveLine.getSaleOrderLine() != null) {
       stockMoveLineRepository
           .all()
@@ -308,10 +308,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
           .bind("saleOrderLineId", stockMoveLine.getSaleOrderLine().getId())
           .bind("stockMoveId", stockMoveLine.getStockMove().getId())
           .fetch()
-          .forEach(
-              stockMvLine ->
-                  stockMvLine.setQtyInvoiced(
-                      invoiceIsRefund ? BigDecimal.ZERO : stockMvLine.getRealQty()));
+          .forEach(stockMvLine -> stockMvLine.setQtyInvoiced(qtyInvoiced));
     }
     if (stockMoveLine.getPurchaseOrderLine() != null) {
       stockMoveLineRepository
@@ -321,10 +318,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
           .bind("purchaseOrderLineId", stockMoveLine.getPurchaseOrderLine().getId())
           .bind("stockMoveId", stockMoveLine.getStockMove().getId())
           .fetch()
-          .forEach(
-              stockMvLine ->
-                  stockMvLine.setQtyInvoiced(
-                      invoiceIsRefund ? BigDecimal.ZERO : stockMvLine.getRealQty()));
+          .forEach(stockMvLine -> stockMvLine.setQtyInvoiced(qtyInvoiced));
     }
   }
 
@@ -334,8 +328,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     boolean invoiceIsRefund =
         stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMoveLine.getStockMove(), invoice);
     // If it is a refund it 0 in all case.
+    BigDecimal qtyInvoiced = null;
     if (invoiceIsRefund) {
-      stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+      qtyInvoiced = BigDecimal.ZERO;
     } else {
       // it depends on if the invoice is linked to refund.
       if (!CollectionUtils.isEmpty(invoice.getRefundInvoiceList())
@@ -344,14 +339,15 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
               .flatMap(inv -> inv.getInvoiceLineList().stream())
               .anyMatch(invoiceLine -> stockMoveLine.equals(invoiceLine.getStockMoveLine()))) {
         // If it is linked to any refund that is ventilated related to the stock move then set to 0.
-        stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+        qtyInvoiced = BigDecimal.ZERO;
       } else {
-        stockMoveLine.setQtyInvoiced(stockMoveLine.getRealQty());
+        qtyInvoiced = stockMoveLine.getRealQty();
       }
     }
+    stockMoveLine.setQtyInvoiced(qtyInvoiced);
 
     // search in sale/purchase order lines to set split stock move lines to invoiced.
-    updateOrderLineQtyInvoiced(stockMoveLine, invoiceIsRefund);
+    updateOrderLineQtyInvoiced(stockMoveLine, qtyInvoiced);
   }
 
   protected void updateQtyInvoicedWithPartiallyInvoiced(
