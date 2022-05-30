@@ -317,12 +317,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       move.setAdjustingMove(true);
     }
 
-    moveInvoiceTermService.generateInvoiceTerms(move);
-
     this.completeMoveLines(move);
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
     this.updateValidateStatus(move, dayBookMode);
 
+    moveInvoiceTermService.generateInvoiceTerms(move);
     moveRepository.save(move);
 
     if (updateCustomerAccount) {

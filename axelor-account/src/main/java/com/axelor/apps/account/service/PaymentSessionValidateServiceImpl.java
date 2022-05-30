@@ -472,7 +472,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTerm.getInvoice().getInvoicePaymentList().stream()
         .filter(
             it ->
-                it.getPaymentSession().equals(paymentSession)
+                it.getPaymentSession() != null
+                    && it.getPaymentSession().equals(paymentSession)
                     && it.getInvoiceTermPaymentList().stream()
                         .anyMatch(itp -> itp.getInvoiceTerm().equals(invoiceTerm)))
         .findFirst()
@@ -645,7 +646,19 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
       moveValidateService.accounting(move);
+      // this.setDueDates(move);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void setDueDates(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+        moveLine.getInvoiceTermList().forEach(it -> it.setDueDate(moveLine.getDueDate()));
+      }
+    }
+
+    moveRepo.save(move);
   }
 
   @Transactional(rollbackOn = {Exception.class})
