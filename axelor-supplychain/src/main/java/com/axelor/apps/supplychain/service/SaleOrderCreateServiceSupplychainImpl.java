@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -91,7 +91,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       TradingName tradingName)
       throws AxelorException {
 
-    if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
+    if (!appSaleService.isApp("supplychain")) {
       return super.createSaleOrder(
           salespersonUser,
           company,
@@ -201,19 +201,20 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       TaxNumber taxNumber,
       FiscalPosition fiscalPosition)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
+    for (SaleOrder saleOrderLocal : saleOrderList) {
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
+      }
+      numSeq.append(saleOrderLocal.getSaleOrderSeq());
+
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
+        externalRef.append(saleOrderLocal.getExternalReference());
       }
     }
 
@@ -224,8 +225,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             contactPartner,
             currency,
             null,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             stockLocation,
             priceList,
             clientPartner,

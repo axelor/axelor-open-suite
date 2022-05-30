@@ -19,7 +19,7 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -53,7 +53,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -89,7 +89,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -115,7 +115,7 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
@@ -132,7 +132,7 @@
     groupBy="user">
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -163,8 +163,7 @@
 
   <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
-    onSave="action-partner-iban-check-on-save,save,action-partner-method-set-user-partner"
-    width="large">
+    onSave="action-partner-group-onsave" width="large">
     <toolbar>
       <button name="showMapBtn" title="Map" icon="fa-map-marker"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
@@ -278,14 +277,13 @@
 								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
 								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
 								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
 							</h4>
                         ]]>
           </viewer>
         </field>
-        <field name="$isSubcontractor" type="boolean" hidden="true" colSpan="12"/>
         <field name="isContact" hidden="true" colSpan="12"/>
         <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
@@ -420,13 +418,10 @@
             colSpan="12"/>
         </panel>
         <panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
-          <field name="fixedPhone" colSpan="3" placeholder="+33100000000" widget="phone"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="fax" colSpan="3" placeholder="+33000000000" widget="phone"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"
-            placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            onChange="action-partner-method-normalize-mobilePhone"/>
+          <field name="fixedPhone" colSpan="3" widget="phone"
+            x-placeholder-number-type="FIXED_LINE"/>
+          <field name="fax" colSpan="3" widget="phone"/>
+          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false">
@@ -434,8 +429,8 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="webSite" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
         </panel>
 
         <panel name="employeePanel" hidden="true">
@@ -602,7 +597,7 @@
 
   <grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
@@ -660,15 +655,11 @@
               <field name="address"/>
             </editor>
           </field>
-          <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            widget="phone" onChange="action-partner-method-normalize-fax"/>
-          <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="mobilePhone" placeholder="+33100000000" widget="phone"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-          <field name="webSite" placeholder="http://www.url.com"
+          <field name="fax" widget="phone"/>
+          <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+          <field name="mobilePhone" widget="phone"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"
             pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-
         </panel>
       </panel>
     </panel-tabs>
@@ -736,7 +727,7 @@
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
           </editor>
         </field>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
@@ -761,10 +752,8 @@
         <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
         <field name="functionBusinessCard"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-        <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -773,8 +762,7 @@
               colSpan="12"/>
           </editor>
         </field>
-        <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fax"/>
+        <field name="fax" widget="phone"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid" colSpan="12"/>
         <field name="timeSlot" colSpan="12"/>
@@ -834,15 +822,11 @@
             pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
         </editor>
       </field>
-      <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        widget="phone" onChange="action-partner-method-normalize-fax"/>
-      <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-      <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
-      <field name="webSite" placeholder="http://www.url.com"
+      <field name="fax" widget="phone"/>
+      <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+      <field name="mobilePhone" widget="phone"/>
+      <field name="webSite" placeholder="http://www.url.com" widget="url"
         pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-
     </panel>
   </form>
 
@@ -871,6 +855,13 @@
     <field name="registrationCode"/>
     <field name="companyStr"/>
     <field name="mainAddress"/>
+    <field name="isProspect"/>
+    <field name="isEmployee"/>
+    <field name="isCustomer"/>
+    <field name="isSupplier"/>
+    <field name="isSubcontractor"/>
+    <field name="isFactor"/>
+    <field name="isCarrier"/>
     <template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -894,6 +885,15 @@
 			    {{partnerCategory.name}}<br/>
 			    <strong><span x-translate>Companies</span></strong> : {{companyStr}}<br/>
 			    <strong><span x-translate>Fiscal position</span></strong> : {{fiscalPosition.code}}</span>
+			    <h4 style="text-align: right;">
+					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+				</h4>
 			  </div>
 			</div>
 		]]>
@@ -946,7 +946,7 @@
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>
     <field name="firstName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
@@ -1006,10 +1006,8 @@
       <panel name="contactDetailsPanel" title="Contact details">
         <field name="jobTitleFunction"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-        <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -1017,8 +1015,7 @@
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
           </editor>
         </field>
-        <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fax"/>
+        <field name="fax" widget="phone"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid"/>
       </panel>
@@ -1069,8 +1066,6 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
     <action name="action-partner-attrs-set-canselect"/>
-    <action name="action-partner-attrs-set-subcontactor"
-      if="__config__.app.isApp('production')"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1122,6 +1117,19 @@
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-validate-factor-supplier-customer-show-error"/>
   </action-group>
+
+  <action-group name="action-partner-group-onsave">
+    <action name="action-partner-iban-check-on-save"/>
+    <action name="action-partner-validate-registration-code"/>
+    <action name="action-method-partner-check-registration-code"/>
+    <action name="save"/>
+    <action name="action-partner-method-set-user-partner"/>
+  </action-group>
+
+  <action-validate name="action-partner-validate-registration-code">
+    <error message="Registration code is required."
+      if="partnerAddressList?.findAll{it.address?.addressL7Country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
+  </action-validate>
 
   <action-record name="action-partner-record-factor-supplier-customer-no-error"
     model="com.axelor.apps.base.db.Partner">
@@ -1420,18 +1428,6 @@
     <field name="supplierQualityRating" expr="eval: supplierQualityRatingSelect"/>
   </action-record>
 
-  <action-method name="action-partner-method-normalize-fixedPhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-partner-method-normalize-fax">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-partner-method-normalize-mobilePhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
   <action-record name="action-partner-record-empty-freight-carrier-mode"
     model="com.axelor.apps.base.db.Partner">
     <field name="freightCarrierMode" expr="eval:null"/>
@@ -1483,6 +1479,10 @@
 
   <action-method name="action-method-partner-registration-code-onChange">
     <call class="com.axelor.apps.base.web.PartnerController" method="modifyRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-method-partner-check-registration-code">
+    <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
   </action-method>
 
   <action-view name="action-contact-partner-dashlet" title="Partners"
@@ -1538,10 +1538,6 @@
       if="__config__.app.getApp('crm').assignableUsers == 1"/>
   </action-attrs>
 
-  <action-attrs name="action-partner-attrs-set-subcontactor">
-    <attribute name="value" for="$isSubcontractor"
-      expr="eval:__config__.app.getApp('production')?.getManageOutsourcing()"/>
-  </action-attrs>
 
   <action-view name="action-partner-view-subsidiary-partners" title="Subsidiaries"
     model="com.axelor.apps.base.db.Partner">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -351,6 +351,60 @@ public interface ITranslation {
       "AccountingReportType15.taxRate"; /*)*/
   public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
       "AccountingReportType15.fiscalPositionCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.paymentNotLettered"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PARTNER = /*$$(*/
+      "AccountingReportType15.partner"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ORIGIN = /*$$(*/
+      "AccountingReportType15.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_RECONCILED_AMOUNT = /*$$(*/
+      "AccountingReportType15.reconciledAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_AMOUNT_TO_RECONCILE = /*$$(*/
+      "AccountingReportType15.amountToReconcile"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ADVANCE_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.advancePaymentNotLettered"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_12_TITLE = /*$$(*/
+      "AccountingReportType12.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_COMPANY = /*$$(*/
+      "AccountingReportType12.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_FROM = /*$$(*/
+      "AccountingReportType12.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TO = /*$$(*/ "AccountingReportType12.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_YEAR = /*$$(*/
+      "AccountingReportType12.year"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_CURRENCY = /*$$(*/
+      "AccountingReportType12.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TAX_CODE = /*$$(*/
+      "AccountingReportType12.taxCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_NAME = /*$$(*/
+      "AccountingReportType12.name"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_MOVE_LINE = /*$$(*/
+      "AccountingReportType12.moveLine"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_DATE = /*$$(*/
+      "AccountingReportType12.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_ACCOUNT_NAME = /*$$(*/
+      "AccountingReportType12.accountName"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_BASE = /*$$(*/
+      "AccountingReportType12.base"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_PAYABLE_VAT = /*$$(*/
+      "AccountingReportType12.payableVAT"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_DEDUCTIBLE_VAT = /*$$(*/
+      "AccountingReportType12.deductibleVAT"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_REPORT_DATE_EDITION = /*$$(*/
+      "AccountingReportType12.reportDateEdition"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TOTAL = /*$$(*/
+      "AccountingReportType12.total"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_BALANCE = /*$$(*/
+      "AccountingReportType12.balance"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_AMOUNT = /*$$(*/
+      "AccountingReportType12.amount"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TAX_RATE = /*$$(*/
+      "AccountingReportType12.taxRate"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_FISCAL_POSITION_CODE = /*$$(*/
+      "AccountingReportType15.fiscalPositionCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_VAT_ON_DEBIT = /*$$(*/
+      "AccountingReportType15.vatOnDebit"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/
@@ -803,6 +857,8 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
   public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
       "Invoice.headOfficeAddress"; /*)*/
+  public static final String INVOICE_REPORT_OPTION_ON_DELIVERIES = /*$$(*/
+      "Invoice.optionOnDeliveries"; /*)*/
 
   public static final String PAYMENT_REMINDER_PAYMENT_REMINDER =
       /*$$(*/ "PaymentReminder.payment_reminder"; /*)*/
@@ -827,4 +883,22 @@ public interface ITranslation {
       /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
   public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
       /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
+
+  public static final String NOTE_BILLS_DATE_TO = /*$$(*/ "NoteBills.date_to"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_CURRENCY = /*$$(*/ "NoteBills.currency"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_TOTAL_DEBIT = /*$$(*/ "NoteBills.total_debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_TOTAL_AMOUNT = /*$$(*/
+      "NoteBills.total_amount"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_DEBIT = /*$$(*/ "NoteBills.debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_CREDIT = /*$$(*/ "NoteBills.credit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_NB = /*$$(*/ "NoteBills.invoice_nb"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_DATE = /*$$(*/ "NoteBills.invoice_date"; /*)*/
+  public static final String NOTE_BILLS_GENERATION_DATE = /*$$(*/ "NoteBills.generation_date"; /*)*/
+  public static final String NOTE_BILLS_PARTNER_SEQ = /*$$(*/ "NoteBills.partner_seq"; /*)*/
+  public static final String NOTE_BILLS_REFERENCE_TO_REMEMBER =
+      /*$$(*/ "NoteBills.reference_to_remember"; /*)*/
+  public static final String NOTE_BILLS_NOTE_BILLS = /*$$(*/ "NoteBills.note_bills"; /*)*/
+  public static final String NOTE_BILLS_PAYABLE_BY = /*$$(*/ "NoteBills.payable_by"; /*)*/
+  public static final String NOTE_BILLS_DIRECT_BOE = /*$$(*/ "NoteBills.direct_boe"; /*)*/
+  public static final String NOTE_BILLS_NOTE_BILLS_NB = /*$$(*/ "NoteBills.note_bills_nb"; /*)*/
 }

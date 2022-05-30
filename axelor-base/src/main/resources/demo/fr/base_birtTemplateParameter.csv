@@ -52,6 +52,7 @@
 51;16;"__locale";"fr_FR";"string"
 52;16;"Locale";"fr";"string"
 53;16;"AccountingReportId";"$AccountingReport.id$";"decimal"
+
 54;17;"__locale";"fr_FR";"string"
 55;17;"Locale";"fr";"string"
 56;17;"AccountingReportId";"$AccountingReport.id$";"decimal"
@@ -115,3 +116,6 @@
 113;33;"__locale";"fr_FR";"string"
 114;33;"Locale";"fr";"string"
 115;33;"DebtRecoveryHistoryID";"$DebtRecoveryHistory.id$";"decimal"
+116;34;"__locale";"fr_FR";"string"
+117;34;"Locale";"fr";"string"
+118;34;"NoteBillsId";"$NoteBills.id$";"decimal"

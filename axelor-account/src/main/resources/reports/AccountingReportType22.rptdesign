@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2036,6 +2036,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4494">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">depreciation_a</property>
                                     </data>
@@ -2050,6 +2054,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4496">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">depreciation_b</property>
                                     </data>
@@ -2064,6 +2072,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4498">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">depreciation_c</property>
                                     </data>
@@ -2078,6 +2090,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4500">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">depreciation_d</property>
                                     </data>
@@ -2140,6 +2156,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4561">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">depreciation_a_total</property>
                                     </data>
@@ -2155,6 +2175,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4562">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">depreciation_b_total</property>
                                     </data>
                                 </cell>
@@ -2169,6 +2193,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4563">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">depreciation_c_total</property>
                                     </data>
                                 </cell>
@@ -2183,6 +2211,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4564">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">depreciation_d_total</property>
                                     </data>
                                 </cell>
@@ -2698,6 +2730,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4460">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">impairment_value_a</property>
                                     </data>
@@ -2712,6 +2748,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4462">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">impairment_value_b</property>
                                     </data>
@@ -2726,6 +2766,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4464">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">impairment_value_c</property>
                                     </data>
@@ -2740,6 +2784,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4466">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">impairment_value_d</property>
                                     </data>
@@ -2803,6 +2851,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4574">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">impairment_value_a_total</property>
                                     </data>
                                 </cell>
@@ -2817,6 +2869,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4575">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">impairment_value_b_total</property>
                                     </data>
                                 </cell>
@@ -2831,6 +2887,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4576">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">impairment_value_c_total</property>
                                     </data>
                                 </cell>
@@ -2845,6 +2905,10 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4577">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="resultSetColumn">impairment_value_d_total</property>
                                     </data>
                                 </cell>

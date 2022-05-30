@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -205,7 +206,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-      customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      if (InvoiceToolService.isPurchase(invoice)) {
+        customerAccount = accountConfigService.getSupplierAdvancePaymentAccount(accountConfig);
+      } else {
+        customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      }
+
     } else {
       if (invoiceMoveLine == null) {
         return null;

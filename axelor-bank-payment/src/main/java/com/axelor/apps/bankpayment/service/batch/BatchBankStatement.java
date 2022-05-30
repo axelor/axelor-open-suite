@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -136,7 +137,7 @@ public class BatchBankStatement extends AbstractBatch {
   }
 
   private Collection<EbicsPartner> getAllActiveEbicsPartners() {
-    return Beans.get(EbicsPartnerRepository.class)
+    return ebicsPartnerRepository
         .all()
         .filter("self.transportEbicsUser.statusSelect = :statusSelect")
         .bind("statusSelect", EbicsUserRepository.STATUS_ACTIVE_CONNECTION)
@@ -145,5 +146,9 @@ public class BatchBankStatement extends AbstractBatch {
 
   public Batch bankStatement(BankPaymentBatch bankPaymentBatch) {
     return Beans.get(BatchBankStatement.class).run(bankPaymentBatch);
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }
 }

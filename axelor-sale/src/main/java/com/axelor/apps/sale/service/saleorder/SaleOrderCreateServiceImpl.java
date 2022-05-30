@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -261,6 +261,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
+          saleOrderLineService.resetPrice(saleOrderLine);
           saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
           saleOrderLineService.computeValues(saleOrder, saleOrderLine);
         }

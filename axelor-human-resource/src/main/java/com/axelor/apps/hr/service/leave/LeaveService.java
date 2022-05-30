@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,6 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -110,7 +109,7 @@ public interface LeaveService {
    * @param date
    * @return
    */
-  public boolean isLeaveDay(User user, LocalDate date);
+  public boolean isLeaveDay(Employee employee, LocalDate date);
 
   /**
    * Gets the leaves for the given user for the given date.
@@ -119,5 +118,20 @@ public interface LeaveService {
    * @param date
    * @return
    */
-  public List<LeaveRequest> getLeaves(User user, LocalDate date);
+  public List<LeaveRequest> getLeaves(Employee employee, LocalDate date);
+
+  /**
+   * Get the LeaveLine associated with the leaveRequest
+   *
+   * @param leaveRequest
+   * @return
+   */
+  LeaveLine getLeaveLine(LeaveRequest leaveRequest);
+
+  /**
+   * Update daysToValidate field of leaveLine
+   *
+   * @param leaveLine
+   */
+  void updateDaysToValidate(LeaveLine leaveLine);
 }

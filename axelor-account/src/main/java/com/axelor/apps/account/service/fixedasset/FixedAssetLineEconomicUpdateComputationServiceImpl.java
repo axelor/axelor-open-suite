@@ -1,9 +1,27 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -38,8 +56,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   public FixedAssetLineEconomicUpdateComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       FixedAssetLineService fixedAssetLineService,
-      AnalyticFixedAssetService analyticFixedAssetService) {
-    super(fixedAssetFailOverControlService);
+      AnalyticFixedAssetService analyticFixedAssetService,
+      AppBaseService appBaseService) {
+    super(fixedAssetFailOverControlService, appBaseService);
     this.fixedAssetLineService = fixedAssetLineService;
     this.analyticFixedAssetService = analyticFixedAssetService;
   }
@@ -77,14 +96,15 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     BigDecimal accountingValue = depreciationBase.subtract(depreciation);
 
     return Optional.ofNullable(
-        createPlannedFixedAssetLine(
+        createFixedAssetLine(
             fixedAsset,
             firstDepreciationDate,
             depreciation,
             depreciation.add(this.firstPlannedFixedAssetLine.getCumulativeDepreciation()),
             accountingValue,
             depreciationBase,
-            getTypeSelect()));
+            getTypeSelect(),
+            FixedAssetLineRepository.STATUS_PLANNED));
   }
 
   @Override
@@ -251,5 +271,15 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected Integer getDurationInMonth(FixedAsset fixedAsset) {
 
     return fixedAsset.getDurationInMonth();
+  }
+
+  @Override
+  protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
+    return fixedAsset.getDepreciatedAmountCurrentYear();
+  }
+
+  @Override
+  protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
+    return fixedAsset.getFailOverDepreciationEndDate();
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,9 +31,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -58,7 +58,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   protected ReportedBalanceLineRepository reportedBalanceLineRepo;
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
-  protected PeriodServiceAccountImpl periodServiceAccountImpl;
+  protected PeriodService periodService;
 
   @Inject
   public YearServiceAccountImpl(
@@ -66,12 +66,12 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       ReportedBalanceLineRepository reportedBalanceLineRepo,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
-      PeriodServiceAccountImpl periodServiceAccountImpl) {
+      PeriodService periodService) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
     this.reportedBalanceLineRepo = reportedBalanceLineRepo;
     this.adjustHistoryService = adjustHistoryService;
-    this.periodServiceAccountImpl = periodServiceAccountImpl;
+    this.periodService = periodService;
   }
 
   /**
@@ -84,12 +84,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     year = yearRepository.find(year.getId());
 
     for (Period period : year.getPeriodList()) {
-      if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
-        adjustHistoryService.setEndDate(period);
-      }
-
-      period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      period.setClosureDateTime(LocalDateTime.now());
+      periodService.close(period);
     }
     Company company = year.getCompany();
     if (company == null) {

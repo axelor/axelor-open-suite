@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,12 +34,18 @@ import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.SelectionBuilderRepo;
 import com.axelor.studio.db.repo.SelectionBuilderRepository;
+import com.axelor.studio.service.ChartRecordViewService;
+import com.axelor.studio.service.ChartRecordViewServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderExportService;
 import com.axelor.studio.service.loader.AppLoaderExportServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderImportService;
 import com.axelor.studio.service.loader.AppLoaderImportServiceImpl;
 import com.axelor.studio.service.mapper.MapperScriptGeneratorService;
 import com.axelor.studio.service.mapper.MapperScriptGeneratorServiceImpl;
+import com.axelor.studio.service.ws.WsAuthenticatorService;
+import com.axelor.studio.service.ws.WsAuthenticatorServiceImpl;
+import com.axelor.studio.service.ws.WsConnectoServiceImpl;
+import com.axelor.studio.service.ws.WsConnectorService;
 
 public class StudioModule extends AxelorModule {
 
@@ -56,5 +62,8 @@ public class StudioModule extends AxelorModule {
     bind(MapperScriptGeneratorService.class).to(MapperScriptGeneratorServiceImpl.class);
     bind(AppLoaderImportService.class).to(AppLoaderImportServiceImpl.class);
     bind(AppLoaderExportService.class).to(AppLoaderExportServiceImpl.class);
+    bind(ChartRecordViewService.class).to(ChartRecordViewServiceImpl.class);
+    bind(WsConnectorService.class).to(WsConnectoServiceImpl.class);
+    bind(WsAuthenticatorService.class).to(WsAuthenticatorServiceImpl.class);
   }
 }

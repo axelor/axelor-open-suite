@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -35,7 +34,7 @@ import java.util.List;
 
 public interface PurchaseOrderSupplychainService {
 
-  void updateToValidatedStatus(PurchaseOrder purchaseOrder);
+  void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException;
 
   void generateBudgetDistribution(PurchaseOrder purchaseOrder);
 
@@ -68,8 +67,6 @@ public interface PurchaseOrderSupplychainService {
   void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder);
 
   void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
-
-  void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException;
 
   void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 

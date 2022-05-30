@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,13 +21,17 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -79,16 +83,24 @@ import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository
 import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChain;
 import com.axelor.apps.supplychain.service.AccountingCutOffService;
 import com.axelor.apps.supplychain.service.AccountingCutOffServiceImpl;
+import com.axelor.apps.supplychain.service.AccountingSituationInitSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.supplychain.service.ClosureAssistantLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.CommonInvoiceService;
+import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.MoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.MoveLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.MrpForecastService;
+import com.axelor.apps.supplychain.service.MrpForecastServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
@@ -115,6 +127,8 @@ import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplycha
 import com.axelor.apps.supplychain.service.PurchaseRequestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
+import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -159,6 +173,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesServiceImpl;
 import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
@@ -257,5 +272,15 @@ public class SupplychainModule extends AxelorModule {
     bind(PartnerSupplychainService.class).to(PartnerSupplychainServiceImpl.class);
     bind(ProductVariantServiceStockImpl.class).to(ProductVariantServiceSupplyChainImpl.class);
     bind(StockHistoryServiceImpl.class).to(StockHistoryServiceSupplyChainImpl.class);
+    bind(AccountingSituationInitServiceImpl.class)
+        .to(AccountingSituationInitSupplychainServiceImpl.class);
+    bind(InvoiceMergingServiceImpl.class).to(InvoiceMergingServiceSupplychainImpl.class);
+    bind(MoveLineServiceSupplychain.class).to(MoveLineServiceSupplychainImpl.class);
+    bind(MoveLineServiceImpl.class).to(MoveLineServiceSupplychainImpl.class);
+    bind(ClosureAssistantLineServiceImpl.class)
+        .to(ClosureAssistantLineSupplychainServiceImpl.class);
+    bind(CommonInvoiceService.class).to(CommonInvoiceServiceImpl.class);
+    bind(MrpForecastService.class).to(MrpForecastServiceImpl.class);
+    bind(SaleOrderCheckAnalyticService.class).to(SaleOrderCheckAnalyticServiceImpl.class);
   }
 }

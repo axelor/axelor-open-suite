@@ -8,7 +8,7 @@
     <field name="lastName"/>
     <field name="firstName"/>
     <field name="emailAddress"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="jobPosition"/>
     <field name="statusSelect"/>
@@ -97,9 +97,11 @@
                 widget="Email" placeholder="user@mydomain.com"/>
             </editor>
           </field>
-          <field name="fixedPhone" widget="phone" colSpan="3"/>
+          <field name="fixedPhone" widget="phone" colSpan="3"
+            x-placeholder-number-type="FIXED_LINE"/>
           <field name="fax" widget="phone" colSpan="3"/>
-          <field name="linkedInProfile" colSpan="3" widget="url"/>
+          <field name="linkedInProfile" colSpan="3" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
           <label name="linkedinLabel"
             title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
             colSpan="2"/>

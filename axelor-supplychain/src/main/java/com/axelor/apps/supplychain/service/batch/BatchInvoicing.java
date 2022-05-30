@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -94,5 +95,9 @@ public class BatchInvoicing extends BatchStrategy {
 
     super.stop();
     addComment(comment);
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SALE_BATCH);
   }
 }

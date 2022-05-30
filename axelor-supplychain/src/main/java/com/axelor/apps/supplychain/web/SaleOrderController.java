@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,7 +53,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -181,8 +180,9 @@ public class SaleOrderController {
       if (saleOrder.getId() != null) {
 
         Partner supplierPartner = null;
-        List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        List<Long> saleOrderLineIdSelected;
         Boolean isDirectOrderLocation = false;
+        Boolean noProduct = true;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
         supplierPartner = (Partner) values.get("supplierPartner");
         saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
@@ -191,15 +191,18 @@ public class SaleOrderController {
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected() && saleOrderLine.getProduct() != null) {
+            if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
+              }
+              if (saleOrderLine.getProduct() != null) {
+                noProduct = false;
               }
               saleOrderLineIdSelected.add(saleOrderLine.getId());
             }
           }
 
-          if (saleOrderLineIdSelected.isEmpty()) {
+          if (saleOrderLineIdSelected.isEmpty() || noProduct) {
             response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
@@ -254,8 +257,9 @@ public class SaleOrderController {
       ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
     Partner supplierPartner = null;
     List<Long> saleOrderLineIdSelected = new ArrayList<>();
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     Boolean isDirectOrderLocation = false;
+    Boolean noProduct = true;
 
     if (saleOrder.getDirectOrderLocation()
         && saleOrder.getStockLocation() != null
@@ -265,6 +269,9 @@ public class SaleOrderController {
 
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.isSelected()) {
+          if (saleOrderLine.getProduct() != null) {
+            noProduct = false;
+          }
           saleOrderLineIdSelected.add(saleOrderLine.getId());
         }
       }
@@ -272,7 +279,7 @@ public class SaleOrderController {
       isDirectOrderLocation = true;
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
-      if (saleOrderLineIdSelected.isEmpty()) {
+      if (saleOrderLineIdSelected.isEmpty() || noProduct) {
         throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {
@@ -280,7 +287,7 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   Partner.class,
-                  new Long(
+                  Long.valueOf(
                       (Integer)
                           ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
       values.put("supplierPartner", supplierPartner);
@@ -288,7 +295,7 @@ public class SaleOrderController {
           (String) request.getContext().get("saleOrderLineIdSelected");
 
       for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-        saleOrderLineIdSelected.add(new Long(saleOrderId));
+        saleOrderLineIdSelected.add(Long.valueOf(saleOrderId));
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
       values.put("isDirectOrderLocation", isDirectOrderLocation);
@@ -399,13 +406,13 @@ public class SaleOrderController {
         // No confirmation popup, sale orders are content in a parameter list
         List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
         for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
+          saleOrderIdList.add(Long.valueOf((Integer) map.get("id")));
         }
       } else {
         // After confirmation popup, sale order's id are in a string separated by ","
         String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
         for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
+          saleOrderIdList.add(Long.valueOf(saleOrderId));
         }
         fromPopup = true;
       }
@@ -550,28 +557,30 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("priceList")).get("id")));
     }
     if (request.getContext().get("contactPartner") != null) {
       commonContactPartner =
           JPA.em()
               .find(
                   Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("team") != null) {
       commonTeam =
           JPA.em()
               .find(
                   Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("team")).get("id")));
     }
     if (request.getContext().get("stockLocation") != null) {
       commonLocation =
           JPA.em()
               .find(
                   StockLocation.class,
-                  new Long((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
     }
 
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
@@ -881,34 +890,6 @@ public class SaleOrderController {
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called from sale order form view when confirming sale order and analytic distribution is
-   * required from company's sale config.
-   *
-   * @param request
-   * @param response
-   */
-  public void checkSaleOrderAnalyticDistributionTemplate(
-      ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<String> productList = new ArrayList<String>();
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.getAnalyticDistributionTemplate() == null) {
-          productList.add(saleOrderLine.getProductName());
-        }
-      }
-      if (!productList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
-            productList);
-      }
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

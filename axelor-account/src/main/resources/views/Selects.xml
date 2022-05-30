@@ -203,9 +203,10 @@
     <option value="18">Move export</option>
     <option value="19">Credit Transfer</option>
     <option value="20">Realize fixed asset lines</option>
-    <option value="21">Close the annual accounts of the past year</option>
-    <option value="22">Open the annual accounts of the next year</option>
+    <option value="21">Close/Open the annual accounts</option>
     <option value="23">Block customer with late payment issues</option>
+    <option value="24">Exchanges</option>
+    <option value="25">Moves consistency control</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -306,6 +307,7 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
+    <option value="7">Irrecoverable Debt</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -395,6 +397,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="noteBills">Note bills</option>
   </selection>
 
   <selection name="account.notification.item.type.select">
@@ -459,10 +462,6 @@
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>
   </selection>
-  <selection name="account.tax.type.select">
-    <option value="1">Collection</option>
-    <option value="2">Debit</option>
-  </selection>
 
   <selection name="account.budget.status.select">
     <option value="1">Draft</option>
@@ -507,6 +506,8 @@
     <option value='5'>Payment</option>
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
+
+    <option value='9'>Irrecoverable</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -654,6 +655,100 @@
   <selection name='ianalytic.account.status.select'>
     <option value="0">Inactive</option>
     <option value="1">Active</option>
+  </selection>
+
+  <selection name="account.fixed.asset.split.type.select">
+    <option value="1">Quantity</option>
+    <option value="2">Amount</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.bill.of.exchange.type.select">
+    <option value="1">Direct bank LCR</option>
+  </selection>
+
+  <selection name="account.account.chart.code.nbr.char.select">
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+  </selection>
+
+  <selection name="iaccount.tax.payment.move.vat.system.select">
+    <option value="1">taxPaymentMove.Delivery</option>
+    <option value="2">taxPaymentMove.Payment</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.select'>
+    <option value="0"></option>
+    <option value="1">Goods - Vat on deliveries</option>
+    <option value="2">Service - Vat on cash payments</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.partner.select'>
+    <option value="0"></option>
+    <option value="1">Common system</option>
+    <option value="2">Option on deliveries</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.moveline.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
+  </selection>
+
+  <selection name="account.closure.assistant.line.action.select">
+    <option value="2">Fixed asset realization</option>
+    <option value="3">Move consistency check</option>
+    <option value="4">closure.accountingReport</option>
+    <option value="5">Calculate the outrun of the year</option>
+    <option value="6">Closure and opening of fiscal year batch</option>
+    <option value="7">Fiscal year closure</option>
+  </selection>
+
+  <selection name="account.closure.assistant.status.select">
+    <option value="1">New</option>
+    <option value="2">In progress</option>
+    <option value="3">Finished</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.invoice.line.tax.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
+    <option value="200">Accounting batch</option>
+    <option value="201">Invoice batch</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.origin.select">
+    <option value="1">Accounted moves</option>
+    <option value="2">Invoice accounted moves</option>
+    <option value="3">Invoice and accounted moves</option>
+    <option value="4">Daybook moves</option>
+    <option value="5">Daybook invoice moves</option>
+    <option value="6">Daybook moves and invoice moves</option>
+    <option value="7">origin.SimulatedMove</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.search.operator.select">
+    <option value="0">OR</option>
+    <option value="1">AND</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.parameter.type.select">
+    <option value="1">parameterType.Search</option>
+    <option value="2">parameterType.Reverse</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.sub.type.select">
+    <option value="1">Original</option>
+    <option value="2">line.Reverse</option>
+    <option value="3">Revision</option>
   </selection>
 
 </object-views>

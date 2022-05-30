@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -148,14 +148,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       incrementDone();
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class).getPayrollPreparationExportHeader(),
+        payrollPreparationService.getPayrollPreparationExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -177,15 +177,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       total++;
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class)
-            .getPayrollPreparationMeilleurGestionExportHeader(),
+        payrollPreparationService.getPayrollPreparationMeilleurGestionExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);

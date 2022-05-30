@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,10 +18,17 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -73,14 +80,31 @@ public class AccountService {
    * @return The balance (debit balance or credit balance)
    */
   public BigDecimal computeBalance(Account account, int balanceType) {
+    return this.computeBalance(account, null, null, balanceType);
+  }
 
+  public BigDecimal computeBalance(AccountType accountType, Year year, int balanceType) {
+    return this.computeBalance(null, accountType, year, balanceType);
+  }
+
+  protected BigDecimal computeBalance(
+      Account account, AccountType accountType, Year year, int balanceType) {
     Query balanceQuery =
         JPA.em()
             .createQuery(
-                "select sum(self.debit - self.credit) from MoveLine self where self.account = :account "
-                    + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)");
+                String.format(
+                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect = "
+                        + MoveRepository.STATUS_ACCOUNTED
+                        + "%s",
+                    account == null ? ".accountType" : "",
+                    year != null ? " and self.move.period.year = :year" : ""));
 
-    balanceQuery.setParameter("account", account);
+    balanceQuery.setParameter("account", account != null ? account : accountType);
+
+    if (year != null) {
+      balanceQuery.setParameter("year", year);
+    }
 
     BigDecimal balance = (BigDecimal) balanceQuery.getSingleResult();
 
@@ -196,6 +220,54 @@ public class AccountService {
       }
       accountRepository.save(account);
     }
+  }
+
+  public Account fillAccountCode(Account account) throws AxelorException {
+    String code = account.getCode();
+    if (StringUtils.notEmpty(code) && account.getCompany() != null) {
+      int accountCodeNbrCharSelect =
+          accountConfigService.getAccountConfig(account.getCompany()).getAccountCodeNbrCharSelect();
+      int accountCodeLength = code.length();
+      if (accountCodeLength > accountCodeNbrCharSelect) {
+        account.setCode(code.substring(0, accountCodeNbrCharSelect));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED),
+            accountCodeLength,
+            accountCodeNbrCharSelect);
+      } else if (accountCodeLength < accountCodeNbrCharSelect
+          && !account.getIsRegulatoryAccount()
+          && account.getAccountType() != null
+          && !AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
+        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+      }
+    }
+    return account;
+  }
+
+  public Account fillAccountCodeOnImport(Account account, int lineNo) throws AxelorException {
+    String code = account.getCode();
+    if (StringUtils.notEmpty(code) && account.getCompany() != null) {
+      int accountCodeNbrCharSelect =
+          accountConfigService.getAccountConfig(account.getCompany()).getAccountCodeNbrCharSelect();
+      int accountCodeLength = code.length();
+      if (accountCodeLength > accountCodeNbrCharSelect) {
+        account.setCode(code.substring(0, accountCodeNbrCharSelect));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT),
+            lineNo,
+            account.getCode());
+      } else if (accountCodeLength < accountCodeNbrCharSelect
+          && !account.getIsRegulatoryAccount()
+          && account.getAccountType() != null
+          && !AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
+        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+      }
+    }
+    return account;
   }
 
   protected Account activate(Account account) {

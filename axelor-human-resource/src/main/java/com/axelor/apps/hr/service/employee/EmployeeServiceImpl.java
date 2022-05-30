@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -160,8 +160,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
-                employee.getUser(),
+                "self.employee = ?1 AND self.duration > 0"
+                    + " AND self.statusSelect = ?2"
+                    + " AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT"
+                    + " AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
+                employee,
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,
                 toDate)

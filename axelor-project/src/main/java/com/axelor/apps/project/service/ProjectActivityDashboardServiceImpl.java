@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Wiki;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
@@ -41,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,33 +56,43 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   @Inject protected WikiRepository wikiRepo;
   @Inject protected ProjectService projectService;
   @Inject protected ObjectMapper objectMapper;
+  @Inject protected ProjectRepository projectRepo;
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
   @Override
-  public Map<String, Object> getData(LocalDate fromDate, LocalDate toDate) {
+  public Map<String, Object> getData(LocalDate startDate, LocalDate endDate, Long projectId) {
     Map<String, Object> dataMap = new HashMap<>();
 
-    List<MailMessage> mailMessageList = getMailMessages(fromDate, toDate);
+    List<MailMessage> mailMessageList = getMailMessages(startDate, endDate);
 
     Map<String, List<Map<String, List<Map<String, Object>>>>> activityDataMap =
         new LinkedHashMap<>();
-    Project contextProject = AuthUtils.getUser().getContextProject();
-    Set<Long> contextProjectIdSet = projectService.getContextProjectIds();
+
+    Project project = null;
+    Set<Long> projectIdSet = new HashSet<Long>();
+
+    if (projectId != null) {
+      project = projectRepo.find(projectId);
+      projectService.getChildProjectIds(projectIdSet, project);
+    } else {
+      project = AuthUtils.getUser().getContextProject();
+      projectIdSet = projectService.getContextProjectIds();
+    }
+
     for (MailMessage message : mailMessageList) {
       LocalDateTime createdOn = message.getCreatedOn();
       String date = getActivityDate(createdOn);
 
       Map<String, Object> activityMap = new HashMap<>();
-      Project activityProject = getActivityProject(contextProject, message, contextProjectIdSet);
+      Project activityProject = getActivityProject(project, message, projectIdSet);
       if (activityProject == null) {
         continue;
       }
       activityMap.put(
           "objectLink", getActionLink(message.getRelatedModel()) + message.getRelatedId());
-      if (contextProject == null
-          || (contextProjectIdSet.contains(activityProject.getId())
-              && !contextProject.equals(activityProject))) {
+      if (project == null
+          || (projectIdSet.contains(activityProject.getId()) && !project.equals(activityProject))) {
         activityMap.put("subProjectName", activityProject.getName());
       }
       activityMap.put("title", message.getRelatedName());
@@ -108,33 +120,35 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
         titleMap.put(message.getRelatedName(), newActivityList);
       } else {
         Map<String, List<Map<String, Object>>> newTitleMap = new HashMap<>();
-        newTitleMap.put(message.getRelatedName(), Arrays.asList(activityMap));
+        newTitleMap.put(
+            message.getRelatedName() == null ? "" : message.getRelatedName(),
+            Arrays.asList(activityMap));
         titleMapList.add(newTitleMap);
       }
       activityDataMap.put(date, titleMapList);
     }
 
-    dataMap.put("$fromDate", fromDate.format(DATE_FORMATTER));
-    dataMap.put("$toDate", toDate.format(DATE_FORMATTER));
+    dataMap.put("$startDate", startDate.format(DATE_FORMATTER));
+    dataMap.put("$endDate", endDate.format(DATE_FORMATTER));
     dataMap.put("$activityList", activityDataMap.isEmpty() ? null : Arrays.asList(activityDataMap));
     return dataMap;
   }
 
   @Override
-  public Map<String, Object> getPreviousData(String date) {
+  public Map<String, Object> getPreviousData(String date, Long projectId) {
     LocalDate formattedDate = LocalDate.parse(date, DATE_FORMATTER);
-    return this.getData(formattedDate.minusDays(30), formattedDate.minusDays(1));
+    return this.getData(formattedDate.minusDays(30), formattedDate.minusDays(1), projectId);
   }
 
   @Override
-  public Map<String, Object> getNextData(String date) {
+  public Map<String, Object> getNextData(String date, Long projectId) {
     LocalDate formattedDate = LocalDate.parse(date, DATE_FORMATTER);
-    LocalDate toDate = formattedDate.plusDays(30);
+    LocalDate endDate = formattedDate.plusDays(30);
     LocalDate todayDate = LocalDate.now();
-    if (todayDate.isBefore(toDate)) {
-      toDate = todayDate;
+    if (todayDate.isBefore(endDate)) {
+      endDate = todayDate;
     }
-    return this.getData(formattedDate.plusDays(1), toDate);
+    return this.getData(formattedDate.plusDays(1), endDate, projectId);
   }
 
   protected String getActionLink(String model) {
@@ -167,21 +181,21 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   }
 
   protected Project getActivityProject(
-      Project contextProject, MailMessage message, Set<Long> contextProjectIdsSet) {
+      Project project, MailMessage message, Set<Long> projectIdSet) {
+
     if (ProjectTask.class.getName().equals(message.getRelatedModel())) {
       ProjectTask projectTask = projectTaskRepo.find(message.getRelatedId());
       if (projectTask != null
-          && (contextProject == null
-              || contextProjectIdsSet.contains(projectTask.getProject().getId()))) {
+          && (project == null || projectIdSet.contains(projectTask.getProject().getId()))) {
         return projectTask.getProject();
       }
     } else if (Wiki.class.getName().equals(message.getRelatedModel())) {
       Wiki wiki = wikiRepo.find(message.getRelatedId());
       if (wiki != null) {
-        Project project = wiki.getProject();
-        if (contextProject == null
-            || (project != null && contextProjectIdsSet.contains(project.getId()))) {
-          return project;
+        Project wikiProject = wiki.getProject();
+        if (project == null
+            || (wikiProject != null && projectIdSet.contains(wikiProject.getId()))) {
+          return wikiProject;
         }
       }
     }
@@ -193,15 +207,15 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
     return LocalDate.now().equals(date) ? I18n.get("Today") : date.format(DATE_FORMATTER);
   }
 
-  protected List<MailMessage> getMailMessages(LocalDate fromDate, LocalDate toDate) {
+  protected List<MailMessage> getMailMessages(LocalDate startDate, LocalDate endDate) {
     return mailMessageRepo
         .all()
         .filter(
-            "self.type = :type AND self.relatedModel IN :relatedModels AND self.createdOn <= :toDate AND self.createdOn >= :fromDate")
+            "self.type = :type AND self.relatedModel IN :relatedModels AND self.createdOn <= :endDate AND self.createdOn >= :startDate")
         .bind("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
         .bind("relatedModels", getRelatedModels())
-        .bind("fromDate", fromDate.atTime(LocalTime.MIN))
-        .bind("toDate", toDate.atTime(LocalTime.MAX))
+        .bind("startDate", startDate.atTime(LocalTime.MIN))
+        .bind("endDate", endDate.atTime(LocalTime.MAX))
         .order("-id")
         .fetch();
   }

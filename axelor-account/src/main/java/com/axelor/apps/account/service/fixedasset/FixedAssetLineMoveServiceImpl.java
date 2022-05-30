@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -163,6 +163,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DEPRECIATED);
     }
 
+    fixedAsset.setCorrectedAccountingValue(BigDecimal.ZERO);
     fixedAssetLineRepo.save(fixedAssetLine);
 
     if (fixedAsset != null) {
@@ -666,21 +667,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       moveLines.add(creditMoveLine1);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
+      if (creditAmountTwo.compareTo(BigDecimal.ZERO) > 0) {
+        MoveLine creditMoveLine2 =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                creditAccountTwo,
+                creditAmountTwo,
+                false,
+                disposalDate,
+                1,
+                origin,
+                fixedAsset.getName());
+        moveLines.add(creditMoveLine2);
 
-      MoveLine creditMoveLine2 =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              creditAccountTwo,
-              creditAmountTwo,
-              false,
-              disposalDate,
-              1,
-              origin,
-              fixedAsset.getName());
-      moveLines.add(creditMoveLine2);
-
-      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
+        this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
+      }
 
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(

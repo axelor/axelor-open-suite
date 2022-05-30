@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.batch;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -85,8 +86,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
       bindValues.put("stockLocationId", workshopStockLocation.getId());
     }
 
-    Query<ManufOrder> manufOrderQuery =
-        Beans.get(ManufOrderRepository.class).all().filter(domain).bind(bindValues);
+    Query<ManufOrder> manufOrderQuery = manufOrderRepository.all().filter(domain).bind(bindValues);
 
     int offset = 0;
 
@@ -111,16 +111,18 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
   protected void stop() {
 
     String comment =
-        String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION) + "\n",
-            batch.getDone());
-
+        String.format(I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION), batch.getDone());
+    comment += "\n";
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
             batch.getAnomaly());
 
     addComment(comment);
     super.stop();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PRODUCTION_BATCH);
   }
 }

@@ -46,6 +46,7 @@
       readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
+    <boolean name="cutOffMoveGenerated" title="Cut off move generated"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
       selection="iaccount.move.functional.origin.select"/>
@@ -95,6 +96,8 @@
 		public static final int FUNCTIONAL_ORIGIN_PAYMENT = 5;
 		public static final int FUNCTIONAL_ORIGIN_CUT_OFF = 6;
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
+
+		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
 	]]></extra-code>
 
     <track>

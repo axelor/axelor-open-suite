@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -33,6 +32,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -296,18 +297,14 @@ public class MoveController {
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
         if (!moveList.isEmpty()) {
-          if (moveList.size() == 1) {
-            this.removeOneMove(moveList.get(0), response);
+          int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
+          if (errorNB > 0) {
+            response.setFlash(
+                String.format(
+                    I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
           } else {
-            int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
-            if (errorNB > 0) {
-              response.setFlash(
-                  String.format(
-                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
-            } else {
-              response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
-              response.setReload(true);
-            }
+            response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+            response.setReload(true);
           }
         } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
       } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
@@ -507,20 +504,18 @@ public class MoveController {
     try {
       Move move =
           Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
-      if (move.getPaymentMode() == null
-          && (move.getJournal()
-                  .getJournalType()
-                  .getTechnicalTypeSelect()
-                  .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
-              || move.getJournal()
-                  .getJournalType()
-                  .getTechnicalTypeSelect()
-                  .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
-        response.setError(I18n.get("Please select a payment mode to generate the counterpart"));
-        return;
-      }
       Beans.get(MoveCounterPartService.class).generateCounterpartMoveLine(move);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
+    try {
+      Move move =
+          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -570,6 +565,12 @@ public class MoveController {
         response.setError(
             I18n.get(
                 "This period is temporarily closed and you do not have the necessary permissions to create entries"));
+      } else if (move.getPeriod() != null
+          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+        response.setError(
+            I18n.get(
+                "This period is closed and you do not have the necessary permissions to create entries"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -590,10 +591,44 @@ public class MoveController {
 
         response.setValue("moveLineList", move.getMoveLineList());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setMoveLineDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveLineControlService.class).setMoveLineDates(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setMoveLineOriginDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveLineControlService.class).setMoveLineOriginDates(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveLineToolService moveLineService = Beans.get(MoveLineToolService.class);
+      if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+        for (MoveLine moveline : move.getMoveLineList()) {
+          moveLineService.checkDateInPeriod(move, moveline);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
@@ -96,7 +97,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PricingService pricingService) {
     super(
         currencyService,
         priceListService,
@@ -105,7 +107,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
-        saleOrderService);
+        saleOrderService,
+        pricingService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -118,7 +121,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
-    if (Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (appAccountService.isApp("supplychain")) {
       saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
       this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
@@ -198,7 +201,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (!appAccountService.isApp("supplychain")) {
       return super.getAvailableStock(saleOrder, saleOrderLine);
     }
 
@@ -215,7 +218,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (!appAccountService.isApp("supplychain")) {
       return super.getAllocatedStock(saleOrder, saleOrderLine);
     }
 
@@ -284,9 +287,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     List<Integer> statusList = new ArrayList<>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     String status =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getsOFilterOnStockDetailStatusSelect();
+        appSupplychainService.getAppSupplychain().getsOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
     }
@@ -326,9 +327,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
     BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) < 0 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
-    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) < 0) {
       return deliveredQty;
     }
 

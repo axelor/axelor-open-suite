@@ -147,7 +147,19 @@
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
     <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
+  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
+    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+
+  <action-view name="account.root.move.move.simplifed"
+    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
+    <view name="move-grid" type="grid"/>
+    <view name="move-simplified-form" type="form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-move-line" parent="account-root-move"
@@ -250,6 +262,20 @@
     <context name="_newDate1" expr="eval: __config__.date.minusDays(5)"/>
     <context name="_newDate2" expr="eval: __config__.date.minusDays(30)"/>
   </action-view>
+
+  <menuitem name="account-root-periodic-processing-annual-processing"
+    parent="account-root-periodic-processing" title="Annual processing"/>
+
+  <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
+    parent="account-root-periodic-processing-annual-processing" title="Year closure"
+    action="account.root.periodic.processing.annual.processing.year.closure"/>
+
+  <action-view name="account.root.periodic.processing.annual.processing.year.closure"
+    title="Year closure" model="com.axelor.apps.account.db.ClosureAssistant">
+    <view type="grid" name="closure-assistant-grid"/>
+    <view type="form" name="closure-assistant-form"/>
+  </action-view>
+
 
   <menuitem name="account-root-debt-recovery" parent="account-root" title="Debt recovery"
     order="15"/>
@@ -487,7 +513,7 @@
   <menuitem name="account-conf-fiscal-position" parent="account-conf-financial"
     title="Fiscal positions" action="account.conf.fiscal.position"/>
 
-  <action-view name="account.conf.fiscal.position" title="Fiscal position"
+  <action-view name="account.conf.fiscal.position" title="Fiscal positions"
     model="com.axelor.apps.account.db.FiscalPosition">
     <view type="grid" name="fiscal-position-grid"/>
     <view type="form" name="fiscal-position-form"/>
@@ -599,16 +625,17 @@
     <view type="form" name="tax-number-form"/>
   </action-view>
 
-  <menuitem name="account-conf-financial-financial-discount" title="Financial Discount"
+  <menuitem name="account-conf-financial-financial-discount" title="Financial Discounts"
     parent="account-conf-financial" action="financial.discount"/>
 
-  <action-view name="financial.discount" title="Financial Discount"
+  <action-view name="financial.discount" title="Financial Discounts"
     model="com.axelor.apps.account.db.FinancialDiscount">
     <view type="grid" name="financial-discount-grid"/>
     <view type="form" name="financial-discount-form"/>
   </action-view>
 
-  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"/>
+  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
+    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
     title="Analytic journals" action="account.conf.analytic.journal"/>
@@ -648,9 +675,9 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
-    title="Analytic axis" action="account.conf.analytic.axis"/>
+    title="analyticAxis.plurial" action="account.conf.analytic.axis"/>
 
-  <action-view name="account.conf.analytic.axis" title="Analytic axis"
+  <action-view name="account.conf.analytic.axis" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
     <view type="grid" name="analytic-axis-grid"/>
     <view type="form" name="analytic-axis-form"/>
@@ -853,24 +880,6 @@
     <view type="form" name="move-template-type-form"/>
   </action-view>
 
-
-  <action-view name="action-customer-invoice-line-menu" title="Customer Invoice Line"
-    model="com.axelor.apps.account.db.InvoiceLine">
-    <view type="grid" name="invoice-line-menu-grid"/>
-    <view type="form" name="invoice-line-menu-form"/>
-    <view-param name="search-filters" value="invoice-line-filters"/>
-    <domain>self.invoice.operationTypeSelect in (3,4)</domain>
-  </action-view>
-
-  <action-view name="action-supplier-invoice-line-menu" title="Supplier Invoice Line"
-    model="com.axelor.apps.account.db.InvoiceLine">
-    <view type="grid" name="invoice-line-menu-grid"/>
-    <view type="form" name="invoice-line-menu-form"/>
-    <view-param name="search-filters" value="invoice-line-filters"/>
-    <domain>self.invoice.operationTypeSelect in (1,2)</domain>
-  </action-view>
-
-
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50"
     icon="fa-cog" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
 
@@ -904,7 +913,7 @@
     action="debt.recovery.root.conf.payment.delay.reason"/>
 
   <action-view name="debt.recovery.root.conf.payment.delay.reason"
-    title="Payment delay reason" model="com.axelor.apps.account.db.PaymentDelayReason">
+    title="Payment delay reasons" model="com.axelor.apps.account.db.PaymentDelayReason">
     <view type="grid" name="payment-delay-reason-grid"/>
     <view type="form" name="payment-delay-reason-form"/>
   </action-view>
@@ -924,9 +933,9 @@
 
 
   <menuitem name="account-analytic-grouping" parent="account-conf-analytic"
-    title="Analytic Grouping" action="account.analytic.grouping"/>
+    title="Analytic Groupings" action="account.analytic.grouping"/>
 
-  <action-view name="account.analytic.grouping" title="Analytic Grouping"
+  <action-view name="account.analytic.grouping" title="Analytic Groupings"
     model="com.axelor.apps.account.db.AnalyticGrouping">
     <view type="grid" name="analytic-grouping-grid"/>
     <view type="form" name="analytic-grouping-form"/>
@@ -959,4 +968,27 @@
     <view type="form" name="analytic-grouping-value-form"/>
   </action-view>
 
+  <menuitem name="account-root-periodic-processing-annual-move-consistency-control"
+    parent="account-root-periodic-processing-annual-processing"
+    action="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" order="90"/>
+
+  <action-view
+    name="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" model="com.axelor.apps.account.db.AccountingBatch">
+    <view type="grid" name="accounting-batch-grid"/>
+    <view type="form" name="accounting-batch-form"/>
+    <view-param name="search-filters" value="accounting-batch-filters"/>
+    <domain>self.actionSelect = 25</domain>
+  </action-view>
+
+  <menuitem name="account-analytic-move-line-search" title="Analytic review"
+    parent="account-conf-analytic" action="account.analytic.move.line.search"
+    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+
+  <action-view name="account.analytic.move.line.search" title="Analytic review"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
+    <view type="grid" name="analytic-move-line-query-grid"/>
+    <view type="form" name="analytic-move-line-query-form"/>
+  </action-view>
 </object-views>

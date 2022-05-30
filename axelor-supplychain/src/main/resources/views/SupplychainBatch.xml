@@ -29,7 +29,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-supplychain-batch-record-reset-period"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -65,24 +65,27 @@
         showIf="actionSelect == 1" colSpan="12">
         <field name="accountingCutOffTypeSelect"
           onChange="action-group-supplychain-batch-onchange-accounting-type"/>
-        <field name="moveDescription"
-          requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
+        <field name="moveDescription" requiredIf="actionSelect == 1"/>
         <panel colSpan="6" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 1"
-            onChange="action-method-supplychain-batch-validate-movedate,action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
-          <label name="adviceDates"
-            title="Please, enter only dates with the last day of month" css="label-danger"/>
+            validIf="$moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
+            help="Please, enter only dates with the last day of month"
+            onChange="action-supplychain-batch-group-move-date-onchange"/>
           <label name="adviseUser"
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
         </panel>
-        <panel name="expensesIncomesPanel" colSpan="12" showIf="actionSelect == 1">
-          <field name="automaticReverse" colSpan="3"/>
-          <field name="automaticReconcile" colSpan="3" hideIf="!automaticReverse"/>
-          <panel colSpan="6" itemSpan="12">
+        <panel name="expensesIncomesPanel" colSpan="12" itemSpan="3"
+          showIf="actionSelect == 1">
+          <field name="automaticReverse"/>
+          <field name="automaticReconcile"
+            showIf="automaticReverse &amp;&amp; cutOffMoveStatusSelect != 5"/>
+          <panel name="reversePanel" colSpan="6"
+            showIf="actionSelect == 1 &amp;&amp; automaticReverse">
             <field name="reverseMoveDate"
-              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"
-              showIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
+              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
+            <field name="reverseMoveDescription"
+              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
           </panel>
           <field name="miscOpeJournal" colSpan="6"
             onChange="action-record-supplychain-batch-journal-onchange,action-attrs-supplychain-batch-cutoff-move-status-domain"
@@ -101,7 +104,10 @@
       </panel>
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
-        <field name="period" domain="self.year.typeSelect = 0"/>
+        <field name="period"
+          domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
+        <field name="productCategorySet" colSpan="12" canNew="false" canEdit="false"
+          canSelect="true"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -113,15 +119,13 @@
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
-        showIf="actionSelect == 1"
-        onClick="action-method-supplychain-batch-validate-movedate,save,action-supplychain-batch-group-accounting-cut-off"
+        showIf="actionSelect == 1" onClick="action-supplychain-batch-group-accounting-cut-off"
         colSpan="12"/>
       <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves"
-        showIf="actionSelect == 2"
-        onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12"
-        if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+        showIf="actionSelect == 2" onClick="save,action-supplychain-batch-method-run-batch"
+        colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
       <button name="invoiceOrdersBatchBtn" title="Invoice orders" showIf="actionSelect == 3"
-        onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
+        onClick="save,action-supplychain-batch-method-run-batch" colSpan="12"/>
       <button name="invoiceOrdersBatchBtn" title="Update stock history"
         showIf="actionSelect == 4"
         onClick="save,action-supplychain-batch-method-update-stock-history" colSpan="12"/>
@@ -130,8 +134,14 @@
 
   <!-- ACTION GROUP -->
   <action-group name="action-supplychain-batch-group-accounting-cut-off">
-    <action name="action-supplychain-batch-validate-twice-in-a-month"/>
-    <action name="action-supplychain-batch-method-accounting-cut-off"/>
+    <action name="save"/>
+    <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
+      if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-supplychain-batch-view-preview-move-lines-to-process"
+      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-supplychain-batch-validate-twice-in-a-month"
+      if="!previewRecordsToProcess"/>
+    <action name="action-supplychain-batch-method-run-batch" if="!previewRecordsToProcess"/>
   </action-group>
 
   <action-group name="action-group-supplychain-batch-group-onload">
@@ -146,6 +156,10 @@
     <action name="action-attrs-supplychain-batch-cutoff-move-status-domain"/>
   </action-group>
 
+  <action-group name="action-supplychain-batch-group-move-date-onchange">
+    <action name="action-supplychain-batch-attrs-show-label"/>
+    <action name="action-record-supplychain-batch-movedate-onchange"/>
+  </action-group>
 
   <!-- ACTION ATTRS -->
   <action-attrs name="action-supplychain-batch-attrs-show-label">
@@ -189,12 +203,17 @@
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+  </action-record>
+
+  <action-record name="action-supplychain-batch-record-reset-period"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="period" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-record-supplychain-batch-set-expenses-incomes"
@@ -235,19 +254,8 @@
 
   <!-- ACTION METHOD -->
 
-  <action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="invoiceOutgoingStockMoves"/>
-  </action-method>
-
-  <action-method name="action-supplychain-batch-method-invoice-orders">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="invoiceOrders"/>
-  </action-method>
-
-  <action-method name="action-supplychain-batch-method-accounting-cut-off">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="accountingCutOff"/>
+  <action-method name="action-supplychain-batch-method-run-batch">
+    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="runBatch"/>
   </action-method>
 
   <action-method name="action-supplychain-batch-method-update-stock-history">
@@ -288,6 +296,71 @@
     <view type="form" name="stock-history-line-form"/>
     <domain>self.period = :period</domain>
     <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
+  </action-view>
+
+  <action-view name="action-supplychain-batch-view-preview-move-lines-to-process"
+    title="Move lines concerned by cut off" model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-cut-off-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>
+      self.account.manageCutOffPeriod IS TRUE
+      AND self.cutOffStartDate IS NOT NULL
+      AND
+      self.cutOffEndDate IS NOT NULL
+      AND ((:_researchJournal > 0 AND self.move.journal.id =
+      :_researchJournal)
+      OR (:_researchJournal = 0 AND
+      self.move.journal.journalType.technicalTypeSelect = :_journalType))
+      AND
+      YEAR(self.move.date) =
+      :_year
+      AND self.move.statusSelect IN (2, 3, 5)
+      AND YEAR(self.cutOffEndDate) > :_year
+      AND
+      self.move.company.id = :_company
+    </domain>
+    <context name="_researchJournal"
+      expr="eval: researchJournal != null ? researchJournal.id : 0"/>
+    <context name="_journalType" expr="eval: accountingCutOffTypeSelect == 3 ? 1 : 2"/>
+    <context name="_year" expr="eval: moveDate.getYear()"/>
+    <context name="_moveDate" expr="eval: moveDate"/>
+    <context name="_company" expr="eval: company.id"/>
+    <context name="_cutOffPreview" expr="eval: true"/>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
+    title="Stock move lines concerned by cut off" model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-cut-off-grid"/>
+    <view type="form" name="stock-move-line-form"/>
+    <domain>
+      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty OR self.product IS NULL
+      OR (:_includeNotStockManagedProduct IS TRUE AND self.product.stockManaged IS FALSE))
+      AND
+      self.stockMove.invoicingStatusSelect &lt;&gt; 2
+      AND
+      self.stockMove.statusSelect = 3
+      AND
+      ((:_accountingCutOffTypeSelect = 1 AND
+      self.stockMove.typeSelect = 3)
+      OR
+      (:_accountingCutOffTypeSelect = 2 AND
+      self.stockMove.typeSelect = 2))
+      AND
+      self.stockMove.realDate &lt;= :_moveDate
+      AND
+      self.stockMove.company.id =
+      :_company
+    </domain>
+    <context name="_company" expr="eval: company.id"/>
+    <context name="_moveDate" expr="eval: moveDate"/>
+    <context name="_accountingCutOffTypeSelect" expr="eval: accountingCutOffTypeSelect"/>
+    <context name="_includeNotStockManagedProduct"
+      expr="eval: includeNotStockManagedProduct"/>
+    <context name="_cutOffPreview" expr="eval: true"/>
+    <context name="_ati" expr="eval: ati"/>
+    <context name="_recoveredTax" expr="eval: recoveredTax"/>
+    <context name="_batchId" expr="eval: id"/>
   </action-view>
 
   <search-filters name="supplychain-batch-filters"

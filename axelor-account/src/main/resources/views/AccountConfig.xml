@@ -23,10 +23,11 @@
         grid-view="company-grid"/>
       <spacer/>
       <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
-        grid-view="account-chart-grid" canNew="true"/>
+        grid-view="account-chart-grid" canNew="true" colSpan="3"/>
+      <field name="accountCodeNbrCharSelect" colSpan="3" readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
-        readonlyIf="hasChartImported || company == null || accountChart == null" icon="fa-import"
-        onClick="action-group-account-config-installchart-click"/>
+        readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
+        icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
       <field name="allowRemovalValidatedMove"/>
@@ -62,12 +63,18 @@
               canEdit="true" showIf="partnerAccountGenerationModeSelect == 2"
               requiredIf="partnerAccountGenerationModeSelect == 2"
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
+            <field name="billOfExchReceivAccount"
+              if=" eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
+              domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"/>
           </panel>
           <panel title="AccountConfig.Suppliers" colSpan="12">
             <field name="supplierAccount"
               domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
               grid-view="account-grid" form-view="account-form"
               help="Select the default supplier account to be used in purchase invoices. It will also be used as parent account if automatic account creation is enabled."/>
+            <field name="supplierAdvancePaymentAccount"
+              domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+              grid-view="account-grid" form-view="account-form"/>
             <field name="supplierAccountPrefix"
               help="Prefix to be prepended on supplier accounts' codes, the code will be [prefix]PARTNERNAME"
               showIf="partnerAccountGenerationModeSelect == 1"
@@ -81,10 +88,10 @@
           <panel name="discountPanel" title="Discount Accounts" colSpan="12">
             <field name="purchFinancialDiscountAccount"
               requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"
-              domain="self.statusSelect = 1"/>
+              domain="self.statusSelect = 1 AND self.company = :company"/>
             <field name="saleFinancialDiscountAccount"
               requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"
-              domain="self.statusSelect = 1"/>
+              domain="self.statusSelect = 1 AND self.company = :company"/>
             <field name="purchFinancialDiscountTax"
               requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
             <field name="saleFinancialDiscountTax"
@@ -121,7 +128,7 @@
               form-view="account-form" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')"/>
           </panel>
-          <panel name="accountFactorPanel"
+          <panel name="accountFactorPanel" title="Factor"
             if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
             <field name="factorDebitAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
@@ -130,7 +137,7 @@
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
           </panel>
-          <panel name="accountGeneralPanel" colSpan="12">
+          <panel name="accountGeneralPanel" colSpan="12" title="Annual closure">
             <field name="yearOpeningAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
@@ -138,12 +145,16 @@
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
           </panel>
+          <panel name="financialResultPanel" title="Financial result" colSpan="12">
+            <field name="resultProfitAccount"/>
+            <field name="resultLossAccount"/>
+          </panel>
 
 
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
-          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
-          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="temporaryClosureAuthorizedRoleList" widget="TagSelect"/>
+          <field name="closureAuthorizedRoleList" widget="TagSelect"/>
         </panel>
         <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
@@ -398,22 +409,9 @@
         <field name="profitAccount" domain="self.statusSelect = 1 AND self.company = :company"
           grid-view="account-grid" form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-        <field name="clearanceAccountSet"
+        <panel-related field="clearanceAccountSet"
           domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
-          grid-view="account-grid" form-view="account-form">
-          <!-- TODO:Check whether this Editor works or not -->
-          <editor x-show-titles="false" x-layout="table">
-            <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="12"/>
-            <field name="name" colSpan="6"/>
-            <field name="accountType" colSpan="6" form-view="account-type-form"
-              grid-view="account-type-grid"/>
-            <field name="reconcileOk" colSpan="6"/>
-            <field name="parentAccount" colSpan="6" grid-view="account-grid"
-              form-view="account-form"/>
-            <field name="company" canEdit="false" widget="SuggestBox" colSpan="6"
-              form-view="company-form" grid-view="company-grid"/>
-          </editor>
-        </field>
+          grid-view="account-grid" form-view="account-form"/>
       </panel>
       <panel name="analyticPanel"
         if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
@@ -448,7 +446,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="_company == null &amp;&amp; __user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-group name="action-group-account-config-installchart-click">
@@ -483,8 +481,9 @@
 
   <action-group name="action-account-config-group-on-save">
     <action name="action-account-config-validate-is-activate-simulated-move"/>
-    <action name="action-account-config-method-deactivate-simultated-moves"/>
+    <action name="action-account-config-method-deactivate-simulated-moves"/>
     <action name="action-validate-account-config-on-save-analytic"/>
+    <action name="action-method-check-account-config-changes-in-analytic"/>
   </action-group>
 
   <action-validate name="action-account-config-validate-is-activate-simulated-move"
@@ -494,7 +493,7 @@
       if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
   </action-validate>
 
-  <action-method name="action-account-config-method-deactivate-simultated-moves">
+  <action-method name="action-account-config-method-deactivate-simulated-moves">
     <call class="com.axelor.apps.account.web.AccountConfigController"
       method="deactivateSimulatedMoves"
       if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
@@ -505,4 +504,9 @@
       expr="eval: analyticAxisByCompanyList.size() &lt; nbrOfAnalyticAxisSelect"
       if="analyticAxisByCompanyList != null &amp;&amp; manageAnalyticAccounting"/>
   </action-attrs>
+
+  <action-method name="action-method-check-account-config-changes-in-analytic">
+    <call class="com.axelor.apps.account.web.AccountConfigController"
+      method="checkChangesInAnalytic"/>
+  </action-method>
 </object-views>

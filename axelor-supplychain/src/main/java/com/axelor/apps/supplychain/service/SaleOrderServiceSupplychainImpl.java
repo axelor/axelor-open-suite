@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -237,7 +237,13 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   @Transactional
-  public void updateToConfirmedStatus(SaleOrder saleOrder) {
+  public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getStatusSelect() == null
+        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS));
+    }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
   }
@@ -307,7 +313,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     SaleOrderLine shippingCostLine = new SaleOrderLine();
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     saleOrderLineService.computeProductInformation(shippingCostLine, saleOrder);
     saleOrderLineService.computeValues(saleOrder, shippingCostLine);
     return shippingCostLine;
@@ -320,13 +325,13 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     if (saleOrderLines == null) {
       return null;
     }
-    List<SaleOrderLine> linesToRemove = new ArrayList<SaleOrderLine>();
+    List<SaleOrderLine> linesToRemove = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
       if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(saleOrderLine);
       }
     }
-    if (linesToRemove.size() == 0) {
+    if (linesToRemove.isEmpty()) {
       return null;
     }
     for (SaleOrderLine lineToRemove : linesToRemove) {
@@ -409,7 +414,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
             partnerSupplychainLinkInvoicedByList.get(0);
         saleOrder.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
-      } else if (partnerSupplychainLinkInvoicedByList.size() == 0) {
+      } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
         saleOrder.setInvoicedPartner(clientPartner);
       } else {
         saleOrder.setInvoicedPartner(null);
@@ -418,7 +423,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         PartnerSupplychainLink partnerSupplychainLinkDeliveredBy =
             partnerSupplychainLinkDeliveredByList.get(0);
         saleOrder.setDeliveredPartner(partnerSupplychainLinkDeliveredBy.getPartner2());
-      } else if (partnerSupplychainLinkDeliveredByList.size() == 0) {
+      } else if (partnerSupplychainLinkDeliveredByList.isEmpty()) {
         saleOrder.setDeliveredPartner(clientPartner);
       } else {
         saleOrder.setDeliveredPartner(null);

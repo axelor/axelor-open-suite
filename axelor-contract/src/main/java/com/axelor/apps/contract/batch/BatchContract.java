@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
@@ -105,5 +106,9 @@ public class BatchContract extends BatchStrategy {
         String.format(
             "%d contract(s) treated and %d anomaly(ies) reported !",
             batch.getDone(), batch.getAnomaly()));
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CONTRACT_BATCH);
   }
 }

@@ -16,7 +16,8 @@
     onSave="action-analytic-distribution-template-on-save">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="company" required="true" onChange="save"/>
+      <field name="company" required="true"
+        onChange="action-method-analytic-distribution-template-check-company"/>
       <field name="isSpecific" hidden="true"/>
     </panel>
     <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
@@ -48,6 +49,25 @@
       onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
   </form>
 
+  <form name="analytic-distribution-template-account-form"
+    title="Analytic distribution template"
+    model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="company" required="true" onChange="save"/>
+      <field name="isSpecific" hidden="true"/>
+    </panel>
+    <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
+      form-view="analytic-distribution-line-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+    <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
+      form-view="analytic-distribution-line-personalized-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+  </form>
+
   <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
       method="validateLines"/>
@@ -61,22 +81,13 @@
   <action-group name="action-analytic-distribution-template-on-save">
     <action name="action-analytic-dist-template-method-validate-tot-percentage"/>
     <action name="action-analytic-dist-template-method-validate-all-percentage"/>
-    <action name="save"/>
-    <action name="action-validate-analytic-distribution-template-check-company"/>
+    <action name="action-method-analytic-distribution-template-check-company"/>
   </action-group>
 
-  <action-validate
-    name="action-validate-analytic-distribution-template-check-company">
-    <alert
-      if="analyticDistributionLineList.any{!(it.analyticAxis.company == company || it.analyticAxis.company == null)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}"
-      message="Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company."/>
-    <alert
-      if="analyticDistributionLineList.any{!(it.analyticAxis.company == company || it.analyticAxis.company == null)} &amp;&amp; !analyticDistributionLineList.any{!(it.analyticJournal.company == company)}"
-      message="Selected AnalyticAxis doesn't belong to the select company."/>
-    <alert
-      if="!analyticDistributionLineList.any{!(it.analyticAxis.company == company || it.analyticAxis.company == null)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}"
-      message="Selected AnalyticJournal doesn't belong to the select company."/>
-  </action-validate>
+  <action-method name="action-method-analytic-distribution-template-check-company">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionTemplateController"
+      method="checkTemplateCompany"/>
+  </action-method>
 
   <search-filters name="analytic-distribution-template-filters"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"

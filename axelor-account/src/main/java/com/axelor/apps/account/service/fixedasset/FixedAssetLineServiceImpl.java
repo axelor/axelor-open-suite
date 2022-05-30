@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
@@ -68,23 +85,17 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             : fixedAsset.getFirstServiceDate();
     long monthsBetweenDates =
         ChronoUnit.MONTHS.between(
-            previousRealizedDate.withDayOfMonth(1), disposalDate.withDayOfMonth(1));
-
+            previousRealizedDate.plusDays(1).withDayOfMonth(1), disposalDate.withDayOfMonth(1));
     BigDecimal prorataTemporis =
         BigDecimal.valueOf(monthsBetweenDates)
             .divide(
                 BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()),
                 FixedAssetServiceImpl.CALCULATION_SCALE,
                 RoundingMode.HALF_UP);
-
-    int numberOfDepreciation =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            ? fixedAsset.getNumberOfDepreciation() - 1
-            : fixedAsset.getNumberOfDepreciation();
     BigDecimal depreciationRate =
         BigDecimal.valueOf(100)
             .divide(
-                BigDecimal.valueOf(numberOfDepreciation),
+                BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
                 FixedAssetServiceImpl.CALCULATION_SCALE,
                 RoundingMode.HALF_UP);
     BigDecimal ddRate = BigDecimal.ONE;
@@ -257,7 +268,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     } else {
       correspondingFixedAssetLine = getExistingLine(fixedAsset, disposalDate);
       FixedAssetLine previousRealizedLine =
-          findOldestFixedAssetLine(
+          findNewestFixedAssetLine(
                   fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
               .orElse(null);
       if (previousRealizedLine != null

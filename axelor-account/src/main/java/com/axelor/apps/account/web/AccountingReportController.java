@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,22 @@ import org.slf4j.LoggerFactory;
 public class AccountingReportController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public void setFieldsFromReportTypeModelAccountingReport(
+      ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+
+    try {
+      Map<String, Object> modelAccountingReportMap =
+          Beans.get(AccountingReportService.class)
+              .getFieldsFromReportTypeModelAccountingReport(accountingReport);
+      if (modelAccountingReportMap != null) {
+        response.setValues(modelAccountingReportMap);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   /**
    * @param request

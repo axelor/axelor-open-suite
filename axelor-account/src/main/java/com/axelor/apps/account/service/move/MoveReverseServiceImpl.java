@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -65,15 +82,15 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             dateOfReversion,
             move.getPaymentMode(),
             move.getFiscalPosition(),
-            MoveRepository.TECHNICAL_ORIGIN_ENTRY,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove(),
             move.getOrigin(),
             move.getDescription(),
-            move.getInvoice(),
-            move.getPaymentVoucher());
+            null,
+            null);
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
@@ -81,7 +98,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       log.debug("Moveline {}", moveLine);
-      Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+      boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
 
@@ -96,8 +113,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
                     AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
                     dateOfReversion);
         if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
-          analyticMoveLineList.forEach(
-              analyticMoveLine -> newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine));
+          analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
         }
       }
 
@@ -164,6 +180,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             originMoveLine.getCounter(),
             originMoveLine.getName(),
             null);
+    reverseMoveLine.setVatSystemSelect(originMoveLine.getVatSystemSelect());
+
     return reverseMoveLine;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductCategoryService {
@@ -40,4 +41,31 @@ public interface ProductCategoryService {
    * @return an optional with the maximum applicable discount if found.
    */
   Optional<BigDecimal> computeMaxDiscount(ProductCategory productCategory) throws AxelorException;
+
+  /**
+   * Find child of given category, and recursively children of found children.
+   *
+   * @param productCategory a product category
+   * @return all children of the category
+   */
+  List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
+      throws AxelorException;
+
+  /**
+   * Find parent of given category, and recursively parents of found parents.
+   *
+   * @param productCategory a product category
+   * @return all parents of the category
+   */
+  List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
+      throws AxelorException;
+
+  /**
+   * Get the growth coefficient of product category. If the coeff is equal to the default value (1),
+   * the method will get growth coeff of parentProductCategory.
+   *
+   * @param productCategory
+   * @return growth coefficient
+   */
+  BigDecimal getGrowthCoeff(ProductCategory productCategory);
 }
