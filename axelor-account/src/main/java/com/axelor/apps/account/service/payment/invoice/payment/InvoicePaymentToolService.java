@@ -65,4 +65,6 @@ public interface InvoicePaymentToolService {
   void computeFinancialDiscount(InvoicePayment invoicePayment);
 
   BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
+
+  boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 }

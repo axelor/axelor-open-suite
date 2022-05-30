@@ -649,4 +649,26 @@ public class AccountConfigService {
 
     return accountConfig.getDasContactPartner();
   }
+
+  public Account getPurchFinancialDiscountAccount(AccountConfig accountConfig)
+      throws AxelorException {
+    if (accountConfig.getPurchFinancialDiscountAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getPurchFinancialDiscountAccount();
+  }
+
+  public Account getSaleFinancialDiscountAccount(AccountConfig accountConfig)
+      throws AxelorException {
+    if (accountConfig.getSaleFinancialDiscountAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSaleFinancialDiscountAccount();
+  }
 }
