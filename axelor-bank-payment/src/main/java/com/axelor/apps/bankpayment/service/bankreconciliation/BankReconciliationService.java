@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
@@ -1099,14 +1100,14 @@ public class BankReconciliationService {
         && bankStatementDebit != null) {
       String query =
           "(self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)"
-              + " AND ((self.debit > 0 and "
-              + bankStatementCredit.signum()
-              + " > 0)"
-              + " OR (self.credit > 0 and "
-              + bankStatementDebit.signum()
-              + " > 0))"
               + " AND self.move.company.id = "
               + bankReconciliation.getCompany().getId();
+      if (bankStatementCredit.signum() > 0) {
+        query = query.concat(" AND self.debit > 0");
+      }
+      if (bankStatementDebit.signum() > 0) {
+        query = query.concat(" AND self.credit > 0");
+      }
       if (bankReconciliation.getCashAccount() != null) {
         query =
             query.concat(" AND self.account.id = " + bankReconciliation.getCashAccount().getId());
@@ -1114,6 +1115,11 @@ public class BankReconciliationService {
       if (bankReconciliation.getJournal() != null) {
         query =
             query.concat(" AND self.move.journal.id = " + bankReconciliation.getJournal().getId());
+      } else {
+        query =
+            query.concat(
+                " AND self.move.journal.journalType.technicalTypeSelect = "
+                    + JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY);
       }
       return query;
     }
