@@ -251,6 +251,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
         .toAttach(saleOrder)
         .generate()
         .getFileLink();

@@ -44,6 +44,11 @@
         <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect"
           selection="production.manuf.order.status.select"/>
       </panel>
+      <panel if="__config__.app.isApp('stock')" if-module="axelor-stock" name="stockPanel"
+        title="Stock" showIf="isStockAppEnable">
+        <field name="inventoryStatusSelect" widget="MultiSelect"
+          selection="inventory.status.select"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">

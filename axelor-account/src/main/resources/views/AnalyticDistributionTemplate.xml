@@ -12,10 +12,11 @@
 
   <form name="analytic-distribution-template-form" title="Analytic distribution template"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
-    onSave="action-analytic-dist-template-method-validate-tot-percentage">
+    onSave="action-analytic-distribution-template-on-save">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="company"/>
+      <field name="company" required="true"
+        onChange="action-method-analytic-distribution-template-check-company"/>
     </panel>
     <panel-related name="analyticDistributionLineListPanel"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
@@ -25,6 +26,22 @@
   <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
       method="validateLines"/>
+  </action-method>
+
+  <action-method name="action-analytic-dist-template-method-validate-all-percentage">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionTemplateController"
+      method="validateTemplatePercentages"/>
+  </action-method>
+
+  <action-group name="action-analytic-distribution-template-on-save">
+    <action name="action-analytic-dist-template-method-validate-tot-percentage"/>
+    <action name="action-analytic-dist-template-method-validate-all-percentage"/>
+    <action name="action-method-analytic-distribution-template-check-company"/>
+  </action-group>
+
+  <action-method name="action-method-analytic-distribution-template-check-company">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionTemplateController"
+      method="checkTemplateCompany"/>
   </action-method>
 
   <search-filters name="analytic-distribution-template-filters"

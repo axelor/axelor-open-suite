@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterGroupRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
+import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -41,8 +42,7 @@ public class ProdProcessLineController {
       if (workCenter != null) {
         response.setValue(
             "durationPerCycle",
-            Beans.get(ProdProcessLineService.class)
-                .getProdProcessLineDurationFromWorkCenter(workCenter));
+            Beans.get(WorkCenterService.class).getDurationFromWorkCenter(workCenter));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -56,12 +56,10 @@ public class ProdProcessLineController {
       if (workCenter != null) {
         response.setValue(
             "minCapacityPerCycle",
-            Beans.get(ProdProcessLineService.class)
-                .getProdProcessLineMinCapacityPerCycleFromWorkCenter(workCenter));
+            Beans.get(WorkCenterService.class).getMinCapacityPerCycleFromWorkCenter(workCenter));
         response.setValue(
             "maxCapacityPerCycle",
-            Beans.get(ProdProcessLineService.class)
-                .getProdProcessLineMaxCapacityPerCycleFromWorkCenter(workCenter));
+            Beans.get(WorkCenterService.class).getMaxCapacityPerCycleFromWorkCenter(workCenter));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -73,7 +71,8 @@ public class ProdProcessLineController {
       ProdProcessLine prodProcessLine = request.getContext().asType(ProdProcessLine.class);
       response.setValue(
           "workCenter",
-          Beans.get(ProdProcessLineService.class).getMainWorkCenterFromGroup(prodProcessLine));
+          Beans.get(WorkCenterService.class)
+              .getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

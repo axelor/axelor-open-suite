@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -25,20 +28,28 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import com.google.inject.Inject;
 
 public class InventoryLineService {
+
+  protected StockConfigService stockConfigService;
+
+  @Inject
+  public InventoryLineService(StockConfigService stockConfigService) {
+    this.stockConfigService = stockConfigService;
+  }
 
   public InventoryLine createInventoryLine(
       Inventory inventory,
       Product product,
       BigDecimal currentQty,
       String rack,
-      TrackingNumber trackingNumber) {
+      TrackingNumber trackingNumber) throws AxelorException {
 
-    return createInventoryLine(inventory, product, currentQty, rack, trackingNumber, null, null);
+    return createInventoryLine(inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
   }
 
   public InventoryLine createInventoryLine(
@@ -48,7 +59,9 @@ public class InventoryLineService {
       String rack,
       TrackingNumber trackingNumber,
       BigDecimal realQty,
-      String description) {
+      String description,
+      StockLocation stockLocation,
+      StockLocation detailsStockLocation) throws AxelorException {
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);
@@ -57,6 +70,10 @@ public class InventoryLineService {
     inventoryLine.setTrackingNumber(trackingNumber);
     inventoryLine.setRealQty(realQty);
     inventoryLine.setDescription(description);
+    inventoryLine.setStockLocation(stockLocation);
+    if (stockLocation == null) {
+      inventoryLine.setStockLocation(detailsStockLocation);
+    }
     this.compute(inventoryLine, inventory);
 
     return inventoryLine;
@@ -97,7 +114,8 @@ public class InventoryLineService {
     return inventoryLine;
   }
 
-  public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory) {
+  public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory)
+      throws AxelorException {
 
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
@@ -115,8 +133,12 @@ public class InventoryLineService {
       inventoryLine.setGap(gap);
 
       BigDecimal price;
-      int value = stockLocation.getCompany().getStockConfig().getInventoryValuationTypeSelect();
-      switch (value) {
+      int inventoryValuationTypeSelect =
+          stockConfigService
+              .getStockConfig(stockLocation.getCompany())
+              .getInventoryValuationTypeSelect();
+
+      switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
           break;
@@ -136,5 +158,18 @@ public class InventoryLineService {
     }
 
     return inventoryLine;
+  }
+
+  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product) {
+    BigDecimal currentQty = BigDecimal.ZERO;
+
+    if (stockLocation != null && product != null) {
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+      if (stockLocationLine != null) {
+        currentQty = stockLocationLine.getCurrentQty();
+      }
+    }
+    return currentQty;
   }
 }

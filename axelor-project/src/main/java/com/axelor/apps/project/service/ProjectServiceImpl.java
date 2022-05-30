@@ -19,7 +19,9 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
@@ -27,7 +29,9 @@ import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -36,27 +40,36 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProjectServiceImpl implements ProjectService {
 
   public static final int MAX_LEVEL_OF_PROJECT = 10;
 
-  private ProjectRepository projectRepository;
+  protected ProjectRepository projectRepository;
+  protected ProjectStatusRepository projectStatusRepository;
+  protected AppProjectService appProjectService;
 
   @Inject
-  public ProjectServiceImpl(ProjectRepository projectRepository) {
+  public ProjectServiceImpl(
+      ProjectRepository projectRepository,
+      ProjectStatusRepository projectStatusRepository,
+      AppProjectService appProjectService) {
     this.projectRepository = projectRepository;
+    this.projectStatusRepository = projectStatusRepository;
+    this.appProjectService = appProjectService;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -76,23 +89,22 @@ public class ProjectServiceImpl implements ProjectService {
       return project;
     }
     project = new Project();
-    project.setStatusSelect(ProjectRepository.STATE_NEW);
     project.setParentProject(parentProject);
     if (parentProject != null) {
       parentProject.addChildProjectListItem(project);
-      project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
-    } else {
-      project.setProjectTypeSelect(ProjectRepository.TYPE_PROJECT);
     }
     if (Strings.isNullOrEmpty(fullName)) {
       fullName = "project";
     }
     project.setName(fullName);
     project.setFullName(project.getName());
-    project.setCompany(company);
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
-    project.setProgress(BigDecimal.ZERO);
+    project.setProjectStatus(getDefaultProjectStatus());
+    project.setProjectTaskStatusSet(
+        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+    project.setProjectTaskPrioritySet(
+        new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     return project;
   }
 
@@ -131,73 +143,127 @@ public class ProjectServiceImpl implements ProjectService {
   public Project createProjectFromTemplate(
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
       throws AxelorException {
-
-    Project project = new Project();
-    project.setName(projectTemplate.getName());
-
-    if (projectRepository.all().filter("self.code = ?", projectCode).count() > 0) {
+    if (projectRepository.findByCode(projectCode) != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, ITranslation.PROJECT_CODE_ERROR);
-    } else {
+    }
 
-      project.setCode(projectCode);
-      project.setClientPartner(clientPartner);
-      if (clientPartner != null
-          && clientPartner.getContactPartnerSet() != null
-          && !clientPartner.getContactPartnerSet().isEmpty()) {
-        project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
-      }
-      project.setDescription(projectTemplate.getDescription());
-      project.setTeam(projectTemplate.getTeam());
-      project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
-      project.setAssignedTo(projectTemplate.getAssignedTo());
-      project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
-      project.setSynchronize(projectTemplate.getSynchronize());
-      project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
-      project.setImputable(projectTemplate.getImputable());
-      project.setCompany(projectTemplate.getCompany());
-      project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
-      project.setExcludePlanning(projectTemplate.getExcludePlanning());
-      project.setProjectTypeSelect(ProjectRepository.TYPE_PROJECT);
+    Project project = generateProject(projectTemplate, projectCode, clientPartner);
+    setWikiItems(project, projectTemplate);
+    projectRepository.save(project);
 
-      List<Wiki> wikiList = projectTemplate.getWikiList();
-
-      if (wikiList != null && !wikiList.isEmpty()) {
-
-        for (Wiki wiki : wikiList) {
-          wiki = wikiRepo.copy(wiki, false);
-          wiki.setProjectTemplate(null);
-          project.addWikiListItem(wiki);
-        }
-      }
-
-      projectRepository.save(project);
-
-      Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
-      if (ObjectUtils.isEmpty(taskTemplateSet)) {
-        return project;
-      }
-      List<TaskTemplate> taskTemplateList = new ArrayList<TaskTemplate>(taskTemplateSet);
-      Collections.sort(
-          taskTemplateList,
-          new Comparator<TaskTemplate>() {
-
-            @Override
-            public int compare(TaskTemplate taskTemplatet1, TaskTemplate taskTemplate2) {
-              return taskTemplatet1.getParentTaskTemplate() == null || taskTemplate2 == null
-                  ? 1
-                  : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1;
-            }
-          });
-
-      if (taskTemplateList != null) {
-        for (TaskTemplate taskTemplate : taskTemplateList) {
-          createTask(taskTemplate, project, taskTemplateSet);
-        }
-      }
-
+    Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
+    if (ObjectUtils.isEmpty(taskTemplateSet)) {
       return project;
     }
+    List<TaskTemplate> taskTemplateList = new ArrayList<>(taskTemplateSet);
+
+    Collections.sort(
+        taskTemplateList,
+        (taskTemplatet1, taskTemplate2) ->
+            taskTemplatet1.getParentTaskTemplate() == null || taskTemplate2 == null
+                ? 1
+                : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
+
+    taskTemplateList.forEach(taskTemplate -> createTask(taskTemplate, project, taskTemplateSet));
+    return project;
+  }
+
+  @Override
+  public Map<String, Object> getTaskView(
+      Project project, String title, String domain, Map<String, Object> context) {
+    ActionViewBuilder builder =
+        ActionView.define(I18n.get(title))
+            .model(ProjectTask.class.getName())
+            .add("grid", "project-task-grid")
+            .add("form", "project-task-form")
+            .domain(domain)
+            .param("details-view", "true");
+
+    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
+      builder.add("kanban", "task-per-section-kanban");
+      builder.add("calendar", "project-task-per-section-calendar");
+    } else {
+      builder.add("kanban", "project-task-kanban");
+      builder.add("calendar", "project-task-per-status-calendar");
+      builder.param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
+    }
+
+    if (ObjectUtils.notEmpty(context)) {
+      context.forEach(builder::context);
+    }
+    return builder.map();
+  }
+
+  @Override
+  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
+      throws AxelorException {
+    return ActionView.define(I18n.get("Create project from this template"))
+        .model(Wizard.class.getName())
+        .add("form", "project-template-wizard-form")
+        .param("popup", "reload")
+        .param("show-toolbar", "false")
+        .param("show-confirm", "false")
+        .param("width", "large")
+        .param("popup-save", "false")
+        .context("_projectTemplate", projectTemplate)
+        .context("_businessProject", projectTemplate.getIsBusinessProject())
+        .map();
+  }
+
+  protected void setWikiItems(Project project, ProjectTemplate projectTemplate) {
+    List<Wiki> wikiList = projectTemplate.getWikiList();
+    if (ObjectUtils.notEmpty(wikiList)) {
+      for (Wiki wiki : wikiList) {
+        wiki = wikiRepo.copy(wiki, false);
+        wiki.setProjectTemplate(null);
+        project.addWikiListItem(wiki);
+      }
+    }
+  }
+
+  @Override
+  public Project generateProject(
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
+    Project project = new Project();
+    project.setName(projectTemplate.getName());
+    project.setCode(projectCode);
+    project.setClientPartner(clientPartner);
+    project.setDescription(projectTemplate.getDescription());
+    project.setTeam(projectTemplate.getTeam());
+    project.setAssignedTo(projectTemplate.getAssignedTo());
+    project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
+    project.setSynchronize(projectTemplate.getSynchronize());
+    project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
+    project.setImputable(projectTemplate.getImputable());
+    project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
+    project.setExcludePlanning(projectTemplate.getExcludePlanning());
+    project.setProjectStatus(getDefaultProjectStatus());
+    project.setProjectTaskStatusSet(
+        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+    project.setProjectTaskPrioritySet(
+        new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
+    if (clientPartner != null && ObjectUtils.notEmpty(clientPartner.getContactPartnerSet())) {
+      project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
+    }
+    return project;
+  }
+
+  @Override
+  public Map<String, Object> getPerStatusKanban(Project project, Map<String, Object> context) {
+    ActionViewBuilder builder =
+        ActionView.define(I18n.get("All tasks"))
+            .model(ProjectTask.class.getName())
+            .add("kanban", "project-task-kanban")
+            .add("grid", "project-task-grid")
+            .add("form", "project-task-form")
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
+            .param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
+
+    if (ObjectUtils.notEmpty(context)) {
+      context.forEach(builder::context);
+    }
+    return builder.map();
   }
 
   public ProjectTask createTask(
@@ -226,6 +292,31 @@ public class ProjectServiceImpl implements ProjectService {
       return task;
     }
     return task;
+  }
+
+  protected String getStatusColumnsTobeExcluded(Project project) {
+    return projectStatusRepository
+        .all()
+        .filter("self not in :allowedProjectTaskStatus")
+        .bind("allowedProjectTaskStatus", project.getProjectTaskStatusSet())
+        .fetchStream()
+        .map(ProjectStatus::getId)
+        .map(String::valueOf)
+        .collect(Collectors.joining(","));
+  }
+
+  @Override
+  public String getTimeZone(Project project) {
+    return null;
+  }
+
+  @Override
+  public ProjectStatus getDefaultProjectStatus() {
+    return projectStatusRepository
+        .all()
+        .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
+        .order("sequence")
+        .fetchOne();
   }
 
   public boolean checkIfResourceBooked(Project project) {
@@ -258,5 +349,43 @@ public class ProjectServiceImpl implements ProjectService {
                             && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
                         || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
                             && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
+  }
+
+  @Override
+  public void getChildProjectIds(Set<Long> projectIdsSet, Project project) {
+    if (projectIdsSet.contains(project.getId())) {
+      return;
+    }
+
+    projectIdsSet.add(project.getId());
+
+    for (Project childProject : project.getChildProjectList()) {
+      getChildProjectIds(projectIdsSet, childProject);
+    }
+  }
+
+  @Override
+  public Set<Long> getContextProjectIds() {
+    User currentUser = AuthUtils.getUser();
+    Project contextProject = currentUser.getContextProject();
+    Set<Long> projectIdsSet = new HashSet<>();
+    if (contextProject == null) {
+      projectIdsSet.add(0l);
+      return projectIdsSet;
+    }
+    if (!currentUser.getIsIncludeSubContextProjects()) {
+      projectIdsSet.add(contextProject.getId());
+      return projectIdsSet;
+    }
+    this.getChildProjectIds(projectIdsSet, contextProject);
+    return projectIdsSet;
+  }
+
+  @Override
+  public String getContextProjectIdsString() {
+    Set<Long> contextProjectIds = this.getContextProjectIds();
+    return contextProjectIds.contains(0l)
+        ? null
+        : contextProjectIds.stream().map(String::valueOf).collect(Collectors.joining(","));
   }
 }

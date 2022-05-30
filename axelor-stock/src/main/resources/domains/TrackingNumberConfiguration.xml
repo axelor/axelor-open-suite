@@ -38,6 +38,11 @@
     <string name="name" title="Name" required="true"/>
     <string name="fullName" title="Full name" namecolumn="true"/>
 
+    <many-to-one name="barcodeTypeConfig" title="Barcode Type"
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
+    <boolean name="useTrackingNumberSeqAsSerialNbr"
+      title="Use tracking number seq as serial number"/>
+
     <extra-code>
    		<![CDATA[
 

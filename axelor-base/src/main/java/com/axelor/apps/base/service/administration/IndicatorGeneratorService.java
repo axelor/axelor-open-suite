@@ -25,7 +25,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 public class IndicatorGeneratorService {
@@ -81,9 +82,9 @@ public class IndicatorGeneratorService {
 
     Query query = JPA.em().createNativeQuery(request);
 
-    BigInteger requestResult = (BigInteger) query.getSingleResult();
+    List<Object> requestResultList = query.getResultList();
 
-    result = String.format("%s", requestResult);
+    result = requestResultList.stream().map(Object::toString).collect(Collectors.joining("\n"));
 
     return result;
   }
@@ -93,9 +94,9 @@ public class IndicatorGeneratorService {
 
     Query query = JPA.em().createQuery(request);
 
-    Long requestResult = (Long) query.getSingleResult();
+    List<Object> requestResultList = query.getResultList();
 
-    result = String.format("%s", requestResult);
+    result = requestResultList.stream().map(Object::toString).collect(Collectors.joining("\n"));
 
     return result;
   }

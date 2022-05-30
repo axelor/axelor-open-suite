@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TradingNameRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -607,10 +608,12 @@ public class DebtRecoveryService {
                 debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
 
             if (CollectionUtils.isEmpty(
-                messageRepo
-                    .findByRelatedTo(
-                        Math.toIntExact(debtRecoveryHistory.getId()),
-                        DebtRecoveryHistory.class.getCanonicalName())
+                Beans.get(MultiRelatedRepository.class)
+                    .all()
+                    .filter(
+                        "self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId AND self.message IS NOT NULL")
+                    .bind("relatedToSelectId", Math.toIntExact(debtRecoveryHistory.getId()))
+                    .bind("relatedToSelect", DebtRecoveryHistory.class.getCanonicalName())
                     .fetch())) {
               debtRecoveryActionService.runMessage(debtRecovery);
             }
