@@ -60,8 +60,7 @@
         canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="pfpValidatorUser" canEdit="false"
-        domain=":company member of self.companySet and self.isPfpValidator = true"
-        requiredIf="company.accountConfig.isManagePassedForPayment"/>
+        domain=":company member of self.companySet and self.isPfpValidator = true"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="company.accountConfig" hidden="true"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
@@ -181,6 +180,7 @@
     <action name="action-account-accounting-situation-default-set"/>
     <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+    <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
   </action-group>
 
   <action-group name="action-accounting-situation-group-form-onload">
@@ -206,6 +206,8 @@
   <action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
     <attribute name="hidden" for="pfpValidatorUser"
       expr="eval: !__parent__?.isSupplier || !company?.accountConfig?.isManagePassedForPayment"/>
+    <attribute name="required" for="pfpValidatorUser"
+      expr="eval: __parent__?.isSupplier &amp;&amp; company?.accountConfig?.isManagePassedForPayment"/>
   </action-attrs>
 
 
