@@ -578,7 +578,7 @@
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
-        showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
+        showIf="invoiceTermList != null">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-invoice-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
