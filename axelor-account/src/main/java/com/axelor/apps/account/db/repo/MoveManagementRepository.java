@@ -18,6 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -105,8 +106,16 @@ public class MoveManagementRepository extends MoveRepository {
     }
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      moveLine.getInvoiceTermList().forEach(it -> it.setInvoice(null));
+      moveLine.getInvoiceTermList().forEach(this::resetInvoiceTerm);
     }
+  }
+
+  protected void resetInvoiceTerm(InvoiceTerm invoiceTerm) {
+    invoiceTerm.setInvoice(null);
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setAmountRemainingAfterFinDiscount(
+        invoiceTerm.getAmount().subtract(invoiceTerm.getFinancialDiscountAmount()));
+    invoiceTerm.setIsPaid(false);
   }
 
   @Override
