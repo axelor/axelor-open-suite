@@ -21,11 +21,11 @@
 20;"OUT_DD";"Direct Debit Payments";3;"true";"false";"true";"false";"Payment Emit.";"true";"false";;1;1;131;"receivable|payable|tax|cash";"665000|765000"
 21;"OUT_OTH";"Other Payments";3;"true";"false";"true";"false";"Payment Emit.";"true";"false";;1;1;132;"receivable|payable|tax|cash";"665000|765000"
 22;"ACC_CLR";"Account clearance";3;"true";"false";"false";"false";;"false";"false";;1;1;135;"receivable|income";
-23;"MISC_AUTO";"Auto Misc. Operation on invoices or cashing";3;"false";"false";"true";"false";;"false";"false";;1;1;133;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|special|tax";
-24;"MISC_MAN";"Manual Misc. Operation";3;"false";"false";"true";"false";;"false";"false";;1;1;134;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|special|tax";
+23;"MISC_AUTO";"Auto Misc. Operation on invoices or cashing";3;"false";"false";"true";"false";;"false";"false";;1;1;133;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|receivable|tax|charge|income|debt|provision";
+24;"MISC_MAN";"Manual Misc. Operation";3;"false";"false";"true";"false";;"false";"false";;1;1;134;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|receivable|tax|charge|income|debt|provision|special";
 25;"REJ_BK";"Bank Operations Rejects";3;"false";"false";"false";"false";"Reject ";"true";"false";;1;1;;"payable|receivable|tax|cash";
 26;"INSTALL";"Monthly Installments";3;"false";"false";"false";"false";"Installment";"true";"false";;1;1;;"receivable|tax|charge";
 27;"TECH";"Technical";5;"false";"false";"false";"false";;"false";"true";;1;1;;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|special|tax";
-28;"IRRECOV";"Irrecoverables";4;"false";"false";"true";"false";"Irrecoverable";"false";"false";;1;1;109;"receivable|tax|charge";
+28;"IRRECOV";"Irrecoverables";4;"false";"false";"true";"false";"Irrecouverable";"false";"false";;1;1;109;"receivable|tax|charge";
 29;"EXP";"Employees Travel expenses";4;"false";"false";"true";"false";"Expense";"true";"false";;1;1;180;"receivable|tax|charge";
-30;"RBLA";"Reported Balance";5;"false";"false";"true";"false";;"false";"false";;1;1;181;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|special|tax";
+30;"RBLA";"Reported Balance";5;"false";"false";"true";"false";"Reported balance";"false";"false";;1;1;181;"asset|cash|commitment|currentAsset|equity|immobilisation|payable|receivable|tax|charge|income|debt|provision|special";

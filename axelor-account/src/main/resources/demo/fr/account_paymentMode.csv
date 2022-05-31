@@ -6,7 +6,7 @@
 5;"Enc. Carte bancaire";"ENC_CB";7;"Carte bancaire";1;6;;;;1;;;;;;
 6;"Enc. Chèque";"ENC_CHQ";6;"Chèque";1;7;;;;1;;;;;;
 7;"Enc. Internet";"ENC_WEB";8;"Internet";1;8;;;;1;;;;;;
-8;"Enc. Virement";"ENC_VIR";11;"Virement";1;9;"true";7;1;1;;;;;;
+8;"Enc. Virement";"ENC_VIR";11;"Virement";1;9;;7;1;1;;;;;;
 9;"Enc. TIP + Chèque";"ENC_TEC";10;"TIP + Chèque";1;4;;;;1;;;;;;
 10;"Dec. Prélèvement";"DEC_PRE";20;"Prélèvement";2;2;"true";7;1;1;;;;;;
 11;"Dec. TIP";"DEC_TIP";18;"TIP";2;3;;;;1;;;;;;
