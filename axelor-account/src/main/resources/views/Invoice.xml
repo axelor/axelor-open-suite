@@ -786,13 +786,16 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
         </panel>
-        <field name="financialDiscount" readonlyIf="amountPaid > 0" showIf="statusSelect > 2"
-          onChange="action-invoice-group-financial-discount"/>
-        <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
-        <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
-          <field name="financialDiscountRate" readonly="true"/>
-          <field name="financialDiscountTotalAmount" readonly="true"/>
-          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        <panel name="financialDiscountPanel" showIf="statusSelect > 2" colSpan="12">
+          <field name="financialDiscount" readonlyIf="amountPaid > 0"
+            onChange="action-invoice-group-financial-discount"/>
+          <field name="financialDiscountDeadlineDate" readonly="true"
+            showIf="financialDiscount"/>
+          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+            <field name="financialDiscountRate" readonly="true"/>
+            <field name="financialDiscountTotalAmount" readonly="true"/>
+            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          </panel>
         </panel>
         <panel-related name="invoicePaymentListPanel" title="Payments details"
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
