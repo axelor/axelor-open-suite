@@ -1101,7 +1101,12 @@ public class BankReconciliationService {
       String query =
           "(self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)"
               + " AND self.move.company.id = "
-              + bankReconciliation.getCompany().getId();
+              + bankReconciliation.getCompany().getId()
+              + " AND (self.move.statusSelect = "
+              + MoveRepository.STATUS_ACCOUNTED
+              + " OR self.move.statusSelect = "
+              + MoveRepository.STATUS_VALIDATED
+              + ")";
       if (bankStatementCredit.signum() > 0) {
         query = query.concat(" AND self.debit > 0");
       }
