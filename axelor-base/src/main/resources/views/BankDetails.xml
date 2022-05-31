@@ -161,7 +161,7 @@
   <action-group name="action-group-account-bank-details-form-onnew">
     <action name="action-method_bank-details-validate-iban"/>
     <action name="action-bank-details-record-set-company"
-      if="__parent__._model == 'com.axelor.apps.base.db.Company'"/>
+      if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
     <action name="action-set-default-partner"/>
     <action name="action-set-default-bank"/>
     <action name="action-bank-details-attrs-code"/>
