@@ -267,4 +267,8 @@ public interface StockMoveLineService {
    * @param stockMoveLine a stock move line being realized.
    */
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine);
+
+  /** To update realQty and conformity of a stock move line (API AOS) */
+  void updateStockMoveLine(StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity)
+      throws AxelorException;
 }
