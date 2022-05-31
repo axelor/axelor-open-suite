@@ -1213,6 +1213,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
 
-    return deadlineDate.isBefore(invoice.getDueDate()) ? invoice.getDueDate() : deadlineDate;
+    return deadlineDate.isBefore(invoice.getInvoiceDate())
+        ? invoice.getInvoiceDate()
+        : deadlineDate;
   }
 }
