@@ -1412,7 +1412,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * AOS) *
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
       throws AxelorException {
     StockMoveLine line = stockMove.getStockMoveLineList().get(0);
@@ -1431,5 +1431,58 @@ public class StockMoveServiceImpl implements StockMoveService {
       line.setRealQty(movedQty);
     }
     stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveDestinationLocation(StockMove stockMove, StockLocation toStockLocation)
+      throws AxelorException {
+    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
+        && stockMove.getStatusSelect() != StockMoveRepository.STATUS_REALIZED) {
+      if (toStockLocation != null) {
+        stockMove.setToStockLocation(toStockLocation);
+        stockMove.setToAddress(toStockLocation.getAddress());
+        Beans.get(StockMoveToolService.class).computeAddressStr(stockMove);
+        stockMoveRepo.save(stockMove);
+      } else {
+        throw new AxelorException(
+            stockMove,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_6));
+      }
+    } else {
+      throw new AxelorException();
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addLineStockMove(
+      StockMove stockMove,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal qty,
+      BigDecimal realQty,
+      Unit unit,
+      Integer conformitySelect)
+      throws AxelorException {
+
+    StockMoveLine newLine = new StockMoveLine();
+    newLine.setStockMove(stockMove);
+    newLine.setLineTypeSelect(StockMoveLineRepository.TYPE_NORMAL);
+    newLine.setProduct(product);
+    stockMoveLineService.setProductInfo(stockMove, newLine, stockMove.getCompany());
+
+    if (product.getTrackingNumberConfiguration() != null && trackingNumber != null) {
+      newLine.setTrackingNumber(trackingNumber);
+    }
+    newLine.setQty(qty);
+    newLine.setRealQty(realQty);
+    newLine.setUnit(unit);
+    newLine.setConformitySelect(conformitySelect);
+
+    stockMoveLineService.compute(newLine, stockMove);
+
+    stockMoveLineRepo.save(newLine);
   }
 }

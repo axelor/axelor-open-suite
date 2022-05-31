@@ -18,10 +18,6 @@ public class StockProductResponse extends ResponseStructure {
     this.futureQty = (BigDecimal) qtys.get("$futureQty");
   }
 
-  public String getObjectName() {
-    return "product";
-  }
-
   public long getId() {
     return id;
   }

@@ -1281,4 +1281,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockLocationLineOpt.ifPresent(
         stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity) throws AxelorException {
+
+    if (stockMoveLine.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_REALIZED
+        && stockMoveLine.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
+      stockMoveLine.setRealQty(realQty);
+      stockMoveLine.setConformitySelect(conformity);
+      stockMoveLineRepository.save(stockMoveLine);
+    }
+  }
 }

@@ -32,10 +32,6 @@ public class SupplychainStockProductResponse extends ResponseStructure {
     this.missingManufOrderQty = (BigDecimal) qtys.get("$missingManufOrderQty");
   }
 
-  public String getObjectName() {
-    return "product";
-  }
-
   public long getId() {
     return id;
   }

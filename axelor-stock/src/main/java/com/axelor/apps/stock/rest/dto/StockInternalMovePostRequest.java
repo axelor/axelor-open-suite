@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockMovePostRequest extends RequestPostStructure {
+public class StockInternalMovePostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
@@ -40,7 +40,7 @@ public class StockMovePostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal movedQty;
 
-  public StockMovePostRequest() {}
+  public StockInternalMovePostRequest() {}
 
   public Long getProductId() {
     return productId;

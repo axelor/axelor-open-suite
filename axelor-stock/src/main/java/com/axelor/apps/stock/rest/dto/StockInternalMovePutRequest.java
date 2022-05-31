@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class StockMovePutRequest extends RequestStructure {
+public class StockInternalMovePutRequest extends RequestStructure {
 
   @Min(0)
   private Long unitId;
@@ -22,7 +22,7 @@ public class StockMovePutRequest extends RequestStructure {
   @Max(StockMoveRepository.STATUS_CANCELED)
   private Integer status;
 
-  public StockMovePutRequest() {}
+  public StockInternalMovePutRequest() {}
 
   public Long getUnitId() {
     return unitId;

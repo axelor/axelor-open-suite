@@ -226,8 +226,23 @@ public interface StockMoveService {
 
   /**
    * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
-   * AOS) *
+   * AOS)
    */
   void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
+      throws AxelorException;
+
+  /** To update destination stock location of a stock move (API AOS) */
+  void updateStockMoveDestinationLocation(StockMove stockMove, StockLocation toStockLocation)
+      throws AxelorException;
+
+  /** To add a stock move line to a stock move (API AOS) */
+  void addLineStockMove(
+      StockMove stockMove,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal qty,
+      BigDecimal realQty,
+      Unit unit,
+      Integer conformitySelect)
       throws AxelorException;
 }
