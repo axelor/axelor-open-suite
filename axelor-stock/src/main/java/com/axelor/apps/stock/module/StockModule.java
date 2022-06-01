@@ -65,6 +65,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.StockMoveToolServiceImpl;
+import com.axelor.apps.stock.service.StockMoveUpdateService;
+import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
@@ -93,6 +95,7 @@ public class StockModule extends AxelorModule {
     bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
     bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
     bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+    bind(StockMoveUpdateService.class).to(StockMoveUpdateServiceImpl.class);
     bind(StockLocationService.class).to(StockLocationServiceImpl.class);
     bind(ProductBaseRepository.class).to(ProductStockRepository.class);
     bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);

@@ -1,5 +1,6 @@
 package com.axelor.apps.stock.rest;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberPostRequest;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberResponse;
@@ -8,8 +9,8 @@ import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import java.time.LocalDate;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,11 +23,15 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class StockTrackingNumberRestController {
 
+  /**
+   * Create new tracking number for given product. Full path to request is
+   * /ws/aos/stock-tracking-number/
+   */
   @Path("/")
   @POST
   @HttpExceptionHandler
   public Response createTrackingNumber(StockTrackingNumberPostRequest requestBody)
-      throws Exception {
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(TrackingNumber.class).check();
 
@@ -35,7 +40,7 @@ public class StockTrackingNumberRestController {
             .generateTrackingNumber(
                 requestBody.fetchProduct(),
                 requestBody.fetchCompany(),
-                LocalDate.now(),
+                Beans.get(AppBaseService.class).getTodayDate(requestBody.fetchCompany()),
                 requestBody.getOrigin(),
                 requestBody.getNotes());
 
