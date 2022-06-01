@@ -47,6 +47,6 @@ public class StockMoveLineRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         "Line successfully updated.",
-        new StockIncomingMoveLineResponse(stockmoveLine));
+        new StockMoveLineResponse(stockmoveLine));
   }
 }
