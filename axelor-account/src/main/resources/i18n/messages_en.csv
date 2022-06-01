@@ -1346,7 +1346,7 @@
 "Exit",,,
 "Exp. accounted on",,,
 "Expected amount",,,
-"Expected total amount",,,
+"Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels.",,,
 "Expense",,,
 "Expense Depreciation Derogatory Account",,,
 "Expense Payment",,,
