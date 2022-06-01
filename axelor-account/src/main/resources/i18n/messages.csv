@@ -2459,7 +2459,7 @@
 "Tax excluded",,,
 "Tax for management fee",,,
 "Tax included",,,
-"Tax is mandatory for the account %s on the move line %s",,,
+"Tax is mandatory for the account %s (%s) on the move line %s",,,
 "Tax line",,,
 "Tax number",,,
 "Tax numbers",,,
