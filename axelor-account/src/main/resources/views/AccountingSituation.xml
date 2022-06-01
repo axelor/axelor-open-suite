@@ -68,11 +68,15 @@
         name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
       <field name="partner.isCustomer" hidden="true"/>
       <field name="partner.isSupplier" hidden="true"/>
+      <field name="__parent._model" hidden="true"/>
+      <field name="__parent.isSupplier" hidden="true"/>
+      <field name="__parent.isSupplier" hidden="true"/>
+      <field name="__parent" hidden="true"/>
     </panel>
     <panel name="vatSystemPanel" title="VAT System"
-      showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)">
+      showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)">
       <field name="vatSystemSelect"
-        showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
+        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -189,6 +193,7 @@
     <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
     <action name="action-record-manage-vat-system-onnew"/>
+    <action name="action-record-set-parent"/>
   </action-group>
 
   <action-group name="action-accounting-situation-group-form-onload">
@@ -197,6 +202,7 @@
     <action name="action-accounting-situation-attrs-hide-employee-account"/>
     <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+    <action name="action-record-set-parent"/>
   </action-group>
 
   <action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -240,6 +246,11 @@
       self.move.statusSelect = 3)</domain>
   </action-view>
 
+  <action-record name="action-record-set-parent"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="__parent" expr="eval:__parent__"/>
+  </action-record>
+
   <action-record name="action-account-accounting-situation-default-set"
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -251,7 +262,7 @@
   <action-record name="action-record-manage-vat-system-onnew"
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="vatSystemSelect" expr="eval: 1"
-      if="partner?.isCustomer || partner?.isSupplier"/>
+      if="__parent__?._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent__?.isCustomer || __parent__?.isSupplier)"/>
   </action-record>
 
   <action-method name="action-accounting-situation-method-set-default-mail">
