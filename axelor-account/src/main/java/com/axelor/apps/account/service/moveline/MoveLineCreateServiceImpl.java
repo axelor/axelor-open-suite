@@ -584,6 +584,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
     }
 
+    newOrUpdatedMoveLine.setMove(move);
+    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
+    newOrUpdatedMoveLine.setDescription(move.getDescription());
+
     newOrUpdatedMoveLine.setDebit(
         newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setCredit(
