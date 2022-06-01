@@ -8,7 +8,9 @@ import com.axelor.apps.stock.rest.dto.StockInternalMovePostRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePutRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMoveResponse;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePostRequest;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.tool.api.ConflictChecker;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
@@ -16,6 +18,7 @@ import com.axelor.apps.tool.api.RequestStructure;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -31,14 +34,12 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class StockMoveRestController {
 
-  // GENERAL STOCK MOVE REQUESTS
-
-  // REALIZE STOCK MOVE :
+  /** Realize a planified stock move. Full path to request is /ws/aos/stock-move/realize/{id} */
   @Path("/realize/{id}")
   @PUT
   @HttpExceptionHandler
   public Response realizeStockMove(@PathParam("id") long stockMoveId, RequestStructure requestBody)
-      throws Exception {
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
@@ -52,19 +53,20 @@ public class StockMoveRestController {
         Response.Status.OK, "Stock move with id " + stockmove.getId() + " successfully realized.");
   }
 
-  // ADD NEW LINE TO STOCK MOVE :
+  /** Add new line in a stock move. Full path to request is /ws/aos/stock-move/add-line/{id} */
   @Path("/add-line/{id}")
   @POST
   @HttpExceptionHandler
   public Response addLineStockMove(
-      @PathParam("id") long stockMoveId, StockMoveLinePostRequest requestBody) throws Exception {
+      @PathParam("id") long stockMoveId, StockMoveLinePostRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId);
 
-    Beans.get(StockMoveService.class)
-        .addLineStockMove(
+    Beans.get(StockMoveLineService.class)
+        .createStockMoveLine(
             stockmove,
             requestBody.fetchProduct(),
             requestBody.fetchTrackingNumber(),
@@ -80,13 +82,15 @@ public class StockMoveRestController {
             + " successfully updated.");
   }
 
-  // INTERNAL STOCK MOVE REQUESTS
-
+  /**
+   * Create new internal move with only one product. Full path to request is
+   * /ws/aos/stock-move/internal/
+   */
   @Path("/internal/")
   @POST
   @HttpExceptionHandler
   public Response createInternalStockMove(StockInternalMovePostRequest requestBody)
-      throws Exception {
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(StockMove.class).check();
     StockMove stockmove =
@@ -106,11 +110,16 @@ public class StockMoveRestController {
         new StockInternalMoveResponse(stockmove));
   }
 
+  /**
+   * Update an internal stock move depending on the elements given in requestBody. Full path to
+   * request is /ws/aos/stock-move/internal/{id}
+   */
   @Path("/internal/{id}")
   @PUT
   @HttpExceptionHandler
   public Response updateInternalStockMove(
-      @PathParam("id") long stockMoveId, StockInternalMovePutRequest requestBody) throws Exception {
+      @PathParam("id") long stockMoveId, StockInternalMovePutRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
@@ -118,24 +127,27 @@ public class StockMoveRestController {
 
     ConflictChecker.checkVersion(stockmove, requestBody.getVersion());
 
-    Beans.get(StockMoveService.class)
+    Beans.get(StockMoveUpdateService.class)
         .updateStockMoveMobility(stockmove, requestBody.getMovedQty(), requestBody.fetchUnit());
 
     if (requestBody.getStatus() != null) {
-      Beans.get(StockMoveService.class).updateStatus(stockmove, requestBody.getStatus());
+      Beans.get(StockMoveUpdateService.class).updateStatus(stockmove, requestBody.getStatus());
     }
 
     return ResponseConstructor.build(
         Response.Status.OK, "Successfully updated", new StockInternalMoveResponse(stockmove));
   }
 
-  // INCOMING STOCK MOVE REQUESTS
-
+  /**
+   * Update destination stock location of a supplier arrival. Full path to request is
+   * /ws/aos/stock-move/incoming/update-destination/{id}
+   */
   @Path("/incoming/update-destination/{id}")
   @PUT
   @HttpExceptionHandler
   public Response updateIncomingStockMove(
-      @PathParam("id") long stockMoveId, StockIncomingMovePutRequest requestBody) throws Exception {
+      @PathParam("id") long stockMoveId, StockIncomingMovePutRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
@@ -143,7 +155,7 @@ public class StockMoveRestController {
 
     ConflictChecker.checkVersion(stockmove, requestBody.getVersion());
 
-    Beans.get(StockMoveService.class)
+    Beans.get(StockMoveUpdateService.class)
         .updateStockMoveDestinationLocation(stockmove, requestBody.fetchToStockLocation());
 
     return ResponseConstructor.build(
