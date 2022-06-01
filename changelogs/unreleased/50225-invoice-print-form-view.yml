@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix an issue where printing an invoice from the form view would give an error"
+type: fix
