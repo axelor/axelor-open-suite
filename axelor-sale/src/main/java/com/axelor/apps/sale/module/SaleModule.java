@@ -57,8 +57,6 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
-import com.axelor.apps.sale.service.pricing.PricingService;
-import com.axelor.apps.sale.service.pricing.PricingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -109,6 +107,5 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
     bind(ConfiguratorMetaJsonFieldService.class).to(ConfiguratorMetaJsonFieldServiceImpl.class);
-    bind(PricingService.class).to(PricingServiceImpl.class);
   }
 }

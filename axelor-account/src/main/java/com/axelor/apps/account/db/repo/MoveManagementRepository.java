@@ -18,6 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -38,6 +39,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -102,13 +104,24 @@ public class MoveManagementRepository extends MoveRepository {
     if (analyticMoveLineList != null) {
       moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
     }
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().forEach(this::resetInvoiceTerm);
+    }
+  }
+
+  protected void resetInvoiceTerm(InvoiceTerm invoiceTerm) {
+    invoiceTerm.setInvoice(null);
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setAmountRemainingAfterFinDiscount(
+        invoiceTerm.getAmount().subtract(invoiceTerm.getFinancialDiscountAmount()));
+    invoiceTerm.setIsPaid(false);
   }
 
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {

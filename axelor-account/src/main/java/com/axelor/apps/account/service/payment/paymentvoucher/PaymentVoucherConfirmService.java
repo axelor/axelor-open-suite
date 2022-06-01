@@ -32,11 +32,11 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -59,6 +59,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,11 +131,14 @@ public class PaymentVoucherConfirmService {
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();
     Company company = paymentVoucher.getCompany();
     BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
-    Journal journal =
-        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 
+    boolean isPaymentValueForCollection = isPaymentValueForCollection(paymentVoucher);
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(
+            paymentMode, company, companyBankDetails, isPaymentValueForCollection);
     Account paymentModeAccount =
-        paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
+        paymentModeService.getPaymentModeAccount(
+            paymentMode, company, companyBankDetails, isPaymentValueForCollection);
 
     paymentVoucherControlService.checkPaymentVoucherField(
         paymentVoucher, company, paymentModeAccount, journal);
@@ -150,31 +155,182 @@ public class PaymentVoucherConfirmService {
     // TODO VEIRIFER QUE LES ELEMENTS A PAYER NE CONCERNE QU'UNE SEULE DEVISE
 
     // TODO RECUPERER DEVISE DE LA PREMIERE DETTE
-    //		Currency currencyToPay = null;
+    // Currency currencyToPay = null;
 
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
-
-    if (appAccountService.getAppAccount().getPaymentVouchersOnInvoice()
-        && paymentVoucher.getPaymentMode().getValidatePaymentByDepositSlipPublication()) {
-      waitForDepositSlip(paymentVoucher);
-    } else {
-      createMoveAndConfirm(paymentVoucher);
-    }
+    createMoveAndConfirm(paymentVoucher, journal, paymentModeAccount, isPaymentValueForCollection);
 
     paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
     paymentVoucherRepository.save(paymentVoucher);
   }
 
-  private void waitForDepositSlip(PaymentVoucher paymentVoucher) {
-    for (PayVoucherElementToPay payVoucherElementToPay :
-        paymentVoucher.getPayVoucherElementToPayList()) {
-      Invoice invoice = payVoucherElementToPay.getMoveLine().getMove().getInvoice();
-      boolean hasPendingPayments =
-          payVoucherElementToPay.getRemainingAmountAfterPayment().signum() <= 0;
-      invoice.setHasPendingPayments(hasPendingPayments);
+  protected void invoiceSetHasPendingPayments(PaymentVoucher paymentVoucher) {
+
+    paymentVoucher.getPayVoucherElementToPayList().stream()
+        .forEach(payVoucherElementToPay -> invoiceSetHasPendingPayment(payVoucherElementToPay));
+  }
+
+  protected void invoiceSetHasPendingPayment(PayVoucherElementToPay payVoucherElementToPay) {
+
+    Invoice invoice = payVoucherElementToPay.getMoveLine().getMove().getInvoice();
+    boolean hasPendingPayments =
+        payVoucherElementToPay.getRemainingAmountAfterPayment().signum() <= 0;
+    invoice.setHasPendingPayments(hasPendingPayments);
+  }
+
+  protected boolean isPaymentValueForCollection(PaymentVoucher paymentVoucher) {
+
+    if (paymentVoucher.getBankEntryGenWithoutValEntryCollectionOk()) {
+      return false;
     }
 
-    paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
+    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+    if (!Objects.equals(
+        PaymentModeRepository.ACCOUNTING_TRIGGER_VALUE_FOR_COLLECTION,
+        paymentMode.getAccountingTriggerSelect())) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public void createMoveAndConfirm(PaymentVoucher paymentVoucher) throws AxelorException {
+
+    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+    Company company = paymentVoucher.getCompany();
+    BankDetails companyBankDetails = getBankDetails(paymentVoucher);
+
+    boolean isPaymentValueForCollection = isPaymentValueForCollection(paymentVoucher);
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(
+            paymentMode, company, companyBankDetails, isPaymentValueForCollection);
+    Account paymentModeAccount =
+        paymentModeService.getPaymentModeAccount(
+            paymentMode, company, companyBankDetails, isPaymentValueForCollection);
+
+    createMoveAndConfirm(paymentVoucher, journal, paymentModeAccount, isPaymentValueForCollection);
+  }
+
+  public void createMoveAndConfirm(
+      PaymentVoucher paymentVoucher, boolean isPaymentValueForCollection) throws AxelorException {
+
+    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+    Company company = paymentVoucher.getCompany();
+    BankDetails companyBankDetails = getBankDetails(paymentVoucher);
+
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(
+            paymentMode, company, companyBankDetails, isPaymentValueForCollection);
+    Account paymentModeAccount =
+        paymentModeService.getPaymentModeAccount(
+            paymentMode, company, companyBankDetails, isPaymentValueForCollection);
+
+    createMoveAndConfirm(paymentVoucher, journal, paymentModeAccount, isPaymentValueForCollection);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void valueForCollectionMoveToGeneratedMove(PaymentVoucher paymentVoucher, LocalDate date)
+      throws AxelorException {
+
+    Move valueForCollectionMove = paymentVoucher.getValueForCollectionMove();
+    if (Objects.isNull(valueForCollectionMove)) {
+      return;
+    }
+
+    Account valueForCollectionAccount = paymentVoucher.getValueForCollectionAccount();
+    Optional<MoveLine> optionalValueForCollectionMoveLine =
+        extractMoveLineFromValueForCollectionMove(
+            valueForCollectionMove, valueForCollectionAccount);
+    if (!optionalValueForCollectionMoveLine.isPresent()) {
+      return;
+    }
+
+    Partner payerPartner = paymentVoucher.getPartner();
+    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+    Company company = paymentVoucher.getCompany();
+    BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails, false);
+    Account paymentModeAccount =
+        paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails, false);
+
+    Move move =
+        moveCreateService.createMoveWithPaymentVoucher(
+            journal,
+            company,
+            paymentVoucher,
+            payerPartner,
+            date,
+            paymentVoucher.getPaymentMode(),
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            paymentVoucher.getRef(),
+            journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null);
+
+    move.setPaymentVoucher(paymentVoucher);
+    move.setTradingName(paymentVoucher.getTradingName());
+    setMove(paymentVoucher, move, false);
+
+    int moveLineNo = 1;
+
+    boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
+    MoveLine moveLineToPaymentModeAccount =
+        moveLineCreateService.createMoveLine(
+            move,
+            payerPartner,
+            paymentModeAccount,
+            paymentVoucher.getPaidAmount(),
+            isDebitToPay,
+            date,
+            moveLineNo++,
+            paymentVoucher.getRef(),
+            null);
+
+    move.addMoveLineListItem(moveLineToPaymentModeAccount);
+
+    MoveLine moveLineToValueForCollectionAccount =
+        moveLineCreateService.createMoveLine(
+            move,
+            payerPartner,
+            valueForCollectionAccount,
+            paymentVoucher.getPaidAmount(),
+            !isDebitToPay,
+            date,
+            moveLineNo++,
+            paymentVoucher.getRef(),
+            null);
+
+    move.addMoveLineListItem(moveLineToValueForCollectionAccount);
+
+    MoveLine valueForCollectionMoveLine = optionalValueForCollectionMoveLine.get();
+    Reconcile reconcile;
+    if (isDebitToPay) {
+      reconcile =
+          reconcileService.createReconcile(
+              valueForCollectionMoveLine,
+              moveLineToValueForCollectionAccount,
+              paymentVoucher.getPaidAmount(),
+              true);
+    } else {
+      reconcile =
+          reconcileService.createReconcile(
+              moveLineToValueForCollectionAccount,
+              valueForCollectionMoveLine,
+              paymentVoucher.getPaidAmount(),
+              true);
+    }
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true, true);
+    }
+    moveValidateService.accounting(move);
+  }
+
+  protected Optional<MoveLine> extractMoveLineFromValueForCollectionMove(
+      Move move, Account account) {
+
+    return move.getMoveLineList().stream()
+        .filter(moveLine -> Objects.equals(account, moveLine.getAccount()))
+        .findFirst();
   }
 
   /**
@@ -184,34 +340,27 @@ public class PaymentVoucherConfirmService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createMoveAndConfirm(PaymentVoucher paymentVoucher) throws AxelorException {
-    Partner payerPartner = paymentVoucher.getPartner();
-    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
-    Company company = paymentVoucher.getCompany();
-    BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
-    if (companyBankDetails == null) {
-      companyBankDetails =
-          Beans.get(BankDetailsService.class)
-              .getDefaultCompanyBankDetails(
-                  paymentVoucher.getCompany(),
-                  paymentVoucher.getPaymentMode(),
-                  paymentVoucher.getPartner(),
-                  paymentVoucher.getOperationTypeSelect());
-      paymentVoucher.setCompanyBankDetails(companyBankDetails);
-    }
-    Journal journal =
-        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
-    LocalDate paymentDate = paymentVoucher.getPaymentDate();
-    boolean scheduleToBePaid = false;
-    Account paymentModeAccount =
-        paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
+  public void createMoveAndConfirm(
+      PaymentVoucher paymentVoucher,
+      Journal journal,
+      Account paymentModeAccount,
+      boolean valueForCollection)
+      throws AxelorException {
 
-    // If paid by a moveline check if all the lines selected have the same account + company
+    boolean scheduleToBePaid = false;
+    Partner payerPartner = paymentVoucher.getPartner();
+    Company company = paymentVoucher.getCompany();
+    LocalDate paymentDate = paymentVoucher.getPaymentDate();
+
+    // If paid by a moveline check if all the lines selected have the same account +
+    // company
     // Excess payment
     boolean allRight =
         paymentVoucherControlService.checkIfSameAccount(
             paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine());
-    // Check if allright=true (means companies and accounts in lines are all the same and same as in
+
+    // Check if allright=true (means companies and accounts in lines are all the
+    // same and same as in
     // move line selected for paying
     log.debug("allRight : {}", allRight);
 
@@ -228,7 +377,8 @@ public class PaymentVoucherConfirmService {
         || (paymentVoucher.getMoveLine() != null && !allRight)
         || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null)) {
 
-      // Manage all the cases in the same way. As if a move line (Excess payment) is selected, we
+      // Manage all the cases in the same way. As if a move line (Excess payment) is
+      // selected, we
       // cancel it first
       Move move =
           moveCreateService.createMoveWithPaymentVoucher(
@@ -237,7 +387,7 @@ public class PaymentVoucherConfirmService {
               paymentVoucher,
               payerPartner,
               paymentDate,
-              paymentMode,
+              paymentVoucher.getPaymentMode(),
               null,
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
@@ -246,8 +396,7 @@ public class PaymentVoucherConfirmService {
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());
-
-      paymentVoucher.setGeneratedMove(move);
+      setMove(paymentVoucher, move, valueForCollection);
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
       int moveLineNo = 1;
@@ -303,9 +452,11 @@ public class PaymentVoucherConfirmService {
       // Create move line for the payment amount
       MoveLine moveLine = null;
 
-      // cancelling the moveLine (excess payment) by creating the balance of all the payments
+      // cancelling the moveLine (excess payment) by creating the balance of all the
+      // payments
       // on the same account as the moveLine (excess payment)
-      // in the else case we create a classical balance on the bank account of the payment mode
+      // in the else case we create a classical balance on the bank account of the
+      // payment mode
 
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
@@ -323,7 +474,7 @@ public class PaymentVoucherConfirmService {
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
         if (reconcile != null) {
-          reconcileService.confirmReconcile(reconcile, true);
+          reconcileService.confirmReconcile(reconcile, true, true);
         }
       } else {
 
@@ -346,17 +497,17 @@ public class PaymentVoucherConfirmService {
         BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
 
         // TODO rajouter le process d'imputation automatique
-        //              if(paymentVoucher.getHasAutoInput())  {
+        // if(paymentVoucher.getHasAutoInput()) {
         //
-        //                  List<MoveLine> debitMoveLines =
+        // List<MoveLine> debitMoveLines =
         // Lists.newArrayList(pas.getDebitLinesToPay(contractLine,
         // paymentVoucher.getPaymentScheduleToPay()));
-        //                  pas.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount,
+        // pas.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount,
         // move, moveLineNo,
-        //                          paymentVoucher.getPayerPartner(), company, contractLine, null,
+        // paymentVoucher.getPayerPartner(), company, contractLine, null,
         // paymentDate, updateCustomerAccount);
-        //              }
-        //              else  {
+        // }
+        // else {
 
         Account partnerAccount =
             Beans.get(AccountCustomerService.class)
@@ -381,11 +532,45 @@ public class PaymentVoucherConfirmService {
         }
       }
       moveValidateService.accounting(move);
-      paymentVoucher.setGeneratedMove(move);
+      setMove(paymentVoucher, move, valueForCollection);
     }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
 
     deleteUnPaidLines(paymentVoucher);
+  }
+
+  protected void setMove(PaymentVoucher paymentVoucher, Move move, boolean valueForCollection) {
+    if (valueForCollection) {
+      paymentVoucher.setValueForCollectionMove(move);
+      return;
+    }
+    paymentVoucher.setGeneratedMove(move);
+  }
+
+  /*
+   * Get companyBankDetails from paymentVoucher. If companyBankDetails is null,
+   * get default from company, paymentMode, partner and operationTypeSelect and
+   * fill companyBankDetails in paymentVoucher.
+   *
+   * @return
+   */
+  protected BankDetails getBankDetails(PaymentVoucher paymentVoucher) throws AxelorException {
+
+    BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+    if (Objects.nonNull(companyBankDetails)) {
+      return companyBankDetails;
+    }
+
+    companyBankDetails =
+        Beans.get(BankDetailsService.class)
+            .getDefaultCompanyBankDetails(
+                paymentVoucher.getCompany(),
+                paymentVoucher.getPaymentMode(),
+                paymentVoucher.getPartner(),
+                paymentVoucher.getOperationTypeSelect());
+    paymentVoucher.setCompanyBankDetails(companyBankDetails);
+
+    return companyBankDetails;
   }
 
   protected int createFinancialDiscountMoveLines(
@@ -410,10 +595,16 @@ public class PaymentVoucherConfirmService {
 
     LocalDate dueDate =
         moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
-    Account financialDiscountAccount =
-        isPurchase
-            ? accountConfig.getPurchFinancialDiscountAccount()
-            : accountConfig.getSaleFinancialDiscountAccount();
+    Account financialDiscountAccount = null;
+
+    if (isPurchase) {
+      financialDiscountAccount =
+          accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
+    } else {
+      financialDiscountAccount =
+          accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
+    }
+
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
 
     MoveLine financialDiscountMoveLine =
@@ -583,7 +774,7 @@ public class PaymentVoucherConfirmService {
         reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
     return moveLine;
   }

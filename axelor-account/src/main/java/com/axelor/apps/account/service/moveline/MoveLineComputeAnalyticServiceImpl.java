@@ -37,6 +37,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyticService {
 
@@ -138,9 +139,10 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
 
   @Override
   public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException {
-    if (moveLine != null && moveLine.getAccount() != null) {
+    if (moveLine != null) {
       Account account = moveLine.getAccount();
-      if (account.getAnalyticDistributionAuthorized()
+      if (account != null
+          && account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionTemplate() != null
           && accountConfigService
                   .getAccountConfig(account.getCompany())
@@ -148,9 +150,9 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
               == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
         moveLine.setAnalyticDistributionTemplate(
             moveLine.getAccount().getAnalyticDistributionTemplate());
+      } else {
+        moveLine.setAnalyticDistributionTemplate(null);
       }
-    } else {
-      moveLine.setAnalyticDistributionTemplate(null);
     }
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
@@ -215,10 +217,12 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     moveLine.setAxis3AnalyticAccount(null);
     moveLine.setAxis4AnalyticAccount(null);
     moveLine.setAxis5AnalyticAccount(null);
-    moveLine
-        .getAnalyticMoveLineList()
-        .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
-    moveLine.getAnalyticMoveLineList().clear();
+    if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine
+          .getAnalyticMoveLineList()
+          .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
+      moveLine.getAnalyticMoveLineList().clear();
+    }
     return moveLine;
   }
 

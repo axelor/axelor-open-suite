@@ -72,7 +72,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -189,6 +188,12 @@ public class MrpServiceImpl implements MrpService {
     this.completeMrp(mrpRepository.find(mrp.getId()));
     this.doCalculation(mrpRepository.find(mrp.getId()));
     this.finish(mrpRepository.find(mrp.getId()));
+  }
+
+  @Override
+  public boolean isOnGoing(Mrp mrp) {
+
+    return mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED;
   }
 
   @Transactional
@@ -356,7 +361,6 @@ public class MrpServiceImpl implements MrpService {
             .order("mrpLineType.sequence")
             .order("id")
             .fetch();
-
     for (MrpLine mrpLine : mrpLineList) {
 
       doASecondPass =
@@ -383,7 +387,11 @@ public class MrpServiceImpl implements MrpService {
     BigDecimal cumulativeQty = mrpLine.getCumulativeQty();
 
     MrpLineType mrpLineType = mrpLine.getMrpLineType();
-
+    if (mrpLineType != null
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+        && mrpLine.getEstimatedDeliveryMrpLine() != null) {
+      return false;
+    }
     boolean isProposalElement = this.isProposalElement(mrpLineType);
 
     BigDecimal minQty = mrpLine.getMinQty();
@@ -530,7 +538,12 @@ public class MrpServiceImpl implements MrpService {
       }
       mrpLine.setQty(mrpLine.getQty().add(reorderQty));
       mrpLine.setRelatedToSelectName(null);
-
+      MrpLine estimatedDeliveryMrpLine = mrpLine.getEstimatedDeliveryMrpLine();
+      if (estimatedDeliveryMrpLine != null) {
+        estimatedDeliveryMrpLine.setQty(estimatedDeliveryMrpLine.getQty().add(reorderQty));
+        estimatedDeliveryMrpLine.setRelatedToSelectName(relatedToSelectName);
+        this.copyMrpLineOrigins(estimatedDeliveryMrpLine, mrpLineOriginList);
+      }
     } else {
       MrpLine createdmrpLine =
           this.createMrpLine(
@@ -542,11 +555,39 @@ public class MrpServiceImpl implements MrpService {
               BigDecimal.ZERO,
               stockLocation,
               null);
+
+      mrpLine = mrpLineRepository.save(createdmrpLine);
+
       if (createdmrpLine != null) {
         createdmrpLine.setWarnDelayFromSupplier(
             getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
-        mrpLine = mrpLineRepository.save(createdmrpLine);
+
+        MrpLineType mrpLineTypeEstimatedDelivery =
+            this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY);
+        if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+            && mrpLineTypeEstimatedDelivery != null) {
+          MrpLine createdEstimatedDeliveryMrpLine =
+              this.createMrpLine(
+                  mrp,
+                  product,
+                  mrpLineTypeEstimatedDelivery,
+                  reorderQty,
+                  initialMaturityDate,
+                  BigDecimal.ZERO,
+                  stockLocation,
+                  null);
+          createdEstimatedDeliveryMrpLine.setRelatedToSelectName(relatedToSelectName);
+          createdEstimatedDeliveryMrpLine.setEstimatedDeliveryDate(
+              maturityDate.plusDays(product.getSupplierDeliveryTime()));
+          createdEstimatedDeliveryMrpLine.setWarnDelayFromSupplier(
+              createdmrpLine.getWarnDelayFromSupplier());
+          this.copyMrpLineOrigins(createdEstimatedDeliveryMrpLine, mrpLineOriginList);
+          createdmrpLine.setEstimatedDeliveryMrpLine(createdEstimatedDeliveryMrpLine);
+          createdmrpLine.setDeliveryDelayDate(
+              initialMaturityDate.minusDays(product.getSupplierDeliveryTime()));
+        }
       }
+
       mrpLine.setRelatedToSelectName(relatedToSelectName);
     }
 
@@ -556,7 +597,7 @@ public class MrpServiceImpl implements MrpService {
   protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
     return mrpLine.getMrpLineType().getElementSelect()
             == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-        && DAYS.between(initialMaturityDate, mrpLine.getMaturityDate())
+        && DAYS.between(mrpLine.getMaturityDate(), initialMaturityDate)
             < mrpLine.getProduct().getSupplierDeliveryTime();
   }
 
@@ -564,8 +605,7 @@ public class MrpServiceImpl implements MrpService {
 
     Partner supplierPartner = product.getDefaultSupplierPartner();
 
-    if (supplierPartner != null
-        && Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
+    if (supplierPartner != null && appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
 
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
 
@@ -671,9 +711,16 @@ public class MrpServiceImpl implements MrpService {
             .fetch();
 
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
-
     for (MrpLine mrpLine : mrpLineList) {
-      mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+
+      if (mrpLine.getMrpLineType() != null
+          && mrpLine.getMrpLineType().getElementSelect()
+              == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+          && mrpLine.getEstimatedDeliveryMrpLine() != null) {
+        mrpLine.setCumulativeQty(previousCumulativeQty);
+      } else {
+        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+      }
       previousCumulativeQty = mrpLine.getCumulativeQty();
 
       log.debug(
@@ -738,7 +785,6 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrderLine.getDesiredDelivDate();
     }
-
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
     if (this.isBeforeEndDate(maturityDate) || purchaseOrderMrpLineType.getIgnoreEndDate()) {

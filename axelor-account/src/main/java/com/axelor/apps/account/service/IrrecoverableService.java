@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
@@ -57,12 +58,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -377,6 +380,38 @@ public class IrrecoverableService {
     return icl;
   }
 
+  public Irrecoverable retrieveAndInit(Irrecoverable irrecoverable) {
+    irrecoverable = irrecoverableRepo.find(irrecoverable.getId());
+    if (irrecoverable.getMoveSet() == null) {
+      irrecoverable.setMoveSet(Sets.newHashSet());
+    }
+    return irrecoverable;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void manageIrrecoverableInvoice(Irrecoverable irrecoverable, Invoice invoice)
+      throws AxelorException {
+
+    log.debug("Facture : {}", invoice.getInvoiceId());
+    irrecoverable = retrieveAndInit(irrecoverable);
+    invoice = invoiceRepo.find(invoice.getId());
+    this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
+
+    irrecoverableRepo.save(irrecoverable);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void manageIrrecoverablePaymentScheduleLine(
+      Irrecoverable irrecoverable, PaymentScheduleLine paymentScheduleLine) throws AxelorException {
+
+    log.debug("Ligne d'échéancier : {}", paymentScheduleLine.getName());
+    irrecoverable = retrieveAndInit(irrecoverable);
+    paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
+    this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
+
+    irrecoverableRepo.save(irrecoverable);
+  }
+
   /**
    * Procédure permettant de
    *
@@ -385,35 +420,14 @@ public class IrrecoverableService {
    */
   public int passInIrrecoverable(Irrecoverable irrecoverable) throws AxelorException {
 
-    irrecoverable.setMoveSet(new HashSet<Move>());
-
-    EntityTransaction transaction = JPA.em().getTransaction();
-
     int anomaly = 0;
 
     this.testCompanyField(irrecoverable.getCompany());
 
-    int i = 0;
-    if (irrecoverable.getInvoiceSet() != null && irrecoverable.getInvoiceSet().size() != 0) {
+    if (irrecoverable.getInvoiceSet() != null && !irrecoverable.getInvoiceSet().isEmpty()) {
       for (Invoice invoice : irrecoverable.getInvoiceSet()) {
-        i++;
-
-        if (!transaction.isActive()) {
-          transaction.begin();
-        }
-
         try {
-          log.debug("Invoice : {}", invoice.getInvoiceId());
-
-          this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
-
-          irrecoverableRepo.save(irrecoverable);
-
-          if (i % 50 == 0) {
-            JPA.flush();
-            JPA.clear();
-          }
-
+          this.manageIrrecoverableInvoice(irrecoverable, invoice);
         } catch (AxelorException e) {
           anomaly++;
           TraceBackService.trace(
@@ -430,35 +444,16 @@ public class IrrecoverableService {
               ExceptionOriginRepository.IRRECOVERABLE,
               irrecoverable.getId());
           log.error("Bug generated for the invoice : {}", invoice.getInvoiceId());
-
-        } finally {
-          if (!transaction.isActive()) {
-            transaction.begin();
-          }
         }
       }
     }
+    irrecoverable = this.retrieveAndInit(irrecoverable);
     if (irrecoverable.getPaymentScheduleLineSet() != null
         && irrecoverable.getPaymentScheduleLineSet().size() != 0) {
       for (PaymentScheduleLine paymentScheduleLine : irrecoverable.getPaymentScheduleLineSet()) {
-        i++;
-
-        if (!transaction.isActive()) {
-          transaction.begin();
-        }
 
         try {
-          log.debug("Payment schedule line : {}", paymentScheduleLine.getName());
-
-          this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
-
-          irrecoverableRepo.save(irrecoverable);
-
-          if (i % 50 == 0) {
-            JPA.flush();
-            JPA.clear();
-          }
-
+          this.manageIrrecoverablePaymentScheduleLine(irrecoverable, paymentScheduleLine);
         } catch (AxelorException e) {
           anomaly++;
           TraceBackService.trace(
@@ -482,20 +477,22 @@ public class IrrecoverableService {
               irrecoverable.getId());
           log.error(
               "Bug generated for the payment schedule line : {}", paymentScheduleLine.getName());
-
-        } finally {
-          if (!transaction.isActive()) {
-            transaction.begin();
-          }
         }
       }
     }
-    if (!transaction.isActive()) {
-      transaction.begin();
+    irrecoverable = this.retrieveAndInit(irrecoverable);
+    if (irrecoverable != null
+        && irrecoverable.getMoveSet() != null
+        && !irrecoverable.getMoveSet().isEmpty()) {
+      EntityTransaction transaction = JPA.em().getTransaction();
+      if (!transaction.isActive()) {
+        transaction.begin();
+      }
+
+      irrecoverable.setStatusSelect(IrrecoverableRepository.STATUS_VALIDATED);
+      irrecoverableRepo.save(irrecoverable);
+      transaction.commit();
     }
-    irrecoverable.setStatusSelect(IrrecoverableRepository.STATUS_VALIDATED);
-    irrecoverableRepo.save(irrecoverable);
-    transaction.commit();
 
     return anomaly;
   }
@@ -527,10 +524,15 @@ public class IrrecoverableService {
     // Getting customer MoveLine from Facture
     MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
+    List<Reconcile> reconcileList = new ArrayList<Reconcile>();
     // Ajout de l'écriture générée
     Move move =
         this.createIrrecoverableMove(
-            invoice, prorataRate, invoice.getRejectMoveLine() != null, irrecoverable.getName());
+            invoice,
+            prorataRate,
+            invoice.getRejectMoveLine() != null,
+            irrecoverable.getName(),
+            reconcileList);
     if (move == null) {
       throw new AxelorException(
           irrecoverable,
@@ -539,6 +541,13 @@ public class IrrecoverableService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
+
+    if (!ObjectUtils.isEmpty(reconcileList)) {
+      for (Reconcile reconcile : reconcileList) {
+        reconcileService.confirmReconcile(reconcile, true, true);
+      }
+    }
+
     irrecoverable.getMoveSet().add(move);
 
     customerMoveLine.setIrrecoverableStatusSelect(
@@ -836,12 +845,18 @@ public class IrrecoverableService {
    * @throws AxelorException
    */
   public Move createIrrecoverableMove(
-      Invoice invoice, BigDecimal prorataRate, boolean isInvoiceReject, String irrecoverableName)
+      Invoice invoice,
+      BigDecimal prorataRate,
+      boolean isInvoiceReject,
+      String irrecoverableName,
+      List<Reconcile> reconcileList)
       throws AxelorException {
     Company company = invoice.getCompany();
     Partner payerPartner = invoice.getPartner();
 
     AccountConfig accountConfig = company.getAccountConfig();
+
+    Move invoiceMove = invoice.getMove();
     // Move
     Move move =
         moveCreateService.createMove(
@@ -852,18 +867,18 @@ public class IrrecoverableService {
             null,
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+            MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
-    BigDecimal amountExTax;
     MoveLine debitMoveLine = null;
     MoveLine lastDebitMoveLine = null;
     BigDecimal creditAmount = null;
-    BigDecimal debitAmount = null;
+
+    BigDecimal debitAmount = BigDecimal.ZERO;
     String originStr = null;
     if (invoice.getMove().getOrigin() != null && irrecoverableName != null) {
       originStr = invoice.getMove().getOrigin() + ":" + irrecoverableName;
@@ -872,102 +887,87 @@ public class IrrecoverableService {
     } else if (invoice.getMove().getOrigin() != null && irrecoverableName == null) {
       originStr = invoice.getMove().getOrigin();
     }
+
     if (isInvoiceReject) {
       creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
-      debitAmount = creditAmount;
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
-      debitAmount = creditAmount;
     }
 
     // Debits MoveLines Tva
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+    for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
 
-      amount =
-          (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
-      // do not generate move line with amount equal to zero
-      if (amount.signum() == 0) {
-        continue;
+      if (invoiceMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+        amount = invoiceMoveLine.getAmountRemaining();
+
+        // Credit MoveLine Customer account (411, 416, ...)
+        MoveLine creditMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                payerPartner,
+                invoiceMoveLine.getAccount(),
+                amount,
+                false,
+                appAccountService.getTodayDate(company),
+                seq,
+                originStr,
+                invoice.getInvoiceId());
+        move.getMoveLineList().add(creditMoveLine);
+
+        Reconcile reconcile =
+            reconcileService.createReconcile(invoiceMoveLine, creditMoveLine, amount, false);
+        if (reconcile != null) {
+          reconcileList.add(reconcile);
+        }
+      } else {
+        amount =
+            invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
+        if (AccountTypeRepository.TYPE_TAX.equals(
+            invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          debitMoveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  taxAccountService.getAccount(
+                      invoiceMoveLine.getTaxLine().getTax(), company, false, false),
+                  amount,
+                  true,
+                  invoiceMoveLine.getTaxLine(),
+                  appAccountService.getTodayDate(company),
+                  seq,
+                  originStr,
+                  invoice.getInvoiceId());
+
+          debitMoveLine.setVatSystemSelect(invoiceMoveLine.getVatSystemSelect());
+
+        } else {
+          // Debit MoveLine 654 (irrecoverable account)
+          debitMoveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  accountConfig.getIrrecoverableAccount(),
+                  amount,
+                  true,
+                  invoiceMoveLine.getTaxLine(),
+                  appAccountService.getTodayDate(company),
+                  seq,
+                  originStr,
+                  invoice.getInvoiceId());
+        }
+        move.getMoveLineList().add(debitMoveLine);
+        seq++;
+
+        debitAmount = debitAmount.add(amount);
+        lastDebitMoveLine = debitMoveLine;
       }
-      debitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              payerPartner,
-              taxAccountService.getAccount(
-                  invoiceLineTax.getTaxLine().getTax(), company, false, false),
-              amount,
-              true,
-              invoiceLineTax.getTaxLine(),
-              appAccountService.getTodayDate(company),
-              seq,
-              originStr,
-              invoice.getInvoiceId());
-
-      debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
-
-      move.getMoveLineList().add(debitMoveLine);
-      seq++;
-
-      debitAmount = debitAmount.subtract(amount);
-
-      amountExTax =
-          (invoiceLineTax.getExTaxBase().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
-
-      // Debit MoveLine 654 (irrecoverable account)
-      debitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              payerPartner,
-              accountConfig.getIrrecoverableAccount(),
-              amountExTax,
-              true,
-              invoiceLineTax.getTaxLine(),
-              appAccountService.getTodayDate(company),
-              seq,
-              originStr,
-              invoice.getInvoiceId());
-
-      move.getMoveLineList().add(debitMoveLine);
-      seq++;
-
-      debitAmount = debitAmount.subtract(amountExTax);
-      lastDebitMoveLine = debitMoveLine;
     }
 
     if (debitAmount != null
-        && BigDecimal.ZERO.compareTo(debitAmount) != 0
+        && debitAmount.compareTo(creditAmount) != 0
         && lastDebitMoveLine != null) {
-      lastDebitMoveLine.setDebit(lastDebitMoveLine.getDebit().add(debitAmount));
-    }
-
-    // Getting customer MoveLine from Facture
-    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
-    if (customerMoveLine == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          invoice.getInvoiceId());
-    }
-
-    // Credit MoveLine Customer account (411, 416, ...)
-    MoveLine creditMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            payerPartner,
-            customerMoveLine.getAccount(),
-            creditAmount,
-            false,
-            appAccountService.getTodayDate(company),
-            seq,
-            originStr,
-            invoice.getInvoiceId());
-    move.getMoveLineList().add(creditMoveLine);
-
-    Reconcile reconcile =
-        reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
-    if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      lastDebitMoveLine.setDebit(
+          lastDebitMoveLine.getDebit().add(creditAmount.subtract(debitAmount)));
     }
 
     return move;
@@ -1008,7 +1008,7 @@ public class IrrecoverableService {
             null,
             payerPartner != null ? payerPartner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            moveLine.getMove().getFunctionalOriginSelect(),
+            MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             originStr,
             moveLine.getDescription());
     move.setOriginDate(moveLine.getMove().getDate());
@@ -1031,7 +1031,7 @@ public class IrrecoverableService {
 
     Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     Tax tax = accountConfig.getIrrecoverableStandardRateTax();

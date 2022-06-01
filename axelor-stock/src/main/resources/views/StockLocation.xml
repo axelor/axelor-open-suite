@@ -7,7 +7,7 @@
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-stock-location-method-open-print-wizard"/>
+        onClick="action-stock-location-method-open-print-wizard"/>
     </toolbar>
     <field name="name"/>
     <field name="parentStockLocation" form-view="stock-location-form"

@@ -95,15 +95,12 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
           I18n.get(IExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
           invoice.getInvoiceId());
     }
-    int typeSelect = paymentMode.getTypeSelect();
-    int inOutSelect = paymentMode.getInOutSelect();
 
-    if ((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
-        || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
-            && inOutSelect == PaymentModeRepository.OUT)
-        || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
-                && inOutSelect == PaymentModeRepository.IN)
-            && paymentMode.getGenerateBankOrder()) {
+    if (paymentModeService.isPendingPayment(paymentMode)
+        && paymentMode.getGenerateBankOrder()
+        && paymentMode.getAccountingTriggerSelect()
+            != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+        && invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_DRAFT) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
@@ -118,14 +115,18 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
-        && !paymentMode.getGenerateBankOrder()) {
+        && (!paymentMode.getGenerateBankOrder()
+            || paymentMode.getAccountingTriggerSelect()
+                == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE)) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
       invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
-    if (paymentMode.getGenerateBankOrder()) {
+    if (paymentMode.getGenerateBankOrder()
+        && invoicePayment.getBankOrder() == null
+        && invoicePayment.getPaymentSession() == null) {
       this.createBankOrder(invoicePayment);
     }
   }

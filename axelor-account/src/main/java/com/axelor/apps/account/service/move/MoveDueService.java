@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -39,9 +40,11 @@ public class MoveDueService {
 
   private MoveLineRepository moveLineRepository;
 
-  @Inject
-  public MoveDueService(MoveLineRepository moveLineRepository) {
+  protected InvoiceService invoiceService;
 
+  @Inject
+  public MoveDueService(MoveLineRepository moveLineRepository, InvoiceService invoiceService) {
+    this.invoiceService = invoiceService;
     this.moveLineRepository = moveLineRepository;
   }
 
@@ -69,6 +72,7 @@ public class MoveDueService {
 
     // Ajout de la facture d'origine
     List<MoveLine> debitMoveLines = Lists.newArrayList(this.getOrignalInvoiceFromRefund(invoice));
+    debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
 
     // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
     List<? extends MoveLine> othersDebitMoveLines = null;

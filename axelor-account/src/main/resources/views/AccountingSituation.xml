@@ -31,10 +31,10 @@
   <form name="accounting-situation-partner-form" title="Accounting situation"
     model="com.axelor.apps.account.db.AccountingSituation"
     onLoad="action-accounting-situation-group-form-onload"
-    onNew="action-accounting-situation-group-form-onnew" width="large">
+    onNew="action-accounting-situation-group-partner-onnew" width="large">
     <panel name="mainPanel">
       <field name="company" widget="SuggestBox" canEdit="false"
-        onChange="action-supplychain-method-compute-used-credit" form-view="company-form"
+        onChange="action-accounting-situation-group-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
       <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
@@ -142,11 +142,11 @@
 
   <form name="accounting-situation-form" title="Accounting situation"
     model="com.axelor.apps.account.db.AccountingSituation"
-    onNew="action-account-accounting-situation-default-set,action-accounting-situation-attrs-hidden-multi-banks"
+    onNew="action-accounting-situation-group-onnew"
     onLoad="action-accounting-situation-attrs-hidden-multi-banks">
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-accounting-situation-method-set-holdback-accounts"/>
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="customerAccount"
@@ -196,10 +196,14 @@
       action="action-accounting-situation-view-move-lines"/>
   </form>
 
-  <action-group name="action-accounting-situation-group-form-onnew">
+  <action-group name="action-accounting-situation-group-onnew">
     <action name="action-account-accounting-situation-default-set"/>
-    <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+  </action-group>
+
+  <action-group name="action-accounting-situation-group-partner-onnew">
+    <action name="action-accounting-situation-group-onnew"/>
+    <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-record-manage-vat-system-onnew"/>
   </action-group>
 
@@ -209,6 +213,11 @@
     <action name="action-accounting-situation-attrs-hide-employee-account"/>
     <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+  </action-group>
+
+  <action-group name="action-accounting-situation-group-company-onchange">
+    <action name="action-supplychain-method-compute-used-credit"/>
+    <action name="action-accounting-situation-method-set-holdback-accounts"/>
   </action-group>
 
   <action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -275,7 +284,7 @@
   <action-record name="action-record-manage-vat-system-onnew"
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="vatSystemSelect" expr="eval: 1"
-      if="partner != null &amp;&amp; (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
+      if="partner?.isCustomer || partner?.isSupplier"/>
   </action-record>
 
   <action-method name="action-accounting-situation-method-set-default-mail">
@@ -297,5 +306,11 @@
     <call class="com.axelor.apps.account.web.AccountingSituationController"
       method="openDebtRecovery"/>
   </action-method>
+
+  <action-method name="action-accounting-situation-method-set-holdback-accounts">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="setHoldBackAccounts"/>
+  </action-method>
+
 
 </object-views>

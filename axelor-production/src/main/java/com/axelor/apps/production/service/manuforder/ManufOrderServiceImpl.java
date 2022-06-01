@@ -462,7 +462,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
@@ -532,7 +531,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         Beans.get(OperationOrderStockMoveService.class)
             .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
-        Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+        operationOrderService.updateDiffProdProductList(operationOrder);
       }
     }
 
@@ -734,6 +733,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     // update stock location by cancelling then planning stock move.
     stockMoveService.cancel(stockMove);
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 

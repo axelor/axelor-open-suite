@@ -241,7 +241,7 @@ public class AccountClearanceService {
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     debitMoveLine.setAccountClearance(accountClearance);

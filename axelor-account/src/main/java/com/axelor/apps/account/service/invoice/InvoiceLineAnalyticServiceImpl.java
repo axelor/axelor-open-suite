@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
 
@@ -121,8 +122,9 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException {
 
-    if (invoiceLine != null && invoiceLine.getAccount() != null) {
-      if (invoiceLine.getAccount().getAnalyticDistributionAuthorized()
+    if (invoiceLine != null) {
+      if (invoiceLine.getAccount() != null
+          && invoiceLine.getAccount().getAnalyticDistributionAuthorized()
           && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
           && accountConfigService
                   .getAccountConfig(invoiceLine.getAccount().getCompany())
@@ -131,11 +133,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
 
         invoiceLine.setAnalyticDistributionTemplate(
             invoiceLine.getAccount().getAnalyticDistributionTemplate());
+      } else {
+        invoiceLine.setAnalyticDistributionTemplate(null);
       }
     } else {
       invoiceLine.setAnalyticDistributionTemplate(null);
     }
-
     return invoiceLine;
   }
 
@@ -190,10 +193,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     invoiceLine.setAxis3AnalyticAccount(null);
     invoiceLine.setAxis4AnalyticAccount(null);
     invoiceLine.setAxis5AnalyticAccount(null);
-    invoiceLine
-        .getAnalyticMoveLineList()
-        .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
-    invoiceLine.getAnalyticMoveLineList().clear();
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      invoiceLine
+          .getAnalyticMoveLineList()
+          .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
+      invoiceLine.getAnalyticMoveLineList().clear();
+    }
     return invoiceLine;
   }
 }

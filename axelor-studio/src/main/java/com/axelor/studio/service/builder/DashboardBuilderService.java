@@ -91,7 +91,12 @@ public class DashboardBuilderService {
       }
 
       dashlet.setAction(actionName);
-      dashlet.setHeight("350");
+      Integer height = dashletBuilder.getHeight();
+      if (height == 0) {
+        height = 350;
+      }
+      dashlet.setHeight(height.toString());
+      dashlet.setCanSearch(dashletBuilder.getCanSearch());
 
       Integer colSpan = dashletBuilder.getColspan();
       if (colSpan > 12) {

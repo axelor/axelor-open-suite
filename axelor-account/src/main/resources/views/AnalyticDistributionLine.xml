@@ -16,9 +16,11 @@
 
   <grid name="analytic-distribution-line-editable-grid" title="Analytic distribution lines"
     model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis"
-    editable="true">
+    editable="true" onNew="action-group-analytic-distribution-line-set-on-new">
     <field name="analyticAccount" grid-view="analytic-account-grid"
-      form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"/>
+      form-view="analytic-account-form" required="true"
+      onSelect="action-attrs-domain-account-distribution-line"
+      onChange="action-analytic-distribution-account-on-change"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
       hidden="true"/>
     <field name="percentage"/>
@@ -31,8 +33,7 @@
     groupBy="analyticAxis">
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="analyticAccount" required="true" grid-view="analytic-account-grid"
-      form-view="analytic-account-form"
-      domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"
+      form-view="analytic-account-form" onSelect="action-attrs-domain-account-distribution-line"
       onChange="action-analytic-distribution-account-on-change"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
@@ -41,13 +42,13 @@
 
   <form name="analytic-distribution-line-form" title="Analytic distribution line"
     model="com.axelor.apps.account.db.AnalyticDistributionLine"
-    onNew="action-group-analytic-distribution-line-set-on-new"
-    onLoad="action-group-analytic-distribution-line-set-on-new">
+    onNew="action-group-analytic-distribution-line-set-on-new">
     <panel name="mainPanel">
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true" onSelect="action-attrs-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
@@ -67,7 +68,8 @@
         onChange="action-axis-change-remove-account" required="true" readonly="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
-        form-view="analytic-journal-form" required="true"/>
+        form-view="analytic-journal-form" required="true"
+        onSelect="action-attrs-domain-journal-distribution-line"/>
     </panel>
   </form>
 
@@ -82,8 +84,6 @@
   </action-attrs>
 
   <action-group name="action-group-analytic-distribution-line-set-on-new">
-    <action name="action-attrs-domain-axis-distribution-line"/>
-    <action name="action-attrs-domain-journal-distribution-line"/>
     <action name="action-record-set-journal-by-default-distribution-line"/>
   </action-group>
 
@@ -97,12 +97,20 @@
 
   <action-attrs name="action-attrs-domain-account-distribution-line">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id} AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
     <attribute name="domain" for="analyticAccount"
       expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id}&quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
     <attribute name="domain" for="analyticAccount" expr="eval: null"
+      if="!(__parent__ &amp;&amp; __parent__.company)"/>
+    <attribute name="domain" for="analyticAccountSet"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
+    <attribute name="domain" for="analyticAccountSet"
+      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id}&quot;"
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
+    <attribute name="domain" for="analyticAccountSet" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
   </action-attrs>
 

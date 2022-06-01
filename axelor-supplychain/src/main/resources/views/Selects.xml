@@ -32,6 +32,7 @@
     <option value="4">Sales forecast</option>
     <option value="5">Purchase proposal</option>
     <option value="10">Stock history</option>
+    <option value="11">Purchase proposal / Estimated delivery</option>
   </selection>
 
   <selection name="supplychain.mrp.line.type.select">
@@ -39,6 +40,10 @@
     <option value="2">Out of stock</option>
   </selection>
 
+  <selection name="supplychain.purchase.order.invoicing.wizard.select">
+    <option value="1">Invoice all</option>
+    <option value="2">Invoice an advance payment</option>
+  </selection>
 
   <selection name="supplychain.mrp.line.related.to.select">
     <option value="com.axelor.apps.sale.db.SaleOrderLine">Sale order line</option>
@@ -174,6 +179,10 @@
   <selection id="supplychain.account.closure.assistant.line.action.select"
     name="account.closure.assistant.line.action.select">
     <option value="1">Cut off generation</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="supplychain.batch.batch.type.select">
+    <option value="900">Supplychain batch</option>
   </selection>
 
 </object-views>

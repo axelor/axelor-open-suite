@@ -1,5 +1,0 @@
----
-title: Mass update
-type: feature
-description: |
-    Enable massUpdate on some fields of MetaMenu,MetaView and MetaAction in axelor-admin.

@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -87,6 +88,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -729,8 +731,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return new HashSet<>();
     }
     String filter = writeGeneralFilterForAdvancePayment();
-    filter += " AND self.partner = :_partner AND self.currency = :_currency";
-
+    filter +=
+        " AND self.partner = :_partner "
+            + "AND self.currency = :_currency "
+            + "AND self.operationTypeSelect = :_operationTypeSelect";
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo
@@ -738,10 +742,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
                 .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+                .bind("_operationTypeSelect", invoice.getOperationTypeSelect())
                 .bind("_partner", partner)
                 .bind("_currency", currency)
                 .fetch());
-
     filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
     return advancePaymentInvoices;
   }
@@ -830,7 +834,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
+  public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice)
+      throws AxelorException {
     List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
 
     Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
@@ -842,9 +847,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         Beans.get(InvoicePaymentToolService.class);
     for (Invoice advancePayment : advancePayments) {
       invoicePayments = advancePayment.getInvoicePaymentList();
-      List<MoveLine> creditMoveLines =
-          invoicePaymentToolService.getCreditMoveLinesFromPayments(invoicePayments);
-      advancePaymentMoveLines.addAll(creditMoveLines);
+      // Since purchase order can have advance payment we check if it is a purchase or not
+      // If it is a purchase, we must add debit lines from payment and not credit line.
+      if (moveToolService.isDebitCustomer(invoice, true)) {
+        List<MoveLine> creditMoveLines =
+            invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, true);
+        advancePaymentMoveLines.addAll(creditMoveLines);
+      } else {
+        List<MoveLine> debitMoveLines =
+            invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, false);
+        advancePaymentMoveLines.addAll(debitMoveLines);
+      }
     }
     return advancePaymentMoveLines;
   }
@@ -1183,5 +1196,25 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
     invoiceTerm.setBankDetails(invoice.getBankDetails());
+  }
+
+  @Override
+  public boolean checkInvoiceTerms(Invoice invoice) {
+    return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
+  public LocalDate getFinancialDiscountDeadlineDate(Invoice invoice) {
+    int discountDelay =
+        Optional.of(invoice)
+            .map(Invoice::getFinancialDiscount)
+            .map(FinancialDiscount::getDiscountDelay)
+            .orElse(0);
+
+    LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
+
+    return deadlineDate.isBefore(invoice.getInvoiceDate())
+        ? invoice.getInvoiceDate()
+        : deadlineDate;
   }
 }

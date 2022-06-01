@@ -56,4 +56,6 @@ public interface MoveLineToolService {
   boolean checkCutOffDates(MoveLine moveLine);
 
   boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
+
+  void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 }

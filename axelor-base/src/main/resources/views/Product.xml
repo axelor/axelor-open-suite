@@ -78,6 +78,8 @@
     <field name="purchasePrice" width="120" x-scale="2"/>
     <field name="costPrice" width="120" x-scale="2"/>
     <field name="salePrice" width="120" x-scale="2"/>
+    <field name="$availableQty" title="Available stock" type="decimal" width="120"
+      sortable="false" if="__config__.app.isApp('stock')"/>
   </grid>
 
   <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product"
@@ -297,7 +299,8 @@
             if="__config__.app.isApp('purchase')"/>
           <field name="defShipCoefByPartner"
             onChange="action-product-method-supplier-catalog-coeff" hideIf="!purchasable"
-            if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+            if-module="axelor-purchase"
+            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
         </panel>
         <panel-related name="supplierCatalogListPanel" field="supplierCatalogList"
           form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"
@@ -558,7 +561,7 @@
     <field name="internalDescription"/>
     <field name="configurator.id"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{fullName}}</strong></div>
+		    <div class="span12"><strong>{{$fmt('fullName')}}</strong></div>
 			<div>
 			  <div class="span4 card-image" style="width: 128px; height: 64px;">
 			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>

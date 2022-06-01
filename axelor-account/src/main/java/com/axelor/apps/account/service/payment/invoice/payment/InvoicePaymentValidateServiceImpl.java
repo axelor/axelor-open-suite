@@ -213,7 +213,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-      customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      if (InvoiceToolService.isPurchase(invoice)) {
+        customerAccount = accountConfigService.getSupplierAdvancePaymentAccount(accountConfig);
+      } else {
+        customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      }
+
     } else {
       if (CollectionUtils.isEmpty(invoiceMoveLines)) {
         return null;
@@ -358,7 +363,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               move,
               customerAccount,
               purchAccount,
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount(),
+              accountConfigService.getPurchFinancialDiscountAccount(accountConfig),
               accountConfigService.getAccountConfig(company).getPurchFinancialDiscountTax());
 
     } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
@@ -377,7 +382,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               move,
               customerAccount,
               saleAccount,
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount(),
+              accountConfigService.getSaleFinancialDiscountAccount(accountConfig),
               accountConfigService.getAccountConfig(company).getSaleFinancialDiscountTax());
     }
 

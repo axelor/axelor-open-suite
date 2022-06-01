@@ -67,6 +67,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -269,21 +270,30 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getPaymentCondition() == null) {
+      if (invoice.getPaymentCondition() == null
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        if (invoice.getInvoiceTermList() != null) {
+          invoice.getInvoiceTermList().clear();
+        } else {
+          invoice.setInvoiceTermList(new ArrayList<>());
+        }
+
+        response.setValues(invoice);
         return;
       }
+
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
           || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
+
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
       if (invoice != null) {
         response.setValues(invoice);
-      } else if (invoice == null) {
+      } else {
         response.setValue("invoiceTermList", null);
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -349,7 +359,7 @@ public class InvoiceController {
   public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationTypeSelect() == null) {
+      if (invoice.getOperationTypeSelect() == null || invoice.getOperationTypeSelect() == 0) {
         return;
       }
       PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
@@ -479,7 +489,7 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null) {
+      } else if (context.get("id") != null && Invoice.class.equals(context.getContextClass())) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
         Integer reportType =
             context.get("reportType") != null
@@ -572,7 +582,8 @@ public class InvoiceController {
       List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
       if (ObjectUtils.isEmpty(ids)) {
-        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+        response.setError(
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 
@@ -923,6 +934,10 @@ public class InvoiceController {
         Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
         response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
         response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+
+        if (isDuplicate) {
+          response.setAttr("$supplierInvoiceNbStatic", "value", invoice.getSupplierInvoiceNb());
+        }
       }
 
     } catch (Exception e) {
@@ -1050,6 +1065,26 @@ public class InvoiceController {
     }
   }
 
+  public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Customer Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (3,4) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1059,6 +1094,42 @@ public class InvoiceController {
           && !Beans.get(InvoiceService.class).checkInvoiceLinesCutOffDates(invoice)) {
         response.setError(I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (!Beans.get(InvoiceService.class).checkInvoiceTerms(invoice)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.RECONCILE_NO_AVAILABLE_INVOICE_TERM));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getLocalizedMessage());
+    }
+  }
+
+  public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Supplier Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (1,2) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

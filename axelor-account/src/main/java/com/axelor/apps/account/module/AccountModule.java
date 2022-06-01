@@ -61,7 +61,6 @@ import com.axelor.apps.account.db.repo.ReconcileGroupAccountRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.db.repo.SequenceAccountManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -158,6 +157,8 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -228,6 +229,8 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
+import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -240,6 +243,8 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.MoveViewHelperServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
+import com.axelor.apps.account.service.move.SimulatedMoveService;
+import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -277,7 +282,6 @@ import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -492,6 +496,8 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
+    bind(MoveRemoveService.class).to(MoveRemoveServiceImpl.class);
+
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 
     bind(AccountManagementRepository.class).to(AccountManagementAccountRepository.class);
@@ -534,8 +540,6 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountConfigAnalyticService.class).to(AccountConfigAnalyticServiceImpl.class);
 
-    bind(SequenceBaseRepository.class).to(SequenceAccountManagementRepository.class);
-
     bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
 
     bind(InvoiceTermRepository.class).to(InvoiceTermAccountRepository.class);
@@ -561,5 +565,9 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
     bind(DoubtfulCustomerInvoiceTermService.class).to(DoubtfulCustomerInvoiceTermServiceImpl.class);
+
+    bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
+
+    bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
   }
 }

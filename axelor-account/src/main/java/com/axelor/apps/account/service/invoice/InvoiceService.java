@@ -247,8 +247,9 @@ public interface InvoiceService {
    *
    * @param invoice
    * @return
+   * @throws AxelorException
    */
-  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) throws AxelorException;
 
   /**
    * Return the move line from the advance payment from related sale order lines.
@@ -325,6 +326,9 @@ public interface InvoiceService {
   @CallMethod
   public List<Long> getInvoiceLineIds(Invoice invoice);
 
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
+
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 
   boolean checkManageCutOffDates(Invoice invoice);
@@ -336,4 +340,12 @@ public interface InvoiceService {
   public void validatePfp(Long invoiceId) throws AxelorException;
 
   void updateUnpaidInvoiceTerms(Invoice invoice);
+
+  /**
+   * Check invoice terms before opening payment wizard
+   *
+   * @param invoice
+   * @return true if there would be at least one invoice term in the invoice payment
+   */
+  boolean checkInvoiceTerms(Invoice invoice);
 }
