@@ -32,4 +32,5 @@ public interface ITranslation {
       "Unpaid Inv. due" /*)*/;
   public static final String PAYMENT_SESSION_COMPUTE_NAME_ON_THE = /*$$(*/ "on the" /*)*/;
   public static final String PAYMENT_SESSION_COMPUTE_NAME_BY = /*$$(*/ "by" /*)*/;
+  public static final String FIXED_ASSET_SPLIT_AMOUNT = /*$$(*/ "fixedAsset.amount" /*)*/;
 }

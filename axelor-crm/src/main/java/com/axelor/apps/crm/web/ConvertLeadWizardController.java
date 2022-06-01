@@ -247,10 +247,12 @@ public class ConvertLeadWizardController {
     try {
       Lead lead = findLead(request);
 
-      MetaFile picture =
-          Beans.get(ConvertBinaryToMetafileService.class)
-              .convertByteTabPictureInMetafile(lead.getPicture());
-      response.setAttr("picture", "value", picture);
+      if (lead.getPicture() != null) {
+        MetaFile picture =
+            Beans.get(ConvertBinaryToMetafileService.class)
+                .convertByteTabPictureInMetafile(lead.getPicture());
+        response.setAttr("picture", "value", picture);
+      }
       response.setAttr("firstName", "value", lead.getFirstName());
       response.setAttr("name", "value", lead.getName());
       response.setAttr("titleSelect", "value", lead.getTitleSelect());

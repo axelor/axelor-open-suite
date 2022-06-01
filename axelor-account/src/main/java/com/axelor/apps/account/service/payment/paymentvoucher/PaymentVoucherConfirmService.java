@@ -320,7 +320,7 @@ public class PaymentVoucherConfirmService {
               true);
     }
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
     moveValidateService.accounting(move);
   }
@@ -474,7 +474,7 @@ public class PaymentVoucherConfirmService {
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
         if (reconcile != null) {
-          reconcileService.confirmReconcile(reconcile, true);
+          reconcileService.confirmReconcile(reconcile, true, true);
         }
       } else {
 
@@ -595,10 +595,16 @@ public class PaymentVoucherConfirmService {
 
     LocalDate dueDate =
         moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
-    Account financialDiscountAccount =
-        isPurchase
-            ? accountConfig.getPurchFinancialDiscountAccount()
-            : accountConfig.getSaleFinancialDiscountAccount();
+    Account financialDiscountAccount = null;
+
+    if (isPurchase) {
+      financialDiscountAccount =
+          accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
+    } else {
+      financialDiscountAccount =
+          accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
+    }
+
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
 
     MoveLine financialDiscountMoveLine =
@@ -768,7 +774,7 @@ public class PaymentVoucherConfirmService {
         reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
     return moveLine;
   }

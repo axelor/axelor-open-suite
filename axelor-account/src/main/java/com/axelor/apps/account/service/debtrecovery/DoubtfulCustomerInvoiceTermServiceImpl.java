@@ -152,7 +152,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
                   false);
 
           if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
+            reconcileService.confirmReconcile(reconcile, true, true);
           }
         }
       }

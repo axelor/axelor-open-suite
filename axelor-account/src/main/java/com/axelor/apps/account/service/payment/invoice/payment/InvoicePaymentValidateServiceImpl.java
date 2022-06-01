@@ -363,7 +363,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               move,
               customerAccount,
               purchAccount,
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount(),
+              accountConfigService.getPurchFinancialDiscountAccount(accountConfig),
               accountConfigService.getAccountConfig(company).getPurchFinancialDiscountTax());
 
     } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
@@ -382,7 +382,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               move,
               customerAccount,
               saleAccount,
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount(),
+              accountConfigService.getSaleFinancialDiscountAccount(accountConfig),
               accountConfigService.getAccountConfig(company).getSaleFinancialDiscountTax());
     }
 

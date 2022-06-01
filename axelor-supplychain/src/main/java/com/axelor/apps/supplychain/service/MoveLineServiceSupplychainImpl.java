@@ -2,6 +2,8 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -24,9 +26,17 @@ public class MoveLineServiceSupplychainImpl extends MoveLineServiceImpl
       PaymentService paymentService,
       AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService,
       SupplychainBatchRepository supplychainBatchRepo) {
     super(
-        moveLineRepository, invoiceRepository, paymentService, appBaseService, moveLineToolService);
+        moveLineRepository,
+        invoiceRepository,
+        paymentService,
+        appBaseService,
+        moveLineToolService,
+        appAccountService,
+        accountConfigService);
     this.supplychainBatchRepo = supplychainBatchRepo;
   }
 

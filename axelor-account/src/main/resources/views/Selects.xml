@@ -301,7 +301,8 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
-    <option value="7">Doubtful credit</option>
+    <option value="7">Irrecoverable Debt</option>
+    <option value="8">Doubtful credit</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -510,6 +511,7 @@
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
+    <option value='9'>Irrecoverable</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -658,6 +660,11 @@
     <option value="1">Active</option>
   </selection>
 
+  <selection name="account.fixed.asset.split.type.select">
+    <option value="1">Quantity</option>
+    <option value="2">Amount</option>
+  </selection>
+
   <selection name="iaccount.account.batch.bill.of.exchange.type.select">
     <option value="1">Direct bank LCR</option>
   </selection>
@@ -751,6 +758,32 @@
   <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
     <option value="200">Accounting batch</option>
     <option value="201">Invoice batch</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.origin.select">
+    <option value="1">Accounted moves</option>
+    <option value="2">Invoice accounted moves</option>
+    <option value="3">Invoice and accounted moves</option>
+    <option value="4">Daybook moves</option>
+    <option value="5">Daybook invoice moves</option>
+    <option value="6">Daybook moves and invoice moves</option>
+    <option value="7">origin.SimulatedMove</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.search.operator.select">
+    <option value="0">OR</option>
+    <option value="1">AND</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.parameter.type.select">
+    <option value="1">parameterType.Search</option>
+    <option value="2">parameterType.Reverse</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.sub.type.select">
+    <option value="1">Original</option>
+    <option value="2">line.Reverse</option>
+    <option value="3">Revision</option>
   </selection>
 
 </object-views>

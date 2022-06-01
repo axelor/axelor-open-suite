@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveComputeServiceImpl implements MoveComputeService {
@@ -39,16 +40,10 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   public Map<String, Object> computeTotals(Move move) {
 
     Map<String, Object> values = new HashMap<>();
-    if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+    if (move.getMoveLineList() == null) {
       return values;
     }
     values.put("$totalLines", move.getMoveLineList().size());
-
-    BigDecimal totalCurrency =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getCurrencyAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    values.put("$totalCurrency", totalCurrency.divide(BigDecimal.ONE.add(BigDecimal.ONE)));
 
     BigDecimal totalDebit =
         move.getMoveLineList().stream()
@@ -61,6 +56,19 @@ public class MoveComputeServiceImpl implements MoveComputeService {
             .map(MoveLine::getCredit)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     values.put("$totalCredit", totalCredit);
+
+    Predicate<? super MoveLine> isDebitCreditFilter =
+        ml -> ml.getCredit().compareTo(BigDecimal.ZERO) > 0;
+    if (totalDebit.compareTo(totalCredit) > 0) {
+      isDebitCreditFilter = ml -> ml.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    BigDecimal totalCurrency =
+        move.getMoveLineList().stream()
+            .filter(isDebitCreditFilter)
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCurrency", totalCurrency);
 
     BigDecimal difference = totalDebit.subtract(totalCredit);
     values.put("$difference", difference);

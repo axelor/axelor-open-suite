@@ -1,0 +1,7 @@
+---
+title: "Work center configurator: show capacity settings panel when work center group feature is active."
+type: change
+description: |
+  When work center group feature is active, allow to configure capacity in work
+  center configurator, so the capacity fields in generated work center are
+  correctly filled from configurator.

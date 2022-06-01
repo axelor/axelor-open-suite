@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
@@ -51,14 +52,16 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       CurrencyService currencyService,
       PartnerSupplychainService partnerSupplychainService,
       SaleOrderComputeService saleOrderComputeService,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      AppAccountService appAccountService) {
     super(
         invoiceRepo,
         moveToolService,
         invoicePaymentRepo,
         invoiceTermService,
         invoiceTermPaymentService,
-        currencyService);
+        currencyService,
+        appAccountService);
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.purchaseOrderService = purchaseOrderService;

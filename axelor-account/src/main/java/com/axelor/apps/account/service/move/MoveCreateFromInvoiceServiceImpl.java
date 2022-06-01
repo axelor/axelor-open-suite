@@ -342,7 +342,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               reconcileService.createReconcile(
                   invoiceCustomerMoveLine, creditMoveLine, amount, false);
           if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
+            reconcileService.confirmReconcile(reconcile, true, true);
           }
         }
       }
@@ -422,7 +422,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       Reconcile reconcile =
           reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
       if (reconcile != null) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
     return oDmove;

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -33,6 +34,9 @@ import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingComputer;
+import com.axelor.apps.base.service.pricing.PricingObserver;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
@@ -45,9 +49,10 @@ import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.pricing.PricingService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -130,11 +135,64 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
+  public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
+    if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
+      PricingComputer pricingComputer =
+          getPricingComputer(pricing.get(), saleOrderLine)
+              .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
+      pricingComputer.subscribe(getSaleOrderLinePricingObserver(saleOrderLine));
+      pricingComputer.apply();
+    } else {
+      saleOrderLine.setPricingScaleLogs(I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_NO_PRICING));
+    }
+  }
+
+  protected PricingObserver getSaleOrderLinePricingObserver(SaleOrderLine saleOrderLine) {
+    return new SaleOrderLinePricingObserver(saleOrderLine);
+  }
+
+  protected PricingComputer getPricingComputer(Pricing pricing, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    return PricingComputer.of(
+        pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class);
+  }
+
+  protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    // It is supposed that only one pricing match those criteria (because of the configuration)
+    // Having more than one pricing matched may result on a unexpected result
+    return pricingService.getRandomPricing(
+        saleOrder.getCompany(),
+        saleOrderLine.getProduct(),
+        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
+        SaleOrderLine.class.getSimpleName(),
+        null);
+  }
+
+  @Override
+  public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
+    if (pricing.isPresent()) {
+      return !getPricingComputer(pricing.get(), saleOrderLine)
+          .putInContext("saleOrder", EntityHelper.getEntity(saleOrder))
+          .getMatchedPricingLines()
+          .isEmpty();
+    }
+
+    return false;
+  }
+
+  @Override
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     // Populate fields from pricing scale before starting process of fillPrice
     if (appSaleService.getAppSale().getEnablePricingScale()) {
-      pricingService.computePricingScale(saleOrder, saleOrderLine);
+      computePricingScale(saleOrderLine, saleOrder);
     }
 
     fillTaxInformation(saleOrderLine, saleOrder);
@@ -254,6 +312,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
     line.setSelectedComplementaryProductList(null);
     return line;
+  }
+
+  @Override
+  public void resetPrice(SaleOrderLine line) {
+    if (!line.getEnableFreezeFields()) {
+      line.setPrice(null);
+      line.setInTaxPrice(null);
+    }
   }
 
   @Override

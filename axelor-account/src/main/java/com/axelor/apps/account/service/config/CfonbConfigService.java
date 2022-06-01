@@ -19,8 +19,6 @@ package com.axelor.apps.account.service.config;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.db.repo.JournalRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
@@ -28,10 +26,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class CfonbConfigService extends AccountConfigService {
-
-  public CfonbConfigService(MoveRepository moveRepo, JournalRepository journalRepo) {
-    super(moveRepo, journalRepo);
-  }
 
   public CfonbConfig getCfonbConfig(AccountConfig accountConfig) throws AxelorException {
     CfonbConfig cfonbConfig = accountConfig.getCfonbConfig();

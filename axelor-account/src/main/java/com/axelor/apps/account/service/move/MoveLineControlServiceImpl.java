@@ -99,19 +99,19 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
       }
       if (invoiceTermList.stream()
-                  .map(invoiceTerm -> invoiceTerm.getPercentage())
+                  .map(InvoiceTerm::getPercentage)
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
                   .compareTo(new BigDecimal(100))
               != 0
           || (invoiceAttached == null
               && invoiceTermList.stream()
-                      .map(invoiceTerm -> invoiceTerm.getAmount())
+                      .map(InvoiceTerm::getAmount)
                       .reduce(BigDecimal.ZERO, BigDecimal::add)
                       .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
                   != 0)
           || (invoiceAttached != null
               && invoiceTermList.stream()
-                      .map(invoiceTerm -> invoiceTerm.getAmount())
+                      .map(InvoiceTerm::getAmount)
                       .reduce(BigDecimal.ZERO, BigDecimal::add)
                       .compareTo(invoiceAttached.getInTaxTotal())
                   != 0)) {
@@ -143,11 +143,15 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   @Override
   public boolean displayInvoiceTermWarningMessage(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    if (move == null) {
+      return false;
+    }
     boolean hasInvoiceTermAndInvoice =
-        ObjectUtils.notEmpty(moveLine.getMove().getInvoice())
-            && moveLine.getAccount().getHasInvoiceTerm();
+        ObjectUtils.notEmpty(move.getInvoice()) && moveLine.getAccount().getHasInvoiceTerm();
+    List<MoveLine> moveLines = move.getMoveLineList();
     boolean containsInvoiceTerm =
-        moveLine.getMove().getMoveLineList().stream()
+        moveLines.stream()
                 .filter(
                     ml ->
                         ObjectUtils.notEmpty(ml.getInvoiceTermList())
@@ -156,7 +160,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                 .count()
             > 0;
     boolean hasInvoiceTermMoveLines =
-        moveLine.getMove().getMoveLineList().stream()
+        moveLines.stream()
                 .filter(
                     ml ->
                         ObjectUtils.notEmpty(ml.getAccount())

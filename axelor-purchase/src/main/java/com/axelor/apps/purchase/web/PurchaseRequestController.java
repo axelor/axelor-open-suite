@@ -22,9 +22,11 @@ import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
+import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,28 +41,34 @@ import java.util.stream.Collectors;
 public class PurchaseRequestController {
 
   public void confirmCart(ActionRequest request, ActionResponse response) {
-    Beans.get(PurchaseRequestService.class).confirmCart();
-    response.setReload(true);
+    try {
+      Beans.get(PurchaseRequestService.class).confirmCart();
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void acceptRequest(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().get("_ids") == null) {
+        return;
+      }
+      List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
 
-    if (request.getContext().get("_ids") == null) {
-      return;
-    }
+      if (!requestIds.isEmpty()) {
+        List<PurchaseRequest> purchaseRequests =
+            Beans.get(PurchaseRequestRepository.class)
+                .all()
+                .filter("self.id in (?1)", requestIds)
+                .fetch();
 
-    List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
+        Beans.get(PurchaseRequestService.class).acceptRequest(purchaseRequests);
 
-    if (!requestIds.isEmpty()) {
-      List<PurchaseRequest> purchaseRequests =
-          Beans.get(PurchaseRequestRepository.class)
-              .all()
-              .filter("self.id in (?1)", requestIds)
-              .fetch();
-
-      Beans.get(PurchaseRequestService.class).acceptRequest(purchaseRequests);
-
-      response.setReload(true);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -109,6 +117,72 @@ public class PurchaseRequestController {
       } catch (AxelorException e) {
         response.setFlash(e.getMessage());
       }
+    }
+  }
+
+  public void requestPurchaseRequest(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
+      Beans.get(PurchaseRequestWorkflowService.class).requestPurchaseRequest(purchaseRequest);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void acceptPurchaseRequest(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
+      Beans.get(PurchaseRequestWorkflowService.class).acceptPurchaseRequest(purchaseRequest);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void purchasePurchaseRequest(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
+      Beans.get(PurchaseRequestWorkflowService.class).purchasePurchaseRequest(purchaseRequest);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void refusePurchaseRequest(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
+      Beans.get(PurchaseRequestWorkflowService.class).refusePurchaseRequest(purchaseRequest);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelPurchaseRequest(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
+      Beans.get(PurchaseRequestWorkflowService.class).cancelPurchaseRequest(purchaseRequest);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void draftPurchaseRequest(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
+      Beans.get(PurchaseRequestWorkflowService.class).draftPurchaseRequest(purchaseRequest);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

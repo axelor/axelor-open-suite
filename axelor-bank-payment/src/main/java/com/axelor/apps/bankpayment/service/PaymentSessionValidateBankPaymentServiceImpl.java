@@ -1,20 +1,25 @@
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -27,6 +32,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,6 +44,7 @@ import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -60,10 +67,13 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
+      AccountConfigService accountConfigService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -80,11 +90,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         reconcileService,
         invoiceTermService,
         moveLineTaxService,
+        invoicePaymentCreateService,
+        invoicePaymentValidateService,
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,
         partnerRepo,
-        invoicePaymentRepo);
+        invoicePaymentRepo,
+        accountConfigService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -178,7 +191,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     paymentSession =
         super.processInvoiceTerm(
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
-
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
@@ -186,6 +198,27 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     }
 
     return paymentSession;
+  }
+
+  @Override
+  protected boolean generatePaymentsFirst(PaymentSession paymentSession) {
+    return super.generatePaymentsFirst(paymentSession)
+        || (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_ONGOING
+            && paymentSession.getPaymentMode().getGenerateBankOrder()
+            && paymentSession.getAccountingTriggerSelect()
+                != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    InvoicePayment invoicePayment =
+        super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+
+    invoicePayment.setBankOrder(paymentSession.getBankOrder());
+
+    return invoicePaymentRepo.save(invoicePayment);
   }
 
   protected void createOrUpdateBankOrderLineFromInvoiceTerm(
@@ -300,5 +333,25 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     }
 
     return flashMessage;
+  }
+
+  @Override
+  public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
+      throws AxelorException {
+    TypedQuery<Partner> partnerQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT Partner FROM Partner Partner "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " GROUP BY Partner.id , InvoiceTerm.bankDetails "
+                    + " HAVING SUM(InvoiceTerm.paymentAmount) < 0 ",
+                Partner.class);
+
+    partnerQuery.setParameter("paymentSession", paymentSession);
+
+    return partnerQuery.getResultList();
   }
 }

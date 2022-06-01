@@ -24,9 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -235,7 +233,7 @@ public class InvoicePaymentController {
 
         if (invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
-          amountError = true;
+          amountError = invoicePayment.getManualChange();
         }
 
         List<Long> invoiceTermIdList =
@@ -306,46 +304,26 @@ public class InvoicePaymentController {
   }
 
   @SuppressWarnings("unchecked")
-  public void addSelectedInvoiceTermsToPay(ActionRequest request, ActionResponse response) {
+  public void setMassPaymentAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-      if (request.getContext().get("invoiceTerms") != null) {
-        List<InvoiceTerm> selectedInvoiceTerms = Lists.newArrayList();
-        InvoiceTermRepository invoiceTermRepo = Beans.get(InvoiceTermRepository.class);
+      List<Long> invoiceIdList = (List<Long>) request.getContext().get("_invoices");
 
-        List<Map> invoiceTermsMap = (List<Map>) request.getContext().get("invoiceTerms");
-        for (Map map : invoiceTermsMap) {
-          if (map.get("selected") != null && ((boolean) map.get("selected"))) {
-            selectedInvoiceTerms.add(invoiceTermRepo.find(new Long((Integer) map.get("id"))));
-          }
-        }
-        if (selectedInvoiceTerms.isEmpty()) {
-          response.setError(I18n.get(IExceptionMessage.INVOICE_PAYMENT_MISSING_TERM_LINE));
-        } else {
-          selectedInvoiceTerms =
-              Beans.get(InvoiceTermService.class)
-                  .filterInvoiceTermsByHoldBack(selectedInvoiceTerms);
-          InvoiceTermPaymentService invoiceTermPaymentService =
-              Beans.get(InvoiceTermPaymentService.class);
+      response.setValue(
+          "amount",
+          Beans.get(InvoicePaymentToolService.class)
+              .getMassPaymentAmount(invoiceIdList, invoicePayment.getPaymentDate()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 
-          invoicePayment =
-              invoiceTermPaymentService.initInvoiceTermPayments(
-                  invoicePayment, selectedInvoiceTerms);
-          invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
-
-          Long invoiceId =
-              Long.valueOf(
-                  (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
-          if (invoiceId > 0) {
-            Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-            InvoiceService invoiceService = Beans.get(InvoiceService.class);
-
-            // TODO update amounts when fixing this
-          }
-          response.setValues(invoicePayment);
-        }
-      }
-
+  public void applyFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      response.setValue(
+          "applyFinancialDiscount",
+          Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

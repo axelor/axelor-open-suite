@@ -56,7 +56,7 @@
       form-view="payment-move-line-distribution-form" readonly="true"/>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1"
-        onClick="save,action-reconcile-method-reconcile"/>
+        onClick="save,action-reconcile-group-reconcile"/>
       <button name="unreconcileBtn" title="Unreconcile" showIf="statusSelect == 2"
         onClick="save,action-reconcile-method-unreconcile"/>
     </panel>
@@ -69,6 +69,11 @@
     </panel>
   </form>
 
+  <action-group name="action-reconcile-group-reconcile">
+    <action name="save"/>
+    <action name="action-reconcile-method-check-reconcile"/>
+    <action name="action-reconcile-method-reconcile"/>
+  </action-group>
 
   <action-attrs name="action-reconcile-attrs-domain-debit">
     <attribute if="eval: creditMoveLine != null" name="domain"
@@ -94,6 +99,10 @@
 
   <action-method name="action-reconcile-method-unreconcile">
     <call class="com.axelor.apps.account.web.ReconcileController" method="unreconcile"/>
+  </action-method>
+
+  <action-method name="action-reconcile-method-check-reconcile">
+    <call class="com.axelor.apps.account.web.ReconcileController" method="checkReconcile"/>
   </action-method>
 
   <search-filters name="reconcile-filters"

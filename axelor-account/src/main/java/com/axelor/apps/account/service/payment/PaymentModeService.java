@@ -61,4 +61,6 @@ public interface PaymentModeService {
    * out status. Return null if no payment mode were found or if the given payment mode is null.
    */
   public PaymentMode reverseInOut(PaymentMode paymentMode);
+
+  boolean isPendingPayment(PaymentMode paymentMode);
 }
