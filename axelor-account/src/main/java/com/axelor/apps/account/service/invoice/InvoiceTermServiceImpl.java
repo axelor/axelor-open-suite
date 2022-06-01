@@ -235,7 +235,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoice.getRemainingAmountAfterFinDiscount());
   }
 
-  protected void computeFinancialDiscount(
+  @Override
+  public void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
@@ -401,6 +402,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getInvoiceDate() != null) {
       LocalDate invoiceDate = invoiceTerm.getInvoice().getInvoiceDate();
       deadlineDate = deadlineDate.isBefore(invoiceDate) ? invoiceDate : deadlineDate;
+    } else if (invoiceTerm.getMoveLine() != null && invoiceTerm.getMoveLine().getDate() != null) {
+      LocalDate moveDate = invoiceTerm.getMoveLine().getDate();
+      deadlineDate = deadlineDate.isBefore(moveDate) ? moveDate : deadlineDate;
     }
 
     return deadlineDate;

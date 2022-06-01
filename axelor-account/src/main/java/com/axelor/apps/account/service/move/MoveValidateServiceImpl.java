@@ -36,6 +36,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -81,6 +82,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AppAccountService appAccountService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -96,7 +98,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       AppBaseService appBaseService,
       AppAccountService appAccountService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MoveLineService moveLineService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
@@ -111,6 +114,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.appAccountService = appAccountService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineService = moveLineService;
   }
 
   /**
@@ -322,6 +326,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.completeMoveLines(move);
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
     this.updateValidateStatus(move, dayBookMode);
+
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      this.computeFinancialDiscount(move);
+    }
 
     moveRepository.save(move);
 
@@ -686,5 +694,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
     }
     return false;
+  }
+
+  public void computeFinancialDiscount(Move move) {
+    if (move.getInvoice() == null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      move.getMoveLineList().forEach(moveLineService::computeFinancialDiscount);
+    }
   }
 }

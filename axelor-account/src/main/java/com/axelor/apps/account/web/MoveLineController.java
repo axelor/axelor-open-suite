@@ -636,4 +636,14 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void computeInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Beans.get(MoveLineService.class).computeInvoiceTermsFinancialDiscount(moveLine);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

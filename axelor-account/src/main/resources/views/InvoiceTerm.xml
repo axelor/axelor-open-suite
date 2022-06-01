@@ -293,8 +293,7 @@
   </form>
 
   <form name="invoice-term-move-line-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm"
-    onLoad="action-invoice-term-group-check-pfp-validator-user"
+    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload"
     onNew="action-invoice-term-group-onnew">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
@@ -328,18 +327,22 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
+        <field name="applyFinancialDiscount"
+          hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount" readonlyIf="paymentSession">
-        <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
-        <field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
-        <field name="financialDiscountAmount" readonly="true" showIf="applyFinancialDiscount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
+        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
+        readonlyIf="paymentSession">
+        <field name="financialDiscount" readonly="true"/>
+        <field name="financialDiscount.discountRate"/>
+        <field name="financialDiscountDeadlineDate"/>
+        <field name="financialDiscountAmount" readonly="true"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
@@ -469,7 +472,8 @@
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
     <action name="action-invoice-term-record-update-customized-true"/>
-    <action name="action-invoice-term-record-set-show-financial-discount"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -488,7 +492,8 @@
 
   <action-group name="action-invoice-term-group-onload">
     <action name="action-invoice-term-group-check-pfp-validator-user"/>
-    <action name="action-invoice-term-record-set-show-financial-discount"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
@@ -506,7 +511,16 @@
   <action-record name="action-invoice-term-record-set-show-financial-discount"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="$showFinancialDiscount"
-      expr="eval: id == null ? __parent__?.statusSelect == 4 : invoice?.statusSelect == 3"/>
+      expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
+      if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+    <field name="$showFinancialDiscount"
+      expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
+      if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
+    <field name="$showFinancialDiscount"
+      expr="eval: invoice?.statusSelect == 3 || invoice?.statusSelect == 4" if="invoice != null"/>
+    <field name="$showFinancialDiscount"
+      expr="eval: moveLine?.move?.statusSelect == 3 || moveLine?.move?.statusSelect == 4"
+      if="invoice == null &amp;&amp; moveLine != null"/>
   </action-record>
 
   <action-validate name="action-invoice-term-validate-pfp-stock-move">

@@ -591,6 +591,20 @@
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Term(s)"
         showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
+        <panel name="financialDiscountPanel" colSpan="12"
+          showIf="move.statusSelect == 3 || move.statusSelect == 4"
+          if="__config__.app.getApp('account').getManageFinancialDiscount()">
+          <field name="financialDiscount" readonlyIf="amountPaid > 0"
+            onChange="action-move-line-group-financial-discount-onchange"/>
+          <field name="financialDiscountDeadlineDate" readonly="true"
+            showIf="financialDiscount"/>
+          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12"
+            readonly="true">
+            <field name="financialDiscountRate"/>
+            <field name="financialDiscountTotalAmount"/>
+            <field name="remainingAmountAfterFinDiscount"/>
+          </panel>
+        </panel>
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
@@ -842,6 +856,11 @@
     <action name="action-move-line-method-print-analytic-account-on-move-line"/>
   </action-group>
 
+  <action-group name="action-move-line-group-financial-discount-onchange">
+    <action name="action-move-line-record-set-financial-discount-information"/>
+    <action name="action-move-line-method-compute-invoice-terms-financial-discount"/>
+  </action-group>
+
   <action-method name="action-move-line-method-compute-analytic-distribution">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeAnalyticDistribution"/>
@@ -1017,6 +1036,32 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
+  <action-record name="action-move-line-record-set-financial-discount-information"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="financialDiscountDeadlineDate"
+      expr="call: com.axelor.apps.account.service.moveline.MoveLineService:getFinancialDiscountDeadlineDate(__self__)"/>
+    <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
+      if="financialDiscount != null"/>
+    <field name="financialDiscountTotalAmount"
+      expr="eval: credit * financialDiscount.discountRate / 100"
+      if="financialDiscount != null &amp;&amp; credit > 0"/>
+    <field name="financialDiscountTotalAmount"
+      expr="eval: debit * financialDiscount.discountRate / 100"
+      if="financialDiscount != null &amp;&amp; debit > 0"/>
+    <field name="remainingAmountAfterFinDiscount"
+      expr="eval: credit - credit * financialDiscount.discountRate / 100"
+      if="financialDiscount != null &amp;&amp; credit > 0"/>
+    <field name="remainingAmountAfterFinDiscount"
+      expr="eval: debit - debit * financialDiscount.discountRate / 100"
+      if="financialDiscount != null &amp;&amp; debit > 0"/>
+    <field name="financialDiscountDeadlineDate" expr="eval: null"
+      if="financialDiscount == null"/>
+    <field name="financialDiscountRate" expr="eval: null" if="financialDiscount == null"/>
+    <field name="financialDiscountTotalAmount" expr="eval: 0" if="financialDiscount == null"/>
+    <field name="remainingAmountAfterFinDiscount" expr="eval: 0"
+      if="financialDiscount == null"/>
+  </action-record>
+
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
@@ -1132,6 +1177,12 @@
   <action-method name="action-move-line-method-check-analytic-account-on-move-line">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="checkAnalyticMoveLineForAxis"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-method-compute-invoice-terms-financial-discount">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="computeInvoiceTermsFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
