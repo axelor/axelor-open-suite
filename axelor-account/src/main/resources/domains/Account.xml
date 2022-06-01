@@ -8,7 +8,7 @@
   <entity name="Account" lang="java" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" hashKey="true"/>
+    <string name="code" title="Code" required="true" equalsInclude="true"/>
     <many-to-one name="parentAccount" ref="Account" title="Parent Account"
       massUpdate="true"/>
     <many-to-one name="accountType" ref="AccountType" massUpdate="true"
