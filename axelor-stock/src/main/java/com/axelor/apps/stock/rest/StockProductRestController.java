@@ -12,6 +12,7 @@ import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -27,11 +28,16 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class StockProductRestController {
 
+  /**
+   * Fetch product stock indicators. Full path to request is
+   * /ws/aos/fetch-product-with-stock/{productId}
+   */
   @Path("/fetch-product-with-stock/{productId}")
   @POST
   @HttpExceptionHandler
   public Response fetchProductIndicators(
-      @PathParam("productId") long productId, StockProductGetRequest requestBody) throws Exception {
+      @PathParam("productId") long productId, StockProductGetRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().readAccess(Product.class).check();
 
@@ -46,11 +52,16 @@ public class StockProductRestController {
         .getProductIndicators(product, company, stockLocation);
   }
 
+  /**
+   * Modify locker of product in given stock location. Full path to request is
+   * /ws/aos/modify-locker/{productId}
+   */
   @Path("/modify-locker/{productId}")
   @PUT
   @HttpExceptionHandler
   public Response modifyProductLocker(
-      @PathParam("productId") Long productId, StockProductPutRequest requestBody) throws Exception {
+      @PathParam("productId") Long productId, StockProductPutRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(Product.class).check();
 

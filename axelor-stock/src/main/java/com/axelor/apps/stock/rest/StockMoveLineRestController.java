@@ -11,6 +11,7 @@ import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -25,12 +26,16 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class StockMoveLineRestController {
 
+  /**
+   * Update realQty and conformity of an incoming stock move. Full path to request is
+   * /ws/aos/stock-move-line/{id}
+   */
   @Path("/{id}")
   @PUT
   @HttpExceptionHandler
   public Response updateIncomingStockMoveLine(
       @PathParam("id") long stockMoveLineId, StockIncomingMoveLinePutRequest requestBody)
-      throws Exception {
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 

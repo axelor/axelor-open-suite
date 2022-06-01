@@ -318,7 +318,8 @@ public class StockLocationServiceImpl implements StockLocationService {
                 && !stockConfig.getIsDisplayPurchaseValueInPrinting());
   }
 
-  @Transactional
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) {
     List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
     for (StockLocationLine stockLocationLine : stockLocationLineList) {
