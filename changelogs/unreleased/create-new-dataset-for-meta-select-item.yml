@@ -1,0 +1,5 @@
+---
+title: "Birt: Creation of new Data Source for MetaSelectItemTranslateDS"
+type: feature
+description: |
+  Creating new DataSource named MetaSelectItemTranslateDS and using it for all the selection and it's translation by passing selection name and key in parameters of query.
