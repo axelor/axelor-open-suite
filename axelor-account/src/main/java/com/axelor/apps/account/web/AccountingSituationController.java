@@ -23,7 +23,10 @@ import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -114,6 +117,18 @@ public class AccountingSituationController {
               .context("_showRecord", debtRecovery.getId())
               .map());
       response.setCanClose(true);
+    }
+  }
+
+  public void setHoldBackAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingSituation accountingSituation =
+          request.getContext().asType(AccountingSituation.class);
+      Partner partner = ContextTool.getContextParent(request.getContext(), Partner.class, 1);
+      Beans.get(AccountingSituationService.class).setHoldBackAccounts(accountingSituation, partner);
+      response.setValues(accountingSituation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

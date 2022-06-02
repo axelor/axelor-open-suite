@@ -63,6 +63,14 @@ public interface ReconcileService {
       boolean updateInvoicePayments)
       throws AxelorException;
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException;
+
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException;
 
@@ -93,4 +101,6 @@ public interface ReconcileService {
       BigDecimal amount,
       Reconcile reconcile)
       throws AxelorException;
+
+  void checkReconcile(Reconcile reconcile) throws AxelorException;
 }

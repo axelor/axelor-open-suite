@@ -30,6 +30,7 @@ import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -75,9 +76,23 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      response.setValue("hasReleasePopup", false);
 
-      if (!Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
+      int errorCode =
+          Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
+      if (errorCode == 1) {
         response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+      } else if (errorCode == 2) {
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Invoice terms"))
+                .model(PaymentSession.class.getName())
+                .add("form", "payment-session-validate-confirm-wizard")
+                .param("popup", "true")
+                .param("popup-save", "false")
+                .context("_showRecord", paymentSession.getId());
+
+        response.setValue("hasReleasePopup", true);
+        response.setView(actionViewBuilder.map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

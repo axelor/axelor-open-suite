@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="invoice-term-move-line-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
       <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"

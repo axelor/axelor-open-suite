@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -48,6 +49,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,6 +65,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
+  protected AppAccountService appAccountService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -73,13 +76,16 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoicePaymentRepository invoicePaymentRepo,
       InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      AppAccountService appAccountService) {
+
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -334,5 +340,34 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP)
             .intValue());
+  }
+
+  public BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date) {
+    List<Invoice> invoiceList =
+        invoiceRepo
+            .all()
+            .filter("self.id IN :invoiceIdList")
+            .bind("invoiceIdList", invoiceIdList)
+            .fetch();
+
+    if (CollectionUtils.isNotEmpty(invoiceList) && date != null) {
+      return invoiceList.stream()
+          .map(Invoice::getInvoiceTermList)
+          .flatMap(Collection::stream)
+          .filter(invoiceTermService::isNotAwaitingPayment)
+          .map(it -> invoiceTermService.getAmountRemaining(it, date))
+          .reduce(BigDecimal::add)
+          .orElse(BigDecimal.ZERO);
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  public boolean applyFinancialDiscount(InvoicePayment invoicePayment) {
+    LocalDate deadLineDate = invoicePayment.getFinancialDiscountDeadlineDate();
+    return (invoicePayment != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()
+        && deadLineDate != null
+        && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
   }
 }

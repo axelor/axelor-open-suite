@@ -121,20 +121,12 @@ public class ImportCityServiceImpl implements ImportCityService {
       throws AxelorException, IOException {
 
     ImportHistory importHistory = null;
-    if (dataFile.getFileType().equals("text/plain")
-        || dataFile.getFileType().equals("text/csv")
-        || dataFile.getFileType().equals("application/zip")) {
-      if (dataFile.getFileType().equals("application/zip")) {
-        dataFile = this.extractCityZip(dataFile);
-      }
-      File configXmlFile = this.getConfigXmlFile(typeSelect);
-      File dataCsvFile = this.getDataCsvFile(dataFile);
+    File configXmlFile = this.getConfigXmlFile(typeSelect);
+    File dataCsvFile = this.getDataCsvFile(dataFile);
 
-      importHistory = importCityData(configXmlFile, dataCsvFile);
-      this.deleteTempFiles(configXmlFile, dataCsvFile);
-    } else {
-      printWriter.append(I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
-    }
+    importHistory = importCityData(configXmlFile, dataCsvFile);
+    this.deleteTempFiles(configXmlFile, dataCsvFile);
+
     return importHistory;
   }
 
@@ -260,9 +252,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       LOG.debug("path for downloaded zip file : {}", downloadFile.getPath());
 
-      StringBuilder buffer = null;
-      try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
-          FileWriter writer = new FileWriter(cityTextFile)) {
+      try (ZipFile zipFile = new ZipFile(downloadFile.getPath())) {
 
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
@@ -273,23 +263,20 @@ public class ImportCityServiceImpl implements ImportCityService {
             BufferedReader stream =
                 new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
 
+            cityTextFile.createNewFile();
+
             switch (geonamesFile) {
               case DUMP:
-                buffer = this.extractDataDumpImport(stream);
+                cityTextFile = this.extractDataDumpImport(stream, cityTextFile);
                 break;
 
               case ZIP:
-                buffer = this.extractDataZipImport(stream);
+                cityTextFile = this.extractDataZipImport(stream, cityTextFile);
                 break;
 
               default:
                 printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
             }
-
-            cityTextFile.createNewFile();
-
-            writer.flush();
-            writer.write(buffer.toString().replace("\"", ""));
 
             LOG.debug("Length of file : {}", cityTextFile.length());
             break;
@@ -354,7 +341,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     return metaFile;
   }
 
-  protected StringBuilder extractDataDumpImport(BufferedReader downloadedCityFileStream)
+  protected File extractDataDumpImport(BufferedReader downloadedCityFileStream, File cityTextFile)
       throws IOException {
 
     HashMap<String, String> regionMap = new HashMap<>();
@@ -404,10 +391,10 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
     }
 
-    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cities);
+    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cities, cityTextFile);
   }
 
-  protected StringBuilder extractDataZipImport(BufferedReader downloadedCityFileStream)
+  protected File extractDataZipImport(BufferedReader downloadedCityFileStream, File cityTextFile)
       throws IOException {
 
     List<String> cityList = new ArrayList<>();
@@ -431,59 +418,65 @@ public class ImportCityServiceImpl implements ImportCityService {
               cityLine[8])); // canton code
     }
 
-    return this.createCityFileZipImport(cityList);
+    return this.createCityFileZipImport(cityList, cityTextFile);
   }
 
-  protected StringBuilder createCityFileZipImport(List<String> cityList) {
+  protected File createCityFileZipImport(List<String> cityList, File cityTextFile)
+      throws IOException {
 
-    StringBuilder buffer = new StringBuilder();
+    try (FileWriter writer = new FileWriter(cityTextFile)) {
+      Set<String> checkDuplicateCitySet = new HashSet<>();
 
-    Set<String> checkDuplicateCitySet = new HashSet<>();
+      for (String city : cityList) {
+        String[] cityInfo = city.split(SEPARATOR);
 
-    for (String city : cityList) {
-      String[] cityInfo = city.split(SEPARATOR);
-
-      if (checkDuplicateCitySet.add(cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
-        buffer.append(city);
+        if (checkDuplicateCitySet.add(
+            cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+          writer.write(city.replace("\"", ""));
+        }
       }
     }
 
-    return buffer;
+    return cityTextFile;
   }
 
-  protected StringBuilder createCityFileDumpImport(
+  protected File createCityFileDumpImport(
       HashMap<String, String> regionMap,
       HashMap<String, String> departmentMap,
       HashMap<String, String> cantonMap,
-      List<String> cityList) {
+      List<String> cityList,
+      File cityTextFile)
+      throws IOException {
 
-    StringBuilder buffer = new StringBuilder();
+    try (FileWriter writer = new FileWriter(cityTextFile)) {
+      Set<String> checkDuplicateCitySet = new HashSet<>();
 
-    Set<String> checkDuplicateCitySet = new HashSet<>();
+      for (String city : cityList) {
+        String[] cityInfo = city.split(SEPARATOR);
 
-    for (String city : cityList) {
-      String[] cityInfo = city.split(SEPARATOR);
-
-      if (checkDuplicateCitySet.add(cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
-        buffer.append(
-            String.format(
-                "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
-                cityInfo[0],
-                cityInfo[1],
-                cityInfo[2],
-                regionMap.get(cityInfo[3]),
-                cityInfo[3],
-                departmentMap.get(cityInfo[4]),
-                cityInfo[4],
-                cantonMap.get(cityInfo[5]),
-                cityInfo[5],
-                cityInfo[6],
-                cityInfo[7],
-                cityInfo[8]));
+        if (checkDuplicateCitySet.add(
+            cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+          writer.write(
+              String.format(
+                      "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
+                      cityInfo[0],
+                      cityInfo[1],
+                      cityInfo[2],
+                      regionMap.get(cityInfo[3]),
+                      cityInfo[3],
+                      departmentMap.get(cityInfo[4]),
+                      cityInfo[4],
+                      cantonMap.get(cityInfo[5]),
+                      cityInfo[5],
+                      cityInfo[6],
+                      cityInfo[7],
+                      cityInfo[8])
+                  .replace("\"", ""));
+        }
       }
     }
 
-    return buffer;
+    return cityTextFile;
   }
 
   protected String getDownloadUrl(GEONAMES_FILE geonamesFile) throws AxelorException {
@@ -558,7 +551,17 @@ public class ImportCityServiceImpl implements ImportCityService {
       printWriter = new PrintWriter(errorFile);
       if (map != null) {
         MetaFile dataFile = metaFileRepo.find(Long.parseLong(map.get("id").toString()));
-        importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
+
+        String extension = Files.getFileExtension(dataFile.getFileName());
+        if (extension != null
+            && (extension.equals("txt") || extension.equals("csv") || extension.equals("zip"))) {
+          if (extension.equals("zip")) {
+            dataFile = this.extractCityZip(dataFile);
+          }
+          importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
+        } else {
+          printWriter.append(I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
+        }
       }
     } catch (Exception e) {
       printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");

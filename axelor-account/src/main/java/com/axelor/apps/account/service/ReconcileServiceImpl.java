@@ -61,6 +61,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -405,8 +406,14 @@ public class ReconcileServiceImpl implements ReconcileService {
       throws AxelorException {
     InvoicePayment invoicePayment = null;
     if (invoice != null
-        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
-      invoicePayment = reconcile.getInvoicePayment();
+        && otherMove.getFunctionalOriginSelect()
+            != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
+      if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
+        invoicePayment =
+            Optional.of(reconcile)
+                .map(Reconcile::getInvoicePayment)
+                .orElse(this.getExistingInvoicePayment(invoice, otherMove));
+      }
 
       if (invoicePayment == null) {
         invoicePayment =
@@ -456,12 +463,31 @@ public class ReconcileServiceImpl implements ReconcileService {
     return invoiceTermPaymentList;
   }
 
+  @Override
+  public void checkReconcile(Reconcile reconcile) throws AxelorException {
+    this.checkMoveLine(reconcile, reconcile.getCreditMoveLine());
+    this.checkMoveLine(reconcile, reconcile.getDebitMoveLine());
+  }
+
+  protected void checkMoveLine(Reconcile reconcile, MoveLine moveLine) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
+        && !invoiceTermService.isEnoughAmountToPay(
+            moveLine.getInvoiceTermList(),
+            reconcile.getAmount(),
+            reconcile.getReconciliationDate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
+    }
+  }
+
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
     if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       if (move != null
           && move.getPaymentVoucher() != null
           && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
         return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+            .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
             .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
             .map(PayVoucherElementToPay::getInvoiceTerm)
             .collect(Collectors.toList());
@@ -510,6 +536,17 @@ public class ReconcileServiceImpl implements ReconcileService {
     return date1.compareTo(date2);
   }
 
+  protected InvoicePayment getExistingInvoicePayment(Invoice invoice, Move move) {
+    return invoice.getInvoicePaymentList().stream()
+        .filter(
+            it ->
+                (it.getMove() != null
+                    && it.getMove().equals(move)
+                    && CollectionUtils.isEmpty(it.getReconcileList())))
+        .findFirst()
+        .orElse(null);
+  }
+
   protected void updatePaymentTax(Reconcile reconcile) throws AxelorException {
     Move debitMove = reconcile.getDebitMoveLine().getMove();
     Move creditMove = reconcile.getCreditMoveLine().getMove();
@@ -524,12 +561,31 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  /**
+   * Méthode permettant de lettrer une écriture au débit avec une écriture au crédit
+   *
+   * @param debitMoveLine
+   * @param creditMoveLine
+   * @throws AxelorException
+   */
+  @Override
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments,
       InvoicePayment invoicePayment)
+      throws AxelorException {
+    return this.reconcile(
+        debitMoveLine, creditMoveLine, null, canBeZeroBalanceOk, updateInvoicePayments);
+  }
+
+  public Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
       throws AxelorException {
     BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
     Reconcile reconcile =

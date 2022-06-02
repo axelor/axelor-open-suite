@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -595,7 +595,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     <body>
         <grid id="2568">
             <property name="height">2.8229166666666665in</property>
-            <property name="width">7.947916666666667in</property>
             <property name="dataSet">PaymentVoucherDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -645,9 +644,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <column id="2571">
                 <property name="width">0.8333333333333334in</property>
             </column>
-            <column id="2572">
-                <property name="width">2.625in</property>
-            </column>
+            <column id="2572"/>
             <row id="2573">
                 <property name="height">0.3125in</property>
                 <cell id="2574">
@@ -741,7 +738,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
                     <table id="2630">
-                        <property name="width">8.135416666666666in</property>
                         <property name="dataSet">PayVoucherDueElementLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -811,9 +807,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <column id="2671">
                             <property name="width">1.5208333333333333in</property>
                         </column>
-                        <column id="2672">
-                            <property name="width">0.6458333333333334in</property>
-                        </column>
+                        <column id="2672"/>
                         <header>
                             <row id="2674">
                                 <property name="height">0.3020833333333333in</property>

@@ -134,6 +134,7 @@ public class ManufOrderWorkflowService {
       if (sequenceService.isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
         manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
       }
+      manufOrderService.createBarcode(manufOrder);
       if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
         manufOrderService.preFillOperations(manufOrder);
       } else {

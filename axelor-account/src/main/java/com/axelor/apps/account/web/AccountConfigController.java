@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -36,7 +36,11 @@ public class AccountConfigController {
   public void deactivateSimulatedMoves(ActionRequest request, ActionResponse response) {
 
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
-    Beans.get(AccountConfigService.class).deactivateSimulatedMoves(accountConfig.getCompany());
+    try {
+      Beans.get(SimulatedMoveService.class).deactivateSimulatedMoves(accountConfig.getCompany());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkChangesInAnalytic(ActionRequest request, ActionResponse response) {

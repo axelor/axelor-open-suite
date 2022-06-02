@@ -146,7 +146,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       if (invoicePayment != null) {
         invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
 
-        if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
+        if (invoicePayment.getApplyFinancialDiscount()
+            && !invoicePayment.getManualChange()
+            && availableAmount.signum() > 0) {
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
           invoicePaymentToolService.computeFinancialDiscount(invoicePayment);

@@ -121,6 +121,7 @@
       <button name="cancelBtn" title="Cancel" css="btn-danger"
         showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
       <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
+      <field name="hasReleasePopup" hidden="true"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
       <field name="validatedByUser" readonly="true"/>
@@ -152,10 +153,26 @@
     </panel>
   </form>
 
+  <form name="payment-session-validate-confirm-wizard" title="Validation"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <panel name="mainPanel" itemSpan="12">
+      <label
+        title="Warning : The following invoice terms have been paid or partially paid since the payment session was created and thus won't be considered during validation. Do you wish to continue ?"/>
+      <button name="validateBtn" title="Continue" colSpan="4"
+        onClick="action-payment-session-group-process-invoice-terms"/>
+      <panel-dashlet name="releasedInvoiceTermsPanel" showTitle="false"
+        action="action-payment-session-view-released-invoice-terms" readonly="true"/>
+    </panel>
+  </form>
+
   <action-group name="action-payment-session-group-validate">
     <action name="save"/>
     <action name="action-payment-session-method-check-session"/>
     <action name="action-payment-session-method-validate-invoice-terms"/>
+    <action name="action-payment-session-group-process-invoice-terms" if="!hasReleasePopup"/>
+  </action-group>
+
+  <action-group name="action-payment-session-group-process-invoice-terms">
     <action name="action-payment-session-method-reconciled-invoice-term-moves"/>
     <action name="action-payment-session-method-validate-payment-session"/>
   </action-group>
@@ -328,6 +345,15 @@
     <view type="form" name="payment-session-form"/>
     <domain>self.assignedToUser.id = :userId OR self.assignedToUser.employee.managerUser = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
+
+  <action-view name="action-payment-session-view-released-invoice-terms"
+    title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-payment-session-grid"/>
+    <view type="form" name="invoice-term-move-line-form"/>
+    <domain>self.paymentSession.id = :_id AND self.isSelectedOnPaymentSession IS TRUE AND
+      (self.isPaid IS TRUE OR self.paymentAmount > self.amountRemaining)</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
 </object-views>

@@ -15,11 +15,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -34,6 +37,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,6 +45,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentSessionValidateServiceImpl implements PaymentSessionValidateService {
   protected AppBaseService appBaseService;
@@ -50,11 +57,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineTaxService moveLineTaxService;
+  protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected InvoicePaymentValidateService invoicePaymentValidateService;
   protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveRepository moveRepo;
   protected PartnerRepository partnerRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
+  protected AccountConfigService accountConfigService;
   protected int counter = 0;
 
   @Inject
@@ -66,11 +76,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      AccountConfigService accountConfigService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -78,19 +91,18 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineTaxService = moveLineTaxService;
+    this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.invoicePaymentValidateService = invoicePaymentValidateService;
     this.paymentSessionRepo = paymentSessionRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveRepo = moveRepo;
     this.partnerRepo = partnerRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
-  public boolean validateInvoiceTerms(PaymentSession paymentSession) {
-    if (paymentSession.getNextSessionDate() == null) {
-      return true;
-    }
-
+  public int validateInvoiceTerms(PaymentSession paymentSession) {
     LocalDate nextSessionDate;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
@@ -99,8 +111,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .all()
             .filter(
                 "self.paymentSession = :paymentSession "
-                    + "AND self.isSelectedOnPaymentSession IS TRUE "
-                    + "AND self.financialDiscount IS NOT NULL")
+                    + "AND self.isSelectedOnPaymentSession IS TRUE")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -111,31 +122,41 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
 
-        if ((invoiceTerm.getInvoice() != null
-                && !invoiceTerm
-                    .getInvoice()
-                    .getFinancialDiscountDeadlineDate()
-                    .isAfter(nextSessionDate))
-            || (invoiceTerm.getMoveLine() != null
-                && invoiceTerm.getMoveLine().getPartner() != null
-                && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
-                && !invoiceTerm
-                    .getDueDate()
-                    .minusDays(
-                        invoiceTerm
-                            .getMoveLine()
-                            .getPartner()
-                            .getFinancialDiscount()
-                            .getDiscountDelay())
-                    .isAfter(nextSessionDate))) {
-          return false;
+        if (nextSessionDate != null
+            && invoiceTerm.getFinancialDiscount() != null
+            && this.checkNextSessionDate(invoiceTerm, nextSessionDate)) {
+          return 1;
+        } else if (invoiceTerm.getIsPaid()
+            || invoiceTerm.getPaymentAmount().compareTo(invoiceTerm.getAmountRemaining()) > 0
+            || !invoiceTermService.isNotAwaitingPayment(invoiceTerm)) {
+          return 2;
         }
       }
 
       JPA.clear();
     }
 
-    return true;
+    return 0;
+  }
+
+  protected boolean checkNextSessionDate(InvoiceTerm invoiceTerm, LocalDate nextSessionDate) {
+    return (invoiceTerm.getInvoice() != null
+            && !invoiceTerm
+                .getInvoice()
+                .getFinancialDiscountDeadlineDate()
+                .isAfter(nextSessionDate))
+        || (invoiceTerm.getMoveLine() != null
+            && invoiceTerm.getMoveLine().getPartner() != null
+            && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
+            && !invoiceTerm
+                .getDueDate()
+                .minusDays(
+                    invoiceTerm
+                        .getMoveLine()
+                        .getPartner()
+                        .getFinancialDiscount()
+                        .getDiscountDelay())
+                .isAfter(nextSessionDate));
   }
 
   protected LocalDate fetchNextSessionDate(PaymentSession paymentSession) {
@@ -197,19 +218,28 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
 
-        if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
-          this.releaseInvoiceTerm(invoiceTerm);
-        } else if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+        if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
+            || this.shouldBeProcessed(invoiceTerm)) {
           offset++;
-          this.processInvoiceTerm(
-              paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+            this.processInvoiceTerm(
+                paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+          }
         } else {
-          offset++;
+          this.releaseInvoiceTerm(invoiceTerm);
         }
       }
 
       JPA.clear();
     }
+  }
+
+  protected boolean shouldBeProcessed(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getIsSelectedOnPaymentSession()
+        && !invoiceTerm.getIsPaid()
+        && invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getPaymentAmount()) >= 0
+        && invoiceTermService.isNotAwaitingPayment(invoiceTerm);
   }
 
   protected PaymentSession processInvoiceTerm(
@@ -220,7 +250,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-    if (paymentSession.getAccountingTriggerSelect()
+    if (this.generatePaymentsFirst(paymentSession)) {
+      this.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+    } else if (paymentSession.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.generateMoveFromInvoiceTerm(
@@ -228,6 +260,30 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return paymentSession;
+  }
+
+  protected boolean generatePaymentsFirst(PaymentSession paymentSession) {
+    return false;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() == null) {
+      return null;
+    }
+
+    InvoicePayment invoicePayment =
+        invoicePaymentCreateService.createInvoicePayment(
+            invoiceTerm.getInvoice(),
+            invoiceTerm,
+            paymentSession.getPaymentMode(),
+            paymentSession.getBankDetails(),
+            paymentSession.getPaymentDate(),
+            paymentSession);
+
+    invoiceTerm.getInvoice().addInvoicePaymentListItem(invoicePayment);
+    return invoicePaymentRepo.save(invoicePayment);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -382,7 +438,38 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       creditMoveLine = moveLine;
     }
 
-    return reconcileService.reconcile(debitMoveLine, creditMoveLine, false, true);
+    InvoicePayment invoicePayment = this.findInvoicePayment(paymentSession, invoiceTerm);
+    if (invoicePayment != null) {
+      invoicePayment.setMove(moveLine.getMove());
+
+      if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+        try {
+          invoicePaymentValidateService.validate(invoicePayment, true);
+        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+        }
+      }
+    }
+
+    return reconcileService.reconcile(debitMoveLine, creditMoveLine, invoicePayment, false, true);
+  }
+
+  protected InvoicePayment findInvoicePayment(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() == null
+        || CollectionUtils.isEmpty(invoiceTerm.getInvoice().getInvoicePaymentList())) {
+      return null;
+    }
+
+    return invoiceTerm.getInvoice().getInvoicePaymentList().stream()
+        .filter(
+            it ->
+                it.getPaymentSession().equals(paymentSession)
+                    && it.getInvoiceTermPaymentList().stream()
+                        .anyMatch(itp -> itp.getInvoiceTerm().equals(invoiceTerm)))
+        .findFirst()
+        .orElse(null);
   }
 
   protected void generateCashMoveAndLines(
@@ -589,10 +676,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return moveLine;
   }
 
-  protected Account getFinancialDiscountAccount(Company company, boolean out) {
+  protected Account getFinancialDiscountAccount(Company company, boolean out)
+      throws AxelorException {
     return out
-        ? company.getAccountConfig().getPurchFinancialDiscountAccount()
-        : company.getAccountConfig().getSaleFinancialDiscountAccount();
+        ? accountConfigService.getPurchFinancialDiscountAccount(
+            accountConfigService.getAccountConfig(company))
+        : accountConfigService.getSaleFinancialDiscountAccount(
+            accountConfigService.getAccountConfig(company));
   }
 
   protected Tax getFinancialDiscountTax(Company company, boolean out) {

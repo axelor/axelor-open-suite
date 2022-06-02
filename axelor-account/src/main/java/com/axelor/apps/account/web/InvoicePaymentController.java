@@ -233,7 +233,7 @@ public class InvoicePaymentController {
 
         if (invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
-          amountError = true;
+          amountError = invoicePayment.getManualChange();
         }
 
         List<Long> invoiceTermIdList =
@@ -298,6 +298,32 @@ public class InvoicePaymentController {
         response.setValue("amount", invoicePayment.getAmount());
         response.setValue("$invoiceTerms", invoiceTermIdList);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void setMassPaymentAmount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      List<Long> invoiceIdList = (List<Long>) request.getContext().get("_invoices");
+
+      response.setValue(
+          "amount",
+          Beans.get(InvoicePaymentToolService.class)
+              .getMassPaymentAmount(invoiceIdList, invoicePayment.getPaymentDate()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void applyFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      response.setValue(
+          "applyFinancialDiscount",
+          Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
