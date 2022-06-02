@@ -481,10 +481,13 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             bankDepositDate,
             chequeNumber,
             null);
-    invoicePaymentList.add(invoicePayment);
 
-    if (!invoice.getInvoicePaymentList().contains(invoicePayment)) {
-      invoice.addInvoicePaymentListItem(invoicePayment);
+    if (invoicePayment != null) {
+      invoicePaymentList.add(invoicePayment);
+
+      if (!invoice.getInvoicePaymentList().contains(invoicePayment)) {
+        invoice.addInvoicePaymentListItem(invoicePayment);
+      }
     }
   }
 
