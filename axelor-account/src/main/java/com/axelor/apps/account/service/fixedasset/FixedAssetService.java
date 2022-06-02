@@ -85,7 +85,11 @@ public interface FixedAssetService {
       FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
       throws AxelorException;
 
-  int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
+  int computeTransferredReason(
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect,
+      BigDecimal disposalQty,
+      FixedAsset fixedAsset);
 
   /**
    * Filter lines from fixedAssetLineList / fiscalAssetLineList / fixedAssetDerogatoryLineList with
@@ -129,4 +133,7 @@ public interface FixedAssetService {
   void multiplyLinesBy(FixedAsset newFixedAsset, BigDecimal prorata) throws AxelorException;
 
   void onChangeDepreciationPlan(FixedAsset fixedAsset) throws AxelorException;
+
+  void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
+      throws AxelorException;
 }

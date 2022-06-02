@@ -45,6 +45,16 @@ public interface IExceptionMessage {
       "The company is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME = /*$$(*/
       "The trading name must be the same for all purchase orders" /*)*/;
+  public static final String PURCHASE_ORDER_REQUEST_WRONG_STATUS = /*$$(*/
+      "Can only request drafted purchase order." /*)*/;
+  public static final String PURCHASE_ORDER_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate requested purchase order." /*)*/;
+  public static final String PURCHASE_ORDER_FINISH_WRONG_STATUS = /*$$(*/
+      "Can only finish validated purchase order." /*)*/;
+  public static final String PURCHASE_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel drafted, requested or validated purchase order." /*)*/;
+  public static final String PURCHASE_ORDER_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from cancelled purchase order." /*)*/;
 
   /** Blocking supplier */
   String SUPPLIER_BLOCKED = /*$$(*/ "This supplier is blocked:" /*)*/;
@@ -63,6 +73,18 @@ public interface IExceptionMessage {
       "There is no sequence set for the purchase requests for the company %s" /*)*/;
   public static final String PURCHASE_REQUEST_MISSING_SUPPLIER_USER = /*$$(*/
       "Please enter supplier for following purchase request : %s" /*)*/;
+  public static final String PURCHASE_REQUEST_REQUEST_WRONG_STATUS = /*$$(*/
+      "Can only request drafted purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_ACCEPT_WRONG_STATUS = /*$$(*/
+      "Can only accept requested purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_PURCHASE_WRONG_STATUS = /*$$(*/
+      "Can only purchase accepted purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse requested purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already canceled purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from canceled purchase request." /*)*/;
 
   public static final String DIFFERENT_SUPPLIER = /*$$(*/
       "The supplier of the purchase order is different from the default supplier of the product." /*)*/;

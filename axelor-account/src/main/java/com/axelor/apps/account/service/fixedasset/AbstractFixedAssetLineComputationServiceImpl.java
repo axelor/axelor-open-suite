@@ -106,8 +106,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
-    BigDecimal depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
-    BigDecimal accountingValue = depreciationBase.subtract(depreciation);
+    BigDecimal depreciation = BigDecimal.ZERO;
+    BigDecimal accountingValue = BigDecimal.ZERO;
+    if (!isAlreadyDepreciated(fixedAsset)) {
+      depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
+      accountingValue = depreciationBase.subtract(depreciation);
+    }
 
     FixedAssetLine line =
         createFixedAssetLine(
@@ -435,6 +439,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     BigDecimal depreciation;
 
+    // If we are at the last line, we depreciate the remaining amount
+    if (!isProrataTemporis(fixedAsset)
+        && getNumberOfDepreciation(fixedAsset) == numberOfDepreciationDone(fixedAsset) + 1) {
+      depreciation = previousFixedAssetLine.getAccountingValue();
+      return depreciation;
+    }
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);

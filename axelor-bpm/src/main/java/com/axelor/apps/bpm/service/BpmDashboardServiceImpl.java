@@ -163,6 +163,7 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
           new HashMap<String, Object>() {
             {
               put("title", wkfModel.getName());
+              put("versionTag", wkfModel.getVersionTag());
               put("processList", processList);
               put("isSuperAdmin", isSuperAdmin);
               put("isAdmin", isAdmin);
