@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PricedOrderService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
@@ -797,7 +797,7 @@ public class SaleOrderController {
     try {
       if (!(saleOrder.getSaleOrderLineList() == null
           || saleOrder.getSaleOrderLineList().isEmpty())) {
-        domain += Beans.get(PartnerService.class).getPartnerDomain(saleOrder.getClientPartner());
+        domain = Beans.get(PricedOrderService.class).getPartnerDomain(saleOrder, domain);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

@@ -43,7 +43,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PricedOrderService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -659,6 +659,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       Partner partner = invoice.getPartner();
       if (partner == null) {
+        response.setValue("priceList", null);
         return;
       }
       int priceListTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
@@ -795,7 +796,7 @@ public class InvoiceController {
       if ((!(invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()))
           && (invoiceTypeSelect == 1)) {
 
-        domain += Beans.get(PartnerService.class).getPartnerDomain(invoice.getPartner());
+        domain = Beans.get(PricedOrderService.class).getPartnerDomain(invoice, domain);
       }
 
     } catch (Exception e) {
