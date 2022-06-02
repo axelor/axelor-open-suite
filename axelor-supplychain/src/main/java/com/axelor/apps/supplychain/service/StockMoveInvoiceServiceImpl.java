@@ -633,7 +633,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  public void computeStockMoveInvoicingStatus(StockMove stockMove) throws AxelorException {
+  public void computeStockMoveInvoicingStatus(StockMove stockMove) {
     int invoicingStatus = StockMoveRepository.STATUS_NOT_INVOICED;
     if (stockMove.getStockMoveLineList() != null
         && stockMove.getInvoiceSet() != null
