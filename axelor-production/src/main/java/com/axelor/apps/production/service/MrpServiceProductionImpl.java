@@ -219,8 +219,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         BigDecimal qty = prodProduct.getQty();
         if (!unit.equals(prodProduct.getUnit())) {
           qty =
-              Beans.get(UnitConversionService.class)
-                  .convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
+              unitConversionService.convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
         }
         MrpLine mrpLine =
             this.createMrpLine(
@@ -264,8 +263,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             BigDecimal qty = computeQtyLeftToConsume(operationOrder, prodProduct);
             if (!unit.equals(prodProduct.getUnit())) {
               qty =
-                  Beans.get(UnitConversionService.class)
-                      .convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
+                  unitConversionService.convert(
+                      prodProduct.getUnit(), unit, qty, qty.scale(), product);
             }
 
             MrpLine mrpLine =
@@ -305,8 +304,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           BigDecimal qty = computeQtyLeftToConsume(manufOrder, prodProduct);
           if (!unit.equals(prodProduct.getUnit())) {
             qty =
-                Beans.get(UnitConversionService.class)
-                    .convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
+                unitConversionService.convert(
+                    prodProduct.getUnit(), unit, qty, qty.scale(), product);
           }
 
           MrpLine mrpLine =
