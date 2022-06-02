@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -231,16 +231,16 @@ public class MrpLineServiceImpl implements MrpLineService {
   }
 
   protected String getPurchaseOrderOrigin(MrpLine mrpLine) {
-    String origin = "";
+    StringBuilder origin = new StringBuilder();
     int count = 0;
     for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
       count++;
-      origin += getMrpLineOriginStr(mrpLineOrigin);
+      origin.append(getMrpLineOriginStr(mrpLineOrigin));
       if (count < mrpLine.getMrpLineOriginList().size()) {
-        origin += " & ";
+        origin.append(" & ");
       }
     }
-    return origin;
+    return origin.toString();
   }
 
   protected String getMrpLineOriginStr(MrpLineOrigin mrpLineOrigin) {

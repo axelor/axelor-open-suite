@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
@@ -25,13 +31,13 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,6 +63,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     this.unitConversionService = unitConversionService;
   }
 
+  @Transactional
   public List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
@@ -74,13 +81,23 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       stockLocationIdList.add(stockLocationId);
     }
 
+    CompanyRepository companyRepo = Beans.get(CompanyRepository.class);
+    ProductRepository productRepo = Beans.get(ProductRepository.class);
+
     // one line per month
     for (LocalDate periodBeginDate = beginDate.withDayOfMonth(1);
         periodBeginDate.isBefore(endDate);
         periodBeginDate = periodBeginDate.plusMonths(1)) {
       LocalDate periodEndDate = periodBeginDate.plusMonths(1);
       StockHistoryLine stockHistoryLine = new StockHistoryLine();
+      Company company = companyRepo.find(companyId);
+      Product product = productRepo.find(productId);
+      stockHistoryLine.setProduct(product);
+      stockHistoryLine.setCompany(company);
       stockHistoryLine.setLabel(periodBeginDate.toString());
+      stockHistoryLine.setPeriod(
+          Beans.get(PeriodService.class)
+              .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL));
       fetchAndFillResultForStockHistoryQuery(
           stockHistoryLine,
           productId,
@@ -159,6 +176,53 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return metaFile;
   }
 
+  protected void computeAvgOutQtyOn12PastMonth(
+      StockHistoryLine stockHistoryLine,
+      Long productId,
+      Long companyId,
+      List<Long> stockLocationIdList,
+      LocalDate periodBeginDate)
+      throws AxelorException {
+    String filter =
+        "self.product.id = :productId "
+            + "AND self.stockMove.statusSelect = :realized "
+            + "AND self.stockMove.company.id = :companyId "
+            + "AND self.stockMove.realDate >= :beginDate "
+            + "AND self.stockMove.realDate < :endDate "
+            + "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
+
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineRepository
+            .all()
+            .filter(filter)
+            .bind("productId", productId)
+            .bind("companyId", companyId)
+            .bind("stockLocationIdList", stockLocationIdList)
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .bind("beginDate", periodBeginDate.minusMonths(12))
+            .bind("endDate", periodBeginDate)
+            .fetch();
+
+    BigDecimal avgOutQtyOn12PastMonth = BigDecimal.ZERO;
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      // quantity in product unit
+      BigDecimal qtyConverted =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              stockMoveLine.getProduct().getUnit(),
+              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().scale(),
+              stockMoveLine.getProduct());
+      avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
+    }
+    avgOutQtyOn12PastMonth =
+        avgOutQtyOn12PastMonth.divide(
+            new BigDecimal(12),
+            Beans.get(AppBaseService.class).getNbDecimalDigitForQty(),
+            RoundingMode.HALF_EVEN);
+    stockHistoryLine.setAvgOutQtyOn12PastMonth(avgOutQtyOn12PastMonth);
+  }
+
   protected void fetchAndFillResultForStockHistoryQuery(
       StockHistoryLine stockHistoryLine,
       Long productId,
@@ -196,8 +260,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       fillIncomingStockHistoryLineFields(stockHistoryLine, stockMoveLineList);
     } else {
       fillOutgoingStockHistoryLineFields(stockHistoryLine, stockMoveLineList);
+      computeAvgOutQtyOn12PastMonth(
+          stockHistoryLine, productId, companyId, stockLocationIdList, periodBeginDate);
     }
-    JPA.clear();
   }
 
   protected void fillIncomingStockHistoryLineFields(

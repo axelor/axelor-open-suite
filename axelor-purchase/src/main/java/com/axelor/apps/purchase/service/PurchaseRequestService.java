@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,9 +24,9 @@ import java.util.List;
 
 public interface PurchaseRequestService {
 
-  public void confirmCart();
+  public void confirmCart() throws AxelorException;
 
-  public void acceptRequest(List<PurchaseRequest> purchaseRequests);
+  public void acceptRequest(List<PurchaseRequest> purchaseRequests) throws AxelorException;
 
   public List<PurchaseOrder> generatePo(
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)

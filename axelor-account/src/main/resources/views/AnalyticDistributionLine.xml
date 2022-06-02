@@ -40,10 +40,10 @@
 
   <form name="analytic-distribution-line-form" title="Analytic distribution line"
     model="com.axelor.apps.account.db.AnalyticDistributionLine"
-    onNew="action-group-analytic-distribution-line-set-on-new"
-    onLoad="action-group-analytic-distribution-line-set-on-new">
+    onNew="action-group-analytic-distribution-line-set-on-new">
     <panel name="mainPanel">
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
@@ -68,7 +68,8 @@
         domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
-        form-view="analytic-journal-form" required="true"/>
+        form-view="analytic-journal-form" required="true"
+        onSelect="action-attrs-domain-journal-distribution-line"/>
     </panel>
   </form>
 
@@ -83,8 +84,6 @@
   </action-attrs>
 
   <action-group name="action-group-analytic-distribution-line-set-on-new">
-    <action name="action-attrs-domain-axis-distribution-line"/>
-    <action name="action-attrs-domain-journal-distribution-line"/>
     <action name="action-record-set-journal-by-default-distribution-line"/>
   </action-group>
 

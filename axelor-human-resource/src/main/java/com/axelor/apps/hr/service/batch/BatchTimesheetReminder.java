@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -126,8 +126,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
         timesheetRepo
             .all()
             .filter(
-                "self.user.id = :userId AND self.statusSelect IN (:confirmed, :validated) AND self.company = :companyId")
-            .bind("userId", employee.getUser().getId())
+                "self.employee.id = :employeeId AND self.statusSelect IN (:confirmed, :validated) AND self.company = :companyId")
+            .bind("employeeId", employee.getId())
             .bind("confirmed", TimesheetRepository.STATUS_CONFIRMED)
             .bind("validated", TimesheetRepository.STATUS_VALIDATED)
             .bind("companyId", batch.getHrBatch().getCompany().getId())

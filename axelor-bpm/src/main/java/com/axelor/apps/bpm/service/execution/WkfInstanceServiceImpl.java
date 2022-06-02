@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -394,7 +394,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     if (!Strings.isNullOrEmpty(instanceId)) {
 
       String processDefinitionId = null;
-      ProcessEngine processEngine = Beans.get(ProcessEngineService.class).getEngine();
+      ProcessEngine processEngine = engineService.getEngine();
 
       HistoricProcessInstance processInstance =
           processEngine
@@ -457,8 +457,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
 
     Map<String, Object> varMap = new HashMap<String, Object>();
 
-    WkfInstance wkfInstance =
-        Beans.get(WkfInstanceRepository.class).findByInstnaceId(processInstanceId);
+    WkfInstance wkfInstance = wkfInstanceRepository.findByInstnaceId(processInstanceId);
 
     if (wkfInstance == null) {
       return varMap;

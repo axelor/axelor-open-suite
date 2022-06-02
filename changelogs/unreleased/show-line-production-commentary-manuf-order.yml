@@ -1,5 +1,0 @@
----
-title: "Manuf Order: show Line production commentary"
-type: feature
-description: |
-  By pressing the plan/start button of the action panel of a Manuf Order whose command line has a production comment, then a message displays

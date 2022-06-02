@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,17 @@ public interface InvoicePaymentToolService {
 
   List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
 
-  List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
+  /**
+   * Method to get move lines from payment. The move lines are either credit or debit depending on
+   * the value of getCreditLine
+   *
+   * @param payments
+   * @param getCreditLine
+   * @return
+   */
+  List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLine);
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+
+  boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 }

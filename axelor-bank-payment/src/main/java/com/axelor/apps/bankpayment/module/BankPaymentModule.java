@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,6 +67,10 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
+import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
+import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
@@ -151,5 +155,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
     bind(BankStatementLineAFB120Repository.class)
         .to(BankPaymentBankStatementLineAFB120Repository.class);
+    bind(BankStatementRuleService.class).to(BankStatementRuleServiceImpl.class);
+    bind(BankStatementQueryService.class).to(BankStatementQueryServiceImpl.class);
   }
 }

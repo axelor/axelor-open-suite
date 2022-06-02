@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,18 +27,20 @@ import com.google.inject.persist.Transactional;
 public interface SaleOrderWorkflowService {
 
   @Transactional
-  public Partner validateCustomer(SaleOrder saleOrder);
+  Partner validateCustomer(SaleOrder saleOrder);
 
-  public String getSequence(Company company) throws AxelorException;
+  String getSequence(Company company) throws AxelorException;
 
-  public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
+  void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException;
 
-  public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException;
+  void finalizeQuotation(SaleOrder saleOrder) throws AxelorException;
 
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
+  void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
 
-  public String getFileName(SaleOrder saleOrder);
+  String getFileName(SaleOrder saleOrder);
+
+  void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

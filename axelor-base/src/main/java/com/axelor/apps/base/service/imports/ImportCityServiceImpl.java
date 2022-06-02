@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,11 +26,11 @@ import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.BufferedReader;
@@ -41,6 +41,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.invoke.MethodHandles;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -90,12 +92,22 @@ public class ImportCityServiceImpl implements ImportCityService {
     DUMP;
   }
 
+  protected PrintWriter printWriter = null;
+
+  protected File errorFile = null;
+
+  protected MetaFileRepository metaFileRepo;
+
   @Inject
   public ImportCityServiceImpl(
-      FactoryImporter factoryImporter, MetaFiles metaFiles, AppBaseService appBaseService) {
+      FactoryImporter factoryImporter,
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
+      MetaFileRepository metaFileRepo) {
     this.factoryImporter = factoryImporter;
     this.metaFiles = metaFiles;
     this.appBaseService = appBaseService;
+    this.metaFileRepo = metaFileRepo;
   }
 
   /**
@@ -109,22 +121,12 @@ public class ImportCityServiceImpl implements ImportCityService {
       throws AxelorException, IOException {
 
     ImportHistory importHistory = null;
-    if (dataFile.getFileType().equals("text/plain")
-        || dataFile.getFileType().equals("text/csv")
-        || dataFile.getFileType().equals("application/zip")) {
-      if (dataFile.getFileType().equals("application/zip")) {
-        dataFile = this.extractCityZip(dataFile);
-      }
-      File configXmlFile = this.getConfigXmlFile(typeSelect);
-      File dataCsvFile = this.getDataCsvFile(dataFile);
+    File configXmlFile = this.getConfigXmlFile(typeSelect);
+    File dataCsvFile = this.getDataCsvFile(dataFile);
 
-      importHistory = importCityData(configXmlFile, dataCsvFile);
-      this.deleteTempFiles(configXmlFile, dataCsvFile);
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION));
-    }
+    importHistory = importCityData(configXmlFile, dataCsvFile);
+    this.deleteTempFiles(configXmlFile, dataCsvFile);
+
     return importHistory;
   }
 
@@ -144,9 +146,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           this.getClass().getResourceAsStream("/import-configs/" + typeSelect + "-config.xml");
 
       if (bindFileInputStream == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.IMPORTER_3));
+        printWriter.append(I18n.get(IExceptionMessage.IMPORTER_3) + "\n");
       }
 
       try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
@@ -155,6 +155,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+      printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
     }
     return configFile;
   }
@@ -176,6 +177,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+      printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
     }
     return csvFile;
   }
@@ -199,6 +201,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+      printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
     }
     return importHistory;
   }
@@ -221,6 +224,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
+      printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
     }
   }
 
@@ -236,6 +240,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile)
       throws AxelorException {
     String downloadUrl = getDownloadUrl(geonamesFile);
+    MetaFile metaFile = null;
 
     try {
       File tempDir = java.nio.file.Files.createTempDirectory(null).toFile();
@@ -247,9 +252,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       LOG.debug("path for downloaded zip file : {}", downloadFile.getPath());
 
-      StringBuilder buffer;
-      try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
-          FileWriter writer = new FileWriter(cityTextFile)) {
+      try (ZipFile zipFile = new ZipFile(downloadFile.getPath())) {
 
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
@@ -260,48 +263,36 @@ public class ImportCityServiceImpl implements ImportCityService {
             BufferedReader stream =
                 new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
 
+            cityTextFile.createNewFile();
+
             switch (geonamesFile) {
               case DUMP:
-                buffer = this.extractDataDumpImport(stream);
+                cityTextFile = this.extractDataDumpImport(stream, cityTextFile);
                 break;
 
               case ZIP:
-                buffer = this.extractDataZipImport(stream);
+                cityTextFile = this.extractDataZipImport(stream, cityTextFile);
                 break;
 
               default:
-                throw new AxelorException(
-                    TraceBackRepository.CATEGORY_NO_VALUE,
-                    I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE));
+                printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
             }
-
-            cityTextFile.createNewFile();
-
-            writer.flush();
-            writer.write(buffer.toString().replace("\"", ""));
 
             LOG.debug("Length of file : {}", cityTextFile.length());
             break;
           }
         }
       }
-      MetaFile metaFile = metaFiles.upload(cityTextFile);
+      metaFile = metaFiles.upload(cityTextFile);
       FileUtils.forceDelete(tempDir);
 
-      return metaFile;
-
     } catch (UnknownHostException hostExp) {
-      throw new AxelorException(
-          hostExp,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR));
-
+      printWriter.append(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR) + "\n");
     } catch (IOException e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND),
-          downloadUrl);
+      printWriter.append(
+          String.format(I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND), downloadUrl) + "\n");
     }
+    return metaFile;
   }
 
   protected MetaFile extractCityZip(MetaFile dataFile) throws AxelorException, IOException {
@@ -334,11 +325,12 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
 
       if (!txtFileFound) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.NO_TEXT_FILE_FOUND),
-            requiredFileName,
-            dataFile.getFileName());
+        printWriter.append(
+            String.format(
+                    I18n.get(IExceptionMessage.NO_TEXT_FILE_FOUND),
+                    requiredFileName,
+                    dataFile.getFileName())
+                + "\n");
       }
     }
 
@@ -349,7 +341,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     return metaFile;
   }
 
-  protected StringBuilder extractDataDumpImport(BufferedReader downloadedCityFileStream)
+  protected File extractDataDumpImport(BufferedReader downloadedCityFileStream, File cityTextFile)
       throws IOException {
 
     HashMap<String, String> regionMap = new HashMap<>();
@@ -399,10 +391,10 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
     }
 
-    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cities);
+    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cities, cityTextFile);
   }
 
-  protected StringBuilder extractDataZipImport(BufferedReader downloadedCityFileStream)
+  protected File extractDataZipImport(BufferedReader downloadedCityFileStream, File cityTextFile)
       throws IOException {
 
     List<String> cityList = new ArrayList<>();
@@ -426,64 +418,70 @@ public class ImportCityServiceImpl implements ImportCityService {
               cityLine[8])); // canton code
     }
 
-    return this.createCityFileZipImport(cityList);
+    return this.createCityFileZipImport(cityList, cityTextFile);
   }
 
-  protected StringBuilder createCityFileZipImport(List<String> cityList) {
+  protected File createCityFileZipImport(List<String> cityList, File cityTextFile)
+      throws IOException {
 
-    StringBuilder buffer = new StringBuilder();
+    try (FileWriter writer = new FileWriter(cityTextFile)) {
+      Set<String> checkDuplicateCitySet = new HashSet<>();
 
-    Set<String> checkDuplicateCitySet = new HashSet<>();
+      for (String city : cityList) {
+        String[] cityInfo = city.split(SEPARATOR);
 
-    for (String city : cityList) {
-      String[] cityInfo = city.split(SEPARATOR);
-
-      if (checkDuplicateCitySet.add(cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
-        buffer.append(city);
+        if (checkDuplicateCitySet.add(
+            cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+          writer.write(city.replace("\"", ""));
+        }
       }
     }
 
-    return buffer;
+    return cityTextFile;
   }
 
-  protected StringBuilder createCityFileDumpImport(
+  protected File createCityFileDumpImport(
       HashMap<String, String> regionMap,
       HashMap<String, String> departmentMap,
       HashMap<String, String> cantonMap,
-      List<String> cityList) {
+      List<String> cityList,
+      File cityTextFile)
+      throws IOException {
 
-    StringBuilder buffer = new StringBuilder();
+    try (FileWriter writer = new FileWriter(cityTextFile)) {
+      Set<String> checkDuplicateCitySet = new HashSet<>();
 
-    Set<String> checkDuplicateCitySet = new HashSet<>();
+      for (String city : cityList) {
+        String[] cityInfo = city.split(SEPARATOR);
 
-    for (String city : cityList) {
-      String[] cityInfo = city.split(SEPARATOR);
-
-      if (checkDuplicateCitySet.add(cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
-        buffer.append(
-            String.format(
-                "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
-                cityInfo[0],
-                cityInfo[1],
-                cityInfo[2],
-                regionMap.get(cityInfo[3]),
-                cityInfo[3],
-                departmentMap.get(cityInfo[4]),
-                cityInfo[4],
-                cantonMap.get(cityInfo[5]),
-                cityInfo[5],
-                cityInfo[6],
-                cityInfo[7],
-                cityInfo[8]));
+        if (checkDuplicateCitySet.add(
+            cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+          writer.write(
+              String.format(
+                      "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
+                      cityInfo[0],
+                      cityInfo[1],
+                      cityInfo[2],
+                      regionMap.get(cityInfo[3]),
+                      cityInfo[3],
+                      departmentMap.get(cityInfo[4]),
+                      cityInfo[4],
+                      cantonMap.get(cityInfo[5]),
+                      cityInfo[5],
+                      cityInfo[6],
+                      cityInfo[7],
+                      cityInfo[8])
+                  .replace("\"", ""));
+        }
       }
     }
 
-    return buffer;
+    return cityTextFile;
   }
 
   protected String getDownloadUrl(GEONAMES_FILE geonamesFile) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-    String downloadUrl;
+    String downloadUrl = null;
 
     switch (geonamesFile) {
       case DUMP:
@@ -493,18 +491,96 @@ public class ImportCityServiceImpl implements ImportCityService {
         downloadUrl = appBase.getGeoNamesZipUrl();
         break;
       default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE));
+        printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
     }
 
     if (StringUtils.isEmpty(downloadUrl)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.GEONAMES_URL_NOT_SPECIFIED),
-          downloadUrl);
+      printWriter.append(
+          String.format(I18n.get(IExceptionMessage.GEONAMES_URL_NOT_SPECIFIED), downloadUrl)
+              + "\n");
     }
 
     return downloadUrl;
+  }
+
+  /**
+   * Imports cities from a predefined Geonames configuration.
+   *
+   * @param downloadFileName
+   * @param typeSelect
+   * @return
+   */
+  public Map<String, Object> importFromGeonamesAutoConfig(
+      String downloadFileName, String typeSelect) {
+    List<ImportHistory> importHistoryList = new ArrayList<>();
+    Map<String, Object> importCityMap = new HashMap<>();
+    try {
+      File tempDir = Files.createTempDir();
+      errorFile = new File(tempDir.getAbsolutePath(), "Error-File.txt");
+      printWriter = new PrintWriter(errorFile);
+
+      MetaFile zipImportDataFile = this.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
+      MetaFile dumpImportDataFile = this.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
+
+      importHistoryList.add(this.importCity(typeSelect + "-zip", zipImportDataFile));
+      importHistoryList.add(this.importCity(typeSelect + "-dump", dumpImportDataFile));
+    } catch (Exception e) {
+      printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
+    }
+    printWriter.close();
+    importCityMap.put("importHistoryList", importHistoryList);
+    importCityMap.put("errorFile", this.getMetaFile(errorFile));
+    return importCityMap;
+  }
+
+  /**
+   * Imports cities from a custom Geonames file. This is useful for the countries not present in the
+   * predefined list.
+   *
+   * @param map
+   * @param typeSelect
+   * @return
+   */
+  public Map<String, Object> importFromGeonamesManualConfig(
+      Map<String, Object> map, String typeSelect) {
+    List<ImportHistory> importHistoryList = new ArrayList<>();
+    Map<String, Object> importCityMap = new HashMap<>();
+    try {
+      File tempDir = Files.createTempDir();
+      errorFile = new File(tempDir.getAbsolutePath(), "Error-File.txt");
+      printWriter = new PrintWriter(errorFile);
+      if (map != null) {
+        MetaFile dataFile = metaFileRepo.find(Long.parseLong(map.get("id").toString()));
+
+        String extension = Files.getFileExtension(dataFile.getFileName());
+        if (extension != null
+            && (extension.equals("txt") || extension.equals("csv") || extension.equals("zip"))) {
+          if (extension.equals("zip")) {
+            dataFile = this.extractCityZip(dataFile);
+          }
+          importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
+        } else {
+          printWriter.append(I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
+        }
+      }
+    } catch (Exception e) {
+      printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
+    }
+    printWriter.close();
+    importCityMap.put("importHistoryList", importHistoryList);
+    importCityMap.put("errorFile", this.getMetaFile(errorFile));
+    return importCityMap;
+  }
+
+  protected MetaFile getMetaFile(File file) {
+    MetaFile metafile = null;
+    if (file != null && file.length() != 0) {
+      try {
+        metafile = metaFiles.upload(file);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    }
+    return metafile;
   }
 }

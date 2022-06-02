@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,7 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -147,6 +142,9 @@ public class DoubtfulCustomerService {
             invoice.getCurrency(),
             partner,
             move.getPaymentMode(),
+            invoice != null
+                ? invoice.getFiscalPosition()
+                : (partner != null ? partner.getFiscalPosition() : null),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             move.getFunctionalOriginSelect(),
             move.getInvoice().getInvoiceId(),
@@ -254,6 +252,7 @@ public class DoubtfulCustomerService {
             null,
             partner,
             moveLine.getMove().getPaymentMode(),
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
             moveLine.getName(),
@@ -349,10 +348,12 @@ public class DoubtfulCustomerService {
 
       invoice.setOldMove(invoice.getMove());
       invoice.setMove(move);
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+
       if (invoice.getPartner() != null) {
         doubtfulCustomerAccount =
             Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), doubtfulCustomerAccount);
+                .getAccount(fiscalPosition, doubtfulCustomerAccount);
       }
       invoice.setPartnerAccount(doubtfulCustomerAccount);
       invoice.setDoubtfulCustomerOk(true);
@@ -404,7 +405,7 @@ public class DoubtfulCustomerService {
         // Créance de + 6 mois
       case 0:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         break;
@@ -412,7 +413,7 @@ public class DoubtfulCustomerService {
         // Créance de + 3 mois
       case 1:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         break;
@@ -469,7 +470,7 @@ public class DoubtfulCustomerService {
         // Créance de + 6 mois
       case 0:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         moveLineList =
@@ -490,7 +491,7 @@ public class DoubtfulCustomerService {
         // Créance de + 3 mois
       case 1:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         moveLineList =

@@ -204,6 +204,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             date,
             date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -220,7 +221,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
+            I18n.get(IExceptionMessage.Capital_Depreciation_Derogatory_Account));
       }
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,8 @@ public interface IExceptionMessage {
       "The production process and the bill of material must be applicable" /*)*/;
 
   /** Batch Compute work in progress valuation */
-  static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
+  static final String BATCH_COMPUTE_VALUATION = /*$$(*/
+      "* %s Computed work in progress valuation" /*)*/;
 
   static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
@@ -76,6 +77,8 @@ public interface IExceptionMessage {
       "You must configure a component default stock location for company %s." /*)*/;
   static final String PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ = /*$$(*/
       "You must configure a sequence for manufacturing order for company %s" /*)*/;
+  static final String PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING = /*$$(*/
+      "Your production virtual stock location is not an outsourcing location." /*)*/;
 
   /** Manuf Order Controller */
   static final String MANUF_ORDER_1 = /*$$(*/
@@ -258,4 +261,15 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_CONDITION = /*$$(*/
       "The condition formula to generate the prod product returns null value or is not consistent. Please correct on prod product configurator id : %s." /*)*/;
+  static final String CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION = /*$$(*/
+      "The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula." /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_SOURCE_STOCK_LOCATION =
+      /*$$(*/
+      "The outsourcing receipt stock location is missing from the stock config" /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION =
+      /*$$(*/
+      "Stock location is missing from the prod process and in the component default stock location in stock configuration." /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
+      /*$$(*/
+      "The produced product stock location is missing in the prod process" /*)*/;
 }

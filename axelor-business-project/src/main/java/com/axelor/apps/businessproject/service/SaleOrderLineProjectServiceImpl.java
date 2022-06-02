@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,11 +25,13 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -51,7 +53,9 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      SaleOrderService saleOrderService,
+      PricingService pricingService) {
     super(
         currencyService,
         priceListService,
@@ -60,10 +64,12 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
+        saleOrderService,
         appAccountService,
         analyticMoveLineService,
         appSupplychainService,
-        accountConfigService);
+        accountConfigService,
+        pricingService);
   }
 
   @Transactional

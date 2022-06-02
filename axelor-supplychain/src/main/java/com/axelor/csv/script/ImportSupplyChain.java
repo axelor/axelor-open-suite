@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -94,7 +94,7 @@ public class ImportSupplyChain {
     return bean;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
 
     try {
@@ -120,7 +120,7 @@ public class ImportSupplyChain {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getDeliveryDate());
@@ -156,7 +156,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
@@ -191,7 +191,7 @@ public class ImportSupplyChain {
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);

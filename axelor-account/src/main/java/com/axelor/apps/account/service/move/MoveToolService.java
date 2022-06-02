@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -155,6 +155,8 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
@@ -162,5 +164,5 @@ public interface MoveToolService {
   @CallMethod
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 
-  boolean getEditAuthorization(Move move) throws AxelorException;
+  void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 }

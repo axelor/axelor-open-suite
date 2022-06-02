@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -86,12 +85,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         timesheet == null ? "null" : timesheet.getFullName());
 
     if (timesheet != null) {
-      User user = timesheet.getUser();
+      Employee employee = timesheet.getEmployee();
 
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (user.getEmployee() != null) {
-        Employee employee = employeeRepository.find(user.getEmployee().getId());
+      if (employee != null) {
+        employee = employeeRepository.find(employee.getId());
 
         log.debug("Employee: {}", employee);
 
@@ -165,7 +164,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   public TimesheetLine createTimesheetLine(
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
@@ -177,7 +176,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setComments(comments);
     timesheetLine.setProduct(product);
     timesheetLine.setProject(project);
-    timesheetLine.setUser(user);
+    timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
@@ -192,8 +191,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public TimesheetLine createTimesheetLine(
-      User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, user, date, timesheet, hours, comments);
+      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
+    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
   }
 
   @Override
@@ -201,7 +200,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetLine timesheetLine,
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
@@ -211,7 +210,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setComments(comments);
     timesheetLine.setProduct(product);
     timesheetLine.setProject(project);
-    timesheetLine.setUser(user);
+    timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));

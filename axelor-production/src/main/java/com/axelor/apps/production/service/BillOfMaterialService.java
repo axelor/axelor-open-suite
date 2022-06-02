@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -53,7 +55,7 @@ public interface BillOfMaterialService {
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
 
   @Transactional
-  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial);
+  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial) throws AxelorException;
@@ -65,5 +67,12 @@ public interface BillOfMaterialService {
   String computeName(BillOfMaterial bom);
 
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
+      throws AxelorException;
+
+  @CallMethod
+  public BillOfMaterial getDefaultBOM(Product originalProduct, Company company)
+      throws AxelorException;
+
+  List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
       throws AxelorException;
 }

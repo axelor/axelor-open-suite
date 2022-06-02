@@ -35,6 +35,8 @@
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
     <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <string name="pricingScaleLogs" title="Price calculation details" large="true"
+      readonly="true"/>
 
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"

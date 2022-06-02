@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,9 @@
  */
 package com.axelor.apps.bpm.service;
 
-import com.axelor.apps.bpm.db.WkfModel;
-import java.util.List;
 import java.util.Map;
 
 public interface BpmDashboardService {
 
-  public Map<String, Object> getData(int offset);
-
-  public List<Map<String, Object>> getChartData(WkfModel wkfModel, String type);
-
-  public List<Map<String, Object>> getInstances();
-
-  public Map<String, Object> getStatusRecords(
-      WkfModel wkfModel, String status, String assignedType);
-
-  public List<Long> getInstanceRecords(String status);
+  Map<String, Object> getData(int offset);
 }

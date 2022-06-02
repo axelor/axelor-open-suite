@@ -1,7 +1,0 @@
----
-title: Configurator BOM - Add workshop stock location
-type: feature
-description: |
-  Add workshop stock location to Configurator BOM and allow to define by script.
-  Update forms and generation process accordingly.
-  Update configurator export/import and demo data.

@@ -43,6 +43,8 @@
     <many-to-one name="creditNoteJournalType"
       ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
 
+    <many-to-one name="supplierAdvancePaymentAccount"
+      ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
 
     <!-- ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"
@@ -58,13 +60,15 @@
     <many-to-one name="cashPositionVariationAccount"
       ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account"
-      title="Advance Payment Account"/>
+      title="Customer advance payment account"/>
     <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
     <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
     <many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account"
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
+    <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bill of exchange receivable account"/>
 
 
     <!-- Automatic account creation for partners -->
@@ -337,6 +341,7 @@
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
+      <field name="billOfExchReceivAccount" on="UPDATE"/>
 
       <field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
       <field name="customerAccountPrefix" on="UPDATE"/>

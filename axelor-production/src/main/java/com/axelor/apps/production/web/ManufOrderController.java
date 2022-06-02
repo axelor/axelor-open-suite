@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.CostSheet;
@@ -39,7 +40,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -50,6 +50,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -59,6 +60,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -235,6 +237,10 @@ public class ManufOrderController {
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
           message = manufOrder.getMoCommentFromSaleOrder();
+        }
+
+        if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
+          Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
         }
 
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
@@ -660,14 +666,13 @@ public class ManufOrderController {
       response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Manufacturing orders"))
-              .model(ManufOrder.class.getName())
-              .add("grid", "generated-manuf-order-grid")
-              .add("form", "manuf-order-form")
+              .model(Wizard.class.getName())
+              .add("form", "multi-level-generated-draft-manuf-order-wizard-form")
               .param("popup", "true")
               .param("popup-save", "false")
               .param("show-toolbar", "false")
               .param("show-confirm", "false")
-              .domain("self.id in (" + StringTool.getIdListString(moList) + ")")
+              .context("_moList", moList)
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -742,6 +747,32 @@ public class ManufOrderController {
       Beans.get(ManufOrderReservedQtyService.class).cancelReservation(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removeUnselectedMOs(ActionRequest request, ActionResponse response) {
+    try {
+      Object object = request.getContext().get("draftManufOrderList");
+      if (object == null) {
+        return;
+      }
+      List<Map<String, Object>> manufOrders = (List<Map<String, Object>>) object;
+      List<Long> ids =
+          Beans.get(ManufOrderService.class).planSelectedOrdersAndDiscardOthers(manufOrders);
+      if (ObjectUtils.isEmpty(ids)) {
+        ids.add(0L);
+      }
+      response.setView(
+          ActionView.define(I18n.get("Manufacturing orders"))
+              .model(ManufOrder.class.getName())
+              .add("grid", "generated-manuf-order-grid")
+              .add("form", "manuf-order-form")
+              .domain("self.id in (" + Joiner.on(",").join(ids) + ")")
+              .map());
+
+    } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
   }

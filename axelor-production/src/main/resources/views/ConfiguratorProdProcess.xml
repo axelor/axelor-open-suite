@@ -23,9 +23,11 @@
       <panel name="stockLocationPanel" title="Stock Location">
         <field name="defStockLocationAsFormula" colSpan="6"/>
         <field name="stockLocation" form-view="stock-location-form"
-          grid-view="stock-location-grid" showIf="!defStockLocationAsFormula"/>
+          grid-view="stock-location-grid" showIf="!defStockLocationAsFormula"
+          requiredIf="!defStockLocationAsFormula"/>
         <field name="stockLocationFormula" colSpan="12" height="120" widget="CodeEditor"
-          x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"/>
+          x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"
+          requiredIf="defStockLocationAsFormula"/>
       </panel>
       <panel name="producedProductStockLocationPanel"
         title="Stock location for produced product">

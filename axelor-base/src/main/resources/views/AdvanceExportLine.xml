@@ -17,7 +17,7 @@
     onLoad="action-advanced-export-line-attrs-validate">
     <panel name="mainPanel">
       <field name="metaField" title="Select target field" required="true"
-        onSelect="action-advanced-export-line-attr-change-domain"
+        onSelect="action-advanced-export-line-method-change-domain"
         onChange="action-advanced-export-line-method-fill-title"/>
       <field name="title" required="true"/>
       <field name="targetField"/>
@@ -56,10 +56,9 @@
     <call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTitle"/>
   </action-method>
 
-  <action-attrs name="action-advanced-export-line-attr-change-domain">
-    <attribute name="domain"
-      expr="eval: &quot; self.metaModel.name = '${currentDomain}' &quot;" for="metaField"/>
-  </action-attrs>
+  <action-method name="action-advanced-export-line-method-change-domain">
+    <call class="com.axelor.apps.base.web.AdvancedExportController" method="metaFieldDomain"/>
+  </action-method>
 
   <action-attrs name="action-advanced-export-line-attr-reset">
     <attribute name="value" for="metaField" expr="eval: null"/>
