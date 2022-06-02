@@ -633,8 +633,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  public void computeStockMoveInvoicingStatus(StockMove stockMove, Invoice invoice)
-      throws AxelorException {
+  public void computeStockMoveInvoicingStatus(StockMove stockMove) throws AxelorException {
     int invoicingStatus = StockMoveRepository.STATUS_NOT_INVOICED;
     if (stockMove.getStockMoveLineList() != null
         && stockMove.getInvoiceSet() != null
@@ -656,12 +655,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         // special case where we invoice a stock move line with no quantities.
         invoicingStatus = StockMoveRepository.STATUS_INVOICED;
       } else if (totalInvoicedQty.signum() > 0 && totalRealQty.compareTo(totalInvoicedQty) > 0) {
-        if (isStockMoveInvoicingPartiallyActivated(invoice)) {
-          invoicingStatus = StockMoveRepository.STATUS_PARTIALLY_INVOICED;
-        } else {
-          invoicingStatus = StockMoveRepository.STATUS_INVOICED;
-        }
-
+        invoicingStatus = StockMoveRepository.STATUS_PARTIALLY_INVOICED;
       } else if (totalRealQty.compareTo(totalInvoicedQty) == 0) {
         invoicingStatus = StockMoveRepository.STATUS_INVOICED;
       }

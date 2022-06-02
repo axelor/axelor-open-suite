@@ -286,7 +286,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
     // update stock moves invoicing status
     for (StockMove stockMove : invoice.getStockMoveSet()) {
-      stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove, invoice);
+      stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove);
     }
   }
 

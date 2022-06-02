@@ -90,10 +90,9 @@ public interface StockMoveInvoiceService {
    * StockMoveLine#qtyInvoiced} in stock move lines and set it in the stock move.
    *
    * @param stockMove a stock move
-   * @param invoice: the invoice of the stock move
    * @throws AxelorException
    */
-  void computeStockMoveInvoicingStatus(StockMove stockMove, Invoice invoice) throws AxelorException;
+  void computeStockMoveInvoicingStatus(StockMove stockMove) throws AxelorException;
 
   /**
    * Checks if the given invoice is a refund of a stock move. Either the stock move is not a
