@@ -134,7 +134,7 @@
   </action-record>
 
   <action-group name="action-journal-group-on-load-actions">
-    <action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
+    <action name="action-journal-method-set-totals" if="journalType?.isDisplayBalances"/>
   </action-group>
 
   <action-method name="action-journal-method-set-totals">
