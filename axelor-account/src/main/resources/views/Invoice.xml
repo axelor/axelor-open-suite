@@ -500,7 +500,7 @@
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
       <field name="partner" colSpan="3" canEdit="false"
         readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"
-        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
+        onChange="action-group-account-invoice-partner-onchange"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" colSpan="3" canEdit="false"
@@ -1109,7 +1109,7 @@ InvoiceSet.length > 0))"
     <panel name="invoicingInfoPanel" title="Invoicing information">
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
         readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))"
-        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str"
+        onChange="action-group-account-invoice-partner-onchange-client"
         onSelect="action-invoice-method-set-partner-domain" canView="false"/>
       <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain"
         domain="self.isContact = true AND :company member of self.companySet"
@@ -1512,6 +1512,12 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
+    <action name="action-group-account-invoice-partner-onchange-client"/>
+    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+  </action-group>
+
+  <action-group name="action-group-account-invoice-partner-onchange-client">
     <action name="action-invoice-record-partner-change"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-due-date"/>
@@ -1527,6 +1533,7 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
+    <action name="action-method-invoice-address-str"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
