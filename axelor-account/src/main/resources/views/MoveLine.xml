@@ -401,7 +401,7 @@
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
-      <spacer colSpan="6"/>
+      <field name="isOtherCurrency" hidden="true"/>
       <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
