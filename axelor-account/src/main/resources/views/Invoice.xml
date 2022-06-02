@@ -764,7 +764,7 @@ InvoiceSet.length > 0))"
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
       <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
-      <button name="validateBtn" hidden="true" title="Validate"
+      <button name="validateBtn" hidden="true" title="Validate" showIf="statusSelect == 1"
         onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
