@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-    <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-	    <toolbar>
-	    	<button name="exportCreatorsBtn" title="Export" onClick="action-configurator-creator-method-export-configurator"/>
-	    	<button name="importCreatorsBtn" title="Import" onClick="action-configurator-creator-view-import"/>
-	    </toolbar>
-    	<field name="name"/>
-		<field name="isActive"/>
-    </grid>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="configurator-creator-grid" title="ConfiguratorCreators"
+    model="com.axelor.apps.sale.db.ConfiguratorCreator">
+    <toolbar>
+      <button name="exportCreatorsBtn" title="Export"
+        onClick="action-configurator-creator-method-export-configurator"/>
+      <button name="importCreatorsBtn" title="Import"
+        onClick="action-configurator-creator-view-import"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="isActive"/>
+  </grid>
 
   <grid name="configurator-creator-grid" title="ConfiguratorCreators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
@@ -173,40 +176,47 @@
     <action name="save"/>
     <action name="action-configurator-creator-create-configurator"/>
   </action-group>
-	<action-record name="action-configurator-creator-record-desactivate" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-		<field name="isActive" expr="eval: false"/>
-	</action-record>
-	
-	<action-view name="action-configurator-creator-view-import" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Import configurator creators">
-		<view name="import-configurator-creator-form" type="form"/>
-		<view-param name="popup" value="true"/>
-		<view-param name="popup-save" value="false"/>
-		<view-param name="show-confirm" value="false"/>
-		<view-param name="show-toolbar" value="false"/>
-	</action-view>
+  <action-record name="action-configurator-creator-record-desactivate"
+    model="com.axelor.apps.sale.db.ConfiguratorCreator">
+    <field name="isActive" expr="eval: false"/>
+  </action-record>
+
+  <action-view name="action-configurator-creator-view-import"
+    model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Import configurator creators">
+    <view name="import-configurator-creator-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
 
   <action-method
     name="action-configurator-creator-method-import-configurator-creators">
     <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
       method="importConfiguratorCreators"/>
   </action-method>
-    <action-view name="action-configurator-creator-view-test" title="Configurator" model="com.axelor.apps.sale.db.Configurator">
-        <view type="form" name="configurator-form"/>
-        <view type="grid" name="configurator-grid"/>
-        <context name="_configuratorCreator" expr="eval: __self__"/>
-    </action-view>
-    
-    <action-method name="action-configurator-creator-method-update-attributes">
-    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAttributes"/>
-    </action-method>
-    
-    <action-method name="action-configurator-creator-method-export-configurator">
-    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="exportConfiguratorCreator"/>
-    </action-method>
-    
-    <search-filters name="configurator-creator-filters" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
-        <field name="configuratorBom" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>
-    </search-filters>
+  <action-view name="action-configurator-creator-view-test" title="Configurator"
+    model="com.axelor.apps.sale.db.Configurator">
+    <view type="form" name="configurator-form"/>
+    <view type="grid" name="configurator-grid"/>
+    <context name="_configuratorCreator" expr="eval: __self__"/>
+  </action-view>
+
+  <action-method name="action-configurator-creator-method-update-attributes">
+    <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+      method="updateAttributes"/>
+  </action-method>
+
+  <action-method name="action-configurator-creator-method-export-configurator">
+    <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+      method="exportConfiguratorCreator"/>
+  </action-method>
+
+  <search-filters name="configurator-creator-filters"
+    model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
+    <field name="configuratorBom" hidden="true"
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>
+  </search-filters>
 
   <action-method name="action-configurator-creator-create-configurator">
     <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
