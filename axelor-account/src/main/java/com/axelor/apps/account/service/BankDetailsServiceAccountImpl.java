@@ -51,7 +51,11 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
    */
   @Override
   public String createCompanyBankDetailsDomain(
-          Currency currency, Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      Currency currency,
+      Partner partner,
+      Company company,
+      PaymentMode paymentMode,
+      Integer operationTypeSelect)
       throws AxelorException {
 
     AppAccountService appAccountService = Beans.get(AppAccountService.class);
@@ -106,13 +110,14 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
     }
   }
 
-  private List<BankDetails> createCompanyBankDetailsDomainFromFactorPartner(Currency currency, Company company)
-      throws AxelorException {
+  private List<BankDetails> createCompanyBankDetailsDomainFromFactorPartner(
+      Currency currency, Company company) throws AxelorException {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
     return bankDetailsList.stream()
-        .filter(bankDetails -> bankDetails.getActive() && bankDetails.getCurrency().equals(currency))
+        .filter(
+            bankDetails -> bankDetails.getActive() && bankDetails.getCurrency().equals(currency))
         .collect(Collectors.toList());
   }
 

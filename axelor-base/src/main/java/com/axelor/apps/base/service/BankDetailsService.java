@@ -76,7 +76,11 @@ public interface BankDetailsService {
    * @throws AxelorException
    */
   String createCompanyBankDetailsDomain(
-      Currency currency, Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      Currency currency,
+      Partner partner,
+      Company company,
+      PaymentMode paymentMode,
+      Integer operationTypeSelect)
       throws AxelorException;
 
   /**

@@ -54,6 +54,7 @@ public class CompanyBankDetailsController {
         "companyBankDetails",
         "domain",
         Beans.get(BankDetailsServiceImpl.class)
-            .createCompanyBankDetailsDomain(currency, partner, company, paymentMode, operationTypeSelect));
+            .createCompanyBankDetailsDomain(
+                currency, partner, company, paymentMode, operationTypeSelect));
   }
 }
