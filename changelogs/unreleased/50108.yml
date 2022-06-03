@@ -1,0 +1,3 @@
+---
+title: "Invoice: Fixed a rounding issue that could happen on total amount tax"
+type: fix

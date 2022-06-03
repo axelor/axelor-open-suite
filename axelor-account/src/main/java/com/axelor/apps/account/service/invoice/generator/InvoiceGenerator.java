@@ -46,6 +46,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -54,6 +55,7 @@ import com.axelor.rpc.ContextEntity;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -430,15 +432,16 @@ public abstract class InvoiceGenerator {
           invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
     }
 
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-
-      // In the invoice currency
-      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
-
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
-    }
+    invoice.setTaxTotal(
+        invoice.getInvoiceLineTaxList().stream()
+            .map(InvoiceLineTax::getTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    invoice.setCompanyTaxTotal(
+        invoice.getInvoiceLineTaxList().stream()
+            .map(InvoiceLineTax::getCompanyTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
     // In the invoice currency
     invoice.setInTaxTotal(invoice.getExTaxTotal().add(invoice.getTaxTotal()));

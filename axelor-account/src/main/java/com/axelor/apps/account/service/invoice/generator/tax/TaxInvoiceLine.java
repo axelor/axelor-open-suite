@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.account.service.invoice.generator.tax;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -190,7 +195,9 @@ public class TaxInvoiceLine extends TaxGenerator {
           (invoiceLineTax.getReverseCharged())
               ? invoiceLineTax.getExTaxBase().negate()
               : invoiceLineTax.getExTaxBase();
-      BigDecimal taxTotal = computeAmount(exTaxBase, taxValue);
+
+      // No scaling here, this value will be sum when the invoice will be computed
+      BigDecimal taxTotal = exTaxBase.multiply(taxValue);
 
       invoiceLineTax.setTaxTotal(taxTotal);
       invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
@@ -200,7 +207,9 @@ public class TaxInvoiceLine extends TaxGenerator {
           (invoiceLineTax.getReverseCharged())
               ? invoiceLineTax.getCompanyExTaxBase().negate()
               : invoiceLineTax.getCompanyExTaxBase();
-      BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, taxValue);
+
+      // No scaling here, this value will be sum when the invoice will be computed
+      BigDecimal companyTaxTotal = companyExTaxBase.multiply(taxValue);
 
       invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
       invoiceLineTax.setCompanyInTaxTotal(
