@@ -55,6 +55,7 @@ public interface InvoiceTermService {
 
   void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
+      BigDecimal totalAmount,
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount);

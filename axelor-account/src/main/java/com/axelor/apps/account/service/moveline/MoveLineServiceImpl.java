@@ -352,6 +352,7 @@ public class MoveLineServiceImpl implements MoveLineService {
             it ->
                 invoiceTermService.computeFinancialDiscount(
                     it,
+                    moveLine.getCredit().max(moveLine.getDebit()),
                     moveLine.getFinancialDiscount(),
                     moveLine.getFinancialDiscountTotalAmount(),
                     moveLine.getRemainingAmountAfterFinDiscount()));

@@ -230,6 +230,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
+        invoice.getInTaxTotal(),
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
         invoice.getRemainingAmountAfterFinDiscount());
@@ -238,12 +239,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
+      BigDecimal totalAmount,
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount) {
     if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
       BigDecimal percentage =
-          invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+          this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
+              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
       invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
       invoiceTerm.setFinancialDiscount(financialDiscount);
@@ -912,12 +915,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
+    return this.computeCustomizedPercentageUnscaled(amount, inTaxTotal)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal computeCustomizedPercentageUnscaled(
+      BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       percentage =
-          amount
-              .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 10, RoundingMode.HALF_UP);
     }
     return percentage;
   }
