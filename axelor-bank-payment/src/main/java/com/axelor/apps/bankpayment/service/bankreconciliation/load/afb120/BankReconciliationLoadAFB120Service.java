@@ -18,7 +18,6 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
-import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
@@ -27,6 +26,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -108,11 +108,11 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-    List<BankStatementLineAFB120> bankStatementLines =
+    String queryFilter =
+        getBankStatementLinesFilter(
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
+    Query<BankStatementLineAFB120> bankStatementLinesQuery =
         JPA.all(BankStatementLineAFB120.class)
-            .filter(
-                getBankStatementLinesFilter(
-                    bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
             .bind("bankDetails", bankReconciliation.getBankDetails())
             .bind("currency", bankReconciliation.getCurrency())
             .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
@@ -120,32 +120,13 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
             .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
             .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT)
             .order("valueDate")
-            .order("sequence")
-            .fetch();
-    return filterBankStatementLinesAFB120(bankReconciliation, bankStatementLines);
-  }
-
-  protected List<BankStatementLineAFB120> filterBankStatementLinesAFB120(
-      BankReconciliation bankReconciliation, List<BankStatementLineAFB120> bankStatementLines) {
-    List<BankReconciliationLine> bankReconciliationLines =
-        bankReconciliation.getBankReconciliationLineList();
-    if (CollectionUtils.isEmpty(bankReconciliationLines)
-        || CollectionUtils.isEmpty(bankStatementLines)) {
-      return bankStatementLines;
+            .order("sequence");
+    List<Long> existingBankStatementLineIds = getExistingBankStatementLines(bankReconciliation);
+    if (!CollectionUtils.isEmpty(existingBankStatementLineIds)) {
+      queryFilter += " AND self.id NOT IN (:existingBankStatementLines)";
+      bankStatementLinesQuery.bind("existingBankStatementLines", existingBankStatementLineIds);
     }
-    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      BankStatementLineAFB120 bankStatementLineToRemove = null;
-      for (BankStatementLineAFB120 bankStatementLine : bankStatementLines) {
-        if (bankStatementLine.equals(bankReconciliationLine.getBankStatementLine())) {
-          bankStatementLineToRemove = bankStatementLine;
-          break;
-        }
-      }
-      if (bankStatementLineToRemove != null) {
-        bankStatementLines.remove(bankStatementLineToRemove);
-      }
-    }
-    return bankStatementLines;
+    return bankStatementLinesQuery.filter(queryFilter).fetch();
   }
 
   protected BankStatementLine getInitialBalanceBankStatementLine(

@@ -24,6 +24,8 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -110,42 +112,38 @@ public class BankReconciliationLoadService {
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-    List<BankStatementLine> bankStatementLines =
+    String queryFilter =
+        getBankStatementLinesFilter(
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
+    Query<BankStatementLine> bankStatementLinesQuery =
         JPA.all(BankStatementLine.class)
-            .filter(
-                getBankStatementLinesFilter(
-                    bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
             .bind("bankDetails", bankReconciliation.getBankDetails())
             .bind("currency", bankReconciliation.getCurrency())
             .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
             .bind("bankStatement", bankStatement)
             .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
             .order("valueDate")
-            .order("sequence")
-            .fetch();
-    return filterBankStatementLines(bankReconciliation, bankStatementLines);
+            .order("sequence");
+    List<Long> existingBankStatementLineIds = getExistingBankStatementLines(bankReconciliation);
+    if (!CollectionUtils.isEmpty(existingBankStatementLineIds)) {
+      queryFilter += " AND self.id NOT IN (:existingBankStatementLines)";
+      bankStatementLinesQuery.bind("existingBankStatementLines", existingBankStatementLineIds);
+    }
+    return bankStatementLinesQuery.filter(queryFilter).fetch();
   }
 
-  protected List<BankStatementLine> filterBankStatementLines(
-      BankReconciliation bankReconciliation, List<BankStatementLine> bankStatementLines) {
+  protected List<Long> getExistingBankStatementLines(BankReconciliation bankReconciliation) {
+    List<Long> bankStatementLineIds = Lists.newArrayList();
     List<BankReconciliationLine> bankReconciliationLines =
         bankReconciliation.getBankReconciliationLineList();
-    if (CollectionUtils.isEmpty(bankReconciliationLines)
-        || CollectionUtils.isEmpty(bankStatementLines)) {
-      return bankStatementLines;
+    if (CollectionUtils.isEmpty(bankReconciliationLines)) {
+      return bankStatementLineIds;
     }
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      BankStatementLine bankStatementLineToRemove = null;
-      for (BankStatementLine bankStatementLine : bankStatementLines) {
-        if (bankStatementLine.equals(bankReconciliationLine.getBankStatementLine())) {
-          bankStatementLineToRemove = bankStatementLine;
-          break;
-        }
-      }
-      if (bankStatementLineToRemove != null) {
-        bankStatementLines.remove(bankStatementLineToRemove);
+      if (bankReconciliationLine.getBankStatementLine() != null) {
+        bankStatementLineIds.add(bankReconciliationLine.getBankStatementLine().getId());
       }
     }
-    return bankStatementLines;
+    return bankStatementLineIds;
   }
 }
