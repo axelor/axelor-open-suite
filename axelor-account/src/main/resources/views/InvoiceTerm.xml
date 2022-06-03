@@ -162,10 +162,10 @@
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
+          onChange="action-invoice-term-group-amount-onchange"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"/>
+          onChange="action-invoice-term-group-invoice-percentage-onchange"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonlyIf="isPaid" required="true"/>
         <field name="bankDetails"
@@ -315,10 +315,9 @@
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
-          validIf="amount > 0"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
+          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
-          onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
+          onChange="action-invoice-term-group-move-line-percentage-onchange"
           validIf="percentage > 0"/>
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
         <field name="paymentMode" requiredIf="invoice != null"/>
@@ -496,6 +495,31 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
+  <action-group name="action-invoice-term-group-amount-onchange">
+    <action name="action-invoice-term-method-compute-customized-percentage"/>
+    <action name="action-invoice-term-record-update-customized-true"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-move-line-amount-onchange">
+    <action name="action-invoice-term-group-amount-onchange"/>
+    <action name="action-invoice-term-method-compute-financial-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-percentage-onchange">
+    <action name="action-invoice-term-method-compute-customized-amount"/>
+    <action name="action-invoice-term-record-update-customized-true"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-move-line-percentage-onchange">
+    <action name="action-invoice-term-group-percentage-onchange"/>
+    <action name="action-invoice-term-method-compute-financial-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-invoice-percentage-onchange">
+    <action name="action-invoice-term-record-update-customized"/>
+    <action name="action-invoice-term-group-percentage-onchange"/>
+  </action-group>
+
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="$isPaymentConditionFree"
@@ -615,6 +639,11 @@
   <action-method name="action-invoice-term-method-compute-total-payment-session">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="computeTotalPaymentSession"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-compute-financial-discount">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="computeFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"

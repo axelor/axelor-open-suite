@@ -43,6 +43,7 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -372,6 +373,26 @@ public class InvoiceTermController {
       Beans.get(PaymentSessionService.class)
           .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      MoveLine moveLine =
+          Optional.of(invoiceTerm.getMoveLine())
+              .orElse(ContextTool.getContextParent(request.getContext(), MoveLine.class, 1));
+
+      Beans.get(InvoiceTermService.class)
+          .computeFinancialDiscount(
+              invoiceTerm,
+              moveLine.getFinancialDiscount(),
+              moveLine.getFinancialDiscountTotalAmount(),
+              moveLine.getRemainingAmountAfterFinDiscount());
+
+      response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
