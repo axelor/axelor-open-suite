@@ -5,16 +5,24 @@
 
   <grid name="ws-connector-grid" model="com.axelor.studio.db.WsConnector" title="Ws Connector">
     <field name="name"/>
+    <field name="appBuilder"/>
   </grid>
 
   <form name="ws-connector-form" model="com.axelor.studio.db.WsConnector" title="Ws Connector"
     width="large">
     <panel name="mainPanel">
+      <field name="appBuilder"/>
+      <spacer/>
       <field name="name"/>
       <field name="defaultWsAuthenticator"/>
       <field name="baseUrl" colSpan="12"/>
       <panel-related field="wsRequestList" colSpan="12" canMove="true"
-        orderBy="sequence"/>
+        orderBy="sequence">
+        <field name="name"/>
+        <field name="wsUrl"/>
+        <field name="requestTypeSelect"/>
+        <field name="sequence" hidden="true"/>
+      </panel-related>
     </panel>
   </form>
 

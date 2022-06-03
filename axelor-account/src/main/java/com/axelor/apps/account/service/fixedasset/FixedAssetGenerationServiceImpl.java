@@ -61,6 +61,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetValidateService fixedAssetValidateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
@@ -73,7 +74,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetValidateService fixedAssetValidateService) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
@@ -81,6 +83,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
+    this.fixedAssetValidateService = fixedAssetValidateService;
   }
 
   @Override
@@ -322,11 +325,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         fixedAsset.setDepreciationPlanSelect(
             fixedAsset.getFixedAssetCategory().getDepreciationPlanSelect());
       }
-      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
-        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-      } else {
-        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
-      }
+
       fixedAsset.setQty(invoiceLine.getQty());
       fixedAsset.setAcquisitionDate(invoice.getOriginDate());
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
@@ -350,7 +349,13 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);
       fixedAsset.setPurchaseAccountMove(invoice.getMove());
-      this.generateAndComputeLines(fixedAsset);
+      fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+
+      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
+        fixedAssetValidateService.validate(fixedAsset);
+      } else {
+        this.generateAndComputeLines(fixedAsset);
+      }
 
       fixedAssetList.add(fixedAssetRepo.save(fixedAsset));
     }

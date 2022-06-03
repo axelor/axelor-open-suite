@@ -110,12 +110,30 @@ public class MoveManagementRepository extends MoveRepository {
     }
   }
 
-  protected void resetInvoiceTerm(InvoiceTerm invoiceTerm) {
-    invoiceTerm.setInvoice(null);
-    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
-    invoiceTerm.setAmountRemainingAfterFinDiscount(
-        invoiceTerm.getAmount().subtract(invoiceTerm.getFinancialDiscountAmount()));
+  public void resetInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setIsPaid(false);
+    invoiceTerm.setApplyFinancialDiscount(false);
+    invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
+    invoiceTerm.setIsSelectedOnPaymentSession(false);
+    invoiceTerm.setDebtRecoveryBlockingOk(false);
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+    invoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+    invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
+    invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
+    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    invoiceTerm.setImportId(null);
+    invoiceTerm.setPaymentSession(null);
+    invoiceTerm.setPfpPartialReason(null);
+    invoiceTerm.setReasonOfRefusalToPay(null);
+    invoiceTerm.setReasonOfRefusalToPayStr(null);
+    invoiceTerm.setPfpValidatorUser(null);
+    invoiceTerm.setFinancialDiscount(null);
+    invoiceTerm.setDecisionPfpTakenDate(null);
+    invoiceTerm.setInvoice(null);
   }
 
   @Override
