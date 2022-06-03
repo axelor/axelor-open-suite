@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
@@ -367,7 +368,9 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null && Invoice.class.equals(context.getContextClass())) {
+      } else if (context.get("id") != null
+          && (Wizard.class.equals(context.getContextClass())
+              || Invoice.class.equals(context.getContextClass()))) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
         Integer reportType =
             context.get("reportType") != null

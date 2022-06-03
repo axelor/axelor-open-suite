@@ -2593,7 +2593,7 @@
 "Tax excluded","HT",,
 "Tax for management fee","TVA pour frais de gestion",,
 "Tax included","TTC",,
-"Tax is mandatory for the account %s on the move line %s","La taxe est obligatoire pour le compte %s sur la ligne d'écriture %s",,
+"Tax is mandatory for the account %s (%s) on the move line %s"," La taxe est obligatoire pour le compte %s (%s) sur la ligne d'écriture %s",,
 "Tax line",,,
 "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option).","La/les ligne(s) de taxe n'ont pas pu être générées du fait d'une ligne de configuration manquante pour la société %s dans le panneau information comptable sur le tiers %s (choix du régime TVA pour la société elle-même).",,
 "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s.","La/les ligne(s) de taxe n'ont pas pu être générées du fait d'une ligne de configuration manquante pour la société %s dans le panneau information comptable sur le tiers %s.",,
