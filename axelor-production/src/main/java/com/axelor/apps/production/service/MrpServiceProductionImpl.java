@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -93,7 +94,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
       ManufOrderRepository manufOrderRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      UnitConversionService unitConversionService) {
     super(
         appBaseService,
         appPurchaseService,
@@ -108,7 +110,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         stockRulesService,
         mrpLineService,
         mrpForecastRepository,
-        stockLocationService);
+        stockLocationService,
+        unitConversionService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }
