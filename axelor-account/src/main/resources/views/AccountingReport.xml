@@ -43,10 +43,6 @@
       <field name="reportType.typeSelect" hidden="true"/>
       <field name="exportTypeSelect"/>
       <field name="currency"/>
-      <field name="contentCurrencySelect" widget="MultiSelect"
-        showIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"
-        hidden="true"
-        requiredIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
@@ -160,6 +156,10 @@
           onChange="action-accounting-report-record-global-by-partner"/>
         <field name="detailed" hideIf="reportType.typeSelect != 4"
           onChange="action-accounting-report-record-detailed"/>
+        <field name="contentCurrencySelect" widget="MultiSelect"
+          showIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"
+          hidden="true"
+          requiredIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"/>
         <field name="displaySimulatedMove"
           showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
@@ -183,6 +183,7 @@
           showIf="reportType.typeSelect==7 || reportType.typeSelect==1"/>
         <field name="company.accountConfig" hidden="true"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
+
       </panel>
     </panel-tabs>
 
