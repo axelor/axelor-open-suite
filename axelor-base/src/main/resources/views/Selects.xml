@@ -291,11 +291,6 @@
     <option value="3">Include Discount in unit price</option>
   </selection>
 
-  <selection name="message.related.to.select" id="base.message.related.to.select">
-    <option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
-    <option value="com.axelor.apps.base.db.Product">Product</option>
-  </selection>
-
   <selection name="base.in.ati.select">
     <option value="1">Always W.T.</option>
     <option value="2">Always A.T.I.</option>

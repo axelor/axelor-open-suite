@@ -94,12 +94,6 @@
     <option value="3">Daily</option>
   </selection>
 
-  <selection name="message.related.to.select" id="crm.message.related.to.select">
-    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
-    <option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
-    <option value="com.axelor.apps.crm.db.Event">Event</option>
-  </selection>
-
   <selection name="crm.event.recurrence.type">
     <option value="1">Every day</option>
     <option value="2">Every week</option>

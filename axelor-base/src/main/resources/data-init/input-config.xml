@@ -32,8 +32,10 @@
     search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"/>
 
   <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
-    search="self.app.code = :code">
+    search="self.app.code = :code" call="com.axelor.csv.script.ImportBaseApp:importBaseApp">
     <bind to="app" column="code" search="self.code = :code"/>
+    <bind column="emailModel" to="emailModelSet" search="self.name in :emailModel"
+      eval="emailModel.split(',') as List"/>
   </input>
 
   <input file="base_barcodeTypeConfig.csv" separator=";"

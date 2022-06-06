@@ -365,11 +365,6 @@
     <option value="2">Monthly payments</option>
   </selection>
 
-  <selection name="message.related.to.select" id="account.message.related.to.select">
-    <option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
-    <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
-  </selection>
-
   <selection name="sequence.generic.code.select" id="account.sequence.generic.code.select">
     <option value="move">Move</option>
     <option value="invoice">Invoice</option>

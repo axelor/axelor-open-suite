@@ -68,4 +68,10 @@
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true"/>
 
+  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
+    call="com.axelor.csv.script.ImportBaseApp:importBaseApp" search="self.app.code = :code">
+    <bind column="emailModel" to="emailModelSet" search="self.name in :emailModel"
+      eval="emailModel.split(',') as List"/>
+  </input>
+
 </csv-inputs>

@@ -48,4 +48,10 @@
   <input file="project_priority.csv" separator=";"
     type="com.axelor.apps.project.db.ProjectPriority" search="self.importId = :importId"/>
 
+  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
+    call="com.axelor.csv.script.ImportBaseApp:importBaseApp" search="self.app.code = :code">
+    <bind column="emailModel" to="emailModelSet" search="self.name in :emailModel"
+      eval="emailModel.split(',') as List"/>
+  </input>
+
 </csv-inputs>

@@ -1,0 +1,5 @@
+---
+title: "MailMessage: Convert static related to dynamic"
+type: feature
+description: |
+  "Provide the way to configure Email Message related entities"

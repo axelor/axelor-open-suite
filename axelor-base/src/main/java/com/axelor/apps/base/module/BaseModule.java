@@ -29,6 +29,8 @@ import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
+import com.axelor.apps.base.db.repo.AppBaseManagementRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
@@ -251,5 +253,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(AppBaseRepository.class).to(AppBaseManagementRepository.class);
   }
 }
