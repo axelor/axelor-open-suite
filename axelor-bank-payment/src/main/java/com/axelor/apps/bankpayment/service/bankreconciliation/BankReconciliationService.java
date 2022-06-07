@@ -1119,8 +1119,9 @@ public class BankReconciliationService {
       } else {
         query =
             query.concat(
-                " AND self.account.accountType.technicalTypeSelect = "
-                    + AccountTypeRepository.TYPE_CASH);
+                " AND self.account.accountType.technicalTypeSelect = '"
+                    + AccountTypeRepository.TYPE_CASH
+                    + "'");
       }
       if (bankReconciliation.getJournal() != null) {
         query =
