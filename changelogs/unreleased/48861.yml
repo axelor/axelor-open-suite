@@ -1,0 +1,3 @@
+---
+title: "Expense line / Move line: Analytic distribution template is now correctly copied in move line when it is created from expense"
+type: fix

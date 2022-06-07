@@ -56,6 +56,7 @@ public class TestFixedAssetGenerationService {
   protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
+  protected FixedAssetValidateService fixedAssetValidateService;
   protected AppBaseService appBaseService;
 
   /*
@@ -76,6 +77,7 @@ public class TestFixedAssetGenerationService {
     fixedAssetLineService = mock(FixedAssetLineService.class);
     fixedAssetLineServiceFactory = mock(FixedAssetLineServiceFactory.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
+    fixedAssetValidateService = mock(FixedAssetValidateService.class);
 
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
@@ -91,7 +93,8 @@ public class TestFixedAssetGenerationService {
             fixedAssetLineServiceFactory,
             sequenceService,
             accountConfigService,
-            appBaseService);
+            appBaseService,
+            fixedAssetValidateService);
 
     prepareFixedAssetRepo();
   }
