@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -162,124 +162,10 @@
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">account_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">account_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">account_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">parent_account_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">debit</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">credit</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">balance</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">prev_year_balance</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">variation</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">variation_balance</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="rowFetchLimit">0</property>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">account_id</property>
-                    <property name="nativeName">account_id</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">account_code</property>
-                    <property name="nativeName">account_code</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">account_name</property>
-                    <property name="nativeName">account_name</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">parent_account_id</property>
-                    <property name="nativeName">parent_account_id</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">debit</property>
-                    <property name="nativeName">debit</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">credit</property>
-                    <property name="nativeName">credit</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">balance</property>
-                    <property name="nativeName">balance</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">prev_year_balance</property>
-                    <property name="nativeName">prev_year_balance</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">variation</property>
-                    <property name="nativeName">variation</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">variation_balance</property>
-                    <property name="nativeName">variation_balance</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[SELECT data.account_id,data.account_code,data.account_name,data.parent_account_id,SUM(data.debit) as debit,SUM(data.credit) as credit,SUM(data.balance) as balance,SUM(data.prev_year_balance) as prev_year_balance,SUM(data.balance) - SUM(data.prev_year_balance) as variation,
 (CASE
     WHEN COALESCE(SUM(data.balance), 0) = 0 THEN -1
@@ -309,7 +195,7 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
@@ -360,7 +246,7 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency = Move.currency) AND
 (AccountingReport.previous_date_from IS NULL OR MoveLine.date_val >= AccountingReport.previous_date_from) AND
 (AccountingReport.previous_date_to IS NULL OR MoveLine.date_val <= AccountingReport.previous_date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
@@ -387,30 +273,6 @@ order by account_code
 GROUP BY account_id,data.account_code,account_name,parent_account_id
 ORDER BY data.account_code
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
