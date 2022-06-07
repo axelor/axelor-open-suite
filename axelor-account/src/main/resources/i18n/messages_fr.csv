@@ -2245,6 +2245,7 @@
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.","La date d'arrêté est antérieure à la date du jour : les écritures enregistrées après cette date ne seront pas prise en compte dans le rapport.",,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book","La clôture d’une année fiscale entraîne l’intégration irréversible d’une écriture comptable dans le Journal des écritures comptables.",,
 "The company is required and must be the same for all invoices","La société est obligatoire et doit être la même pour l'ensemble des factures",,
+"The configuration to retrieve the account on the payment mode is missing:","La configuration du mode de paiement pour récupérer le compte comptable est manquante :",,
 "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%","La répartition configurée est incorrecte, la somme des pourcentages pour au moins un axe est différente de 100%",,
 "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%","La distribution analytique configurée est erronée, la somme des pourcentages pour chaque axe doit être égale à 100%",,
 "The currency is missing on the account move %s","La devise est manquante sur l'écriture %s",,
