@@ -25,10 +25,10 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public class MoveDueService {
           .collect(Collectors.toList());
     }
 
-    return null;
+    return new ArrayList<>();
   }
 
   public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue)
@@ -71,7 +71,7 @@ public class MoveDueService {
     Partner partner = invoice.getPartner();
 
     // Ajout de la facture d'origine
-    List<MoveLine> debitMoveLines = Lists.newArrayList(this.getOrignalInvoiceFromRefund(invoice));
+    List<MoveLine> debitMoveLines = this.getOrignalInvoiceFromRefund(invoice);
     debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
 
     // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
