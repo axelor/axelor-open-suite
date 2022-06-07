@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.payment;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -35,6 +36,16 @@ public interface PaymentModeService {
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
       throws AxelorException;
+
+  /**
+   * Find payment mode account from the move payment mode, journal and company. Use company active
+   * bank details to find the correct account.
+   *
+   * @param move a move with a filled payment mode, journal and company.
+   * @return the found account
+   * @throws AxelorException
+   */
+  public Account getPaymentModeAccount(Move move) throws AxelorException;
 
   public AccountManagement getAccountManagement(
       PaymentMode paymentMode, Company company, BankDetails bankDetails);
