@@ -48,6 +48,14 @@ public interface ReconcileService {
 
   public List<Partner> getPartners(Reconcile reconcile);
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      InvoicePayment invoicePayment)
+      throws AxelorException;
+
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,

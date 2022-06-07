@@ -26,12 +26,14 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -130,7 +132,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
 
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -262,10 +263,24 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     }
 
     invoicePayment.setMove(move);
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (customerMoveLine != null
+        && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       for (MoveLine invoiceMoveLine : invoiceMoveLines) {
-        invoicePayment.addReconcileListItem(
-            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, true));
+        Reconcile reconcile =
+            reconcileService.reconcile(
+                invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
+
+        if (reconcile == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
+              invoiceMoveLine.getName(),
+              invoiceMoveLine.getAccount().getCode(),
+              customerMoveLine.getName(),
+              customerMoveLine.getAccount().getCode());
+        }
+
+        invoicePayment.addReconcileListItem(reconcile);
       }
     }
 
