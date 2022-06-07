@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -221,5 +222,31 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     }
 
     return fixedAssetCategory;
+  }
+
+  @Override
+  public Account getPurchVatRegulationAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException {
+    if (accountManagement != null && accountManagement.getPurchVatRegulationAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX),
+          tax.getCode(),
+          company.getCode());
+    }
+    return accountManagement.getPurchVatRegulationAccount();
+  }
+
+  @Override
+  public Account getSaleVatRegulationAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException {
+    if (accountManagement != null && accountManagement.getSaleVatRegulationAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX),
+          tax.getCode(),
+          company.getCode());
+    }
+    return accountManagement.getSaleVatRegulationAccount();
   }
 }
