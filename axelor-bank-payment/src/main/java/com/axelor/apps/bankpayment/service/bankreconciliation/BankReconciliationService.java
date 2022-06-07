@@ -1116,6 +1116,11 @@ public class BankReconciliationService {
       if (bankReconciliation.getCashAccount() != null) {
         query =
             query.concat(" AND self.account.id = " + bankReconciliation.getCashAccount().getId());
+      } else {
+        query =
+            query.concat(
+                " AND self.account.accountType.technicalTypeSelect = "
+                    + AccountTypeRepository.TYPE_CASH);
       }
       if (bankReconciliation.getJournal() != null) {
         query =
