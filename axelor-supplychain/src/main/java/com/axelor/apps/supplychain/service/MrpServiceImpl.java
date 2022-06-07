@@ -97,6 +97,8 @@ public class MrpServiceImpl implements MrpService {
 
   protected AppBaseService appBaseService;
 
+  protected UnitConversionService unitConversionService;
+
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
   protected Mrp mrp;
@@ -116,7 +118,8 @@ public class MrpServiceImpl implements MrpService {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      UnitConversionService unitConversionService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -129,6 +132,7 @@ public class MrpServiceImpl implements MrpService {
     this.stockRulesService = stockRulesService;
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
+    this.unitConversionService = unitConversionService;
 
     this.appBaseService = appBaseService;
     this.stockLocationService = stockLocationService;
@@ -661,13 +665,12 @@ public class MrpServiceImpl implements MrpService {
       BigDecimal qty = purchaseOrderLine.getQty().subtract(purchaseOrderLine.getReceivedQty());
       if (!unit.equals(purchaseOrderLine.getUnit())) {
         qty =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    purchaseOrderLine.getUnit(),
-                    unit,
-                    qty,
-                    qty.scale(),
-                    purchaseOrderLine.getProduct());
+            unitConversionService.convert(
+                purchaseOrderLine.getUnit(),
+                unit,
+                qty,
+                qty.scale(),
+                purchaseOrderLine.getProduct());
       }
       MrpLine mrpLine =
           this.createMrpLine(
@@ -759,13 +762,12 @@ public class MrpServiceImpl implements MrpService {
       BigDecimal qty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
       if (!unit.equals(saleOrderLine.getUnit())) {
         qty =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    saleOrderLine.getUnit(),
-                    unit,
-                    qty,
-                    saleOrderLine.getQty().scale(),
-                    saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(),
+                unit,
+                qty,
+                saleOrderLine.getQty().scale(),
+                saleOrderLine.getProduct());
       }
 
       MrpLine mrpLine =
@@ -834,8 +836,8 @@ public class MrpServiceImpl implements MrpService {
       BigDecimal qty = mrpForecast.getQty();
       if (!unit.equals(mrpForecast.getUnit())) {
         qty =
-            Beans.get(UnitConversionService.class)
-                .convert(mrpForecast.getUnit(), unit, qty, qty.scale(), mrpForecast.getProduct());
+            unitConversionService.convert(
+                mrpForecast.getUnit(), unit, qty, qty.scale(), mrpForecast.getProduct());
       }
       MrpLine mrpLine =
           this.createMrpLine(
