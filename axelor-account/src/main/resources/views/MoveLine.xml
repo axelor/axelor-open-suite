@@ -659,6 +659,7 @@
     <action name="action-method-move-line-hide-axis-analytic-account"/>
     <action name="action-method-change-account-set-default-distribution-template"/>
     <action name="action-method-move-line-set-required-analytic-accounts"/>
+    <action name="action-move-line-record-set-debitcredit"/>
   </action-group>
 
   <action-group name="action-group-analytic-axis-onchange">
@@ -797,8 +798,14 @@
 
   <action-record name="action-move-line-record-set-currencyAmount"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
-    <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
+    <field name="currencyAmount" expr="eval: debit / currencyRate"
+      if="debit != 0 &amp;&amp; account?.commonPosition == 2"/>
+    <field name="currencyAmount" expr="eval: debit / currencyRate * -1"
+      if="debit != 0 &amp;&amp; account?.commonPosition == 1"/>
+    <field name="currencyAmount" expr="eval: credit / currencyRate"
+      if="credit != 0 &amp;&amp; account?.commonPosition == 1"/>
+    <field name="currencyAmount" expr="eval: credit / currencyRate * -1"
+      if="credit != 0 &amp;&amp; account?.commonPosition == 2"/>
     <field name="currencyAmount" expr="eval: 0" if="(debit == 0 &amp;&amp; credit == 0)"/>
   </action-record>
 
@@ -844,9 +851,22 @@
   <action-record name="action-move-line-record-set-debitcredit"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="debit" expr="eval: currencyAmount * currencyRate"
-      if="account?.commonPosition == 2"/>
+      if="currencyAmount &gt;= 0 &amp;&amp; account?.commonPosition == 2"/>
+    <field name="debit" expr="eval: 0"
+      if="currencyAmount &lt; 0 &amp;&amp; account?.commonPosition == 2"/>
+    <field name="debit" expr="eval: currencyAmount * currencyRate * -1"
+      if="currencyAmount &lt; 0 &amp;&amp; account?.commonPosition == 1"/>
+    <field name="debit" expr="eval: 0"
+      if="currencyAmount &gt;= 0 &amp;&amp; account?.commonPosition == 1"/>
+
     <field name="credit" expr="eval: currencyAmount * currencyRate"
-      if="account?.commonPosition == 1"/>
+      if="currencyAmount &gt;= 0 &amp;&amp; account?.commonPosition == 1"/>
+    <field name="credit" expr="eval: 0"
+      if="currencyAmount &lt; 0 &amp;&amp; account?.commonPosition == 1"/>
+    <field name="credit" expr="eval: currencyAmount * currencyRate * -1"
+      if="currencyAmount &lt; 0 &amp;&amp; account?.commonPosition == 2"/>
+    <field name="credit" expr="eval: 0"
+      if="currencyAmount &gt;= 0 &amp;&amp; account?.commonPosition == 2"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
