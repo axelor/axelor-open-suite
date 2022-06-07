@@ -322,7 +322,7 @@
         <field name="estimatedDelivDate"
           onChange="save,action-sale-order-line-supplychain-method-update-reservation-date"
           readonlyIf="$availabiltyRequest"/>
-        <field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
+        <field name="deliveredQty" readonly="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
