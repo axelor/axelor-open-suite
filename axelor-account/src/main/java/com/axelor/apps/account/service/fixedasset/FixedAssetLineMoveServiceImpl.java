@@ -27,11 +27,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -129,6 +132,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account debitLineAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account creditLineAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      if (debitLineAccount == null || creditLineAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FIXED_ASSET_CATEGORY_MISSING_DEBIT_OR_CREDIT_ACCOUNT),
+            fixedAsset.getFixedAssetCategory().getName());
+      }
       BigDecimal amount = fixedAssetLine.getDepreciation();
 
       // Creating accounting debit move line
@@ -211,7 +220,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      if (chargeAccount == null || depreciationAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FIXED_ASSET_CATEGORY_MISSING_CHARGE_OR_DEPRECIATION_ACCOUNT),
+            fixedAsset.getFixedAssetCategory().getName());
+      }
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
+      if (purchaseAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FIXED_ASSET_MISSING_PURCHASE_ACCOUNT));
+      }
       BigDecimal chargeAmount = fixedAssetLine.getResidualValue();
       BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
 

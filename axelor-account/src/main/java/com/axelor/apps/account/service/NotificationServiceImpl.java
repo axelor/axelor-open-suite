@@ -122,13 +122,14 @@ public class NotificationServiceImpl implements NotificationService {
     return accountConfigService.getAutoMiscOpeJournal(accountConfig);
   }
 
-  protected Account getAccount(AccountConfig accountConfig, NotificationItem notificationItem) {
-    Account account = accountConfig.getFactorCreditAccount();
+  protected Account getAccount(AccountConfig accountConfig, NotificationItem notificationItem)
+      throws AxelorException {
     if (notificationItem.getTypeSelect()
         == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE_AFTER_FACTORE_RETURN) {
-      account = accountConfig.getFactorDebitAccount();
+      return accountConfigService.getFactorDebitAccount(accountConfig);
+    } else {
+      return accountConfigService.getFactorCreditAccount(accountConfig);
     }
-    return account;
   }
 
   @Transactional(rollbackOn = {Exception.class})
