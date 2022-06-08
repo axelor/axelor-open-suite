@@ -411,6 +411,13 @@ public class InventoryService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVENTORY_VALIDATE_WRONG_STATUS));
     }
+    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+      if (inventoryLine.getStockLocation() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.INVENTORY_LINE_STOCK_LOCATION_MISSING));
+      }
+    }
     inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
