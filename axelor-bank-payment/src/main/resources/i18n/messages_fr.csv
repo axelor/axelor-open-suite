@@ -911,6 +911,8 @@
 "The bank details is inactive.","Le RIB est inactif.",,
 "The bank details type is not compatible with the accepted types in file format.","Le type de compte bancaire n'est pas autorisé par le format de fichier.",,
 "The bank order is not properly signed. Please correct it and sign it again.","L’ordre bancaire n’est pas signé correctement. Merci de le corriger et de le signer à nouveau.",,
+"The bank statement cannot be removed because of bank reconciliation, please remove those references %s","Le relevé ne peut pas être supprimé car il y a des rapprochements bancaires,veuillez supprimer ces références %s",,
+"The bank statement cannot be removed because of bank reconciliation line, please remove those references %s","Le relevé ne peut pas être supprimé car il y a des lignes de rapprochements bancaires,veuillez supprimer ces références %s",,
 "The company %s does not have bank order sequence","La société %s n'a pas de séquence d'ordre bancaire configurée",,
 "The input to be zipped cannot be null","L'archive ne peut être vide",,
 "The payment status will not update.","Le statut du paiement ne sera pas mis à jour.",,
