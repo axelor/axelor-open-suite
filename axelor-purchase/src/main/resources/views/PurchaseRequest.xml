@@ -37,7 +37,7 @@
     model="com.axelor.apps.purchase.db.PurchaseRequest">
     <toolbar>
       <button name="generatePoBtn" title="Generate PO"
-        onClick="action-purchase-request-open-generate-po-wizard" readonlyIf="!_ids"/>
+        onClick="action-purchase-request-open-generate-po-wizard"/>
     </toolbar>
     <hilite if="statusSelect == 2" color="info"/>
     <hilite if="statusSelect == 3" color="primary"/>
