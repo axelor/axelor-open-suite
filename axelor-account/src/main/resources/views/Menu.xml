@@ -53,7 +53,7 @@
     if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
     order="16"/>
 
-  <menuitem name="invoice-root-pfp" title="PFP" parent="invoice-root"
+  <menuitem name="invoice-root-pfp" title="PFP" parent="none"
     if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
     order="16"/>
 
@@ -75,7 +75,8 @@
   </action-view>
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
-    action="invoice.root.pfp.awaiting.pfp" parent="invoice-root-pfp"
+    action="invoice.root.pfp.awaiting.pfp"
+    parent="invoice-root"
     if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
 
   <action-view name="invoice.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
@@ -776,7 +777,7 @@
     title="Advanced"/>
 
   <menuitem name="menu-account-sale-invoice-advanced"
-    parent="menu-account-invoice-advanced" title="Turnover"
+    parent="invoice-root-report" title="Turnover"
     action="account.sale.invoice.advanced.view"/>
 
   <action-view name="account.sale.invoice.advanced.view" title="Sale Invoices Details"
