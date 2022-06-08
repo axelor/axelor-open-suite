@@ -93,6 +93,8 @@
 		public static final int FUNCTIONAL_ORIGIN_PAYMENT = 5;
 		public static final int FUNCTIONAL_ORIGIN_CUT_OFF = 6;
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
+
+		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
 	]]></extra-code>
 
     <track>

@@ -38,7 +38,7 @@ public class ReconcileManagementRepository extends ReconcileRepository {
       return super.save(reconcile);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -65,7 +65,7 @@ public class ReconcileManagementRepository extends ReconcileRepository {
             I18n.get(IExceptionMessage.RECONCILE_CAN_NOT_BE_REMOVE),
             entity.getReconcileSeq());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);

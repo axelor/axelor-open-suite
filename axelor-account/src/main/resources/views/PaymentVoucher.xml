@@ -44,8 +44,7 @@
         onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="fa-print"
-        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"
-        showIf="statusSelect == 3"/>
+        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
@@ -228,12 +227,12 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="operationTypeSelect" expr="eval: _operationTypeSelect"
       if="_operationTypeSelect"/>
     <field name="currency" expr="eval:__user__.activeCompany?.currency"/>
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
   </action-record>
 

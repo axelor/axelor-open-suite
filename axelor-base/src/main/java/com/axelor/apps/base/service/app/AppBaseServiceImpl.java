@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
@@ -89,18 +88,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public LocalDate getTodayDate(Company company) {
 
     return getTodayDateTime(company).toLocalDate();
-  }
-
-  @Override
-  public Unit getUnit() {
-
-    AppBase appBase = getAppBase();
-
-    if (appBase != null) {
-      return appBase.getDefaultProjectUnit();
-    }
-
-    return null;
   }
 
   @Override

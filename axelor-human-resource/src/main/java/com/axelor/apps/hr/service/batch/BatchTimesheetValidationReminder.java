@@ -95,21 +95,21 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
           Beans.get(TimesheetRepository.class)
               .all()
               .filter(
-                  "self.company.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true",
+                  "self.company.id = ?1 AND self.statusSelect = 1 AND self.employee.timesheetReminder = true",
                   company.getId())
               .fetch();
     } else {
       timesheetList =
           Beans.get(TimesheetRepository.class)
               .all()
-              .filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true")
+              .filter("self.statusSelect = 1 AND self.employee.timesheetReminder = true")
               .fetch();
     }
     String model = template.getMetaModel().getFullName();
     String tag = template.getMetaModel().getName();
     for (Timesheet timesheet : timesheetList) {
       try {
-        Employee employee = timesheet.getUser().getEmployee();
+        Employee employee = timesheet.getEmployee();
         if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
         }
@@ -130,17 +130,17 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
             ? Beans.get(TimesheetRepository.class)
                 .all()
                 .filter(
-                    "self.company.id = ?1 AND self.statusSelect = 1 AND self.user.employee.timesheetReminder = true",
+                    "self.company.id = ?1 AND self.statusSelect = 1 AND self.employee.timesheetReminder = true",
                     batch.getMailBatch().getCompany().getId())
                 .fetch()
             : Beans.get(TimesheetRepository.class)
                 .all()
-                .filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true")
+                .filter("self.statusSelect = 1 AND self.employee.timesheetReminder = true")
                 .fetch();
 
     for (Timesheet timesheet : timesheetList) {
       try {
-        Employee employee = timesheet.getUser().getEmployee();
+        Employee employee = timesheet.getEmployee();
         if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
         }

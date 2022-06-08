@@ -249,8 +249,9 @@ public interface InvoiceService {
    *
    * @param invoice
    * @return
+   * @throws AxelorException
    */
-  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) throws AxelorException;
 
   /**
    * Return the move line from the advance payment from related sale order lines.
@@ -352,4 +353,7 @@ public interface InvoiceService {
 
   public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
 }

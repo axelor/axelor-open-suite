@@ -1,7 +1,23 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -10,9 +26,8 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -26,6 +41,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
   protected AccountManagementService accountManagementService;
+  protected PaymentModeService paymentModeService;
 
   @Inject
   public MoveCounterPartServiceImpl(
@@ -34,19 +50,25 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
-      AccountManagementService accountManagementService) {
+      AccountManagementService accountManagementService,
+      PaymentModeService paymentModeService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.moveLineCreateService = moveLineCreateService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
     this.accountManagementService = accountManagementService;
+    this.paymentModeService = paymentModeService;
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
-    move.addMoveLineListItem(createCounterpartMoveLine(move));
+    MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
+    if (counterPartMoveLine == null) {
+      return;
+    }
+    move.addMoveLineListItem(counterPartMoveLine);
     moveRepository.save(move);
   }
 
@@ -55,6 +77,9 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     Account accountingAccount = getAccountingAccountFromJournal(move);
     boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
+    if (amount.signum() == 0) {
+      return null;
+    }
     isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
@@ -88,7 +113,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {
     Account accountingAccount = null;
-    Company company = move.getCompany();
     int technicalTypeSelect = move.getJournal().getJournalType().getTechnicalTypeSelect();
     if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
       accountingAccount =
@@ -98,12 +122,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
           accountingSituationService.getCustomerAccount(move.getPartner(), move.getCompany());
     } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
         && move.getPaymentMode() != null) {
-      AccountManagement accountManagement =
-          accountManagementService.getAccountManagement(
-              move.getPaymentMode().getAccountManagementList(), company);
-      if (ObjectUtils.notEmpty(accountManagement)) {
-        accountingAccount = accountManagement.getCashAccount();
-      }
+      accountingAccount = paymentModeService.getPaymentModeAccount(move);
     }
     return accountingAccount;
   }

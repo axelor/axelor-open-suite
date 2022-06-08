@@ -48,6 +48,14 @@ public interface SaleOrderLineService {
   SaleOrderLine resetProductInformation(SaleOrderLine line);
 
   /**
+   * Reset price and inTaxPrice (only if the line.enableFreezeField is disabled) of the
+   * saleOrderLine
+   *
+   * @param line
+   */
+  void resetPrice(SaleOrderLine line);
+
+  /**
    * Compute totals from a sale order line
    *
    * @param saleOrder
@@ -311,9 +319,33 @@ public interface SaleOrderLineService {
       ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
-      throws ClassNotFoundException, AxelorException;
-
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * Methods to compute the pricing scale of saleOrderLine <br>
+   * It is supposed that only one root pricing (pricing with no previousPricing) exists with the
+   * configuration of the saleOrderLine. (product, productCategory, company, concernedModel) Having
+   * more than one pricing matched may result on a unexpected result
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * Methods that checks if saleOrderLine can be can classified with a pricing line of a existing
+   * and started pricing. <br>
+   * It is supposed that only one root pricing (pricing with no previousPricing) exists with the
+   * configuration of the saleOrderLine. (product, productCategory, company, concernedModel) Having
+   * more than one pricing matched may have different result each time this method is called
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @return true if it can be classified, else false
+   * @throws AxelorException
+   */
+  public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }

@@ -81,7 +81,8 @@
             <field name="fax" widget="phone" colSpan="4"/>
             <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
               colSpan="4"/>
-            <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
           </panel>
 
           <panel name="addressPanel" title="Primary address" colSpan="12">

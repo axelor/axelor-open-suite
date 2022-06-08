@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -93,7 +94,7 @@ public class ImportSupplyChain {
     return bean;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
 
     try {
@@ -119,7 +120,7 @@ public class ImportSupplyChain {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getDeliveryDate());
@@ -155,7 +156,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
@@ -190,7 +191,7 @@ public class ImportSupplyChain {
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);
@@ -208,7 +209,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  public Object importInventory(Object bean, Map<String, Object> values) {
+  public Object importInventory(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof Inventory;
 
