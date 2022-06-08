@@ -1115,11 +1115,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public List<Long> getInvoiceLineIds(Invoice invoice) {
     List<Long> invoiceLineListIds = new ArrayList<Long>();
-    if (invoice != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLineListIds.add(invoiceLine.getId());
+    if (invoice != null && invoice.getId() != null) {
+      invoice = invoiceRepo.find(invoice.getId());
+      if (invoice != null) {
+        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+          invoiceLineListIds.add(invoiceLine.getId());
+        }
       }
     }
+    invoiceLineListIds.add((long) 0);
     return invoiceLineListIds;
   }
 
