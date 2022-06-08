@@ -84,8 +84,6 @@ import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
 import com.axelor.apps.account.service.AnalyticAxisControlServiceImpl;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
-import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface FixedAssetService {
   /**
@@ -63,6 +64,7 @@ public interface FixedAssetService {
    * @param fixedAsset
    */
   void computeFirstDepreciationDate(FixedAsset fixedAsset);
+
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**

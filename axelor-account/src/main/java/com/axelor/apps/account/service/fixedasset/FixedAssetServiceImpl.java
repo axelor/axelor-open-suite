@@ -24,15 +24,14 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -64,6 +63,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
+  protected FixedAssetDateService fixedAssetDateService;
 
   protected FixedAssetLineService fixedAssetLineService;
 
@@ -86,7 +86,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
-      FixedAssetGenerationService fixedAssetGenerationService) {
+      FixedAssetGenerationService fixedAssetGenerationService,
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -95,6 +96,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
@@ -322,24 +324,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (fixedAssetCategory == null) {
       return;
     }
-    Integer periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
-    Integer firstDepreciationDateInitSelect =
-        fixedAssetCategory.getFirstDepreciationDateInitSelect();
-    if (fixedAssetCategory != null
-        && periodicityTypeSelect != null
-        && firstDepreciationDateInitSelect != null) {
-      if (firstDepreciationDateInitSelect
-          == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION) {
-        fixedAsset.setFirstDepreciationDate(
-            analyticFixedAssetService.computeFirstDepreciationDate(
-                fixedAsset, fixedAsset.getAcquisitionDate()));
-      } else {
-        fixedAsset.setFirstDepreciationDate(
-            analyticFixedAssetService.computeFirstDepreciationDate(
-                fixedAsset, fixedAsset.getFirstServiceDate()));
-      }
-    }
+    fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
   }
+
   @Override
   @Transactional
   public void updateDepreciation(FixedAsset fixedAsset) throws AxelorException {
