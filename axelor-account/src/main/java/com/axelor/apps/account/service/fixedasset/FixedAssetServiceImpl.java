@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceF
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -230,101 +229,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         }
       }
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validate(FixedAsset fixedAsset) throws AxelorException {
-    Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
-    if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
-
-      if (StringUtils.isEmpty(fixedAsset.getFixedAssetSeq())) {
-        fixedAsset.setFixedAssetSeq(fixedAssetGenerationService.generateSequence(fixedAsset));
-      }
-
-      if (fixedAsset.getFixedAssetLineList() != null
-          && !fixedAsset.getFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      }
-      if (fixedAsset.getFiscalFixedAssetLineList() != null
-          && !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      }
-      if (fixedAsset.getFixedAssetDerogatoryLineList() != null
-          && !fixedAsset.getFixedAssetDerogatoryLineList().isEmpty()) {
-        fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
-      }
-      if (fixedAsset.getIfrsFixedAssetLineList() != null
-          && !fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      }
-
-      if (!fixedAsset
-          .getDepreciationPlanSelect()
-          .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-        fixedAsset = fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
-      } else {
-        fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
-      }
-
-      if (fixedAsset.getIsEqualToFiscalDepreciation()) {
-        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
-      } else if (fixedAsset
-          .getDepreciationPlanSelect()
-          .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-        fixedAsset.setAccountingValue(BigDecimal.ZERO);
-      } else {
-        fixedAsset.setAccountingValue(
-            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
-      }
-
-    } else {
-      fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
-    }
-    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-    fixedAssetRepo.save(fixedAsset);
-  }
-
-  @Override
-  public int massValidation(List<Long> fixedAssetIds) throws AxelorException {
-    int count = 0;
-    for (Long id : fixedAssetIds) {
-      FixedAsset fixedAsset = fixedAssetRepo.find(id);
-      if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-        validate(fixedAsset);
-        JPA.clear();
-        count++;
-      }
-    }
-    return count;
-  }
-
-  /**
-   * If firstDepreciationDateInitSeelct if acquisition Date THEN : -If PeriodicityTypeSelect = 12
-   * (Year) >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.acquisitionDate -if
-   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
-   * fixedAsset.acquisitionDate Else (== first service date) -If PeriodicityTypeSelect = 12 (Year)
-   * >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.firstServiceDate -if
-   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
-   * fixedAsset.firstServiceDate
-   */
-  @Override
-  public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
-
-    FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-    if (fixedAssetCategory == null) {
-      return;
-    }
-    fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
   }
 
   @Override
