@@ -1004,7 +1004,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
-    moveLine.addInvoiceTermListItem(newInvoiceTerm);
+    if (moveLine != null) {
+      moveLine.addInvoiceTermListItem(newInvoiceTerm);
+    }
 
     return newInvoiceTerm;
   }
