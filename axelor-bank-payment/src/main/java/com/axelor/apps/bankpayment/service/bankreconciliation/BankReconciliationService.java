@@ -1119,7 +1119,7 @@ public class BankReconciliationService {
       } else {
         query =
             query.concat(
-                " AND self.account.accountType.technicalTypeSelect = '"
+                " AND self.account.accountType.technicalTypeSelect LIKE '"
                     + AccountTypeRepository.TYPE_CASH
                     + "'");
       }
