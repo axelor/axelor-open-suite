@@ -86,7 +86,9 @@ public class JournalService {
         compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
         compatiblePartnerDomain.append(")");
         return compatiblePartnerDomain.toString();
-      } else return null;
+      } else {
+        return null;
+      }
     }
     return null;
   }
