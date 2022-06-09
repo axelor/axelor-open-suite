@@ -247,13 +247,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount) {
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()
+        && financialDiscount != null) {
       BigDecimal percentage =
           this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
               .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
+      invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
@@ -262,6 +265,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
+    } else {
+      invoiceTerm.setApplyFinancialDiscount(false);
+      invoiceTerm.setFinancialDiscount(null);
+      invoiceTerm.setFinancialDiscountDeadlineDate(null);
+      invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
+      invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+      invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
     }
   }
 

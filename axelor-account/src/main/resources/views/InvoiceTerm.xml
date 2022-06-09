@@ -540,12 +540,12 @@
       expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
       if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
     <field name="$showFinancialDiscount"
-      expr="eval: __parent__?.move?.statusSelect == 3 || __parent__?.move?.statusSelect == 4"
+      expr="eval: __parent__?.move?.statusSelect != 1 || __parent__?.move?.statusSelect != 5"
       if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
     <field name="$showFinancialDiscount"
       expr="eval: invoice?.statusSelect == 3 || invoice?.statusSelect == 4" if="invoice != null"/>
     <field name="$showFinancialDiscount"
-      expr="eval: moveLine?.move?.statusSelect == 3 || moveLine?.move?.statusSelect == 4"
+      expr="eval: moveLine?.move?.statusSelect != 1 || moveLine?.move?.statusSelect != 5"
       if="invoice == null &amp;&amp; moveLine != null"/>
   </action-record>
 

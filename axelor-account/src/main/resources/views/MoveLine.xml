@@ -89,6 +89,7 @@
     <field name="date" width="100" onChange="account-move-line-group-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      onChange="action-move-line-group-partner-onchange"
       onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
@@ -516,6 +517,7 @@
         readonlyIf="amountPaid &gt; 0"
         onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
+        onChange="action-move-line-group-partner-onchange"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
@@ -592,10 +594,10 @@
       <panel name="invoiceTermPanel" title="Term(s)"
         showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
         <panel name="financialDiscountPanel" colSpan="12"
-          showIf="move.statusSelect == 3 || move.statusSelect == 4"
+          showIf="move.statusSelect != 1 || move.statusSelect != 5"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
           <field name="financialDiscount" readonlyIf="amountPaid > 0"
-            onChange="action-move-line-group-financial-discount-onchange"/>
+            onChange="action-move-line-method-compute-financial-discount"/>
           <field name="financialDiscountDeadlineDate" readonly="true"
             showIf="financialDiscount"/>
           <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12"
@@ -768,6 +770,8 @@
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
@@ -840,6 +844,8 @@
     <action name="account-move-line-record-date-onchange"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-move-line-group-account-onchange">
@@ -856,9 +862,9 @@
     <action name="action-move-line-method-print-analytic-account-on-move-line"/>
   </action-group>
 
-  <action-group name="action-move-line-group-financial-discount-onchange">
-    <action name="action-move-line-record-set-financial-discount-information"/>
-    <action name="action-move-line-method-compute-invoice-terms-financial-discount"/>
+  <action-group name="action-move-line-group-partner-onchange">
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -1036,32 +1042,6 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
-  <action-record name="action-move-line-record-set-financial-discount-information"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.moveline.MoveLineService:getFinancialDiscountDeadlineDate(__self__)"/>
-    <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="financialDiscount != null"/>
-    <field name="financialDiscountTotalAmount"
-      expr="eval: credit * financialDiscount.discountRate / 100"
-      if="financialDiscount != null &amp;&amp; credit > 0"/>
-    <field name="financialDiscountTotalAmount"
-      expr="eval: debit * financialDiscount.discountRate / 100"
-      if="financialDiscount != null &amp;&amp; debit > 0"/>
-    <field name="remainingAmountAfterFinDiscount"
-      expr="eval: credit - credit * financialDiscount.discountRate / 100"
-      if="financialDiscount != null &amp;&amp; credit > 0"/>
-    <field name="remainingAmountAfterFinDiscount"
-      expr="eval: debit - debit * financialDiscount.discountRate / 100"
-      if="financialDiscount != null &amp;&amp; debit > 0"/>
-    <field name="financialDiscountDeadlineDate" expr="eval: null"
-      if="financialDiscount == null"/>
-    <field name="financialDiscountRate" expr="eval: null" if="financialDiscount == null"/>
-    <field name="financialDiscountTotalAmount" expr="eval: 0" if="financialDiscount == null"/>
-    <field name="remainingAmountAfterFinDiscount" expr="eval: 0"
-      if="financialDiscount == null"/>
-  </action-record>
-
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
@@ -1179,10 +1159,9 @@
       method="checkAnalyticMoveLineForAxis"/>
   </action-method>
 
-  <action-method
-    name="action-move-line-method-compute-invoice-terms-financial-discount">
+  <action-method name="action-move-line-method-compute-financial-discount">
     <call class="com.axelor.apps.account.web.MoveLineController"
-      method="computeInvoiceTermsFinancialDiscount"/>
+      method="computeFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

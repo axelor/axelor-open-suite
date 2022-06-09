@@ -339,9 +339,15 @@ public class MoveLineServiceImpl implements MoveLineService {
                   .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
-
-      this.computeInvoiceTermsFinancialDiscount(moveLine);
+    } else {
+      moveLine.setFinancialDiscount(null);
+      moveLine.setFinancialDiscountRate(BigDecimal.ZERO);
+      moveLine.setFinancialDiscountDeadlineDate(null);
+      moveLine.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+      moveLine.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
     }
+
+    this.computeInvoiceTermsFinancialDiscount(moveLine);
   }
 
   @Override

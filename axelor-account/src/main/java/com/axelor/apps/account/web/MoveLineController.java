@@ -637,10 +637,19 @@ public class MoveLineController {
     }
   }
 
-  public void computeInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
+  public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Beans.get(MoveLineService.class).computeInvoiceTermsFinancialDiscount(moveLine);
+
+      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+
+      response.setValue("financialDiscount", moveLine.getFinancialDiscount());
+      response.setValue(
+          "financialDiscountDeadlineDate", moveLine.getFinancialDiscountDeadlineDate());
+      response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
+      response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
       response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
