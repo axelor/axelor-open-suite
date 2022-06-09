@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -331,7 +332,6 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.setFinancialDiscount(financialDiscount);
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
-      moveLine.setFinancialDiscountDeadlineDate(this.getFinancialDiscountDeadlineDate(moveLine));
       moveLine.setFinancialDiscountTotalAmount(
           amount.multiply(
               financialDiscount
@@ -342,7 +342,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     } else {
       moveLine.setFinancialDiscount(null);
       moveLine.setFinancialDiscountRate(BigDecimal.ZERO);
-      moveLine.setFinancialDiscountDeadlineDate(null);
       moveLine.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
       moveLine.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
     }
@@ -352,15 +351,17 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
-    moveLine.getInvoiceTermList().stream()
-        .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
-        .forEach(
-            it ->
-                invoiceTermService.computeFinancialDiscount(
-                    it,
-                    moveLine.getCredit().max(moveLine.getDebit()),
-                    moveLine.getFinancialDiscount(),
-                    moveLine.getFinancialDiscountTotalAmount(),
-                    moveLine.getRemainingAmountAfterFinDiscount()));
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().stream()
+          .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
+          .forEach(
+              it ->
+                  invoiceTermService.computeFinancialDiscount(
+                      it,
+                      moveLine.getCredit().max(moveLine.getDebit()),
+                      moveLine.getFinancialDiscount(),
+                      moveLine.getFinancialDiscountTotalAmount(),
+                      moveLine.getRemainingAmountAfterFinDiscount()));
+    }
   }
 }

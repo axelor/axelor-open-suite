@@ -644,8 +644,6 @@ public class MoveLineController {
       Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
 
       response.setValue("financialDiscount", moveLine.getFinancialDiscount());
-      response.setValue(
-          "financialDiscountDeadlineDate", moveLine.getFinancialDiscountDeadlineDate());
       response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
       response.setValue(

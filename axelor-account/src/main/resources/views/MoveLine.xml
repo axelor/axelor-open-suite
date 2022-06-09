@@ -598,11 +598,9 @@
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
           <field name="financialDiscount" readonlyIf="amountPaid > 0"
             onChange="action-move-line-method-compute-financial-discount"/>
-          <field name="financialDiscountDeadlineDate" readonly="true"
-            showIf="financialDiscount"/>
+          <field name="financialDiscountRate" readonly="true"/>
           <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12"
             readonly="true">
-            <field name="financialDiscountRate"/>
             <field name="financialDiscountTotalAmount"/>
             <field name="remainingAmountAfterFinDiscount"/>
           </panel>
@@ -844,8 +842,6 @@
     <action name="account-move-line-record-date-onchange"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
-    <action name="action-move-line-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-move-line-group-account-onchange">
