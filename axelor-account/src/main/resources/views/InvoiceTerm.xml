@@ -471,6 +471,8 @@
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
     <action name="action-invoice-term-record-update-customized-true"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-invoice-term-record-set-show-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
@@ -538,7 +540,7 @@
       expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
       if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
     <field name="$showFinancialDiscount"
-      expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
+      expr="eval: __parent__?.move?.statusSelect == 3 || __parent__?.move?.statusSelect == 4"
       if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
     <field name="$showFinancialDiscount"
       expr="eval: invoice?.statusSelect == 3 || invoice?.statusSelect == 4" if="invoice != null"/>
@@ -586,8 +588,7 @@
   </action-method>
 
   <action-method name="action-method-invoice-init-invoice-term">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="initInvoiceTermFromInvoice"/>
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="initInvoiceTerm"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-refusal-to-pay">

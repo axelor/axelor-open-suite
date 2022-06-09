@@ -43,7 +43,6 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +115,7 @@ public class InvoiceTermController {
     }
   }
 
-  public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
+  public void initInvoiceTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
@@ -381,9 +380,14 @@ public class InvoiceTermController {
   public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      MoveLine moveLine =
-          Optional.of(invoiceTerm.getMoveLine())
-              .orElse(ContextTool.getContextParent(request.getContext(), MoveLine.class, 1));
+      MoveLine moveLine = invoiceTerm.getMoveLine();
+      if (moveLine == null) {
+        moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+        if (moveLine == null) {
+          return;
+        }
+      }
 
       Beans.get(InvoiceTermService.class)
           .computeFinancialDiscount(
