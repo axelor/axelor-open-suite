@@ -1,0 +1,3 @@
+---
+title: "BANK STATEMENT: corrected rollback error when removing bank statement linked to bank reconciliation"
+type: fix

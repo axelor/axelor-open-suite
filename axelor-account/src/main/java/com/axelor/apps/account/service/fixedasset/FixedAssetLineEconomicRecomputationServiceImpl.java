@@ -116,7 +116,7 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return previousFixedAssetLine.getAccountingValue();
+      return getAccountingValue(previousFixedAssetLine);
     }
 
     return linearDepreciationBase;
@@ -126,7 +126,7 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     if (linearDepreciationBase == null) {
-      linearDepreciationBase = previousFixedAssetLine.getAccountingValue();
+      linearDepreciationBase = getAccountingValue(previousFixedAssetLine);
     }
     return super.computeDepreciation(fixedAsset, previousFixedAssetLine, linearDepreciationBase);
   }
