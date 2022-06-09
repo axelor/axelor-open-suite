@@ -65,7 +65,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de factures.");
+      LOG.debug("Creation of lines with taxes for the invoices lines");
 
       for (InvoiceLine invoiceLine : invoiceLines) {
         // map is updated with created invoice line taxes
@@ -126,7 +126,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
   protected void createOrUpdateInvoiceLineTax(
       InvoiceLine invoiceLine, TaxLine taxLine, Map<TaxLine, InvoiceLineTax> map) {
-    LOG.debug("TVA {}", taxLine);
+    LOG.debug("Tax {}", taxLine);
     InvoiceLineTax invoiceLineTax = map.get(taxLine);
     if (invoiceLineTax != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTax);
@@ -257,7 +257,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "Tax line : Tax total => {}, Total W.T. => {}",
           invoiceLineTax.getTaxTotal(),
           invoiceLineTax.getInTaxTotal());
     }

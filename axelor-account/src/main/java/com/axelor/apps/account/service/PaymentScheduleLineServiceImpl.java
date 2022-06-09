@@ -132,7 +132,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     }
 
     log.debug(
-        "Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",
+        "Creation of payment schedule line number {} for the date {} and amount of {}",
         new Object[] {
           paymentScheduleLine.getScheduleLineSeq(),
           paymentScheduleLine.getScheduleDate(),
@@ -157,7 +157,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
 
     log.debug(
-        "Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})",
+        "Creation of lines for the payment schedule number {} (number of schedule : {}, amount : {})",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), nbrTerm, inTaxAmount});
 
     if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1) {

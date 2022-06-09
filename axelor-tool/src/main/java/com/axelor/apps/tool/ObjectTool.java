@@ -43,7 +43,7 @@ public final class ObjectTool {
   public static Field getField(String fieldName, @SuppressWarnings("rawtypes") Class classGotten) {
     Field field = null;
     try {
-      LOG.debug("Classe traitée - {}", classGotten);
+      LOG.debug("Processed class - {}", classGotten);
       field = classGotten.getDeclaredField(fieldName);
 
     } catch (SecurityException e) {
@@ -51,7 +51,7 @@ public final class ObjectTool {
     } catch (NoSuchFieldException e) {
       TraceBackService.trace(e);
     }
-    LOG.debug("Champ récupéré : {}", field);
+    LOG.debug("Gotten class : {}", field);
     return field;
   }
 
@@ -74,7 +74,7 @@ public final class ObjectTool {
     } catch (NoSuchMethodException e) {
       return null;
     }
-    LOG.debug("Méthode récupéré : {}", m);
+    LOG.debug("Gotten method : {}", m);
     try {
       Object[] args = null;
       obj = m.invoke(obj, args);
@@ -85,7 +85,7 @@ public final class ObjectTool {
     } catch (InvocationTargetException e) {
       return null;
     }
-    LOG.debug("Objet récupéré", obj);
+    LOG.debug("Gotten object : {}", obj);
     return obj;
   }
 

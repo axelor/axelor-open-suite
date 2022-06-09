@@ -288,7 +288,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       LocalDateTime plannedEndDateT)
       throws AxelorException {
 
-    logger.debug("Création d'un OF {}", priority);
+    logger.debug("Creation of a manufacturing order {}", priority);
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
 

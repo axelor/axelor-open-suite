@@ -229,7 +229,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     // Check if move lines accounts are the same (debit and credit)
     if (!creditMoveLine.getAccount().equals(debitMoveLine.getAccount())) {
       log.debug(
-          "Compte ligne de credit : {} , Compte ligne de debit : {}",
+          "Credit move line account : {} , Debit move line account : {}",
           creditMoveLine.getAccount(),
           debitMoveLine.getAccount());
 
@@ -499,7 +499,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
 
     BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
-    log.debug("Montant à payer / à lettrer au débit : {}", debitAmountRemaining);
+    log.debug("Amount to pay / to letter for debit : {}", debitAmountRemaining);
     if (debitAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
       Company company = reconcile.getDebitMoveLine().getMove().getCompany();
 
@@ -509,7 +509,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               < 0
           || reconcile.getMustBeZeroBalanceOk()) {
 
-        log.debug("Seuil respecté");
+        log.debug("Threshold respected");
 
         MoveLine creditAdjustMoveLine =
             moveAdjustementService.createAdjustmentCreditMove(debitMoveLine);
@@ -525,7 +525,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     reconcile.setCanBeZeroBalanceOk(false);
-    log.debug("Fin de la gestion des écarts de règlement");
+    log.debug("End of payment difference management");
   }
 
   /**
@@ -538,7 +538,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException {
     if (creditMoveLine != null) {
       BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
-      log.debug("Montant à payer / à lettrer au crédit : {}", creditAmountRemaining);
+      log.debug("Amount to pay / to letter for credit : {}", creditAmountRemaining);
 
       if (creditAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
         AccountConfig accountConfig =
@@ -549,7 +549,7 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .compareTo(accountConfig.getThresholdDistanceFromRegulation())
             < 0) {
 
-          log.debug("Seuil respecté");
+          log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
               moveAdjustementService.createAdjustmentCreditMove(creditMoveLine);

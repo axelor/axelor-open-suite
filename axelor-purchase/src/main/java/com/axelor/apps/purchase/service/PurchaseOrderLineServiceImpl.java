@@ -150,7 +150,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     LOG.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of amount W.T. with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;

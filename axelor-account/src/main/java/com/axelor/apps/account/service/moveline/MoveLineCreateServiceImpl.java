@@ -306,9 +306,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       boolean isDebitCustomer)
       throws AxelorException {
 
-    log.debug(
-        "Création des lignes d'écriture comptable de la facture/l'avoir {}",
-        invoice.getInvoiceId());
+    log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
@@ -378,7 +376,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
         log.debug(
-            "Traitement de la ligne de facture : compte comptable = {}, montant = {}",
+            "Processing of the invoice line : account = {}, amount = {}",
             new Object[] {account.getName(), companyExTaxTotal});
 
         if (invoiceLine.getAnalyticDistributionTemplate() == null

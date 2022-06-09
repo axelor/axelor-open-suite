@@ -47,7 +47,7 @@ public abstract class InvoiceLineManagement {
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     LOG.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -66,7 +66,7 @@ public abstract class InvoiceLineManagement {
     BigDecimal amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_UP);
 
     LOG.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;

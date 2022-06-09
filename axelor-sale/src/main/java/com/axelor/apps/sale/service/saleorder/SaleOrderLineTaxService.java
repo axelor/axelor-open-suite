@@ -67,7 +67,7 @@ public class SaleOrderLineTaxService {
 
     if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de commande client.");
+      LOG.debug("Creation of VAT lines for sale order lines.");
 
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
@@ -119,7 +119,7 @@ public class SaleOrderLineTaxService {
       saleOrderLineTaxList.add(saleOrderLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "VAT line : VAT total => {}, W.T. total => {}",
           new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});
     }
 

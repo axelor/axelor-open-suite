@@ -132,7 +132,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
     logger.debug(
-        "Peupler une facture => lignes de devis: {} ",
+        "Populate an invoice => purchase order lines: {} ",
         new Object[] {purchaseOrder.getPurchaseOrderLineList().size()});
 
     // create Tva lines
@@ -176,7 +176,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
 
     logger.debug(
-        "Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
+        "Invoice's total: W.T.T. = {},  W.T. = {}, VAT = {}, A.T.I. = {}",
         new Object[] {
           purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal()
         });
@@ -213,7 +213,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       throws AxelorException {
 
     logger.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        "Creation of a purchase order: Company = {},  External reference = {}, Supplier partner = {}",
         new Object[] {company.getName(), externalReference, supplierPartner.getFullName()});
 
     PurchaseOrder purchaseOrder = new PurchaseOrder();

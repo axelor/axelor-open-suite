@@ -120,7 +120,7 @@ public class AccountClearanceService {
                 accountClearance.getDateThreshold())
             .fetch();
 
-    log.debug("Liste des trop perçus récupérés : {}", moveLineList);
+    log.debug("Overpayment list collected : {}", moveLineList);
 
     return moveLineList;
   }

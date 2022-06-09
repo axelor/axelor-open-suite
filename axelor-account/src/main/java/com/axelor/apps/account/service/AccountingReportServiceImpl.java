@@ -343,7 +343,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   public String addParams(String paramQuery, Object param) {
 
-    log.debug("requete et param : {} : {}", paramQuery, paramNumber);
+    log.debug("Query and parameters : {} : {}", paramQuery, paramNumber);
 
     this.addParams(paramQuery.replaceAll("%d", String.valueOf(paramNumber++)));
     this.params.add(param);

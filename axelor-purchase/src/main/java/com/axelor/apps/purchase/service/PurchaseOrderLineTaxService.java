@@ -60,7 +60,7 @@ public class PurchaseOrderLineTaxService {
 
     if (purchaseOrderLineList != null && !purchaseOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de commande fournisseur.");
+      LOG.debug("Creation of tax lines for purchase order lines.");
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
@@ -74,7 +74,7 @@ public class PurchaseOrderLineTaxService {
                 : null;
 
         if (taxLine != null) {
-          LOG.debug("TVA {}", taxLine);
+          LOG.debug("VAT {}", taxLine);
 
           if (map.containsKey(taxLine)) {
 
@@ -100,7 +100,7 @@ public class PurchaseOrderLineTaxService {
         }
 
         if (taxLineRC != null) {
-          LOG.debug("TVA {}", taxLineRC);
+          LOG.debug("VAT {}", taxLineRC);
 
           if (map.containsKey(taxLineRC)) {
 
@@ -151,7 +151,7 @@ public class PurchaseOrderLineTaxService {
       purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "Tax line : Tax total => {}, Total W.T. => {}",
           new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
     }
 

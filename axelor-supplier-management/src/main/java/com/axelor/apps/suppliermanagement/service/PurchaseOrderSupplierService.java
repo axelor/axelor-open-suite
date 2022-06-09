@@ -174,7 +174,7 @@ public class PurchaseOrderSupplierService {
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur depuis le devis fournisseur : {} et le fournisseur : {}",
+        "Creation of a purchase order from : {} and the supplier : {}",
         parentPurchaseOrder.getPurchaseOrderSeq(),
         supplierPartner.getFullName());
 
@@ -215,7 +215,7 @@ public class PurchaseOrderSupplierService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
     LOG.debug(
-        "Création d'une ligne de commande fournisseur pour le produit : {}",
+        "Creation of a purchase order line for the product : {}",
         purchaseOrderLine.getProductName());
 
     return purchaseOrderLineService.createPurchaseOrderLine(

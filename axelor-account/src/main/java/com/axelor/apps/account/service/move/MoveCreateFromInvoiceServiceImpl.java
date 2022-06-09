@@ -121,7 +121,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
 
       log.debug(
-          "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
+          "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
           new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
       int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
@@ -290,7 +290,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       else {
 
         log.debug(
-            "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
+            "Creation of a O.D. move specific to the use of overpayment {} (COmpany : {}, Journal : {})",
             new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
         Move move =
@@ -367,12 +367,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
     log.debug(
-        "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
+        "Creation of a O.D. move specific to the use of overpayment {} (COmpany : {}, Journal : {})",
         new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
     BigDecimal remainingAmount = invoice.getInTaxTotal().abs();
 
-    log.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
+    log.debug("Amount to pay with the credit note : {}", remainingAmount);
 
     Move oDmove =
         moveCreateService.createMove(
