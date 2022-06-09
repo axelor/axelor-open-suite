@@ -1,0 +1,3 @@
+---
+title: "Weighted average price in product company is now correctly computed in company currency instead of purchase currency."
+type: fix
