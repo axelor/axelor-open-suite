@@ -785,6 +785,9 @@ public interface IExceptionMessage {
   public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
       "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
 
+  public static final String INVOICE_PAYMENT_CANNOT_RECONCILE = /*$$(*/
+      "Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s." /*)*/;
+
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
@@ -827,6 +830,9 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
   static final String PAYMENT_MODE_4 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
+
+  static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
+      "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
@@ -1265,4 +1271,13 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
       "Please select a sale financial discount account in account config for company %s." /*)*/;
+
+  static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
+      "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)" /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
 }

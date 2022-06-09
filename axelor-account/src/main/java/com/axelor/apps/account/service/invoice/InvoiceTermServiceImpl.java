@@ -68,6 +68,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -195,12 +196,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
-      throws AxelorException {
-
-    InvoiceTerm invoiceTerm = new InvoiceTerm();
-
-    invoiceTerm.setPaymentConditionLine(paymentConditionLine);
+  public InvoiceTerm computeInvoiceTerm(
+      Invoice invoice, PaymentConditionLine paymentConditionLine) {
     BigDecimal amount =
         invoice
             .getInTaxTotal()
@@ -209,21 +206,28 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
-    invoiceTerm.setAmount(amount);
-    invoiceTerm.setAmountRemaining(amount);
 
-    invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
-    invoiceTerm.setIsPaid(false);
-    invoiceTerm.setPercentage(paymentConditionLine.getPaymentPercentage());
+    User pfpUser = null;
+    if (getPfpValidatorUserCondition(invoice)) {
+      pfpUser = invoiceService.getPfpValidatorUser(invoice);
+    }
 
+    InvoiceTerm invoiceTerm =
+        this.createInvoiceTerm(
+            invoice,
+            null,
+            invoice.getBankDetails(),
+            pfpUser,
+            invoice.getPaymentMode(),
+            null,
+            null,
+            amount,
+            paymentConditionLine.getPaymentPercentage(),
+            paymentConditionLine.getIsHoldback());
+
+    invoiceTerm.setPaymentConditionLine(paymentConditionLine);
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
-    if (getPfpValidatorUserCondition(invoice)) {
-      invoiceTerm.setPfpValidatorUser(invoiceService.getPfpValidatorUser(invoice));
-    }
-    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
-    invoiceTerm.setBankDetails(invoice.getBankDetails());
     return invoiceTerm;
   }
 
@@ -848,11 +852,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date) {
-    return invoiceTerm.getApplyFinancialDiscount()
-            && invoiceTerm.getFinancialDiscountDeadlineDate() != null
-            && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
-        ? invoiceTerm.getAmountRemainingAfterFinDiscount()
-        : invoiceTerm.getAmountRemaining();
+    return Optional.of(
+            invoiceTerm.getApplyFinancialDiscount()
+                    && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+                    && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
+                ? invoiceTerm.getAmountRemainingAfterFinDiscount()
+                : invoiceTerm.getAmountRemaining())
+        .orElse(BigDecimal.ZERO);
   }
 
   @Override
@@ -997,7 +1003,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     InvoiceTerm newInvoiceTerm = new InvoiceTerm();
 
     newInvoiceTerm.setInvoice(invoice);
-    newInvoiceTerm.setIsCustomized(true);
+    newInvoiceTerm.setIsCustomized(false);
     newInvoiceTerm.setIsPaid(false);
     newInvoiceTerm.setDueDate(date);
     newInvoiceTerm.setIsHoldBack(isHoldBack);
@@ -1012,7 +1018,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
-    moveLine.addInvoiceTermListItem(newInvoiceTerm);
+    if (moveLine != null) {
+      moveLine.addInvoiceTermListItem(newInvoiceTerm);
+    }
 
     return newInvoiceTerm;
   }

@@ -233,7 +233,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoiceTermPayment invoiceTermPayment,
       InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount) {
-    if (applyFinancialDiscount) {
+    if (applyFinancialDiscount && invoiceTerm.getAmountRemainingAfterFinDiscount().signum() > 0) {
       BigDecimal remainingTotalFinancialDiscountAmount =
           invoiceTerm
               .getAmountRemaining()

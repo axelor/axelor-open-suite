@@ -123,6 +123,7 @@
       <field name="paymentMode.typeSelect" hidden="true"/>
       <field name="invoicesSelected" hidden="true"/>
       <button name="validateBtn" title="Validate"
+        showIf="paymentMode != null &amp;&amp; paymentDate != null"
         onClick="action-invoice-payment-method-validate-mass-payment,close"/>
     </panel>
   </form>

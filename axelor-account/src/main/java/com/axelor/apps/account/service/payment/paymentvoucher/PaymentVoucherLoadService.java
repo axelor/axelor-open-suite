@@ -415,23 +415,8 @@ public class PaymentVoucherLoadService {
     }
 
     paymentVoucher.setCompanyBankDetails(companyBankDetails);
-    BigDecimal amount = BigDecimal.ZERO;
-    List<InvoiceTerm> invoiceTermList = getInvoiceTerms(paymentVoucher);
 
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      PayVoucherDueElement payVoucherDueElement =
-          createPayVoucherDueElement(paymentVoucher, invoiceTerm);
-      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
-
-      if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
-        amount = amount.add(payVoucherDueElement.getAmountRemaining());
-      }
-    }
-
-    paymentVoucher.setPaidAmount(amount);
-    paymentVoucher.clearPayVoucherDueElementList();
-
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+    for (InvoiceTerm invoiceTerm : getInvoiceTerms(paymentVoucher)) {
       paymentVoucher.addPayVoucherDueElementListItem(
           createPayVoucherDueElement(paymentVoucher, invoiceTerm));
     }
@@ -442,7 +427,7 @@ public class PaymentVoucherLoadService {
 
     PayVoucherDueElement payVoucherDueElement =
         paymentVoucher.getPayVoucherDueElementList().stream()
-            .sorted(Comparator.comparing(PayVoucherDueElement::getSequence))
+            .sorted(Comparator.comparing(it -> it.getInvoiceTerm().getSequence()))
             .filter(
                 it ->
                     invoice.equals(it.getMoveLine().getMove().getInvoice())
@@ -454,6 +439,8 @@ public class PaymentVoucherLoadService {
       paymentVoucher.addPayVoucherElementToPayListItem(
           createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, 1));
       paymentVoucher.getPayVoucherDueElementList().remove(payVoucherDueElement);
+
+      paymentVoucher.setPaidAmount(payVoucherDueElement.getAmountRemaining());
     }
   }
 
