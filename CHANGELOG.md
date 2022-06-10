@@ -1,3 +1,31 @@
+## [5.4.17] (2022-06-10)
+
+#### Changes
+
+* Sale order email template: added unit in sale order line details.
+
+#### Fixed
+
+* Contract batch: invoicing a batch of contracts does not take into account closed contract anymore.
+* Sale order/Invoice printings: fix "Dr." civility that was displayed as "Mlle.".
+* Product: Weighted average price in product company is now correctly computed in company currency instead of purchase currency.
+* Purchase order: fix wrong total W.T. computation when generated from purchase request.
+* Purchase order line: fill supplier code and name on purchase order lines generated from purchase request.
+* Expense line: Analytic distribution date is now set to expense line's expense date if it is setted. If not, it is still by default today date.
+* MRP: fixed an issue where quantity conversion for mrp lines from manuf orders was not applied.
+* Supplier: allow to create an accounting situation with a company that does not have PFP feature activated.
+* Invoice: fixed an issue where printing an invoice from the form view would give an error.
+* Cost sheet: fix wrong total when computing cost from bill of materials or manufacturing orders.
+* Supplier: fixed an issue where realizing a reversed stock move would update supplier quality rating.
+* Bank details: fix missing fields when created from company.
+* Stock rules: fix user and team fields not displayed with alert activated.
+* Expense line / Move line: Analytic distribution template is now correctly copied in move line when it is created from expense.
+* Stock move: fix wrong computation on supplier quality rating
+
+When realizing a stock move, stock move lines with the conformity not filled were counting as non-compliant
+and decreasing the supplier's quality rating.
+
+
 ## [5.4.16] (2022-05-27)
 
 #### Fixed
@@ -560,7 +588,8 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
-[5.4.16]: https://github.com/axelor/axelor-open-suite/compare/v5.4.14...v5.4.16
+[5.4.17]: https://github.com/axelor/axelor-open-suite/compare/v5.4.16...v5.4.17
+[5.4.16]: https://github.com/axelor/axelor-open-suite/compare/v5.4.15...v5.4.16
 [5.4.15]: https://github.com/axelor/axelor-open-suite/compare/v5.4.14...v5.4.15
 [5.4.14]: https://github.com/axelor/axelor-open-suite/compare/v5.4.13...v5.4.14
 [5.4.13]: https://github.com/axelor/axelor-open-suite/compare/v5.4.12...v5.4.13
