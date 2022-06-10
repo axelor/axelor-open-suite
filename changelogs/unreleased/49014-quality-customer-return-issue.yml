@@ -1,3 +1,0 @@
----
-title: "Supplier : Fix an issue where realizing a reversed stock move would update supplier quality rating"
-type: fix

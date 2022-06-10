@@ -1,3 +1,0 @@
----
-title: "MoveLine: fix the date's validity check, when the date was equal to the period's starting date or the endind date, it was considered being outside of this period"
-type: fix
