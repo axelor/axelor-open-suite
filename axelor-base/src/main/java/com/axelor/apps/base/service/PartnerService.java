@@ -152,4 +152,6 @@ public interface PartnerService {
   String computeCompanyStr(Partner partner);
 
   String getPartnerDomain(Partner partner);
+
+  List<Long> getPartnerIdsByType(String type);
 }

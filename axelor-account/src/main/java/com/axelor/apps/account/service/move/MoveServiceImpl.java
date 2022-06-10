@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -68,6 +69,7 @@ public class MoveServiceImpl implements MoveService {
   protected MoveDueService moveDueService;
   protected PaymentService paymentService;
   protected MoveExcessPaymentService moveExcessPaymentService;
+  protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
 
@@ -86,8 +88,8 @@ public class MoveServiceImpl implements MoveService {
       PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
-
+      AccountConfigService accountConfigService,
+      JournalRepository journalRepository) {
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -99,6 +101,7 @@ public class MoveServiceImpl implements MoveService {
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
+    this.journalRepository = journalRepository;
 
     this.appAccountService = appAccountService;
   }
@@ -628,5 +631,39 @@ public class MoveServiceImpl implements MoveService {
       }
     }
     return move;
+  }
+
+  @Override
+  public boolean isPartnerNotCompatible(Move move) {
+    Journal journal = move.getJournal();
+    Partner partner = move.getPartner();
+    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null) {
+      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
+      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
+        switch (compatiblePartnerType) {
+          case JournalRepository.IS_PROSPECT:
+            if (partner.getIsProspect()) {
+              return false;
+            }
+            break;
+          case JournalRepository.IS_CUSTOMER:
+            if (partner.getIsCustomer()) {
+              return false;
+            }
+            break;
+          case JournalRepository.IS_SUPPLIER:
+            if (partner.getIsSupplier()) {
+              return false;
+            }
+            break;
+          case JournalRepository.IS_FACTOR:
+            if (!partner.getIsFactor()) {
+              return false;
+            }
+            break;
+        }
+      }
+    }
+    return true;
   }
 }
