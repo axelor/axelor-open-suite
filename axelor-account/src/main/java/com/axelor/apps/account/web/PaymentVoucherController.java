@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.db.BankDetails;
@@ -225,6 +226,19 @@ public class PaymentVoucherController {
             .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
       }
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setReceiptDisplay(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      boolean displayReceipt =
+          Beans.get(PaymentVoucherControlService.class).isReceiptDisplayed(paymentVoucher);
+
+      response.setAttr("receiptNo", "hidden", !displayReceipt);
+      response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
