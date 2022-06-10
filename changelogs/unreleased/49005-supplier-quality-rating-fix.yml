@@ -1,0 +1,6 @@
+---
+title: "Stock move : fix wrong calculation on supplier quality rating"
+type: fix
+description: |
+  When realizing a stock move, stock move lines with the conformity not filled were counting as non-compliant
+  and decreasing the supplier's quality rating.
