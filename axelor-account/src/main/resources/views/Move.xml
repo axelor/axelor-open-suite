@@ -65,7 +65,8 @@
             onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title"
             form-view="company-form" grid-view="company-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
-            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
+            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            onChange="action-move-method-journal-on-change"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false"/>
           <field name="date" onChange="action-move-method-get-period"
@@ -77,7 +78,7 @@
         </panel>
         <field name="partner" colSpan="12" canNew="false" canEdit="false"
           form-view="partner-form" grid-view="partner-grid"
-          onSelect="action-account-move-method-filter-partner"/>
+          onSelect="action-move-group-partner-on-select"/>
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3">
@@ -510,5 +511,20 @@
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>
+
+  <action-method
+    name="action-account-move-method-filter-journal-partner-compatible-type">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="filterJournalPartnerCompatibleType"/>
+  </action-method>
+
+  <action-group name="action-move-group-partner-on-select">
+    <action name="action-account-move-method-filter-partner"/>
+    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
+  </action-group>
+
+  <action-method name="action-move-method-journal-on-change">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
 
 </object-views>

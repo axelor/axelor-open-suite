@@ -23,8 +23,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -54,7 +56,7 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     move = Beans.get(MoveRepository.class).find(move.getId());
     try {
-      Beans.get(MoveService.class).getMoveValidateService().validate(move);
+      Beans.get(MoveValidateService.class).validate(move);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -354,6 +356,33 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      String journalPartnerCompatibleDomain =
+          Beans.get(JournalService.class).filterJournalPartnerCompatibleType(move);
+      if (journalPartnerCompatibleDomain != null) {
+        response.setAttr("partner", "domain", journalPartnerCompatibleDomain);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeJournal(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getPartner() != null) {
+        boolean isPartnerNotCompatible = Beans.get(MoveService.class).isPartnerNotCompatible(move);
+        if (isPartnerNotCompatible) {
+          response.setValue("partner", null);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
