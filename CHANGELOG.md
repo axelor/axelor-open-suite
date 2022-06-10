@@ -1,3 +1,32 @@
+## [6.1.13] (2022-06-10)
+
+#### Changes
+
+* Sale order email template: added unit in sale order line details.
+* Webapp: add `data.export.locale` property in application.properties file.
+
+#### Fixed
+
+* Accounting batch: display fields related to debt recovery only when debt recovery action is selected.
+* Contract batch: invoicing a batch of contracts does not take into account closed contract anymore.
+* Sale order/Invoice printings: fix "Dr." civility that was displayed as "Mlle.".
+* Move: fix partner not being filtered according to payment mode compatible types.
+* Expense line: Analytic distribution date is now set to expense line's expense date if it is setted. If not, it is still by default today date.
+* MRP: fixed an issue where quantity conversion for mrp lines from manuf orders was not applied.
+* Supplier: allow to create an accounting situation with a company that does not have PFP feature activated.
+* Invoice: fixed an issue where printing an invoice from the form view would give an error.
+* Cost sheet: fix wrong total when computing cost from bill of materials or manufacturing orders.
+* Purchase order: fix wrong total W.T. computation when generated from purchase request.
+* Supplier: fixed an issue where realizing a reversed stock move would update supplier quality rating.
+* Bank details: fix missing fields when created from company.
+* Stock rules: fix user and team fields not displayed with alert activated.
+* Expense line / Move line: Analytic distribution template is now correctly copied in move line when it is created from expense.
+* Stock move: fix wrong computation on supplier quality rating
+
+When realizing a stock move, stock move lines with the conformity not filled were counting as non-compliant
+and decreasing the supplier's quality rating.
+
+
 ## [6.1.12] (2022-05-27)
 
 #### Fixed
@@ -578,6 +607,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.13]: https://github.com/axelor/axelor-open-suite/compare/v6.1.12...v6.1.13
 [6.1.12]: https://github.com/axelor/axelor-open-suite/compare/v6.1.11...v6.1.12
 [6.1.11]: https://github.com/axelor/axelor-open-suite/compare/v6.1.10...v6.1.11
 [6.1.10]: https://github.com/axelor/axelor-open-suite/compare/v6.1.9...v6.1.10
