@@ -1,3 +1,0 @@
----
-title: "Expense line: Analytic distribution date is now set to expense line's expense date if it is setted. If not, it is still by default the today's date"
-type: fix
