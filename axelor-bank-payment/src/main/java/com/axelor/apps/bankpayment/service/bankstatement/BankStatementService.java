@@ -311,8 +311,8 @@ public class BankStatementService {
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .order("operationDate")
-              .order("sequence")
+              .order("-operationDate")
+              .order("-sequence")
               .fetch();
       initialBankStatementLineAFB120.remove(0);
       finalBankStatementLineAFB120.remove(finalBankStatementLineAFB120.size() - 1);
