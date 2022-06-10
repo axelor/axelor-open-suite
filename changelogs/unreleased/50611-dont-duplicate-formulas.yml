@@ -1,0 +1,3 @@
+---
+title: "Don't duplicate formulas on configurator creator for required fields on Product and SaleOrderLine models"
+type: fix

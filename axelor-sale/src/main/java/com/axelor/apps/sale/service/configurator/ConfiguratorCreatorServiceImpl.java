@@ -522,13 +522,22 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   @Transactional
   public void addRequiredFormulas(ConfiguratorCreator creator) {
     for (Field field : Product.class.getDeclaredFields()) {
-      if (field.getAnnotation(NotNull.class) != null) {
-        creator.addConfiguratorProductFormulaListItem(createProductFormula(field.getName()));
+      String fieldName = field.getName();
+      if (field.getAnnotation(NotNull.class) != null
+          && creator.getConfiguratorProductFormulaList().stream()
+              .map(i -> i.getMetaField().getName())
+              .noneMatch(fieldName::equals)) {
+        creator.addConfiguratorProductFormulaListItem(createProductFormula(fieldName));
       }
     }
+
     for (Field field : SaleOrderLine.class.getDeclaredFields()) {
-      if (field.getAnnotation(NotNull.class) != null) {
-        creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(field.getName()));
+      String fieldName = field.getName();
+      if (field.getAnnotation(NotNull.class) != null
+          && creator.getConfiguratorSOLineFormulaList().stream()
+              .map(i -> i.getMetaField().getName())
+              .noneMatch(fieldName::equals)) {
+        creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(fieldName));
       }
     }
   }
