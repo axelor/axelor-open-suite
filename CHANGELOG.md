@@ -1,3 +1,46 @@
+## [6.2.2] (2022-06-10)
+
+#### Changes
+
+* Sale order email template: added unit in sale order line details.
+* Webapp: add `data.export.locale` property in application.properties file.
+
+#### Fixed
+
+* Fixed first time record loading being slow on grid after server start due to bpm engine initialization.
+* Stock location: Allow to print location financial data only for stock locations configured as valued stock location.
+* Accounting batch: display fields related to debt recovery only when debt recovery action is selected.
+* Contract batch: invoicing a batch of contracts does not take into account closed contract anymore.
+* Studio: Fix UI and other changes for studio editor.
+* Studio: Fix label translation for editor.
+* Studio: Auto convert field name and model name to camelcase for custom fields and custom models.
+* Sale order/Invoice printings: fix "Dr." civility that was displayed as "Mlle.".
+* Base, HR: add missing french translations.
+* Move: fix partner not being filtered according to payment mode compatible types.
+* Weighted average price in product company is now correctly computed in company currency instead of purchase currency.
+* Expense line: Analytic distribution date is now set to expense line's expense date if it is setted. If not, it is still by default today date.
+* MRP: fixed an issue where quantity conversion for mrp lines from manuf orders was not applied.
+* Accounting move line: fix the date's validity check, when the date was equal to the period's starting date or the endind date, it was considered being outside of this period.
+* Journal: added valid account types to demo data.
+* Supplier: allow to create an accounting situation with a company that does not have PFP feature activated.
+* Invoice: fixed an issue where printing an invoice from the form view would give an error.
+* Cost sheet: fix wrong total when computing cost from bill of materials or manufacturing orders.
+* Accounting move: fix account selection when generating automatically the counterpart of a move line.
+
+Improve error messages when the account cannot be determined when generating the counterpart of a move line, also use the default company bank details to select the right account.
+
+* Purchase order: fix wrong total W.T. computation when generated from purchase request.
+* Supplier: fixed an issue where realizing a reversed stock move would update supplier quality rating.
+* Bank details: fix missing fields when created from company.
+* Stock rules: fix user and team fields not displayed with alert activated.
+* Expense line / Move line: Analytic distribution template is now correctly copied in move line when it is created from expense.
+* Stock move : fix wrong calculation on supplier quality rating
+
+When realizing a stock move, stock move lines with the conformity not filled were counting as non-compliant
+and decreasing the supplier's quality rating.
+
+* Invoice: fixed an issue where changing the product in a line with existing analytic would display an error.
+
 ## [6.2.1] (2022-05-27)
 
 #### Fixed
@@ -343,5 +386,6 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.2]: https://github.com/axelor/axelor-open-suite/compare/v6.2.1...v6.2.2
 [6.2.1]: https://github.com/axelor/axelor-open-suite/compare/v6.2.0...v6.2.1
 [6.2.0]: https://github.com/axelor/axelor-open-suite/compare/v6.1.11...v6.2.0
