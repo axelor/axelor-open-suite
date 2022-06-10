@@ -44,7 +44,7 @@
 
   <grid name="move-line-account-grid" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="name"/>
+    <field name="name" title="Reference"/>
     <field name="date"/>
     <field name="move.period"/>
     <field name="move.journal"/>

@@ -296,6 +296,8 @@ public class MoveController {
                     MoveRepository.STATUS_CANCELED,
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
+        int moveNb = moveList.size();
+
         if (!moveList.isEmpty()) {
           int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
           if (errorNB > 0) {
@@ -303,7 +305,8 @@ public class MoveController {
                 String.format(
                     I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
           } else {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+            response.setFlash(
+                String.format(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK), moveNb));
             response.setReload(true);
           }
         } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
