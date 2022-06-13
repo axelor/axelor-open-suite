@@ -23,6 +23,8 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -74,18 +76,18 @@ public class TargetListServiceImpl implements TargetListService {
   public Set<Partner> getAllPartners(Set<TargetList> targetListSet) throws AxelorException {
     Set<Partner> partnerSet = new HashSet<>();
 
-    for (TargetList target : targetListSet) {
+    for (TargetList target : SetUtils.emptyIfNull(targetListSet)) {
       String filter = getPartnerQuery(target);
       if (filter != null) {
         try {
-          partnerSet.addAll(partnerRepo.all().filter(filter).fetch());
+          partnerSet.addAll(ListUtils.emptyIfNull(partnerRepo.all().filter(filter).fetch()));
         } catch (Exception e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.CAMPAIGN_PARTNER_FILTER));
         }
       }
-      for (Partner partner : target.getPartnerSet()) {
+      for (Partner partner : SetUtils.emptyIfNull(target.getPartnerSet())) {
         partnerSet.add(partner);
       }
     }
@@ -96,18 +98,18 @@ public class TargetListServiceImpl implements TargetListService {
   public Set<Lead> getAllLeads(Set<TargetList> targetListSet) throws AxelorException {
     Set<Lead> leadSet = new HashSet<>();
 
-    for (TargetList target : targetListSet) {
+    for (TargetList target : SetUtils.emptyIfNull(targetListSet)) {
       String filter = getLeadQuery(target);
       if (filter != null) {
         try {
-          leadSet.addAll(leadRepo.all().filter(filter).fetch());
+          leadSet.addAll(ListUtils.emptyIfNull(leadRepo.all().filter(filter).fetch()));
         } catch (Exception e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.CAMPAIGN_LEAD_FILTER));
         }
       }
-      for (Lead lead : target.getLeadSet()) {
+      for (Lead lead : SetUtils.emptyIfNull(target.getLeadSet())) {
         leadSet.add(lead);
       }
     }

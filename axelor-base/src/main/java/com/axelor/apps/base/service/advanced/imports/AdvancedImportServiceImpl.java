@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
@@ -680,6 +681,11 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   @Override
   public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException {
     List<FileTab> fileTabList = advancedImport.getFileTabList();
+
+    if (CollectionUtils.isEmpty(fileTabList)) {
+      return false;
+    }
+
     Beans.get(ValidatorService.class).sortFileTabList(fileTabList);
 
     boolean isResetValue = resetRelationalFields(fileTabList);
@@ -852,7 +858,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       List<Object> recList = (List<Object>) jsonContext.get(field);
 
       String ids =
-          recList.stream()
+          ListUtils.emptyIfNull(recList).stream()
               .map(
                   obj -> {
                     Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
@@ -879,7 +885,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
       String key = keyValue[0].replaceAll("(^\\h*)|(\\h*$)", "").trim().toLowerCase();
-      if (keys.contains(key)) {
+      if (ListUtils.emptyIfNull(keys).contains(key)) {
         tabConfigDataMap.put(key, keyValue[1].trim());
       }
     }

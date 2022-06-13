@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.tool.EmailTool;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -177,7 +178,7 @@ public class SyncContactService {
     syncContact = syncContactRepo.find(id);
     syncContactHistoric.setUser(userService.getUser());
     Set<Partner> partnerSet = new HashSet<>();
-    for (Partner partner : syncContactHistoric.getPartnerSet()) {
+    for (Partner partner : SetUtils.emptyIfNull(syncContactHistoric.getPartnerSet())) {
       Partner find = partnerRepo.find(partner.getId());
       if (find != null) {
         partnerSet.add(find);

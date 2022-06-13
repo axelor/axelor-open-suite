@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -59,7 +60,7 @@ public class DuplicateObjectsService {
                 "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
                 modelName)
             .fetch();
-    for (MetaField metaField : allField) {
+    for (MetaField metaField : ListUtils.emptyIfNull(allField)) {
       if ("ManyToOne".equals(metaField.getRelationship())) {
         Query update =
             JPA.em()

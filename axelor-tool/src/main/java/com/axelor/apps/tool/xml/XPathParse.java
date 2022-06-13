@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.xml;
 
+import com.axelor.common.ObjectUtils;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
@@ -112,22 +113,24 @@ public class XPathParse {
       XPathFactory factory = XPathFactory.newInstance();
       XPath xpath = factory.newXPath();
 
-      for (String xpe : xpeList) {
+      if (ObjectUtils.notEmpty(xpeList)) {
+        for (String xpe : xpeList) {
 
-        XPathExpression expr = xpath.compile(xpe); // /text()
+          XPathExpression expr = xpath.compile(xpe); // /text()
 
-        Object result = expr.evaluate(this.doc, XPathConstants.NODESET);
-        NodeList nodes = (NodeList) result;
+          Object result = expr.evaluate(this.doc, XPathConstants.NODESET);
+          NodeList nodes = (NodeList) result;
 
-        if (nodes.getLength() == 1) {
+          if (nodes.getLength() == 1) {
 
-          dict.put(xpe, nodes.item(0).getNodeValue());
+            dict.put(xpe, nodes.item(0).getNodeValue());
 
-        } else {
+          } else {
 
-          for (int i = 0; i < nodes.getLength(); i++) {
+            for (int i = 0; i < nodes.getLength(); i++) {
 
-            dict.put(i + "__" + xpe, nodes.item(i).getNodeValue());
+              dict.put(i + "__" + xpe, nodes.item(i).getNodeValue());
+            }
           }
         }
       }

@@ -26,6 +26,7 @@ import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -309,8 +310,11 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
                 EntityHelper.getEntityClass(template).getName())
             .fetch();
     Set<MetaFile> metaFiles = Sets.newHashSet();
-    for (DMSFile metaAttachment : metaAttachments) {
-      if (!metaAttachment.getIsDirectory()) metaFiles.add(metaAttachment.getMetaFile());
+
+    if (ObjectUtils.notEmpty(metaAttachments)) {
+      for (DMSFile metaAttachment : metaAttachments) {
+        if (!metaAttachment.getIsDirectory()) metaFiles.add(metaAttachment.getMetaFile());
+      }
     }
 
     log.debug("Metafile to attach: {}", metaFiles);

@@ -50,14 +50,16 @@ public class MoveCancelService {
       return;
     }
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
 
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
-        throw new AxelorException(
-            move,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_CANCEL_1));
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MOVE_CANCEL_1));
+        }
       }
     }
 

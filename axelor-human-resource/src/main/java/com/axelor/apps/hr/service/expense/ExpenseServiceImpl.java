@@ -96,6 +96,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -478,11 +479,13 @@ public class ExpenseServiceImpl implements ExpenseService {
                   ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                   : "");
       moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
-      for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
-        AnalyticMoveLine analyticDistributionLine =
-            Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
-        analyticDistributionLine.setExpenseLine(null);
-        moveLine.addAnalyticMoveLineListItem(analyticDistributionLine);
+      if (CollectionUtils.isNotEmpty(expenseLine.getAnalyticMoveLineList())) {
+        for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
+          AnalyticMoveLine analyticDistributionLine =
+              Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
+          analyticDistributionLine.setExpenseLine(null);
+          moveLine.addAnalyticMoveLineListItem(analyticDistributionLine);
+        }
       }
       moveLines.add(moveLine);
       expenseLineId++;
@@ -512,6 +515,9 @@ public class ExpenseServiceImpl implements ExpenseService {
       moveLines.add(moveLine);
     }
 
+    if (move.getMoveLineList() == null) {
+      move.setMoveLineList(new ArrayList<>());
+    }
     move.getMoveLineList().addAll(moveLines);
 
     moveValidateService.validate(move);
@@ -686,9 +692,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   protected MoveLine getExpenseEmployeeMoveLineByLoop(Expense expense) {
     MoveLine expenseEmployeeMoveLine = null;
-    for (MoveLine moveline : expense.getMove().getMoveLineList()) {
-      if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-        expenseEmployeeMoveLine = moveline;
+    List<MoveLine> moveLineList = expense.getMove().getMoveLineList();
+    if (moveLineList != null) {
+      for (MoveLine moveline : moveLineList) {
+        if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          expenseEmployeeMoveLine = moveline;
+        }
       }
     }
     return expenseEmployeeMoveLine;
@@ -946,19 +955,21 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
 
-    for (EmployeeVehicle vehicle : vehicleList) {
-      LocalDate startDate = vehicle.getStartDate();
-      LocalDate endDate = vehicle.getEndDate();
-      if (startDate == null) {
-        if (endDate == null || expenseDate.compareTo(endDate) <= 0) {
+    if (vehicleList != null) {
+      for (EmployeeVehicle vehicle : vehicleList) {
+        LocalDate startDate = vehicle.getStartDate();
+        LocalDate endDate = vehicle.getEndDate();
+        if (startDate == null) {
+          if (endDate == null || expenseDate.compareTo(endDate) <= 0) {
+            kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+          }
+        } else if (endDate == null) {
+          if (expenseDate.compareTo(startDate) >= 0) {
+            kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+          }
+        } else if (expenseDate.compareTo(startDate) >= 0 && expenseDate.compareTo(endDate) <= 0) {
           kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
         }
-      } else if (endDate == null) {
-        if (expenseDate.compareTo(startDate) >= 0) {
-          kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
-        }
-      } else if (expenseDate.compareTo(startDate) >= 0 && expenseDate.compareTo(endDate) <= 0) {
-        kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
       }
     }
     return kilometricAllowParamList;
@@ -990,19 +1001,20 @@ public class ExpenseServiceImpl implements ExpenseService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED));
     }
-
-    for (EmployeeVehicle vehicle : vehicleList) {
-      if (vehicle.getKilometricAllowParam() == null) {
-        break;
-      }
-      LocalDate startDate = vehicle.getStartDate();
-      LocalDate endDate = vehicle.getEndDate();
-      if ((startDate == null && (endDate == null || expenseDate.compareTo(endDate) <= 0))
-          || (endDate == null
-              && (expenseDate.compareTo(startDate) >= 0
-                  || (expenseDate.compareTo(startDate) >= 0
-                      && expenseDate.compareTo(endDate) <= 0)))) {
-        kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+    if (vehicleList != null) {
+      for (EmployeeVehicle vehicle : vehicleList) {
+        if (vehicle.getKilometricAllowParam() == null) {
+          break;
+        }
+        LocalDate startDate = vehicle.getStartDate();
+        LocalDate endDate = vehicle.getEndDate();
+        if ((startDate == null && (endDate == null || expenseDate.compareTo(endDate) <= 0))
+            || (endDate == null
+                && (expenseDate.compareTo(startDate) >= 0
+                    || (expenseDate.compareTo(startDate) >= 0
+                        && expenseDate.compareTo(endDate) <= 0)))) {
+          kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+        }
       }
     }
     return kilometricAllowParamList;
@@ -1033,11 +1045,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
 
     // removing expense from one O2M also remove the link
-    for (ExpenseLine expenseLine : expenseLineList) {
-      if (!kilometricExpenseLineList.contains(expenseLine)
-          && !generalExpenseLineList.contains(expenseLine)) {
-        expenseLine.setExpense(null);
-        expenseLineRepository.remove(expenseLine);
+    if (expenseLineList != null) {
+      for (ExpenseLine expenseLine : expenseLineList) {
+        if (!kilometricExpenseLineList.contains(expenseLine)
+            && !generalExpenseLineList.contains(expenseLine)) {
+          expenseLine.setExpense(null);
+          expenseLineRepository.remove(expenseLine);
+        }
       }
     }
 

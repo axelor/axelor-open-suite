@@ -34,6 +34,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -145,6 +146,9 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             .filter("self.typeSelect = :_priceListTypeSelect " + "AND self.isExclusive = false")
             .bind("_priceListTypeSelect", priceListTypeSelect)
             .fetch();
+    if (partnerPriceLists == null) {
+      partnerPriceLists = new ArrayList<>();
+    }
     // get (maybe exclusive) list for the partner
     PartnerPriceList partnerPriceList = getPartnerPriceList(partner, priceListTypeSelect);
     if (partnerPriceList != null && partnerPriceList.getIsExclusive()) {

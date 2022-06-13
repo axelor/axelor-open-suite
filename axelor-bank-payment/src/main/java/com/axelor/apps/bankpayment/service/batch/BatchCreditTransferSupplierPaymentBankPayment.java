@@ -29,6 +29,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class BatchCreditTransferSupplierPaymentBankPayment
     List<InvoicePayment> doneList =
         processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
 
-    if (!doneList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(doneList)) {
       try {
         bankOrderMergeService.mergeFromInvoicePayments(doneList);
       } catch (Exception e) {

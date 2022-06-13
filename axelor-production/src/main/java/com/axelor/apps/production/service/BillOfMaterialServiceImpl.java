@@ -32,6 +32,8 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -144,7 +146,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + ")");
       personalizedBOM.setPersonalized(true);
       Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
-      for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterial childBillOfMaterial :
+          SetUtils.emptyIfNull(billOfMaterial.getBillOfMaterialSet())) {
         personalizedBOMSet.add(customizeBillOfMaterial(childBillOfMaterial, depth + 1));
       }
       personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
@@ -187,7 +190,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               .bind("id", previousId)
               .order("-versionNumber")
               .fetch();
-      if (!billOfMaterialSet.isEmpty()) {
+      if (CollectionUtils.isNotEmpty(billOfMaterialSet)) {
         latestVersion =
             (billOfMaterialSet.get(0).getVersionNumber() > latestVersion)
                 ? billOfMaterialSet.get(0).getVersionNumber()
@@ -285,7 +288,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     List<Long> validBomIds = new ArrayList<Long>();
 
-    for (BillOfMaterial childBom : bom.getBillOfMaterialSet()) {
+    for (BillOfMaterial childBom : SetUtils.emptyIfNull(bom.getBillOfMaterialSet())) {
 
       if (useProductDefaultBom
           && CollectionUtils.isEmpty(childBom.getBillOfMaterialSet())
@@ -316,17 +319,17 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     log.debug("Invalid bom trees: {}", invalidBomTrees);
 
-    if (!invalidBomTrees.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(invalidBomTrees)) {
       List<TempBomTree> childBomTrees =
           tempBomTreeRepo.all().filter("self.parent in (?1)", invalidBomTrees).fetch();
 
-      for (TempBomTree childBomTree : childBomTrees) {
+      for (TempBomTree childBomTree : ListUtils.emptyIfNull(childBomTrees)) {
         childBomTree.setParent(null);
         tempBomTreeRepo.save(childBomTree);
       }
     }
 
-    for (TempBomTree invalidBomTree : invalidBomTrees) {
+    for (TempBomTree invalidBomTree : ListUtils.emptyIfNull(invalidBomTrees)) {
       tempBomTreeRepo.remove(invalidBomTree);
     }
   }
@@ -376,7 +379,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         priority += 10;
         BillOfMaterial newComponent =
             createBomFromRawMaterial(Long.valueOf((int) rawMaterial.get("id")), priority);
-        billOfMaterial.getBillOfMaterialSet().add(newComponent);
+        billOfMaterial.addBillOfMaterialSetItem(newComponent);
       }
     } else {
       return;

@@ -81,6 +81,9 @@ public class KilometricService {
   }
 
   public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
+    if (employee.getKilometricLogList() == null) {
+      return null;
+    }
     return employee.getKilometricLogList().stream()
         .filter(
             log ->

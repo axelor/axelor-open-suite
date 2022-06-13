@@ -39,6 +39,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetSupplychainService extends BudgetService {
 
@@ -70,20 +71,23 @@ public class BudgetSupplychainService extends BudgetService {
                   PurchaseOrderRepository.STATUS_VALIDATED,
                   PurchaseOrderRepository.STATUS_FINISHED)
               .fetch();
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        LocalDate orderDate =
-            budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getOrderDate();
-        if (orderDate != null) {
-          for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-            LocalDate fromDate = budgetLine.getFromDate();
-            LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate != null && toDate != null)
-                && (fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
-              budgetLine.setAmountCommitted(
-                  budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
-              budgetLineRepository.save(budgetLine);
-              break;
+
+      if (CollectionUtils.isNotEmpty(budgetDistributionList)) {
+        for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+          LocalDate orderDate =
+              budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getOrderDate();
+          if (orderDate != null) {
+            for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+              LocalDate fromDate = budgetLine.getFromDate();
+              LocalDate toDate = budgetLine.getToDate();
+              if ((fromDate != null && toDate != null)
+                  && (fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
+                  && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
+                budgetLine.setAmountCommitted(
+                    budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
+                budgetLineRepository.save(budgetLine);
+                break;
+              }
             }
           }
         }
@@ -98,27 +102,31 @@ public class BudgetSupplychainService extends BudgetService {
                   InvoiceRepository.STATUS_VALIDATED,
                   InvoiceRepository.STATUS_VENTILATED)
               .fetch();
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        Optional<LocalDate> optionaldate = getDate(budgetDistribution);
-        Invoice invoice = budgetDistribution.getInvoiceLine().getInvoice();
-        optionaldate.ifPresent(
-            date -> {
-              for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-                LocalDate fromDate = budgetLine.getFromDate();
-                LocalDate toDate = budgetLine.getToDate();
-                if (fromDate != null
-                    && toDate != null
-                    && (fromDate.isBefore(date) || fromDate.isEqual(date))
-                    && (toDate.isAfter(date) || toDate.isEqual(date))) {
-                  budgetLine.setAmountRealized(
-                      invoice.getOperationTypeSelect()
-                              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                          ? budgetLine.getAmountRealized().subtract(budgetDistribution.getAmount())
-                          : budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-                  break;
+      if (CollectionUtils.isNotEmpty(budgetDistributionList)) {
+        for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+          Optional<LocalDate> optionaldate = getDate(budgetDistribution);
+          Invoice invoice = budgetDistribution.getInvoiceLine().getInvoice();
+          optionaldate.ifPresent(
+              date -> {
+                for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+                  LocalDate fromDate = budgetLine.getFromDate();
+                  LocalDate toDate = budgetLine.getToDate();
+                  if (fromDate != null
+                      && toDate != null
+                      && (fromDate.isBefore(date) || fromDate.isEqual(date))
+                      && (toDate.isAfter(date) || toDate.isEqual(date))) {
+                    budgetLine.setAmountRealized(
+                        invoice.getOperationTypeSelect()
+                                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                            ? budgetLine
+                                .getAmountRealized()
+                                .subtract(budgetDistribution.getAmount())
+                            : budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+                    break;
+                  }
                 }
-              }
-            });
+              });
+        }
       }
     }
     return budget.getBudgetLineList();

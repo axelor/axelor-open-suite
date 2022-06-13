@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -58,7 +59,7 @@ public class PublicHolidayService {
                 fromDate,
                 toDate)
             .fetch();
-    for (EventsPlanningLine publicHolidayDay : publicHolidayDayList) {
+    for (EventsPlanningLine publicHolidayDay : ListUtils.emptyIfNull(publicHolidayDayList)) {
       publicHolidayDays =
           publicHolidayDays.add(
               BigDecimal.valueOf(

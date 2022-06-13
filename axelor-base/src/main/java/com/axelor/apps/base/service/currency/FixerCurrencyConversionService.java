@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -86,7 +87,7 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
       List<CurrencyConversionLine> currencyConversionLines =
           appBase.getCurrencyConversionLineList();
       currencyConversionLines =
-          currencyConversionLines.stream()
+          ListUtils.emptyIfNull(currencyConversionLines).stream()
               .filter(it -> !it.getFromDate().isAfter(today) && it.getToDate() == null)
               .collect(Collectors.toList());
 

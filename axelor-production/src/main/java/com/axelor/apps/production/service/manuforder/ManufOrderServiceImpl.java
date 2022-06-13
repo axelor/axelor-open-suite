@@ -58,6 +58,8 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -686,7 +688,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
 
     List<StockMoveLine> realizedProducedStockMoveLineList =
-        stockMoveLineList.stream()
+        ListUtils.emptyIfNull(stockMoveLineList).stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove() != null
@@ -695,7 +697,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             .sorted(Comparator.comparingLong(StockMoveLine::getId))
             .collect(Collectors.toList());
     List<StockMoveLine> oldRealizedProducedStockMoveLineList =
-        oldStockMoveLineList.stream()
+        ListUtils.emptyIfNull(oldStockMoveLineList).stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove() != null
@@ -881,7 +883,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
-    for (BillOfMaterial bom : billOfMaterial.getBillOfMaterialSet()) {
+    for (BillOfMaterial bom : SetUtils.emptyIfNull(billOfMaterial.getBillOfMaterialSet())) {
       Product product = bom.getProduct();
       if (productList != null && !productList.contains(product)) {
         continue;
@@ -972,10 +974,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
 
       manufOrder.setManufOrderMergeResult(mergedManufOrder);
-      for (ProductionOrder productionOrder : manufOrder.getProductionOrderSet()) {
+      for (ProductionOrder productionOrder :
+          SetUtils.emptyIfNull(manufOrder.getProductionOrderSet())) {
         mergedManufOrder.addProductionOrderSetItem(productionOrder);
       }
-      for (SaleOrder saleOrder : manufOrder.getSaleOrderSet()) {
+      for (SaleOrder saleOrder : SetUtils.emptyIfNull(manufOrder.getSaleOrderSet())) {
         mergedManufOrder.addSaleOrderSetItem(saleOrder);
       }
       /*

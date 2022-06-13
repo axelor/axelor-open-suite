@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -159,9 +160,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
         stockMove.setArchived(true);
-        for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
-          stockMoveline.setSaleOrderLine(null);
-          stockMoveline.setArchived(true);
+        if (CollectionUtils.isNotEmpty(stockMove.getStockMoveLineList())) {
+          for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+            stockMoveline.setSaleOrderLine(null);
+            stockMoveline.setArchived(true);
+          }
         }
       }
     }
@@ -250,6 +253,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getSaleOrderLineList() == null) {
+      saleOrder.setSaleOrderLineList(new ArrayList<>());
+    }
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     Partner client = saleOrder.getClientPartner();
     ShipmentMode shipmentMode = saleOrder.getShipmentMode();
@@ -265,7 +272,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     if (client != null) {
       List<CustomerShippingCarriagePaid> carriagePaids =
           client.getCustomerShippingCarriagePaidList();
-      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
+      for (CustomerShippingCarriagePaid customerShippingCarriagePaid :
+          ListUtils.emptyIfNull(carriagePaids)) {
         if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
           if (customerShippingCarriagePaid.getShippingCostsProduct() != null) {
             shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();

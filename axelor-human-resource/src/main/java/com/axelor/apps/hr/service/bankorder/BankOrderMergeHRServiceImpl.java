@@ -62,7 +62,6 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
     if (!Beans.get(AppService.class).isApp("employee")) {
       return super.mergeBankOrders(bankOrders);
     }
-
     List<Expense> expenseList =
         expenseHRRepository
             .all()
@@ -70,19 +69,19 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
                 "self.bankOrder.id IN (?)",
                 bankOrders.stream().map(BankOrder::getId).collect(Collectors.toList()))
             .fetch();
-
-    for (Expense expense : expenseList) {
-      expense.setBankOrder(null);
-      expenseHRRepository.save(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        expense.setBankOrder(null);
+        expenseHRRepository.save(expense);
+      }
     }
-
     BankOrder bankOrder = super.mergeBankOrders(bankOrders);
-
-    for (Expense expense : expenseList) {
-      expense.setBankOrder(bankOrder);
-      expenseHRRepository.save(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        expense.setBankOrder(bankOrder);
+        expenseHRRepository.save(expense);
+      }
     }
-
     return bankOrder;
   }
 }

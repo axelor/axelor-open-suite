@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.Inflector;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -89,7 +90,7 @@ public class MenuBuilderService {
         actionBuilder.setTypeSelect(ActionBuilderRepository.TYPE_SELECT_VIEW);
         String domain = action.getDomain();
         actionBuilder.setDomainCondition(domain);
-        for (ActionView.View view : action.getViews()) {
+        for (ActionView.View view : ListUtils.emptyIfNull(action.getViews())) {
           ActionBuilderView builderView = new ActionBuilderView();
           builderView.setViewType(view.getType());
           builderView.setViewName(view.getName());

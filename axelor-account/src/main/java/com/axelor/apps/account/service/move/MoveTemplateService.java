@@ -87,8 +87,10 @@ public class MoveTemplateService {
   public void validateMoveTemplateLine(MoveTemplate moveTemplate) {
     moveTemplate.setIsValid(true);
 
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      line.setIsValid(true);
+    if (moveTemplate.getMoveTemplateLineList() != null) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+        line.setIsValid(true);
+      }
     }
 
     moveTemplateRepo.save(moveTemplate);
@@ -156,57 +158,59 @@ public class MoveTemplateService {
 
         int counter = 1;
 
-        for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
-          partner = null;
-          if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
-            isDebit = true;
-            if (moveTemplateLine.getHasPartnerToDebit()) {
-              partner = debitPartner;
+        if (moveTemplate.getMoveTemplateLineList() != null) {
+          for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
+            partner = null;
+            if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
+              isDebit = true;
+              if (moveTemplateLine.getHasPartnerToDebit()) {
+                partner = debitPartner;
+              }
+            } else if (moveTemplateLine
+                .getDebitCreditSelect()
+                .equals(MoveTemplateLineRepository.CREDIT)) {
+              isDebit = false;
+              if (moveTemplateLine.getHasPartnerToCredit()) {
+                partner = creditPartner;
+              }
             }
-          } else if (moveTemplateLine
-              .getDebitCreditSelect()
-              .equals(MoveTemplateLineRepository.CREDIT)) {
-            isDebit = false;
-            if (moveTemplateLine.getHasPartnerToCredit()) {
-              partner = creditPartner;
+
+            BigDecimal amount =
+                moveBalance
+                    .multiply(moveTemplateLine.getPercentage())
+                    .divide(hundred, RoundingMode.HALF_UP);
+
+            MoveLine moveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    partner,
+                    moveTemplateLine.getAccount(),
+                    amount,
+                    isDebit,
+                    moveDate,
+                    moveDate,
+                    counter,
+                    origin,
+                    moveTemplateLine.getName());
+            move.addMoveLineListItem(moveLine);
+
+            Tax tax = moveTemplateLine.getTax();
+
+            if (tax != null) {
+              TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+              if (taxLine != null) {
+                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxRate(taxLine.getValue());
+                moveLine.setTaxCode(tax.getCode());
+              }
             }
+
+            moveLine.setAnalyticDistributionTemplate(
+                moveTemplateLine.getAnalyticDistributionTemplate());
+            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            counter++;
           }
-
-          BigDecimal amount =
-              moveBalance
-                  .multiply(moveTemplateLine.getPercentage())
-                  .divide(hundred, RoundingMode.HALF_UP);
-
-          MoveLine moveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
-                  partner,
-                  moveTemplateLine.getAccount(),
-                  amount,
-                  isDebit,
-                  moveDate,
-                  moveDate,
-                  counter,
-                  origin,
-                  moveTemplateLine.getName());
-          move.getMoveLineList().add(moveLine);
-
-          Tax tax = moveTemplateLine.getTax();
-
-          if (tax != null) {
-            TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
-            if (taxLine != null) {
-              moveLine.setTaxLine(taxLine);
-              moveLine.setTaxRate(taxLine.getValue());
-              moveLine.setTaxCode(tax.getCode());
-            }
-          }
-
-          moveLine.setAnalyticDistributionTemplate(
-              moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-
-          counter++;
         }
 
         if (moveTemplate.getAutomaticallyValidate()) {
@@ -314,12 +318,14 @@ public class MoveTemplateService {
   protected boolean checkValidityInPercentage(MoveTemplate moveTemplate) {
     BigDecimal debitPercent = BigDecimal.ZERO;
     BigDecimal creditPercent = BigDecimal.ZERO;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      LOG.debug("Adding percent: {}", line.getPercentage());
-      if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
-        debitPercent = debitPercent.add(line.getPercentage());
-      } else {
-        creditPercent = creditPercent.add(line.getPercentage());
+    if (moveTemplate.getMoveTemplateLineList() != null) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+        LOG.debug("Adding percent: {}", line.getPercentage());
+        if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
+          debitPercent = debitPercent.add(line.getPercentage());
+        } else {
+          creditPercent = creditPercent.add(line.getPercentage());
+        }
       }
     }
 
@@ -337,9 +343,11 @@ public class MoveTemplateService {
   protected boolean checkValidityInAmount(MoveTemplate moveTemplate) {
     BigDecimal debit = BigDecimal.ZERO;
     BigDecimal credit = BigDecimal.ZERO;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      debit = debit.add(line.getDebit());
-      credit = credit.add(line.getCredit());
+    if (moveTemplate.getMoveTemplateLineList() != null) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+        debit = debit.add(line.getDebit());
+        credit = credit.add(line.getCredit());
+      }
     }
 
     LOG.debug("Debit : {}, Credit : {}", debit, credit);

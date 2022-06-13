@@ -101,7 +101,6 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
-import org.apache.commons.collections4.ListUtils;
 import wslite.json.JSONException;
 
 /** @author axelor */
@@ -211,6 +210,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     Map<Integer, String> correspMap = getCorresMap();
 
     List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+    if (ObjectUtils.isEmpty(timesheetLines)) {
+      return;
+    }
     timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
     for (int i = 0; i < timesheetLines.size(); i++) {
 
@@ -452,10 +454,12 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected boolean isWorkedDay(
       LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
     DayPlanning dayPlanningCurr = new DayPlanning();
-    for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getName().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
-        dayPlanningCurr = dayPlanning;
-        break;
+    if (ObjectUtils.notEmpty(dayPlanningList)) {
+      for (DayPlanning dayPlanning : dayPlanningList) {
+        if (dayPlanning.getName().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
+          dayPlanningCurr = dayPlanning;
+          break;
+        }
       }
     }
 
@@ -816,8 +820,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                 project,
                 TimesheetRepository.STATUS_VALIDATED)
             .fetch();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      sum = sum.add(timesheetLine.getHoursDuration());
+    if (ObjectUtils.notEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        sum = sum.add(timesheetLine.getHoursDuration());
+      }
     }
     return sum;
   }
@@ -909,7 +915,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     if (timesheet.getToDate() == null) {
 
       List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-      if (timesheetLineList.isEmpty()) {
+      if (ObjectUtils.isEmpty(timesheetLineList)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
@@ -975,7 +981,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
       lines.add(Mapper.toMap(line));
     }
-
     return lines;
   }
 
@@ -1094,6 +1099,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
+    if (ObjectUtils.isEmpty(planningList)) {
+      return;
+    }
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       TimesheetLine timesheetLine = createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
       timesheet.addTimesheetLineListItem(timesheetLine);
@@ -1195,6 +1203,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional
   public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
+    if (ObjectUtils.isEmpty(timesheetLines)) {
+      return;
+    }
     for (TimesheetLine timesheetLine : timesheetLines) {
       ProjectTask projectTask = timesheetLine.getProjectTask();
       if (projectTask != null) {
@@ -1213,9 +1224,13 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional
   public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
 
+    if (ObjectUtils.isEmpty(timesheet.getTimesheetLineList())) {
+      return;
+    }
+
     List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
 
-    for (TimesheetLine timesheetLine : ListUtils.emptyIfNull(timesheet.getTimesheetLineList())) {
+    for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
       if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
         removedTimesheetLines.add(timesheetLine);
         if (timesheetLine.getId() != null) {
@@ -1254,8 +1269,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     if (contextProject == null) {
       List<Project> allTimeSpentProjectList =
           projectRepo.all().filter("self.isShowTimeSpent = true").fetch();
-      for (Project timeSpentProject : allTimeSpentProjectList) {
-        projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+      if (ObjectUtils.notEmpty(allTimeSpentProjectList)) {
+        for (Project timeSpentProject : allTimeSpentProjectList) {
+          projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+        }
       }
     } else {
       if (!currentUser.getIsIncludeSubContextProjects()) {

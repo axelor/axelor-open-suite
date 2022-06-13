@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -216,6 +217,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
 
     Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new HashMap<>();
+
+    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      return saleOrderLinePerDateMap;
+    }
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 

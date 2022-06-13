@@ -191,6 +191,10 @@ public class PaymentVoucherLoadService {
    */
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
+    if (paymentVoucher.getPayVoucherDueElementList() == null) {
+      return;
+    }
+
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
     paymentVoucher
         .getPayVoucherDueElementList()
@@ -269,7 +273,9 @@ public class PaymentVoucherLoadService {
 
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
 
-    paymentVoucher.getPayVoucherElementToPayList().clear();
+    if (paymentVoucher.getPayVoucherElementToPayList() != null) {
+      paymentVoucher.getPayVoucherElementToPayList().clear();
+    }
 
     this.searchDueElements(paymentVoucher);
   }

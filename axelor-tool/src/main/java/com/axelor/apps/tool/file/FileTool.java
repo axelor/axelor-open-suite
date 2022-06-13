@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.file;
 
+import com.axelor.common.ObjectUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -99,13 +100,15 @@ public final class FileTool {
     try (BufferedWriter output = new BufferedWriter(new FileWriter(file))) {
       int i = 0;
 
-      for (String line : multiLine) {
+      if (ObjectUtils.notEmpty(multiLine)) {
+        for (String line : multiLine) {
 
-        output.write(line);
-        output.newLine();
-        i++;
-        if (i % 50 == 0) {
-          output.flush();
+          output.write(line);
+          output.newLine();
+          i++;
+          if (i % 50 == 0) {
+            output.flush();
+          }
         }
       }
 

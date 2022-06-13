@@ -40,8 +40,10 @@ public class AnalyticAxisByCompanyServiceImpl implements AnalyticAxisByCompanySe
   public String getAxisDomain(AccountConfig accountConfig) {
     if (accountConfig != null) {
       List<Long> idList = new ArrayList<Long>();
-      for (AnalyticAxisByCompany axisByCompany : accountConfig.getAnalyticAxisByCompanyList()) {
-        idList.add(axisByCompany.getAnalyticAxis().getId());
+      if (accountConfig.getAnalyticAxisByCompanyList() != null) {
+        for (AnalyticAxisByCompany axisByCompany : accountConfig.getAnalyticAxisByCompanyList()) {
+          idList.add(axisByCompany.getAnalyticAxis().getId());
+        }
       }
       for (AnalyticAxis analyticAxis :
           analyticAxisRepository

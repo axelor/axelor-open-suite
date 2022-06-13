@@ -40,6 +40,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -363,7 +364,7 @@ public class PurchaseOrderLineController {
     String domain = "";
     if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
         && purchaseOrderLine.getProduct() != null
-        && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
+        && CollectionUtils.isNotEmpty(purchaseOrderLine.getProduct().getSupplierCatalogList())) {
       domain +=
           "self.id != "
               + company.getPartner().getId()

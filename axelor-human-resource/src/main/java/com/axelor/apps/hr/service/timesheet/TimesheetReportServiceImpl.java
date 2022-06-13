@@ -126,23 +126,25 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     LocalDate fromDate = timesheetReport.getFromDate();
     LocalDate toDate = timesheetReport.getToDate();
 
-    for (User user : users) {
-      Employee employee = user.getEmployee();
-      try {
-        worksHour = workedHour = BigDecimal.ZERO;
-        BigDecimal publicHolidays =
-            publicHolidayService.computePublicHolidayDays(
-                fromDate,
-                toDate,
-                employee.getWeeklyPlanning(),
-                employee.getPublicHolidayEventsPlanning());
-        worksHour = getTotalWeekWorksHours(user, fromDate, toDate, publicHolidays);
-        workedHour = getTotalWeekWorkedHours(user, fromDate, toDate, publicHolidays);
-        if (worksHour.compareTo(workedHour) != 0) {
-          userSet.add(user);
+    if (CollectionUtils.isNotEmpty(users)) {
+      for (User user : users) {
+        Employee employee = user.getEmployee();
+        try {
+          worksHour = workedHour = BigDecimal.ZERO;
+          BigDecimal publicHolidays =
+              publicHolidayService.computePublicHolidayDays(
+                  fromDate,
+                  toDate,
+                  employee.getWeeklyPlanning(),
+                  employee.getPublicHolidayEventsPlanning());
+          worksHour = getTotalWeekWorksHours(user, fromDate, toDate, publicHolidays);
+          workedHour = getTotalWeekWorkedHours(user, fromDate, toDate, publicHolidays);
+          if (worksHour.compareTo(workedHour) != 0) {
+            userSet.add(user);
+          }
+        } catch (Exception e) {
+          TraceBackService.trace(e);
         }
-      } catch (Exception e) {
-        TraceBackService.trace(e);
       }
     }
     return userSet;
@@ -289,8 +291,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
     List<User> users = getUsers(timesheetReport);
 
+    if (CollectionUtils.isEmpty(users)) {
+      return list;
+    }
+
     for (User user : users) {
       Employee employee = user.getEmployee();
+
       BigDecimal dailyWorkingHours = employee.getDailyWorkHours();
       WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 

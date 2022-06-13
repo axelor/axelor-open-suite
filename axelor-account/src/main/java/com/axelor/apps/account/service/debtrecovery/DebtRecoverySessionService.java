@@ -76,11 +76,13 @@ public class DebtRecoverySessionService {
     List<DebtRecoveryConfigLine> debtRecoveryConfigLines =
         company.getAccountConfig().getDebtRecoveryConfigLineList();
 
-    for (DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines) {
-      if (debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory())) {
+    if (debtRecoveryConfigLines != null) {
+      for (DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines) {
+        if (debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory())) {
 
-        log.debug("méthode de relance determinée ");
-        return debtRecoveryConfigLine.getDebtRecoveryMethod();
+          log.debug("méthode de relance determinée ");
+          return debtRecoveryConfigLine.getDebtRecoveryMethod();
+        }
       }
     }
 

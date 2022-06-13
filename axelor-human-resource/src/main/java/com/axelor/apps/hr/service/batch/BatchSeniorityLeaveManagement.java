@@ -48,6 +48,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -64,6 +65,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -146,6 +148,10 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
 
+    if (CollectionUtils.isEmpty(employeeList)) {
+      return;
+    }
+
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       employee = employeeRepository.find(employee.getId());
@@ -181,7 +187,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     LeaveLine leaveLine = null;
     BigDecimal quantity = BigDecimal.ZERO;
 
-    if (!employee.getLeaveLineList().isEmpty()) {
+    if (ObjectUtils.notEmpty(employee.getLeaveLineList())) {
       for (LeaveLine line : employee.getLeaveLineList()) {
 
         if (line.getLeaveReason().equals(batch.getHrBatch().getLeaveReason())) {
@@ -216,40 +222,43 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
             IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
       }
       Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
-
-      for (LeaveManagementBatchRule rule :
+      List<LeaveManagementBatchRule> leaveManagementBatchRuleList =
           Beans.get(HRConfigRepository.class)
               .all()
               .filter("self.company.id = ?1", batch.getHrBatch().getCompany().getId())
               .fetchOne()
-              .getLeaveManagementBatchRuleList()) {
+              .getLeaveManagementBatchRuleList();
+      if (leaveManagementBatchRuleList != null) {
+        for (LeaveManagementBatchRule rule : leaveManagementBatchRuleList) {
 
-        if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
-          maker.setContext(employee, "Employee");
-          String formula = rule.getFormula();
-          formula =
-              formula.replace(
-                  hrConfig.getSeniorityVariableName(),
-                  String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getLengthOfService(employee, batch.getHrBatch().getReferentialDate())));
-          formula =
-              formula.replace(
-                  hrConfig.getAgeVariableName(),
-                  String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getAge(employee, batch.getHrBatch().getReferentialDate())));
-          maker.setTemplate(formula);
-          eval = maker.make();
-          CompilerConfiguration conf = new CompilerConfiguration();
-          ImportCustomizer customizer = new ImportCustomizer();
-          customizer.addStaticStars("java.lang.Math");
-          conf.addCompilationCustomizers(customizer);
-          Binding binding = new Binding();
-          GroovyShell shell = new GroovyShell(binding, conf);
-          if (shell.evaluate(eval).toString().equals("true")) {
-            quantity = rule.getLeaveDayNumber();
-            break;
+          if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
+            maker.setContext(employee, "Employee");
+            String formula = rule.getFormula();
+            formula =
+                formula.replace(
+                    hrConfig.getSeniorityVariableName(),
+                    String.valueOf(
+                        Beans.get(EmployeeService.class)
+                            .getLengthOfService(
+                                employee, batch.getHrBatch().getReferentialDate())));
+            formula =
+                formula.replace(
+                    hrConfig.getAgeVariableName(),
+                    String.valueOf(
+                        Beans.get(EmployeeService.class)
+                            .getAge(employee, batch.getHrBatch().getReferentialDate())));
+            maker.setTemplate(formula);
+            eval = maker.make();
+            CompilerConfiguration conf = new CompilerConfiguration();
+            ImportCustomizer customizer = new ImportCustomizer();
+            customizer.addStaticStars("java.lang.Math");
+            conf.addCompilationCustomizers(customizer);
+            Binding binding = new Binding();
+            GroovyShell shell = new GroovyShell(binding, conf);
+            if (shell.evaluate(eval).toString().equals("true")) {
+              quantity = rule.getLeaveDayNumber();
+              break;
+            }
           }
         }
       }

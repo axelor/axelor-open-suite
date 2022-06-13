@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
@@ -115,7 +116,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 
       if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
-        if (!stockLocations.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(stockLocations)) {
           BigDecimal qty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =
@@ -190,18 +191,20 @@ public class StockLocationServiceImpl implements StockLocationService {
 
     StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
 
-    for (StockLocationLine stockLocationLine : stockLocationLineList) {
-      StockRules stockRules =
-          stockRulesRepository
-              .all()
-              .filter(
-                  "self.stockLocation = ?1 AND self.product = ?2",
-                  stockLocationLine.getStockLocation(),
-                  stockLocationLine.getProduct())
-              .fetchOne();
-      if (stockRules != null
-          && stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
-        idList.add(stockLocationLine.getId());
+    if (CollectionUtils.isNotEmpty(stockLocationLineList)) {
+      for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        StockRules stockRules =
+            stockRulesRepository
+                .all()
+                .filter(
+                    "self.stockLocation = ?1 AND self.product = ?2",
+                    stockLocationLine.getStockLocation(),
+                    stockLocationLine.getProduct())
+                .fetchOne();
+        if (stockRules != null
+            && stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+          idList.add(stockLocationLine.getId());
+        }
       }
     }
 

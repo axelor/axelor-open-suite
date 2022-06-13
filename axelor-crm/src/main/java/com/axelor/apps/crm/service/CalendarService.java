@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.collect.Lists;
@@ -42,13 +43,15 @@ public class CalendarService extends ICalendarService {
     Set<User> followedUsers = user.getFollowersCalUserSet();
     List<Long> calendarIdlist = new ArrayList<Long>();
 
-    for (User userIt : followedUsers) {
-      for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
-        if ((user.equals(calendarManagement.getUser()))
-            || (team != null && team.equals(calendarManagement.getTeam()))) {
-          List<ICalendar> icalList =
-              icalRepo.all().filter("self.user.id = ?1", userIt.getId()).fetch();
-          calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
+    if (ObjectUtils.notEmpty(followedUsers)) {
+      for (User userIt : followedUsers) {
+        for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
+          if ((user.equals(calendarManagement.getUser()))
+              || (team != null && team.equals(calendarManagement.getTeam()))) {
+            List<ICalendar> icalList =
+                icalRepo.all().filter("self.user.id = ?1", userIt.getId()).fetch();
+            calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
+          }
         }
       }
     }

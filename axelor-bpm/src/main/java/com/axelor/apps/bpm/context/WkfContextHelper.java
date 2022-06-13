@@ -19,6 +19,7 @@ package com.axelor.apps.bpm.context;
 
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.db.JpaRepository;
@@ -149,7 +150,7 @@ public class WkfContextHelper {
 
     List<Long> values = new ArrayList<Long>();
 
-    for (FullContext fullContext : lines) {
+    for (FullContext fullContext : ListUtils.emptyIfNull(lines)) {
       values.add((Long) fullContext.get("id"));
     }
 

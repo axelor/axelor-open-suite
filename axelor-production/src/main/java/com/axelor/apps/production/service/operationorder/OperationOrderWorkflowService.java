@@ -39,6 +39,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
@@ -402,7 +403,7 @@ public class OperationOrderWorkflowService {
         int beforeOrAfterConfig =
             operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
         if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-          for (StockMove stockMove : operationOrder.getInStockMoveList()) {
+          for (StockMove stockMove : ListUtils.emptyIfNull(operationOrder.getInStockMoveList())) {
             Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
           }
 

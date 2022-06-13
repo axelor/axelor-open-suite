@@ -34,6 +34,7 @@ import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.base.service.ical.ICalendarEventService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -460,7 +461,7 @@ public class EventController {
   public void setCalendarDomain(ActionRequest request, ActionResponse response) {
     User user = AuthUtils.getUser();
     List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
-    if (calendarIdlist.isEmpty()) {
+    if (ObjectUtils.isEmpty(calendarIdlist)) {
       response.setAttr("calendar", "domain", "self.id is null");
     } else {
       response.setAttr(
@@ -472,7 +473,8 @@ public class EventController {
     Event event = request.getContext().asType(Event.class);
     User user = AuthUtils.getUser();
     List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
-    if (calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendar().getId())) {
+    if (ObjectUtils.isEmpty(calendarIdlist)
+        || !calendarIdlist.contains(event.getCalendar().getId())) {
       response.setAttr("meetingGeneralPanel", "readonly", "true");
       response.setAttr("addGuestsPanel", "readonly", "true");
       response.setAttr("meetingAttributesPanel", "readonly", "true");

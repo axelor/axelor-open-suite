@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
@@ -48,10 +49,11 @@ public class ImportPermission {
       if (permission.getId() != null) {
         if (groups != null && !groups.isEmpty()) {
           for (Group group :
-              groupRepository
-                  .all()
-                  .filter("code in ?1", Arrays.asList(groups.split("\\|")))
-                  .fetch()) {
+              ListUtils.emptyIfNull(
+                  groupRepository
+                      .all()
+                      .filter("code in ?1", Arrays.asList(groups.split("\\|")))
+                      .fetch())) {
             Set<Permission> permissions = group.getPermissions();
             if (permissions == null) permissions = new HashSet<Permission>();
             permissions.add(permissionRepo.find(permission.getId()));

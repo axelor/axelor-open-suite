@@ -924,12 +924,14 @@ public class LeaveServiceImpl implements LeaveService {
                 leaveRequest.getUser(),
                 LeaveRequestRepository.STATUS_VALIDATED)
             .fetch();
-    for (LeaveRequest leaveRequest2 : leaveRequestList) {
-      if (isOverlapped(leaveRequest, leaveRequest2)) {
-        throw new AxelorException(
-            leaveRequest,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+    if (ObjectUtils.notEmpty(leaveRequestList)) {
+      for (LeaveRequest leaveRequest2 : leaveRequestList) {
+        if (isOverlapped(leaveRequest, leaveRequest2)) {
+          throw new AxelorException(
+              leaveRequest,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+        }
       }
     }
   }

@@ -42,6 +42,11 @@ public class ArchivingToolServiceImpl implements ArchivingToolService {
                     + " WHERE field.type_name like :objectName");
     FindModelWithobjectFieldQuery.setParameter("objectName", object.getClass().getSimpleName());
     List<Object[]> resultList = FindModelWithobjectFieldQuery.getResultList();
+
+    if (ObjectUtils.isEmpty(resultList)) {
+      return objectsLinkToMap;
+    }
+
     for (Object[] result : resultList) {
 
       String fieldName = ((String) result[0]).replaceAll("([A-Z])", "_$1").toLowerCase();

@@ -34,6 +34,7 @@ import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -48,6 +49,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   protected ABCAnalysisLineRepository abcAnalysisLineRepository;
@@ -160,30 +162,32 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     String productCategoryQuery = getProductCategoryQuery();
     String productFamilyQuery = getProductFamilyQuery();
 
-    if (!abcAnalysis.getProductSet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(abcAnalysis.getProductSet())) {
       productList.addAll(abcAnalysis.getProductSet());
     }
 
-    if (!abcAnalysis.getProductCategorySet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(abcAnalysis.getProductCategorySet())) {
       productList.addAll(
-          productRepository
-              .all()
-              .filter(
-                  productCategoryQuery,
-                  abcAnalysis.getProductCategorySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE)
-              .fetch());
+          ListUtils.emptyIfNull(
+              productRepository
+                  .all()
+                  .filter(
+                      productCategoryQuery,
+                      abcAnalysis.getProductCategorySet(),
+                      ProductRepository.PRODUCT_TYPE_STORABLE)
+                  .fetch()));
     }
 
-    if (!abcAnalysis.getProductFamilySet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(abcAnalysis.getProductFamilySet())) {
       productList.addAll(
-          productRepository
-              .all()
-              .filter(
-                  productFamilyQuery,
-                  abcAnalysis.getProductFamilySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE)
-              .fetch());
+          ListUtils.emptyIfNull(
+              productRepository
+                  .all()
+                  .filter(
+                      productFamilyQuery,
+                      abcAnalysis.getProductFamilySet(),
+                      ProductRepository.PRODUCT_TYPE_STORABLE)
+                  .fetch()));
     }
 
     return productList;
@@ -206,7 +210,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
             .all()
             .filter("self.id IN (" + StringTool.getIdListString(getProductSet(abcAnalysis)) + ")");
 
-    while (!(productList = productQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(productList = ListUtils.emptyIfNull(productQuery.fetch(FETCH_LIMIT, offset)))
+        .isEmpty()) {
       abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
       offset += productList.size();
 
@@ -266,7 +271,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
             .order("-decimalWorth")
             .order("id");
 
-    while (!(abcAnalysisLineList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(abcAnalysisLineList = ListUtils.emptyIfNull(query.fetch(FETCH_LIMIT, offset)))
+        .isEmpty()) {
       offset += abcAnalysisLineList.size();
       abcAnalysisLineList.forEach(this::analyzeLine);
       JPA.clear();
@@ -317,7 +323,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     BigDecimal lineCumulatedWorth =
         abcAnalysisLine.getCumulatedWorth().setScale(2, RoundingMode.HALF_UP);
 
-    for (ABCAnalysisClass abcAnalysisClass : abcAnalysisClassList) {
+    for (ABCAnalysisClass abcAnalysisClass : ListUtils.emptyIfNull(abcAnalysisClassList)) {
       maxQty = maxQty.add(abcAnalysisClass.getQty());
       maxWorth = maxWorth.add(abcAnalysisClass.getWorth());
       if (lineCumulatedQty.compareTo(maxQty) <= 0 && lineCumulatedWorth.compareTo(maxWorth) <= 0) {
@@ -398,7 +404,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     BigDecimal totalQty = BigDecimal.ZERO, totalWorth = BigDecimal.ZERO;
     BigDecimal comparisonValue = new BigDecimal(100);
 
-    for (ABCAnalysisClass abcAnalysisClass : abcAnalysisClassList) {
+    for (ABCAnalysisClass abcAnalysisClass : ListUtils.emptyIfNull(abcAnalysisClassList)) {
       classQty = abcAnalysisClass.getQty();
       classWorth = abcAnalysisClass.getWorth();
       if (classQty.compareTo(BigDecimal.ZERO) <= 0 || classWorth.compareTo(BigDecimal.ZERO) <= 0) {

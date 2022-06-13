@@ -36,6 +36,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -144,7 +145,7 @@ public class PurchaseOrderController {
       if (request.getContext().get("purchaseOrderToMerge") instanceof List) {
         // No confirmation popup, purchase orders are content in a parameter list
         List<Map> purchaseOrderMap = (List<Map>) request.getContext().get("purchaseOrderToMerge");
-        for (Map map : purchaseOrderMap) {
+        for (Map map : ListUtils.emptyIfNull(purchaseOrderMap)) {
           purchaseOrderIdList.add(new Long((Integer) map.get("id")));
         }
       } else {

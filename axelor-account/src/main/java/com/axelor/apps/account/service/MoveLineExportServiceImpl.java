@@ -1430,12 +1430,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                   items[6] = totAmt.toString();
 
                   String analyticAccounts = "";
-                  for (AnalyticMoveLine analyticDistributionLine :
-                      moveLine3.getAnalyticMoveLineList()) {
-                    analyticAccounts =
-                        analyticAccounts
-                            + analyticDistributionLine.getAnalyticAccount().getCode()
-                            + "/";
+                  if (moveLine3.getAnalyticMoveLineList() != null) {
+                    for (AnalyticMoveLine analyticDistributionLine :
+                        moveLine3.getAnalyticMoveLineList()) {
+                      analyticAccounts =
+                          analyticAccounts
+                              + analyticDistributionLine.getAnalyticAccount().getCode()
+                              + "/";
+                    }
                   }
 
                   if (typeSelect == 9) {

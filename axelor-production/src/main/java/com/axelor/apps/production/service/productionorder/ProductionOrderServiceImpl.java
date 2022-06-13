@@ -29,6 +29,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -183,7 +184,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     int statusSelect = productionOrder.getStatusSelect();
 
-    if (productionOrder.getManufOrderSet().stream()
+    if (SetUtils.emptyIfNull(productionOrder.getManufOrderSet()).stream()
         .allMatch(
             manufOrder -> manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT)) {
       statusSelect = ProductionOrderRepository.STATUS_DRAFT;
@@ -196,7 +197,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     boolean allCancel = true;
     boolean allCompleted = true;
 
-    for (ManufOrder manufOrder : productionOrder.getManufOrderSet()) {
+    for (ManufOrder manufOrder : SetUtils.emptyIfNull(productionOrder.getManufOrderSet())) {
 
       switch (manufOrder.getStatusSelect()) {
         case (ManufOrderRepository.STATUS_PLANNED):

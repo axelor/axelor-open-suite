@@ -61,9 +61,13 @@ public class NotificationController {
     try {
       Notification notification = request.getContext().asType(Notification.class);
       List<Long> moveLineIdList = new ArrayList<Long>();
-      for (NotificationItem notificationItem : notification.getNotificationItemList()) {
-        for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
-          moveLineIdList.add(moveLine.getId());
+      if (notification.getNotificationItemList() != null) {
+        for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+          if (notificationItem.getMove().getMoveLineList() != null) {
+            for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
+              moveLineIdList.add(moveLine.getId());
+            }
+          }
         }
       }
       response.setView(

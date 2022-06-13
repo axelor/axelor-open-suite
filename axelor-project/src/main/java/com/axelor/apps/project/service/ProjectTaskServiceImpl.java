@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -113,7 +114,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     nextProjectTask.setProjectTaskCategory(projectTask.getProjectTaskCategory());
     nextProjectTask.setProgressSelect(0);
 
-    projectTask.getMembersUserSet().forEach(nextProjectTask::addMembersUserSetItem);
+    SetUtils.emptyIfNull(projectTask.getMembersUserSet())
+        .forEach(nextProjectTask::addMembersUserSetItem);
 
     nextProjectTask.setParentTask(projectTask.getParentTask());
     nextProjectTask.setProduct(projectTask.getProduct());

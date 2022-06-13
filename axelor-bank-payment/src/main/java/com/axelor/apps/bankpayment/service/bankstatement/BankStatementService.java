@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -178,7 +179,7 @@ public class BankStatementService {
             .filter("self.bankStatement = :bankStatement")
             .bind("bankStatement", bankStatement)
             .fetch();
-    for (BankStatementLineAFB120 bsl : bankStatementLines) {
+    for (BankStatementLineAFB120 bsl : ListUtils.emptyIfNull(bankStatementLines)) {
       bankPaymentBankStatementLineAFB120Repository.remove(bsl);
     }
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
@@ -189,7 +190,7 @@ public class BankStatementService {
     List<BankStatementLine> bankStatementLines =
         bankStatementLineRepository.findByBankStatement(bankStatement).fetch();
     BigDecimal amountToReconcile = BigDecimal.ZERO;
-    for (BankStatementLine bankStatementLine : bankStatementLines) {
+    for (BankStatementLine bankStatementLine : ListUtils.emptyIfNull(bankStatementLines)) {
       amountToReconcile = amountToReconcile.add(bankStatementLine.getAmountRemainToReconcile());
     }
     if (amountToReconcile.compareTo(BigDecimal.ZERO) == 0) {
@@ -202,7 +203,7 @@ public class BankStatementService {
   public boolean bankStatementLineAlreadyExists(List<BankStatementLineAFB120> initialLines) {
     boolean alreadyImported = false;
     BankStatementLineAFB120 tempBankStatementLineAFB120;
-    for (BankStatementLineAFB120 bslAFB120 : initialLines) {
+    for (BankStatementLineAFB120 bslAFB120 : ListUtils.emptyIfNull(initialLines)) {
       tempBankStatementLineAFB120 =
           bankPaymentBankStatementLineAFB120Repository
               .all()
@@ -239,7 +240,7 @@ public class BankStatementService {
   public void checkAmountWithPreviousBankStatement(
       BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
     boolean deleteLines = false;
-    for (BankDetails bd : bankDetails) {
+    for (BankDetails bd : ListUtils.emptyIfNull(bankDetails)) {
       BankStatementLineAFB120 initialBankStatementLineAFB120 =
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
@@ -276,7 +277,7 @@ public class BankStatementService {
   public void checkAmountWithinBankStatement(
       BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
     boolean deleteLines = false;
-    for (BankDetails bd : bankDetails) {
+    for (BankDetails bd : ListUtils.emptyIfNull(bankDetails)) {
       List<BankStatementLineAFB120> initialBankStatementLineAFB120 =
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
@@ -334,7 +335,7 @@ public class BankStatementService {
     List<BankStatementLineAFB120> finalLines;
     List<BankDetails> bankDetails = fetchBankDetailsList(bankStatement);
     // Load lines
-    for (BankDetails bd : bankDetails) {
+    for (BankDetails bd : ListUtils.emptyIfNull(bankDetails)) {
       initialLines =
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(

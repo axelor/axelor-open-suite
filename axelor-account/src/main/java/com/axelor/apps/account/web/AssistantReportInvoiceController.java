@@ -84,10 +84,21 @@ public class AssistantReportInvoiceController {
                 assistant.getCompany() != null ? assistant.getCompany().getTimezone() : null)
             .addParam("assistantId", assistant.getId())
             .addParam("companyId", assistant.getCompany().getId())
-            .addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))
-            .addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
             .addParam(
-                "productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
+                "partnersIds",
+                assistant.getPartnerSet() == null
+                    ? null
+                    : Joiner.on(",").join(assistant.getPartnerSet()))
+            .addParam(
+                "productsIds",
+                assistant.getProductSet() == null
+                    ? null
+                    : Joiner.on(",").join(assistant.getProductSet()))
+            .addParam(
+                "productCategoriesIds",
+                assistant.getProductCategorySet() == null
+                    ? null
+                    : Joiner.on(",").join(assistant.getProductCategorySet()))
             .addParam("graphType", assistant.getGraphTypeSelect().toString())
             .addFormat(assistant.getFormatSelect())
             .generate()

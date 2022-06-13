@@ -509,7 +509,13 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
                 "self.objectId = ?1 AND self.objectName = ?2",
                 message.getId(),
                 Message.class.getName());
-    return Sets.newHashSet(query.fetch());
+    List<MetaAttachment> metaAttachmentList = query.fetch();
+
+    if (metaAttachmentList == null) {
+      return Sets.newHashSet();
+    }
+
+    return Sets.newHashSet(metaAttachmentList);
   }
 
   public List<String> getEmailAddresses(Set<EmailAddress> emailAddressSet) {

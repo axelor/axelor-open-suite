@@ -34,6 +34,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -81,7 +82,7 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       List<SaleOrderLine> saleOrderLineList =
           saleOrderLineRepo.all().filter("self.id in ?1", saleOrderLineIds).fetch();
 
-      for (SaleOrderLine line : saleOrderLineList) {
+      for (SaleOrderLine line : ListUtils.emptyIfNull(saleOrderLineList)) {
         line.setProject(project);
         saleOrderLineRepo.save(line);
       }

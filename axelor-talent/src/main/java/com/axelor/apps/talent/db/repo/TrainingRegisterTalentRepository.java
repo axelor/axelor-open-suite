@@ -28,6 +28,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
 import javax.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TrainingRegisterTalentRepository extends TrainingRegisterRepository {
 
@@ -73,8 +74,10 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
 
     List<Event> eventList = trainingRegister.getEventList();
 
-    for (Event event : eventList) {
-      eventRepo.remove(event);
+    if (CollectionUtils.isNotEmpty(eventList)) {
+      for (Event event : eventList) {
+        eventRepo.remove(event);
+      }
     }
 
     super.remove(trainingRegister);

@@ -20,6 +20,7 @@ package com.axelor.apps.bpm.context;
 import com.axelor.apps.baml.tools.BpmTools;
 import com.axelor.apps.bpm.db.WkfProcessConfig;
 import com.axelor.apps.bpm.db.WkfTaskConfig;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class WkfCache {
 
     Map<Long, String> modelMap = new HashMap<Long, String>();
     modelMap.put(0L, "");
-    for (WkfProcessConfig config : wkfProcessConfigs) {
+    for (WkfProcessConfig config : ListUtils.emptyIfNull(wkfProcessConfigs)) {
       modelMap.put(config.getId(), config.getModel());
     }
     WKF_MODEL_CACHE.put(BpmTools.getCurentTenant(), modelMap);
@@ -52,7 +53,7 @@ public class WkfCache {
 
     MultiMap multiMap = new MultiValueMap();
     multiMap.put(0L, null);
-    for (WkfTaskConfig config : wkfTaskConfigs) {
+    for (WkfTaskConfig config : ListUtils.emptyIfNull(wkfTaskConfigs)) {
       if (config.getButton() != null) {
         for (String btnName : config.getButton().split(",")) {
           multiMap.put(config.getId(), btnName);

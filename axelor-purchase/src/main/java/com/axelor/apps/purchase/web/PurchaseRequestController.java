@@ -24,6 +24,7 @@ import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -87,7 +88,7 @@ public class PurchaseRequestController {
                 .filter("self.id in (?1)", requestIds)
                 .fetch();
         List<String> purchaseRequestSeqs =
-            purchaseRequests.stream()
+            ListUtils.emptyIfNull(purchaseRequests).stream()
                 .filter(pr -> pr.getSupplierUser() == null)
                 .map(PurchaseRequest::getPurchaseRequestSeq)
                 .collect(Collectors.toList());

@@ -66,6 +66,10 @@ public class WkfRequestListener {
   private void processUpdated(BeforeTransactionComplete event, String tenantId)
       throws AxelorException {
 
+    if (event.getUpdated() == null) {
+      return;
+    }
+
     Set<? extends Model> updated = new HashSet<Model>(event.getUpdated());
 
     for (Model model : updated) {
@@ -163,6 +167,10 @@ public class WkfRequestListener {
 
   @Transactional
   public void processDeleted(BeforeTransactionComplete event, String tenantId) {
+
+    if (event.getDeleted() == null) {
+      return;
+    }
 
     Set<? extends Model> deleted = new HashSet<Model>(event.getDeleted());
 

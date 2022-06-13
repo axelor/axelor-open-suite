@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -117,9 +118,11 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       List<InvoicePayment> invoicePaymentList =
           invoicePaymentRepo.findByBankOrder(bankOrderToRemove).fetch();
 
-      for (InvoicePayment invoicePayment : invoicePaymentList) {
+      if (ObjectUtils.notEmpty(invoicePaymentList)) {
+        for (InvoicePayment invoicePayment : invoicePaymentList) {
 
-        invoicePayment.setBankOrder(bankOrder);
+          invoicePayment.setBankOrder(bankOrder);
+        }
       }
 
       bankOrderRepo.remove(bankOrderToRemove);
@@ -232,7 +235,11 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
 
     int counter = 1;
 
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+    List<BankOrderLine> bankOrderLineList = bankOrder.getBankOrderLineList();
+    if (bankOrderLineList == null) {
+      bankOrderLineList = new ArrayList<>();
+    }
+    for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
       List<Object> keys = new ArrayList<Object>();
       keys.add(bankOrderLine.getPartner());
@@ -265,7 +272,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       }
     }
 
-    bankOrder.getBankOrderLineList().clear();
+    bankOrderLineList.clear();
 
     for (BankOrderLine bankOrderLine : bankOrderLineMap.values()) {
 
@@ -282,40 +289,43 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     String lastReferenceId = "";
     LocalDate lastReferenceDate = null;
 
-    for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
-      LocalDate originDate = null;
-      String originReferenceId = null;
+    List<BankOrderLineOrigin> bankOrderLineOriginList = bankOrderLine.getBankOrderLineOriginList();
+    if (ObjectUtils.notEmpty(bankOrderLineOriginList)) {
+      for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLineOriginList) {
+        LocalDate originDate = null;
+        String originReferenceId = null;
 
-      switch (bankOrderLineOrigin.getRelatedToSelect()) {
-        case BankOrderLineOriginRepository.RELATED_TO_INVOICE:
-          Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
-          if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
-            originReferenceId = invoice.getSupplierInvoiceNb();
-          } else {
-            originReferenceId = invoice.getInvoiceId();
-          }
-          if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
-            originDate = invoice.getOriginDate();
-          } else {
-            originDate = invoice.getInvoiceDate();
-          }
-          break;
+        switch (bankOrderLineOrigin.getRelatedToSelect()) {
+          case BankOrderLineOriginRepository.RELATED_TO_INVOICE:
+            Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+            if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
+              originReferenceId = invoice.getSupplierInvoiceNb();
+            } else {
+              originReferenceId = invoice.getInvoiceId();
+            }
+            if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
+              originDate = invoice.getOriginDate();
+            } else {
+              originDate = invoice.getInvoiceDate();
+            }
+            break;
 
-        case BankOrderLineOriginRepository.RELATED_TO_PAYMENT_SCHEDULE_LINE:
-          PaymentScheduleLine paymentScheduleLine =
-              paymentScheduleLineRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
-          originReferenceId = paymentScheduleLine.getName();
-          originDate = paymentScheduleLine.getScheduleDate();
-          break;
+          case BankOrderLineOriginRepository.RELATED_TO_PAYMENT_SCHEDULE_LINE:
+            PaymentScheduleLine paymentScheduleLine =
+                paymentScheduleLineRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+            originReferenceId = paymentScheduleLine.getName();
+            originDate = paymentScheduleLine.getScheduleDate();
+            break;
 
-        default:
-          break;
-      }
+          default:
+            break;
+        }
 
-      if (originDate != null
-          && (lastReferenceDate == null || lastReferenceDate.isBefore(originDate))) {
-        lastReferenceDate = originDate;
-        lastReferenceId = originReferenceId;
+        if (originDate != null
+            && (lastReferenceDate == null || lastReferenceDate.isBefore(originDate))) {
+          lastReferenceDate = originDate;
+          lastReferenceId = originReferenceId;
+        }
       }
     }
 

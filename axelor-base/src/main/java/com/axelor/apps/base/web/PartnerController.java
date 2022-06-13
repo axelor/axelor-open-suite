@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -217,7 +218,7 @@ public class PartnerController {
     Company company = Beans.get(UserService.class).getUser().getActiveCompany();
     if (company == null) {
       List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
-      if (companyList.size() == 1) {
+      if (ListUtils.size(companyList) == 1) {
         company = companyList.get(0);
       }
     }

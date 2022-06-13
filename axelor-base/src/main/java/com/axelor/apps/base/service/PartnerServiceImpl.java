@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.tool.ComputeNameTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -60,6 +61,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -338,12 +340,12 @@ public class PartnerServiceImpl implements PartnerService {
   public List<Long> findPartnerMails(Partner partner) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(partner)));
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
+        idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(contact)));
       }
     }
     return idList;
@@ -353,7 +355,7 @@ public class PartnerServiceImpl implements PartnerService {
   public List<Long> findContactMails(Partner partner) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(partner)));
 
     return idList;
   }
@@ -450,19 +452,19 @@ public class PartnerServiceImpl implements PartnerService {
 
       List<PartnerAddress> partnerAddressList =
           partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
-      if (partnerAddressList.isEmpty()) {
+      if (CollectionUtils.isEmpty(partnerAddressList)) {
         partnerAddressList = partnerAddressRepo.all().filter(queryComman, partner.getId()).fetch();
 
-        if (partnerAddressList.isEmpty()) {
+        if (CollectionUtils.isEmpty(partnerAddressList)) {
           partnerAddressList =
               partnerAddressRepo.all().filter("self.partner.id = ?1", partner.getId()).fetch();
         }
       }
 
-      if (partnerAddressList.size() == 1) {
+      if (ListUtils.size(partnerAddressList) == 1) {
         return partnerAddressList.get(0).getAddress();
       }
-      for (PartnerAddress partnerAddress : partnerAddressList) {
+      for (PartnerAddress partnerAddress : ListUtils.emptyIfNull(partnerAddressList)) {
         if (partnerAddress.getIsDefaultAddr()) {
           return partnerAddress.getAddress();
         }
@@ -508,7 +510,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
 
-    for (BankDetails bankDetails : partner.getBankDetailsList()) {
+    for (BankDetails bankDetails : ListUtils.emptyIfNull(partner.getBankDetailsList())) {
       if (bankDetails.getIsDefault()) {
         return bankDetails;
       }

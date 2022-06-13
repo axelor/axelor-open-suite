@@ -30,6 +30,7 @@ import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -322,7 +323,8 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
     workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
     workCenterGroupCopy.setTemplate(false);
-    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
+    SetUtils.emptyIfNull(workCenterGroup.getWorkCenterSet())
+        .forEach((workCenterGroupCopy::addWorkCenterSetItem));
 
     confProdProcessLine.setWorkCenterGroup(workCenterGroupCopy);
     return Beans.get(ConfiguratorProdProcessLineRepository.class).save(confProdProcessLine);

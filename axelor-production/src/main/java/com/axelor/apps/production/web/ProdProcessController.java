@@ -33,6 +33,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ProdProcessController {
@@ -108,7 +109,7 @@ public class ProdProcessController {
             .fetch();
     String message;
 
-    if (!prodProcessSet.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(prodProcessSet)) {
 
       String existingVersions = "";
       for (ProdProcess prodProcessVersion : prodProcessSet) {

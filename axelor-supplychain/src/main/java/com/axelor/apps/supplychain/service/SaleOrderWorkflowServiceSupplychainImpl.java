@@ -43,6 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,7 +204,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
                 saleOrder.getId(),
                 "com.axelor.apps.sale.db.SaleOrder")
             .fetch();
-    if (!stockMoves.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoves)) {
       for (StockMove stockMove : stockMoves) {
         Integer statusSelect = stockMove.getStatusSelect();
         if (statusSelect == StockMoveRepository.STATUS_DRAFT

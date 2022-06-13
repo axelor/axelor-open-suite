@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionProductStockLocationServiceImpl extends ProductStockLocationServiceImpl {
 
@@ -126,7 +127,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumBuildingQty = BigDecimal.ZERO;
-    if (!stockMoveLineList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
 
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -162,7 +163,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;
-    if (!stockMoveLineList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal productConsumeManufOrderQty = stockMoveLine.getRealQty();
@@ -197,7 +198,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumMissingManufOrderQty = BigDecimal.ZERO;
-    if (!stockMoveLineList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal productMissingManufOrderQty = getMissingQtyOfStockMoveLine(stockMoveLine);

@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.mobile;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -56,7 +57,7 @@ public class BusinessProjectMobileController {
       if (user != null) {
         List<Project> projectList =
             Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
-        for (Project project : projectList) {
+        for (Project project : ListUtils.emptyIfNull(projectList)) {
           if ((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
               || user.equals(project.getAssignedTo())) {
             Map<String, String> map = new HashMap<String, String>();

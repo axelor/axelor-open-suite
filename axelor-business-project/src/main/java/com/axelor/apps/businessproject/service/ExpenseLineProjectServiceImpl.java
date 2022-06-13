@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ExpenseLineProjectServiceImpl implements ExpenseLineProjectService 
       List<ExpenseLine> expenseLineList =
           expenseLineRepo.all().filter("self.id in ?1", expenseLineIds).fetch();
 
-      for (ExpenseLine line : expenseLineList) {
+      for (ExpenseLine line : ListUtils.emptyIfNull(expenseLineList)) {
         line.setProject(project);
         expenseLineRepo.save(line);
       }

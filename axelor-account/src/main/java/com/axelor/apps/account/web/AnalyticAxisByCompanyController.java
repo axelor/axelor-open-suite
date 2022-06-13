@@ -46,7 +46,10 @@ public class AnalyticAxisByCompanyController {
     try {
       AccountConfig accountConfig = request.getContext().getParent().asType(AccountConfig.class);
       if (accountConfig != null) {
-        Integer axisListSize = accountConfig.getAnalyticAxisByCompanyList().size();
+        Integer axisListSize =
+            accountConfig.getAnalyticAxisByCompanyList() == null
+                ? 0
+                : accountConfig.getAnalyticAxisByCompanyList().size();
 
         if (axisListSize < accountConfig.getNbrOfAnalyticAxisSelect()) {
           response.setValue("orderSelect", axisListSize + 1);

@@ -28,6 +28,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -99,7 +100,7 @@ public class OperationOrderController {
                 .order("priority")
                 .order("plannedEndDateT")
                 .fetch();
-        for (OperationOrder operationOrderIt : operationOrderList) {
+        for (OperationOrder operationOrderIt : ListUtils.emptyIfNull(operationOrderList)) {
           operationOrderWorkflowService.replan(operationOrderIt);
         }
         response.setReload(true);

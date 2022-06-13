@@ -84,10 +84,12 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
         authorizedBankDetails = new ArrayList<>();
 
-        for (AccountManagement accountManagement : accountManagementList) {
-          if (accountManagement.getCompany() != null
-              && accountManagement.getCompany().equals(company)) {
-            authorizedBankDetails.add(accountManagement.getBankDetails());
+        if (accountManagementList != null) {
+          for (AccountManagement accountManagement : accountManagementList) {
+            if (accountManagement.getCompany() != null
+                && accountManagement.getCompany().equals(company)) {
+              authorizedBankDetails.add(accountManagement.getBankDetails());
+            }
           }
         }
       }
@@ -107,6 +109,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+    if (bankDetailsList == null) {
+      return new ArrayList<>();
+    }
     return bankDetailsList.stream()
         .filter(bankDetails -> bankDetails.getActive())
         .collect(Collectors.toList());
@@ -176,6 +181,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       return null;
     }
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+    if (bankDetailsList == null) {
+      return null;
+    }
     return bankDetailsList.stream()
         .filter(bankDetails -> bankDetails.getIsDefault())
         .findFirst()

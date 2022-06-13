@@ -109,9 +109,13 @@ public class SubrogationReleaseController {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
 
       List<Long> moveLineIdList = new ArrayList<Long>();
-      for (Move move : subrogationRelease.getMoveList()) {
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLineIdList.add(moveLine.getId());
+      if (subrogationRelease.getMoveList() != null) {
+        for (Move move : subrogationRelease.getMoveList()) {
+          if (move.getMoveLineList() != null) {
+            for (MoveLine moveLine : move.getMoveLineList()) {
+              moveLineIdList.add(moveLine.getId());
+            }
+          }
         }
       }
       response.setView(

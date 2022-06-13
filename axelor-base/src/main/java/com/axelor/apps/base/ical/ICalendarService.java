@@ -29,6 +29,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -638,7 +639,7 @@ public class ICalendarService {
           && calendar.getPassword() != null
           && store.connect(calendar.getLogin(), password)) {
         List<CalDavCalendarCollection> colList = store.getCollections();
-        if (!colList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(colList)) {
           calendar = doSync(calendar, colList.get(0), startDate, endDate);
           calendar.setLastSynchronizationDateT(
               Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
@@ -770,7 +771,7 @@ public class ICalendarService {
           .bind("end", endDate);
     }
 
-    for (ICalendarEvent event : queryBuilder.build().fetch()) {
+    for (ICalendarEvent event : ListUtils.emptyIfNull(queryBuilder.build().fetch())) {
       if (ICalendarRepository.ICAL_ONLY.equals(calendar.getSynchronizationSelect())) {
         iEventRepo.remove(event);
       } else {
@@ -914,7 +915,7 @@ public class ICalendarService {
     try {
       if (store.connect(calendar.getLogin(), calendar.getPassword())) {
         List<CalDavCalendarCollection> colList = store.getCollections();
-        if (!colList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(colList)) {
           CalDavCalendarCollection collection = colList.get(0);
           cal = collection.getCalendar(uid);
         }
@@ -943,7 +944,7 @@ public class ICalendarService {
         if (store.connect(
             calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))) {
           List<CalDavCalendarCollection> colList = store.getCollections();
-          if (!colList.isEmpty()) {
+          if (CollectionUtils.isNotEmpty(colList)) {
             CalDavCalendarCollection collection = colList.get(0);
             final Map<String, VEvent> remoteEvents = new HashMap<>();
 
@@ -970,7 +971,7 @@ public class ICalendarService {
   @Transactional
   public void removeOldEvents(List<ICalendarEvent> oldEvents) {
 
-    for (ICalendarEvent event : oldEvents) {
+    for (ICalendarEvent event : ListUtils.emptyIfNull(oldEvents)) {
       iEventRepo.remove(event);
     }
   }

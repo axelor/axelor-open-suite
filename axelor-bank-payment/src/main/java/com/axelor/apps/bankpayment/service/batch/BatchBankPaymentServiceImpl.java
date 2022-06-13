@@ -49,6 +49,8 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -154,7 +156,9 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     List<PaymentScheduleLine> paymentScheduleLineList;
     int offset = 0;
 
-    while (!(paymentScheduleLineList = fetchPaymentScheduleLineDoneList(batch, offset)).isEmpty()) {
+    while (!(paymentScheduleLineList =
+            ListUtils.emptyIfNull(fetchPaymentScheduleLineDoneList(batch, offset)))
+        .isEmpty()) {
       createBankOrders(batch, paymentScheduleLineList);
       offset += paymentScheduleLineList.size();
       JPA.clear();
@@ -163,7 +167,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
     List<BankOrder> bankOrderList;
 
-    while ((bankOrderList = fetchLimitedBankOrderList(batch)).size() > 1) {
+    while ((bankOrderList = ListUtils.emptyIfNull(fetchLimitedBankOrderList(batch))).size() > 1) {
       bankOrderMergeService.mergeBankOrders(bankOrderList);
       JPA.clear();
       batch = batchRepo.find(batch.getId());
@@ -190,7 +194,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
       MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
 
-      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+      for (Invoice invoice : SetUtils.emptyIfNull(paymentSchedule.getInvoiceSet())) {
         MoveLine debitMoveLine = moveLineToolService.getDebitCustomerMoveLine(invoice);
         Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
 
@@ -207,7 +211,8 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected void createBankOrders(Batch batch, Reconcile reconcile)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
+    for (InvoicePayment invoicePayment :
+        ListUtils.emptyIfNull(invoicePaymentRepo.findByReconcile(reconcile).fetch())) {
       if (invoicePayment.getBankOrder() != null) {
         continue;
       }
@@ -268,7 +273,8 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     int offset = 0;
 
     try {
-      while (!(paymentScheduleLineList = fetchPaymentScheduleLineDoneList(batch, offset))
+      while (!(paymentScheduleLineList =
+              ListUtils.emptyIfNull(fetchPaymentScheduleLineDoneList(batch, offset)))
           .isEmpty()) {
         bankOrder = bankOrderRepo.find(bankOrder.getId());
 

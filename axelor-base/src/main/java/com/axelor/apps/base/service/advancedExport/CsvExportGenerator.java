@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -58,7 +59,8 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
   @Override
   public void generateHeader() {
     int index = 0;
-    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+    for (AdvancedExportLine advancedExportLine :
+        ListUtils.emptyIfNull(advancedExport.getAdvancedExportLineList())) {
       totalCols[index++] = I18n.get(advancedExportLine.getTitle());
     }
     csvWriter.writeNext(totalCols);

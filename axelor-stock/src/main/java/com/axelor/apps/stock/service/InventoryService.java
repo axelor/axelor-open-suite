@@ -40,6 +40,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -195,7 +196,10 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public Path importFile(Inventory inventory) throws AxelorException {
 
-    List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
+    List<InventoryLine> inventoryLineList =
+        inventory.getInventoryLineList() == null
+            ? new ArrayList<>()
+            : inventory.getInventoryLineList();
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
     List<String[]> data = this.getDatas(filePath);
 
@@ -328,19 +332,21 @@ public class InventoryService {
   public HashMap<String, InventoryLine> getInventoryLines(Inventory inventory) {
     HashMap<String, InventoryLine> inventoryLineMap = new HashMap<>();
 
-    for (InventoryLine line : inventory.getInventoryLineList()) {
-      StringBuilder key = new StringBuilder();
-      if (line.getProduct() != null) {
-        key.append(line.getProduct().getCode());
-      }
-      if (line.getTrackingNumber() != null) {
-        key.append(line.getTrackingNumber().getTrackingNumberSeq());
-      }
-      if (line.getStockLocation() != null) {
-        key.append(line.getStockLocation().getName());
-      }
+    if (CollectionUtils.isNotEmpty(inventory.getInventoryLineList())) {
+      for (InventoryLine line : inventory.getInventoryLineList()) {
+        StringBuilder key = new StringBuilder();
+        if (line.getProduct() != null) {
+          key.append(line.getProduct().getCode());
+        }
+        if (line.getTrackingNumber() != null) {
+          key.append(line.getTrackingNumber().getTrackingNumberSeq());
+        }
+        if (line.getStockLocation() != null) {
+          key.append(line.getStockLocation().getName());
+        }
 
-      inventoryLineMap.put(key.toString(), line);
+        inventoryLineMap.put(key.toString(), line);
+      }
     }
 
     return inventoryLineMap;
@@ -454,8 +460,10 @@ public class InventoryService {
             .bind("originId", inventory.getId())
             .fetch();
 
-    for (StockMove stockMove : stockMoveList) {
-      stockMoveService.cancel(stockMove);
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
+        stockMoveService.cancel(stockMove);
+      }
     }
 
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
@@ -529,7 +537,7 @@ public class InventoryService {
       throws AxelorException {
     Set<StockLocation> stockLocationSet = new HashSet<>();
 
-    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+    for (InventoryLine inventoryLine : ListUtils.emptyIfNull(inventory.getInventoryLineList())) {
       if (inventoryLine.getStockLocation() != null) {
         stockLocationSet.add(inventoryLine.getStockLocation());
       }
@@ -814,7 +822,7 @@ public class InventoryService {
 
     List<String[]> list = new ArrayList<>();
 
-    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+    for (InventoryLine inventoryLine : ListUtils.emptyIfNull(inventory.getInventoryLineList())) {
       String[] item = new String[10];
       String realQty = "";
 

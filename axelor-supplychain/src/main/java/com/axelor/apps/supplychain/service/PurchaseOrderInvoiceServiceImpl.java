@@ -66,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,8 +161,10 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
+      }
     }
     return invoiceLineList;
   }
@@ -347,20 +350,22 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      BigDecimal realQty =
-          purchaseOrderLine
-              .getQty()
-              .multiply(percentSum)
-              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-      qtyToInvoiceMap.put(purchaseOrderLine.getId(), realQty);
+    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        BigDecimal realQty =
+            purchaseOrderLine
+                .getQty()
+                .multiply(percentSum)
+                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        qtyToInvoiceMap.put(purchaseOrderLine.getId(), realQty);
 
-      if (qtyToInvoiceMap.get(purchaseOrderLine.getId()).compareTo(purchaseOrderLine.getQty())
-          > 0) {
-        throw new AxelorException(
-            purchaseOrderLine,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.PO_INVOICE_QTY_MAX));
+        if (qtyToInvoiceMap.get(purchaseOrderLine.getId()).compareTo(purchaseOrderLine.getQty())
+            > 0) {
+          throw new AxelorException(
+              purchaseOrderLine,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.PO_INVOICE_QTY_MAX));
+        }
       }
     }
     return this.generateInvoice(
@@ -406,14 +411,16 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      if (qtyToInvoiceMap.containsKey(purchaseOrderLine.getId())) {
-        List<InvoiceLine> invoiceLines =
-            this.createInvoiceLine(
-                invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
-        invoiceLineList.addAll(invoiceLines);
-        purchaseOrderLine.setInvoiced(true);
+        if (qtyToInvoiceMap.containsKey(purchaseOrderLine.getId())) {
+          List<InvoiceLine> invoiceLines =
+              this.createInvoiceLine(
+                  invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
+          invoiceLineList.addAll(invoiceLines);
+          purchaseOrderLine.setInvoiced(true);
+        }
       }
     }
 

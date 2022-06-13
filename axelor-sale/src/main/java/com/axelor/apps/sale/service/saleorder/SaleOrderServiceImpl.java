@@ -37,6 +37,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
@@ -220,6 +221,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     SaleOrderLine soLine;
+    if (soLines == null) {
+      soLines = new ArrayList<>();
+    }
     for (PackLine packLine : packLineList) {
       if (packLine.getTypeSelect() != PackLineRepository.TYPE_NORMAL
           && Boolean.TRUE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
@@ -363,7 +367,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     BigDecimal oldQty = BigDecimal.ZERO;
     this.sortSaleOrderLineList(saleOrder);
 
-    for (SaleOrderLine SOLine : saleOrderLineList) {
+    for (SaleOrderLine SOLine : ListUtils.emptyIfNull(saleOrderLineList)) {
 
       if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK && !isStartOfPack) {
         newQty = SOLine.getQty();
@@ -396,7 +400,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     copySaleOrder.clearSaleOrderLineList();
     Beans.get(SaleOrderRepository.class).save(copySaleOrder);
 
-    for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
+    for (LinkedHashMap<String, Object> soLine : ListUtils.emptyIfNull(saleOrderLines)) {
       if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
         continue;
       }

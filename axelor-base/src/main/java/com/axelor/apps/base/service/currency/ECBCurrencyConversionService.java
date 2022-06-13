@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -77,7 +78,8 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
 
     Map<Long, Set<Long>> currencyMap = new HashMap<Long, Set<Long>>();
 
-    for (CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()) {
+    for (CurrencyConversionLine ccl :
+        ListUtils.emptyIfNull(appBase.getCurrencyConversionLineList())) {
       if (currencyMap.containsKey(ccl.getEndCurrency().getId())) {
         currencyMap.get(ccl.getEndCurrency().getId()).add(ccl.getStartCurrency().getId());
 

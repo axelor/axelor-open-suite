@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimetableServiceImpl implements TimetableService {
 
@@ -102,14 +103,16 @@ public class TimetableServiceImpl implements TimetableService {
       TimetableTemplate template, BigDecimal exTaxTotal, LocalDate computationDate) {
     List<Timetable> timetables = new ArrayList<>();
 
-    for (TimetableTemplateLine templateLine : template.getTimetableTemplateLineList()) {
-      Timetable timetable = new Timetable();
-      timetable.setEstimatedDate(
-          InvoiceToolService.getDueDate(templateLine.getPaymentCondition(), computationDate));
-      timetable.setPercentage(templateLine.getPercentage());
-      timetable.setAmount(
-          exTaxTotal.multiply(templateLine.getPercentage()).divide(BigDecimal.valueOf(100)));
-      timetables.add(timetable);
+    if (CollectionUtils.isNotEmpty(template.getTimetableTemplateLineList())) {
+      for (TimetableTemplateLine templateLine : template.getTimetableTemplateLineList()) {
+        Timetable timetable = new Timetable();
+        timetable.setEstimatedDate(
+            InvoiceToolService.getDueDate(templateLine.getPaymentCondition(), computationDate));
+        timetable.setPercentage(templateLine.getPercentage());
+        timetable.setAmount(
+            exTaxTotal.multiply(templateLine.getPercentage()).divide(BigDecimal.valueOf(100)));
+        timetables.add(timetable);
+      }
     }
 
     timetables.sort(Comparator.comparing(Timetable::getEstimatedDate));

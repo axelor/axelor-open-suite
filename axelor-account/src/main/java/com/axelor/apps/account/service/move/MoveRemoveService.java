@@ -92,26 +92,34 @@ public class MoveRemoveService {
   }
 
   protected void cleanMoveToArchived(Move move) throws Exception {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-        reconcileService.unreconcile(reconcile);
-      }
-      for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-        reconcileService.unreconcile(reconcile);
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getDebitReconcileList() != null) {
+          for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+            reconcileService.unreconcile(reconcile);
+          }
+        }
+        if (moveLine.getCreditReconcileList() != null) {
+          for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+            reconcileService.unreconcile(reconcile);
+          }
+        }
       }
     }
   }
 
   protected void updateSystem(Move move) throws Exception {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getPartner() != null) {
-        accountCustomerService.updateAccountingSituationCustomerAccount(
-            accountingSituationService.getAccountingSituation(
-                moveLine.getPartner(), move.getCompany()),
-            true,
-            true,
-            true);
-        accountingSituationService.updateCustomerCredit(moveLine.getPartner());
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getPartner() != null) {
+          accountCustomerService.updateAccountingSituationCustomerAccount(
+              accountingSituationService.getAccountingSituation(
+                  moveLine.getPartner(), move.getCompany()),
+              true,
+              true,
+              true);
+          accountingSituationService.updateCustomerCredit(moveLine.getPartner());
+        }
       }
     }
   }
@@ -139,9 +147,11 @@ public class MoveRemoveService {
               moveModelError);
     }
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
 
-      errorMessage += checkDaybookMoveLine(moveLine);
+        errorMessage += checkDaybookMoveLine(moveLine);
+      }
     }
     if (errorMessage != null && !errorMessage.isEmpty()) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
@@ -168,8 +178,10 @@ public class MoveRemoveService {
   @Transactional(rollbackOn = {Exception.class})
   public Move archiveMove(Move move) {
     move.setArchived(true);
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setArchived(true);
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setArchived(true);
+      }
     }
     return move;
   }

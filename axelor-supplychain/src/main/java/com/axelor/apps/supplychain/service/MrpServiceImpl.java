@@ -61,6 +61,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -89,6 +90,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -349,16 +351,18 @@ public class MrpServiceImpl implements MrpService {
             .order("id")
             .fetch();
 
-    for (MrpLine mrpLine : mrpLineList) {
+    if (CollectionUtils.isNotEmpty(mrpLineList)) {
+      for (MrpLine mrpLine : mrpLineList) {
 
-      doASecondPass =
-          this.checkInsufficientCumulativeQty(
-              mrpLineRepository.find(mrpLine.getId()),
-              productRepository.find(product.getId()),
-              counter == 0);
-      JPA.clear();
-      if (doASecondPass) {
-        break;
+        doASecondPass =
+            this.checkInsufficientCumulativeQty(
+                mrpLineRepository.find(mrpLine.getId()),
+                productRepository.find(product.getId()),
+                counter == 0);
+        JPA.clear();
+        if (doASecondPass) {
+          break;
+        }
       }
     }
 
@@ -558,7 +562,8 @@ public class MrpServiceImpl implements MrpService {
 
     if (supplierPartner != null && appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
 
-      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+      for (SupplierCatalog supplierCatalog :
+          ListUtils.emptyIfNull(product.getSupplierCatalogList())) {
 
         if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
           return supplierCatalog.getMinQty();
@@ -607,6 +612,10 @@ public class MrpServiceImpl implements MrpService {
             .order("mrpLineType.sequence")
             .order("id")
             .fetch();
+
+    if (CollectionUtils.isEmpty(mrpLineList)) {
+      return;
+    }
 
     Map<List<Object>, MrpLine> map = Maps.newHashMap();
     MrpLine consolidateMrpLine = null;
@@ -667,6 +676,10 @@ public class MrpServiceImpl implements MrpService {
             .order("id")
             .fetch();
 
+    if (CollectionUtils.isEmpty(mrpLineList)) {
+      return;
+    }
+
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
 
     for (MrpLine mrpLine : mrpLineList) {
@@ -710,13 +723,15 @@ public class MrpServiceImpl implements MrpService {
                 statusList)
             .fetch();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      this.createPurchaseMrpLines(
-          mrpRepository.find(mrp.getId()),
-          purchaseOrderLineRepository.find(purchaseOrderLine.getId()),
-          mrpLineTypeRepository.find(purchaseOrderMrpLineType.getId()));
-      JPA.clear();
+        this.createPurchaseMrpLines(
+            mrpRepository.find(mrp.getId()),
+            purchaseOrderLineRepository.find(purchaseOrderLine.getId()),
+            mrpLineTypeRepository.find(purchaseOrderMrpLineType.getId()));
+        JPA.clear();
+      }
     }
   }
 
@@ -782,8 +797,9 @@ public class MrpServiceImpl implements MrpService {
     List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
 
     mrp = mrpRepository.find(mrp.getId());
+    // If the MRP's list of sale order lines is empty, treat the lines concerned by the mrpLineTypes
 
-    if (mrp.getSaleOrderLineSet().isEmpty()) {
+    if (CollectionUtils.isEmpty(mrp.getSaleOrderLineSet())) {
 
       String filter =
           "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
@@ -894,7 +910,7 @@ public class MrpServiceImpl implements MrpService {
 
     mrp = mrpRepository.find(mrp.getId());
 
-    if (mrp.getMrpForecastSet().isEmpty()) {
+    if (CollectionUtils.isEmpty(mrp.getMrpForecastSet())) {
 
       mrpForecastList.addAll(
           mrpForecastRepository
@@ -1247,6 +1263,10 @@ public class MrpServiceImpl implements MrpService {
             .filter("self.mrp.id = ?1 AND self.proposalToProcess = true", mrp.getId())
             .order("maturityDate")
             .fetch();
+
+    if (CollectionUtils.isEmpty(mrpLineList)) {
+      return;
+    }
 
     for (MrpLine mrpLine : mrpLineList) {
 

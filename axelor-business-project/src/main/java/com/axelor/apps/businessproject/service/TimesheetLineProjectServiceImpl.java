@@ -43,6 +43,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
@@ -201,8 +202,8 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     int offset = 0;
     List<TimesheetLine> timesheetLineList;
 
-    while (!(timesheetLineList = timesheetLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-        .isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        (timesheetLineList = timesheetLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)))) {
       offset += timesheetLineList.size();
       for (TimesheetLine timesheetLine : timesheetLineList) {
         updateTimesheetLines(timesheetLine);

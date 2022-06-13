@@ -28,6 +28,7 @@ import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
@@ -235,7 +236,8 @@ public class TicketServiceImpl implements TicketService {
 
     } else if (!ids.isEmpty()) {
 
-      for (Ticket ticket : ticketRepo.all().filter("id in ?1", ids).fetch()) {
+      for (Ticket ticket :
+          ListUtils.emptyIfNull(ticketRepo.all().filter("id in ?1", ids).fetch())) {
         ticket.setAssignedToUser(AuthUtils.getUser());
         ticketRepo.save(ticket);
       }

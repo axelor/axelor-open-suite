@@ -82,11 +82,13 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
             .all()
             .filter("self.bankOrder.id = ?", bankOrder.getId())
             .fetch();
-    for (Expense expense : expenseList) {
-      if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expenseService.createMoveForExpensePayment(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
+          expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+          expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+          expenseService.createMoveForExpensePayment(expense);
+        }
       }
     }
   }
@@ -103,10 +105,12 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
             .all()
             .filter("self.bankOrder.id = ?", bankOrder.getId())
             .fetch();
-    for (Expense expense : expenseList) {
-      if (expense != null
-          && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        expenseService.cancelPayment(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        if (expense != null
+            && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+          expenseService.cancelPayment(expense);
+        }
       }
     }
   }

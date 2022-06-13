@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -89,7 +90,7 @@ public abstract class AbstractTimerService implements TimerService {
   @Transactional
   public void cancel(Timer timer) {
     List<TimerHistory> histories = timerHistoryRepository.findByTimer(timer).fetch();
-    histories.forEach(timerHistoryRepository::remove);
+    ListUtils.emptyIfNull(histories).forEach(timerHistoryRepository::remove);
     timer.setStatusSelect(TimerRepository.TIMER_STOPPED);
   }
 

@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -80,7 +81,8 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       projectIdSet = projectService.getContextProjectIds();
     }
 
-    for (MailMessage message : mailMessageList) {
+    for (MailMessage message : ListUtils.emptyIfNull(mailMessageList)) {
+
       LocalDateTime createdOn = message.getCreatedOn();
       String date = getActivityDate(createdOn);
 

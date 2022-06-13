@@ -271,7 +271,7 @@ public class PaymentServiceImpl implements PaymentService {
               moveLineNo2,
               invoiceName,
               null);
-      move.getMoveLineList().add(creditMoveLine);
+      move.addMoveLineListItem(creditMoveLine);
 
       // Utiliser uniquement dans le cas du paiemnt des échéances lors d'une saisie paiement
       if (payVoucherElementToPay != null) {
@@ -320,7 +320,7 @@ public class PaymentServiceImpl implements PaymentService {
               null,
               null);
 
-      move.getMoveLineList().add(moveLine);
+      move.addMoveLineListItem(moveLine);
       moveLineNo2++;
       // Gestion du passage en 580
       reconcileService.balanceCredit(moveLine);
@@ -378,7 +378,7 @@ public class PaymentServiceImpl implements PaymentService {
                   moveLineNo2,
                   null,
                   null);
-          move.getMoveLineList().add(debitMoveLine);
+          move.addMoveLineListItem(debitMoveLine);
           moveLineNo2++;
 
           for (MoveLine creditMoveLine : creditMoveLines) {
@@ -435,7 +435,7 @@ public class PaymentServiceImpl implements PaymentService {
               null,
               null);
 
-      move.getMoveLineList().add(debitmoveLine);
+      move.addMoveLineListItem(debitmoveLine);
       moveLineNo2++;
     }
     log.debug("End useExcessPaymentWithAmount");

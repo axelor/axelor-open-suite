@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.validation.constraints.Digits;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchLeaveManagement extends BatchStrategy {
 
@@ -135,6 +136,10 @@ public class BatchLeaveManagement extends BatchStrategy {
   }
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
+
+    if (CollectionUtils.isEmpty(employeeList)) {
+      return;
+    }
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {

@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -136,7 +137,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
                     .all()
                     .filter("self.purchaseOrder.id = ?1", purchaseOrder.getId());
 
-        for (ManufOrder manufOrder : manufOrderList) {
+        for (ManufOrder manufOrder : ListUtils.emptyIfNull(manufOrderList)) {
           manufOrder.setPurchaseOrder(mergedPurchaseOrder);
           manufOrderRepository.save(manufOrder);
         }

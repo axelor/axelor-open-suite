@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.querie;
 import com.axelor.apps.base.db.Querie;
 import com.axelor.apps.base.db.repo.QuerieRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -86,7 +87,7 @@ public class QuerieService {
     javax.persistence.Query query = JPA.em().createNativeQuery(filter);
     List<BigInteger> queryResult = query.getResultList();
 
-    for (BigInteger bi : queryResult) {
+    for (BigInteger bi : ListUtils.emptyIfNull(queryResult)) {
       idLists.add(bi.longValue());
     }
 
@@ -99,7 +100,7 @@ public class QuerieService {
 
     List<Map> result =
         Query.of((Class<? extends Model>) klass).filter(filter).select("id").fetch(0, 0);
-    for (Map map : result) {
+    for (Map map : ListUtils.emptyIfNull(result)) {
       idLists.add(Long.valueOf(map.get("id").toString()));
     }
 

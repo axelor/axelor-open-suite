@@ -122,7 +122,7 @@ public class WkfNodeService {
             Beans.get(WkfCommonService.class)
                 .addProperties(WkfPropertyMapper.FIELD_MAP, config, activity);
     ExtensionElements extensionElements = activity.getExtensionElements();
-    if (extensionElements != null) {
+    if (extensionElements != null && extensionElements.getElements() != null) {
       for (ModelElementInstance modelElementInstance : extensionElements.getElements()) {
         metaAttrsList.addAll(
             metaAttrsService.createMetaAttrs(

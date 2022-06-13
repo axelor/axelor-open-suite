@@ -307,27 +307,29 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      Account account = invoiceLine.getAccount();
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        Account account = invoiceLine.getAccount();
 
-      if (invoiceLine.getAccount() == null
-          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_6),
-            invoiceLine.getProductName());
-      }
+        if (invoiceLine.getAccount() == null
+            && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
+          throw new AxelorException(
+              invoice,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.VENTILATE_STATE_6),
+              invoiceLine.getProductName());
+        }
 
-      if (account != null
-          && !account.getAnalyticDistributionAuthorized()
-          && (invoiceLine.getAnalyticDistributionTemplate() != null
-              || (invoiceLine.getAnalyticMoveLineList() != null
-                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+        if (account != null
+            && !account.getAnalyticDistributionAuthorized()
+            && (invoiceLine.getAnalyticDistributionTemplate() != null
+                || (invoiceLine.getAnalyticMoveLineList() != null
+                    && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+          throw new AxelorException(
+              invoice,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+        }
       }
     }
 
@@ -375,13 +377,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Move move = invoice.getMove();
 
     if (move != null) {
-      if (invoice.getUsherPassageOk()) {
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLine.setUsherPassageOk(true);
-        }
-      } else {
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLine.setUsherPassageOk(false);
+      List<MoveLine> moveLineList = move.getMoveLineList();
+      if (moveLineList != null) {
+        if (invoice.getUsherPassageOk()) {
+          for (MoveLine moveLine : moveLineList) {
+            moveLine.setUsherPassageOk(true);
+          }
+        } else {
+          for (MoveLine moveLine : moveLineList) {
+            moveLine.setUsherPassageOk(false);
+          }
         }
       }
 
@@ -666,10 +671,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
     for (Invoice invoice : invoiceList) {
       int countLine = 1;
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLine.setSequence(countLine * 10);
-        invoiceLines.add(invoiceLine);
-        countLine++;
+      if (invoice.getInvoiceLineList() != null) {
+        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+          invoiceLine.setSequence(countLine * 10);
+          invoiceLines.add(invoiceLine);
+          countLine++;
+        }
       }
     }
     return invoiceLines;
@@ -987,6 +994,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 || paymentModeTypeSelect == PaymentModeRepository.TYPE_DD))
         || (paymentModeInOutSelect == PaymentModeRepository.OUT
             && paymentModeTypeSelect == PaymentModeRepository.TYPE_TRANSFER)) {
+      if (partner.getBankDetailsList() == null) {
+        return false;
+      }
       return partner.getBankDetailsList().stream().anyMatch(bankDetails -> bankDetails.getActive());
     }
 
@@ -1034,20 +1044,22 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     validPfpValidatorUserList.add(pfpValidatorUser);
 
-    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+    if (substitutePfpValidatorList != null) {
+      for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
+        LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+        LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
 
-      if (substituteStartDate == null) {
-        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        }
-      } else {
-        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        } else if (substituteStartDate.isBefore(todayDate)
-            && substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        if (substituteStartDate == null) {
+          if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+            validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          }
+        } else {
+          if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+            validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          } else if (substituteStartDate.isBefore(todayDate)
+              && substituteEndDate.isAfter(todayDate)) {
+            validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          }
         }
       }
     }

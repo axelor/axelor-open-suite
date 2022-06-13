@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -99,6 +100,9 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
     if (CollectionUtils.isNotEmpty(skills)) {
 
       Employee employee = trainingRegister.getEmployee();
+      if (employee.getSkillSet() == null) {
+        employee.setSkillSet(new HashSet<>());
+      }
       employee.getSkillSet().addAll(skills);
 
       skills.forEach(
@@ -230,31 +234,33 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     List<Long> eventsIds = new ArrayList<>();
 
-    for (LinkedHashMap<String, Object> employeeMap : employeeList) {
+    if (CollectionUtils.isNotEmpty(employeeList)) {
+      for (LinkedHashMap<String, Object> employeeMap : employeeList) {
 
-      Employee employee =
-          Beans.get(EmployeeRepository.class)
-              .find(Long.parseLong(employeeMap.get("id").toString()));
+        Employee employee =
+            Beans.get(EmployeeRepository.class)
+                .find(Long.parseLong(employeeMap.get("id").toString()));
 
-      if (employee.getUser() == null) {
-        continue;
+        if (employee.getUser() == null) {
+          continue;
+        }
+
+        TrainingRegister trainingRegister = new TrainingRegister();
+        trainingRegister.setTraining(trainingSession.getTraining());
+        trainingRegister.setFromDate(trainingSession.getFromDate());
+        trainingRegister.setToDate(trainingSession.getToDate());
+        trainingRegister.setTrainingSession(trainingSession);
+        trainingRegister.setEmployee(employee);
+        trainingRegister.setRating(trainingSession.getOverallRatingToApply());
+
+        Event event = this.plan(trainingRegister);
+
+        trainingRegister.addEventListItem(event);
+
+        eventsIds.add(event.getId());
+
+        trainingSession.addTrainingRegisterListItem(trainingRegister);
       }
-
-      TrainingRegister trainingRegister = new TrainingRegister();
-      trainingRegister.setTraining(trainingSession.getTraining());
-      trainingRegister.setFromDate(trainingSession.getFromDate());
-      trainingRegister.setToDate(trainingSession.getToDate());
-      trainingRegister.setTrainingSession(trainingSession);
-      trainingRegister.setEmployee(employee);
-      trainingRegister.setRating(trainingSession.getOverallRatingToApply());
-
-      Event event = this.plan(trainingRegister);
-
-      trainingRegister.getEventList().add(event);
-
-      eventsIds.add(event.getId());
-
-      trainingSession.getTrainingRegisterList().add(trainingRegister);
     }
 
     trainingSessionRepo.save(trainingSession);

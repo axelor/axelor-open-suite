@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.tool.MetaTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -65,23 +66,24 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
         .filter(fullName -> fullName.contains("$"))
         .forEach(
             fullName -> {
-              formulas.forEach(
-                  formula -> {
-                    String[] nameFieldInfo = fullName.split("[\\$_]");
-                    String attrName = nameFieldInfo[0];
-                    String fieldName = nameFieldInfo[1];
-                    if (formula.getMetaJsonField() != null
-                        && attrName.equals(formula.getMetaField().getName())
-                        && fieldName.equals(formula.getMetaJsonField().getName())) {
-                      putFieldValueInMap(
-                          fieldName,
-                          jsonIndicators.get(fullName),
-                          attrName,
-                          formula.getMetaJsonField(),
-                          attrValueMap);
-                      keysToRemove.add(fullName);
-                    }
-                  });
+              ListUtils.emptyIfNull(formulas)
+                  .forEach(
+                      formula -> {
+                        String[] nameFieldInfo = fullName.split("[\\$_]");
+                        String attrName = nameFieldInfo[0];
+                        String fieldName = nameFieldInfo[1];
+                        if (formula.getMetaJsonField() != null
+                            && attrName.equals(formula.getMetaField().getName())
+                            && fieldName.equals(formula.getMetaJsonField().getName())) {
+                          putFieldValueInMap(
+                              fieldName,
+                              jsonIndicators.get(fullName),
+                              attrName,
+                              formula.getMetaJsonField(),
+                              attrValueMap);
+                          keysToRemove.add(fullName);
+                        }
+                      });
             });
 
     jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));

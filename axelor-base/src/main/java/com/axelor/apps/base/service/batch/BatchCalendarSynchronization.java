@@ -24,6 +24,7 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.google.inject.Inject;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchCalendarSynchronization extends AbstractBatch {
 
@@ -40,6 +41,10 @@ public class BatchCalendarSynchronization extends AbstractBatch {
             .filter("self.user.activeCompany = :company AND self.isValid = TRUE")
             .bind("company", company)
             .fetch();
+
+    if (CollectionUtils.isEmpty(calendars)) {
+      return;
+    }
 
     for (ICalendar calendar : calendars) {
       try {

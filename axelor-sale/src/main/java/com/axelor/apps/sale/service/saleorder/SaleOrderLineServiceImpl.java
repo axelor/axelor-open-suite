@@ -49,6 +49,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -794,6 +795,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     SaleOrderLine saleOrderLine;
     Set<Integer> packLineTypeSet = getPackLineTypes(pack.getComponents());
     int typeSelect = SaleOrderLineRepository.TYPE_START_OF_PACK;
+    if (saleOrderLineList == null) {
+      saleOrderLineList = new ArrayList<>();
+    }
     for (int i = 0; i < 2; i++) {
       if (packLineTypeSet == null || !packLineTypeSet.contains(typeSelect)) {
         saleOrderLine =
@@ -802,7 +806,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLineList.add(saleOrderLine);
       }
       if (typeSelect == SaleOrderLineRepository.TYPE_START_OF_PACK) {
-        sequence += pack.getComponents().size() + 1;
+        sequence += ListUtils.size(pack.getComponents()) + 1;
         typeSelect = SaleOrderLineRepository.TYPE_END_OF_PACK;
       }
     }

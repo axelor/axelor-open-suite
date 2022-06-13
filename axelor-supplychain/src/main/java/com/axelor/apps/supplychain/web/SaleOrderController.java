@@ -49,6 +49,7 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -75,6 +76,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderController {
@@ -190,7 +192,8 @@ public class SaleOrderController {
 
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
-          for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          for (SaleOrderLine saleOrderLine :
+              ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
             if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
@@ -267,12 +270,14 @@ public class SaleOrderController {
         && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
       values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
 
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.isSelected()) {
-          if (saleOrderLine.getProduct() != null) {
-            noProduct = false;
+      if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          if (saleOrderLine.isSelected()) {
+            if (saleOrderLine.getProduct() != null) {
+              noProduct = false;
+            }
+            saleOrderLineIdSelected.add(saleOrderLine.getId());
           }
-          saleOrderLineIdSelected.add(saleOrderLine.getId());
         }
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
@@ -749,10 +754,12 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
-        saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
-        saleOrderLineList.add(saleOrderLineMap);
+      if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+          saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+          saleOrderLineList.add(saleOrderLineMap);
+        }
       }
       response.setValue("amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);

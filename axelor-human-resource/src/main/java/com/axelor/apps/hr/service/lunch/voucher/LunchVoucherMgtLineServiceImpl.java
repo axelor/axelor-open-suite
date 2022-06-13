@@ -27,6 +27,7 @@ import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -87,8 +88,10 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
                 employee.getId())
             .fetch();
 
-    for (LunchVoucherAdvance item : list) {
-      number += item.getNbrLunchVouchers() - item.getNbrLunchVouchersUsed();
+    if (ObjectUtils.notEmpty(list)) {
+      for (LunchVoucherAdvance item : list) {
+        number += item.getNbrLunchVouchers() - item.getNbrLunchVouchersUsed();
+      }
     }
 
     return number;

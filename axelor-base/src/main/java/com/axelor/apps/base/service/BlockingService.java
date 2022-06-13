@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.inject.Beans;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -40,7 +41,7 @@ public class BlockingService {
 
     if (blockings != null && !blockings.isEmpty()) {
       for (Blocking blocking : blockings) {
-        if (blocking.getCompanySet().contains(company)
+        if (SetUtils.emptyIfNull(blocking.getCompanySet()).contains(company)
             && blocking.getBlockingSelect().equals(blockingType)
             && blocking
                     .getBlockingToDate()

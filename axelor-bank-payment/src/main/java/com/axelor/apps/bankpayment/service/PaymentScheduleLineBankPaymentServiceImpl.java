@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -187,8 +188,12 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     moveValidateService.validate(rejectionMove);
 
     List<MoveLine> moveLineList = new ArrayList<>();
-    moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());
-    moveLineList.addAll(rejectionMove.getMoveLineList());
+    if (advanceOrPaymentMove.getMoveLineList() != null) {
+      moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());
+    }
+    if (rejectionMove.getMoveLineList() != null) {
+      moveLineList.addAll(rejectionMove.getMoveLineList());
+    }
     moveLineService.reconcileMoveLines(moveLineList);
 
     return rejectionMove;
@@ -210,8 +215,12 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         continue;
       }
 
-      for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
-        invoicePaymentCancelService.cancel(invoicePayment);
+      List<InvoicePayment> invoicePaymentList =
+          invoicePaymentRepo.findByReconcile(reconcile).fetch();
+      if (ObjectUtils.notEmpty(invoicePaymentList)) {
+        for (InvoicePayment invoicePayment : invoicePaymentList) {
+          invoicePaymentCancelService.cancel(invoicePayment);
+        }
       }
     }
   }

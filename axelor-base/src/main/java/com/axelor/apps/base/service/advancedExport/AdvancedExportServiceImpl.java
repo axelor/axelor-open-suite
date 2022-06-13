@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.tool.NamingTool;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -116,7 +117,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
             I18n.get("Please select a language on user form."));
       }
 
-      for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+      for (AdvancedExportLine advancedExportLine :
+          ListUtils.emptyIfNull(advancedExport.getAdvancedExportLineList())) {
         String[] splitField = advancedExportLine.getTargetField().split("\\.");
         String alias = "Col_" + col;
 
@@ -409,17 +411,18 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   private List<AdvancedExportLine> sortAdvancedExportLineList(
       List<AdvancedExportLine> advancedExportLineList) {
 
-    advancedExportLineList.sort(
-        new Comparator<AdvancedExportLine>() {
+    ListUtils.emptyIfNull(advancedExportLineList)
+        .sort(
+            new Comparator<AdvancedExportLine>() {
 
-          @Override
-          public int compare(AdvancedExportLine line1, AdvancedExportLine line2) {
-            if (line1.getSequence().equals(line2.getSequence())) {
-              return line1.getId().compareTo(line2.getId());
-            }
-            return line1.getSequence() - line2.getSequence();
-          }
-        });
+              @Override
+              public int compare(AdvancedExportLine line1, AdvancedExportLine line2) {
+                if (line1.getSequence().equals(line2.getSequence())) {
+                  return line1.getId().compareTo(line2.getId());
+                }
+                return line1.getSequence() - line2.getSequence();
+              }
+            });
     return advancedExportLineList;
   }
 

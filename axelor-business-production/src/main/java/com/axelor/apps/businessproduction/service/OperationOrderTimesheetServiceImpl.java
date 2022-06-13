@@ -24,6 +24,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -42,12 +43,15 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
       OperationOrder operationOrder,
       List<TimesheetLine> oldTimesheetLineList,
       List<TimesheetLine> newTimesheetLineList) {
-    List<TimesheetLine> operationOrderTsLineList =
-        new ArrayList<>(operationOrder.getTimesheetLineList());
 
-    operationOrderTsLineList.removeAll(oldTimesheetLineList);
+    List<TimesheetLine> operationOrderTsLineList =
+        operationOrder.getTimesheetLineList() == null
+            ? new ArrayList<>()
+            : new ArrayList<>(operationOrder.getTimesheetLineList());
+
+    operationOrderTsLineList.removeAll(ListUtils.emptyIfNull(oldTimesheetLineList));
     operationOrderTsLineList.addAll(
-        newTimesheetLineList.stream()
+        ListUtils.emptyIfNull(newTimesheetLineList).stream()
             .filter(timesheetLine -> operationOrder.equals(timesheetLine.getOperationOrder()))
             .collect(Collectors.toList()));
     long durationLong =

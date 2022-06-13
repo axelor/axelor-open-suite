@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.timer.AbstractTimerService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -101,7 +102,7 @@ public class TimerProjectTaskServiceImpl extends AbstractTimerService
   @Override
   public Duration compute(ProjectTask task) {
     Duration total = Duration.ZERO;
-    for (Timer timer : task.getTimerList()) {
+    for (Timer timer : ListUtils.emptyIfNull(task.getTimerList())) {
       total = total.plus(compute(timer));
     }
     return total;

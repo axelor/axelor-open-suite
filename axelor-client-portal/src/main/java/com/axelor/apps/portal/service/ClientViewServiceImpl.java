@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JpaSecurity;
 import com.axelor.i18n.I18n;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ClientViewServiceImpl implements ClientViewService {
 
@@ -120,13 +122,13 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected Integer getOrdersInProgressIndicator(User user) {
     List<Filter> filters = getOrdersInProgressOfUser(user);
     List<SaleOrder> saleOrderList = Filter.and(filters).build(SaleOrder.class).fetch();
-    return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
+    return ListUtils.size(saleOrderList);
   }
 
   protected Integer getQuotationsIndicator(User user) {
     List<Filter> filters = getQuotationsOfUser(user);
     List<SaleOrder> saleOrderList = Filter.and(filters).build(SaleOrder.class).fetch();
-    return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
+    return ListUtils.size(saleOrderList);
   }
 
   protected String getLastOrderIndicator(User user) {
@@ -168,32 +170,32 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected Integer getPlannedDeliveriesIndicator(User user) {
     List<Filter> filters = getPlannedDeliveriesOfUser(user);
     List<StockMove> stockMoveList = Filter.and(filters).build(StockMove.class).fetch();
-    return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+    return ListUtils.size(stockMoveList);
   }
 
   protected Integer getReversionsIndicator(User user) {
     List<Filter> filters = getReversionsOfUser(user);
     List<StockMove> stockMoveList = Filter.and(filters).build(StockMove.class).fetch();
-    return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+    return ListUtils.size(stockMoveList);
   }
 
   /* Invoice Indicators */
   protected Integer getOverdueInvoicesIndicator(User user) {
     List<Filter> filters = getOverdueInvoicesOfUser(user);
     List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
-    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    return ListUtils.size(invoiceList);
   }
 
   protected Integer getAwaitingInvoicesIndicator(User user) {
     List<Filter> filters = getAwaitingInvoicesOfUser(user);
     List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
-    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    return ListUtils.size(invoiceList);
   }
 
   protected String getTotalRemainingIndicator(User user) {
     List<Filter> filters = getTotalRemainingOfUser(user);
     List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
-    if (!invoiceList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
       BigDecimal total =
           invoiceList.stream()
               .map(Invoice::getAmountRemaining)
@@ -207,51 +209,51 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected Integer getRefundIndicator(User user) {
     List<Filter> filters = getRefundOfUser(user);
     List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
-    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    return ListUtils.size(invoiceList);
   }
 
   /* Helpdesk Indicators */
   protected Integer getCustomerTicketsIndicator(User user) {
     List<Filter> filters = getTicketsOfUser(user);
     List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    return ListUtils.size(ticketList);
   }
 
   protected Integer getCompanyTicketsIndicator(User user) {
     List<Filter> filters = getCompanyTicketsOfUser(user);
     List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    return ListUtils.size(ticketList);
   }
 
   protected Integer getResolvedTicketsIndicator(User user) {
     List<Filter> filters = getResolvedTicketsOfUser(user);
     List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    return ListUtils.size(ticketList);
   }
 
   protected Object getLateTicketsIndicator(User user) {
     List<Filter> filters = getLateTicketsOfUser(user);
     List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    return ListUtils.size(ticketList);
   }
 
   /* Project Indicators */
   protected Integer getTotalProjectsIndicator(User user) {
     List<Filter> filters = getTotalProjectsOfUser(user);
     List<Project> projectList = Filter.and(filters).build(Project.class).fetch();
-    return !projectList.isEmpty() ? projectList.size() : 0;
+    return ListUtils.size(projectList);
   }
 
   protected Integer getTasksInCompletedIndicator(User user) {
     List<Filter> filters = getTasksInCompletedOfUser(user);
     List<ProjectTask> projectTaskList = Filter.and(filters).build(ProjectTask.class).fetch();
-    return !projectTaskList.isEmpty() ? projectTaskList.size() : 0;
+    return ListUtils.size(projectTaskList);
   }
 
   protected Integer getTasksDueIndicator(User user) {
     List<Filter> filters = getTasksInCompletedOfUser(user);
     List<ProjectTask> projectTaskList = Filter.and(filters).build(ProjectTask.class).fetch();
-    return !projectTaskList.isEmpty() ? projectTaskList.size() : 0;
+    return ListUtils.size(projectTaskList);
   }
 
   /* SaleOrder Query */

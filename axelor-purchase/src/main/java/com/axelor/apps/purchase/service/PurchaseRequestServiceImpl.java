@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
@@ -54,16 +55,20 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             .filter("self.statusSelect = 1 and self.createdBy = ?1", AuthUtils.getUser())
             .fetch();
 
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      purchaseRequestWorkflowService.requestPurchaseRequest(purchaseRequest);
+    if (CollectionUtils.isNotEmpty(purchaseRequests)) {
+      for (PurchaseRequest purchaseRequest : purchaseRequests) {
+        purchaseRequestWorkflowService.requestPurchaseRequest(purchaseRequest);
+      }
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void acceptRequest(List<PurchaseRequest> purchaseRequests) throws AxelorException {
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      purchaseRequestWorkflowService.acceptPurchaseRequest(purchaseRequest);
+    if (CollectionUtils.isNotEmpty(purchaseRequests)) {
+      for (PurchaseRequest purchaseRequest : purchaseRequests) {
+        purchaseRequestWorkflowService.acceptPurchaseRequest(purchaseRequest);
+      }
     }
   }
 

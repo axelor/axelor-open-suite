@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectedStockServiceImpl implements ProjectedStockService {
 
@@ -70,7 +71,7 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
             .order("id")
             .fetch();
 
-    if (mrpLineList.isEmpty()) {
+    if (CollectionUtils.isEmpty(mrpLineList)) {
       List<MrpLine> mrpLineListToDelete =
           Beans.get(MrpLineRepository.class).all().filter("self.mrp = ?1", mrp).fetch();
       removeMrpAndMrpLine(mrpLineListToDelete);

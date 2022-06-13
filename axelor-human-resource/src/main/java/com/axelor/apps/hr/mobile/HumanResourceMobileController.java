@@ -335,11 +335,13 @@ public class HumanResourceMobileController {
               .all()
               .filter("self.isActivity = true AND self.dtype = 'Product'")
               .fetch();
-      for (Product product : productList) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", product.getName());
-        map.put("id", product.getId().toString());
-        dataList.add(map);
+      if (productList != null) {
+        for (Product product : productList) {
+          Map<String, String> map = new HashMap<>();
+          map.put("name", product.getName());
+          map.put("id", product.getId().toString());
+          dataList.add(map);
+        }
       }
       response.setData(dataList);
     } catch (Exception e) {
@@ -553,15 +555,16 @@ public class HumanResourceMobileController {
       if (user == null || user.getEmployee() == null) {
 
         List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-        for (LeaveReason leaveReason : leaveReasonList) {
-          if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
-            Map<String, String> map = new HashMap<>();
-            map.put("name", leaveReason.getName());
-            map.put("id", leaveReason.getId().toString());
-            dataList.add(map);
+        if (leaveReasonList != null) {
+          for (LeaveReason leaveReason : leaveReasonList) {
+            if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+              Map<String, String> map = new HashMap<>();
+              map.put("name", leaveReason.getName());
+              map.put("id", leaveReason.getId().toString());
+              dataList.add(map);
+            }
           }
         }
-
       } else if (user.getEmployee() != null) {
         List<LeaveLine> leaveLineList =
             Beans.get(LeaveLineRepository.class)
@@ -571,16 +574,18 @@ public class HumanResourceMobileController {
                 .fetch();
 
         String tmpName = "";
-        for (LeaveLine leaveLine : leaveLineList) {
-          String name = leaveLine.getName();
-          if (tmpName != name) {
-            Map<String, String> map = new HashMap<>();
-            map.put("name", leaveLine.getName());
-            map.put("id", leaveLine.getLeaveReason().getId().toString());
-            map.put("quantity", leaveLine.getQuantity().toString());
-            dataList.add(map);
+        if (leaveLineList != null) {
+          for (LeaveLine leaveLine : leaveLineList) {
+            String name = leaveLine.getName();
+            if (tmpName != name) {
+              Map<String, String> map = new HashMap<>();
+              map.put("name", leaveLine.getName());
+              map.put("id", leaveLine.getLeaveReason().getId().toString());
+              map.put("quantity", leaveLine.getQuantity().toString());
+              dataList.add(map);
+            }
+            tmpName = name;
           }
-          tmpName = name;
         }
       }
       response.setData(dataList);
@@ -618,11 +623,13 @@ public class HumanResourceMobileController {
               .filter(
                   "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND self.dtype = 'Product'")
               .fetch();
-      for (Product product : productList) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", product.getName());
-        map.put("id", product.getId().toString());
-        dataList.add(map);
+      if (productList != null) {
+        for (Product product : productList) {
+          Map<String, String> map = new HashMap<>();
+          map.put("name", product.getName());
+          map.put("id", product.getId().toString());
+          dataList.add(map);
+        }
       }
       response.setData(dataList);
       response.setTotal(dataList.size());
@@ -658,20 +665,21 @@ public class HumanResourceMobileController {
               .all()
               .filter("self.employee = ?1", user.getEmployee())
               .fetch();
+      if (employeeVehicleList != null) {
+        // Not sorted by default ?
+        employeeVehicleList.sort(
+            (employeeVehicle1, employeeVehicle2) ->
+                employeeVehicle1
+                    .getKilometricAllowParam()
+                    .getCode()
+                    .compareTo(employeeVehicle2.getKilometricAllowParam().getCode()));
 
-      // Not sorted by default ?
-      employeeVehicleList.sort(
-          (employeeVehicle1, employeeVehicle2) ->
-              employeeVehicle1
-                  .getKilometricAllowParam()
-                  .getCode()
-                  .compareTo(employeeVehicle2.getKilometricAllowParam().getCode()));
-
-      for (EmployeeVehicle employeeVehicle : employeeVehicleList) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", employeeVehicle.getKilometricAllowParam().getName());
-        map.put("id", employeeVehicle.getKilometricAllowParam().getId().toString());
-        dataList.add(map);
+        for (EmployeeVehicle employeeVehicle : employeeVehicleList) {
+          Map<String, String> map = new HashMap<>();
+          map.put("name", employeeVehicle.getKilometricAllowParam().getName());
+          map.put("id", employeeVehicle.getKilometricAllowParam().getId().toString());
+          dataList.add(map);
+        }
       }
       response.setData(dataList);
     } catch (Exception e) {

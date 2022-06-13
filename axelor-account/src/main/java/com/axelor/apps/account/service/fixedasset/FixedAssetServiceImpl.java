@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
@@ -280,18 +281,22 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public void updateAnalytic(FixedAsset fixedAsset) throws AxelorException {
-    if (fixedAsset.getAnalyticDistributionTemplate() != null) {
-      if (fixedAsset.getDisposalMove() != null) {
-        for (MoveLine moveLine : fixedAsset.getDisposalMove().getMoveLineList()) {
-          this.createAnalyticOnMoveLine(fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        fixedAsset.getAnalyticDistributionTemplate();
+    if (analyticDistributionTemplate != null) {
+      Move disposalMove = fixedAsset.getDisposalMove();
+      if (disposalMove != null && disposalMove.getMoveLineList() != null) {
+        for (MoveLine moveLine : disposalMove.getMoveLineList()) {
+          this.createAnalyticOnMoveLine(analyticDistributionTemplate, moveLine);
         }
       }
       if (fixedAsset.getFixedAssetLineList() != null) {
         for (FixedAssetLine fixedAssetLine : fixedAsset.getFixedAssetLineList()) {
-          if (fixedAssetLine.getDepreciationAccountMove() != null) {
-            for (MoveLine moveLine :
-                fixedAssetLine.getDepreciationAccountMove().getMoveLineList()) {
-              this.createAnalyticOnMoveLine(fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+          Move depreciationAccountMove = fixedAssetLine.getDepreciationAccountMove();
+          if (depreciationAccountMove != null
+              && depreciationAccountMove.getMoveLineList() != null) {
+            for (MoveLine moveLine : depreciationAccountMove.getMoveLineList()) {
+              this.createAnalyticOnMoveLine(analyticDistributionTemplate, moveLine);
             }
           }
         }

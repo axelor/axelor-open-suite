@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -429,7 +430,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     int offset = 0;
     List<ProjectTask> projectTaskList;
 
-    while (!(projectTaskList = taskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        projectTaskList = taskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))) {
       offset += projectTaskList.size();
       for (ProjectTask projectTask : projectTaskList) {
         updateTaskToInvoice(projectTask, appBusinessProject);

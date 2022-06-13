@@ -147,28 +147,29 @@ public class PayrollPreparationService {
                 employee,
                 LeaveRequestRepository.STATUS_VALIDATED)
             .fetch();
+    if (leaveRequestList != null) {
+      for (LeaveRequest leaveRequest : leaveRequestList) {
 
-    for (LeaveRequest leaveRequest : leaveRequestList) {
+        PayrollLeave payrollLeave = new PayrollLeave();
 
-      PayrollLeave payrollLeave = new PayrollLeave();
+        if (leaveRequest.getFromDateT().toLocalDate().isBefore(fromDate)) {
+          payrollLeave.setFromDate(fromDate);
+        } else {
+          payrollLeave.setFromDate(leaveRequest.getFromDateT().toLocalDate());
+        }
 
-      if (leaveRequest.getFromDateT().toLocalDate().isBefore(fromDate)) {
-        payrollLeave.setFromDate(fromDate);
-      } else {
-        payrollLeave.setFromDate(leaveRequest.getFromDateT().toLocalDate());
+        if (leaveRequest.getToDateT().toLocalDate().isAfter(toDate)) {
+          payrollLeave.setToDate(toDate);
+        } else {
+          payrollLeave.setToDate(leaveRequest.getToDateT().toLocalDate());
+        }
+
+        payrollLeave.setDuration(
+            leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
+        payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
+        payrollLeave.setLeaveRequest(leaveRequest);
+        payrollLeaveList.add(payrollLeave);
       }
-
-      if (leaveRequest.getToDateT().toLocalDate().isAfter(toDate)) {
-        payrollLeave.setToDate(toDate);
-      } else {
-        payrollLeave.setToDate(leaveRequest.getToDateT().toLocalDate());
-      }
-
-      payrollLeave.setDuration(
-          leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
-      payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
-      payrollLeave.setLeaveRequest(leaveRequest);
-      payrollLeaveList.add(payrollLeave);
     }
     return payrollLeaveList;
   }
@@ -202,7 +203,7 @@ public class PayrollPreparationService {
     LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
     LocalDate toDate = payrollPreparation.getPeriod().getToDate();
     BigDecimal extraHoursNumber = BigDecimal.ZERO;
-    for (ExtraHoursLine extraHoursLine :
+    List<ExtraHoursLine> extraHoursLineList =
         Beans.get(ExtraHoursLineRepository.class)
             .all()
             .filter(
@@ -211,9 +212,12 @@ public class PayrollPreparationService {
                 fromDate,
                 toDate,
                 payrollPreparation.getId())
-            .fetch()) {
-      payrollPreparation.addExtraHoursLineListItem(extraHoursLine);
-      extraHoursNumber = extraHoursNumber.add(extraHoursLine.getQty());
+            .fetch();
+    if (extraHoursLineList != null) {
+      for (ExtraHoursLine extraHoursLine : extraHoursLineList) {
+        payrollPreparation.addExtraHoursLineListItem(extraHoursLine);
+        extraHoursNumber = extraHoursNumber.add(extraHoursLine.getQty());
+      }
     }
     return extraHoursNumber;
   }
@@ -236,9 +240,11 @@ public class PayrollPreparationService {
                 payrollPreparation.getPeriod().getFromDate(),
                 payrollPreparation.getPeriod().getToDate())
             .fetch();
-    for (Expense expense : expenseList) {
-      expenseAmount = expenseAmount.add(expense.getInTaxTotal());
-      payrollPreparation.addExpenseListItem(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        expenseAmount = expenseAmount.add(expense.getInTaxTotal());
+        payrollPreparation.addExpenseListItem(expense);
+      }
     }
     return expenseAmount;
   }
@@ -254,12 +260,14 @@ public class PayrollPreparationService {
                 payrollPreparation.getId(),
                 payrollPreparation.getPeriod())
             .fetch();
-    for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherList) {
-      lunchVoucherNumber =
-          lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getLunchVoucherNumber()));
-      lunchVoucherNumber =
-          lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getInAdvanceNbr()));
-      payrollPreparation.addLunchVoucherMgtLineListItem(lunchVoucherMgtLine);
+    if (lunchVoucherList != null) {
+      for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherList) {
+        lunchVoucherNumber =
+            lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getLunchVoucherNumber()));
+        lunchVoucherNumber =
+            lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getInAdvanceNbr()));
+        payrollPreparation.addLunchVoucherMgtLineListItem(lunchVoucherMgtLine);
+      }
     }
     return lunchVoucherNumber;
   }
@@ -280,9 +288,11 @@ public class PayrollPreparationService {
                 payrollPreparation.getPeriod(),
                 EmployeeBonusMgtRepository.STATUS_CALCULATED)
             .fetch();
-    for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
-      payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);
-      employeeBonusAmount = employeeBonusAmount.add(employeeBonusMgtLine.getAmount());
+    if (employeeBonusList != null) {
+      for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
+        payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);
+        employeeBonusAmount = employeeBonusAmount.add(employeeBonusMgtLine.getAmount());
+      }
     }
     return employeeBonusAmount;
   }
@@ -343,15 +353,18 @@ public class PayrollPreparationService {
     // LEAVES
     if (payrollPreparation.getLeaveDuration().compareTo(BigDecimal.ZERO) > 0) {
       List<PayrollLeave> payrollLeaveList = fillInLeaves(payrollPreparation);
-      for (PayrollLeave payrollLeave : payrollLeaveList) {
-        if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
-          String[] leaveLine = createExportFileLine(payrollPreparation);
-          leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
-          leaveLine[4] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[6] = payrollLeave.getDuration().toString();
-          list.add(leaveLine);
+      if (payrollLeaveList != null) {
+        for (PayrollLeave payrollLeave : payrollLeaveList) {
+          if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
+            String[] leaveLine = createExportFileLine(payrollPreparation);
+            leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
+            leaveLine[4] =
+                payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            leaveLine[5] =
+                payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            leaveLine[6] = payrollLeave.getDuration().toString();
+            list.add(leaveLine);
+          }
         }
       }
     }
@@ -367,20 +380,23 @@ public class PayrollPreparationService {
     // EMPLOYEE BONUS MANAGEMENT
     if (payrollPreparation.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0) {
       Map<String, BigDecimal> map = new HashMap<>();
-      for (EmployeeBonusMgtLine bonus : payrollPreparation.getEmployeeBonusMgtLineList()) {
-        if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()) {
-          if (map.containsKey(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())) {
-            map.put(
-                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
-                bonus
-                    .getAmount()
-                    .add(
-                        map.get(
-                            bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())));
-          } else {
-            map.put(
-                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
-                bonus.getAmount());
+      if (payrollPreparation.getEmployeeBonusMgtLineList() != null) {
+        for (EmployeeBonusMgtLine bonus : payrollPreparation.getEmployeeBonusMgtLineList()) {
+          if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()) {
+            if (map.containsKey(
+                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())) {
+              map.put(
+                  bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
+                  bonus
+                      .getAmount()
+                      .add(
+                          map.get(
+                              bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())));
+            } else {
+              map.put(
+                  bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
+                  bonus.getAmount());
+            }
           }
         }
       }
@@ -403,20 +419,22 @@ public class PayrollPreparationService {
                   payrollPreparation.getId(),
                   true)
               .fetch();
-      Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
-          extraHourLineList.stream()
-              .collect(
-                  Collectors.groupingBy(
-                      ExtraHoursLine::getExtraHoursType,
-                      Collectors.reducing(
-                          BigDecimal.ZERO, ExtraHoursLine::getQty, BigDecimal::add)));
-      extraHourLineExportMap.forEach(
-          (extraHoursTypeGroup, totalHours) -> {
-            String[] extraHourLine = createExportFileLine(payrollPreparation);
-            extraHourLine[3] = extraHoursTypeGroup.getExportCode();
-            extraHourLine[6] = totalHours.toString();
-            list.add(extraHourLine);
-          });
+      if (extraHourLineList != null) {
+        Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
+            extraHourLineList.stream()
+                .collect(
+                    Collectors.groupingBy(
+                        ExtraHoursLine::getExtraHoursType,
+                        Collectors.reducing(
+                            BigDecimal.ZERO, ExtraHoursLine::getQty, BigDecimal::add)));
+        extraHourLineExportMap.forEach(
+            (extraHoursTypeGroup, totalHours) -> {
+              String[] extraHourLine = createExportFileLine(payrollPreparation);
+              extraHourLine[3] = extraHoursTypeGroup.getExportCode();
+              extraHourLine[6] = totalHours.toString();
+              list.add(extraHourLine);
+            });
+      }
     }
   }
 

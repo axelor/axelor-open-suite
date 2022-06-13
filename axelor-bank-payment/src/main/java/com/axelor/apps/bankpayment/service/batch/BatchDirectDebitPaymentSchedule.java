@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -152,7 +153,8 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
       if (accountingBatch.getIncludeOtherBankAccounts()
           && appBaseService.getAppBase().getManageMultiBanks()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+        bankDetailsSet.addAll(
+            ListUtils.emptyIfNull(accountingBatch.getCompany().getBankDetailsList()));
       }
 
       queryBuilder.add(
@@ -183,7 +185,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
-    while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+    while (!(paymentScheduleLineList = ListUtils.emptyIfNull(query.fetch(FETCH_LIMIT))).isEmpty()) {
       findBatch();
       companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
       PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();

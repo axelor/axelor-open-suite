@@ -30,6 +30,7 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
 
@@ -66,7 +67,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
             .bind("dateLimit", LocalDateTime.now().minusMonths(months));
 
     for (List<GlobalTrackingLog> globalTrackingLogList;
-        !(globalTrackingLogList = query.fetch(FETCH_LIMIT)).isEmpty(); ) {
+        CollectionUtils.isNotEmpty((globalTrackingLogList = query.fetch(FETCH_LIMIT))); ) {
       removeGlobalTrackingLogs(globalTrackingLogList);
       JPA.clear();
     }

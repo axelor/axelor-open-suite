@@ -44,6 +44,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +98,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
     query.bind("company", accountingBatch.getCompany());
     List<Reimbursement> reimbursementList = query.fetch();
 
-    if (reimbursementList.isEmpty()) {
+    if (CollectionUtils.isEmpty(reimbursementList)) {
       return;
     }
 

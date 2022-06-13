@@ -62,7 +62,6 @@ public class BatchEmploymentContractExport extends BatchStrategy {
                 hrBatch.getCompany(),
                 EmploymentContractRepository.STATUS_ACTIVE)
             .fetch();
-
     switch (hrBatch.getEmploymentContractExportTypeSelect()) {
       case HrBatchRepository.EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE:
         try {
@@ -82,13 +81,14 @@ public class BatchEmploymentContractExport extends BatchStrategy {
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
+    if (employmentContractList != null) {
+      for (EmploymentContract employmentContract : employmentContractList) {
+        Beans.get(EmploymentContractService.class)
+            .employmentContractExportSilae(employmentContract, list);
 
-    for (EmploymentContract employmentContract : employmentContractList) {
-      Beans.get(EmploymentContractService.class)
-          .employmentContractExportSilae(employmentContract, list);
-
-      total++;
-      incrementDone();
+        total++;
+        incrementDone();
+      }
     }
 
     File tempFile =

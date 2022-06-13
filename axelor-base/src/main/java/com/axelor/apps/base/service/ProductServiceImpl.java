@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -199,7 +200,7 @@ public class ProductServiceImpl implements ProductService {
             .filter("self.parentProduct = ?1 AND self.dtype = 'Product'", product)
             .fetch();
 
-    for (Product productVariant : productVariantList) {
+    for (Product productVariant : ListUtils.emptyIfNull(productVariantList)) {
 
       productVariant.setCostPrice(product.getCostPrice());
       productVariant.setPurchasePrice(product.getPurchasePrice());

@@ -26,6 +26,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -67,7 +68,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     List<Project> projectChildrenList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
-    for (Project projectChild : projectChildrenList) {
+    for (Project projectChild : ListUtils.emptyIfNull(projectChildrenList)) {
       this.setLines(invoicingProject, projectChild, counter);
     }
     return;

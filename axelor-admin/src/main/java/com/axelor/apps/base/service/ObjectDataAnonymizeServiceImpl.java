@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeService {
 
@@ -59,28 +60,31 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     try {
       String rootModel = objectDataConfig.getModelSelect();
 
-      for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
-        Class<? extends Model> modelClass =
-            ObjectDataCommonService.findModelClass(line.getMetaModel());
-        Query<? extends Model> query =
-            ObjectDataCommonService.createQuery(recordId, line, modelClass);
-        List<? extends Model> data = query.fetch();
-        Mapper mapper = Mapper.of(modelClass);
+      if (CollectionUtils.isNotEmpty(objectDataConfig.getDataConfigLineList())) {
+        for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
 
-        int reset = line.getResetPathSelect();
-        if (reset != DataConfigLineRepository.RESET_NONE
-            && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
+          Class<? extends Model> modelClass =
+              ObjectDataCommonService.findModelClass(line.getMetaModel());
+          Query<? extends Model> query =
+              ObjectDataCommonService.createQuery(recordId, line, modelClass);
+          List<? extends Model> data = query.fetch();
+          Mapper mapper = Mapper.of(modelClass);
 
-          String path = getPath(line);
+          int reset = line.getResetPathSelect();
+          if (reset != DataConfigLineRepository.RESET_NONE
+              && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
 
-          if (reset == DataConfigLineRepository.RESET_DELETE) {
-            deleteLink(mapper, path, data);
-          } else {
-            replaceLink(mapper, path, data, rootModel, line.getRecordSelectId());
+            String path = getPath(line);
+
+            if (reset == DataConfigLineRepository.RESET_DELETE) {
+              deleteLink(mapper, path, data);
+            } else {
+              replaceLink(mapper, path, data, rootModel, line.getRecordSelectId());
+            }
           }
-        }
 
-        deleteFields(line.getToDeleteMetaFieldSet(), mapper, data);
+          deleteFields(line.getToDeleteMetaFieldSet(), mapper, data);
+        }
       }
 
     } catch (Exception e) {

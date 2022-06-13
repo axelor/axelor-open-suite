@@ -236,14 +236,17 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
         "Mise à jour de l'échéancier {} : {}",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), inTaxTotal});
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+    if (paymentSchedule.getPaymentScheduleLineList() != null) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
 
-      if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLineRepository.STATUS_IN_PROGRESS
-          && !paymentScheduleLine.getRejectedOk()) {
+        if (paymentScheduleLine.getStatusSelect()
+                == PaymentScheduleLineRepository.STATUS_IN_PROGRESS
+            && !paymentScheduleLine.getRejectedOk()) {
 
-        log.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
+          log.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
 
-        paymentScheduleLine.setInTaxAmount(inTaxTotal);
+          paymentScheduleLine.setInTaxAmount(inTaxTotal);
+        }
       }
     }
 
@@ -304,15 +307,17 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   public List<MoveLine> getPaymentSchedulerMoveLineToPay(PaymentSchedule paymentSchedule) {
     log.debug("In getPaymentSchedulerMoveLineToPay ....");
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
-    for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-      if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0
-          && invoice.getMove() != null
-          && invoice.getMove().getMoveLineList() != null) {
-        for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
-          if (moveLine.getAccount().getUseForPartnerBalance()
-              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-              && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-            moveLines.add(moveLine);
+    if (paymentSchedule.getInvoiceSet() != null) {
+      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+        if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0
+            && invoice.getMove() != null
+            && invoice.getMove().getMoveLineList() != null) {
+          for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
+            if (moveLine.getAccount().getUseForPartnerBalance()
+                && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+                && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+              moveLines.add(moveLine);
+            }
           }
         }
       }
@@ -401,25 +406,29 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     // L'échéancier est passé à annulé
     paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CANCELED);
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+    if (paymentSchedule.getPaymentScheduleLineList() != null) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
 
-      // Si l'échéance n'est pas complètement payée
-      if (paymentScheduleLine.getInTaxAmountPaid().compareTo(paymentScheduleLine.getInTaxAmount())
-          != 0) {
+        // Si l'échéance n'est pas complètement payée
+        if (paymentScheduleLine.getInTaxAmountPaid().compareTo(paymentScheduleLine.getInTaxAmount())
+            != 0) {
 
-        // L'échéance est passée à cloturé
-        paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_CLOSED);
+          // L'échéance est passée à cloturé
+          paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_CLOSED);
+        }
       }
     }
 
-    for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-      // L'échéancier n'est plus selectionné sur la facture
-      invoice.setPaymentSchedule(null);
+    if (paymentSchedule.getInvoiceSet() != null) {
+      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+        // L'échéancier n'est plus selectionné sur la facture
+        invoice.setPaymentSchedule(null);
 
-      // L'échéancier est assigné dans un nouveau champs afin de garder un lien invisble pour
-      // l'utilisateur, mais utilisé pour le passage en irrécouvrable
-      invoice.setCanceledPaymentSchedule(paymentSchedule);
-      invoice.setSchedulePaymentOk(false);
+        // L'échéancier est assigné dans un nouveau champs afin de garder un lien invisble pour
+        // l'utilisateur, mais utilisé pour le passage en irrécouvrable
+        invoice.setCanceledPaymentSchedule(paymentSchedule);
+        invoice.setSchedulePaymentOk(false);
+      }
     }
   }
 
@@ -465,8 +474,10 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 
     // On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
-      paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_CLOSED);
+    if (paymentSchedule.getPaymentScheduleLineList() != null) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+        paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_CLOSED);
+      }
     }
     paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CLOSED);
   }

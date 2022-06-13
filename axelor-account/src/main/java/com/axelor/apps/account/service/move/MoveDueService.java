@@ -51,7 +51,9 @@ public class MoveDueService {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
-    if (originalInvoice != null && originalInvoice.getMove() != null) {
+    if (originalInvoice != null
+        && originalInvoice.getMove() != null
+        && originalInvoice.getMove().getMoveLineList() != null) {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0

@@ -48,6 +48,7 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -219,10 +220,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void checkInvoicedConsumptionLines(Contract contract) throws AxelorException {
     Contract origin = find(contract.getId());
     List<ConsumptionLine> lineInvoiced =
-        origin.getConsumptionLineList().stream()
+        ListUtils.emptyIfNull(origin.getConsumptionLineList()).stream()
             .filter(ConsumptionLine::getIsInvoiced)
             .collect(Collectors.toList());
-    for (ConsumptionLine line : contract.getConsumptionLineList()) {
+    for (ConsumptionLine line : ListUtils.emptyIfNull(contract.getConsumptionLineList())) {
       if (lineInvoiced.contains(line)) {
         lineInvoiced.remove(line);
       }
@@ -237,10 +238,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void checkInvoicedAdditionalContractLine(Contract contract) throws AxelorException {
     Contract origin = find(contract.getId());
     List<ContractLine> lineInvoiced =
-        origin.getAdditionalBenefitContractLineList().stream()
+        ListUtils.emptyIfNull(origin.getAdditionalBenefitContractLineList()).stream()
             .filter(ContractLine::getIsInvoiced)
             .collect(Collectors.toList());
-    for (ContractLine line : contract.getAdditionalBenefitContractLineList()) {
+    for (ContractLine line :
+        ListUtils.emptyIfNull(contract.getAdditionalBenefitContractLineList())) {
       if (lineInvoiced.contains(line)) {
         lineInvoiced.remove(line);
       }
@@ -393,7 +395,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     // Compute all additional lines
     List<ContractLine> additionalLines =
-        contract.getAdditionalBenefitContractLineList().stream()
+        ListUtils.emptyIfNull(contract.getAdditionalBenefitContractLineList()).stream()
             .filter(contractLine -> !contractLine.getIsInvoiced())
             .peek(contractLine -> contractLine.setIsInvoiced(true))
             .collect(Collectors.toList());
@@ -430,7 +432,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 start, end, contract.getCurrentContractVersion().getInvoicingDuration());
       }
       List<ContractLine> lines =
-          version.getContractLineList().stream()
+          ListUtils.emptyIfNull(version.getContractLineList()).stream()
               .filter(contractLine -> !contractLine.getIsConsumptionLine())
               .collect(Collectors.toList());
 
@@ -483,7 +485,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap.create();
 
     Stream<ConsumptionLine> lineStream =
-        contract.getConsumptionLineList().stream().filter(c -> !c.getIsInvoiced());
+        ListUtils.emptyIfNull(contract.getConsumptionLineList()).stream()
+            .filter(c -> !c.getIsInvoiced());
 
     if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
       lineStream =

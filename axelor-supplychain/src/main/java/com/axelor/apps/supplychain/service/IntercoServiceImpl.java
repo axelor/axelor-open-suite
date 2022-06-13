@@ -75,6 +75,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class IntercoServiceImpl implements IntercoService {
 
@@ -320,8 +321,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine =
         Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
             .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
-    for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
-      obj.setSaleOrderLine(saleOrderLine);
+
+    if (CollectionUtils.isNotEmpty(saleOrderLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
+        obj.setSaleOrderLine(saleOrderLine);
+      }
     }
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);

@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -66,6 +67,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ChartRecordViewServiceImpl implements ChartRecordViewService {
 
@@ -186,7 +188,7 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
     }
 
     String aggByKey =
-        chart.getSeries().stream()
+        ListUtils.emptyIfNull(chart.getSeries()).stream()
             .map(ChartSeries::getGroupBy)
             .filter(Objects::nonNull)
             .findFirst()
@@ -419,11 +421,15 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
       return value;
     }
     List<Option> selectionList = MetaStore.getSelectionList(selection);
-    for (Option option : selectionList) {
-      if (option.getLocalizedTitle().equals(titleParam)) {
-        return ConvertUtils.convert(option.getValue(), targetType);
+
+    if (CollectionUtils.isNotEmpty(selectionList)) {
+      for (Option option : selectionList) {
+        if (option.getLocalizedTitle().equals(titleParam)) {
+          return ConvertUtils.convert(option.getValue(), targetType);
+        }
       }
     }
+
     return value;
   }
 

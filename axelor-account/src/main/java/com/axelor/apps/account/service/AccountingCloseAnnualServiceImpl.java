@@ -318,10 +318,12 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   }
 
   public List<Long> getAllAccountOfYear(Set<Account> accountSet, Year year) {
-
-    List<Long> accountIdList =
-        accountService.getAllAccountsSubAccountIncluded(
-            accountSet.stream().map(Account::getId).collect(Collectors.toList()));
+    List<Long> accountIdList = new ArrayList<>();
+    if (accountSet != null) {
+      accountIdList =
+          accountService.getAllAccountsSubAccountIncluded(
+              accountSet.stream().map(Account::getId).collect(Collectors.toList()));
+    }
 
     Query q =
         JPA.em()

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -55,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +78,7 @@ public class AdvancedExportController {
       MetaModelRepository metaModelRepository = Beans.get(MetaModelRepository.class);
       MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
 
-      for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
+      for (MetaField field : ListUtils.emptyIfNull(advancedExport.getMetaModel().getMetaFields())) {
         Map<String, Object> allFieldMap = new HashMap<>();
         allFieldMap.put("currentDomain", advancedExport.getMetaModel().getName());
 
@@ -204,7 +206,7 @@ public class AdvancedExportController {
       throws AxelorException, IOException {
     AdvancedExportService advancedExportService = Beans.get(AdvancedExportService.class);
 
-    if (!advancedExport.getAdvancedExportLineList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(advancedExport.getAdvancedExportLineList())) {
       List<Long> recordIds = createCriteria(request, advancedExport);
 
       File file = advancedExportService.export(advancedExport, recordIds, fileType);

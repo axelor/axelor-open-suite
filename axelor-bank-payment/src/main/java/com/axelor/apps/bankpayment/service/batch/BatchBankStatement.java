@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -62,7 +63,7 @@ public class BatchBankStatement extends AbstractBatch {
       ebicsPartners = getAllActiveEbicsPartners();
     }
 
-    for (EbicsPartner ebicsPartner : ebicsPartners) {
+    for (EbicsPartner ebicsPartner : CollectionUtils.emptyIfNull(ebicsPartners)) {
       try {
         List<BankStatement> bankStatementList =
             ebicsPartnerService.getBankStatements(

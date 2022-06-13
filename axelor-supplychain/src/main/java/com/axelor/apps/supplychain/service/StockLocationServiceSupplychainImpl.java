@@ -31,6 +31,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationServiceSupplychainImpl extends StockLocationServiceImpl
     implements StockLocationServiceSupplychain {
@@ -53,7 +54,7 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
 
       if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
-        if (!stockLocations.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(stockLocations)) {
           BigDecimal reservedQty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =

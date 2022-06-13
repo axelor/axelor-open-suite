@@ -88,7 +88,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       LocalDate date) {
 
     List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>();
-    if (analyticDistributionTemplate != null) {
+    if (analyticDistributionTemplate != null
+        && analyticDistributionTemplate.getAnalyticDistributionLineList() != null) {
       for (AnalyticDistributionLine analyticDistributionLine :
           analyticDistributionTemplate.getAnalyticDistributionLineList()) {
         analyticMoveLineList.add(

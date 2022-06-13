@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProcessService {
 
@@ -134,7 +136,7 @@ public class ProdProcessService {
 
     ProdProcess copy = prodProcessRepo.copy(prodProcess, true);
 
-    copy.getProdProcessLineList().forEach(list -> list.setProdProcess(copy));
+    ListUtils.emptyIfNull(copy.getProdProcessLineList()).forEach(list -> list.setProdProcess(copy));
     copy.setOriginalProdProcess(prodProcess);
     copy.setVersionNumber(
         this.getLatestProdProcessVersion(prodProcess, prodProcess.getVersionNumber(), true) + 1);
@@ -155,7 +157,7 @@ public class ProdProcessService {
               .bind("id", previousId)
               .order("-versionNumber")
               .fetch();
-      if (!prodProcessSet.isEmpty()) {
+      if (CollectionUtils.isNotEmpty(prodProcessSet)) {
         latestVersion =
             (prodProcessSet.get(0).getVersionNumber() > latestVersion)
                 ? prodProcessSet.get(0).getVersionNumber()

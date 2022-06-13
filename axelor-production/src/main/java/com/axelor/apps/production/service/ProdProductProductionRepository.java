@@ -27,6 +27,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
@@ -80,7 +81,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
             .setParameter("manufOrderId", toProduceManufOrderId)
             .getResultList();
     BigDecimal availableQty;
-    if (queryResult.isEmpty()) {
+    if (CollectionUtils.isEmpty(queryResult)) {
       availableQty = BigDecimal.ZERO;
     } else {
       availableQty = queryResult.get(0);

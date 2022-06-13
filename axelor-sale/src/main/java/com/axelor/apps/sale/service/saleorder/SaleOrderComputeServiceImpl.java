@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -180,7 +181,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
   @Override
   public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder) {
     BigDecimal price = BigDecimal.ZERO;
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
       price = price.add(saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted()));
     }
     return price;

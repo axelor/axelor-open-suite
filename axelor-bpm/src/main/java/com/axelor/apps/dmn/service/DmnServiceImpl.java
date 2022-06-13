@@ -23,6 +23,7 @@ import com.axelor.apps.bpm.db.DmnTable;
 import com.axelor.apps.bpm.db.repo.DmnTableRepository;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.db.EntityHelper;
@@ -83,7 +84,7 @@ public class DmnServiceImpl implements DmnService {
 
     if (dmnTable != null) {
       Map<String, Object> res = result.get(0);
-      for (DmnField dmnField : dmnTable.getOutputDmnFieldList()) {
+      for (DmnField dmnField : ListUtils.emptyIfNull(dmnTable.getOutputDmnFieldList())) {
         if (dmnField.getField() != null) {
           addValue(context, dmnField.getField(), res.get(dmnField.getName()), model);
         }
@@ -428,7 +429,7 @@ public class DmnServiceImpl implements DmnService {
 
     log.debug("Json fields founds: {}", metaJsonFields);
 
-    for (MetaJsonField field : metaJsonFields) {
+    for (MetaJsonField field : ListUtils.emptyIfNull(metaJsonFields)) {
       addJsonField(searchOperator, multiple, resultVar, scriptBuilder, varName, field);
       scriptBuilder.append("\n");
     }

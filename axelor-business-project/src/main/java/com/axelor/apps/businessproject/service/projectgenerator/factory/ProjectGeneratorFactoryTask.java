@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
@@ -82,12 +83,11 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       boolean isTaskGenerated =
-          projectTaskRepo
+          CollectionUtils.isNotEmpty(
+              projectTaskRepo
                   .all()
                   .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
-                  .fetch()
-                  .size()
-              > 0;
+                  .fetch());
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
               (String)

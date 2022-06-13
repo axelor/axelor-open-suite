@@ -40,6 +40,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -233,7 +234,7 @@ public class ManufOrderController {
 
       String message = "";
 
-      for (ManufOrder manufOrder : manufOrders) {
+      for (ManufOrder manufOrder : ListUtils.emptyIfNull(manufOrders)) {
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
           message = manufOrder.getMoCommentFromSaleOrder();
@@ -603,7 +604,7 @@ public class ManufOrderController {
       ProdProductProductionRepository prodProductProductionRepository =
           Beans.get(ProdProductProductionRepository.class);
       List<ProdProduct> prodProducts =
-          mo.getToConsumeProdProductList().stream()
+          ListUtils.emptyIfNull(mo.getToConsumeProdProductList()).stream()
               .filter(
                   prodProduct ->
                       prodProduct.getProduct().getProductSubTypeSelect()

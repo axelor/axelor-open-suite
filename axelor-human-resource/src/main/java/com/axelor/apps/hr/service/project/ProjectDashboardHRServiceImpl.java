@@ -23,6 +23,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -50,13 +51,15 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
             .filter("self.project.id IN ?1", projectService.getContextProjectIds())
             .fetch();
     BigDecimal totalDuration = BigDecimal.ZERO;
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      try {
-        totalDuration =
-            totalDuration.add(
-                timesheetLineService.computeHoursDuration(
-                    timesheetLine.getTimesheet(), timesheetLine.getDuration(), true));
-      } catch (AxelorException e) {
+    if (ObjectUtils.notEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        try {
+          totalDuration =
+              totalDuration.add(
+                  timesheetLineService.computeHoursDuration(
+                      timesheetLine.getTimesheet(), timesheetLine.getDuration(), true));
+        } catch (AxelorException e) {
+        }
       }
     }
     return totalDuration;

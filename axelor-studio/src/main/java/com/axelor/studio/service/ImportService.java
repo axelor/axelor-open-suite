@@ -54,6 +54,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
+import org.apache.shiro.util.CollectionUtils;
 
 public class ImportService {
 
@@ -265,7 +266,7 @@ public class ImportService {
     importPath = importPath.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> fileUrls = MetaScanner.findAll(importPath);
 
-    if (fileUrls.isEmpty()) {
+    if (CollectionUtils.isEmpty(fileUrls)) {
       return null;
     }
 

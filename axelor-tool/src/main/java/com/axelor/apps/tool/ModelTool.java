@@ -18,6 +18,7 @@
 package com.axelor.apps.tool;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
@@ -183,9 +184,11 @@ public final class ModelTool {
    */
   public static <T extends Model> List<T> copy(JpaRepository<T> repo, List<T> src, boolean deep) {
     List<T> dest = new ArrayList<>();
-    for (T obj : src) {
-      T cpy = repo.copy(obj, deep);
-      dest.add(cpy);
+    if (ObjectUtils.notEmpty(src)) {
+      for (T obj : src) {
+        T cpy = repo.copy(obj, deep);
+        dest.add(cpy);
+      }
     }
     return dest;
   }

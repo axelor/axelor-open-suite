@@ -34,6 +34,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -64,7 +65,7 @@ public class BankReconciliationController {
           Beans.get(BankReconciliationRepository.class)
               .find(context.asType(BankReconciliation.class).getId());
       List<BankReconciliationLine> bankReconciliationLines =
-          br.getBankReconciliationLineList().stream()
+          ListUtils.emptyIfNull(br.getBankReconciliationLineList()).stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList());
       if (bankReconciliationLines.isEmpty()) {
@@ -374,7 +375,8 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       List<BankReconciliationLine> bankReconciliationLines =
           bankReconciliation.getBankReconciliationLineList();
-      for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      for (BankReconciliationLine bankReconciliationLine :
+          ListUtils.emptyIfNull(bankReconciliationLines)) {
         Beans.get(BankReconciliationLineService.class).checkIncompleteLine(bankReconciliationLine);
       }
     } catch (AxelorException e) {

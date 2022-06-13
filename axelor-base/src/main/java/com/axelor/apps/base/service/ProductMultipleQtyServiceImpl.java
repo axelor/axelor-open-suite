@@ -25,6 +25,7 @@ import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
 
   public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties) {
 
-    if (productMultipleQties.size() == 0) {
+    if (CollectionUtils.isEmpty(productMultipleQties)) {
       return true;
     }
 
