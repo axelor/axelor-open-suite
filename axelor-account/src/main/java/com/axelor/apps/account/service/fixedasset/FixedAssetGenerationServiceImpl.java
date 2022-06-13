@@ -45,12 +45,14 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected FixedAssetValidateService fixedAssetValidateService;
+  protected FixedAssetDateService fixedAssetDateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
@@ -59,6 +61,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       FixedAssetValidateService fixedAssetValidateService) {
+    this.fixedAssetDateService = fixedAssetDateService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
@@ -314,6 +317,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
+      fixedAsset.setResidualValue(BigDecimal.ZERO);
       if (invoiceLine.getQty() != null) {
         fixedAsset.setName(
             invoiceLine.getProductName()
@@ -334,6 +338,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setPurchaseAccountMove(invoice.getMove());
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
 
+      fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
       if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
         fixedAssetValidateService.validate(fixedAsset);
       } else {
