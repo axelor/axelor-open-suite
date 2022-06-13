@@ -289,7 +289,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
     completeSelection(metaField, newField);
     newField.setType(MetaTool.typeToJsonType(typeName));
-    newField.setName(formulaMetaField.getName() + "_" + creator.getId());
+    newField.setName(formulaMetaField.getName() + "_indicators_" + creator.getId());
     newField.setTitle(formulaMetaField.getLabel());
 
     return newField;
