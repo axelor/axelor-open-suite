@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
@@ -43,7 +44,8 @@ public class VentilateAdvancePaymentState extends VentilateState {
       WorkflowVentilationService workflowService,
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      BlockingService blockingService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -53,7 +55,8 @@ public class VentilateAdvancePaymentState extends VentilateState {
         workflowService,
         userService,
         fixedAssetGenerationService,
-        invoiceTermService);
+        invoiceTermService,
+        blockingService);
   }
 
   @Override

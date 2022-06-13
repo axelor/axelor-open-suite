@@ -30,6 +30,8 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
@@ -70,6 +72,8 @@ public class VentilateState extends WorkflowInvoice {
 
   protected InvoiceTermService invoiceTermService;
 
+  protected BlockingService blockingService;
+
   @Inject
   public VentilateState(
       SequenceService sequenceService,
@@ -80,7 +84,8 @@ public class VentilateState extends WorkflowInvoice {
       WorkflowVentilationService workflowService,
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      BlockingService blockingService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -90,6 +95,7 @@ public class VentilateState extends WorkflowInvoice {
     this.userService = userService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.invoiceTermService = invoiceTermService;
+    this.blockingService = blockingService;
   }
 
   @Override
@@ -102,6 +108,7 @@ public class VentilateState extends WorkflowInvoice {
 
     Preconditions.checkNotNull(invoice.getPartner());
 
+    checkBlocking();
     setDate();
     setJournal();
     setPartnerAccount();
@@ -113,6 +120,16 @@ public class VentilateState extends WorkflowInvoice {
     setVentilatedLog();
 
     workflowService.afterVentilation(invoice);
+  }
+
+  protected void checkBlocking() throws AxelorException {
+    if (blockingService.getBlocking(
+            invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING)
+        != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+    }
   }
 
   protected void setVentilatedLog() {
