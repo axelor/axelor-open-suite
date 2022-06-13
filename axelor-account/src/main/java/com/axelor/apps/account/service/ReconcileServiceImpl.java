@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -49,6 +50,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,10 +236,9 @@ public class ReconcileServiceImpl implements ReconcileService {
           debitMoveLine.getAccount());
 
       // Check if move lines accounts are compatible
-      if (!debitMoveLine
-          .getAccount()
-          .getCompatibleAccountSet()
-          .contains(creditMoveLine.getAccount())) {
+      Set<Account> compatibleAccountSet = debitMoveLine.getAccount().getCompatibleAccountSet();
+      if (compatibleAccountSet == null
+          || !compatibleAccountSet.contains(creditMoveLine.getAccount())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.RECONCILE_2),

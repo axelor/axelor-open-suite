@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -95,7 +96,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException {
 
     List<DayPlanning> listDay = planning.getWeekDays();
-    for (DayPlanning dayPlanning : listDay) {
+    for (DayPlanning dayPlanning : ListUtils.emptyIfNull(listDay)) {
 
       if (dayPlanning.getMorningFrom() != null
           && dayPlanning.getMorningTo() != null
@@ -239,7 +240,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name) {
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
-    for (DayPlanning dayPlanning : dayPlanningList) {
+    for (DayPlanning dayPlanning : ListUtils.emptyIfNull(dayPlanningList)) {
       if (dayPlanning.getName().equals(name)) {
         return dayPlanning;
       }

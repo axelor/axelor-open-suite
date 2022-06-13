@@ -31,6 +31,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -58,7 +59,7 @@ public class ExtraHoursController {
                 AuthUtils.getUser(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
-    if (extraHoursList.isEmpty()) {
+    if (ObjectUtils.isEmpty(extraHoursList)) {
       response.setView(
           ActionView.define(I18n.get("Extra Hours"))
               .model(ExtraHours.class.getName())

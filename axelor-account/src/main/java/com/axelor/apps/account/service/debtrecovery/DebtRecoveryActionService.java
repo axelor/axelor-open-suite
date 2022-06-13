@@ -152,8 +152,10 @@ public class DebtRecoveryActionService {
 
     DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
-    for (Template template : templateSet) {
-      messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
+    if (templateSet != null) {
+      for (Template template : templateSet) {
+        messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
+      }
     }
 
     return messages;

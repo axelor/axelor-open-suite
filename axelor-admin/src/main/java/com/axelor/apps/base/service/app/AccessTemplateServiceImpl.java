@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -108,8 +109,9 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
   private void getMenusPerApp() {
 
     List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null").order("id").fetch();
-
-    processMenu(menus.iterator());
+    if (menus != null) {
+      processMenu(menus.iterator());
+    }
   }
 
   private void processMenu(Iterator<MetaMenu> menuIter) {
@@ -133,7 +135,9 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       }
     }
     List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent = ?1", menu).order("id").fetch();
-    processMenu(menus.iterator());
+    if (menus != null) {
+      processMenu(menus.iterator());
+    }
     processMenu(menuIter);
   }
 
@@ -296,6 +300,10 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
 
     List<MetaModel> metaModels =
         metaModelRepo.all().filter("self.fullName not in ?1", objMenu.keySet()).fetch();
+
+    if (ObjectUtils.isEmpty(metaModels)) {
+      return;
+    }
 
     Iterator<MetaModel> modelIter = metaModels.iterator();
     String appMenu = objMenu.get(App.class.getName());

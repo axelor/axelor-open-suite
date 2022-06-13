@@ -23,6 +23,7 @@ import com.axelor.apps.bpm.db.WkfProcessConfig;
 import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
 import com.axelor.apps.bpm.web.WkfModelController;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
@@ -48,7 +49,7 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
     List<WkfModel> wkfModelList = wkfModelRepo.all().order("code").fetch();
     List<WkfModel> filterWkfModels = new ArrayList<>();
 
-    for (WkfModel wkfModel : wkfModelList) {
+    for (WkfModel wkfModel : ListUtils.emptyIfNull(wkfModelList)) {
       List<WkfProcess> processes = wkfModelService.getProcesses(wkfModel);
       if (CollectionUtils.isEmpty(processes)) {
         continue;
@@ -91,14 +92,14 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
       List<WkfProcess> processes = wkfModelService.getProcesses(wkfModel);
       List<Map<String, Object>> processList = new ArrayList<>();
 
-      for (WkfProcess process : processes) {
+      for (WkfProcess process : ListUtils.emptyIfNull(processes)) {
         List<Map<String, Object>> configList = new ArrayList<>();
 
         List<WkfProcessConfig> processConfigs = process.getWkfProcessConfigList();
         wkfModelService.sortProcessConfig(processConfigs);
 
         List<String> _modelList = new ArrayList<>();
-        for (WkfProcessConfig processConfig : processConfigs) {
+        for (WkfProcessConfig processConfig : ListUtils.emptyIfNull(processConfigs)) {
 
           boolean isMetaModel = processConfig.getMetaModel() != null;
           String modelName =

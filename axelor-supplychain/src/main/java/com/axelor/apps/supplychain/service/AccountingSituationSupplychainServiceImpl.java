@@ -39,6 +39,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl
@@ -68,8 +69,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     if (appAccountService.getAppAccount().getManageCustomerCredit()) {
       List<AccountingSituation> accountingSituationList =
           accountingSituationRepo.all().filter("self.partner = ?1", partner).fetch();
-      for (AccountingSituation accountingSituation : accountingSituationList) {
-        accountingSituationRepo.save(this.computeUsedCredit(accountingSituation));
+      if (CollectionUtils.isNotEmpty(accountingSituationList)) {
+        for (AccountingSituation accountingSituation : accountingSituationList) {
+          accountingSituationRepo.save(this.computeUsedCredit(accountingSituation));
+        }
       }
     }
   }
@@ -89,8 +92,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
 
-    for (AccountingSituation accountingSituation : accountingSituationList) {
-      computeUsedCredit(accountingSituation);
+    if (CollectionUtils.isNotEmpty(accountingSituationList)) {
+      for (AccountingSituation accountingSituation : accountingSituationList) {
+        computeUsedCredit(accountingSituation);
+      }
     }
   }
 
@@ -106,6 +111,11 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 
     Partner partner = saleOrder.getClientPartner();
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
+
+    if (CollectionUtils.isEmpty(accountingSituationList)) {
+      return;
+    }
+
     for (AccountingSituation accountingSituation : accountingSituationList) {
       if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
         // Update UsedCredit
@@ -154,8 +164,11 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
                 SaleOrderRepository.STATUS_DRAFT_QUOTATION,
                 SaleOrderRepository.STATUS_CANCELED)
             .fetch();
-    for (SaleOrder saleOrder : saleOrderList) {
-      sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
+
+    if (CollectionUtils.isNotEmpty(saleOrderList)) {
+      for (SaleOrder saleOrder : saleOrderList) {
+        sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
+      }
     }
     // subtract the amount of payments if there is no move created for
     // invoice payments

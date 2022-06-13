@@ -45,6 +45,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,25 +86,27 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
     Map<Partner, List<SaleOrderLine>> saleOrderLinesBySupplierPartner = new HashMap<>();
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-      if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE) {
+        if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE) {
 
-        Partner supplierPartner = saleOrderLine.getSupplierPartner();
+          Partner supplierPartner = saleOrderLine.getSupplierPartner();
 
-        if (supplierPartner == null) {
-          throw new AxelorException(
-              saleOrderLine,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.SO_PURCHASE_1),
-              saleOrderLine.getProductName());
+          if (supplierPartner == null) {
+            throw new AxelorException(
+                saleOrderLine,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.SO_PURCHASE_1),
+                saleOrderLine.getProductName());
+          }
+
+          if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
+            saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
+          }
+
+          saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
         }
-
-        if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
-        }
-
-        saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
       }
     }
 

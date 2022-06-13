@@ -58,6 +58,8 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -214,7 +216,7 @@ public class ManufOrderWorkflowService {
 
     int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-      for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+      for (StockMove stockMove : ListUtils.emptyIfNull(manufOrder.getInStockMoveList())) {
         manufOrderStockMoveService.finishStockMove(stockMove);
       }
     }
@@ -348,7 +350,8 @@ public class ManufOrderWorkflowService {
   @Transactional(rollbackOn = {Exception.class})
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+      for (OperationOrder operationOrder :
+          ListUtils.emptyIfNull(manufOrder.getOperationOrderList())) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
           operationOrderWorkflowService.start(operationOrder);
         }
@@ -445,13 +448,13 @@ public class ManufOrderWorkflowService {
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
     int count = 0;
     List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-    for (OperationOrder operationOrderIt : operationOrderList) {
+    for (OperationOrder operationOrderIt : ListUtils.emptyIfNull(operationOrderList)) {
       if (operationOrderIt.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
         count++;
       }
     }
 
-    if (count == operationOrderList.size()) {
+    if (count == ListUtils.size(operationOrderList)) {
       this.finish(manufOrder);
     }
   }
@@ -566,7 +569,8 @@ public class ManufOrderWorkflowService {
             .filter("self.name = 'Hour' AND self.unitTypeSelect = 3")
             .fetchOne();
 
-    for (ProdHumanResource humanResource : operationOrder.getProdHumanResourceList()) {
+    for (ProdHumanResource humanResource :
+        ListUtils.emptyIfNull(operationOrder.getProdHumanResourceList())) {
 
       Product product = humanResource.getProduct();
       Unit purchaseUnit = product.getPurchasesUnit();
@@ -585,7 +589,7 @@ public class ManufOrderWorkflowService {
           purchaseOrderLineService.createPurchaseOrderLine(
               purchaseOrder, product, null, null, quantity, purchaseUnit);
 
-      purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
+      purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     }
   }
 
@@ -613,7 +617,7 @@ public class ManufOrderWorkflowService {
             purchaseOrder.getCompany().getAccountConfig().getOutPaymentMode());
       }
 
-      if (supplierPartner.getContactPartnerSet().size() == 1) {
+      if (SetUtils.size(supplierPartner.getContactPartnerSet()) == 1) {
         purchaseOrder.setContactPartner(supplierPartner.getContactPartnerSet().iterator().next());
       }
 
@@ -672,7 +676,8 @@ public class ManufOrderWorkflowService {
 
     this.setPurchaseOrderSupplierDetails(purchaseOrder);
 
-    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+    for (OperationOrder operationOrder :
+        ListUtils.emptyIfNull(manufOrder.getOperationOrderList())) {
       if (operationOrder.getUseLineInGeneratedPurchaseOrder()) {
         this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
       }

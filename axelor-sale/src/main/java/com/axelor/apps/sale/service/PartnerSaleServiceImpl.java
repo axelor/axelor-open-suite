@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -52,14 +53,14 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
 
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
-    idList.addAll(this.findMailsFromSaleOrder(partner));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(partner)));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromSaleOrder(partner)));
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
-        idList.addAll(this.findMailsFromSaleOrderContact(contact));
+        idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(contact)));
+        idList.addAll(ListUtils.emptyIfNull(this.findMailsFromSaleOrderContact(contact)));
       }
     }
     return idList;
@@ -74,8 +75,8 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
 
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
-    idList.addAll(this.findMailsFromSaleOrderContact(partner));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(partner)));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromSaleOrderContact(partner)));
 
     return idList;
   }
@@ -179,7 +180,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     List<String> customerList =
         JPA.em().createQuery(customerSelection + endQuery, String.class).getResultList();
 
-    for (int i = 0; i < averageList.size(); i++) {
+    for (int i = 0; i < ListUtils.size(averageList); i++) {
       Map<String, Object> dataMap = new HashMap<String, Object>();
       dataMap.put("_average", (Object) averageList.get(i));
       dataMap.put("_customer", (Object) customerList.get(i));

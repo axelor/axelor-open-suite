@@ -60,8 +60,10 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -128,7 +130,7 @@ public class ExpenseController {
                 user,
                 activeCompany)
             .fetch();
-    if (expenseList.isEmpty()) {
+    if (ObjectUtils.isEmpty(expenseList)) {
       response.setView(
           ActionView.define(I18n.get("Expense"))
               .model(Expense.class.getName())
@@ -489,7 +491,8 @@ public class ExpenseController {
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
-    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
+    for (ExpenseLine expenseLine :
+        ListUtils.emptyIfNull(expenseService.getExpenseLineList(expense))) {
       compt++;
       if (expenseLine
           .getExpenseDate()

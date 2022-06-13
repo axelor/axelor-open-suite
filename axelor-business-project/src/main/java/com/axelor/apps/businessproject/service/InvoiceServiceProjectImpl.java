@@ -41,6 +41,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -152,8 +153,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
   @Transactional(rollbackOn = Exception.class)
   public void cancel(Invoice invoice) throws AxelorException {
     super.cancel(invoice);
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+    for (InvoiceLine invoiceLine : ListUtils.emptyIfNull(invoice.getInvoiceLineList())) {
+      for (AnalyticMoveLine analyticMoveLine :
+          ListUtils.emptyIfNull(invoiceLine.getAnalyticMoveLineList())) {
         analyticMoveLine.setProject(null);
       }
     }
@@ -163,9 +165,10 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
   public Invoice updateLines(Invoice invoice) {
     AnalyticMoveLineRepository analyticMoveLineRepository =
         Beans.get(AnalyticMoveLineRepository.class);
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine : ListUtils.emptyIfNull(invoice.getInvoiceLineList())) {
       invoiceLine.setProject(invoice.getProject());
-      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+      for (AnalyticMoveLine analyticMoveLine :
+          ListUtils.emptyIfNull(invoiceLine.getAnalyticMoveLineList())) {
         analyticMoveLine.setProject(invoice.getProject());
         analyticMoveLineRepository.save(analyticMoveLine);
       }

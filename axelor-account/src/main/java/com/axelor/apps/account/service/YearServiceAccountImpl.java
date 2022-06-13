@@ -83,13 +83,15 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   public void closeYearProcess(Year year) throws AxelorException {
     year = yearRepository.find(year.getId());
 
-    for (Period period : year.getPeriodList()) {
-      if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
-        adjustHistoryService.setEndDate(period);
-      }
+    if (year.getPeriodList() != null) {
+      for (Period period : year.getPeriodList()) {
+        if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+          adjustHistoryService.setEndDate(period);
+        }
 
-      period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      period.setClosureDateTime(LocalDateTime.now());
+        period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+        period.setClosureDateTime(LocalDateTime.now());
+      }
     }
     Company company = year.getCompany();
     if (company == null) {
@@ -143,15 +145,17 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       year = yearRepository.find(year.getId());
       log.debug("Tiers en cours de traitement : {}", partner.getName());
 
-      for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-        if (accountingSituation.getCompany().equals(year.getCompany())) {
-          log.debug("On ajoute une ligne à la Situation comptable trouvée");
+      if (partner.getAccountingSituationList() != null) {
+        for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+          if (accountingSituation.getCompany().equals(year.getCompany())) {
+            log.debug("On ajoute une ligne à la Situation comptable trouvée");
 
-          BigDecimal reportedBalanceAmount =
-              this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
-          this.createReportedBalanceLine(accountingSituation, reportedBalanceAmount, year);
+            BigDecimal reportedBalanceAmount =
+                this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
+            this.createReportedBalanceLine(accountingSituation, reportedBalanceAmount, year);
 
-          break;
+            break;
+          }
         }
       }
       JPA.clear();

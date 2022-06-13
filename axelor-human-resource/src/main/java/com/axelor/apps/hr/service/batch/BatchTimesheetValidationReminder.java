@@ -161,19 +161,21 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
 
     List<Employee> employeeList =
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
-
-    for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
-      try {
-        Message message =
-            templateMessageService.generateMessage(employee.getId(), model, tag, template);
-        messageService.sendByEmail(message);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
+    if (employeeList != null) {
+      for (Employee employee : employeeList) {
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
+        try {
+          Message message =
+              templateMessageService.generateMessage(employee.getId(), model, tag, template);
+          messageService.sendByEmail(message);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
+        }
       }
     }
   }
@@ -181,18 +183,19 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
   public void generateAllEmail() {
     List<Employee> employeeList =
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
-
-    for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
-      try {
-        generateAndSendMessage(employee);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
+    if (employeeList != null) {
+      for (Employee employee : employeeList) {
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
+        try {
+          generateAndSendMessage(employee);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
+        }
       }
     }
   }

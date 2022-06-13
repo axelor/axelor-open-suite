@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -80,7 +81,7 @@ public class BankReconciliationValidateService {
     // Also, line should be sort by date and sequence
 
     for (BankReconciliationLine bankReconciliationLine :
-        bankReconciliation.getBankReconciliationLineList()) {
+        ListUtils.emptyIfNull(bankReconciliation.getBankReconciliationLineList())) {
 
       if (!bankReconciliationLine.getIsPosted()) {
 

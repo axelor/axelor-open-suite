@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -117,24 +118,21 @@ public class PriceListService {
   @Transactional
   public void setPriceListLineAnomaly(Product product) {
     if (!product.getSellable()) {
-      product
-          .getPriceListLineList()
+      ListUtils.emptyIfNull(product.getPriceListLineList())
           .forEach(
               line -> {
                 line.setAnomalySelect(PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE);
                 priceListLineRepo.persist(line);
               });
     } else if (product.getIsUnrenewed()) {
-      product
-          .getPriceListLineList()
+      ListUtils.emptyIfNull(product.getPriceListLineList())
           .forEach(
               line -> {
                 line.setAnomalySelect(PriceListLineRepository.ANOMALY_NOT_RENEWED);
                 priceListLineRepo.persist(line);
               });
     } else {
-      product
-          .getPriceListLineList()
+      ListUtils.emptyIfNull(product.getPriceListLineList())
           .forEach(
               line -> {
                 line.setAnomalySelect(null);
@@ -284,7 +282,7 @@ public class PriceListService {
     PriceList historizedPriceList = priceListRepo.copy(priceList, false);
     historizedPriceList.setIsActive(false);
     List<PriceListLine> priceListLineList = priceList.getPriceListLineList();
-    for (PriceListLine priceListLine : priceListLineList) {
+    for (PriceListLine priceListLine : ListUtils.emptyIfNull(priceListLineList)) {
       PriceListLine newPriceListLine = priceListLineRepo.copy(priceListLine, false);
       newPriceListLine.setPriceList(null);
       historizedPriceList.addPriceListLineListItem(newPriceListLine);

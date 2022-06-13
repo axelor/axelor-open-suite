@@ -27,6 +27,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationLineReservationServiceImpl
     implements StockLocationLineReservationService {
@@ -68,11 +69,13 @@ public class StockLocationLineReservationServiceImpl
             .bind("stockLocation", stockLocationLine.getStockLocation())
             .bind("planned", StockMoveRepository.STATUS_PLANNED)
             .fetch();
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      stockMoveLine.setReservedQty(BigDecimal.ZERO);
-      SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-      if (saleOrderLine != null) {
-        saleOrderLine.setReservedQty(BigDecimal.ZERO);
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setReservedQty(BigDecimal.ZERO);
+        SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+        if (saleOrderLine != null) {
+          saleOrderLine.setReservedQty(BigDecimal.ZERO);
+        }
       }
     }
     Beans.get(ReservedQtyService.class).updateReservedQty(stockLocationLine);

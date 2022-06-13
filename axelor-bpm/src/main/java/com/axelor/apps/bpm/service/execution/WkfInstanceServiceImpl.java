@@ -26,6 +26,7 @@ import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.db.EntityHelper;
@@ -49,6 +50,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import org.apache.commons.io.IOUtils;
+import org.apache.shiro.util.CollectionUtils;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RuntimeService;
@@ -312,31 +314,41 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
         engineService.getEngine().getHistoryService().createHistoricProcessInstanceQuery();
 
     List<String> processInstanceIds =
-        processInstanceQuery.processDefinitionId(processId).activeActivityIdIn(nodeKey).unfinished()
-            .list().stream()
+        ListUtils.emptyIfNull(
+                processInstanceQuery
+                    .processDefinitionId(processId)
+                    .activeActivityIdIn(nodeKey)
+                    .unfinished()
+                    .list())
+            .stream()
             .map(it -> it.getId())
             .collect(Collectors.toList());
 
     if (permanent) {
       processInstanceQuery =
           engineService.getEngine().getHistoryService().createHistoricProcessInstanceQuery();
-      processInstanceQuery.processDefinitionId(processId).executedActivityIdIn(nodeKey).list()
+      ListUtils.emptyIfNull(
+              processInstanceQuery
+                  .processDefinitionId(processId)
+                  .executedActivityIdIn(nodeKey)
+                  .list())
           .stream()
           .forEach(it -> processInstanceIds.add(it.getId()));
     }
 
     if (type != null && type.equals(BpmnModelConstants.BPMN_ELEMENT_END_EVENT)) {
-      engineService
-          .getEngine()
-          .getHistoryService()
-          .createHistoricProcessInstanceQuery()
-          .executedActivityIdIn(nodeKey)
-          .completed()
-          .or()
-          .finished()
-          .endOr()
-          .processDefinitionKey(processId.substring(0, processId.indexOf(":")))
-          .list()
+      ListUtils.emptyIfNull(
+              engineService
+                  .getEngine()
+                  .getHistoryService()
+                  .createHistoricProcessInstanceQuery()
+                  .executedActivityIdIn(nodeKey)
+                  .completed()
+                  .or()
+                  .finished()
+                  .endOr()
+                  .processDefinitionKey(processId.substring(0, processId.indexOf(":")))
+                  .list())
           .forEach(it -> processInstanceIds.add(it.getId()));
     }
 
@@ -377,7 +389,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     List<ProcessInstance> processInstances =
         runtimeService.createProcessInstanceQuery().active().unlimitedList();
 
-    for (ProcessInstance processInstance : processInstances) {
+    for (ProcessInstance processInstance : ListUtils.emptyIfNull(processInstances)) {
       try {
         runtimeService.deleteProcessInstance(
             processInstance.getProcessInstanceId(), "Reset", true, true, false);
@@ -464,7 +476,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
 
     for (WkfProcessConfig wkfProcessConfig :
-        wkfInstance.getWkfProcess().getWkfProcessConfigList()) {
+        ListUtils.emptyIfNull(wkfInstance.getWkfProcess().getWkfProcessConfigList())) {
 
       Model model =
           FullContextHelper.getRepository(wkfProcessConfig.getModel())
@@ -501,7 +513,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     HistoricActivityInstanceQuery query =
         historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId);
 
-    for (HistoricActivityInstance instance : query.list()) {
+    for (HistoricActivityInstance instance : ListUtils.emptyIfNull(query.list())) {
 
       //		  String type = instance.getActivityType();
       String name = instance.getActivityName();
@@ -530,7 +542,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
             .filter("self.callModel = ?1 AND self.callLink IS NOT NULL", chldModel)
             .fetch();
 
-    if (taskConfigs.isEmpty()) {
+    if (CollectionUtils.isEmpty(taskConfigs)) {
       return;
     }
 
@@ -564,7 +576,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
             .superProcessInstanceId(processInstanceId)
             .list();
 
-    for (ProcessInstance processInstance : processInstances) {
+    for (ProcessInstance processInstance : ListUtils.emptyIfNull(processInstances)) {
       WkfInstance wkfInstance =
           wkfInstanceRepository.findByInstnaceId(processInstance.getProcessInstanceId());
       if (wkfInstance == null) {
@@ -573,7 +585,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
 
       List<WkfProcessConfig> processConfigs = wkfInstance.getWkfProcess().getWkfProcessConfigList();
 
-      for (WkfProcessConfig processConfig : processConfigs) {
+      for (WkfProcessConfig processConfig : ListUtils.emptyIfNull(processConfigs)) {
         String configModel = null;
         if (processConfig.getMetaModel() != null) {
           configModel = processConfig.getMetaModel().getFullName();

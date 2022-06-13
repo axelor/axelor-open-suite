@@ -27,6 +27,7 @@ import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.RoleRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -158,18 +159,23 @@ public class PermissionAssistantService {
     List<String> headerRow = new ArrayList<>();
     headerRow.addAll(getTranslatedStrings(header, bundle));
     if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
-      groupRow = new String[header.size() + (assistant.getGroupSet().size() * groupHeader.size())];
-      for (Group group : assistant.getGroupSet()) {
-        groupRow[count + 1] = group.getCode();
-        headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
-        count += groupHeader.size();
+      if (assistant.getGroupSet() != null) {
+        groupRow =
+            new String[header.size() + (assistant.getGroupSet().size() * groupHeader.size())];
+        for (Group group : assistant.getGroupSet()) {
+          groupRow[count + 1] = group.getCode();
+          headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
+          count += groupHeader.size();
+        }
       }
     } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
-      groupRow = new String[header.size() + (assistant.getRoleSet().size() * groupHeader.size())];
-      for (Role role : assistant.getRoleSet()) {
-        groupRow[count + 1] = role.getName();
-        headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
-        count += groupHeader.size();
+      if (assistant.getRoleSet() != null) {
+        groupRow = new String[header.size() + (assistant.getRoleSet().size() * groupHeader.size())];
+        for (Role role : assistant.getRoleSet()) {
+          groupRow[count + 1] = role.getName();
+          headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
+          count += groupHeader.size();
+        }
       }
     }
 
@@ -191,57 +197,68 @@ public class PermissionAssistantService {
 
     MetaField userField = assistant.getMetaField();
 
-    for (MetaModel object : assistant.getObjectSet()) {
+    if (ObjectUtils.notEmpty(assistant.getObjectSet())) {
+      for (MetaModel object : assistant.getObjectSet()) {
 
-      int colIndex = header.size() + 1;
-      String[] row = new String[size];
-      row[0] = object.getFullName();
-
-      if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
-        for (Group group : assistant.getGroupSet()) {
-          String permName = getPermissionName(userField, object.getName(), group.getCode());
-          colIndex = writePermission(object, userField, row, colIndex, permName);
-          colIndex++;
-        }
-
-      } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
-        for (Role role : assistant.getRoleSet()) {
-          String permName = getPermissionName(userField, object.getName(), role.getName());
-          colIndex = writePermission(object, userField, row, colIndex, permName);
-          colIndex++;
-        }
-      }
-
-      csvWriter.writeNext(row);
-
-      if (!assistant.getFieldPermission()) {
-        continue;
-      }
-
-      List<MetaField> fieldList = object.getMetaFields();
-      Collections.sort(fieldList, compareField());
-
-      for (MetaField field : fieldList) {
-        colIndex = header.size() + 1;
-        row = new String[size];
-        row[1] = field.getName();
-        row[2] = getFieldTitle(field, bundle);
+        int colIndex = header.size() + 1;
+        String[] row = new String[size];
+        row[0] = object.getFullName();
 
         if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
-          for (Group group : assistant.getGroupSet()) {
-            String permName = getPermissionName(null, object.getName(), group.getCode());
-            colIndex = writeFieldPermission(field, row, colIndex, permName);
-            colIndex++;
+          if (assistant.getGroupSet() != null) {
+            for (Group group : assistant.getGroupSet()) {
+              String permName = getPermissionName(userField, object.getName(), group.getCode());
+              colIndex = writePermission(object, userField, row, colIndex, permName);
+              colIndex++;
+            }
           }
-
         } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
-          for (Role role : assistant.getRoleSet()) {
-            String permName = getPermissionName(null, object.getName(), role.getName());
-            colIndex = writeFieldPermission(field, row, colIndex, permName);
-            colIndex++;
+          if (assistant.getRoleSet() != null) {
+            for (Role role : assistant.getRoleSet()) {
+              String permName = getPermissionName(userField, object.getName(), role.getName());
+              colIndex = writePermission(object, userField, row, colIndex, permName);
+              colIndex++;
+            }
           }
         }
+
         csvWriter.writeNext(row);
+
+        if (!assistant.getFieldPermission()) {
+          continue;
+        }
+
+        List<MetaField> fieldList = object.getMetaFields();
+        Collections.sort(fieldList, compareField());
+
+        if (fieldList != null) {
+          for (MetaField field : fieldList) {
+            colIndex = header.size() + 1;
+            row = new String[size];
+            row[1] = field.getName();
+            row[2] = getFieldTitle(field, bundle);
+
+            if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
+              if (assistant.getGroupSet() != null) {
+                for (Group group : assistant.getGroupSet()) {
+                  String permName = getPermissionName(null, object.getName(), group.getCode());
+                  colIndex = writeFieldPermission(field, row, colIndex, permName);
+                  colIndex++;
+                }
+              }
+
+            } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
+              if (assistant.getRoleSet() != null) {
+                for (Role role : assistant.getRoleSet()) {
+                  String permName = getPermissionName(null, object.getName(), role.getName());
+                  colIndex = writeFieldPermission(field, row, colIndex, permName);
+                  colIndex++;
+                }
+              }
+            }
+            csvWriter.writeNext(row);
+          }
+        }
       }
     }
   }

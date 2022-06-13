@@ -112,12 +112,11 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         continue;
       }
       boolean isTaskGenerated =
-          projectTaskRepo
+          CollectionUtils.isNotEmpty(
+              projectTaskRepo
                   .all()
                   .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
-                  .fetch()
-                  .size()
-              > 0;
+                  .fetch());
       if (root == null) {
         root =
             projectTaskBusinessProjectService.create(

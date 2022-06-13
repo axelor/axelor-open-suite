@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -47,7 +48,7 @@ public class IndicatorGeneratorGroupingService {
     String result = "";
 
     for (IndicatorGenerator indicatorGenerator :
-        indicatorGeneratorGrouping.getIndicatorGeneratorSet()) {
+        SetUtils.emptyIfNull(indicatorGeneratorGrouping.getIndicatorGeneratorSet())) {
 
       indicatorGeneratorService.run(indicatorGenerator);
 
@@ -93,7 +94,7 @@ public class IndicatorGeneratorGroupingService {
     List<String[]> resultList = new ArrayList<String[]>();
 
     for (IndicatorGenerator indicatorGenerator :
-        indicatorGeneratorGrouping.getIndicatorGeneratorSet()) {
+        SetUtils.emptyIfNull(indicatorGeneratorGrouping.getIndicatorGeneratorSet())) {
 
       String[] result = {
         indicatorGenerator.getCode(), indicatorGenerator.getName(), indicatorGenerator.getResult()

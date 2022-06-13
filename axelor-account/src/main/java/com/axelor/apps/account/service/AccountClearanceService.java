@@ -116,7 +116,9 @@ public class AccountClearanceService {
                 MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_ACCOUNTED,
                 accountClearance.getAmountThreshold(),
-                company.getAccountConfig().getClearanceAccountSet(),
+                company.getAccountConfig().getClearanceAccountSet() == null
+                    ? new HashSet<>()
+                    : company.getAccountConfig().getClearanceAccountSet(),
                 accountClearance.getDateThreshold())
             .fetch();
 
@@ -151,11 +153,13 @@ public class AccountClearanceService {
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
-    for (MoveLine moveLine : moveLineList) {
-      Move move =
-          this.createAccountClearanceMove(
-              moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveValidateService.validate(move);
+    if (moveLineList != null) {
+      for (MoveLine moveLine : moveLineList) {
+        Move move =
+            this.createAccountClearanceMove(
+                moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
+        moveValidateService.validate(move);
+      }
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
@@ -260,6 +264,7 @@ public class AccountClearanceService {
     accountClearance.setAmountThreshold(amountThreshold);
     accountClearance.setCompany(company);
     accountClearance.setDateThreshold(dateThreshold);
+    accountClearance.setMoveLineSet(new HashSet<>());
     accountClearance.getMoveLineSet().addAll(moveLineSet);
     accountClearance.setName(name);
     accountClearance.setDateTime(appBaseService.getTodayDateTime());

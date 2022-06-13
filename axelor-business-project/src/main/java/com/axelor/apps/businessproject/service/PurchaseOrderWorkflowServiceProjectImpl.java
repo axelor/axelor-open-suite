@@ -30,6 +30,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -66,8 +67,10 @@ public class PurchaseOrderWorkflowServiceProjectImpl
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      for (AnalyticMoveLine analyticMoveLine : purchaseOrderLine.getAnalyticMoveLineList()) {
+    for (PurchaseOrderLine purchaseOrderLine :
+        ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineList())) {
+      for (AnalyticMoveLine analyticMoveLine :
+          ListUtils.emptyIfNull(purchaseOrderLine.getAnalyticMoveLineList())) {
         analyticMoveLine.setProject(null);
         analyticMoveLineRepository.save(analyticMoveLine);
       }

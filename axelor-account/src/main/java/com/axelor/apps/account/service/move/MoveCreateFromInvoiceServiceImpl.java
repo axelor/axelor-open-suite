@@ -324,7 +324,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                   1,
                   origin,
                   null);
-          move.getMoveLineList().add(creditMoveLine);
+          move.addMoveLineListItem(creditMoveLine);
 
           // Use of excess payment
           paymentService.useExcessPaymentWithAmountConsolidated(
@@ -405,7 +405,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               1,
               origin,
               null);
-      oDmove.getMoveLineList().add(debitMoveLine);
+      oDmove.addMoveLineListItem(debitMoveLine);
 
       // Use of excess payment
       paymentService.createExcessPaymentWithAmount(

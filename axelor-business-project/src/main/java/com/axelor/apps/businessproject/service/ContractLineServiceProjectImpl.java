@@ -26,6 +26,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -50,7 +51,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
     if (project != null) {
       List<AnalyticMoveLine> analyticMoveLineList = contractLine.getAnalyticMoveLineList();
 
-      analyticMoveLineList.forEach(analyticMoveLine -> analyticMoveLine.setProject(project));
+      ListUtils.emptyIfNull(analyticMoveLineList)
+          .forEach(analyticMoveLine -> analyticMoveLine.setProject(project));
       contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return contractLine;

@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MpsChargeServiceImpl implements MpsChargeService {
 
@@ -58,10 +59,13 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     List<MpsWeeklySchedule> mpsWeeklyScheduleList =
         Beans.get(MpsWeeklyScheduleRepository.class).all().order("totalHours").fetch();
     Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap = new LinkedHashMap<>();
-    for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
-      Map<YearMonth, BigDecimal> totalHoursCountYearForMpsWeeklySchedualMap =
-          countTotalHoursForMpsWeeklySchedual(mpsWeeklySchedule, startMonthDate, endMonthDate);
-      totalHoursCountMap.put(mpsWeeklySchedule, totalHoursCountYearForMpsWeeklySchedualMap);
+
+    if (CollectionUtils.isNotEmpty(mpsWeeklyScheduleList)) {
+      for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
+        Map<YearMonth, BigDecimal> totalHoursCountYearForMpsWeeklySchedualMap =
+            countTotalHoursForMpsWeeklySchedual(mpsWeeklySchedule, startMonthDate, endMonthDate);
+        totalHoursCountMap.put(mpsWeeklySchedule, totalHoursCountYearForMpsWeeklySchedualMap);
+      }
     }
 
     return totalHoursCountMap;

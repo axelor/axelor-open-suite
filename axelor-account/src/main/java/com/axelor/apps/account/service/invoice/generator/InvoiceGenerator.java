@@ -57,6 +57,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,11 +276,15 @@ public abstract class InvoiceGenerator {
 
     if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-      companyBankDetails =
-          bankDetailsList.stream()
-              .filter(bankDetails -> bankDetails.getIsDefault())
-              .findFirst()
-              .orElse(null);
+      if (CollectionUtils.isEmpty(bankDetailsList)) {
+        companyBankDetails = null;
+      } else {
+        companyBankDetails =
+            bankDetailsList.stream()
+                .filter(bankDetails -> bankDetails.getIsDefault())
+                .findFirst()
+                .orElse(null);
+      }
     } else if (accountingSituation != null) {
       if (paymentMode != null) {
         if (paymentMode.equals(partner.getOutPaymentMode())) {
@@ -349,8 +354,16 @@ public abstract class InvoiceGenerator {
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
-      invoice.getInvoiceLineList().addAll(invoiceLines);
-      invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
+      if (invoice.getInvoiceLineList() == null) {
+        invoice.setInvoiceLineList(invoiceLines);
+      } else {
+        invoice.getInvoiceLineList().addAll(invoiceLines);
+      }
+      if (invoice.getInvoiceLineTaxList() == null) {
+        invoice.setInvoiceLineTaxList(invoiceTaxLines);
+      } else {
+        invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
+      }
     } else {
       invoiceLines.stream().forEach(invoice::addInvoiceLineListItem);
       invoiceTaxLines.stream().forEach(invoice::addInvoiceLineTaxListItem);
@@ -416,28 +429,32 @@ public abstract class InvoiceGenerator {
     invoice.setCompanyTaxTotal(BigDecimal.ZERO);
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
-      if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
-        continue;
+        if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+          continue;
+        }
+
+        // In the invoice currency
+        invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
+
+        // In the company accounting currency
+        invoice.setCompanyExTaxTotal(
+            invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
       }
-
-      // In the invoice currency
-      invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
-
-      // In the company accounting currency
-      invoice.setCompanyExTaxTotal(
-          invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
     }
 
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+    if (invoice.getInvoiceLineTaxList() != null) {
+      for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
-      // In the invoice currency
-      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
+        // In the invoice currency
+        invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
 
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
+        // In the company accounting currency
+        invoice.setCompanyTaxTotal(
+            invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
+      }
     }
 
     // In the invoice currency

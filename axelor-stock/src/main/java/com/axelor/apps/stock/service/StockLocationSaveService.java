@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationSaveService {
 
@@ -51,9 +52,11 @@ public class StockLocationSaveService {
             .bind("companyId", companyId)
             .bind("stockLocationId", defaultStockLocation.getId())
             .fetch();
-    for (PartnerStockSettings partnerStockSettings : partnerStockSettingsToRemove) {
-      Partner partnerToClean = partnerStockSettings.getPartner();
-      partnerToClean.removePartnerStockSettingsListItem(partnerStockSettings);
+    if (CollectionUtils.isNotEmpty(partnerStockSettingsToRemove)) {
+      for (PartnerStockSettings partnerStockSettings : partnerStockSettingsToRemove) {
+        Partner partnerToClean = partnerStockSettings.getPartner();
+        partnerToClean.removePartnerStockSettingsListItem(partnerStockSettings);
+      }
     }
   }
 }

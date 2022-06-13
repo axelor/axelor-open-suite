@@ -126,9 +126,11 @@ public class MoveTemplateController {
     MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
     if (moveTemplate.getIsValid()) {
       boolean isValid = true;
-      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-        if (!line.getIsValid()) {
-          isValid = false;
+      if (moveTemplate.getMoveTemplateLineList() != null) {
+        for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+          if (!line.getIsValid()) {
+            isValid = false;
+          }
         }
       }
       if (!isValid) {

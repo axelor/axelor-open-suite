@@ -84,47 +84,51 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
                     .getRespiteDateBeforeAccountBlocking()
                     .compareTo(appBaseService.getTodayDate(debtRecovery.getCompany()))
                 >= 0) {
-          for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
-            if (!customerToUnblock.contains(invoice.getPartner().getId())) {
-              log.debug("Unblocking {}", invoice.getPartner());
-              result
-                  .append(I18n.get("Unblocking"))
-                  .append(" ")
-                  .append(invoice.getPartner().getFullName())
-                  .append("</br>");
-              customerToUnblock.add(invoice.getPartner().getId());
-              incrementDone();
+          if (debtRecovery.getInvoiceDebtRecoverySet() != null) {
+            for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
+              if (!customerToUnblock.contains(invoice.getPartner().getId())) {
+                log.debug("Unblocking {}", invoice.getPartner());
+                result
+                    .append(I18n.get("Unblocking"))
+                    .append(" ")
+                    .append(invoice.getPartner().getFullName())
+                    .append("</br>");
+                customerToUnblock.add(invoice.getPartner().getId());
+                incrementDone();
+              }
             }
           }
           continue;
         }
-        for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
-          try {
-            Partner partner = processInvoice(invoice);
-            if (partner != null && !customersToBlock.contains(partner.getId())) {
-              log.debug("Blocking {}", partner.getFullName());
-              result
-                  .append(I18n.get("Blocking"))
-                  .append(" ")
-                  .append(partner.getFullName())
-                  .append("</br>");
-              customersToBlock.add(partner.getId());
-              customersToBlock.addAll(
-                  Query.of(Partner.class)
-                      .filter("self.parentPartner = :parentPartner")
-                      .bind("parentPartner", partner.getId())
-                      .fetchStream()
-                      .map(parentPartner -> parentPartner.getId())
-                      .collect(Collectors.toList()));
-              incrementDone();
+        if (debtRecovery.getInvoiceDebtRecoverySet() != null) {
+          for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
+            try {
+              Partner partner = processInvoice(invoice);
+              if (partner != null && !customersToBlock.contains(partner.getId())) {
+                log.debug("Blocking {}", partner.getFullName());
+                result
+                    .append(I18n.get("Blocking"))
+                    .append(" ")
+                    .append(partner.getFullName())
+                    .append("</br>");
+                customersToBlock.add(partner.getId());
+                customersToBlock.addAll(
+                    Query.of(Partner.class)
+                        .filter("self.parentPartner = :parentPartner")
+                        .bind("parentPartner", partner.getId())
+                        .fetchStream()
+                        .map(parentPartner -> parentPartner.getId())
+                        .collect(Collectors.toList()));
+                incrementDone();
+              }
+            } catch (Exception e) {
+              TraceBackService.trace(
+                  new Exception(String.format("%s %s", "Invoice", invoice.getInvoiceId()), e),
+                  null,
+                  batch.getId());
+              log.error("Error for invoice {}", invoice.getInvoiceId());
+              incrementAnomaly();
             }
-          } catch (Exception e) {
-            TraceBackService.trace(
-                new Exception(String.format("%s %s", "Invoice", invoice.getInvoiceId()), e),
-                null,
-                batch.getId());
-            log.error("Error for invoice {}", invoice.getInvoiceId());
-            incrementAnomaly();
           }
         }
       }

@@ -26,6 +26,8 @@ import com.axelor.apps.bpm.db.repo.WkfProcessConfigRepository;
 import com.axelor.apps.bpm.service.WkfModelService;
 import com.axelor.apps.bpm.service.deployment.BpmDeploymentService;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
@@ -260,7 +262,7 @@ public class WkfModelController {
       String process = (String) request.getContext().get("_process");
 
       if (wkfModel != null) {
-        for (WkfProcess wkfProcess : wkfModel.getWkfProcessList()) {
+        for (WkfProcess wkfProcess : ListUtils.emptyIfNull(wkfModel.getWkfProcessList())) {
           if (CollectionUtils.isEmpty(wkfProcess.getWkfProcessConfigList())
               || !wkfProcess.getName().equals(process)) {
             continue;
@@ -499,7 +501,10 @@ public class WkfModelController {
       actionViewBuilder = this.createActionBuilder(status, metaJsonModel);
     }
 
-    response.setView(actionViewBuilder.context("ids", !recordIds.isEmpty() ? recordIds : 0).map());
+    response.setView(
+        actionViewBuilder
+            .context("ids", CollectionUtils.isNotEmpty(recordIds) ? recordIds : 0)
+            .map());
   }
 
   public void getStatusPerView(ActionRequest request, ActionResponse response) {
@@ -619,12 +624,12 @@ public class WkfModelController {
   }
 
   public boolean isAdmin(WkfModel wkfModel, User user) {
-    boolean isAdminUser = wkfModel.getAdminUserSet().contains(user);
+    boolean isAdminUser = SetUtils.emptyIfNull(wkfModel.getAdminUserSet()).contains(user);
     boolean isAdminRole =
-        wkfModel.getAdminRoleSet().stream()
+        SetUtils.emptyIfNull(wkfModel.getAdminRoleSet()).stream()
             .filter(
                 role -> {
-                  return user.getRoles().contains(role);
+                  return SetUtils.emptyIfNull(user.getRoles()).contains(role);
                 })
             .findAny()
             .isPresent();
@@ -636,12 +641,12 @@ public class WkfModelController {
   }
 
   public boolean isManager(WkfModel wkfModel, User user) {
-    boolean isManagerUser = wkfModel.getManagerUserSet().contains(user);
+    boolean isManagerUser = SetUtils.emptyIfNull(wkfModel.getManagerUserSet()).contains(user);
     boolean isManagerRole =
-        wkfModel.getManagerRoleSet().stream()
+        SetUtils.emptyIfNull(wkfModel.getManagerRoleSet()).stream()
             .filter(
                 role -> {
-                  return user.getRoles().contains(role);
+                  return SetUtils.emptyIfNull(user.getRoles()).contains(role);
                 })
             .findAny()
             .isPresent();
@@ -653,12 +658,12 @@ public class WkfModelController {
   }
 
   public boolean isUser(WkfModel wkfModel, User user) {
-    boolean isUser = wkfModel.getUserSet().contains(user);
+    boolean isUser = SetUtils.emptyIfNull(wkfModel.getUserSet()).contains(user);
     boolean isUserRole =
-        wkfModel.getRoleSet().stream()
+        SetUtils.emptyIfNull(wkfModel.getRoleSet()).stream()
             .filter(
                 role -> {
-                  return user.getRoles().contains(role);
+                  return SetUtils.emptyIfNull(user.getRoles()).contains(role);
                 })
             .findAny()
             .isPresent();

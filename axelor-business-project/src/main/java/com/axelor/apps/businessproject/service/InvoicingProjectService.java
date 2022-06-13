@@ -61,6 +61,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -79,6 +81,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicingProjectService {
 
@@ -111,11 +114,11 @@ public class InvoicingProjectService {
           I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
     }
 
-    if (invoicingProject.getSaleOrderLineSet().isEmpty()
-        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
-        && invoicingProject.getLogTimesSet().isEmpty()
-        && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
+    if (CollectionUtils.isEmpty(invoicingProject.getSaleOrderLineSet())
+        && CollectionUtils.isEmpty(invoicingProject.getPurchaseOrderLineSet())
+        && CollectionUtils.isEmpty(invoicingProject.getLogTimesSet())
+        && CollectionUtils.isEmpty(invoicingProject.getExpenseLineSet())
+        && CollectionUtils.isEmpty(invoicingProject.getProjectTaskSet())) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -133,7 +136,7 @@ public class InvoicingProjectService {
     Partner customer = project.getClientPartner();
     Partner customerContact = project.getContactPartner();
 
-    if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
+    if (customerContact == null && SetUtils.size(customer.getContactPartnerSet()) == 1) {
       customerContact = customer.getContactPartnerSet().iterator().next();
     }
     Company company = this.getRootCompany(project);
@@ -340,7 +343,7 @@ public class InvoicingProjectService {
     List<Project> projectChildrenList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
-    for (Project projectChild : projectChildrenList) {
+    for (Project projectChild : ListUtils.emptyIfNull(projectChildrenList)) {
       this.setLines(invoicingProject, projectChild, counter);
     }
 
@@ -382,11 +385,12 @@ public class InvoicingProjectService {
       invoicingProject
           .getLogTimesSet()
           .addAll(
-              Beans.get(TimesheetLineRepository.class)
-                  .all()
-                  .filter(logTimesQueryBuilder.toString())
-                  .bind(logTimesQueryMap)
-                  .fetch());
+              ListUtils.emptyIfNull(
+                  Beans.get(TimesheetLineRepository.class)
+                      .all()
+                      .filter(logTimesQueryBuilder.toString())
+                      .bind(logTimesQueryMap)
+                      .fetch()));
     }
 
     StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
@@ -419,38 +423,42 @@ public class InvoicingProjectService {
     invoicingProject
         .getSaleOrderLineSet()
         .addAll(
-            Beans.get(SaleOrderLineRepository.class)
-                .all()
-                .filter(solQueryBuilder.toString())
-                .bind(solQueryMap)
-                .fetch());
+            ListUtils.emptyIfNull(
+                Beans.get(SaleOrderLineRepository.class)
+                    .all()
+                    .filter(solQueryBuilder.toString())
+                    .bind(solQueryMap)
+                    .fetch()));
 
     invoicingProject
         .getPurchaseOrderLineSet()
         .addAll(
-            Beans.get(PurchaseOrderLineRepository.class)
-                .all()
-                .filter(polQueryBuilder.toString())
-                .bind(polQueryMap)
-                .fetch());
+            ListUtils.emptyIfNull(
+                Beans.get(PurchaseOrderLineRepository.class)
+                    .all()
+                    .filter(polQueryBuilder.toString())
+                    .bind(polQueryMap)
+                    .fetch()));
 
     invoicingProject
         .getExpenseLineSet()
         .addAll(
-            Beans.get(ExpenseLineRepository.class)
-                .all()
-                .filter(expenseLineQueryBuilder.toString())
-                .bind(expenseLineQueryMap)
-                .fetch());
+            ListUtils.emptyIfNull(
+                Beans.get(ExpenseLineRepository.class)
+                    .all()
+                    .filter(expenseLineQueryBuilder.toString())
+                    .bind(expenseLineQueryMap)
+                    .fetch()));
 
     invoicingProject
         .getProjectTaskSet()
         .addAll(
-            Beans.get(ProjectTaskRepository.class)
-                .all()
-                .filter(taskQueryBuilder.toString())
-                .bind(taskQueryMap)
-                .fetch());
+            ListUtils.emptyIfNull(
+                Beans.get(ProjectTaskRepository.class)
+                    .all()
+                    .filter(taskQueryBuilder.toString())
+                    .bind(taskQueryMap)
+                    .fetch()));
   }
 
   public void clearLines(InvoicingProject invoicingProject) {

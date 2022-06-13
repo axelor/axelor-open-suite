@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
@@ -58,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +120,7 @@ public class AddressController {
       QAPicklistType qaPicklist = (QAPicklistType) retDict.get("qaPicklist");
       List<PickListEntry> pickList = new ArrayList<>();
       if (qaPicklist != null) {
-        for (PicklistEntryType p : qaPicklist.getPicklistEntry()) {
+        for (PicklistEntryType p : ListUtils.emptyIfNull(qaPicklist.getPicklistEntry())) {
           PickListEntry e = new PickListEntry();
           e.setAddress(a);
           e.setMoniker(p.getMoniker());
@@ -157,7 +159,7 @@ public class AddressController {
     Address a = request.getContext().asType(Address.class);
     PickListEntry pickedEntry = null;
 
-    if (!a.getPickList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(a.getPickList())) {
 
       // if (a.pickList*.selected.count { it == true} > 0)
       //	pickedEntry = a.pickList.find {it.selected == true}

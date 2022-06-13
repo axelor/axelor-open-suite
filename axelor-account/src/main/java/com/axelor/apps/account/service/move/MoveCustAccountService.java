@@ -77,12 +77,14 @@ public class MoveCustAccountService {
    */
   public List<Partner> getPartnerOfMove(Move move) {
     List<Partner> partnerList = new ArrayList<Partner>();
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount() != null
-          && moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getPartner() != null
-          && !partnerList.contains(moveLine.getPartner())) {
-        partnerList.add(moveLine.getPartner());
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount() != null
+            && moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getPartner() != null
+            && !partnerList.contains(moveLine.getPartner())) {
+          partnerList.add(moveLine.getPartner());
+        }
       }
     }
     return partnerList;

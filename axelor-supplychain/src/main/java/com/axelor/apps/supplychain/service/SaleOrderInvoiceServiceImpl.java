@@ -65,6 +65,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,8 +197,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal percentage) {
     Map<Long, BigDecimal> map = new HashMap<>();
 
-    for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
-      map.put(soLine.getId(), percentage);
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
+        map.put(soLine.getId(), percentage);
+      }
     }
     return map;
   }
@@ -417,26 +420,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      Long SOrderId = saleOrderLine.getId();
-      if (qtyToInvoiceMap.containsKey(SOrderId)) {
-        if (isPercent) {
-          BigDecimal percent = qtyToInvoiceMap.get(SOrderId);
-          BigDecimal realQty =
-              saleOrderLine
-                  .getQty()
-                  .multiply(percent)
-                  .divide(
-                      new BigDecimal("100"),
-                      appBaseService.getNbDecimalDigitForQty(),
-                      RoundingMode.HALF_UP);
-          qtyToInvoiceMap.put(SOrderId, realQty);
-        }
-        if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {
-          throw new AxelorException(
-              saleOrder,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Long SOrderId = saleOrderLine.getId();
+        if (qtyToInvoiceMap.containsKey(SOrderId)) {
+          if (isPercent) {
+            BigDecimal percent = qtyToInvoiceMap.get(SOrderId);
+            BigDecimal realQty =
+                saleOrderLine
+                    .getQty()
+                    .multiply(percent)
+                    .divide(
+                        new BigDecimal("100"),
+                        appBaseService.getNbDecimalDigitForQty(),
+                        RoundingMode.HALF_UP);
+            qtyToInvoiceMap.put(SOrderId, realQty);
+          }
+          if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {
+            throw new AxelorException(
+                saleOrder,
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
+          }
         }
       }
     }
@@ -534,8 +539,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      qtyToInvoiceMap.put(saleOrderLine.getId(), saleOrderLine.getQty());
+    if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        qtyToInvoiceMap.put(saleOrderLine.getId(), saleOrderLine.getQty());
+      }
     }
     return createInvoice(saleOrder, saleOrderLineList, qtyToInvoiceMap);
   }

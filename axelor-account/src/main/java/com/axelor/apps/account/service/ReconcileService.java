@@ -72,6 +72,7 @@ public interface ReconcileService {
     return acc1.getAccount().getReconcileOk()
         && acc2.getAccount().getReconcileOk()
         && (acc1.getAccount().equals(acc2.getAccount())
-            || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
+            || (acc1.getAccount().getCompatibleAccountSet() != null
+                && acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount())));
   }
 }

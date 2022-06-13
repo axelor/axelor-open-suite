@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -111,7 +112,7 @@ public class AddressServiceImpl implements AddressService {
 
     csv.writeNext(header.toArray(new String[header.size()]));
     List<String> items = new ArrayList<>();
-    for (Address a : addresses) {
+    for (Address a : ListUtils.emptyIfNull(addresses)) {
 
       items.add(a.getId() != null ? a.getId().toString() : "");
       items.add(a.getAddressL2() != null ? a.getAddressL2() : "");
@@ -127,7 +128,7 @@ public class AddressServiceImpl implements AddressService {
     csv.close();
     LOG.info("{} exported", path);
 
-    return addresses.size();
+    return ListUtils.size(addresses);
   }
 
   @Override
@@ -301,14 +302,14 @@ public class AddressServiceImpl implements AddressService {
 
     List<City> cities = cityRepository.findByZipAndCountry(zip, country).fetch();
 
-    City city = cities.size() == 1 ? cities.get(0) : null;
+    City city = ListUtils.size(cities) == 1 ? cities.get(0) : null;
     address.setCity(city);
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 
     if (appBaseService.getAppBase().getStoreStreets()) {
       List<Street> streets =
           streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
-      if (streets.size() == 1) {
+      if (ListUtils.size(streets) == 1) {
         Street street = streets.get(0);
         address.setStreet(street);
         String name = street.getName();

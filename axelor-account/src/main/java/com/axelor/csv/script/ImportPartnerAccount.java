@@ -33,30 +33,32 @@ public class ImportPartnerAccount {
     assert bean instanceof Partner;
     try {
       Partner partner = (Partner) bean;
-      for (Company company : partner.getCompanySet()) {
-        AccountingSituation accountingSituation = new AccountingSituation();
-        accountingSituation.setPartner(partner);
-        accountingSituation.setCompany(company);
-        accountingSituation.setCustomerAccount(
-            accountRepo
-                .all()
-                .filter(
-                    "self.code = ?1 AND self.company = ?2",
-                    values.get("customerAccount_code").toString(),
-                    company)
-                .fetchOne());
-        accountingSituation.setSupplierAccount(
-            accountRepo
-                .all()
-                .filter(
-                    "self.code = ?1 AND self.company = ?2",
-                    values.get("supplierAccount_code").toString(),
-                    company)
-                .fetchOne());
-        if (partner.getAccountingSituationList() == null) {
-          partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
+      if (partner.getCompanySet() != null) {
+        for (Company company : partner.getCompanySet()) {
+          AccountingSituation accountingSituation = new AccountingSituation();
+          accountingSituation.setPartner(partner);
+          accountingSituation.setCompany(company);
+          accountingSituation.setCustomerAccount(
+              accountRepo
+                  .all()
+                  .filter(
+                      "self.code = ?1 AND self.company = ?2",
+                      values.get("customerAccount_code").toString(),
+                      company)
+                  .fetchOne());
+          accountingSituation.setSupplierAccount(
+              accountRepo
+                  .all()
+                  .filter(
+                      "self.code = ?1 AND self.company = ?2",
+                      values.get("supplierAccount_code").toString(),
+                      company)
+                  .fetchOne());
+          if (partner.getAccountingSituationList() == null) {
+            partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
+          }
+          partner.getAccountingSituationList().add(accountingSituation);
         }
-        partner.getAccountingSituationList().add(accountingSituation);
       }
       return partner;
     } catch (Exception e) {

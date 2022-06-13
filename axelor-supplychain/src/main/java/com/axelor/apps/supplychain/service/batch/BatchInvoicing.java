@@ -29,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class BatchInvoicing extends BatchStrategy {
 
     List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
 
-    while (!saleOrders.isEmpty()) {
+    while (CollectionUtils.isNotEmpty(saleOrders)) {
       for (SaleOrder saleOrder : saleOrders) {
         try {
           subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);

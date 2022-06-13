@@ -37,6 +37,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Singleton
@@ -82,7 +83,7 @@ public class InvoicingProjectController {
       response.setError(IExceptionMessage.LINES_NOT_SELECTED);
       return;
     }
-    if (projects.size() > 0) {
+    if (CollectionUtils.isNotEmpty(projects)) {
       for (InvoicingProject invProject : projects) {
         invoice = Beans.get(InvoicingProjectService.class).generateInvoice(invProject);
         if (invoice != null) {

@@ -43,6 +43,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -68,6 +69,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,8 +170,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     int offset = 0;
 
     List<ForecastRecapLineType> forecastRecapLineTypeList;
-    while (!(forecastRecapLineTypeList = forecastRecapLineTypeQuery.fetch(FETCH_LIMIT, offset))
-        .isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        (forecastRecapLineTypeList = forecastRecapLineTypeQuery.fetch(FETCH_LIMIT, offset)))) {
       for (ForecastRecapLineType forecastRecapLineType : forecastRecapLineTypeList) {
         offset++;
         populateWithTimetables(forecastRecap, forecastRecapLineType);
@@ -212,7 +214,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     final int FETCH_LIMIT = 10;
     int offset = 0;
     List<? extends Model> modelList;
-    while (!(modelList = modelQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty((modelList = modelQuery.fetch(FETCH_LIMIT, offset)))) {
       for (Model model : modelList) {
         offset++;
         createForecastRecapLines(forecastRecap, model, forecastRecapLineType);
@@ -641,7 +643,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
     if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER) {
-      for (Timetable timetable : timetableList) {
+      for (Timetable timetable : ListUtils.emptyIfNull(timetableList)) {
         timetable = timetableRepo.find(timetable.getId());
         BigDecimal amountCompanyCurr =
             currencyService
@@ -663,7 +665,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       }
     } else if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER) {
-      for (Timetable timetable : timetableList) {
+      for (Timetable timetable : ListUtils.emptyIfNull(timetableList)) {
         timetable = timetableRepo.find(timetable.getId());
         BigDecimal amountCompanyCurr =
             currencyService
@@ -711,7 +713,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   @Override
   public void computeForecastRecapLineBalance(ForecastRecap forecastRecap) {
 
-    List<ForecastRecapLine> forecastRecapLines = forecastRecap.getForecastRecapLineList();
+    List<ForecastRecapLine> forecastRecapLines =
+        forecastRecap.getForecastRecapLineList() == null
+            ? new ArrayList<>()
+            : forecastRecap.getForecastRecapLineList();
 
     Collections.sort(
         forecastRecapLines,

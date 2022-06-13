@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -45,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,13 +111,13 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
     List<String> query = Lists.newArrayList();
 
-    if (!hrBatch.getEmployeeSet().isEmpty()) {
+    if (ObjectUtils.notEmpty(hrBatch.getEmployeeSet())) {
       String employeeIds =
           Joiner.on(',')
               .join(Iterables.transform(hrBatch.getEmployeeSet(), obj -> obj.getId().toString()));
       query.add("self.id IN (" + employeeIds + ")");
     }
-    if (!hrBatch.getPlanningSet().isEmpty()) {
+    if (ObjectUtils.notEmpty(hrBatch.getPlanningSet())) {
       String planningIds =
           Joiner.on(',')
               .join(Iterables.transform(hrBatch.getPlanningSet(), obj -> obj.getId().toString()));
@@ -138,6 +140,10 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
   }
 
   public void generatePayrollPreparations(List<Employee> employeeList) {
+
+    if (CollectionUtils.isEmpty(employeeList)) {
+      return;
+    }
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
@@ -185,7 +191,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
                 (company != null) ? companyFilter : filter, hrBatch.getPeriod(), employee, company)
             .fetch();
     log.debug("list : " + payrollPreparationList);
-    if (!payrollPreparationList.isEmpty()) {
+    if (ObjectUtils.notEmpty(payrollPreparationList)) {
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,

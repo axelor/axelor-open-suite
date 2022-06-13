@@ -23,6 +23,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -38,9 +39,11 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   @Override
   @Transactional(rollbackOn = Exception.class)
   public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
-    for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
+    for (PurchaseOrderLine orderLine :
+        ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineList())) {
       orderLine.setProject(purchaseOrder.getProject());
-      for (AnalyticMoveLine analyticMoveLine : orderLine.getAnalyticMoveLineList()) {
+      for (AnalyticMoveLine analyticMoveLine :
+          ListUtils.emptyIfNull(orderLine.getAnalyticMoveLineList())) {
         analyticMoveLine.setProject(purchaseOrder.getProject());
         analyticMoveLineRepository.save(analyticMoveLine);
       }
@@ -51,9 +54,10 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   @Override
   @Transactional(rollbackOn = Exception.class)
   public SaleOrder updateLines(SaleOrder saleOrder) {
-    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine orderLine : ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
       orderLine.setProject(saleOrder.getProject());
-      for (AnalyticMoveLine analyticMoveLine : orderLine.getAnalyticMoveLineList()) {
+      for (AnalyticMoveLine analyticMoveLine :
+          ListUtils.emptyIfNull(orderLine.getAnalyticMoveLineList())) {
         analyticMoveLine.setProject(saleOrder.getProject());
         analyticMoveLineRepository.save(analyticMoveLine);
       }

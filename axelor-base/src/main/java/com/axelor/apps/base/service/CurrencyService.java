@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -227,7 +228,7 @@ public class CurrencyService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_4));
     }
 
-    for (CurrencyConversionLine existingCcl : currencyConversionLines) {
+    for (CurrencyConversionLine existingCcl : ListUtils.emptyIfNull(currencyConversionLines)) {
       if (existingCcl.equals(currentCcl)
           || !(existingCcl.getStartCurrency().equals(startCurrency)
               && existingCcl.getEndCurrency().equals(endCurrency))) {

@@ -35,6 +35,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.List;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 
@@ -77,7 +78,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
             .setMaxResults(FETCH_LIMIT);
 
     List<StockMove> stockMoveList;
-    while (!(stockMoveList = query.getResultList()).isEmpty()) {
+    while (CollectionUtils.isNotEmpty((stockMoveList = query.getResultList()))) {
       for (StockMove stockMove : stockMoveList) {
         try {
           stockMoveInvoiceService.createInvoiceFromSaleOrder(

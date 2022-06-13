@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
@@ -289,6 +290,9 @@ public class DataBackupCreateService {
     }
 
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
+    if (metaModels == null) {
+      metaModels = new ArrayList<>();
+    }
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
@@ -374,26 +378,28 @@ public class DataBackupCreateService {
         DatabaseMetaData dbmd = connection.getMetaData();
 
         List<Property> properties = model.fields();
-        for (Property property : properties) {
-          if (property.isRequired()) {
-            ResultSet res =
-                dbmd.getColumns(
-                    null,
-                    null,
-                    metaModel.getTableName().toLowerCase(),
-                    property.getName().replaceAll("([^_A-Z])([A-Z])", "$1_$2").toLowerCase());
+        if (ObjectUtils.notEmpty(properties)) {
+          for (Property property : properties) {
+            if (property.isRequired()) {
+              ResultSet res =
+                  dbmd.getColumns(
+                      null,
+                      null,
+                      metaModel.getTableName().toLowerCase(),
+                      property.getName().replaceAll("([^_A-Z])([A-Z])", "$1_$2").toLowerCase());
 
-            while (res.next()) {
-              if (res.getInt("NULLABLE") == 1) {
-                String strErr = "Required field issue in table: ";
-                sb.append(strErr)
-                    .append(
-                        "Model: "
-                            + metaModel.getName()
-                            + ", Field: "
-                            + property.getName()
-                            + "-----------------------------------------\n");
-                query = null;
+              while (res.next()) {
+                if (res.getInt("NULLABLE") == 1) {
+                  String strErr = "Required field issue in table: ";
+                  sb.append(strErr)
+                      .append(
+                          "Model: "
+                              + metaModel.getName()
+                              + ", Field: "
+                              + property.getName()
+                              + "-----------------------------------------\n");
+                  query = null;
+                }
               }
             }
           }

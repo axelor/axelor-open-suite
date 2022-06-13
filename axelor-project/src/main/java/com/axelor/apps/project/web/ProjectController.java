@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -37,7 +38,7 @@ public class ProjectController {
   public void importMembers(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
     if (project.getTeam() != null) {
-      project.getTeam().getMembers().forEach(project::addMembersUserSetItem);
+      SetUtils.emptyIfNull(project.getTeam().getMembers()).forEach(project::addMembersUserSetItem);
       response.setValue("membersUserSet", project.getMembersUserSet());
     }
   }

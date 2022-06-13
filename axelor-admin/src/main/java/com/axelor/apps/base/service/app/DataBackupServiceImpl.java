@@ -35,6 +35,7 @@ import com.google.inject.servlet.ServletScopes;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -181,6 +182,9 @@ public class DataBackupServiceImpl implements DataBackupService {
         "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
 
     List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
+    if (metaModelList == null) {
+      metaModelList = new ArrayList<>();
+    }
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModelList.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
 

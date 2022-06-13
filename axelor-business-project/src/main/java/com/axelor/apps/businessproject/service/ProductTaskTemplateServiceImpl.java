@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,7 +62,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     List<ProjectTask> tasks = new ArrayList<>();
     Product product = saleOrderLine.getProduct();
 
-    for (TaskTemplate template : templates) {
+    for (TaskTemplate template : ListUtils.emptyIfNull(templates)) {
       BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
 
       while (qtyTmp.signum() > 0) {

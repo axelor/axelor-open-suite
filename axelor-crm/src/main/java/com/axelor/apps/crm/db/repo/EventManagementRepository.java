@@ -26,6 +26,7 @@ import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -111,7 +112,8 @@ public class EventManagementRepository extends EventRepository {
 
       User user = AuthUtils.getUser();
       List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
-      if (calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendar().getId())) {
+      if (ObjectUtils.isEmpty(calendarIdlist)
+          || !calendarIdlist.contains(entity.getCalendar().getId())) {
         throw new AxelorException(
             entity,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

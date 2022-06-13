@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -143,7 +144,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     }
 
     for (List<Expense> expenseList;
-        !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty();
+        ObjectUtils.notEmpty((expenseList = query.fetch(FETCH_LIMIT)));
         JPA.clear()) {
       for (Expense expense : expenseList) {
         try {

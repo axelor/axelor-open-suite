@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 
 public class ManufOrderValidateBusinessServiceImpl implements ManufOrderValidateBusinessService {
@@ -26,7 +27,7 @@ public class ManufOrderValidateBusinessServiceImpl implements ManufOrderValidate
   public long checkTimesheet(ManufOrder manufOrder) {
     OperationOrderValidateBusinessService operationOrderValidService =
         Beans.get(OperationOrderValidateBusinessService.class);
-    return manufOrder.getOperationOrderList().stream()
+    return ListUtils.emptyIfNull(manufOrder.getOperationOrderList()).stream()
         .mapToLong(operationOrderValidService::checkTimesheet)
         .sum();
   }

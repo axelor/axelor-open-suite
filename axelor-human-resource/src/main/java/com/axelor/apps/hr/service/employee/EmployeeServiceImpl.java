@@ -169,11 +169,12 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
                 fromDate,
                 toDate)
             .fetch();
-
-    for (LeaveRequest leaveRequest : leaveRequestList) {
-      daysLeave =
-          daysLeave.add(
-              Beans.get(LeaveService.class).computeDuration(leaveRequest, fromDate, toDate));
+    if (leaveRequestList != null) {
+      for (LeaveRequest leaveRequest : leaveRequestList) {
+        daysLeave =
+            daysLeave.add(
+                Beans.get(LeaveService.class).computeDuration(leaveRequest, fromDate, toDate));
+      }
     }
 
     return daysWorks.subtract(daysLeave);

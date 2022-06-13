@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -146,7 +147,7 @@ public class UnitConversionService {
       this.maker.setContext(product, "Product");
     }
     String eval = null;
-    for (UnitConversion unitConversion : unitConversionList) {
+    for (UnitConversion unitConversion : ListUtils.emptyIfNull(unitConversionList)) {
 
       if (unitConversion.getStartUnit().equals(startUnit)
           && unitConversion.getEndUnit().equals(endUnit)) {

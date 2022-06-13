@@ -39,6 +39,7 @@ import com.axelor.meta.db.MetaModel;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -108,12 +109,15 @@ public class BatchTimesheetReminder extends BatchStrategy {
                 "self.timesheetReminder = 't' AND self.mainEmploymentContract.payCompany = :companyId")
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
+    if (employees != null) {
+      employees.removeIf(
+          employee ->
+              hasRecentTimesheet(now, daysBeforeReminder, employee)
+                  || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
 
-    employees.removeIf(
-        employee ->
-            hasRecentTimesheet(now, daysBeforeReminder, employee)
-                || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
-    return employees;
+      return employees;
+    }
+    return new ArrayList<>();
   }
 
   private boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
@@ -139,7 +140,7 @@ public class ValidatorService {
 
     sortFileTabList(advancedImport.getFileTabList());
 
-    for (FileTab fileTab : advancedImport.getFileTabList()) {
+    for (FileTab fileTab : ListUtils.emptyIfNull(advancedImport.getFileTabList())) {
       if (!Arrays.stream(sheets).anyMatch(sheet -> sheet.equals(fileTab.getName()))) {
         continue;
       }
@@ -197,7 +198,7 @@ public class ValidatorService {
     }
     List<String> sheetList = Arrays.asList(sheets);
     List<String> tabList =
-        advancedImport.getFileTabList().stream()
+        ListUtils.emptyIfNull(advancedImport.getFileTabList()).stream()
             .map(tab -> tab.getName())
             .collect(Collectors.toList());
 

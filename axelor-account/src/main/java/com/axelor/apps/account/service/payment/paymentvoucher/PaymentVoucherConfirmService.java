@@ -153,12 +153,14 @@ public class PaymentVoucherConfirmService {
   }
 
   private void waitForDepositSlip(PaymentVoucher paymentVoucher) {
-    for (PayVoucherElementToPay payVoucherElementToPay :
-        paymentVoucher.getPayVoucherElementToPayList()) {
-      Invoice invoice = payVoucherElementToPay.getMoveLine().getMove().getInvoice();
-      boolean hasPendingPayments =
-          payVoucherElementToPay.getRemainingAmountAfterPayment().signum() <= 0;
-      invoice.setHasPendingPayments(hasPendingPayments);
+    if (paymentVoucher.getPayVoucherElementToPayList() != null) {
+      for (PayVoucherElementToPay payVoucherElementToPay :
+          paymentVoucher.getPayVoucherElementToPayList()) {
+        Invoice invoice = payVoucherElementToPay.getMoveLine().getMove().getInvoice();
+        boolean hasPendingPayments =
+            payVoucherElementToPay.getRemainingAmountAfterPayment().signum() <= 0;
+        invoice.setHasPendingPayments(hasPendingPayments);
+      }
     }
 
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
@@ -398,9 +400,11 @@ public class PaymentVoucherConfirmService {
     boolean scheduleToBePaid2 = scheduleToBePaid;
 
     List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
-    for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
+    if (payVoucherElementToPayList != null) {
+      for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
 
-      debitMoveLines.add(payVoucherElementToPay.getMoveLine());
+        debitMoveLines.add(payVoucherElementToPay.getMoveLine());
+      }
     }
     List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
     creditMoveLines.add(creditMoveLine);

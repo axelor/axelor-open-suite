@@ -229,7 +229,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public void checkLines(BankOrder bankOrder) throws AxelorException {
     List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
-    if (bankOrderLines.isEmpty()) {
+    if (bankOrderLines == null || bankOrderLines.isEmpty()) {
       throw new AxelorException(
           bankOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -267,15 +267,17 @@ public class BankOrderServiceImpl implements BankOrderService {
     InvoicePaymentValidateServiceBankPayImpl invoicePaymentValidateServiceBankPayImpl =
         Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
 
-    for (InvoicePayment invoicePayment : invoicePaymentList) {
-      if (invoicePayment != null
-          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
-          && invoicePayment.getInvoice() != null) {
+    if (ObjectUtils.notEmpty(invoicePaymentList)) {
+      for (InvoicePayment invoicePayment : invoicePaymentList) {
+        if (invoicePayment != null
+            && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
+            && invoicePayment.getInvoice() != null) {
 
-        if (bankOrderLineOriginService.existBankOrderLineOrigin(
-            bankOrder, invoicePayment.getInvoice())) {
+          if (bankOrderLineOriginService.existBankOrderLineOrigin(
+              bankOrder, invoicePayment.getInvoice())) {
 
-          invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+            invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+          }
         }
       }
     }
@@ -287,10 +289,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
 
-    for (InvoicePayment invoicePayment : invoicePaymentList) {
-      if (invoicePayment != null
-          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        invoicePaymentCancelService.cancel(invoicePayment);
+    if (ObjectUtils.notEmpty(invoicePaymentList)) {
+      for (InvoicePayment invoicePayment : invoicePaymentList) {
+        if (invoicePayment != null
+            && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+          invoicePaymentCancelService.cancel(invoicePayment);
+        }
       }
     }
   }

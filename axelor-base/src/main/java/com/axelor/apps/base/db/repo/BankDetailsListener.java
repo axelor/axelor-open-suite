@@ -20,6 +20,7 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -32,7 +33,7 @@ public class BankDetailsListener {
       Company company = bankDetails.getCompany();
 
       if (company != null) {
-        for (BankDetails details : company.getBankDetailsList()) {
+        for (BankDetails details : ListUtils.emptyIfNull(company.getBankDetailsList())) {
           if (!details.getId().equals(bankDetails.getId())
               && details.getIban().equals(bankDetails.getIban())
               && details.getActive()) {

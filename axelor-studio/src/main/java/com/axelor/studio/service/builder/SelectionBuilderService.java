@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
@@ -129,7 +130,7 @@ public class SelectionBuilderService {
     if (metaSelect == null) {
       metaSelect = new MetaSelect(name);
     } else {
-      for (MetaSelectItem item : metaSelect.getItems()) {
+      for (MetaSelectItem item : ListUtils.emptyIfNull(metaSelect.getItems())) {
         itemMap.put(item.getValue(), item);
       }
     }

@@ -20,6 +20,7 @@ package com.axelor.apps.bpm.service.init;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.baml.tools.BpmTools;
 import com.axelor.apps.bpm.context.WkfCache;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.tenants.TenantConfig;
 import com.axelor.db.tenants.TenantConfigProvider;
 import com.axelor.inject.Beans;
@@ -74,7 +75,8 @@ public class ProcessEngineService {
             .setDefaultSerializationFormat(Variables.SerializationDataFormats.JAVA.name())
             .buildProcessEngine();
 
-    for (Deployment deployment : engine.getRepositoryService().createDeploymentQuery().list()) {
+    for (Deployment deployment :
+        ListUtils.emptyIfNull(engine.getRepositoryService().createDeploymentQuery().list())) {
       engine
           .getManagementService()
           .registerProcessApplication(

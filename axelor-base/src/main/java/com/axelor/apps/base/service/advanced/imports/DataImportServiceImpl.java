@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
@@ -164,7 +165,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     validatorService.sortFileTabList(advancedImport.getFileTabList());
 
-    for (FileTab fileTab : advancedImport.getFileTabList()) {
+    for (FileTab fileTab : ListUtils.emptyIfNull(advancedImport.getFileTabList())) {
       if (!Arrays.stream(sheets).anyMatch(sheet -> sheet.equals(fileTab.getName()))) {
         continue;
       }
@@ -254,7 +255,7 @@ public class DataImportServiceImpl implements DataImportService {
     int cnt = 0;
     Map<String, Object> searchMap = new HashMap<String, Object>();
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
+    for (FileField fileField : ListUtils.emptyIfNull(fileTab.getFileFieldList())) {
       if (fileField.getImportType() == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
         continue;
       }
@@ -305,7 +306,9 @@ public class DataImportServiceImpl implements DataImportService {
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
     List<String> dataList = new ArrayList<String>();
 
-    for (int fieldIndex = 0; fieldIndex < fileTab.getFileFieldList().size(); fieldIndex++) {
+    for (int fieldIndex = 0;
+        fieldIndex < ListUtils.size(fileTab.getFileFieldList());
+        fieldIndex++) {
       FileField fileField = fileTab.getFileFieldList().get(fieldIndex);
 
       String key = null;

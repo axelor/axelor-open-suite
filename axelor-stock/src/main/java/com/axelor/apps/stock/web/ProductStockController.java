@@ -36,6 +36,7 @@ import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ProductStockController {
@@ -90,8 +91,10 @@ public class ProductStockController {
       List<StockLocationLine> stockLocationLineList =
           stockLocationLineService.getStockLocationLines(product);
 
-      for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
+      if (CollectionUtils.isNotEmpty(stockLocationLineList)) {
+        for (StockLocationLine stockLocationLine : stockLocationLineList) {
+          stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
+        }
       }
       Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
       response.setReload(true);

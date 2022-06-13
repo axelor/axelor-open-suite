@@ -28,6 +28,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductStockRepository extends ProductBaseRepository {
 
@@ -56,7 +58,8 @@ public class ProductStockRepository extends ProductBaseRepository {
         Beans.get(WeightedAveragePriceService.class);
     Set<MetaField> specificProductFieldSet =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
-    if (!specificProductFieldSet.isEmpty() && appBaseService.getAppBase().getEnableMultiCompany()) {
+    if (CollectionUtils.isNotEmpty(specificProductFieldSet)
+        && appBaseService.getAppBase().getEnableMultiCompany()) {
       ArrayList<Company> productCompanyList = new ArrayList<>();
       if (product.getProductCompanyList() != null) {
         for (ProductCompany productCompany : product.getProductCompanyList()) {
@@ -65,7 +68,7 @@ public class ProductStockRepository extends ProductBaseRepository {
       }
       Mapper mapper = Mapper.of(Product.class);
       List<StockConfig> stockConfigList = Beans.get(StockConfigRepository.class).all().fetch();
-      for (StockConfig stockConfig : stockConfigList) {
+      for (StockConfig stockConfig : ListUtils.emptyIfNull(stockConfigList)) {
         if (stockConfig.getCompany() != null
             && !productCompanyList.contains(stockConfig.getCompany())
             && stockConfig.getReceiptDefaultStockLocation() != null

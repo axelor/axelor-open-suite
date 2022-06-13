@@ -29,6 +29,7 @@ import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.deployment.BpmDeploymentService;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.apps.bpm.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -401,13 +402,15 @@ public class WkfModelServiceImpl implements WkfModelService {
 
     String diagramXml = diagramNodeList.item(0).getTextContent();
     String[] nodeNames = StringUtils.substringsBetween(diagramXml, "name=\"", "\"");
-    for (String node : nodeNames) {
-      String translationStr = translationService.getTranslationKey(node, sourceLanguage);
-      translationStr = translationService.getTranslation(translationStr, targetLanguage);
-      node = node.replace("$", "\\\\$");
-      node = node.replace("{", "\\\\{");
-      node = node.replace("}", "\\\\}");
-      diagramXml = diagramXml.replaceAll(Pattern.quote(node), translationStr);
+    if (nodeNames != null) {
+      for (String node : nodeNames) {
+        String translationStr = translationService.getTranslationKey(node, sourceLanguage);
+        translationStr = translationService.getTranslation(translationStr, targetLanguage);
+        node = node.replace("$", "\\\\$");
+        node = node.replace("{", "\\\\{");
+        node = node.replace("}", "\\\\}");
+        diagramXml = diagramXml.replaceAll(Pattern.quote(node), translationStr);
+      }
     }
 
     diagramNodeList.item(0).setTextContent(diagramXml);
@@ -428,7 +431,7 @@ public class WkfModelServiceImpl implements WkfModelService {
 
     List<WkfProcess> processList = getProcesses(wkfModel);
 
-    for (WkfProcess process : processList) {
+    for (WkfProcess process : ListUtils.emptyIfNull(processList)) {
       Map<String, Object> processMap = new HashMap<>();
       List<Map<String, Object>> configList = new ArrayList<>();
 
@@ -436,7 +439,7 @@ public class WkfModelServiceImpl implements WkfModelService {
       this.sortProcessConfig(processConfigs);
 
       List<String> _modelList = new ArrayList<>();
-      for (WkfProcessConfig processConfig : processConfigs) {
+      for (WkfProcessConfig processConfig : ListUtils.emptyIfNull(processConfigs)) {
 
         final boolean isMetaModel = processConfig.getMetaModel() != null;
         final String modelName =
@@ -488,7 +491,7 @@ public class WkfModelServiceImpl implements WkfModelService {
 
   @Override
   public void sortProcessConfig(List<WkfProcessConfig> processConfigs) {
-    processConfigs.sort(Comparator.comparing(WkfProcessConfig::getId));
+    ListUtils.emptyIfNull(processConfigs).sort(Comparator.comparing(WkfProcessConfig::getId));
   }
 
   @SuppressWarnings("serial")
@@ -521,59 +524,60 @@ public class WkfModelServiceImpl implements WkfModelService {
     List<Long> recordIdsPerModel = new ArrayList<>();
     Map<String, Object> taskMap = new HashMap<String, Object>();
 
-    taskConfigs.forEach(
-        config -> {
-          List<String> processInstanceIds =
-              wkfInstanceService.findProcessInstanceByNode(
-                  config.getName(), config.getProcessId(), config.getType(), false);
+    ListUtils.emptyIfNull(taskConfigs)
+        .forEach(
+            config -> {
+              List<String> processInstanceIds =
+                  wkfInstanceService.findProcessInstanceByNode(
+                      config.getName(), config.getProcessId(), config.getType(), false);
 
-          List<Long> recordStatusIds = new ArrayList<>();
+              List<Long> recordStatusIds = new ArrayList<>();
 
-          if (!isMetaModel) {
-            List<MetaJsonRecord> jsonModelrecords =
-                this.getMetaJsonRecords(config, processInstanceIds, modelName, user, null);
+              if (!isMetaModel) {
+                List<MetaJsonRecord> jsonModelrecords =
+                    this.getMetaJsonRecords(config, processInstanceIds, modelName, user, null);
 
-            recordStatusIds.addAll(
-                jsonModelrecords.stream()
-                    .map(record -> record.getId())
-                    .collect(Collectors.toList()));
+                recordStatusIds.addAll(
+                    ListUtils.emptyIfNull(jsonModelrecords).stream()
+                        .map(record -> record.getId())
+                        .collect(Collectors.toList()));
 
-            if (withTask) {
-              this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
-            }
+                if (withTask) {
+                  this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
+                }
 
-          } else {
-            List<Model> metaModelRecords =
-                this.getMetaModelRecords(config, processInstanceIds, modelName, user, null);
+              } else {
+                List<Model> metaModelRecords =
+                    this.getMetaModelRecords(config, processInstanceIds, modelName, user, null);
 
-            recordStatusIds.addAll(
-                metaModelRecords.stream()
-                    .map(record -> record.getId())
-                    .collect(Collectors.toList()));
+                recordStatusIds.addAll(
+                    ListUtils.emptyIfNull(metaModelRecords).stream()
+                        .map(record -> record.getId())
+                        .collect(Collectors.toList()));
 
-            if (withTask) {
-              this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
-            }
-          }
+                if (withTask) {
+                  this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
+                }
+              }
 
-          if (CollectionUtils.isNotEmpty(recordStatusIds)) {
-            recordIdsPerModel.addAll(recordStatusIds);
-            statusList.add(
-                new HashMap<String, Object>() {
-                  {
-                    put(
-                        "title",
-                        !StringUtils.isBlank(config.getDescription())
-                            ? config.getDescription()
-                            : config.getName());
-                    put("isMetaModel", isMetaModel);
-                    put("modelName", modelName);
-                    put("statusCount", recordStatusIds.size());
-                    put("statusRecordIds", recordStatusIds);
-                  }
-                });
-          }
-        });
+              if (CollectionUtils.isNotEmpty(recordStatusIds)) {
+                recordIdsPerModel.addAll(recordStatusIds);
+                statusList.add(
+                    new HashMap<String, Object>() {
+                      {
+                        put(
+                            "title",
+                            !StringUtils.isBlank(config.getDescription())
+                                ? config.getDescription()
+                                : config.getName());
+                        put("isMetaModel", isMetaModel);
+                        put("modelName", modelName);
+                        put("statusCount", recordStatusIds.size());
+                        put("statusRecordIds", recordStatusIds);
+                      }
+                    });
+              }
+            });
 
     if (withTask) {
       taskMap.put("isMetaModel", isMetaModel);
@@ -591,7 +595,7 @@ public class WkfModelServiceImpl implements WkfModelService {
 
     List<WkfProcess> processList = getProcesses(wkfModel);
 
-    for (WkfProcess process : processList) {
+    for (WkfProcess process : ListUtils.emptyIfNull(processList)) {
       Map<String, Object> processMap = new HashMap<>();
       List<Map<String, Object>> configList = new ArrayList<>();
       WkfProcessConfig firstProcessConfig = null;
@@ -601,7 +605,7 @@ public class WkfModelServiceImpl implements WkfModelService {
 
       int taskAssignedToMe = 0;
       List<String> _modelList = new ArrayList<>();
-      for (WkfProcessConfig processConfig : processConfigs) {
+      for (WkfProcessConfig processConfig : ListUtils.emptyIfNull(processConfigs)) {
 
         boolean isDirectCreation = processConfig.getIsDirectCreation();
         firstProcessConfig =
@@ -848,28 +852,46 @@ public class WkfModelServiceImpl implements WkfModelService {
     if (!isMetaModel) {
       List<MetaJsonRecord> taskTodayList =
           this.getMetaJsonRecords(config, processInstanceIds, modelName, user, TASK_TODAY);
-      taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskTodayIds.addAll(
+          ListUtils.emptyIfNull(taskTodayList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<MetaJsonRecord> taskNextList =
           this.getMetaJsonRecords(config, processInstanceIds, modelName, user, TASK_NEXT);
-      taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskNextIds.addAll(
+          ListUtils.emptyIfNull(taskNextList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<MetaJsonRecord> lateTaskList =
           this.getMetaJsonRecords(config, processInstanceIds, modelName, user, LATE_TASK);
-      lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      lateTaskIds.addAll(
+          ListUtils.emptyIfNull(lateTaskList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
     } else {
       List<Model> taskTodayList =
           this.getMetaModelRecords(config, processInstanceIds, modelName, user, TASK_TODAY);
-      taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskTodayIds.addAll(
+          ListUtils.emptyIfNull(taskTodayList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<Model> taskNextList =
           this.getMetaModelRecords(config, processInstanceIds, modelName, user, TASK_NEXT);
-      taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskNextIds.addAll(
+          ListUtils.emptyIfNull(taskNextList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<Model> lateTaskList =
           this.getMetaModelRecords(config, processInstanceIds, modelName, user, LATE_TASK);
-      lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      lateTaskIds.addAll(
+          ListUtils.emptyIfNull(lateTaskList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
     }
 
     if (taskMap.containsKey("taskTodayIds")) {

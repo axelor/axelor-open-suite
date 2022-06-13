@@ -35,6 +35,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.slf4j.Logger;
@@ -243,12 +244,14 @@ public class FilterSqlService {
       e.printStackTrace();
     }
 
-    for (MetaField field : targetModel.getMetaFields()) {
-      if (field.getName().equals("name")) {
-        return new String[] {fieldName + ".name", field.getTypeName()};
-      }
-      if (field.getName().equals("code")) {
-        return new String[] {fieldName + ".code", field.getTypeName()};
+    if (CollectionUtils.isNotEmpty(targetModel.getMetaFields())) {
+      for (MetaField field : targetModel.getMetaFields()) {
+        if (field.getName().equals("name")) {
+          return new String[] {fieldName + ".name", field.getTypeName()};
+        }
+        if (field.getName().equals("code")) {
+          return new String[] {fieldName + ".code", field.getTypeName()};
+        }
       }
     }
 

@@ -48,6 +48,7 @@ import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -157,7 +158,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setTaxTotal(BigDecimal.ZERO);
     purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+    for (PurchaseOrderLine purchaseOrderLine :
+        ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineList())) {
       purchaseOrder.setExTaxTotal(
           purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
 
@@ -166,7 +168,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
           purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
     }
 
-    for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
+    for (PurchaseOrderLineTax purchaseOrderLineVat :
+        ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineTaxList())) {
 
       // In the purchase order currency
       purchaseOrder.setTaxTotal(

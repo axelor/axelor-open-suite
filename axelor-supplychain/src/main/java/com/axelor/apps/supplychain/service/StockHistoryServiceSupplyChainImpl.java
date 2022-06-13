@@ -26,6 +26,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl {
 
@@ -46,18 +47,20 @@ public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl 
     BigDecimal sumOutQtyPeriod = BigDecimal.ZERO;
     BigDecimal sumOneoffSaleOutQtyPeriod = BigDecimal.ZERO;
     BigDecimal qtyConverted = BigDecimal.ZERO;
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      qtyConverted =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              stockMoveLine.getProduct().getUnit(),
-              stockMoveLine.getRealQty(),
-              stockMoveLine.getRealQty().scale(),
-              stockMoveLine.getProduct());
-      if (stockMoveLine.getSaleOrderLine().getSaleOrder().getOneoffSale()) {
-        sumOneoffSaleOutQtyPeriod = sumOneoffSaleOutQtyPeriod.add(qtyConverted);
-      } else {
-        sumOutQtyPeriod = sumOutQtyPeriod.add(qtyConverted);
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        qtyConverted =
+            unitConversionService.convert(
+                stockMoveLine.getUnit(),
+                stockMoveLine.getProduct().getUnit(),
+                stockMoveLine.getRealQty(),
+                stockMoveLine.getRealQty().scale(),
+                stockMoveLine.getProduct());
+        if (stockMoveLine.getSaleOrderLine().getSaleOrder().getOneoffSale()) {
+          sumOneoffSaleOutQtyPeriod = sumOneoffSaleOutQtyPeriod.add(qtyConverted);
+        } else {
+          sumOutQtyPeriod = sumOutQtyPeriod.add(qtyConverted);
+        }
       }
     }
     stockHistoryLine.setSumOutQtyPeriod(sumOutQtyPeriod);

@@ -34,6 +34,7 @@ import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.tool.MetaTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -62,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
@@ -140,10 +142,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       Configurator configurator, List<MetaJsonField> indicators) {
 
     List<ConfiguratorFormula> formulas = new ArrayList<>();
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
+    formulas.addAll(
+        ListUtils.emptyIfNull(
+            configurator.getConfiguratorCreator().getConfiguratorProductFormulaList()));
+    formulas.addAll(
+        ListUtils.emptyIfNull(
+            configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList()));
 
-    return indicators.stream()
+    return ListUtils.emptyIfNull(indicators).stream()
         .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
         .collect(Collectors.toList());
   }
@@ -336,7 +342,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       formulas = creator.getConfiguratorSOLineFormulaList();
     }
     String groovyFormula = null;
-    for (ConfiguratorFormula formula : formulas) {
+    for (ConfiguratorFormula formula : ListUtils.emptyIfNull(formulas)) {
       String fieldName = indicatorName;
       fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
@@ -450,7 +456,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         methodArg[0] = SaleOrderLine.class;
       }
       configuratorFormulaList =
-          configuratorFormulaList.stream()
+          ListUtils.emptyIfNull(configuratorFormulaList).stream()
               .filter(
                   configuratorFormula ->
                       "OneToMany".equals(configuratorFormula.getMetaField().getRelationship()))
@@ -508,6 +514,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             .bind("name", model.getClass().getSimpleName())
             .fetch();
 
+    if (CollectionUtils.isEmpty(manyToManyFields)) {
+      return;
+    }
+
     Mapper mapper = Mapper.of(model.getClass());
     for (MetaField manyToManyField : manyToManyFields) {
       Set<? extends Model> manyToManyValue =
@@ -525,6 +535,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToOne'")
             .bind("name", model.getClass().getSimpleName())
             .fetch();
+
+    if (CollectionUtils.isEmpty(manyToOneFields)) {
+      return;
+    }
 
     Mapper mapper = Mapper.of(model.getClass());
     for (MetaField manyToOneField : manyToOneFields) {

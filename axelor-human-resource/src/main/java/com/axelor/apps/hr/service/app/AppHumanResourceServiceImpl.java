@@ -101,11 +101,12 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
   public void generateHrConfigurations() {
 
     List<Company> companies = companyRepo.all().filter("self.hrConfig is null").fetch();
-
-    for (Company company : companies) {
-      HRConfig hrConfig = new HRConfig();
-      hrConfig.setCompany(company);
-      hrConfigRepo.save(hrConfig);
+    if (companies != null) {
+      for (Company company : companies) {
+        HRConfig hrConfig = new HRConfig();
+        hrConfig.setCompany(company);
+        hrConfigRepo.save(hrConfig);
+      }
     }
   }
 }

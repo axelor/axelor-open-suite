@@ -25,6 +25,7 @@ import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
 import com.axelor.apps.bpm.service.init.WkfProcessApplication;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttrs;
@@ -134,14 +135,14 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
       migrateRunningInstances(wkfModel.getDeploymentId(), engine, definitions);
     }
 
-    if (definitions.size() == 1) {
+    if (ListUtils.size(definitions) == 1) {
       wkfModel.setVersionTag(definitions.get(0).getVersionTag());
     }
 
     wkfModel.setDeploymentId(deployment.getId());
 
-    log.debug("Definitions deployed: {}", definitions.size());
-    for (ProcessDefinition definition : definitions) {
+    log.debug("Definitions deployed: {}", ListUtils.size(definitions));
+    for (ProcessDefinition definition : ListUtils.emptyIfNull(definitions)) {
 
       WkfProcess process =
           wkfProcessRepository
@@ -183,9 +184,9 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
             .deploymentId(oldDeploymentId)
             .list();
 
-    log.debug("Old definition size " + oldDefinitions.size());
-    for (ProcessDefinition oldDefinition : oldDefinitions) {
-      for (ProcessDefinition newDefinition : definitions) {
+    log.debug("Old definition size " + ListUtils.size(oldDefinitions));
+    for (ProcessDefinition oldDefinition : ListUtils.emptyIfNull(oldDefinitions)) {
+      for (ProcessDefinition newDefinition : ListUtils.emptyIfNull(definitions)) {
         if (oldDefinition.getKey().equals(newDefinition.getKey())) {
           log.debug(
               "Migrating from old defintion: {}, to new definition: {}",

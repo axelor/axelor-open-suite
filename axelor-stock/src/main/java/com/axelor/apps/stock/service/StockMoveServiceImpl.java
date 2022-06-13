@@ -51,6 +51,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -72,6 +73,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -399,7 +401,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+      ListUtils.emptyIfNull(stockMove.getStockMoveLineList())
+          .forEach(stockMoveLineService::fillRealizeWapPrice);
     }
     stockMoveLineService.checkExpirationDates(stockMove);
 
@@ -514,7 +517,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     List<Product> productList =
-        stockMove.getStockMoveLineList().stream()
+        ListUtils.emptyIfNull(stockMove.getStockMoveLineList()).stream()
             .map(StockMoveLine::getProduct)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
@@ -621,11 +624,13 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList) {
 
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
-      if (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) != 0) {
+        if (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) != 0) {
 
-        return true;
+          return true;
+        }
       }
     }
 
@@ -903,14 +908,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setStockMoveLineList(new ArrayList<>());
 
     modifiedStockMoveLines =
-        modifiedStockMoveLines.stream()
+        ListUtils.emptyIfNull(modifiedStockMoveLines).stream()
             .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
 
       // find the original move line to update it
       Optional<StockMoveLine> correspondingMoveLine =
-          originalStockMove.getStockMoveLineList().stream()
+          ListUtils.emptyIfNull(originalStockMove.getStockMoveLineList()).stream()
               .filter(stockMoveLine -> stockMoveLine.getId().equals(moveLine.getId()))
               .findFirst();
       if (BigDecimal.ZERO.compareTo(moveLine.getQty()) > 0
@@ -979,7 +984,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
+    for (StockMoveLine line : ListUtils.emptyIfNull(stockMove.getStockMoveLineList()))
+      line.setRealQty(line.getQty());
     stockMoveRepo.save(stockMove);
   }
 
@@ -1172,7 +1178,7 @@ public class StockMoveServiceImpl implements StockMoveService {
                         .collect(Collectors.joining(","))
                     + ") AND self.printingSettings IS NULL")
             .fetch();
-    if (!stockMoveList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
       String exceptionMessage =
           String.format(
               I18n.get(IExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
@@ -1251,8 +1257,10 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   public void setAvailableStatus(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      stockMoveLineService.setAvailableStatus(stockMoveLine);
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLineService.setAvailableStatus(stockMoveLine);
+      }
     }
   }
 

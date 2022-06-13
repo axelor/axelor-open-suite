@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -82,7 +83,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     Partner clientPartner = project.getClientPartner();
     Partner contactPartner = project.getContactPartner();
-    if (contactPartner == null && clientPartner.getContactPartnerSet().size() == 1) {
+    if (contactPartner == null && SetUtils.size(clientPartner.getContactPartnerSet()) == 1) {
       contactPartner = clientPartner.getContactPartnerSet().iterator().next();
     }
 

@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.administration;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.Group;
@@ -140,7 +141,7 @@ public class ExportDbObjectService {
               .order("-priority")
               .order("id")
               .fetch();
-      log.debug("Total root menus: {}", menuList.size());
+      log.debug("Total root menus: {}", ListUtils.size(menuList));
       generateMenuGraph(menuList);
       CsvTool.csvWriter(
           objectFile.getParent(), objectFile.getName(), ';', csvHeaders, fieldDataList);
@@ -151,7 +152,7 @@ public class ExportDbObjectService {
 
   private void generateMenuGraph(List<? extends MetaMenu> menuList) {
     // log.debug("Checking menu list: {}",menuList);
-    for (MetaMenu menu : menuList) {
+    for (MetaMenu menu : ListUtils.emptyIfNull(menuList)) {
       String model = menu.getAction() != null ? menu.getAction().getModel() : null;
       // log.debug("Action model: ",model);
       if (model != null && !objectList.contains(model)) {
@@ -271,7 +272,7 @@ public class ExportDbObjectService {
 
       List<URL> urls = MetaScanner.findAll(module, "domains", "(.*?)\\.xml$");
 
-      for (URL url : urls) {
+      for (URL url : ListUtils.emptyIfNull(urls)) {
         File file = MetaFiles.createTempFile("tempXml", ".xml").toFile();
         org.apache.commons.io.FileUtils.copyURLToFile(url, file);
         String objectName = Paths.get(url.getPath()).getFileName().toString().split("\\.")[0];

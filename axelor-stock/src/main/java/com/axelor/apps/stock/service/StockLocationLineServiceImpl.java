@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -636,26 +637,30 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           product.getFullName());
     }
 
-    for (StockMoveLine incomingStockMoveLine : incomingStockMoveLineList) {
-      BigDecimal qtyToAdd =
-          unitConversionService.convert(
-              incomingStockMoveLine.getUnit(),
-              stockLocationLine.getUnit(),
-              incomingStockMoveLine.getRealQty(),
-              incomingStockMoveLine.getRealQty().scale(),
-              product);
-      futureQty = futureQty.add(qtyToAdd);
+    if (CollectionUtils.isNotEmpty(incomingStockMoveLineList)) {
+      for (StockMoveLine incomingStockMoveLine : incomingStockMoveLineList) {
+        BigDecimal qtyToAdd =
+            unitConversionService.convert(
+                incomingStockMoveLine.getUnit(),
+                stockLocationLine.getUnit(),
+                incomingStockMoveLine.getRealQty(),
+                incomingStockMoveLine.getRealQty().scale(),
+                product);
+        futureQty = futureQty.add(qtyToAdd);
+      }
     }
 
-    for (StockMoveLine outgoingStockMoveLine : outgoingStockMoveLineList) {
-      BigDecimal qtyToSubtract =
-          unitConversionService.convert(
-              outgoingStockMoveLine.getUnit(),
-              stockLocationLine.getUnit(),
-              outgoingStockMoveLine.getRealQty(),
-              outgoingStockMoveLine.getRealQty().scale(),
-              product);
-      futureQty = futureQty.subtract(qtyToSubtract);
+    if (CollectionUtils.isNotEmpty(outgoingStockMoveLineList)) {
+      for (StockMoveLine outgoingStockMoveLine : outgoingStockMoveLineList) {
+        BigDecimal qtyToSubtract =
+            unitConversionService.convert(
+                outgoingStockMoveLine.getUnit(),
+                stockLocationLine.getUnit(),
+                outgoingStockMoveLine.getRealQty(),
+                outgoingStockMoveLine.getRealQty().scale(),
+                product);
+        futureQty = futureQty.subtract(qtyToSubtract);
+      }
     }
 
     return futureQty;

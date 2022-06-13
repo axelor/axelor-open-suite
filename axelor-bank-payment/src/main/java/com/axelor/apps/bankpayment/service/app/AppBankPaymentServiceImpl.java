@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppBankPaymentRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -56,10 +57,12 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
   public void generateBankPaymentConfigurations() {
     List<Company> companies = companyRepo.all().filter("self.bankPaymentConfig IS NULL").fetch();
 
-    for (Company company : companies) {
-      BankPaymentConfig config = new BankPaymentConfig();
-      config.setCompany(company);
-      bankPaymentConfigRepo.save(config);
+    if (ObjectUtils.notEmpty(companies)) {
+      for (Company company : companies) {
+        BankPaymentConfig config = new BankPaymentConfig();
+        config.setCompany(company);
+        bankPaymentConfigRepo.save(config);
+      }
     }
   }
 }

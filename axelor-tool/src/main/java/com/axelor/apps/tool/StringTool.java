@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -218,15 +219,16 @@ public final class StringTool {
     StringBuilder sb = new StringBuilder(bytes.length * 2);
     String s = "";
 
-    for (byte b : bytes) {
+    if (ObjectUtils.notEmpty(bytes)) {
+      for (byte b : bytes) {
 
-      s = String.format("%x", b);
-      if (s.length() == 1) {
-        sb.append('0');
+        s = String.format("%x", b);
+        if (s.length() == 1) {
+          sb.append('0');
+        }
+        sb.append(s);
       }
-      sb.append(s);
     }
-
     return sb.toString();
   }
 

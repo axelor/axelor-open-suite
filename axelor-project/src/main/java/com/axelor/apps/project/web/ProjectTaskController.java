@@ -29,6 +29,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.time.Duration;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskController {
 
@@ -47,7 +48,7 @@ public class ProjectTaskController {
       boolean hideCancel = true;
       if (timer != null) {
         hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
-        hideCancel = timer.getTimerHistoryList().isEmpty();
+        hideCancel = CollectionUtils.isEmpty(timer.getTimerHistoryList());
       }
 
       response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);

@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockHistoryServiceImpl implements StockHistoryService {
 
@@ -204,16 +205,19 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .fetch();
 
     BigDecimal avgOutQtyOn12PastMonth = BigDecimal.ZERO;
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      // quantity in product unit
-      BigDecimal qtyConverted =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              stockMoveLine.getProduct().getUnit(),
-              stockMoveLine.getRealQty(),
-              stockMoveLine.getRealQty().scale(),
-              stockMoveLine.getProduct());
-      avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
+
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        // quantity in product unit
+        BigDecimal qtyConverted =
+            unitConversionService.convert(
+                stockMoveLine.getUnit(),
+                stockMoveLine.getProduct().getUnit(),
+                stockMoveLine.getRealQty(),
+                stockMoveLine.getRealQty().scale(),
+                stockMoveLine.getProduct());
+        avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
+      }
     }
     avgOutQtyOn12PastMonth =
         avgOutQtyOn12PastMonth.divide(

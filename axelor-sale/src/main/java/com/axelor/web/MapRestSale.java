@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -59,7 +60,7 @@ public class MapRestSale {
     labelNode.add("Turnover");
     arrayNode.add(labelNode);
 
-    for (SaleOrder so : orders) {
+    for (SaleOrder so : ListUtils.emptyIfNull(orders)) {
 
       Country country = so.getMainInvoicingAddress().getAddressL7Country();
       BigDecimal value = so.getExTaxTotal();

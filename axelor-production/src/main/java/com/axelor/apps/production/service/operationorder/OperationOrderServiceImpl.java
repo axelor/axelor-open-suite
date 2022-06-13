@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -226,7 +227,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                 toDateTime)
             .fetch();
     Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
+    for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderListTemp)) {
       if (operationOrder.getWorkCenter() != null
           && operationOrder.getWorkCenter().getMachine() != null) {
         if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
@@ -244,7 +245,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                   itDateTime.plusHours(1))
               .fetch();
       Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-      for (OperationOrder operationOrder : operationOrderList) {
+      for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderList)) {
         if (operationOrder.getWorkCenter() != null
             && operationOrder.getWorkCenter().getMachine() != null) {
           String machine = operationOrder.getWorkCenter().getMachine().getName();
@@ -321,7 +322,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                 toDateTime)
             .fetch();
     Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
+    for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderListTemp)) {
       if (operationOrder.getWorkCenter() != null
           && operationOrder.getWorkCenter().getMachine() != null) {
         if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
@@ -340,7 +341,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
               .fetch();
       Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
       WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
-      for (OperationOrder operationOrder : operationOrderList) {
+      for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderList)) {
         if (operationOrder.getWorkCenter() != null
             && operationOrder.getWorkCenter().getMachine() != null) {
           String machine = operationOrder.getWorkCenter().getMachine().getName();
@@ -470,7 +471,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return;
     }
     Optional<StockMove> stockMoveOpt =
-        operationOrder.getInStockMoveList().stream()
+        ListUtils.emptyIfNull(operationOrder.getInStockMoveList()).stream()
             .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
             .findFirst();
     StockMove stockMove;

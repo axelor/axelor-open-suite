@@ -34,6 +34,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SopServiceImpl implements SopService {
 
@@ -88,8 +91,10 @@ public class SopServiceImpl implements SopService {
             .bind("status", PeriodRepository.STATUS_OPENED)
             .fetch();
     List<SopLine> sopLineList = new ArrayList<SopLine>();
-    for (Period period : yearPeriods) {
-      sopLineList.add(this.createSOPLine(sop, period));
+    if (CollectionUtils.isNotEmpty(yearPeriods)) {
+      for (Period period : yearPeriods) {
+        sopLineList.add(this.createSOPLine(sop, period));
+      }
     }
     this.linkSOPLines(sop, sopLineList);
     this.updateSOPLines(sop);
@@ -116,7 +121,7 @@ public class SopServiceImpl implements SopService {
   }
 
   protected void updateSOPLines(Sop sop) throws AxelorException {
-    for (SopLine sopLine : sop.getSopLineList()) {
+    for (SopLine sopLine : ListUtils.emptyIfNull(sop.getSopLineList())) {
       sop = sopRepo.find(sop.getId());
       if (sop.getIsForecastOnHistoric()) {
         this.setSalesForecast(
@@ -147,7 +152,7 @@ public class SopServiceImpl implements SopService {
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 
     List<Long> stockLocationIds =
-        stockLocationSet.stream()
+        SetUtils.emptyIfNull(stockLocationSet).stream()
             .map(stockLocation -> stockLocation.getId())
             .collect(Collectors.toList());
 
@@ -167,7 +172,7 @@ public class SopServiceImpl implements SopService {
             .order("id");
     int offset = 0;
     List<SaleOrderLine> saleOrderLineList;
-    while (!(saleOrderLineList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty((saleOrderLineList = query.fetch(FETCH_LIMIT, offset)))) {
       offset += FETCH_LIMIT;
       actualCurrency = currencyRepo.find(actualCurrency.getId());
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {

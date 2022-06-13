@@ -34,6 +34,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -71,6 +72,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +122,10 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   public MetaFile exportUnitCostCalc(UnitCostCalculation unitCostCalculation, String fileName)
       throws IOException {
     List<String[]> list = new ArrayList<>();
-    List<UnitCostCalcLine> unitCostCalcLineList = unitCostCalculation.getUnitCostCalcLineList();
+    List<UnitCostCalcLine> unitCostCalcLineList =
+        unitCostCalculation.getUnitCostCalcLineList() == null
+            ? new ArrayList<>()
+            : unitCostCalculation.getUnitCostCalcLineList();
 
     Collections.sort(
         unitCostCalcLineList,
@@ -203,7 +208,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public void runUnitCostCalc(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
-    if (!unitCostCalculation.getUnitCostCalcLineList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getUnitCostCalcLineList())) {
       clear(unitCostCalculation);
     }
 
@@ -283,7 +288,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     Set<Product> productSet = Sets.newHashSet();
 
-    if (!unitCostCalculation.getProductSet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getProductSet())) {
 
       productSet.addAll(unitCostCalculation.getProductSet());
     }
@@ -291,40 +296,42 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     List<Integer> productSubTypeSelects =
         StringTool.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
-    if (!unitCostCalculation.getProductCategorySet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getProductCategorySet())) {
 
       productSet.addAll(
-          productRepository
-              .all()
-              .filter(
-                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
-                      + " AND self.dtype = 'Product'",
-                  unitCostCalculation.getProductCategorySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  productSubTypeSelects,
-                  unitCostCalculation.getCompanySet(),
-                  ProductRepository.PROCUREMENT_METHOD_PRODUCE,
-                  ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
-              .fetch());
+          ListUtils.emptyIfNull(
+              productRepository
+                  .all()
+                  .filter(
+                      "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
+                          + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                          + " AND self.dtype = 'Product'",
+                      unitCostCalculation.getProductCategorySet(),
+                      ProductRepository.PRODUCT_TYPE_STORABLE,
+                      productSubTypeSelects,
+                      unitCostCalculation.getCompanySet(),
+                      ProductRepository.PROCUREMENT_METHOD_PRODUCE,
+                      ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
+                  .fetch()));
     }
 
-    if (!unitCostCalculation.getProductFamilySet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getProductFamilySet())) {
 
       productSet.addAll(
-          productRepository
-              .all()
-              .filter(
-                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
-                      + " AND self.dtype = 'Product'",
-                  unitCostCalculation.getProductFamilySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  productSubTypeSelects,
-                  unitCostCalculation.getCompanySet(),
-                  ProductRepository.PROCUREMENT_METHOD_PRODUCE,
-                  ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
-              .fetch());
+          ListUtils.emptyIfNull(
+              productRepository
+                  .all()
+                  .filter(
+                      "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
+                          + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                          + " AND self.dtype = 'Product'",
+                      unitCostCalculation.getProductFamilySet(),
+                      ProductRepository.PRODUCT_TYPE_STORABLE,
+                      productSubTypeSelects,
+                      unitCostCalculation.getCompanySet(),
+                      ProductRepository.PROCUREMENT_METHOD_PRODUCE,
+                      ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
+                  .fetch()));
     }
 
     if (productSet.isEmpty()) {
@@ -461,7 +468,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
   public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
-    for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
+    for (UnitCostCalcLine unitCostCalcLine :
+        ListUtils.emptyIfNull(unitCostCalculation.getUnitCostCalcLineList())) {
 
       updateUnitCosts(unitCostCalcLineRepository.find(unitCostCalcLine.getId()));
 

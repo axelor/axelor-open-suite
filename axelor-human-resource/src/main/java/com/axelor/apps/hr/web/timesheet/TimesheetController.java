@@ -42,6 +42,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -136,7 +137,7 @@ public class TimesheetController {
                 AuthUtils.getUser(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
-    if (timesheetList.isEmpty()) {
+    if (ObjectUtils.isEmpty(timesheetList)) {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
               .model(Timesheet.class.getName())

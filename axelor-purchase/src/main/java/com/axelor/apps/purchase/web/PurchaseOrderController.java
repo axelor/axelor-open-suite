@@ -44,6 +44,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -551,7 +552,8 @@ public class PurchaseOrderController {
           return;
         }
       } else {
-        for (FiscalPosition fiscalPosition : purchaseOrder.getTaxNumber().getFiscalPositionSet()) {
+        for (FiscalPosition fiscalPosition :
+            SetUtils.emptyIfNull(purchaseOrder.getTaxNumber().getFiscalPositionSet())) {
           if (fiscalPosition.getId().equals(poFiscalPosition.getId())) {
             return;
           }

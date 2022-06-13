@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -92,7 +93,8 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
       if (accountingBatch.getIncludeOtherBankAccounts()
           && appBaseService.getAppBase().getManageMultiBanks()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+        bankDetailsSet.addAll(
+            ListUtils.emptyIfNull(accountingBatch.getCompany().getBankDetailsList()));
       }
 
       filterList.add("self.companyBankDetails IN (:bankDetailsSet)");
@@ -152,7 +154,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
     BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
     BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
-    while (!(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+    while (!(invoiceList = ListUtils.emptyIfNull(query.fetch(FETCH_LIMIT))).isEmpty()) {
       if (!JPA.em().contains(companyBankDetails)) {
         companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
       }

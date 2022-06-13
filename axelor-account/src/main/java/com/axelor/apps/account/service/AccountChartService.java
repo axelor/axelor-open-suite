@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
@@ -116,7 +117,7 @@ public class AccountChartService {
     accountConfigRepo.save(accountConfig);
     act = accountChartRepository.find(act.getId());
     company = companyRepo.find(company.getId());
-    Set<Company> companySet = act.getCompanySet();
+    Set<Company> companySet = act.getCompanySet() == null ? new HashSet<>() : act.getCompanySet();
     companySet.add(company);
     act.setCompanySet(companySet);
     accountChartRepository.save(act);

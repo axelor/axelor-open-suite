@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -199,7 +200,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     Long duration = campaign.getDuration();
 
-    for (Partner partner : campaign.getPartnerSet()) {
+    for (Partner partner : SetUtils.emptyIfNull(campaign.getPartnerSet())) {
       Event event = new Event();
 
       if (partner.getIsContact()) {
@@ -224,7 +225,7 @@ public class CampaignServiceImpl implements CampaignService {
       eventRepo.save(event);
     }
 
-    for (Lead lead : campaign.getLeadSet()) {
+    for (Lead lead : SetUtils.emptyIfNull(campaign.getLeadSet())) {
       Event event = new Event();
       event.setLead(lead);
       event.setUser(
@@ -258,10 +259,11 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext) {
 
-    Set<Partner> partners = campaign.getPartners();
-    Set<Partner> notParticipatingPartnerSet = campaign.getNotParticipatingPartnerSet();
+    Set<Partner> partners = SetUtils.emptyIfNull(campaign.getPartners());
+    Set<Partner> notParticipatingPartnerSet =
+        SetUtils.emptyIfNull(campaign.getNotParticipatingPartnerSet());
 
-    for (Partner partner : campaignContext.getPartnerSet()) {
+    for (Partner partner : SetUtils.emptyIfNull(campaignContext.getPartnerSet())) {
       if (partner.isSelected()
           && !partners.contains(partner)
           && !notParticipatingPartnerSet.contains(partner)) {
@@ -269,10 +271,10 @@ public class CampaignServiceImpl implements CampaignService {
       }
     }
 
-    Set<Lead> leads = campaign.getLeads();
-    Set<Lead> notParticipatingLeadSet = campaign.getNotParticipatingLeadSet();
+    Set<Lead> leads = SetUtils.emptyIfNull(campaign.getLeads());
+    Set<Lead> notParticipatingLeadSet = SetUtils.emptyIfNull(campaign.getNotParticipatingLeadSet());
 
-    for (Lead lead : campaignContext.getLeadSet()) {
+    for (Lead lead : SetUtils.emptyIfNull(campaignContext.getLeadSet())) {
       if (lead.isSelected() && !leads.contains(lead) && !notParticipatingLeadSet.contains(lead)) {
         campaign.addInvitedLeadSetItem(lead);
       }
@@ -309,14 +311,14 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public void addParticipatingTargets(Campaign campaign, Campaign campaignContext) {
 
-    for (Partner partner : campaignContext.getInvitedPartnerSet()) {
+    for (Partner partner : SetUtils.emptyIfNull(campaignContext.getInvitedPartnerSet())) {
       if (partner.isSelected()) {
         campaign.addPartner(partner);
         campaign.removeInvitedPartnerSetItem(partner);
       }
     }
 
-    for (Lead lead : campaignContext.getInvitedLeadSet()) {
+    for (Lead lead : SetUtils.emptyIfNull(campaignContext.getInvitedLeadSet())) {
       if (lead.isSelected()) {
         campaign.addLead(lead);
         campaign.removeInvitedLeadSetItem(lead);
@@ -330,14 +332,14 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext) {
 
-    for (Partner partner : campaignContext.getInvitedPartnerSet()) {
+    for (Partner partner : SetUtils.emptyIfNull(campaignContext.getInvitedPartnerSet())) {
       if (partner.isSelected()) {
         campaign.addNotParticipatingPartnerSetItem(partner);
         campaign.removeInvitedPartnerSetItem(partner);
       }
     }
 
-    for (Lead lead : campaignContext.getInvitedLeadSet()) {
+    for (Lead lead : SetUtils.emptyIfNull(campaignContext.getInvitedLeadSet())) {
       if (lead.isSelected()) {
         campaign.addNotParticipatingLeadSetItem(lead);
         campaign.removeInvitedLeadSetItem(lead);

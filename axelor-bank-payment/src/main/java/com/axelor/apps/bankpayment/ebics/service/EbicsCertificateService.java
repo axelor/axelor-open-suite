@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -47,6 +48,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -256,9 +258,12 @@ public class EbicsCertificateService {
       return null;
     }
 
-    for (EbicsCertificate cert : bank.getEbicsCertificateList()) {
-      if (cert.getTypeSelect().equals(type)) {
-        return cert;
+    List<EbicsCertificate> ebicsCertificateList = bank.getEbicsCertificateList();
+    if (ObjectUtils.notEmpty(ebicsCertificateList)) {
+      for (EbicsCertificate cert : ebicsCertificateList) {
+        if (cert.getTypeSelect().equals(type)) {
+          return cert;
+        }
       }
     }
 

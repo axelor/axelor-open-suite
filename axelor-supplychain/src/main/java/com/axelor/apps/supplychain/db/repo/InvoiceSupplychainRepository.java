@@ -26,6 +26,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
 
@@ -39,12 +40,14 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
     copy.setPurchaseOrder(null);
     copy.setStockMoveSet(null);
 
-    for (InvoiceLine line : copy.getInvoiceLineList()) {
-      line.setSaleOrderLine(null);
-      line.setPurchaseOrderLine(null);
-      line.setStockMoveLine(null);
-      line.setOutgoingStockMove(null);
-      line.setIncomingStockMove(null);
+    if (CollectionUtils.isNotEmpty(copy.getInvoiceLineList())) {
+      for (InvoiceLine line : copy.getInvoiceLineList()) {
+        line.setSaleOrderLine(null);
+        line.setPurchaseOrderLine(null);
+        line.setStockMoveLine(null);
+        line.setOutgoingStockMove(null);
+        line.setIncomingStockMove(null);
+      }
     }
 
     return copy;

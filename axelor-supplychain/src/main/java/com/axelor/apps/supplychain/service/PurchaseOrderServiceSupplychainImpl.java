@@ -45,6 +45,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -61,6 +62,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -279,6 +281,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   @Override
   public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder) {
 
+    if (CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return;
+    }
+
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
       newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
@@ -305,7 +311,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
       Map<Budget, BigDecimal> amountPerBudget = new HashMap<>();
       if (appAccountService.getAppBudget().getManageMultiBudget()) {
-        for (PurchaseOrderLine pol : purchaseOrderLines) {
+        for (PurchaseOrderLine pol : ListUtils.emptyIfNull(purchaseOrderLines)) {
           if (pol.getBudgetDistributionList() != null) {
             for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
               Budget budget = bd.getBudget();
@@ -322,7 +328,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
           }
         }
       } else {
-        for (PurchaseOrderLine pol : purchaseOrderLines) {
+        for (PurchaseOrderLine pol : ListUtils.emptyIfNull(purchaseOrderLines)) {
           // getting Budget associated to POL
           Budget budget = pol.getBudget();
 
@@ -374,13 +380,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
     // getting BudgetLine of the period
     BudgetLine bl = null;
-    for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-      if (DateTool.isBetween(
-          budgetLine.getFromDate(),
-          budgetLine.getToDate(),
-          appAccountService.getTodayDate(budget.getCompany()))) {
-        bl = budgetLine;
-        break;
+    if (CollectionUtils.isNotEmpty(budget.getBudgetLineList())) {
+      for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+        if (DateTool.isBetween(
+            budgetLine.getFromDate(),
+            budgetLine.getToDate(),
+            appAccountService.getTodayDate(budget.getCompany()))) {
+          bl = budgetLine;
+          break;
+        }
       }
     }
 
@@ -400,8 +408,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder) {
 
     Budget budget = purchaseOrder.getBudget();
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrderLine.setBudget(budget);
+    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        purchaseOrderLine.setBudget(budget);
+      }
     }
   }
 

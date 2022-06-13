@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -75,7 +76,7 @@ public class MapRest {
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
-      for (Partner partner : partners) {
+      for (Partner partner : ListUtils.emptyIfNull(partners)) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
@@ -198,7 +199,7 @@ public class MapRest {
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
-      for (Partner customer : customers) {
+      for (Partner customer : ListUtils.emptyIfNull(customers)) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
@@ -246,7 +247,7 @@ public class MapRest {
           partnerRepo.all().filter("self.isProspect = true AND self.isContact=?", false).fetch();
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
-      for (Partner prospect : customers) {
+      for (Partner prospect : ListUtils.emptyIfNull(customers)) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
@@ -293,7 +294,7 @@ public class MapRest {
       List<? extends Partner> customers =
           partnerRepo.all().filter("self.isSupplier = true AND self.isContact=?", false).fetch();
 
-      for (Partner supplier : customers) {
+      for (Partner supplier : ListUtils.emptyIfNull(customers)) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 

@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,9 +70,11 @@ public class PurchaseOrderSupplierService {
   @Transactional
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
-      this.generateSuppliersRequests(purchaseOrderLine);
+        this.generateSuppliersRequests(purchaseOrderLine);
+      }
     }
     poRepo.save(purchaseOrder);
   }

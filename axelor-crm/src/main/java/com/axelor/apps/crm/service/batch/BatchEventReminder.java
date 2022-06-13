@@ -30,6 +30,7 @@ import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -78,44 +79,46 @@ public class BatchEventReminder extends BatchStrategy {
 
       List<? extends EventReminder> eventReminderList = eventReminderRepo.all().fetch();
 
-      for (EventReminder eventReminder : eventReminderList) {
+      if (ObjectUtils.notEmpty(eventReminderList)) {
+        for (EventReminder eventReminder : eventReminderList) {
 
-        try {
+          try {
 
-          eventReminder = eventReminderRepo.find(eventReminder.getId());
+            eventReminder = eventReminderRepo.find(eventReminder.getId());
 
-          Integer eventStatusSelect = eventReminder.getEvent().getStatusSelect();
-          boolean eventIsNotFinished =
-              eventStatusSelect == EventRepository.STATUS_PLANNED
-                  || eventStatusSelect == EventRepository.STATUS_NOT_STARTED
-                  || eventStatusSelect == EventRepository.STATUS_ON_GOING
-                  || eventStatusSelect == EventRepository.STATUS_PENDING;
-          if (!eventReminder.getIsReminded() && isExpired(eventReminder) && eventIsNotFinished) {
-            updateEventReminder(eventReminder);
-            i++;
-          }
+            Integer eventStatusSelect = eventReminder.getEvent().getStatusSelect();
+            boolean eventIsNotFinished =
+                eventStatusSelect == EventRepository.STATUS_PLANNED
+                    || eventStatusSelect == EventRepository.STATUS_NOT_STARTED
+                    || eventStatusSelect == EventRepository.STATUS_ON_GOING
+                    || eventStatusSelect == EventRepository.STATUS_PENDING;
+            if (!eventReminder.getIsReminded() && isExpired(eventReminder) && eventIsNotFinished) {
+              updateEventReminder(eventReminder);
+              i++;
+            }
 
-        } catch (Exception e) {
+          } catch (Exception e) {
 
-          TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1),
-                      eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()),
-                  e),
-              ExceptionOriginRepository.CRM,
-              batch.getId());
+            TraceBackService.trace(
+                new Exception(
+                    String.format(
+                        I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1),
+                        eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()),
+                    e),
+                ExceptionOriginRepository.CRM,
+                batch.getId());
 
-          incrementAnomaly();
+            incrementAnomaly();
 
-          LOG.error(
-              "Bug(Anomalie) généré(e) pour le rappel de l'évènement {}",
-              eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject());
+            LOG.error(
+                "Bug(Anomalie) généré(e) pour le rappel de l'évènement {}",
+                eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject());
 
-        } finally {
+          } finally {
 
-          if (i % 1 == 0) {
-            JPA.clear();
+            if (i % 1 == 0) {
+              JPA.clear();
+            }
           }
         }
       }
@@ -182,65 +185,67 @@ public class BatchEventReminder extends BatchStrategy {
 
       @SuppressWarnings("unchecked")
       List<EventReminder> eventReminderList = q.getResultList();
+      if (ObjectUtils.notEmpty(eventReminderList)) {
+        for (EventReminder eventReminder : eventReminderList) {
+          try {
+            eventReminder = eventReminderRepo.find(eventReminder.getId());
+            Message message = messageServiceCrmImpl.createMessage(eventReminder.getEvent());
 
-      for (EventReminder eventReminder : eventReminderList) {
-        try {
-          eventReminder = eventReminderRepo.find(eventReminder.getId());
-          Message message = messageServiceCrmImpl.createMessage(eventReminder.getEvent());
+            // Send reminder to owner of the reminder in any case
+            if (eventReminder.getUser().getPartner() != null
+                && eventReminder.getUser().getPartner().getEmailAddress() != null) {
+              message.addToEmailAddressSetItem(
+                  eventReminder.getUser().getPartner().getEmailAddress());
+            } else if (eventReminder.getUser().getEmail() != null) {
+              message.addToEmailAddressSetItem(
+                  findOrCreateEmailAddress(
+                      eventReminder.getUser().getEmail(),
+                      "[" + eventReminder.getUser().getEmail() + "]"));
+            } else {
+              messageRepo.remove(message);
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(IExceptionMessage.CRM_CONFIG_USER_EMAIL),
+                  eventReminder.getUser().getName());
+            }
 
-          // Send reminder to owner of the reminder in any case
-          if (eventReminder.getUser().getPartner() != null
-              && eventReminder.getUser().getPartner().getEmailAddress() != null) {
-            message.addToEmailAddressSetItem(
-                eventReminder.getUser().getPartner().getEmailAddress());
-          } else if (eventReminder.getUser().getEmail() != null) {
-            message.addToEmailAddressSetItem(
-                findOrCreateEmailAddress(
-                    eventReminder.getUser().getEmail(),
-                    "[" + eventReminder.getUser().getEmail() + "]"));
-          } else {
-            messageRepo.remove(message);
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.CRM_CONFIG_USER_EMAIL),
-                eventReminder.getUser().getName());
-          }
-
-          // Also send to attendees if needed
-          if (EventReminderRepository.ASSIGN_TO_ALL.equals(eventReminder.getAssignToSelect())
-              && eventReminder.getEvent().getAttendees() != null) {
-            for (ICalendarUser iCalUser : eventReminder.getEvent().getAttendees()) {
-              if (iCalUser.getUser() != null && iCalUser.getUser().getPartner() != null) {
-                message.addToEmailAddressSetItem(iCalUser.getUser().getPartner().getEmailAddress());
-              } else {
-                message.addToEmailAddressSetItem(
-                    findOrCreateEmailAddress(iCalUser.getEmail(), iCalUser.getName()));
+            // Also send to attendees if needed
+            if (EventReminderRepository.ASSIGN_TO_ALL.equals(eventReminder.getAssignToSelect())
+                && eventReminder.getEvent().getAttendees() != null) {
+              for (ICalendarUser iCalUser : eventReminder.getEvent().getAttendees()) {
+                if (iCalUser.getUser() != null && iCalUser.getUser().getPartner() != null) {
+                  message.addToEmailAddressSetItem(
+                      iCalUser.getUser().getPartner().getEmailAddress());
+                } else {
+                  message.addToEmailAddressSetItem(
+                      findOrCreateEmailAddress(iCalUser.getEmail(), iCalUser.getName()));
+                }
               }
             }
-          }
 
-          message = Beans.get(MessageService.class).sendByEmail(message);
-        } catch (Exception e) {
+            message = Beans.get(MessageService.class).sendByEmail(message);
+          } catch (Exception e) {
 
-          TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get("Event") + " %s",
-                      eventRepo.find(eventReminder.getEvent().getId()).getSubject()),
-                  e),
-              ExceptionOriginRepository.CRM,
-              batch.getId());
+            TraceBackService.trace(
+                new Exception(
+                    String.format(
+                        I18n.get("Event") + " %s",
+                        eventRepo.find(eventReminder.getEvent().getId()).getSubject()),
+                    e),
+                ExceptionOriginRepository.CRM,
+                batch.getId());
 
-          incrementAnomaly();
+            incrementAnomaly();
 
-          LOG.error(
-              "Bug(Anomalie) généré(e) pour l'évènement {}",
-              eventRepo.find(eventReminder.getEvent().getId()).getSubject());
+            LOG.error(
+                "Bug(Anomalie) généré(e) pour l'évènement {}",
+                eventRepo.find(eventReminder.getEvent().getId()).getSubject());
 
-        } finally {
+          } finally {
 
-          if (i % 1 == 0) {
-            JPA.clear();
+            if (i % 1 == 0) {
+              JPA.clear();
+            }
           }
         }
       }

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.script.SimpleBindings;
+import org.apache.commons.collections.CollectionUtils;
 import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParser;
 import org.camunda.bpm.engine.impl.variable.serializer.jpa.JPAVariableSerializer;
 import org.camunda.bpm.engine.variable.Variables;
@@ -87,6 +88,10 @@ public class WkfCommonServiceImpl implements WkfCommonService {
                 isActive)
             .order("pathCondition")
             .fetch();
+
+    if (CollectionUtils.isEmpty(configs)) {
+      return null;
+    }
 
     Map<String, Object> ctxMap = new HashMap<String, Object>();
     ctxMap.put(getVarName(model), new FullContext(model));

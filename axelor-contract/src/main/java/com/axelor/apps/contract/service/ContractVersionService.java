@@ -19,6 +19,7 @@ package com.axelor.apps.contract.service;
 
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -87,7 +88,7 @@ public interface ContractVersionService {
   ContractVersion newDraft(Contract contract);
 
   default ContractVersion getContractVersion(Contract contract, LocalDate date) {
-    for (ContractVersion version : contract.getVersionHistory()) {
+    for (ContractVersion version : ListUtils.emptyIfNull(contract.getVersionHistory())) {
       if (version.getActivationDate() == null || version.getEndDate() == null) {
         continue;
       }

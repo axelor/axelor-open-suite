@@ -103,26 +103,28 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     Map<String, List<String[]>> data = new HashMap<>();
 
-    for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
+    if (objectDataConfig.getDataConfigLineList() != null) {
+      for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
 
-      MetaModel metaModel = line.getMetaModel();
+        MetaModel metaModel = line.getMetaModel();
 
-      logger.debug("Create data for: {}", metaModel.getName());
+        logger.debug("Create data for: {}", metaModel.getName());
 
-      Class<? extends Model> modelClass = ObjectDataCommonService.findModelClass(metaModel);
+        Class<? extends Model> modelClass = ObjectDataCommonService.findModelClass(metaModel);
 
-      Query<? extends Model> query =
-          ObjectDataCommonService.createQuery(recordId, line, modelClass);
+        Query<? extends Model> query =
+            ObjectDataCommonService.createQuery(recordId, line, modelClass);
 
-      ResourceBundle bundle = ObjectDataCommonService.getResourceBundle(language);
+        ResourceBundle bundle = ObjectDataCommonService.getResourceBundle(language);
 
-      String[][] fieldsData = createFieldsData(line.getToExportMetaFieldSet(), bundle);
+        String[][] fieldsData = createFieldsData(line.getToExportMetaFieldSet(), bundle);
 
-      Map<String, String> selectMap = getSelectMap(Mapper.of(modelClass));
+        Map<String, String> selectMap = getSelectMap(Mapper.of(modelClass));
 
-      List<String[]> dataList = fetchData(fieldsData, query, selectMap, bundle);
+        List<String[]> dataList = fetchData(fieldsData, query, selectMap, bundle);
 
-      data.put(line.getTabName(), dataList);
+        data.put(line.getTabName(), dataList);
+      }
     }
 
     return data;

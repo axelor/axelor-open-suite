@@ -17,9 +17,11 @@
  */
 package com.axelor.studio.service.loader;
 
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.common.Inflector;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.ResourceUtils;
 import com.axelor.data.XStreamUtils;
 import com.axelor.data.xml.XMLBind;
@@ -313,7 +315,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
         }
         fileWriter.write("<" + dasherizeModel + ">\n");
 
-        for (MetaJsonField jsonField : dataLoader.getJsonFieldSet()) {
+        for (MetaJsonField jsonField : SetUtils.emptyIfNull(dataLoader.getJsonFieldSet())) {
           String field = jsonField.getName();
           Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(field);
           fileWriter.write(
@@ -395,7 +397,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
         fileWriter.write("<" + dasherizeModel + ">\n");
 
-        for (MetaField metaField : dataLoader.getMetaFieldSet()) {
+        for (MetaField metaField : SetUtils.emptyIfNull(dataLoader.getMetaFieldSet())) {
           String field = metaField.getName();
           fileWriter.write(
               "\t<"
@@ -429,14 +431,16 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
       } else if (value instanceof Collection) {
         Collection<Object> records = (Collection<Object>) value;
         StringBuilder stringBuilder = new StringBuilder();
-        for (Object rec : records) {
-          if (stringBuilder.length() > 0) {
-            stringBuilder.append(";");
-          }
-          Object target = ((FullContext) rec).get(getTargetName(fieldAttrs));
-          if (target != null) {
-            target = target.toString().replace(";", ",");
-            stringBuilder.append(target);
+        if (ObjectUtils.notEmpty(records)) {
+          for (Object rec : records) {
+            if (stringBuilder.length() > 0) {
+              stringBuilder.append(";");
+            }
+            Object target = ((FullContext) rec).get(getTargetName(fieldAttrs));
+            if (target != null) {
+              target = target.toString().replace(";", ",");
+              stringBuilder.append(target);
+            }
           }
         }
         value = stringBuilder.toString();
@@ -509,10 +513,12 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     File zipFile = MetaFiles.createTempFile("app-", ".zip").toFile();
 
     ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
-    for (File file : exportDir.listFiles()) {
-      ZipEntry zipEntry = new ZipEntry(file.getName());
-      zipOut.putNextEntry(zipEntry);
-      Files.copy(file, zipOut);
+    if (exportDir.listFiles() != null) {
+      for (File file : exportDir.listFiles()) {
+        ZipEntry zipEntry = new ZipEntry(file.getName());
+        zipOut.putNextEntry(zipEntry);
+        Files.copy(file, zipOut);
+      }
     }
     zipOut.close();
 
@@ -664,7 +670,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     List<XMLBind> fieldBindings = new ArrayList<>();
 
-    for (MetaJsonField jsonField : dataLoader.getJsonFieldSet()) {
+    for (MetaJsonField jsonField : SetUtils.emptyIfNull(dataLoader.getJsonFieldSet())) {
       Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(jsonField.getName());
       log.debug("Json Field name: {}, Field attrs: {}", jsonField, fieldAttrs);
       String fieldType = jsonField.getType();

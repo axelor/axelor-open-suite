@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class StockMoveInvoiceController {
@@ -117,8 +118,10 @@ public class StockMoveInvoiceController {
 
       // No confirmation popup, stock Moves are content in a parameter list
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+        }
       }
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
@@ -291,8 +294,10 @@ public class StockMoveInvoiceController {
       List<Long> stockMoveIdList = new ArrayList<>();
 
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+        }
       }
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
@@ -451,8 +456,10 @@ public class StockMoveInvoiceController {
       List<Long> stockMoveIdList = new ArrayList<>();
       List<StockMove> stockMoveList = new ArrayList<>();
 
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(((Number) map.get("id")).longValue());
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(((Number) map.get("id")).longValue());
+        }
       }
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
@@ -501,8 +508,10 @@ public class StockMoveInvoiceController {
       List<Long> stockMoveIdList = new ArrayList<>();
       List<StockMove> stockMoveList = new ArrayList<>();
 
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(((Number) map.get("id")).longValue());
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(((Number) map.get("id")).longValue());
+        }
       }
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));

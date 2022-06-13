@@ -322,6 +322,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   protected void updatePurchaseOrderLines(StockMove stockMove, boolean qtyWasReceived)
       throws AxelorException {
+
+    if (CollectionUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return;
+    }
+
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getPurchaseOrderLine() != null) {
         PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();

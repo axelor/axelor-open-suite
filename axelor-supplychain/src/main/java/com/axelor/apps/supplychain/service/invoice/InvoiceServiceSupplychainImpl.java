@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -118,9 +120,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     List<Timetable> timetableList =
         timeTableRepo.all().filter("self.invoice.id = ?1", invoice.getId()).fetch();
 
-    for (Timetable timetable : timetableList) {
-      timetable.setInvoiced(true);
-      timeTableRepo.save(timetable);
+    if (CollectionUtils.isNotEmpty(timetableList)) {
+      for (Timetable timetable : timetableList) {
+        timetable.setInvoiced(true);
+        timeTableRepo.save(timetable);
+      }
     }
   }
 
@@ -185,7 +189,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     SaleOrder saleOrder = invoice.getSaleOrder();
     // search sale order in invoice lines
     List<SaleOrder> saleOrderList =
-        invoice.getInvoiceLineList().stream()
+        ListUtils.emptyIfNull(invoice.getInvoiceLineList()).stream()
             .map(invoiceLine -> invoice.getSaleOrder())
             .collect(Collectors.toList());
 
@@ -213,7 +217,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
 
   @Override
   public void computePackTotal(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    List<InvoiceLine> invoiceLineList =
+        invoice.getInvoiceLineList() == null ? new ArrayList<>() : invoice.getInvoiceLineList();
 
     if (!invoiceLineService.hasEndOfPackTypeLine(invoiceLineList)) {
       return;
@@ -274,7 +279,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) throws AxelorException {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    List<InvoiceLine> invoiceLineList =
+        invoice.getInvoiceLineList() == null ? new ArrayList<>() : invoice.getInvoiceLineList();
     invoiceLineList.sort(Comparator.comparing(InvoiceLine::getSequence));
     boolean isStartOfPack = false;
     BigDecimal oldQty = BigDecimal.ZERO;
@@ -310,14 +316,16 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
               .filter(":invoiceId in self.invoiceSet.id")
               .bind("invoiceId", invoice.getId())
               .fetch();
-      for (StockMove stockMove : stockMoveList) {
-        stockMove.removeInvoiceSetItem(invoice);
-        stockMove.addInvoiceSetItem(newInvoice);
-        invoice.removeStockMoveSetItem(stockMove);
-        newInvoice.addStockMoveSetItem(stockMove);
-        invoiceRepo.save(invoice);
-        invoiceRepo.save(newInvoice);
-        stockMoveRepository.save(stockMove);
+      if (CollectionUtils.isNotEmpty(stockMoveList)) {
+        for (StockMove stockMove : stockMoveList) {
+          stockMove.removeInvoiceSetItem(invoice);
+          stockMove.addInvoiceSetItem(newInvoice);
+          invoice.removeStockMoveSetItem(stockMove);
+          newInvoice.addStockMoveSetItem(stockMove);
+          invoiceRepo.save(invoice);
+          invoiceRepo.save(newInvoice);
+          stockMoveRepository.save(stockMove);
+        }
       }
     }
   }

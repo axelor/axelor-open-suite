@@ -48,6 +48,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
@@ -63,6 +64,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -196,7 +198,7 @@ public class MrpLineServiceImpl implements MrpLineService {
           purchaseOrders.put(key, purchaseOrder);
         }
       }
-      if (mrpLine.getMrpLineOriginList().size() == 1) {
+      if (ListUtils.size(mrpLine.getMrpLineOriginList()) == 1) {
         if (mrpLine
             .getMrpLineOriginList()
             .get(0)
@@ -233,11 +235,13 @@ public class MrpLineServiceImpl implements MrpLineService {
   protected String getPurchaseOrderOrigin(MrpLine mrpLine) {
     String origin = "";
     int count = 0;
-    for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
-      count++;
-      origin += getMrpLineOriginStr(mrpLineOrigin);
-      if (count < mrpLine.getMrpLineOriginList().size()) {
-        origin += " & ";
+    if (CollectionUtils.isNotEmpty(mrpLine.getMrpLineOriginList())) {
+      for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
+        count++;
+        origin += getMrpLineOriginStr(mrpLineOrigin);
+        if (count < mrpLine.getMrpLineOriginList().size()) {
+          origin += " & ";
+        }
       }
     }
     return origin;

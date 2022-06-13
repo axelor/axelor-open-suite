@@ -36,6 +36,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -96,7 +97,7 @@ public class InvoicePaymentValidateProjectServiceImpl
             .fetchOne();
 
     if (invoicingProject != null) {
-      for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
+      for (ProjectTask projectTask : SetUtils.emptyIfNull(invoicingProject.getProjectTaskSet())) {
         projectTask.setIsPaid(invoice.getHasPendingPayments());
       }
     }

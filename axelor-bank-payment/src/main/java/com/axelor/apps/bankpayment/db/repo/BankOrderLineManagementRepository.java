@@ -20,8 +20,10 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 public class BankOrderLineManagementRepository extends BankOrderLineRepository {
@@ -35,18 +37,22 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
     String pieceDueDateList = "";
     boolean bFirst = true;
 
-    for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
-      if (bFirst) {
-        pieceReferenceList += changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
-        pieceDateList += changeDateToString(bankOrderLineOrigin.getRelatedToSelectDate());
-        pieceDueDateList += changeDateToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
-        bFirst = false;
-      } else {
-        pieceReferenceList +=
-            "," + changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
-        pieceDateList += "," + changeDateToString(bankOrderLineOrigin.getRelatedToSelectDate());
-        pieceDueDateList +=
-            "," + changeDateToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+    List<BankOrderLineOrigin> bankOrderLineOriginList = bankOrderLine.getBankOrderLineOriginList();
+    if (ObjectUtils.notEmpty(bankOrderLineOriginList)) {
+      for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLineOriginList) {
+        if (bFirst) {
+          pieceReferenceList +=
+              changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
+          pieceDateList += changeDateToString(bankOrderLineOrigin.getRelatedToSelectDate());
+          pieceDueDateList += changeDateToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+          bFirst = false;
+        } else {
+          pieceReferenceList +=
+              "," + changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
+          pieceDateList += "," + changeDateToString(bankOrderLineOrigin.getRelatedToSelectDate());
+          pieceDueDateList +=
+              "," + changeDateToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+        }
       }
     }
 

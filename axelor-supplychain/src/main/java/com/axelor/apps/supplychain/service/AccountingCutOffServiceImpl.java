@@ -198,7 +198,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     List<Move> moveList = new ArrayList<>();
 
-    List<StockMoveLine> stockMoveLineSortedList = stockMove.getStockMoveLineList();
+    List<StockMoveLine> stockMoveLineSortedList =
+        stockMove.getStockMoveLineList() == null
+            ? new ArrayList<>()
+            : stockMove.getStockMoveLineList();
     Collections.sort(stockMoveLineSortedList, Comparator.comparing(StockMoveLine::getSequence));
 
     Move move =
@@ -606,9 +609,15 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected void reconcile(Move move, Move reverseMove) throws AxelorException {
 
     List<MoveLine> moveLineSortedList = move.getMoveLineList();
+    if (moveLineSortedList == null) {
+      moveLineSortedList = new ArrayList<>();
+    }
     Collections.sort(moveLineSortedList, Comparator.comparing(MoveLine::getCounter));
 
     List<MoveLine> reverseMoveLineSortedList = reverseMove.getMoveLineList();
+    if (reverseMoveLineSortedList == null) {
+      reverseMoveLineSortedList = new ArrayList<>();
+    }
     Collections.sort(reverseMoveLineSortedList, Comparator.comparing(MoveLine::getCounter));
 
     Iterator<MoveLine> reverseMoveLinesIt = reverseMoveLineSortedList.iterator();

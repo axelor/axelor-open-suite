@@ -25,6 +25,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -60,7 +61,7 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
       List<PurchaseOrderLine> purchaseOrderLineList =
           purchaseOrderLineRepo.all().filter("self.id in ?1", purchaseOrderLineIds).fetch();
 
-      for (PurchaseOrderLine line : purchaseOrderLineList) {
+      for (PurchaseOrderLine line : ListUtils.emptyIfNull(purchaseOrderLineList)) {
         line.setProject(project);
         purchaseOrderLineRepo.save(line);
       }

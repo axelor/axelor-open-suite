@@ -19,6 +19,7 @@ package com.axelor.apps.mobile.web;
 
 import com.axelor.apps.base.db.AppMobile;
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -79,7 +80,7 @@ public class AppMobileController {
 
   private Object convertToData(Set<? extends AuditableModel> modelSet) {
 
-    return modelSet.stream()
+    return SetUtils.emptyIfNull(modelSet).stream()
         .map(
             it ->
                 new HashMap<String, Object>() {

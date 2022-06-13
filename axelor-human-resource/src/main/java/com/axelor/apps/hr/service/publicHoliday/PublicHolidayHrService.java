@@ -18,14 +18,12 @@
 package com.axelor.apps.hr.service.publicHoliday;
 
 import com.axelor.apps.base.db.EventsPlanning;
-import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.util.List;
 
 public class PublicHolidayHrService extends PublicHolidayService {
 
@@ -50,7 +48,7 @@ public class PublicHolidayHrService extends PublicHolidayService {
       return 0;
     }
 
-    List<EventsPlanningLine> imposedDayList =
+    long imposedDayListCount =
         eventsPlanningLineRepo
             .all()
             .filter(
@@ -58,8 +56,8 @@ public class PublicHolidayHrService extends PublicHolidayService {
                 imposedDays,
                 startDate,
                 endDate)
-            .fetch();
+            .count();
 
-    return imposedDayList.size();
+    return (int) imposedDayListCount;
   }
 }

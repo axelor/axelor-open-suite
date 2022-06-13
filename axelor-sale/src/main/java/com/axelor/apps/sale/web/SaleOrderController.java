@@ -50,6 +50,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -883,7 +884,8 @@ public class SaleOrderController {
           return;
         }
       } else {
-        for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+        for (FiscalPosition fiscalPosition :
+            SetUtils.emptyIfNull(saleOrder.getTaxNumber().getFiscalPositionSet())) {
           if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
             return;
           }

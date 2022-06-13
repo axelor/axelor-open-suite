@@ -22,7 +22,9 @@ import static com.axelor.common.StringUtils.isBlank;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuditableRunner;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
@@ -113,7 +115,7 @@ public class MailServiceMessageImpl extends MailServiceImpl {
     }
 
     final List<InternetAddress> addresses = new ArrayList<>();
-    for (EmailAddress emailAddress : query.fetch(maxResult)) {
+    for (EmailAddress emailAddress : ListUtils.emptyIfNull(query.fetch(maxResult))) {
       try {
         final InternetAddress item = new InternetAddress(emailAddress.getAddress());
         addresses.add(item);
@@ -169,10 +171,13 @@ public class MailServiceMessageImpl extends MailServiceImpl {
       builder.to(recipient);
     }
 
-    for (MetaAttachment attachment : messages.findAttachments(message)) {
-      final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
-      final File file = filePath.toFile();
-      builder.attach(file.getName(), file.toString());
+    final List<MetaAttachment> attachmentList = messages.findAttachments(message);
+    if (ObjectUtils.notEmpty(attachmentList)) {
+      for (MetaAttachment attachment : attachmentList) {
+        final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
+        final File file = filePath.toFile();
+        builder.attach(file.getName(), file.toString());
+      }
     }
 
     final MimeMessage email;

@@ -31,6 +31,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.SendMailQueueService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -135,7 +136,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
     EmailAddress fromEmailAddress = message.getFromEmailAddress();
     Set<EmailAddress> toEmailAddressList = message.getToEmailAddressSet();
-    List<String> emailAddresses = null;
+    List<String> emailAddresses = new ArrayList<>();
     if (ObjectUtils.notEmpty(toEmailAddressList)) {
       emailAddresses =
           toEmailAddressList.stream().map(EmailAddress::getAddress).collect(Collectors.toList());
@@ -166,21 +167,23 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
             && fromEmailAddress != null
             && StringUtils.notBlank(fromEmailAddress.getAddress())) {
           relatedRecords.addAll(
-              JPA.all(klass)
-                  .filter(String.format("self.%s = :email", modelEmailLink.getEmailField()))
-                  .bind("email", fromEmailAddress.getAddress())
-                  .cacheable()
-                  .fetch());
+              ListUtils.emptyIfNull(
+                  JPA.all(klass)
+                      .filter(String.format("self.%s = :email", modelEmailLink.getEmailField()))
+                      .bind("email", fromEmailAddress.getAddress())
+                      .cacheable()
+                      .fetch()));
         }
 
         if (modelEmailLink.getAddressTypeSelect() == ModelEmailLinkRepository.ADDRESS_TYPE_TO
             && ObjectUtils.notEmpty(emailAddresses)) {
           relatedRecords.addAll(
-              JPA.all(klass)
-                  .filter(String.format("self.%s IN :emails", modelEmailLink.getEmailField()))
-                  .bind("emails", emailAddresses)
-                  .cacheable()
-                  .fetch());
+              ListUtils.emptyIfNull(
+                  JPA.all(klass)
+                      .filter(String.format("self.%s IN :emails", modelEmailLink.getEmailField()))
+                      .bind("emails", emailAddresses)
+                      .cacheable()
+                      .fetch()));
         }
 
         for (Model relatedRecord : relatedRecords) {

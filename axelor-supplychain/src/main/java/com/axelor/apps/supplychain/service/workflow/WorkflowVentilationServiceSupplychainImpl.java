@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +56,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,6 +159,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     // Get all different saleOrders from invoice
     Set<SaleOrder> saleOrderSet = new HashSet<>();
 
+    if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       SaleOrder saleOrder = null;
       saleOrder = this.saleOrderLineProcess(invoice, invoiceLine);
@@ -220,6 +226,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     // Get all different purchaseOrders from invoice
     Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
 
+    if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       PurchaseOrder purchaseOrder = null;
       purchaseOrder = this.purchaseOrderLineProcess(invoice, invoiceLine);
@@ -276,7 +286,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private void stockMoveProcess(Invoice invoice) throws AxelorException {
     // update qty invoiced in stock move line
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine : ListUtils.emptyIfNull(invoice.getInvoiceLineList())) {
       StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
       if (stockMoveLine == null) {
         continue;

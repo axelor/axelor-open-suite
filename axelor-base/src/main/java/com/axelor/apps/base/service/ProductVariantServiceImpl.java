@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductMultipleQtyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -794,14 +795,12 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     ProductMultipleQtyRepository productMultipleQtyRepository =
         Beans.get(ProductMultipleQtyRepository.class);
-    productModel
-        .getSaleProductMultipleQtyList()
+    ListUtils.emptyIfNull(productModel.getSaleProductMultipleQtyList())
         .forEach(
             saleProductMultipleQty ->
                 product.addSaleProductMultipleQtyListItem(
                     productMultipleQtyRepository.copy(saleProductMultipleQty, false)));
-    productModel
-        .getPurchaseProductMultipleQtyList()
+    ListUtils.emptyIfNull(productModel.getPurchaseProductMultipleQtyList())
         .forEach(
             purchaseProductMultipleQty ->
                 product.addPurchaseProductMultipleQtyListItem(
@@ -815,8 +814,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     AccountManagementRepository accountManagementRepository =
         Beans.get(AccountManagementRepository.class);
-    productModel
-        .getAccountManagementList()
+    ListUtils.emptyIfNull(productModel.getAccountManagementList())
         .forEach(
             accountManagement ->
                 product.addAccountManagementListItem(

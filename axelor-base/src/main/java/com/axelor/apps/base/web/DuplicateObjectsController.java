@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +60,7 @@ public class DuplicateObjectsController {
     selectedIds.add(Long.parseLong(originalId));
     List<Map<String, Object>> duplicateObjects =
         (List<Map<String, Object>>) request.getContext().get("duplicateObjects");
-    for (Map map : duplicateObjects) {
+    for (Map map : ListUtils.emptyIfNull(duplicateObjects)) {
       if (!map.get("recordId").toString().equals(originalId)) {
         selectedIds.add(Long.parseLong(map.get("recordId").toString()));
       }
@@ -82,7 +84,7 @@ public class DuplicateObjectsController {
     List<Object> duplicateObj =
         duplicateObjectsService.getAllSelectedObject(selectedIds, modelName);
 
-    for (Object object : duplicateObj) {
+    for (Object object : ListUtils.emptyIfNull(duplicateObj)) {
       Long id = (Long) Mapper.of(object.getClass()).get(object, "id");
       Property propertyNameColumn = Mapper.of(object.getClass()).getNameField();
       String nameColumn =
@@ -195,7 +197,7 @@ public class DuplicateObjectsController {
         Beans.get(DuplicateObjectsService.class)
             .findDuplicatedRecordIds(fields, modelClass, getCriteria(request, modelClass));
 
-    if (ids.isEmpty()) {
+    if (CollectionUtils.isEmpty(ids)) {
       return null;
     }
 

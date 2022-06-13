@@ -38,6 +38,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -69,7 +70,7 @@ public class LeaveController {
                   user,
                   user.getActiveCompany())
               .fetch();
-      if (leaveList.isEmpty()) {
+      if (ObjectUtils.isEmpty(leaveList)) {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())

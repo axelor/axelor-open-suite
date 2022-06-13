@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
@@ -133,7 +134,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       return descendantsProductCategoryList;
     }
     List<ProductCategory> childrenProductCategoryList = fetchChildren(productCategory);
-    while (!childrenProductCategoryList.isEmpty() && i < MAX_ITERATION) {
+    while (CollectionUtils.isNotEmpty(childrenProductCategoryList) && i < MAX_ITERATION) {
       List<ProductCategory> nextChildrenProductCategoryList = new ArrayList<>();
       for (ProductCategory childProductCategory : childrenProductCategoryList) {
         if (descendantsProductCategoryList.contains(childProductCategory)

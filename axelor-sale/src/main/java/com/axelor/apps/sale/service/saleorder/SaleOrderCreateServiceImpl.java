@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -218,7 +219,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
     for (SaleOrder saleOrder : saleOrderList) {
       int countLine = 1;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
         saleOrderLine.setSequence(countLine * 10);
         saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
         countLine++;

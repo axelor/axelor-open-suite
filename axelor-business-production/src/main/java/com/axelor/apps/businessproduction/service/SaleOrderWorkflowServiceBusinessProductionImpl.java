@@ -38,6 +38,7 @@ import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -90,8 +91,9 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
+      for (AnalyticMoveLine analyticMoveLine :
+          ListUtils.emptyIfNull(saleOrderLine.getAnalyticMoveLineList())) {
         analyticMoveLine.setProject(null);
         analyticMoveLineRepository.save(analyticMoveLine);
       }

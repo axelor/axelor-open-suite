@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -489,9 +490,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
                 purchaseOrder.getId())
             .fetch();
 
-    for (StockMove stockMove : stockMoveList) {
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
 
-      stockMoveService.cancel(stockMove);
+        stockMoveService.cancel(stockMove);
+      }
     }
   }
 

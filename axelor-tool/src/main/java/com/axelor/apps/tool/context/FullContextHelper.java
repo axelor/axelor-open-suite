@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.context;
 
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
@@ -141,8 +142,12 @@ public class FullContextHelper {
 
     Query<? extends Model> query = createQuery(modelName, queryStr, null, null);
 
-    for (Model model : query.fetch()) {
-      wkfEntities.add(new FullContext(model));
+    List<? extends Model> modelList = query.fetch();
+
+    if (ObjectUtils.notEmpty(modelList)) {
+      for (Model model : modelList) {
+        wkfEntities.add(new FullContext(model));
+      }
     }
 
     return wkfEntities;
@@ -158,8 +163,12 @@ public class FullContextHelper {
 
     Query<? extends Model> query = createQuery(modelName, queryStr, null, params);
 
-    for (Model model : query.fetch()) {
-      wkfEntities.add(new FullContext(model));
+    List<? extends Model> modelList = query.fetch();
+
+    if (ObjectUtils.notEmpty(modelList)) {
+      for (Model model : modelList) {
+        wkfEntities.add(new FullContext(model));
+      }
     }
 
     return wkfEntities;
@@ -172,8 +181,12 @@ public class FullContextHelper {
 
     Query<? extends Model> query = createQuery(modelName, queryStr, paramMap, null);
 
-    for (Model model : query.fetch()) {
-      wkfEntities.add(new FullContext(model));
+    List<? extends Model> modelList = query.fetch();
+
+    if (ObjectUtils.notEmpty(modelList)) {
+      for (Model model : modelList) {
+        wkfEntities.add(new FullContext(model));
+      }
     }
 
     return wkfEntities;

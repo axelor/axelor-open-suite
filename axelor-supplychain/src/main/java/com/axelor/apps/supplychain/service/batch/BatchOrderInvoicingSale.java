@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
 
@@ -114,7 +115,7 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
     Set<Long> treatedSet = new HashSet<>();
 
     for (List<SaleOrder> saleOrderList;
-        !(saleOrderList = query.fetch(FETCH_LIMIT)).isEmpty();
+        CollectionUtils.isNotEmpty((saleOrderList = query.fetch(FETCH_LIMIT)));
         JPA.clear()) {
       for (SaleOrder saleOrder : saleOrderList) {
         if (treatedSet.contains(saleOrder.getId())) {

@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPurchaseService {
@@ -49,10 +50,12 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
 
     List<Company> companies = companyRepo.all().filter("self.purchaseConfig is null").fetch();
 
-    for (Company company : companies) {
-      PurchaseConfig purchaseConfig = new PurchaseConfig();
-      purchaseConfig.setCompany(company);
-      purchaseConfigRepo.save(purchaseConfig);
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        PurchaseConfig purchaseConfig = new PurchaseConfig();
+        purchaseConfig.setCompany(company);
+        purchaseConfigRepo.save(purchaseConfig);
+      }
     }
   }
 }

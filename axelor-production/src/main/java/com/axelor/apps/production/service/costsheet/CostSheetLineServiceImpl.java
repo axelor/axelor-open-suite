@@ -43,6 +43,7 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -354,7 +355,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         List<SupplierCatalog> supplierCatalogList =
             (List<SupplierCatalog>)
                 productCompanyService.get(product, "supplierCatalogList", company);
-        for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+        for (SupplierCatalog supplierCatalog : ListUtils.emptyIfNull(supplierCatalogList)) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
             price =
                 unitConversionService.convert(
@@ -556,7 +557,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       return;
     }
 
-    for (CostSheetGroup indirectCostSheetGroup : this.getIndirectCostSheetGroups(costSheetGroup)) {
+    for (CostSheetGroup indirectCostSheetGroup :
+        ListUtils.emptyIfNull(this.getIndirectCostSheetGroups(costSheetGroup))) {
 
       this.createIndirectCostSheetLine(parentCostSheetLine, indirectCostSheetGroup, costPrice);
     }

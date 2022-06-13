@@ -77,7 +77,8 @@ public class UserController {
     Set<Company> pfpValidatorUserCompanySet = pfpValidatorUser.getCompanySet();
     Set<Company> newPfpValidatorUserCompanySet = newPfpValidatorUser.getCompanySet();
 
-    if (!pfpValidatorUserCompanySet.equals(newPfpValidatorUserCompanySet)) {
+    if (pfpValidatorUserCompanySet != null
+        && !pfpValidatorUserCompanySet.equals(newPfpValidatorUserCompanySet)) {
 
       response.setAttr(
           "$pfpValidatorCompanySetLabel",

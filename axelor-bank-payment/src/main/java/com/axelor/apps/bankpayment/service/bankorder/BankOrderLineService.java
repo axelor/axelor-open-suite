@@ -35,6 +35,8 @@ import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -337,12 +339,15 @@ public class BankOrderLineService {
         && bankOrderLine.getReceiverCompany() != null) {
       candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
       if (candidateBankDetails == null) {
-        for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsList()) {
-          if (candidateBankDetails != null && bankDetails.getActive()) {
-            candidateBankDetails = null;
-            break;
-          } else if (bankDetails.getActive()) {
-            candidateBankDetails = bankDetails;
+        List<BankDetails> bankDetailsList = bankOrderLine.getReceiverCompany().getBankDetailsList();
+        if (ObjectUtils.notEmpty(bankDetailsList)) {
+          for (BankDetails bankDetails : bankDetailsList) {
+            if (candidateBankDetails != null && bankDetails.getActive()) {
+              candidateBankDetails = null;
+              break;
+            } else if (bankDetails.getActive()) {
+              candidateBankDetails = bankDetails;
+            }
           }
         }
       }
@@ -352,7 +357,7 @@ public class BankOrderLineService {
       if (candidateBankDetails == null) {
         List<BankDetails> bankDetailsList =
             bankDetailsRepo.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
-        if (bankDetailsList.size() == 1) {
+        if (ListUtils.size(bankDetailsList) == 1) {
           candidateBankDetails = bankDetailsList.get(0);
         }
       }
@@ -391,7 +396,8 @@ public class BankOrderLineService {
 
     if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 
-      if (!ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
+      if (ebicsPartner.getReceiverBankDetailsSet() == null
+          || !ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));

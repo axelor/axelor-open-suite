@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesExporter {
   protected static final String NAME_GOODS = /*$$(*/ "Declaration of exchanges of goods" /*)*/;
@@ -124,12 +125,14 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
     int lineNum = 1;
 
-    for (StockMoveLine stockMoveLine : stockMoveLines) {
+    if (CollectionUtils.isNotEmpty(stockMoveLines)) {
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
 
-      String[] data = exportLineToCsv(stockMoveLine, lineNum);
-      if (data != null && data.length != 0) {
-        dataList.add(data);
-        lineNum++;
+        String[] data = exportLineToCsv(stockMoveLine, lineNum);
+        if (data != null && data.length != 0) {
+          dataList.add(data);
+          lineNum++;
+        }
       }
     }
 

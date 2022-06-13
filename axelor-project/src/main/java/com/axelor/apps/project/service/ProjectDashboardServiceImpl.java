@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -117,7 +118,8 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
     Set<User> membersSet = new HashSet<>();
     projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
         .stream()
-        .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
+        .forEach(
+            subProject -> membersSet.addAll(SetUtils.emptyIfNull(subProject.getMembersUserSet())));
     return membersSet;
   }
 
