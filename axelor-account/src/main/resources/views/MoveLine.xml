@@ -508,7 +508,8 @@
       </field>
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange"/>
-        <field name="dueDate" showIf="dueDate"/>
+        <field name="dueDate" showIf="dueDate"
+          onChange="action-move-line-validate-invoice-term-alert"/>
         <field name="originDate"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
@@ -594,8 +595,8 @@
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
-          grid-view="invoice-term-move-line-grid"/>
+        <field name="invoiceTermList" colSpan="12" onChange="save"
+          form-view="invoice-term-move-line-form" grid-view="invoice-term-move-line-grid"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
@@ -608,7 +609,7 @@
           <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
           </viewer>
         </field>
-        <field name="invoiceTermList" colSpan="12"
+        <field name="invoiceTermList" colSpan="12" onChange="save"
           form-view="invoice-term-move-line-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
@@ -754,6 +755,8 @@
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-compute-invoice-terms"
+      if="account?.hasInvoiceTerm &amp;&amp; !invoiceTermList?.isEmpty()"/>
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
@@ -826,6 +829,7 @@
     <action name="account-move-line-record-date-onchange"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
+    <action name="action-move-line-validate-invoice-term-alert"/>
   </action-group>
 
   <action-group name="action-move-line-group-account-onchange">
@@ -955,6 +959,10 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate"/>
   </action-method>
 
+  <action-method name="action-move-line-method-compute-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="computeInvoiceTerms"/>
+  </action-method>
+
   <action-record name="action-move-line-record-set-currencyAmount"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
@@ -978,6 +986,12 @@
       if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
     <alert message="Debit and credit value cannot be negative."
       if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
+  </action-validate>
+
+  <action-validate name="action-move-line-validate-invoice-term-alert">
+    <info
+      message="Warning: Changing any date won't have any effect on invoice terms and their financial discount"
+      if="account?.hasInvoiceTerm &amp;&amp; !invoiceTermList?.isEmpty()"/>
   </action-validate>
 
   <action-record name="action-move-line-debit-credit-clean"

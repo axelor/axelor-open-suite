@@ -52,6 +52,9 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  public void computeInvoiceTerm(
+      InvoiceTerm invoiceTerm, BigDecimal newTotalAmount, BigDecimal oldTotalAmount);
+
   /**
    * Method that creates a customized invoiceTerm
    *

@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -632,6 +633,21 @@ public class MoveLineController {
           "$invoiceTermListPercentageWarningText",
           "hidden",
           !(Beans.get(MoveLineControlService.class).displayInvoiceTermWarningMessage(moveLine)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      MoveLine moveLineDb = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+      BigDecimal oldTotal =
+          moveLineDb == null ? null : moveLineDb.getCredit().max(moveLineDb.getDebit());
+      Beans.get(MoveLineInvoiceTermService.class).computeInvoiceTerms(moveLine, oldTotal);
+
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

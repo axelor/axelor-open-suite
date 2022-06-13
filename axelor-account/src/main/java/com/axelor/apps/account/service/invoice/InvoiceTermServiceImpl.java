@@ -231,6 +231,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
+  @Override
+  public void computeInvoiceTerm(
+      InvoiceTerm invoiceTerm, BigDecimal newTotalAmount, BigDecimal oldTotalAmount) {
+    BigDecimal percentage = invoiceTerm.getPercentage();
+
+    if (invoiceTerm.getId() != null && oldTotalAmount != null) {
+      InvoiceTerm invoiceTermDb = invoiceTermRepo.find(invoiceTerm.getId());
+      percentage =
+          this.computeCustomizedPercentageUnscaled(invoiceTermDb.getAmount(), oldTotalAmount);
+    }
+
+    this.setAmounts(invoiceTerm, newTotalAmount, percentage);
+  }
+
   protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
@@ -295,17 +309,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
-    invoiceTerm.setPercentage(invoiceTermPercentage);
-    BigDecimal amount =
-        invoice
-            .getInTaxTotal()
-            .multiply(invoiceTermPercentage)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
-    invoiceTerm.setAmount(amount);
-    invoiceTerm.setAmountRemaining(amount);
+
+    this.setAmounts(invoiceTerm, invoice.getInTaxTotal(), invoiceTermPercentage);
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
@@ -327,29 +332,31 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsCustomized(true);
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
+
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(moveLine);
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
-    invoiceTerm.setPercentage(invoiceTermPercentage);
-    BigDecimal amount;
-    if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
-      amount = moveLine.getDebit();
-    } else {
-      amount = moveLine.getCredit();
-    }
-    amount =
-        amount
-            .multiply(invoiceTermPercentage)
+
+    BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
+    this.setAmounts(invoiceTerm, amount, invoiceTermPercentage);
+
+    return invoiceTerm;
+  }
+
+  protected void setAmounts(InvoiceTerm invoiceTerm, BigDecimal total, BigDecimal percentage) {
+    BigDecimal amount =
+        total
+            .multiply(percentage)
             .divide(
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
+
+    invoiceTerm.setPercentage(percentage);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-
-    return invoiceTerm;
   }
 
   @Override
@@ -914,12 +921,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
+    return this.computeCustomizedPercentageUnscaled(amount, inTaxTotal)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal computeCustomizedPercentageUnscaled(
+      BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       percentage =
-          amount
-              .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 10, RoundingMode.HALF_UP);
     }
     return percentage;
   }
