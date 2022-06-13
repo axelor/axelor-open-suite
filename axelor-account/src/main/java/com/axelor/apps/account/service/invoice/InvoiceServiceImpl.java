@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -87,6 +88,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -1194,5 +1196,25 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
     invoiceTerm.setBankDetails(invoice.getBankDetails());
+  }
+
+  @Override
+  public boolean checkInvoiceTerms(Invoice invoice) {
+    return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
+  public LocalDate getFinancialDiscountDeadlineDate(Invoice invoice) {
+    int discountDelay =
+        Optional.of(invoice)
+            .map(Invoice::getFinancialDiscount)
+            .map(FinancialDiscount::getDiscountDelay)
+            .orElse(0);
+
+    LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
+
+    return deadlineDate.isBefore(invoice.getInvoiceDate())
+        ? invoice.getInvoiceDate()
+        : deadlineDate;
   }
 }

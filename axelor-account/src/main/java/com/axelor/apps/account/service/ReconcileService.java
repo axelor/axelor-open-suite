@@ -48,9 +48,25 @@ public interface ReconcileService {
 
   public List<Partner> getPartners(Reconcile reconcile);
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      InvoicePayment invoicePayment)
+      throws AxelorException;
+
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException;
+
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException;
@@ -85,4 +101,6 @@ public interface ReconcileService {
       BigDecimal amount,
       Reconcile reconcile)
       throws AxelorException;
+
+  void checkReconcile(Reconcile reconcile) throws AxelorException;
 }

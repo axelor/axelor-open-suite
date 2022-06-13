@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -48,8 +49,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentVoucherLoadService {
@@ -122,18 +123,19 @@ public class PaymentVoucherLoadService {
       query += " and self.moveLine.credit > 0 ";
     }
 
-    return invoiceTermRepo
-        .all()
-        .filter(query)
-        .bind("partner", paymentVoucher.getPartner())
-        .bind("company", paymentVoucher.getCompany())
-        .bind("statusDaybook", MoveRepository.STATUS_DAYBOOK)
-        .bind("statusAccounted", MoveRepository.STATUS_ACCOUNTED)
-        .bind("tradingName", paymentVoucher.getTradingName())
-        .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
-        .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
-        .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
-        .fetch();
+    return invoiceTermService.filterNotAwaitingPayment(
+        invoiceTermRepo
+            .all()
+            .filter(query)
+            .bind("partner", paymentVoucher.getPartner())
+            .bind("company", paymentVoucher.getCompany())
+            .bind("statusDaybook", MoveRepository.STATUS_DAYBOOK)
+            .bind("statusAccounted", MoveRepository.STATUS_ACCOUNTED)
+            .bind("tradingName", paymentVoucher.getTradingName())
+            .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
+            .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
+            .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+            .fetch());
   }
 
   public List<PayVoucherDueElement> searchDueElements(PaymentVoucher paymentVoucher)
@@ -228,39 +230,33 @@ public class PaymentVoucherLoadService {
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
     boolean generateAll = true;
 
-    paymentVoucher
-        .getPayVoucherDueElementList()
-        .sort(Comparator.comparing(PayVoucherDueElement::getSequence));
+    List<PayVoucherDueElement> selectedElements =
+        paymentVoucher.getPayVoucherDueElementList().stream()
+            .filter(Model::isSelected)
+            .sorted(Comparator.comparing(PayVoucherDueElement::getSequence))
+            .sorted(this.getDueElementComparator())
+            .collect(Collectors.toList());
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
-    for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {
+    for (PayVoucherDueElement payVoucherDueElement : selectedElements) {
+      PayVoucherElementToPay payVoucherElementToPay =
+          this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++);
 
-      if (payVoucherDueElement.isSelected()) {
+      if (payVoucherElementToPay != null && payVoucherElementToPay.getAmountToPay().signum() > 0) {
+        paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
 
-        PayVoucherElementToPay payVoucherElementToPay =
-            this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++);
+        paymentVoucher.setRemainingAmount(
+            paymentVoucher.getRemainingAmount().subtract(payVoucherElementToPay.getAmountToPay()));
 
-        if (payVoucherElementToPay != null
-            && payVoucherElementToPay.getAmountToPay().signum() > 0) {
-          paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
-
-          paymentVoucher.setRemainingAmount(
-              paymentVoucher
-                  .getRemainingAmount()
-                  .subtract(payVoucherElementToPay.getAmountToPay()));
-
-          // Remove the line from the due elements lists
-          toRemove.add(payVoucherDueElement);
-        } else {
-          generateAll = false;
-        }
+        // Remove the line from the due elements lists
+        toRemove.add(payVoucherDueElement);
+      } else {
+        generateAll = false;
       }
     }
     for (PayVoucherDueElement payVoucherDueElement : toRemove) {
       paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
     }
-
-    this.sortElementsToPay(paymentVoucher);
 
     return generateAll;
   }
@@ -419,23 +415,8 @@ public class PaymentVoucherLoadService {
     }
 
     paymentVoucher.setCompanyBankDetails(companyBankDetails);
-    BigDecimal amount = BigDecimal.ZERO;
-    List<InvoiceTerm> invoiceTermList = getInvoiceTerms(paymentVoucher);
 
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      PayVoucherDueElement payVoucherDueElement =
-          createPayVoucherDueElement(paymentVoucher, invoiceTerm);
-      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
-
-      if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
-        amount = amount.add(payVoucherDueElement.getAmountRemaining());
-      }
-    }
-
-    paymentVoucher.setPaidAmount(amount);
-    paymentVoucher.clearPayVoucherDueElementList();
-
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+    for (InvoiceTerm invoiceTerm : getInvoiceTerms(paymentVoucher)) {
       paymentVoucher.addPayVoucherDueElementListItem(
           createPayVoucherDueElement(paymentVoucher, invoiceTerm));
     }
@@ -444,22 +425,23 @@ public class PaymentVoucherLoadService {
       return;
     }
 
-    int sequence = 0;
+    PayVoucherDueElement payVoucherDueElement =
+        paymentVoucher.getPayVoucherDueElementList().stream()
+            .sorted(Comparator.comparing(it -> it.getInvoiceTerm().getSequence()))
+            .filter(
+                it ->
+                    invoice.equals(it.getMoveLine().getMove().getInvoice())
+                        && paymentVoucher.getCurrency().equals(it.getCurrency()))
+            .findFirst()
+            .orElse(null);
 
-    for (Iterator<PayVoucherDueElement> it =
-            paymentVoucher.getPayVoucherDueElementList().iterator();
-        it.hasNext(); ) {
-      PayVoucherDueElement payVoucherDueElement = it.next();
+    if (payVoucherDueElement != null) {
+      paymentVoucher.addPayVoucherElementToPayListItem(
+          createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, 1));
+      paymentVoucher.getPayVoucherDueElementList().remove(payVoucherDueElement);
 
-      if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
-          && paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
-        paymentVoucher.addPayVoucherElementToPayListItem(
-            createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, ++sequence));
-        it.remove();
-      }
+      paymentVoucher.setPaidAmount(payVoucherDueElement.getAmountRemaining());
     }
-
-    this.sortElementsToPay(paymentVoucher);
   }
 
   @Transactional
@@ -473,8 +455,6 @@ public class PaymentVoucherLoadService {
         elementToPay ->
             paymentVoucher.addPayVoucherElementToPayListItem(
                 payVoucherElementToPayRepo.find(elementToPay.getId())));
-
-    this.sortElementsToPay(paymentVoucher);
 
     paymentVoucherRepository.save(paymentVoucher);
   }
@@ -493,15 +473,9 @@ public class PaymentVoucherLoadService {
     }
   }
 
-  protected void sortElementsToPay(PaymentVoucher paymentVoucher) {
-    paymentVoucher
-        .getPayVoucherElementToPayList()
-        .sort(Comparator.comparing(t -> t.getInvoiceTerm().getDueDate()));
-
-    int seq = 1;
-    for (PayVoucherElementToPay payVoucherElementToPay :
-        paymentVoucher.getPayVoucherElementToPayList()) {
-      payVoucherElementToPay.setSequence(seq++);
-    }
+  protected Comparator<PayVoucherDueElement> getDueElementComparator() {
+    Comparator<PayVoucherDueElement> comparator =
+        Comparator.comparing(t -> t.getInvoiceTerm().getDueDate());
+    return comparator.thenComparing(t -> t.getInvoiceTerm().getInvoice().getInvoiceDate());
   }
 }

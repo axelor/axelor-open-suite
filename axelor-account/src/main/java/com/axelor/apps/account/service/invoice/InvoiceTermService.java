@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -260,9 +261,19 @@ public interface InvoiceTermService {
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
+  BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
+
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList) throws AxelorException;
 
   void reconcileAndUpdateInvoiceTermsAmounts(
       InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
+
+  List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
+
+  boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
+
+  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
+
+  BigDecimal computeParentTotal(Context context);
 }

@@ -39,13 +39,13 @@ public interface IExceptionMessage {
   static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed  category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
@@ -89,7 +89,7 @@ public interface IExceptionMessage {
   static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
-      "Selected move(s) has/have been removed successfully" /*)*/;
+      "%d move(s) has/have been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -203,6 +203,8 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
+  static final String ACCOUNTING_REPORT_9 = /*$$(*/
+      "Error : Missing accounting report type for %s" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
   static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
@@ -301,7 +303,7 @@ public interface IExceptionMessage {
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
   static final String MOVE_9 = /*$$(*/
-      "Tax is mandatory for the account %s on the move line %s" /*)*/;
+      "Tax is mandatory for the account %s (%s) on the move line %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
@@ -783,6 +785,9 @@ public interface IExceptionMessage {
   public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
       "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
 
+  public static final String INVOICE_PAYMENT_CANNOT_RECONCILE = /*$$(*/
+      "Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s." /*)*/;
+
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
@@ -825,6 +830,9 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
   static final String PAYMENT_MODE_4 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
+
+  static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
+      "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
@@ -931,6 +939,12 @@ public interface IExceptionMessage {
 
   static final String INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL = /*$$(*/
       "%s records(s) refused on %s record(s) selected(s)." /*)*/;
+
+  static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
+      "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
+
+  static final String RECONCILE_NOT_ENOUGH_AMOUNT = /*$$(*/
+      "The remaining amount of the available invoice term(s) for payment is lower than the amount to reconcile. The reconciliation process couldn't succeed." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -1133,13 +1147,10 @@ public interface IExceptionMessage {
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
+
   static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
       "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
-  static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
-      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
-
-  // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
       "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
 
@@ -1180,7 +1191,7 @@ public interface IExceptionMessage {
       "Tax lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
 
   static final String TAX_MOVELINE_VAT_SYSTEM_DEFAULT = /*$$(*/
-      "At least one tax accounting move line associated to this move is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
+      "At least one tax accounting move line associated to the move %s is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
 
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
@@ -1210,9 +1221,6 @@ public interface IExceptionMessage {
   static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
       "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;
 
-  static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
-      "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
-
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
 
@@ -1227,4 +1235,54 @@ public interface IExceptionMessage {
 
   static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
       "Please select a payment mode to generate the counterpart" /*)*/;
+
+  static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
+      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
+
+  static final String FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL = /*$$(*/
+      "The quantity selected is the same as that of the fixed asset. The disposal will therefore be treated as a total disposal" /*)*/;
+
+  static final String IMPORT_FEC_ACCOUNT_NOT_FOUND = /*$$(*/
+      "The account with the code %s cannot be found. The move line cannot be created." /*)*/;
+
+  static final String IMPORT_FEC_JOURNAL_NOT_FOUND = /*$$(*/
+      "The journal with the code %s cannot be found. The move cannot be created." /*)*/;
+
+  static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
+      "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
+
+  static final String MASS_UPDATE_SUCCESSFUL =
+      /*$$(*/ "Operation successful : %s record(s) updated." /*)*/;
+
+  static final String MASS_UPDATE_SELECTED_NO_RECORD =
+      /*$$(*/ "No record has been updated. Please make sure the selection can be updated accordingly." /*)*/;
+
+  static final String MASS_UPDATE_ALL_NO_RECORD =
+      /*$$(*/ "No record has been updated. Please make sure the selection can be updated accordingly (e.g. Status different from selected one)." /*)*/;
+
+  static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
+
+  static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+  static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
+      "Capital Depreciation Derogatory Account" /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
+      "Please select a purchase financial discount account in account config for company %s." /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
+      "Please select a sale financial discount account in account config for company %s." /*)*/;
+
+  static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
+      "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)" /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
+
+  static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+  static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
 }

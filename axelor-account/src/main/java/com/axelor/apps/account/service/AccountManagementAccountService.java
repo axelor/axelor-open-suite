@@ -18,9 +18,11 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -68,4 +70,10 @@ public interface AccountManagementAccountService extends AccountManagementServic
    * @throws AxelorException
    */
   public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company);
+
+  public Account getPurchVatRegulationAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
+
+  public Account getSaleVatRegulationAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
 }

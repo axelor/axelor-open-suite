@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,7 +195,19 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     queryBuilder.add("self.statusSelect = :statusSelect");
     queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_CONFIRMED);
 
-    return queryBuilder.build().fetch();
+    List<PaymentVoucher> paymentVouchers = queryBuilder.build().fetch();
+    List<PaymentVoucher> paymentVouchersSelected = depositSlip.getPaymentVoucherList();
+    if (CollectionUtils.isEmpty(paymentVouchers)
+        || CollectionUtils.isEmpty(paymentVouchersSelected)) {
+      return paymentVouchers;
+    } else {
+      for (PaymentVoucher paymentVoucher : paymentVouchersSelected) {
+        if (paymentVouchers.contains(paymentVoucher)) {
+          paymentVouchers.remove(paymentVoucher);
+        }
+      }
+    }
+    return paymentVouchers;
   }
 
   @Transactional(rollbackOn = {Exception.class})

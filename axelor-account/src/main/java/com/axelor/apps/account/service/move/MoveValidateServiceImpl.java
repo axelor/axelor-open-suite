@@ -230,7 +230,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               String.format(
-                  I18n.get(IExceptionMessage.MOVE_9), account.getName(), moveLine.getName()));
+                  I18n.get(IExceptionMessage.MOVE_9),
+                  account.getCode(),
+                  account.getName(),
+                  moveLine.getName()));
         }
 
         if (moveLine.getAnalyticDistributionTemplate() == null
@@ -653,7 +656,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           && isConfigurationIssueOnVatSystem(move)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.TAX_MOVELINE_VAT_SYSTEM_DEFAULT));
+            I18n.get(IExceptionMessage.TAX_MOVELINE_VAT_SYSTEM_DEFAULT),
+            move.getReference());
       }
     }
   }

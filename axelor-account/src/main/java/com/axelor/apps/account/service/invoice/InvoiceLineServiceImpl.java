@@ -48,6 +48,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -338,7 +339,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             .getAccountConfig(invoice.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-      productInformation.put("analyticMoveLineList", null);
+      productInformation.put("analyticMoveLineList", new ArrayList<AnalyticMoveLine>());
     }
     return productInformation;
   }

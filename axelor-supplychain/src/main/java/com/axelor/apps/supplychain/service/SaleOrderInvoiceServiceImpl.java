@@ -39,7 +39,7 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
@@ -87,7 +87,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected StockMoveRepository stockMoveRepository;
 
-  protected SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl;
+  protected SaleOrderWorkflowService saleOrderWorkflowService;
 
   protected InvoiceTermService invoiceTermService;
   protected CommonInvoiceService commonInvoiceService;
@@ -101,8 +101,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceServiceSupplychainImpl invoiceService,
       SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl,
       InvoiceTermService invoiceTermService,
+      SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService) {
 
     this.appBaseService = appBaseService;
@@ -112,8 +112,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
-    this.saleOrderWorkflowServiceImpl = saleOrderWorkflowServiceImpl;
     this.invoiceTermService = invoiceTermService;
+    this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
   }
 
@@ -676,8 +676,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     saleOrder.setAmountInvoiced(amountInvoiced);
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
-        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0) {
-      saleOrderWorkflowServiceImpl.completeSaleOrder(saleOrder);
+        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      saleOrderWorkflowService.completeSaleOrder(saleOrder);
     }
   }
 

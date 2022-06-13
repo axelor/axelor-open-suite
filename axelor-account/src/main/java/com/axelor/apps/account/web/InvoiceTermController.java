@@ -30,7 +30,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -39,10 +38,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -55,57 +54,64 @@ public class InvoiceTermController {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void computeCustomizedAmount(ActionRequest request, ActionResponse response) {
-    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal total;
-      if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getInTaxTotal();
-      } else {
-        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      if (request.getContext().getParent() != null
+          && request.getContext().getParent().containsKey("_model")) {
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
+        BigDecimal amount =
+            Beans.get(InvoiceTermService.class).getCustomizedAmount(invoiceTerm, total);
+
+        if (amount.signum() > 0) {
+          response.setValue("amount", amount);
+          response.setValue("amountRemaining", amount);
+        }
       }
-      if (total.compareTo(BigDecimal.ZERO) == 0) {
-        return;
-      }
-      BigDecimal amount =
-          invoiceTerm
-              .getPercentage()
-              .multiply(total)
-              .divide(
-                  new BigDecimal(100),
-                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                  RoundingMode.HALF_UP);
-      response.setValue("amount", amount);
-      response.setValue("amountRemaining", amount);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
   public void computeCustomizedPercentage(ActionRequest request, ActionResponse response) {
-    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal total;
-      if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getInTaxTotal();
-      } else {
-        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
-      }
-      if (total.compareTo(BigDecimal.ZERO) == 0) {
-        return;
-      }
-      BigDecimal percentage =
-          Beans.get(InvoiceTermService.class)
-              .computeCustomizedPercentage(invoiceTerm.getAmount(), total);
-      response.setValue("percentage", percentage);
-      response.setValue("amountRemaining", invoiceTerm.getAmount());
-      response.setValue(
-          "isCustomized",
-          invoiceTerm.getPaymentConditionLine() == null
-              || percentage.compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage())
-                  != 0);
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
+      if (request.getContext().getParent() != null
+          && request.getContext().getParent().containsKey("_model")) {
+        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
+
+        if (total.compareTo(BigDecimal.ZERO) == 0) {
+          return;
+        }
+
+        BigDecimal percentage =
+            invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+        response.setValue("percentage", percentage);
+        response.setValue("amountRemaining", invoiceTerm.getAmount());
+        response.setValue(
+            "isCustomized",
+            invoiceTerm.getPaymentConditionLine() == null
+                || percentage.compareTo(
+                        invoiceTerm.getPaymentConditionLine().getPaymentPercentage())
+                    != 0);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  protected BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm) {
+    if (parentContext.get("_model").equals(Invoice.class.getName())) {
+      Invoice invoice = parentContext.asType(Invoice.class);
+      return invoice.getInTaxTotal();
+    } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
+      MoveLine moveLine = parentContext.asType(MoveLine.class);
+      return moveLine.getDebit().max(moveLine.getCredit());
+    } else {
+      return BigDecimal.ZERO;
     }
   }
 
@@ -272,7 +278,7 @@ public class InvoiceTermController {
           (PfpPartialReason) request.getContext().get("pfpPartialReason");
 
       if (pfpGrantedAmount.compareTo(invoiceAmount) >= 0) {
-        response.setValue("pfpGrantedAmount", 0);
+        response.setValue("pfpGrantedAmount", BigDecimal.ZERO);
         response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }

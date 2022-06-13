@@ -22,10 +22,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveComputeServiceImpl implements MoveComputeService {
@@ -45,13 +45,6 @@ public class MoveComputeServiceImpl implements MoveComputeService {
     }
     values.put("$totalLines", move.getMoveLineList().size());
 
-    BigDecimal totalCurrency =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getCurrencyAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
-    values.put("$totalCurrency", totalCurrency);
-
     BigDecimal totalDebit =
         move.getMoveLineList().stream()
             .map(MoveLine::getDebit)
@@ -63,6 +56,19 @@ public class MoveComputeServiceImpl implements MoveComputeService {
             .map(MoveLine::getCredit)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     values.put("$totalCredit", totalCredit);
+
+    Predicate<? super MoveLine> isDebitCreditFilter =
+        ml -> ml.getCredit().compareTo(BigDecimal.ZERO) > 0;
+    if (totalDebit.compareTo(totalCredit) > 0) {
+      isDebitCreditFilter = ml -> ml.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    BigDecimal totalCurrency =
+        move.getMoveLineList().stream()
+            .filter(isDebitCreditFilter)
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCurrency", totalCurrency);
 
     BigDecimal difference = totalDebit.subtract(totalCredit);
     values.put("$difference", difference);

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Year;
@@ -93,7 +94,9 @@ public class AccountService {
             .createQuery(
                 String.format(
                     "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
-                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)%s",
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect = "
+                        + MoveRepository.STATUS_ACCOUNTED
+                        + "%s",
                     account == null ? ".accountType" : "",
                     year != null ? " and self.move.period.year = :year" : ""));
 

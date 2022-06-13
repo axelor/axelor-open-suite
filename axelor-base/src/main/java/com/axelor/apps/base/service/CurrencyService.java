@@ -62,7 +62,7 @@ public class CurrencyService {
     this.currencyConversionLineRepo = currencyConversionLineRepo;
   }
 
-  public CurrencyService(LocalDate today) {
+  public CurrencyService(AppBaseService appBaseService, LocalDate today) {
 
     this.appBaseService = appBaseService;
     this.today = today;

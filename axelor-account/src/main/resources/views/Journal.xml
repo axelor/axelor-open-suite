@@ -4,6 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="journalType"/>
@@ -28,7 +32,8 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="company" canEdit="false"
         readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form"
-        grid-view="company-grid" onChange="action-journal-record-change-config-values"/>
+        grid-view="company-grid"
+        onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
     </panel>
@@ -141,6 +146,11 @@
     <field name="exportCode" expr="eval:null" if="notExportOk"/>
   </action-record>
 
+  <action-record name="action-journal-record-reset-valid-account-set"
+    model="com.axelor.apps.account.db.Journal">
+    <field name="validAccountSet" expr="eval: null"/>
+  </action-record>
+
   <action-group name="action-journal-group-on-load-actions">
     <action name="action-journal-method-set-totals"
       if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
@@ -155,11 +165,12 @@
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
   </action-method>
+
   <action-record name="action-journal-record-change-config-values"
     model="com.axelor.apps.account.db.Journal">
-    <field name="authorizeSimulatedMove" expr="eval: false"
-      if="company?.accountConfig?.isActivateSimulatedMove||company?.accountConfig==null"/>
-    <field name="allowAccountingDaybook" expr="eval: false"
-      if="company?.accountConfig?.isActivateSimulatedMove||company?.accountConfig==null"/>
+    <field name="authorizeSimulatedMove"
+      expr="eval: company?.accountConfig?.isActivateSimulatedMove"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: company?.accountConfig?.accountingDaybook"/>
   </action-record>
 </object-views>

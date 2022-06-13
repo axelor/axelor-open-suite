@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -60,6 +61,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetValidateService fixedAssetValidateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
@@ -72,7 +74,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetValidateService fixedAssetValidateService) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
@@ -80,6 +83,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
+    this.fixedAssetValidateService = fixedAssetValidateService;
   }
 
   @Override
@@ -241,6 +245,31 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAsset is null
+   */
+  @Override
+  public void generateAndComputeFixedAssetLinesStartingWith(
+      FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAsset);
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      FixedAssetLineComputationService fixedAssetLineComputationService =
+          Beans.get(FixedAssetLineEconomicRecomputationServiceImpl.class);
+      if (fixedAssetLine != null) {
+        generateComputedPlannedFixedAssetLines(
+            fixedAsset,
+            fixedAssetLine,
+            fixedAsset.getFixedAssetLineList(),
+            fixedAssetLineComputationService);
+      }
+    }
+  }
+
   private List<FixedAssetLine> generateComputedPlannedFixedAssetLines(
       FixedAsset fixedAsset,
       FixedAssetLine initialFixedAssetLine,
@@ -296,11 +325,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         fixedAsset.setDepreciationPlanSelect(
             fixedAsset.getFixedAssetCategory().getDepreciationPlanSelect());
       }
-      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
-        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-      } else {
-        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
-      }
+
       fixedAsset.setQty(invoiceLine.getQty());
       fixedAsset.setAcquisitionDate(invoice.getOriginDate());
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
@@ -324,7 +349,13 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);
       fixedAsset.setPurchaseAccountMove(invoice.getMove());
-      this.generateAndComputeLines(fixedAsset);
+      fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+
+      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
+        fixedAssetValidateService.validate(fixedAsset);
+      } else {
+        this.generateAndComputeLines(fixedAsset);
+      }
 
       fixedAssetList.add(fixedAssetRepo.save(fixedAsset));
     }

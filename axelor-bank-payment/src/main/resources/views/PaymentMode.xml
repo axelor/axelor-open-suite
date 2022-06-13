@@ -10,7 +10,8 @@
       <replace>
         <panel name="accountingTriggerPanel" stacked="true">
           <field name="accountingTriggerSelect" hidden="true"
-            hideIf="!generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"/>
+            hideIf="!generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"
+            selection-in="[0,1,2,3,4]"/>
           <field name="accountingTriggerSelect" hidden="true"
             hideIf="generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"
             selection-in="[0,1]"/>
@@ -22,9 +23,8 @@
     <extend target="//panel[@name='paymentProcessesSettingsPanel']">
       <insert position="after">
         <panel name="bankOrderPanel" title="Bank order config." hidden="true"
-          hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
+          showIf="(typeSelect == 2 &amp;&amp; inOutSelect == 1) || (typeSelect == 9 &amp;&amp; inOutSelect == 2) || (typeSelect == 10 &amp;&amp; inOutSelect == 1)">
           <field name="generateBankOrder"
-            showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"
             onChange="action-payment-mode-record-generate-bank-order-onchange"/>
           <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
           <panel name="generateBankOrderPanel" showIf="generateBankOrder" colSpan="12">

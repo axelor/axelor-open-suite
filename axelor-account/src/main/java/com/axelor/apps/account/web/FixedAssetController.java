@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlServi
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -127,7 +128,8 @@ public class FixedAssetController {
     try {
       int transferredReason =
           Beans.get(FixedAssetService.class)
-              .computeTransferredReason(disposalTypeSelect, disposalQtySelect);
+              .computeTransferredReason(
+                  disposalTypeSelect, disposalQtySelect, disposalQty, fixedAsset);
 
       FixedAsset createdFixedAsset =
           Beans.get(FixedAssetService.class)
@@ -171,7 +173,7 @@ public class FixedAssetController {
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
-        Beans.get(FixedAssetService.class).validate(fixedAsset);
+        Beans.get(FixedAssetValidateService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
@@ -203,7 +205,7 @@ public class FixedAssetController {
                         .filter(ObjectUtils::notEmpty)
                         .map(input -> Long.parseLong(input.toString()))
                         .collect(Collectors.toList()));
-        int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
+        int validatedFixedAssets = Beans.get(FixedAssetValidateService.class).massValidation(ids);
         response.setFlash(
             validatedFixedAssets
                 + " "
@@ -414,6 +416,30 @@ public class FixedAssetController {
       response.setAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkPartialDisposal(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (context.get("disposalDate") == null
+        || context.get("disposalAmount") == null
+        || context.get("disposalTypeSelect") == null
+        || context.get("disposalQtySelect") == null) {
+      return;
+    }
+    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
+    Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
+    FixedAsset fixedAsset =
+        Beans.get(FixedAssetRepository.class).find(Long.valueOf(context.get("_id").toString()));
+    try {
+      if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
+          && disposalQty.compareTo(fixedAsset.getQty()) == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
 }
