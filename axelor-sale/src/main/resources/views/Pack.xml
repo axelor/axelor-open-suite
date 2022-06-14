@@ -15,7 +15,7 @@
     onNew="action-pack-record-onnew">
     <panel name="packPanel">
       <field name="code" colSpan="3" required="true" x-bind="{{code|unaccent|uppercase}}"/>
-      <field name="name" colSpan="3"/>
+      <field name="name" colSpan="3" required="true"/>
       <field name="unit" colSpan="3" canEdit="false" form-view="unit-form"
         grid-view="unit-grid"/>
       <field name="currency" colSpan="3" canEdit="false"/>
@@ -36,7 +36,8 @@
         target="com.axelor.apps.sale.db.Pack" form-view="pack-form" grid-view="pack-grid"
         canNew="true" canEdit="true"/>
       <field name="$qty" type="decimal" title="Qty" min="1"/>
-      <button name="addPackBtn" title="Add Pack" onClick="action-sale-order-method-add-pack"/>
+      <button name="addPackBtn" title="Add Pack" onClick="action-sale-order-method-add-pack"
+        readonlyIf="$pack == null"/>
       <field name="_id" title="Sale order id" hidden="true"/>
     </panel>
   </form>
