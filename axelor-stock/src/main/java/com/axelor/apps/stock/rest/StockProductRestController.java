@@ -6,7 +6,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.tool.api.ConflictChecker;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;

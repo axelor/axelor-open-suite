@@ -45,8 +45,6 @@ public class StockMoveLineRestController {
         .updateStockMoveLine(stockmoveLine, requestBody.getRealQty(), requestBody.getConformity());
 
     return ResponseConstructor.build(
-        Response.Status.OK,
-        "Line successfully updated.",
-        new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
   }
 }
