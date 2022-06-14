@@ -594,11 +594,11 @@
       <panel name="invoiceTermPanel" title="Term(s)"
         showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
         <panel name="financialDiscountPanel" colSpan="12"
-          showIf="move.statusSelect != 1 || move.statusSelect != 5"
+          showIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
           <field name="financialDiscount" readonlyIf="amountPaid > 0"
             onChange="action-move-line-method-compute-financial-discount"/>
-          <field name="financialDiscountRate" readonly="true"/>
+          <field name="financialDiscountRate" showIf="financialDiscount" readonly="true"/>
           <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12"
             readonly="true">
             <field name="financialDiscountTotalAmount"/>
