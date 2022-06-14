@@ -89,20 +89,20 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
 
   // Transform id to object
   public Product fetchProduct() {
-    return ObjectFinder.find(Product.class, productId);
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 
   public StockLocation fetchStockLocation() {
-    return ObjectFinder.find(StockLocation.class, stockLocationId);
+    return ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
   }
 
   public StockCorrectionReason fetchReason() {
-    return ObjectFinder.find(StockCorrectionReason.class, reasonId);
+    return ObjectFinder.find(StockCorrectionReason.class, reasonId, ObjectFinder.NO_VERSION);
   }
 
   public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
-      return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

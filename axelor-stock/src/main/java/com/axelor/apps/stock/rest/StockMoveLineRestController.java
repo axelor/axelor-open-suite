@@ -5,7 +5,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.tool.api.ConflictChecker;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
@@ -39,9 +38,8 @@ public class StockMoveLineRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
-    StockMoveLine stockmoveLine = ObjectFinder.find(StockMoveLine.class, stockMoveLineId);
-
-    ConflictChecker.checkVersion(stockmoveLine, requestBody.getVersion());
+    StockMoveLine stockmoveLine =
+        ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
 
     Beans.get(StockMoveLineService.class)
         .updateStockMoveLine(stockmoveLine, requestBody.getRealQty(), requestBody.getConformity());

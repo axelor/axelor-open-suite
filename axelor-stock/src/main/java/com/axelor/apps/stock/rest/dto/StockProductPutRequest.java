@@ -35,6 +35,6 @@ public class StockProductPutRequest extends RequestStructure {
   // Transform id to object
 
   public StockLocation fetchStockLocation() {
-    return ObjectFinder.find(StockLocation.class, stockLocationId);
+    return ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
   }
 }

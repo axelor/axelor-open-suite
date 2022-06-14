@@ -59,7 +59,7 @@ public class StockInternalMovePutRequest extends RequestStructure {
   // Transform id to object
   public Unit fetchUnit() {
     if (this.unitId != null) {
-      return ObjectFinder.find(Unit.class, unitId);
+      return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

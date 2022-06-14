@@ -56,10 +56,10 @@ public class StockTrackingNumberPostRequest extends RequestPostStructure {
 
   // Transform id to object
   public Product fetchProduct() {
-    return ObjectFinder.find(Product.class, productId);
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 
   public Company fetchCompany() {
-    return ObjectFinder.find(Company.class, companyId);
+    return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
   }
 }
