@@ -51,4 +51,6 @@ public interface IExceptionMessage {
 
   // Callable Tool
   String PROCESS_BEING_COMPUTED = /*$$(*/ "Computation in progress..." /*)*/;
+  /** ModelTool */
+  static final String DUPLICATE_NO_DATA_FOUND = /*$$(*/ "No data was found." /*)*/;
 }

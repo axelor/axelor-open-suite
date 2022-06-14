@@ -20,11 +20,13 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -152,38 +154,41 @@ public class DuplicateObjectsController {
    * @param response
    * @throws AxelorException
    */
-  public void showDuplicate(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void showDuplicate(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Set<String> fields = new HashSet<String>();
+      Class<? extends Model> modelClass = extractModel(request, fields);
+      ModelTool.emptyTable(modelClass);
+      LOG.debug("Duplicate record model: {}", modelClass.getName());
 
-    Context context = request.getContext();
-    Set<String> fields = new HashSet<String>();
-    Class<? extends Model> modelClass = extractModel(request, fields);
+      if (fields.size() > 0) {
 
-    LOG.debug("Duplicate record model: {}", modelClass.getName());
+        String filter = findDuplicated(request, fields, modelClass);
 
-    if (fields.size() > 0) {
+        if (filter == null) {
+          response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
+        } else {
+          response.setView(
+              ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
+                  .model(modelClass.getName())
+                  .add("grid")
+                  .add("form")
+                  .domain(filter)
+                  .context("_domain", filter)
+                  .map());
 
-      String filter = findDuplicated(request, fields, modelClass);
-
-      if (filter == null) {
-        response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
-      } else {
-        response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
-                .model(modelClass.getName())
-                .add("grid")
-                .add("form")
-                .domain(filter)
-                .context("_domain", filter)
-                .map());
-
-        if (context.get("_contextModel") != null) {
-          response.setCanClose(true);
+          if (context.get("_contextModel") != null) {
+            response.setCanClose(true);
+          }
         }
+      } else if (context.get("_contextModel") == null) {
+        response.setFlash(I18n.get(IExceptionMessage.GENERAL_10));
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
       }
-    } else if (context.get("_contextModel") == null) {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_10));
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

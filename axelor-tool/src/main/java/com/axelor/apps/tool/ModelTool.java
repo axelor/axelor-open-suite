@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.Column;
+import javax.persistence.Query;
 
 public final class ModelTool {
 
@@ -188,5 +189,18 @@ public final class ModelTool {
       dest.add(cpy);
     }
     return dest;
+  }
+
+  public static void emptyTable(Class<? extends Model> modelClass) throws AxelorException {
+    StringBuilder queryBuilder = new StringBuilder("SELECT 1 FROM ");
+    queryBuilder.append(modelClass.getSimpleName());
+    String query = queryBuilder.toString();
+    Query finalQuery = JPA.em().createQuery(query).setMaxResults(1);
+
+    if (finalQuery.getResultList().isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.DUPLICATE_NO_DATA_FOUND));
+    }
   }
 }
