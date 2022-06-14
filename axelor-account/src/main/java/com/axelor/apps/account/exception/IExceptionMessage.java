@@ -89,7 +89,7 @@ public interface IExceptionMessage {
   static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
-      "Selected move(s) has/have been removed successfully" /*)*/;
+      "%d move(s) has/have been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -1280,4 +1280,9 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
+
+  static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+  static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
 }

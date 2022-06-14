@@ -278,7 +278,7 @@ public class InvoiceTermController {
           (PfpPartialReason) request.getContext().get("pfpPartialReason");
 
       if (pfpGrantedAmount.compareTo(invoiceAmount) >= 0) {
-        response.setValue("pfpGrantedAmount", 0);
+        response.setValue("pfpGrantedAmount", BigDecimal.ZERO);
         response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }

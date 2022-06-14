@@ -110,6 +110,7 @@
       <field name="decisionPfpTakenDate"/>
       <field name="paymentSession"/>
       <field name="pfpValidateStatusSelect"/>
+      <field name="pfpValidatorUser"/>
     </track>
 
   </entity>
