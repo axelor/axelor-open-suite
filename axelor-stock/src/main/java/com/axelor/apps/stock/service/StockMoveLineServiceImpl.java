@@ -1282,9 +1282,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
   }
 
-  /**
-   * Create new stock line, then set product infos and compute prices (API AOS)
-   */
+  /** Create new stock line, then set product infos and compute prices (API AOS) */
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void createStockMoveLine(
@@ -1317,9 +1315,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLineRepository.save(line);
   }
 
-  /**
-   * Update stock move line realQty and conformity (API AOS)
-   */
+  /** Update stock move line realQty and conformity (API AOS) */
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveLine(
