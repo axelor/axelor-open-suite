@@ -56,6 +56,8 @@ public interface IExceptionMessage {
       "Can only cancel a validated inventory." /*)*/;
   static final String INVENTORY_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft if cancelled." /*)*/;
+  static final String INVENTORY_VALIDATE_INVENTORY_LINE_LIST = /*$$(*/
+      "Please fill all inventory lines" /*)*/;
 
   /** Stock Location Line Service Impl */
   static final String LOCATION_LINE_1 = /*$$(*/
