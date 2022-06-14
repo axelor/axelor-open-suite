@@ -142,11 +142,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
-
     BigDecimal sum = BigDecimal.ZERO;
+    BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
+
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
-        sum = sum.add(invoiceTerm.getPercentage());
+        sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
       }
     }
     return sum;
@@ -332,7 +333,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
-    invoiceTerm.setPercentage(invoiceTermPercentage);
+    invoiceTerm.setPercentage(
+        invoiceTermPercentage.setScale(
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     BigDecimal amount;
     if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
       amount = moveLine.getDebit();
@@ -914,12 +917,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
+    return this.computeCustomizedPercentageUnscaled(amount, inTaxTotal)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal computeCustomizedPercentageUnscaled(
+      BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       percentage =
-          amount
-              .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 10, RoundingMode.HALF_UP);
     }
     return percentage;
   }
