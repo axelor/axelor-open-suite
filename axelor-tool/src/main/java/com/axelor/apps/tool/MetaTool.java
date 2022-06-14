@@ -22,6 +22,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,5 +95,27 @@ public class MetaTool {
     typeToJsonTypeMap.put("Custom-ManyToMany", "json-many-to-many");
     typeToJsonTypeMap.put("Custom-OneToMany", "json-one-to-many");
     return typeToJsonTypeMap;
+  }
+
+  /**
+   * Get Model class name of wantedType in case wantedType is a ManyToOne or Custom-ManyToOne. This
+   * method return wantedType if wantedType is not a ManyToOne or Custom-ManyToOne
+   *
+   * @param indicator
+   * @param wantedType
+   * @return
+   */
+  public static String getWantedClassName(MetaJsonField indicator, String wantedType) {
+    String wantedClassName;
+    if ((wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne"))
+        && indicator.getTargetModel() != null) {
+      // it is a relational field so we get the target model class
+      String targetName = indicator.getTargetModel();
+      // get only the class without the package
+      wantedClassName = targetName.substring(targetName.lastIndexOf('.') + 1);
+    } else {
+      wantedClassName = wantedType;
+    }
+    return wantedClassName;
   }
 }

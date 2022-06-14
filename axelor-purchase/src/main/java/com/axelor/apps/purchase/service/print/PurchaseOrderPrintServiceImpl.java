@@ -118,6 +118,8 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
         .addFormat(formatPdf);
   }
 
@@ -129,7 +131,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     }
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class)
+        + appBaseService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)

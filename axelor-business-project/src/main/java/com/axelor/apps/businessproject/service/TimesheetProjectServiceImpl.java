@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -33,13 +34,15 @@ import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,10 +65,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      ProjectTaskRepository projectTaskRepository,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetLineRepository timesheetlineRepo,
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -76,17 +80,18 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         userHrService,
         timesheetLineService,
         projectPlanningTimeRepository,
-        projectTaskRepository,
+        projectTaskRepo,
         productCompanyService,
-        timesheetLineRepo,
-        timeSheetRepository);
+        timesheetlineRepo,
+        timeSheetRepository,
+        projectService);
   }
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException {
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("business-project")) {
+    if (!appHumanResourceService.isApp("business-project")) {
       return super.createInvoiceLines(invoice, timesheetLineList, priority);
     }
 
@@ -178,5 +183,17 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
   public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {
     return timesheetLineService.computeHoursDuration(
         timesheetLine.getTimesheet(), timesheetLine.getDurationForCustomer(), true);
+  }
+
+  @Override
+  protected TimesheetLine createTimeSheetLineFromPPT(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    TimesheetLine line = super.createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
+    if (ObjectUtils.notEmpty(projectPlanningTime.getProjectTask())
+        && projectPlanningTime.getProjectTask().getInvoicingType()
+            == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+      line.setToInvoice(projectPlanningTime.getProjectTask().getToInvoice());
+    }
+    return line;
   }
 }

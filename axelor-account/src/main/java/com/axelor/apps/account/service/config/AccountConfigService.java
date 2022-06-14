@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
@@ -323,6 +324,19 @@ public class AccountConfigService {
     return accountConfig.getAdvancePaymentAccount();
   }
 
+  public Account getSupplierAdvancePaymentAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getSupplierAdvancePaymentAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_46),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSupplierAdvancePaymentAccount();
+  }
+
   public Account getCashPositionVariationAccount(AccountConfig accountConfig)
       throws AxelorException {
 
@@ -597,5 +611,18 @@ public class AccountConfigService {
     }
 
     return accountConfig.getFactorDebitAccount();
+  }
+
+  public Partner getDasContactPartner(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getDasContactPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_42),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
+    return accountConfig.getDasContactPartner();
   }
 }

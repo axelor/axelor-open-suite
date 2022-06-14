@@ -72,6 +72,8 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
+  void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
@@ -108,5 +110,11 @@ public interface InvoiceLineService {
    */
   public InvoiceLine updateProductQty(
       InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty)
+      throws AxelorException;
+
+  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
+      throws AxelorException;
+
+  public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException;
 }

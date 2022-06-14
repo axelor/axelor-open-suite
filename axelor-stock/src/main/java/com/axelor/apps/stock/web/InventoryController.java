@@ -130,6 +130,39 @@ public class InventoryController {
     }
   }
 
+  public void planInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).planInventory(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void startInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).startInventory(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void completeInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).completeInventory(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void validateInventory(ActionRequest request, ActionResponse response) {
     try {
       Long id = request.getContext().asType(Inventory.class).getId();
@@ -146,6 +179,17 @@ public class InventoryController {
       Inventory inventory = request.getContext().asType(Inventory.class);
       inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
       Beans.get(InventoryService.class).cancel(inventory);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void draftInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(Inventory.class).getId();
+      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+      Beans.get(InventoryService.class).draftInventory(inventory);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

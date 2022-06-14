@@ -83,6 +83,7 @@
         <scalar-parameter name="Locale" id="4050">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -90,6 +91,7 @@
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -132,7 +134,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -242,6 +243,12 @@
                     <text-property name="heading">move_sequence</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">select_title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">select_title</text-property>
+                    <text-property name="heading">select_title</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount_remaining</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount_remaining</text-property>
@@ -257,6 +264,16 @@
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -335,6 +352,11 @@
                     </structure>
                     <structure>
                         <property name="position">15</property>
+                        <property name="name">select_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
                         <property name="name">amount_remaining</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -443,6 +465,13 @@
                 </structure>
                 <structure>
                     <property name="position">15</property>
+                    <property name="name">select_title</property>
+                    <property name="nativeName">select_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
                     <property name="name">amount_remaining</property>
                     <property name="nativeName">amount_remaining</property>
                     <property name="dataType">decimal</property>
@@ -453,7 +482,12 @@
 MoveLine.date_val, MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
-Account.code as account_code , Account.name as account_name , Move.reference as move_sequence,
+Account.code as account_code , Account.name as account_name , Move.reference as move_sequence, 
+(CASE WHEN(MetaTranslation.message_value = '') THEN
+		        Meta.select_title
+		    ELSE  
+				MetaTranslation.message_value
+			END) as select_title,
 MoveLine.amount_remaining
 from public.account_accounting_report as AccountingReport
 left outer join public.account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -476,6 +510,13 @@ left outer join public.base_company as Company on (AccountingReport.company = Co
 left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
+left outer join (SELECT cast(meta_select_item.value as int) AS select_value, meta_select_item.title AS select_title 
+	FROM meta_select JOIN meta_select_item 
+	ON meta_select.name = 'iaccount.move.status.select'
+	AND meta_select_item.select_id = meta_select.id) 
+AS Meta ON (Meta.select_value = Move.status_select)
+left outer join meta_translation as MetaTranslation
+ON MetaTranslation.message_key = Meta.select_title AND MetaTranslation.language = ?
 where 
 (AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
@@ -488,8 +529,9 @@ Move.company = AccountingReport.company AND
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
-(AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
-Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
+(AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
+AND Move.ignore_in_accounting_ok = false
+AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (ReportType.type_select = 1 OR (ReportType.type_select != 1 AND Account.use_for_partner_balance is true))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
@@ -512,12 +554,14 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <text-property name="heading">logo_height</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
@@ -594,42 +638,49 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_type</property>
+                    <property name="alias">report_type</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">report_type</text-property>
                     <text-property name="heading">report_type</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_code_account</property>
+                    <property name="alias">display_code_account</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_code_account</text-property>
                     <text-property name="heading">display_code_account</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_move_line_sequence</property>
+                    <property name="alias">display_move_line_sequence</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_move_line_sequence</text-property>
                     <text-property name="heading">display_move_line_sequence</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_name_account</property>
+                    <property name="alias">display_name_account</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_name_account</text-property>
                     <text-property name="heading">display_name_account</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_only_not_completely_lettered_move_lines</property>
+                    <property name="alias">display_only_not_completely_lettered_move_lines</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_only_not_completely_lettered_move_lines</text-property>
                     <text-property name="heading">display_only_not_completely_lettered_move_lines</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_cumulative_balance</property>
+                    <property name="alias">display_cumulative_balance</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_cumulative_balance</text-property>
                     <text-property name="heading">display_cumulative_balance</text-property>
@@ -750,6 +801,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                         <property name="name">display_cumulative_balance</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">display_simulated_move</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -759,140 +815,126 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">period_name</property>
                     <property name="nativeName">period_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">journal_name</property>
                     <property name="nativeName">journal_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">global</property>
                     <property name="nativeName">global</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">global_by_date</property>
                     <property name="nativeName">global_by_date</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">report_type</property>
                     <property name="nativeName">report_type</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">display_code_account</property>
                     <property name="nativeName">display_code_account</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">display_move_line_sequence</property>
                     <property name="nativeName">display_move_line_sequence</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">display_name_account</property>
                     <property name="nativeName">display_name_account</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">display_only_not_completely_lettered_move_lines</property>
                     <property name="nativeName">display_only_not_completely_lettered_move_lines</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">display_cumulative_balance</property>
                     <property name="nativeName">display_cumulative_balance</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">display_simulated_move</property>
+                    <property name="nativeName">display_simulated_move</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -915,7 +957,8 @@ AccountingReport.display_code_account_column_on_printing as display_code_account
 AccountingReport.display_move_line_sequence_on_printing as display_move_line_sequence,
 AccountingReport.display_name_account_column_on_printing as display_name_account,
 AccountingReport.display_only_not_completely_lettered_move_lines,
-AccountingReport.display_cumulative_balance
+AccountingReport.display_cumulative_balance,
+AccountingReport.display_simulated_move as display_simulated_move
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -1421,6 +1464,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">display_simulated_move</property>
+                    <text-property name="displayName">display_simulated_move</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="492">
                 <property name="width">1.6in</property>
@@ -1448,6 +1498,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="1247">
                     <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
+                    <property name="textAlign">center</property>
                     <text id="4001">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
@@ -1456,12 +1507,56 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">center</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">'AccountingReportType'+row["report_type"]+'.title'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                    <text id="4274">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">center</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType.provisional'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1993,6 +2088,12 @@ else{
                                 <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">select_title</property>
+                                <text-property name="displayName">select_title</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["select_title"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="4147">
@@ -2000,6 +2101,9 @@ else{
                         </column>
                         <column id="4090">
                             <property name="width">15%</property>
+                        </column>
+                        <column id="5124">
+                            <property name="width">10%</property>
                         </column>
                         <column id="4257">
                             <list-property name="visibility">
@@ -2063,6 +2167,42 @@ else{
                             <row id="4052">
                                 <cell id="4142"/>
                                 <cell id="4053"/>
+                                <cell id="5119">
+                                    <text id="4283">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType.status_select_title'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="4252">
                                     <text id="4265">
                                         <property name="fontSize">9.5pt</property>
@@ -2476,7 +2616,7 @@ else{
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <cell id="4143">
-                                        <property name="colSpan">13</property>
+                                        <property name="colSpan">14</property>
                                         <property name="rowSpan">1</property>
                                         <data id="4115">
                                             <property name="resultSetColumn">account</property>
@@ -2489,7 +2629,7 @@ else{
                                     <method name="onCreate"><![CDATA[vars["PreviousBalance"]=0]]></method>
                                     <cell id="4145"/>
                                     <cell id="4107">
-                                        <property name="colSpan">7</property>
+                                        <property name="colSpan">8</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4141">
                                             <property name="fontSize">9.5pt</property>
@@ -2569,6 +2709,12 @@ else{
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">move_line_name</property>
+                                    </data>
+                                </cell>
+                                <cell id="5121">
+                                    <data id="5118">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="resultSetColumn">select_title</property>
                                     </data>
                                 </cell>
                                 <cell id="4254">
@@ -2679,6 +2825,7 @@ else{
                             <row id="4082">
                                 <cell id="4146"/>
                                 <cell id="4083"/>
+                                <cell id="5123"/>
                                 <cell id="4256"/>
                                 <cell id="4262"/>
                                 <cell id="4084"/>

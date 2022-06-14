@@ -19,12 +19,19 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Singleton
 public class InventoryLineController {
@@ -44,15 +51,53 @@ public class InventoryLineController {
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
-    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-    Inventory inventory =
-        request.getContext().getParent() != null
-            ? request.getContext().getParent().asType(Inventory.class)
-            : inventoryLine.getInventory();
-    inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
-    response.setValue("unit", inventoryLine.getUnit());
-    response.setValue("gap", inventoryLine.getGap());
-    response.setValue("gapValue", inventoryLine.getGapValue());
-    response.setValue("realValue", inventoryLine.getRealValue());
+    try {
+      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+      Inventory inventory =
+          request.getContext().getParent() != null
+              ? request.getContext().getParent().asType(Inventory.class)
+              : inventoryLine.getInventory();
+      inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
+      response.setValue("unit", inventoryLine.getUnit());
+      response.setValue("gap", inventoryLine.getGap());
+      response.setValue("gapValue", inventoryLine.getGapValue());
+      response.setValue("realValue", inventoryLine.getRealValue());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setStockLocationDomain(ActionRequest request, ActionResponse response) {
+    try {
+      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+      Inventory inventory =
+          request.getContext().getParent() != null
+              ? request.getContext().getParent().asType(Inventory.class)
+              : inventoryLine.getInventory();
+
+      if (inventory != null && inventory.getStockLocation() != null) {
+        Set<StockLocation> stockLocationSet = new HashSet<StockLocation>();
+        stockLocationSet.add(inventory.getStockLocation());
+        stockLocationSet = Beans.get(InventoryService.class).getStockLocations(stockLocationSet);
+        response.setAttr(
+            "stockLocation",
+            "domain",
+            "self.id IN(" + StringTool.getIdListString(stockLocationSet) + ")");
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateCurrentQty(ActionRequest request, ActionResponse response) {
+    try {
+      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+      BigDecimal updatedCurrentQty =
+          Beans.get(InventoryLineService.class)
+              .getCurrentQty(inventoryLine.getStockLocation(), inventoryLine.getProduct());
+      response.setValue("currentQty", updatedCurrentQty);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

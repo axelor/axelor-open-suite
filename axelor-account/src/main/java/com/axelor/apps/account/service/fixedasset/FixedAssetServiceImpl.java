@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -53,7 +53,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
-  protected MoveLineService moveLineService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   protected AccountConfigService accountConfigService;
 
@@ -65,12 +65,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetRepository fixedAssetRepo,
       FixedAssetLineMoveService fixedAssetLineMoveService,
       FixedAssetLineComputationService fixedAssetLineComputationService,
-      MoveLineService moveLineService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AccountConfigService accountConfigService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
-    this.moveLineService = moveLineService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.accountConfigService = accountConfigService;
   }
 
@@ -274,7 +274,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
+      moveLine = moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
     }
   }
 
@@ -301,7 +301,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(FixedAsset fixedAsset) {
+  public void validate(FixedAsset fixedAsset) throws AxelorException {
+    if (fixedAsset.getGrossValue() == null || fixedAsset.getGrossValue().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.FIXED_ASSET_GROSS_VALUE_0),
+          fixedAsset.getReference());
+    }
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
       if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
@@ -317,7 +323,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public int massValidation(List<Long> fixedAssetIds) {
+  public int massValidation(List<Long> fixedAssetIds) throws AxelorException {
     int count = 0;
     for (Long id : fixedAssetIds) {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);

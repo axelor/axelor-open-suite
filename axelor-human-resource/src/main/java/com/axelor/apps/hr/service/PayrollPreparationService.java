@@ -320,8 +320,7 @@ public class PayrollPreparationService {
     }
 
     payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(
-        Beans.get(AppBaseService.class).getTodayDate(payrollPreparation.getCompany()));
+    payrollPreparation.setExportDate(appBaseService.getTodayDate(payrollPreparation.getCompany()));
     payrollPreparationRepo.save(payrollPreparation);
 
     return file.getPath();
@@ -424,7 +423,7 @@ public class PayrollPreparationService {
   public String getPayrollPreparationExportName() {
     return I18n.get("Payroll preparation")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString();
+        + appBaseService.getTodayDateTime().toLocalDateTime().toString();
   }
 
   public String[] getPayrollPreparationExportHeader() {
@@ -461,7 +460,7 @@ public class PayrollPreparationService {
     Period payPeriod = payrollPreparation.getPeriod();
 
     long nbNotExportedPayroll =
-        Beans.get(PayrollPreparationRepository.class)
+        payrollPreparationRepo
             .all()
             .filter(
                 "self.company = :_company AND self.exported = false "
@@ -472,8 +471,7 @@ public class PayrollPreparationService {
 
     if (nbNotExportedPayroll == 0) {
       payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      payPeriod.setClosureDateTime(
-          Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+      payPeriod.setClosureDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     }
     Beans.get(PeriodRepository.class).save(payPeriod);
   }

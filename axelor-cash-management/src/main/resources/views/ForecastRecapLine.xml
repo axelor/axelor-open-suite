@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="forecast-recap-line-grid" title="Lines"
+  <grid name="forecast-recap-line-grid" sortable="false" title="Lines"
     model="com.axelor.apps.cash.management.db.ForecastRecapLine"
     orderBy="estimatedDate,forecastRecapLineType.sequence">
     <hilite background="success" if="typeSelect==1"/>

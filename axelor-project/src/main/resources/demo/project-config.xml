@@ -7,6 +7,12 @@
     search="self.importId = :importId">
     <bind to="fromDate" column="fromDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"/>
+    <bind to="projectTaskStatusSet" column="projectTaskStatusSet"
+      search="self.importId in :projectTaskStatusSet"
+      eval="projectTaskStatusSet.split('\\|') as List"/>
+    <bind to="projectTaskPrioritySet" column="projectTaskPrioritySet"
+      search="self.importId in :projectTaskPrioritySet"
+      eval="projectTaskPrioritySet.split('\\|') as List"/>
   </input>
 
   <input file="business_project_project.csv" type="com.axelor.apps.project.db.Project"
@@ -19,15 +25,14 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(taskDate)"/>
   </input>
 
-  <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
-    search="self.importId = :importId">
-    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
-      if="yearlyResetOk"/>
-    <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
-    <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
-    <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
-    <bind to="resetDate"
-      eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
+  <input file="app_project.csv" type="com.axelor.apps.base.db.AppProject"
+    search="self.id is not null" separator=";">
+    <bind to="defaultTaskStatusSet" column="projectTaskStatusSet"
+      search="self.importId in :projectTaskStatusSet"
+      eval="projectTaskStatusSet.split('\\|') as List"/>
+    <bind to="defaultPrioritySet" column="projectTaskPrioritySet"
+      search="self.importId in :projectTaskPrioritySet"
+      eval="projectTaskPrioritySet.split('\\|') as List"/>
   </input>
 
 </csv-inputs>

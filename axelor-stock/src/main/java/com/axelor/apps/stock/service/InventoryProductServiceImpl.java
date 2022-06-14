@@ -16,7 +16,7 @@ public class InventoryProductServiceImpl implements InventoryProductService {
     Query query =
         JPA.em()
             .createQuery(
-                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.trackingNumber HAVING COUNT(self) > 1");
+                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.stockLocation, self.trackingNumber HAVING COUNT(self) > 1");
 
     Long duplicateCounter = Long.valueOf(0);
     try {

@@ -38,6 +38,7 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading Name"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <date name="respiteDateBeforeAccountBlocking" title="Respite date before account blocking"/>
 
     <string name="name" namecolumn="true" search="referenceDate,id" title="Name">
 	   	<![CDATA[

@@ -17,13 +17,17 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
+import com.axelor.apps.talent.db.TrainingSkill;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
@@ -31,10 +35,13 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,10 +95,33 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     trainingRegister.setStatusSelect(2);
 
-    trainingRegister
-        .getEmployee()
-        .getSkillSet()
-        .addAll(trainingRegister.getTraining().getSkillSet());
+    Set<Skill> skills = trainingRegister.getTraining().getSkillSet();
+    if (CollectionUtils.isNotEmpty(skills)) {
+
+      Employee employee = trainingRegister.getEmployee();
+      employee.getSkillSet().addAll(skills);
+
+      skills.forEach(
+          skill -> {
+            TrainingSkill trainingSkill = new TrainingSkill();
+
+            trainingSkill.setSkill(skill);
+
+            LocalDate date = trainingRegister.getToDate().toLocalDate();
+            trainingSkill.setGraduationDate(date);
+
+            Duration validityDuration = skill.getValidityDuration();
+            if (validityDuration != null) {
+              LocalDate endOfValidityDate =
+                  Beans.get(DurationService.class).computeDuration(validityDuration, date);
+              trainingSkill.setEndOfValidityDate(endOfValidityDate);
+            }
+
+            employee.addTrainingSkillListItem(trainingSkill);
+          });
+
+      Beans.get(EmployeeRepository.class).save(employee);
+    }
 
     trainingRegisterRepo.save(trainingRegister);
   }
@@ -227,7 +257,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
       trainingSession.getTrainingRegisterList().add(trainingRegister);
     }
 
-    Beans.get(TrainingSessionRepository.class).save(trainingSession);
+    trainingSessionRepo.save(trainingSession);
 
     return eventsIds.toString().replace("[", "(").replace("]", ")");
   }

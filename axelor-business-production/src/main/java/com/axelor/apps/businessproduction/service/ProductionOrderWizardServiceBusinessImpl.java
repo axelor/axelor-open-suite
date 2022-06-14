@@ -64,7 +64,6 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
   @SuppressWarnings("unchecked")
   public Long validate(Context context) throws AxelorException {
 
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
     if (!appProductionService.isApp("production")
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       return super.validate(context);
@@ -117,6 +116,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
             project,
             startDateT.toLocalDateTime(),
             endDateT != null ? endDateT.toLocalDateTime() : null,
+            null,
             null);
 
     if (productionOrder != null) {

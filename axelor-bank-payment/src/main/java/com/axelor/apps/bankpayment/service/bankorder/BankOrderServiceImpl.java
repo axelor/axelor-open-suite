@@ -317,8 +317,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         && paymentMode != null
         && paymentMode.getAutomaticTransmission()) {
 
-      bankOrder.setConfirmationDateTime(
-          Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+      bankOrder.setConfirmationDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
       bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
       makeEbicsUserFollow(bankOrder);
 
@@ -689,8 +688,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   protected Sequence getSequence(BankOrder bankOrder) throws AxelorException {
     BankPaymentConfig bankPaymentConfig =
-        Beans.get(BankPaymentConfigService.class)
-            .getBankPaymentConfig(bankOrder.getSenderCompany());
+        bankPaymentConfigService.getBankPaymentConfig(bankOrder.getSenderCompany());
 
     switch (bankOrder.getOrderTypeSelect()) {
       case BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT:
