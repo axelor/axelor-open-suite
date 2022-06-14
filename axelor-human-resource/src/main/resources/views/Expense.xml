@@ -171,12 +171,12 @@
       <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
         title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
         form-view="expense-line-form" grid-view="expense-line-grid"
-        onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period,action-expense-attrs-set-total-to-refund"/>
+        onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="kilometricExpenseLineListPanel"
         field="kilometricExpenseLineList" title="Kilometric Allowances"
         readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers" editable="true"
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
-        onChange="action-expense-method-compute,action-expense-attrs-set-total-to-refund"/>
+        onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
         showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
@@ -249,6 +249,12 @@
     <action name="action-expense-refusal-popup-form"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="save"/>
+  </action-group>
+
+  <action-group name="action-expense-group-expense-line-on-change">
+    <action name="action-expense-method-compute"/>
+    <action name="action-expense-method-update-moveDate-and-period"/>
+    <action name="action-expense-attrs-set-total-to-refund"/>
   </action-group>
 
   <action-record name="action-expense-record-default"

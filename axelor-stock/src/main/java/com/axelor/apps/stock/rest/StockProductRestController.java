@@ -5,12 +5,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
-import com.axelor.apps.stock.rest.dto.StockProductResponse;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.tool.api.*;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import java.util.Map;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,7 +29,8 @@ public class StockProductRestController {
     Company company = requestBody.getCompany();
     StockLocation stockLocation = requestBody.getStockLocation();
 
-    return Beans.get(StockProductRestService.class).getProductIndicators(product, company, stockLocation);
+    return Beans.get(StockProductRestService.class)
+        .getProductIndicators(product, company, stockLocation);
   }
 
   @Path("/modify-locker/{productId}")

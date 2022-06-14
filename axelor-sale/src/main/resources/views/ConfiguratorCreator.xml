@@ -8,7 +8,7 @@
     <toolbar>
       <button name="exportCreatorsBtn" title="Export"
         onClick="action-configurator-creator-export"/>
-      <button name="importCreatorsBtn" title="Import"
+      <button name="importCreatorsBtn" title="import.verb"
         onClick="action-configurator-creator-view-import"/>
     </toolbar>
     <field name="name"/>
@@ -152,7 +152,7 @@
     <panel name="mainPanel">
       <field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile"
         widget="binary-link" title="Data file"/>
-      <button name="importCreatorsBtn" title="Import"
+      <button name="importCreatorsBtn" title="import.verb"
         onClick="action-configurator-creator-method-import-configurator-creators"
         showIf="dataFile != null" colSpan="6"/>
       <field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
