@@ -105,7 +105,7 @@ public class AccountClearanceService {
         moveLineRepo
             .all()
             .filter(
-                "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                     + "AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) "
                     + "AND self.amountRemaining > 0 AND self.amountRemaining <= ?4 AND self.credit > 0 AND self.account in ?5 AND self.date <= ?6",
                 company,
