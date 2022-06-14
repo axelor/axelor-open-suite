@@ -2,8 +2,8 @@ package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.rest.dto.StockIncomingMoveLinePutRequest;
-import com.axelor.apps.stock.rest.dto.StockIncomingMoveLineResponse;
+import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
+import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.tool.api.ConflictChecker;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
@@ -33,8 +33,8 @@ public class StockMoveLineRestController {
   @Path("/{id}")
   @PUT
   @HttpExceptionHandler
-  public Response updateIncomingStockMoveLine(
-      @PathParam("id") long stockMoveLineId, StockIncomingMoveLinePutRequest requestBody)
+  public Response updateStockMoveLine(
+      @PathParam("id") long stockMoveLineId, StockMoveLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
@@ -47,8 +47,6 @@ public class StockMoveLineRestController {
         .updateStockMoveLine(stockmoveLine, requestBody.getRealQty(), requestBody.getConformity());
 
     return ResponseConstructor.build(
-        Response.Status.OK,
-        "Line successfully updated.",
-        new StockIncomingMoveLineResponse(stockmoveLine));
+        Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
   }
 }
