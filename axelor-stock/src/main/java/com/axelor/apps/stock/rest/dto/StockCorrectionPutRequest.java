@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class StockCorrectionPutRequest implements RequestStructure {
+public class StockCorrectionPutRequest extends RequestStructure {
 
   @Min(StockCorrectionRepository.STATUS_DRAFT)
   @Max(StockCorrectionRepository.STATUS_VALIDATED)

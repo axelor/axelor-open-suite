@@ -27,4 +27,23 @@ public class RequestValidator {
       throw new BadRequestException(String.valueOf(errorMsg));
     }
   }
+
+  public static void validateBody(RequestPostStructure body) {
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    Validator validator = factory.getValidator();
+
+    Set<ConstraintViolation<RequestPostStructure>> constraintViolations = validator.validate(body);
+
+    if (constraintViolations.size() > 0) {
+      StringBuilder errorMsg = new StringBuilder("Some constraints are invalid : ");
+      for (ConstraintViolation<RequestPostStructure> constraint : constraintViolations) {
+        errorMsg
+            .append(constraint.getPropertyPath())
+            .append(" ")
+            .append(constraint.getMessage())
+            .append("; ");
+      }
+      throw new BadRequestException(String.valueOf(errorMsg));
+    }
+  }
 }

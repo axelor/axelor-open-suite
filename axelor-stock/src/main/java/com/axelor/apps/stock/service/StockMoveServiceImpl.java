@@ -216,7 +216,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove createStockMoveMobility(
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
