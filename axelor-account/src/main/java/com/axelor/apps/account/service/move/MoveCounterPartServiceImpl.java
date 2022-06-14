@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -38,6 +39,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineTaxService moveLineTaxService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
   protected AccountManagementService accountManagementService;
@@ -48,6 +50,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
       MoveLineCreateService moveLineCreateService,
+      MoveLineTaxService moveLineTaxService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
       AccountManagementService accountManagementService,
@@ -55,6 +58,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.moveLineCreateService = moveLineCreateService;
+    this.moveLineTaxService = moveLineTaxService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
     this.accountManagementService = accountManagementService;
@@ -99,6 +103,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
     moveLine.setDescription(move.getDescription());
+    moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
     return moveLine;
   }
 
