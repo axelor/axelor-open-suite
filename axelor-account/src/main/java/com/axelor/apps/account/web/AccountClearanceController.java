@@ -36,10 +36,10 @@ import java.util.Map;
 public class AccountClearanceController {
 
   public void getExcessPayment(ActionRequest request, ActionResponse response) {
-
-    AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
-
     try {
+      AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
+      accountClearance = Beans.get(AccountClearanceRepository.class).find(accountClearance.getId());
+
       Beans.get(AccountClearanceService.class).setExcessPayment(accountClearance);
       response.setReload(true);
     } catch (Exception e) {
