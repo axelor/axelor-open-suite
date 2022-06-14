@@ -54,8 +54,8 @@ public class StockCorrectionRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockCorrection.class).createAccess(StockMove.class).check();
 
-    StockCorrection stockCorrection = ObjectFinder.find(StockCorrection.class, stockCorrectionId);
-    ConflictChecker.checkVersion(stockCorrection, requestBody.getVersion());
+    StockCorrection stockCorrection =
+        ObjectFinder.find(StockCorrection.class, stockCorrectionId, requestBody.getVersion());
 
     String message = "";
     if (requestBody.getRealQty() != null) {

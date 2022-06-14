@@ -6,6 +6,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.tool.api.ConflictChecker;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
@@ -40,7 +41,8 @@ public class StockProductRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().readAccess(Product.class).check();
 
-    Product product = ObjectFinder.find(Product.class, productId);
+    Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
+
     Company company = requestBody.getCompany();
     StockLocation stockLocation = requestBody.getStockLocation();
 
@@ -61,7 +63,7 @@ public class StockProductRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(Product.class).check();
 
-    Product product = ObjectFinder.find(Product.class, productId);
+    Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
     Beans.get(StockLocationService.class)
         .changeProductLocker(requestBody.fetchStockLocation(), product, requestBody.getNewLocker());

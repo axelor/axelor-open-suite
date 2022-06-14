@@ -100,28 +100,28 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
 
   // Transform id to object
   public Product fetchProduct() {
-    return ObjectFinder.find(Product.class, productId);
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 
   public StockLocation fetchOriginStockLocation() {
-    return ObjectFinder.find(StockLocation.class, originStockLocationId);
+    return ObjectFinder.find(StockLocation.class, originStockLocationId, ObjectFinder.NO_VERSION);
   }
 
   public StockLocation fetchDestStockLocation() {
-    return ObjectFinder.find(StockLocation.class, destStockLocationId);
+    return ObjectFinder.find(StockLocation.class, destStockLocationId, ObjectFinder.NO_VERSION);
   }
 
   public Company fetchCompany() {
-    return ObjectFinder.find(Company.class, companyId);
+    return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
   }
 
   public Unit fetchUnit() {
-    return ObjectFinder.find(Unit.class, unitId);
+    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 
   public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
-      return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

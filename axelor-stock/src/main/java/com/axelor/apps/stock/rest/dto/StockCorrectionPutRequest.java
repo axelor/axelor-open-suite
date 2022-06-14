@@ -49,7 +49,7 @@ public class StockCorrectionPutRequest extends RequestStructure {
   // Transform id to object
   public StockCorrectionReason fetchReason() {
     if (this.reasonId != null) {
-      return ObjectFinder.find(StockCorrectionReason.class, reasonId);
+      return ObjectFinder.find(StockCorrectionReason.class, reasonId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

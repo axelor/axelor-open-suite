@@ -11,7 +11,6 @@ import com.axelor.apps.stock.rest.dto.StockMoveLinePostRequest;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveUpdateService;
-import com.axelor.apps.tool.api.ConflictChecker;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestStructure;
@@ -43,9 +42,7 @@ public class StockMoveRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId);
-
-    ConflictChecker.checkVersion(stockmove, requestBody.getVersion());
+    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
     Beans.get(StockMoveService.class).realize(stockmove);
 
@@ -63,7 +60,7 @@ public class StockMoveRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
 
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId);
+    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, ObjectFinder.NO_VERSION);
 
     Beans.get(StockMoveLineService.class)
         .createStockMoveLine(
@@ -123,9 +120,7 @@ public class StockMoveRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId);
-
-    ConflictChecker.checkVersion(stockmove, requestBody.getVersion());
+    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
     Beans.get(StockMoveUpdateService.class)
         .updateStockMoveMobility(stockmove, requestBody.getMovedQty(), requestBody.fetchUnit());
@@ -151,9 +146,7 @@ public class StockMoveRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).check();
 
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId);
-
-    ConflictChecker.checkVersion(stockmove, requestBody.getVersion());
+    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
     Beans.get(StockMoveUpdateService.class)
         .updateStockMoveDestinationLocation(stockmove, requestBody.fetchToStockLocation());

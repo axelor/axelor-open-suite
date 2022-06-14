@@ -25,7 +25,7 @@ public class StockIncomingMovePutRequest extends RequestStructure {
   // Transform id to object
   public StockLocation fetchToStockLocation() {
     if (this.toStockLocationId != null) {
-      return ObjectFinder.find(StockLocation.class, toStockLocationId);
+      return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

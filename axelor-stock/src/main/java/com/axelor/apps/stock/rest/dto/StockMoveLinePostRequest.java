@@ -91,16 +91,16 @@ public class StockMoveLinePostRequest extends RequestPostStructure {
 
   // Transform id to object
   public Product fetchProduct() {
-    return ObjectFinder.find(Product.class, productId);
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 
   public Unit fetchUnit() {
-    return ObjectFinder.find(Unit.class, unitId);
+    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 
   public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
-      return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }
