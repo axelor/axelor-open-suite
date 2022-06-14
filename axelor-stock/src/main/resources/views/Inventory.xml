@@ -164,7 +164,6 @@
   <action-group name="action-group-stock-inventory-complete-click">
     <action name="save"/>
     <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
-    <action name="action-inventory-validate-inventory-line-list"/>
     <action name="action-inventory-method-complete"/>
     <action name="save"/>
   </action-group>
@@ -294,11 +293,6 @@
   <action-attrs name="action-inventory-attrs-reset-stock-location">
     <attribute name="value" for="stockLocation" expr="eval: null"/>
   </action-attrs>
-
-  <action-validate name="action-inventory-validate-inventory-line-list">
-    <error message="Please fill all inventory lines"
-      if="inventoryLineList.any { it?.realQty == null }"/>
-  </action-validate>
 
   <action-method name="action-inventory-method-inventory-line-list-duplicate-product">
     <call class="com.axelor.apps.stock.web.InventoryController" method="checkDuplicateProduct"/>
