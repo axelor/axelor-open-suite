@@ -7,7 +7,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockIncomingMoveLinePutRequest extends RequestStructure {
+public class StockMoveLinePutRequest extends RequestStructure {
 
   @Min(0)
   @NotNull
@@ -15,10 +15,9 @@ public class StockIncomingMoveLinePutRequest extends RequestStructure {
 
   @Min(StockMoveLineRepository.CONFORMITY_NONE)
   @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
-  @NotNull
   private Integer conformity;
 
-  public StockIncomingMoveLinePutRequest() {}
+  public StockMoveLinePutRequest() {}
 
   public BigDecimal getRealQty() {
     return realQty;

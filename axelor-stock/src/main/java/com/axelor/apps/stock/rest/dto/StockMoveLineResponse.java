@@ -3,14 +3,14 @@ package com.axelor.apps.stock.rest.dto;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.tool.api.ResponseStructure;
 
-public class StockIncomingMoveLineResponse extends ResponseStructure {
+public class StockMoveLineResponse extends ResponseStructure {
   private final long id;
   private final long stockMoveId;
   private final long productId;
   private final int realQty;
   private final int conformity;
 
-  public StockIncomingMoveLineResponse(StockMoveLine stockMoveLine) {
+  public StockMoveLineResponse(StockMoveLine stockMoveLine) {
     super(stockMoveLine.getVersion());
     this.id = stockMoveLine.getId();
     this.stockMoveId = stockMoveLine.getStockMove().getId();
