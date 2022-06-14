@@ -325,12 +325,10 @@ public class MoveLineServiceImpl implements MoveLineService {
   public void computeFinancialDiscount(MoveLine moveLine) {
     if (moveLine.getAccount() != null
         && moveLine.getAccount().getHasInvoiceTerm()
-        && moveLine.getPartner() != null
-        && moveLine.getPartner().getFinancialDiscount() != null) {
-      FinancialDiscount financialDiscount = moveLine.getPartner().getFinancialDiscount();
+        && moveLine.getFinancialDiscount() != null) {
+      FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
       BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
 
-      moveLine.setFinancialDiscount(financialDiscount);
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
           amount.multiply(

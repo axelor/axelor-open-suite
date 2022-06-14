@@ -859,6 +859,8 @@
   </action-group>
 
   <action-group name="action-move-line-group-partner-onchange">
+    <action name="action-move-line-record-set-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-move-line-method-compute-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
@@ -1036,6 +1038,14 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-set-financial-discount"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="financialDiscount" expr="eval: partner?.financialDiscount"
+      if="partner &amp;&amp; partner?.financialDiscount"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="!partner || !partner?.financialDiscount"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
