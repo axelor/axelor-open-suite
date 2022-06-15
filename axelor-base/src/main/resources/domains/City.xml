@@ -17,7 +17,7 @@
     <boolean name="hasZipOnRight" title="Zip On Right"/>
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
     <string name="fullName" namecolumn="true" title="Concatenation of city name and zip code"
-            search="name,zip">
+      search="name,zip">
       <![CDATA[
             String fullName = "";
             if(name != null) { fullName = name; }
