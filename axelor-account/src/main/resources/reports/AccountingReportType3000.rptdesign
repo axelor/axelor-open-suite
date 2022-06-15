@@ -38,7 +38,7 @@ var temp = {};]]></method>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/wip-6.2-2022</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -52,6 +52,9 @@ var temp = {};]]></method>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">***</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -112,6 +115,9 @@ var temp = {};]]></method>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">4</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -125,7 +131,7 @@ var temp = {};]]></method>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
+                <value type="constant">postgres</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -455,11 +461,11 @@ LEFT JOIN account_accounting_report_partner_set as PartnerSet
 ON PartnerSet.account_accounting_report = Report.id
 
 WHERE Report.id = ?
-	AND (Report.date_from    IS NULL OR MoveLine.date_val >= Report.date_from)
-	AND (Report.date_to      IS NULL OR MoveLine.date_val <= Report.date_to)
-	AND (Report.journal      IS NULL OR Move.journal = Report.journal)
-	AND (Report.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
-	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner = PartnerSet.partner_set)
+	AND (Report.date_from    IS NULL OR MoveLine.date_val IS NULL OR MoveLine.date_val >= Report.date_from)
+	AND (Report.date_to      IS NULL OR MoveLine.date_val IS NULL OR MoveLine.date_val <= Report.date_to)
+	AND (Report.journal      IS NULL OR Move.journal IS NULL OR Move.journal = Report.journal)
+	AND (Report.payment_mode IS NULL OR Move.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
+	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner IS NULL OR MoveLine.partner = PartnerSet.partner_set)
 	AND (MoveLine.id 	     IS NULL OR (
 		Report.currency	  = Move.company_currency
 		AND Report.company = Move.company
@@ -1444,8 +1450,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="5400">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
+                    <text id="5551">
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["report_date"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Date'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <text id="5505">
                         <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">ReportDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1462,7 +1504,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Date : <VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1658,8 +1700,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="rowSpan">1</property>
                     <property name="fontSize">18pt</property>
                     <property name="textAlign">left</property>
+                    <text id="5552">
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["journal"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Journal'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <text id="5503">
                         <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">ReportDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1676,7 +1754,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Journal : <VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="5471">
@@ -1684,8 +1762,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="rowSpan">1</property>
                     <property name="fontSize">18pt</property>
                     <property name="textAlign">left</property>
+                    <text id="5553">
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["payment_mode"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Payment Mode'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <text id="5508">
                         <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">ReportDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1702,7 +1816,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Mode : <VALUE-OF>row["payment_mode"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["payment_mode"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="5472"/>
