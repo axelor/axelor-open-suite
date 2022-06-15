@@ -315,7 +315,7 @@
       <panel name="deliveryPanel" title="Delivery">
         <field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedDelivDate"
-          onChange="save,action-sale-order-line-supplychain-method-update-reservation-date"
+          onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
           readonlyIf="$availabiltyRequest"/>
         <field name="deliveredQty" readonly="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
@@ -704,6 +704,13 @@
     <action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-method-compute-analytic-distribution"/>
   </action-group>
+
+  <action-group name="action-sale-order-line-group-deliv-estimated-date-onchange">
+    <action name="save" if="__id__"/>
+    <action name="action-sale-order-line-supplychain-method-update-reservation-date"
+      if="__id__"/>
+  </action-group>
+
   <action-attrs name="action-sale-order-attrs-hide-ati">
     <attribute name="hidden" for="exTaxTotal" expr="eval: __parent__.inAti"
       if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
