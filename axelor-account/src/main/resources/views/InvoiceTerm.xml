@@ -246,7 +246,7 @@
           onClick="action-invoice-term-set-partial-validate-status-select,action-invoice-term-view-pfp-partial-reason-wizard"/>
         <button name="refusalToPayBtn" title="Refuse to pay"
           showIf="$isValidPfpValidatorUser &amp;&amp;[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
-          colSpan="4" css="btn-danger" onClick="action-invoiceterm-view-refusal-to-pay,save"/>
+          colSpan="4" css="btn-danger" onClick="action-invoice-term-group-refusal-to-pay,save"/>
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
@@ -396,7 +396,7 @@
           onClick="action-invoice-term-set-partial-validate-status-select,action-invoice-term-view-pfp-partial-reason-wizard"/>
         <button name="refusalToPayBtn" title="Refuse to pay"
           showIf="$isValidPfpValidatorUser &amp;&amp;[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
-          colSpan="4" css="btn-danger" onClick="action-invoiceterm-view-refusal-to-pay,save"/>
+          colSpan="4" css="btn-danger" onClick="action-invoice-term-group-refusal-to-pay,save"/>
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
@@ -479,6 +479,7 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-validate-pfp">
+    <action name="action-invoice-term-validate-save-invoice"/>
     <action name="save"/>
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -489,6 +490,11 @@
   <action-group name="action-invoice-term-group-onload">
     <action name="action-invoice-term-group-check-pfp-validator-user"/>
     <action name="action-invoice-term-record-set-show-financial-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-refusal-to-pay">
+    <action name="action-invoice-term-validate-save-invoice"/>
+    <action name="action-invoiceterm-view-refusal-to-pay"/>
   </action-group>
 
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
@@ -513,6 +519,12 @@
     <alert
       message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
       if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice.id).fetch().size &gt;= 1"/>
+  </action-validate>
+
+  <action-validate name="action-invoice-term-validate-save-invoice">
+    <alert
+      message="This process requires the parent invoice to be saved then reloaded, do you wish to continue ?"
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
   </action-validate>
 
   <action-record name="action-invoice-term-record-update-customized"
