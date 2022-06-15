@@ -2,8 +2,6 @@ package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.rest.dto.StockIncomingMovePutRequest;
-import com.axelor.apps.stock.rest.dto.StockIncomingMoveResponse;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePostRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePutRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMoveResponse;
@@ -131,29 +129,5 @@ public class StockMoveRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK, "Successfully updated", new StockInternalMoveResponse(stockmove));
-  }
-
-  /**
-   * Update destination stock location of a supplier arrival. Full path to request is
-   * /ws/aos/stock-move/incoming/update-destination/{id}
-   */
-  @Path("/incoming/update-destination/{id}")
-  @PUT
-  @HttpExceptionHandler
-  public Response updateIncomingStockMove(
-      @PathParam("id") long stockMoveId, StockIncomingMovePutRequest requestBody)
-      throws AxelorException {
-    RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
-
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
-
-    Beans.get(StockMoveUpdateService.class)
-        .updateStockMoveDestinationLocation(stockmove, requestBody.fetchToStockLocation());
-
-    return ResponseConstructor.build(
-        Response.Status.OK,
-        "Destination stock location successfully updated.",
-        new StockIncomingMoveResponse(stockmove));
   }
 }

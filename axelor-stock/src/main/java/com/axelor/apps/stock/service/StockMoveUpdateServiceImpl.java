@@ -21,14 +21,10 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -110,27 +106,5 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
       line.setRealQty(movedQty);
     }
     stockMoveRepo.save(stockMove);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateStockMoveDestinationLocation(StockMove stockMove, StockLocation toStockLocation)
-      throws AxelorException {
-    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
-        && stockMove.getStatusSelect() != StockMoveRepository.STATUS_REALIZED) {
-      if (toStockLocation != null) {
-        stockMove.setToStockLocation(toStockLocation);
-        stockMove.setToAddress(toStockLocation.getAddress());
-        Beans.get(StockMoveToolService.class).computeAddressStr(stockMove);
-        stockMoveRepo.save(stockMove);
-      } else {
-        throw new AxelorException(
-            stockMove,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_6));
-      }
-    } else {
-      throw new AxelorException();
-    }
   }
 }

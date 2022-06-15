@@ -18,7 +18,6 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
@@ -33,9 +32,5 @@ public interface StockMoveUpdateService {
    * AOS)
    */
   void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
-      throws AxelorException;
-
-  /** To update destination stock location of a stock move (API AOS) */
-  void updateStockMoveDestinationLocation(StockMove stockMove, StockLocation toStockLocation)
       throws AxelorException;
 }
