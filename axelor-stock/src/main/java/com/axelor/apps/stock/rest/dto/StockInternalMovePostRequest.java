@@ -6,12 +6,12 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestStructure;
+import com.axelor.apps.tool.api.RequestPostStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockMovePostRequest implements RequestStructure {
+public class StockInternalMovePostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
@@ -40,7 +40,7 @@ public class StockMovePostRequest implements RequestStructure {
   @Min(0)
   private BigDecimal movedQty;
 
-  public StockMovePostRequest() {}
+  public StockInternalMovePostRequest() {}
 
   public Long getProductId() {
     return productId;
@@ -100,28 +100,28 @@ public class StockMovePostRequest implements RequestStructure {
 
   // Transform id to object
   public Product fetchProduct() {
-    return ObjectFinder.find(Product.class, productId);
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 
   public StockLocation fetchOriginStockLocation() {
-    return ObjectFinder.find(StockLocation.class, originStockLocationId);
+    return ObjectFinder.find(StockLocation.class, originStockLocationId, ObjectFinder.NO_VERSION);
   }
 
   public StockLocation fetchDestStockLocation() {
-    return ObjectFinder.find(StockLocation.class, destStockLocationId);
+    return ObjectFinder.find(StockLocation.class, destStockLocationId, ObjectFinder.NO_VERSION);
   }
 
   public Company fetchCompany() {
-    return ObjectFinder.find(Company.class, companyId);
+    return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
   }
 
   public Unit fetchUnit() {
-    return ObjectFinder.find(Unit.class, unitId);
+    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 
   public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
-      return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

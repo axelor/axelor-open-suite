@@ -1,11 +1,11 @@
 package com.axelor.apps.supplychain.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.tool.api.ApiStructure;
+import com.axelor.apps.tool.api.ResponseStructure;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class SupplychainStockProductResponse implements ApiStructure {
+public class SupplychainStockProductResponse extends ResponseStructure {
 
   private final long id;
   private final BigDecimal realQty;
@@ -19,6 +19,7 @@ public class SupplychainStockProductResponse implements ApiStructure {
   private final BigDecimal missingManufOrderQty;
 
   public SupplychainStockProductResponse(Product product, Map<String, Object> qtys) {
+    super(product.getVersion());
     this.id = product.getId();
     this.realQty = (BigDecimal) qtys.get("$realQty");
     this.futureQty = (BigDecimal) qtys.get("$futureQty");
@@ -29,10 +30,6 @@ public class SupplychainStockProductResponse implements ApiStructure {
     this.buildingQty = (BigDecimal) qtys.get("$buildingQty");
     this.consumeManufOrderQty = (BigDecimal) qtys.get("$consumeManufOrderQty");
     this.missingManufOrderQty = (BigDecimal) qtys.get("$missingManufOrderQty");
-  }
-
-  public String getObjectName() {
-    return "product";
   }
 
   public long getId() {

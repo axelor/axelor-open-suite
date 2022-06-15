@@ -216,7 +216,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove createStockMoveMobility(
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
@@ -1384,53 +1384,5 @@ public class StockMoveServiceImpl implements StockMoveService {
         }
       }
     }
-  }
-
-  @Override
-  public void updateStatus(StockMove stockMove, Integer status) throws Exception {
-    int currentStatus = stockMove.getStatusSelect();
-    if (currentStatus == StockMoveRepository.STATUS_DRAFT) {
-      if (status == StockMoveRepository.STATUS_PLANNED) {
-        plan(stockMove);
-      } else if (status == StockMoveRepository.STATUS_REALIZED) {
-        validate(stockMove);
-      } else if (status == StockMoveRepository.STATUS_CANCELED) {
-        cancel(stockMove);
-      }
-    } else if (currentStatus == StockMoveRepository.STATUS_PLANNED) {
-      if (status == StockMoveRepository.STATUS_REALIZED) {
-        realize(stockMove);
-      } else if (status == StockMoveRepository.STATUS_CANCELED) {
-        cancel(stockMove);
-      }
-    } else {
-      throw new Exception("Method not supported");
-    }
-  }
-
-  /**
-   * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
-   * AOS) *
-   */
-  @Override
-  @Transactional
-  public void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
-      throws AxelorException {
-    StockMoveLine line = stockMove.getStockMoveLineList().get(0);
-    if (unit != null) {
-      BigDecimal convertQty =
-          Beans.get(UnitConversionService.class)
-              .convert(
-                  line.getUnit(), unit, line.getQty(), line.getQty().scale(), line.getProduct());
-      line.setUnit(unit);
-      line.setQty(convertQty);
-      line.setRealQty(convertQty);
-    }
-    if (movedQty != null) {
-      // Only one product
-      line.setQty(movedQty);
-      line.setRealQty(movedQty);
-    }
-    stockMoveRepo.save(stockMove);
   }
 }

@@ -1,10 +1,9 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.StockCorrectionReason;
-import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestPostStructure;
 import java.math.BigDecimal;
@@ -12,7 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockCorrectionPostRequest extends RequestPostStructure {
+public class StockMoveLinePostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
@@ -20,24 +19,24 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
-  private Long stockLocationId;
+  private Long unitId;
 
-  @NotNull
   @Min(0)
-  private Long reasonId;
-
   private Long trackingNumberId;
 
   @NotNull
-  @Min(StockCorrectionRepository.STATUS_DRAFT)
-  @Max(StockCorrectionRepository.STATUS_VALIDATED)
-  private int status;
+  @Min(0)
+  private BigDecimal expectedQty;
 
   @NotNull
   @Min(0)
   private BigDecimal realQty;
 
-  public StockCorrectionPostRequest() {}
+  @Min(StockMoveLineRepository.CONFORMITY_NONE)
+  @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
+  private Integer conformity;
+
+  public StockMoveLinePostRequest() {}
 
   public Long getProductId() {
     return productId;
@@ -47,20 +46,12 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
     this.productId = productId;
   }
 
-  public Long getStockLocationId() {
-    return stockLocationId;
+  public Long getUnitId() {
+    return unitId;
   }
 
-  public void setStockLocationId(Long stockLocationId) {
-    this.stockLocationId = stockLocationId;
-  }
-
-  public Long getReasonId() {
-    return reasonId;
-  }
-
-  public void setReasonId(Long reasonId) {
-    this.reasonId = reasonId;
+  public void setUnitId(Long unitId) {
+    this.unitId = unitId;
   }
 
   public Long getTrackingNumberId() {
@@ -71,12 +62,12 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
     this.trackingNumberId = trackingNumberId;
   }
 
-  public int getStatus() {
-    return status;
+  public BigDecimal getExpectedQty() {
+    return expectedQty;
   }
 
-  public void setStatus(int status) {
-    this.status = status;
+  public void setExpectedQty(BigDecimal expectedQty) {
+    this.expectedQty = expectedQty;
   }
 
   public BigDecimal getRealQty() {
@@ -87,17 +78,24 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
     this.realQty = realQty;
   }
 
+  public Integer getConformity() {
+    if (conformity == null) {
+      return StockMoveLineRepository.CONFORMITY_NONE;
+    }
+    return conformity;
+  }
+
+  public void setConformity(Integer conformity) {
+    this.conformity = conformity;
+  }
+
   // Transform id to object
   public Product fetchProduct() {
     return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 
-  public StockLocation fetchStockLocation() {
-    return ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
-  }
-
-  public StockCorrectionReason fetchReason() {
-    return ObjectFinder.find(StockCorrectionReason.class, reasonId, ObjectFinder.NO_VERSION);
+  public Unit fetchUnit() {
+    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 
   public TrackingNumber fetchTrackingNumber() {

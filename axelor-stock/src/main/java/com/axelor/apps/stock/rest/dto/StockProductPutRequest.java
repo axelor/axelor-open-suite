@@ -6,7 +6,7 @@ import com.axelor.apps.tool.api.RequestStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockProductPutRequest implements RequestStructure {
+public class StockProductPutRequest extends RequestStructure {
 
   @NotNull
   @Min(0)
@@ -35,6 +35,6 @@ public class StockProductPutRequest implements RequestStructure {
   // Transform id to object
 
   public StockLocation fetchStockLocation() {
-    return ObjectFinder.find(StockLocation.class, stockLocationId);
+    return ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
   }
 }

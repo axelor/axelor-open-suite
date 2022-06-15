@@ -7,7 +7,7 @@ import com.axelor.apps.tool.api.RequestStructure;
 import java.util.Objects;
 import javax.validation.constraints.Min;
 
-public class StockProductGetRequest implements RequestStructure {
+public class StockProductGetRequest extends RequestStructure {
 
   @Min(0)
   private Long companyId;
@@ -38,14 +38,15 @@ public class StockProductGetRequest implements RequestStructure {
     if (companyId == null) {
       return null;
     }
-    return ObjectFinder.find(Company.class, companyId);
+    return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
   }
 
   public StockLocation getStockLocation() {
     if (stockLocationId == null) {
       return null;
     }
-    StockLocation stockLocation = ObjectFinder.find(StockLocation.class, stockLocationId);
+    StockLocation stockLocation =
+        ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
     if (!Objects.equals(stockLocation.getCompany().getId(), companyId)) {
       return null;
     }

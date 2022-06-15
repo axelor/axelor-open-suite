@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class StockCorrectionPutRequest implements RequestStructure {
+public class StockCorrectionPutRequest extends RequestStructure {
 
   @Min(StockCorrectionRepository.STATUS_DRAFT)
   @Max(StockCorrectionRepository.STATUS_VALIDATED)
@@ -49,7 +49,7 @@ public class StockCorrectionPutRequest implements RequestStructure {
   // Transform id to object
   public StockCorrectionReason fetchReason() {
     if (this.reasonId != null) {
-      return ObjectFinder.find(StockCorrectionReason.class, reasonId);
+      return ObjectFinder.find(StockCorrectionReason.class, reasonId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

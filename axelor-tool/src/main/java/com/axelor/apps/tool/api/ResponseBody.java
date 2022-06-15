@@ -6,7 +6,7 @@ public class ResponseBody {
 
   private final int codeStatus;
   private final String messageStatus;
-  private final ApiStructure object;
+  private final ResponseStructure object;
 
   public ResponseBody(Response.Status codeStatus, String messageStatus) {
     this.codeStatus = codeStatus.getStatusCode();
@@ -14,7 +14,7 @@ public class ResponseBody {
     this.object = null;
   }
 
-  public ResponseBody(Response.Status codeStatus, String messageStatus, ApiStructure object) {
+  public ResponseBody(Response.Status codeStatus, String messageStatus, ResponseStructure object) {
     this.codeStatus = codeStatus.getStatusCode();
     this.messageStatus = messageStatus;
     this.object = object;
@@ -28,7 +28,7 @@ public class ResponseBody {
     return messageStatus;
   }
 
-  public ApiStructure getObject() {
+  public ResponseStructure getObject() {
     return object;
   }
 }

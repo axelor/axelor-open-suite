@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class StockMovePutRequest implements RequestStructure {
+public class StockInternalMovePutRequest extends RequestStructure {
 
   @Min(0)
   private Long unitId;
@@ -22,7 +22,7 @@ public class StockMovePutRequest implements RequestStructure {
   @Max(StockMoveRepository.STATUS_CANCELED)
   private Integer status;
 
-  public StockMovePutRequest() {}
+  public StockInternalMovePutRequest() {}
 
   public Long getUnitId() {
     return unitId;
@@ -59,7 +59,7 @@ public class StockMovePutRequest implements RequestStructure {
   // Transform id to object
   public Unit fetchUnit() {
     if (this.unitId != null) {
-      return ObjectFinder.find(Unit.class, unitId);
+      return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }
