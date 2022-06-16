@@ -2,17 +2,23 @@ package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.ProductVariantAttr;
+import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
+import com.axelor.apps.stock.rest.dto.StockProductVariantResponse;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
+import com.axelor.apps.tool.api.RequestStructure;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -73,5 +79,31 @@ public class StockProductRestController {
             + product.getId()
             + " to "
             + requestBody.getNewLocker());
+  }
+
+  @Path("/get-variant-attributes/{productId}")
+  @POST
+  @HttpExceptionHandler
+  public Response getVariantsAttributes(
+      @PathParam("productId") Long productId, RequestStructure requestBody) throws AxelorException {
+
+    RequestValidator.validateBody(requestBody);
+
+    new SecurityCheck()
+        .readAccess(
+            Arrays.asList(
+                Product.class,
+                ProductVariant.class,
+                ProductVariantAttr.class,
+                ProductVariantValue.class))
+        .check();
+
+    Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Request completed",
+        new StockProductVariantResponse(
+            product, Beans.get(StockProductRestService.class).fetchAttributes(product)));
   }
 }
