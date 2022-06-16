@@ -55,6 +55,8 @@ public class EmployeeBonusService {
 
   @Inject EmployeeServiceImpl employeeService;
 
+  @Inject EmployeeComputeDaysLeaveBonusService employeeComputeDaysLeaveBonusService;
+
   private static final char TEMPLATE_DELIMITER = '$';
 
   @Transactional(rollbackOn = {Exception.class})
@@ -175,7 +177,7 @@ public class EmployeeBonusService {
           formula.replace(
               hrConfig.getWorkingDaysVariableName(),
               String.valueOf(
-                  employeeService.getDaysWorkedInPeriod(
+                  employeeComputeDaysLeaveBonusService.getDaysWorkedInPeriod(
                       employee, period.getFromDate(), period.getToDate())));
     }
     if (!Strings.isNullOrEmpty(hrConfig.getTotalWorkingDaysVariableName())) {

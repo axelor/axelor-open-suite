@@ -35,9 +35,6 @@ public interface EmployeeService extends UserService {
   public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
 
-  public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
-
   public Map<String, String> getSocialNetworkUrl(String name, String firstName);
 
   /** Generates a new {@link DPAE} for given {@link Employee} and returns its id. */
