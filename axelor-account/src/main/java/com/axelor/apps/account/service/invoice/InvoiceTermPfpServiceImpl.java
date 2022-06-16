@@ -41,7 +41,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     invoiceTerm.setDecisionPfpTakenDate(
         Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-    invoiceTerm.setPfpGrantedAmount(invoiceTerm.getAmount());
+    invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
     invoiceTermRepo.save(invoiceTerm);
@@ -151,8 +151,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
     invoiceTerm.setDecisionPfpTakenDate(
         Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-    invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    invoiceTerm.setPfpRejectedAmount(invoiceTerm.getAmount());
+    invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
+    invoiceTerm.setRemainingPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
@@ -168,33 +168,53 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   public void generateInvoiceTerm(
       InvoiceTerm originalInvoiceTerm,
       BigDecimal invoiceAmount,
-      BigDecimal pfpGrantedAmount,
+      BigDecimal initialPfpAmount,
       PfpPartialReason partialReason) {
-    BigDecimal amount = invoiceAmount.subtract(pfpGrantedAmount);
+    BigDecimal amount = invoiceAmount.subtract(initialPfpAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
-    invoiceTermService.createInvoiceTerm(originalInvoiceTerm, invoice, amount);
-    updateOriginalTerm(originalInvoiceTerm, pfpGrantedAmount, partialReason, amount, invoice);
+    this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
+    this.updateOriginalTerm(originalInvoiceTerm, initialPfpAmount, partialReason, amount, invoice);
 
     invoiceTermService.initInvoiceTermsSequence(originalInvoiceTerm.getInvoice());
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  protected void createPfpInvoiceTerm(
+      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
+    InvoiceTerm invoiceTerm =
+        invoiceTermService.createInvoiceTerm(
+            invoice,
+            originalInvoiceTerm.getMoveLine(),
+            originalInvoiceTerm.getBankDetails(),
+            originalInvoiceTerm.getPfpValidatorUser(),
+            originalInvoiceTerm.getPaymentMode(),
+            originalInvoiceTerm.getDueDate(),
+            originalInvoiceTerm.getEstimatedPaymentDate(),
+            amount,
+            invoiceTermService.computeCustomizedPercentage(amount, invoice.getInTaxTotal()),
+            originalInvoiceTerm.getIsHoldBack());
+
+    invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
+    invoiceTermRepo.save(invoiceTerm);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
-      BigDecimal pfpGrantedAmount,
+      BigDecimal grantedAmount,
       PfpPartialReason partialReason,
       BigDecimal amount,
       Invoice invoice) {
     originalInvoiceTerm.setIsCustomized(true);
     originalInvoiceTerm.setIsPaid(false);
-    originalInvoiceTerm.setAmount(pfpGrantedAmount);
+    originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmount());
+    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setPercentage(
-        invoiceTermService.computeCustomizedPercentage(pfpGrantedAmount, invoice.getInTaxTotal()));
-    originalInvoiceTerm.setAmountRemaining(pfpGrantedAmount);
+        invoiceTermService.computeCustomizedPercentage(grantedAmount, invoice.getInTaxTotal()));
+    originalInvoiceTerm.setAmountRemaining(grantedAmount);
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
-    originalInvoiceTerm.setPfpGrantedAmount(pfpGrantedAmount);
-    originalInvoiceTerm.setPfpRejectedAmount(amount);
+    originalInvoiceTerm.setRemainingPfpAmount(amount);
     originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
     originalInvoiceTerm.setPfpPartialReason(partialReason);
   }
