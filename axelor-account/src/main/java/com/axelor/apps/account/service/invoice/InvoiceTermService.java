@@ -239,9 +239,6 @@ public interface InvoiceTermService {
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
-  InvoiceTerm createInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount);
-
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);

@@ -801,24 +801,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional
-  public InvoiceTerm createInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
-    return invoiceTermRepo.save(
-        this.createInvoiceTerm(
-            invoice,
-            originalInvoiceTerm.getMoveLine(),
-            originalInvoiceTerm.getBankDetails(),
-            originalInvoiceTerm.getPfpValidatorUser(),
-            originalInvoiceTerm.getPaymentMode(),
-            originalInvoiceTerm.getDueDate(),
-            originalInvoiceTerm.getEstimatedPaymentDate(),
-            amount,
-            computeCustomizedPercentage(amount, invoice.getInTaxTotal()),
-            originalInvoiceTerm.getIsHoldBack()));
-  }
-
-  @Override
   public InvoiceTerm createInvoiceTerm(
       MoveLine moveLine,
       BankDetails bankDetails,
@@ -865,8 +847,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setBankDetails(bankDetails);
     newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     newInvoiceTerm.setPfpValidatorUser(pfpUser);
-    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
     if (moveLine != null) {
@@ -876,25 +858,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return newInvoiceTerm;
   }
 
-  public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {
+  public void setPaymentAmount(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
-      boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
-      if (accountConfigService
-              .getAccountConfig(invoiceTerm.getInvoice().getCompany())
-              .getIsManagePassedForPayment()
-          && invoiceTerm.getInvoice().getOperationTypeSelect()
-              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-        if (isSignedNegative) {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount().negate());
-        } else {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
-        }
+      if (this.getIsSignedNegative(invoiceTerm)) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
       } else {
-        if (isSignedNegative) {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
-        } else {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-        }
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
     }
   }
@@ -904,7 +873,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException {
     if (invoiceTerm != null) {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
-      managePassedForPayment(invoiceTerm);
+      setPaymentAmount(invoiceTerm);
       computeAmountPaid(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
     }
