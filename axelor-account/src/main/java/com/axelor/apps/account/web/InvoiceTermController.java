@@ -271,15 +271,15 @@ public class InvoiceTermController {
           Beans.get(InvoiceTermRepository.class)
               .find(Long.valueOf((Integer) request.getContext().get("_id")));
 
-      BigDecimal initialPfpAmount = (BigDecimal) request.getContext().get("initialPfpAmount");
-      if (initialPfpAmount.signum() == 0) {
+      BigDecimal grantedAmount = new BigDecimal((String) request.getContext().get("grantedAmount"));
+      if (grantedAmount.signum() == 0) {
         response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
         return;
       }
 
       BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
-      if (initialPfpAmount.compareTo(invoiceAmount) >= 0) {
-        response.setValue("initialPfpAmount", originalInvoiceTerm.getAmountRemaining());
+      if (grantedAmount.compareTo(invoiceAmount) >= 0) {
+        response.setValue("$grantedAmount", originalInvoiceTerm.getAmountRemaining());
         response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }
@@ -292,7 +292,7 @@ public class InvoiceTermController {
       }
 
       Beans.get(InvoiceTermPfpService.class)
-          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, initialPfpAmount, partialReason);
+          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
