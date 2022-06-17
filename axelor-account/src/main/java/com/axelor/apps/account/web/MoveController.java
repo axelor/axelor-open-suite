@@ -197,6 +197,8 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      String flashMessage = I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE);
+
       if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
@@ -208,23 +210,20 @@ public class MoveController {
                     MoveRepository.STATUS_ACCOUNTED,
                     MoveRepository.STATUS_CANCELED)
                 .fetch();
+
         if (!moveList.isEmpty()) {
-          if (moveList.size() == 1) {
-            this.removeOneMove(moveList.get(0), response);
-          } else {
-            int errorNB =
-                Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
-            if (errorNB > 0) {
-              response.setFlash(
-                  String.format(
-                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
-            } else {
-              response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
-              response.setReload(true);
-            }
-          }
-        } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+          int errorNB =
+              Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
+
+          flashMessage =
+              errorNB > 0
+                  ? String.format(
+                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB)
+                  : I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK);
+        }
+      }
+
+      response.setFlash(flashMessage);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
