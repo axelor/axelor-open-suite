@@ -86,6 +86,7 @@
 		public static final int STATUS_DRAFT = 1;
         public static final int STATUS_WAITING_FOR_DEPOSIT_SLIP = 2;
 		public static final int STATUS_CONFIRMED = 3;
+		public static final int STATUS_CANCELED = 4;
 
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;
