@@ -350,7 +350,7 @@
   <action-view name="action-payment-session-view-released-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
-    <view type="form" name="invoice-term-move-line-form"/>
+    <view type="form" name="invoice-form"/>
     <domain>self.paymentSession.id = :_id AND self.isSelectedOnPaymentSession IS TRUE AND
       (self.isPaid IS TRUE OR self.paymentAmount > self.amountRemaining)</domain>
     <context name="_id" expr="eval: id"/>

@@ -109,8 +109,7 @@
   <action-view name="invoice.root.invoice.terms" title="Terms list"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-grid"/>
-    <view type="form" name="invoice-term-move-line-form"/>
-    <domain>self.invoice IS NOT NULL</domain>
+    <view type="form" name="invoice-term-form"/>
   </action-view>
 
   <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="25"
