@@ -168,12 +168,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   public void generateInvoiceTerm(
       InvoiceTerm originalInvoiceTerm,
       BigDecimal invoiceAmount,
-      BigDecimal initialPfpAmount,
+      BigDecimal grantedAmount,
       PfpPartialReason partialReason) {
-    BigDecimal amount = invoiceAmount.subtract(initialPfpAmount);
+    BigDecimal amount = invoiceAmount.subtract(grantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
     this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
-    this.updateOriginalTerm(originalInvoiceTerm, initialPfpAmount, partialReason, amount, invoice);
+    this.updateOriginalTerm(originalInvoiceTerm, grantedAmount, partialReason, amount, invoice);
 
     invoiceTermService.initInvoiceTermsSequence(originalInvoiceTerm.getInvoice());
   }
