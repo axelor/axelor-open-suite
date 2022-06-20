@@ -762,6 +762,7 @@
 "Please select a signatory","Veuillez sélectionner un signataire",,
 "Please select a user name","Veuillez sélectionner un utilisateur",,
 "Please select at least one bank reconciliation line (button on right side of table).","Veuillez sélectionner au moins une ligne de rapprochement bancaire (bouton à droite du tableau).",,
+"Please select at least one bank reconciliation line for multiple reconciles","Veuillez sélectionner au moins une ligne de rapprochement bancaire pour effectuer le pointage multiple",,
 "Please select at least two bank orders","Veuillez sélectionner au moins deux ordres bancaires",,
 "Please select draft or awaiting signature bank orders only","Veuillez sélectionner uniquement des ordres bancaires  au statut brouillon ou en attente de signature",,
 "Please select one bank reconciliation line","Veuillez sélectionner une ligne de reconciliation",,
