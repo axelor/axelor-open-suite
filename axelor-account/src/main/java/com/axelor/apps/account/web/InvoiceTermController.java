@@ -266,30 +266,33 @@ public class InvoiceTermController {
         response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_NOT_SAVED));
         return;
       }
+
       InvoiceTerm originalInvoiceTerm =
           Beans.get(InvoiceTermRepository.class)
               .find(Long.valueOf((Integer) request.getContext().get("_id")));
-      BigDecimal pfpGrantedAmount = (BigDecimal) request.getContext().get("pfpGrantedAmount");
-      if (pfpGrantedAmount.compareTo(BigDecimal.ZERO) == 0) {
+
+      BigDecimal grantedAmount = new BigDecimal((String) request.getContext().get("grantedAmount"));
+      if (grantedAmount.signum() == 0) {
         response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
         return;
       }
 
       BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
-      PfpPartialReason partialReason =
-          (PfpPartialReason) request.getContext().get("pfpPartialReason");
-
-      if (pfpGrantedAmount.compareTo(invoiceAmount) >= 0) {
-        response.setValue("pfpGrantedAmount", BigDecimal.ZERO);
+      if (grantedAmount.compareTo(invoiceAmount) >= 0) {
+        response.setValue("$grantedAmount", originalInvoiceTerm.getAmountRemaining());
         response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }
+
+      PfpPartialReason partialReason =
+          (PfpPartialReason) request.getContext().get("pfpPartialReason");
       if (ObjectUtils.isEmpty(partialReason)) {
         response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
         return;
       }
+
       Beans.get(InvoiceTermPfpService.class)
-          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, pfpGrantedAmount, partialReason);
+          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

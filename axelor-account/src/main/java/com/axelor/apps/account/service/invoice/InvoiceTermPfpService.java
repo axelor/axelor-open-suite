@@ -21,6 +21,6 @@ public interface InvoiceTermPfpService {
   void generateInvoiceTerm(
       InvoiceTerm originalInvoiceTerm,
       BigDecimal invoiceAmount,
-      BigDecimal pfpGrantedAmount,
+      BigDecimal grantedAmount,
       PfpPartialReason partialReason);
 }
