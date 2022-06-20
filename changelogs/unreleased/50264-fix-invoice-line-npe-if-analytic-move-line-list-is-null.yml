@@ -1,0 +1,3 @@
+---
+title: "INVOICE LINE: corrected invoice line npe if analytic move line list is null"
+type: fix

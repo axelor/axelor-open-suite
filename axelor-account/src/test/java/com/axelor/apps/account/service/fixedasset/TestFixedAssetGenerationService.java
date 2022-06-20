@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -49,7 +48,7 @@ public class TestFixedAssetGenerationService {
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
   protected AccountConfigService accountConfigService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
-  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDateService fixedAssetDateService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
   protected SequenceService sequenceService;
@@ -70,7 +69,7 @@ public class TestFixedAssetGenerationService {
     fixedAssetLineMoveService = mock(FixedAssetLineMoveService.class);
     accountConfigService = mock(AccountConfigService.class);
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
-    analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
+    fixedAssetDateService = mock(FixedAssetDateService.class);
     fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
     sequenceService = mock(SequenceService.class);
     appBaseService = mock(AppBaseService.class);
@@ -78,15 +77,17 @@ public class TestFixedAssetGenerationService {
     fixedAssetLineServiceFactory = mock(FixedAssetLineServiceFactory.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetValidateService = mock(FixedAssetValidateService.class);
+    fixedAssetDateService = mock(FixedAssetDateService.class);
 
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            analyticFixedAssetService, fixedAssetFailOverControlService, appBaseService);
+            fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
     fixedAssetGenerationService =
         new FixedAssetGenerationServiceImpl(
+            fixedAssetDateService,
             fixedAssetLineService,
             fixedAssetDerogatoryLineService,
             fixedAssetRepo,
@@ -119,7 +120,7 @@ public class TestFixedAssetGenerationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(false),
             new BigDecimal("500.00"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
@@ -216,7 +217,7 @@ public class TestFixedAssetGenerationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true),
             new BigDecimal("500.00"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
@@ -318,7 +319,7 @@ public class TestFixedAssetGenerationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true),
             new BigDecimal("500.00"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
@@ -416,7 +417,7 @@ public class TestFixedAssetGenerationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, true),
             new BigDecimal("102638.35"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
@@ -546,7 +547,7 @@ public class TestFixedAssetGenerationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("102638.35"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
@@ -672,7 +673,7 @@ public class TestFixedAssetGenerationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("102638.35"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
