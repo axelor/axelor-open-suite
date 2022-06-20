@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
@@ -151,7 +152,7 @@ public class InvoiceTermController {
         if (invoiceTerm.getInvoice() != null
             && invoiceTerm.getInvoice().getCompany() != null
             && invoiceTerm.getReasonOfRefusalToPay() != null) {
-          Beans.get(InvoiceTermService.class)
+          Beans.get(InvoiceTermPfpService.class)
               .refusalToPay(
                   Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
                   invoiceTerm.getReasonOfRefusalToPay(),
@@ -166,7 +167,7 @@ public class InvoiceTermController {
         }
         Integer recordsSelected = invoiceTermIds.size();
         Integer recordsRefused =
-            Beans.get(InvoiceTermService.class)
+            Beans.get(InvoiceTermPfpService.class)
                 .massRefusePfp(
                     invoiceTermIds,
                     invoiceTerm.getReasonOfRefusalToPay(),
@@ -230,7 +231,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceterm =
           Beans.get(InvoiceTermRepository.class)
               .find(request.getContext().asType(InvoiceTerm.class).getId());
-      Beans.get(InvoiceTermService.class).validatePfp(invoiceterm, AuthUtils.getUser());
+      Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -246,7 +247,8 @@ public class InvoiceTermController {
         return;
       }
       Integer recordsSelected = invoiceTermIds.size();
-      Integer recordsUpdated = Beans.get(InvoiceTermService.class).massValidatePfp(invoiceTermIds);
+      Integer recordsUpdated =
+          Beans.get(InvoiceTermPfpService.class).massValidatePfp(invoiceTermIds);
       response.setFlash(
           String.format(
               I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
@@ -286,7 +288,7 @@ public class InvoiceTermController {
         response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
         return;
       }
-      Beans.get(InvoiceTermService.class)
+      Beans.get(InvoiceTermPfpService.class)
           .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, pfpGrantedAmount, partialReason);
       response.setCanClose(true);
     } catch (Exception e) {

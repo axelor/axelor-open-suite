@@ -27,9 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -45,11 +43,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
@@ -658,23 +654,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void refusalToPay(
-      InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
-    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-    invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    invoiceTerm.setPfpRejectedAmount(invoiceTerm.getAmount());
-    invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
-    invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
-    invoiceTerm.setReasonOfRefusalToPayStr(
-        reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
-
-    invoiceTermRepo.save(invoiceTerm);
-  }
-
-  @Override
   @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> eligibleInvoiceTermList =
@@ -769,67 +748,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-    invoiceTerm.setPfpGrantedAmount(invoiceTerm.getAmount());
-    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-    invoiceTerm.setPfpValidatorUser(currentUser);
-    invoiceTermRepo.save(invoiceTerm);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Integer massValidatePfp(List<Long> invoiceTermIds) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_VALIDATED)
-            .fetch();
-    User currentUser = AuthUtils.getUser();
-    int updatedRecords = 0;
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
-        validatePfp(invoiceTerm, currentUser);
-        updatedRecords++;
-      }
-    }
-    return updatedRecords;
-  }
-
-  @Override
-  public Integer massRefusePfp(
-      List<Long> invoiceTermIds,
-      CancelReason reasonOfRefusalToPay,
-      String reasonOfRefusalToPayStr) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_LITIGATION)
-            .fetch();
-    User currentUser = AuthUtils.getUser();
-    int updatedRecords = 0;
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      boolean invoiceTermCheck =
-          ObjectUtils.notEmpty(invoiceTerm.getInvoice())
-              && ObjectUtils.notEmpty(invoiceTerm.getInvoice().getCompany())
-              && ObjectUtils.notEmpty(reasonOfRefusalToPay);
-      if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
-        refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
-        updatedRecords++;
-      }
-    }
-    return updatedRecords;
-  }
-
-  @Override
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() != null
         && invoiceTerm.getFinancialDiscount() != null
@@ -866,55 +784,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
-  protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
-    boolean isValidUser =
-        currentUser.getIsSuperPfpUser()
-            || (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-                && currentUser.equals(invoiceTerm.getPfpValidatorUser()));
-    if (isValidUser) {
-      return true;
-    }
-    return validateUser(invoiceTerm, currentUser)
-        && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-            && invoiceTerm
-                .getPfpValidatorUser()
-                .equals(invoiceService.getPfpValidatorUser(invoiceTerm.getInvoice())))
-        && !invoiceTerm.getIsPaid();
-  }
-
-  protected boolean validateUser(InvoiceTerm invoiceTerm, User currentUser) {
-    boolean isValidUser = false;
-    if (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())) {
-      List<SubstitutePfpValidator> substitutePfpValidatorList =
-          invoiceTerm.getPfpValidatorUser().getSubstitutePfpValidatorList();
-      LocalDate todayDate =
-          Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany());
-
-      for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-        if (substitutePfpValidator.getSubstitutePfpValidatorUser().equals(currentUser)) {
-          LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-          LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
-          if (substituteStartDate == null) {
-            if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-              isValidUser = true;
-              break;
-            }
-          } else {
-            if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-              isValidUser = true;
-              break;
-            } else if (substituteStartDate.isBefore(todayDate)
-                && substituteEndDate.isAfter(todayDate)) {
-              isValidUser = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-    return isValidUser;
-  }
-
   @Override
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
     return this.computeCustomizedPercentageUnscaled(amount, inTaxTotal)
@@ -933,21 +802,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional
-  public void generateInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm,
-      BigDecimal invoiceAmount,
-      BigDecimal pfpGrantedAmount,
-      PfpPartialReason partialReason) {
-    BigDecimal amount = invoiceAmount.subtract(pfpGrantedAmount);
-    Invoice invoice = originalInvoiceTerm.getInvoice();
-    createInvoiceTerm(originalInvoiceTerm, invoice, amount);
-    updateOriginalTerm(originalInvoiceTerm, pfpGrantedAmount, partialReason, amount, invoice);
-
-    initInvoiceTermsSequence(originalInvoiceTerm.getInvoice());
-  }
-
-  @Transactional
-  protected InvoiceTerm createInvoiceTerm(
+  public InvoiceTerm createInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
     return invoiceTermRepo.save(
         this.createInvoiceTerm(
@@ -1019,27 +874,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     return newInvoiceTerm;
-  }
-
-  @Transactional
-  protected void updateOriginalTerm(
-      InvoiceTerm originalInvoiceTerm,
-      BigDecimal pfpGrantedAmount,
-      PfpPartialReason partialReason,
-      BigDecimal amount,
-      Invoice invoice) {
-    originalInvoiceTerm.setIsCustomized(true);
-    originalInvoiceTerm.setIsPaid(false);
-    originalInvoiceTerm.setAmount(pfpGrantedAmount);
-    originalInvoiceTerm.setPercentage(
-        computeCustomizedPercentage(pfpGrantedAmount, invoice.getInTaxTotal()));
-    originalInvoiceTerm.setAmountRemaining(pfpGrantedAmount);
-    originalInvoiceTerm.setPfpValidateStatusSelect(
-        InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
-    originalInvoiceTerm.setPfpGrantedAmount(pfpGrantedAmount);
-    originalInvoiceTerm.setPfpRejectedAmount(amount);
-    originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
-    originalInvoiceTerm.setPfpPartialReason(partialReason);
   }
 
   public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
@@ -57,6 +58,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
+      InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
       IntercoService intercoService,
       TaxService taxService,
@@ -75,6 +77,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         moveToolService,
         invoiceLineRepo,
         invoiceTermService,
+        invoiceTermPfpService,
         appBaseService,
         intercoService,
         taxService,
