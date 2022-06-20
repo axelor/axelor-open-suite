@@ -94,7 +94,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       findBatch();
       for (ProjectTask projectTask : taskList) {
         try {
-          projectTask = projectTaskBusinessProjectService.updateTaskFinancialInfo(projectTask);
+          projectTask = projectTaskBusinessProjectService.setProjectTaskValues(projectTask);
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(

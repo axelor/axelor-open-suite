@@ -19,7 +19,6 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -81,20 +80,17 @@ public class ProjectTaskController {
   }
 
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
-    ProjectTask task = request.getContext().asType(ProjectTask.class);
-    ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
     try {
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
-          Beans.get(ProjectTaskBusinessProjectService.class);
-      task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
-      if (projectTaskCategory != null) {
-        task = projectTaskBusinessProjectService.updateTaskFinancialInfo(task);
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      if (task.getSaleOrderLine() == null && task.getInvoiceLine() == null) {
+        ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
+            Beans.get(ProjectTaskBusinessProjectService.class);
+        task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
+        if (task.getProjectTaskCategory() != null) {
+          task = projectTaskBusinessProjectService.updateTaskFinancialInfo(task);
+        }
+        response.setValues(task);
       }
-
-      if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-        task.setToInvoice(true);
-      }
-      response.setValues(task);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

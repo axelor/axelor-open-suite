@@ -285,7 +285,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     nextProjectTask.setCustomerReferral(projectTask.getCustomerReferral());
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
   public ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
@@ -301,12 +300,17 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         return projectTask;
       }
 
-      projectTask.setInvoicingType(projectTaskCategory.getDefaultInvoicingType());
-      projectTask.setProduct(projectTaskCategory.getDefaultProduct());
-      product = projectTask.getProduct();
+      Integer invoicingType = projectTaskCategory.getDefaultInvoicingType();
+      projectTask.setInvoicingType(invoicingType);
+      if (invoicingType.equals(ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
+          || invoicingType.equals(ProjectTaskRepository.INVOICING_TYPE_PACKAGE)) {
+        projectTask.setToInvoice(true);
+      }
+      product = projectTaskCategory.getDefaultProduct();
       if (product == null) {
         return projectTask;
       }
+      projectTask.setProduct(product);
       projectTask.setUnitPrice(this.computeUnitPrice(projectTask));
     }
     Company company =
@@ -324,8 +328,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             : projectTask.getBudgetedTime());
     projectTask = this.updateDiscount(projectTask);
     projectTask = this.compute(projectTask);
-
-    return projectTaskRepo.save(projectTask);
+    return projectTask;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -436,5 +439,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
       JPA.clear();
     }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Override
+  public ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getSaleOrderLine() != null || projectTask.getInvoiceLine() != null) {
+      return projectTask;
+    }
+    projectTask = updateTaskFinancialInfo(projectTask);
+    return projectTaskRepo.save(projectTask);
   }
 }
