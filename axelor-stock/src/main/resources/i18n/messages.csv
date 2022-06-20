@@ -1,6 +1,7 @@
 "key","message","comment","context"
 "${fullName} plan. st. move",,,
 "${fullName} real st. move",,,
+"%s Reverse stock move (From %s)",,,
 "0.00",,,
 "0.50",,,
 "1.00",,,
@@ -622,7 +623,6 @@
 "Return Surplus",,,
 "Return of goods",,,
 "Return surplus",,,
-"Reverse stock move (From",,,
 "Reversions",,,
 "Run",,,
 "Sale Qty by tracking",,,
