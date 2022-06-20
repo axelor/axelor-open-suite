@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentCostLineCreationService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.db.JPA;
@@ -441,7 +442,8 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       String message =
-          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+          Beans.get(PurchaseOrderShipmentCostLineCreationService.class)
+              .createShipmentCostLine(purchaseOrder);
       if (message != null) {
         response.setFlash(message);
       }
