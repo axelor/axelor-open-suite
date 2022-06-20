@@ -88,7 +88,7 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_6 = /*$$(*/
       "There's no destination stock location selected for the stock's movement %s" /*)*/;
   static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
-  static final String STOCK_MOVE_8 = /*$$(*/ "Reverse stock move (From" /*)*/;
+  static final String STOCK_MOVE_8 = /*$$(*/ "%s Reverse stock move (From %s)" /*)*/;
   static final String STOCK_MOVE_9 = /*$$(*/ "A partial stock move has been generated (%s)" /*)*/;
   static final String STOCK_MOVE_10 = /*$$(*/ "Please select the StockMove(s) to print." /*)*/;
   static final String STOCK_MOVE_11 = /*$$(*/ "Company address is empty." /*)*/;
