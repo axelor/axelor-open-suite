@@ -84,8 +84,6 @@ import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
 import com.axelor.apps.account.service.AnalyticAxisControlServiceImpl;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
-import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -159,6 +157,8 @@ import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
@@ -427,8 +427,6 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveCreateService.class).to(MoveCreateServiceImpl.class);
 
-    bind(AnalyticFixedAssetService.class).to(AnalyticFixedAssetServiceImpl.class);
-
     bind(FixedAssetDerogatoryLineService.class).to(FixedAssetDerogatoryLineServiceImpl.class);
 
     bind(FixedAssetDerogatoryLineMoveService.class)
@@ -515,6 +513,8 @@ public class AccountModule extends AxelorModule {
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
 
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
+
+    bind(FixedAssetDateService.class).to(FixedAssetDateServiceImpl.class);
 
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
 

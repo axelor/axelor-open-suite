@@ -654,7 +654,7 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
 
     <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
+      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
       if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
     <attribute name="hidden" for="customerInvoicePanel"
       expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3"/>
@@ -674,7 +674,7 @@
 
   <action-attrs name="action-attrs-account-invoice-line-account-onchange">
     <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
+      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
       if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
   </action-attrs>
 
