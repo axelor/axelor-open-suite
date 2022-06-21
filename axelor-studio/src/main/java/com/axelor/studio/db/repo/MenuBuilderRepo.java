@@ -58,7 +58,7 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
     if (actionBuilder != null) {
       menuBuilder.setActionBuilder(actionBuilderRepo.copy(actionBuilder, deep));
     }
-
+    menuBuilder.setMetaMenu(null);
     return menuBuilder;
   }
 
