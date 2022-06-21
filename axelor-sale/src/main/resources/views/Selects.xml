@@ -85,6 +85,13 @@
     <option value="pdf">PDF</option>
   </selection>
 
+  <selection name="configurator.formula.type.select">
+    <option value="1">Product</option>
+    <option value="2">Sale order line</option>
+    <option value="3">Free indicator</option>
+  </selection>
+
+
   <selection name="sale.complementary.product.generation.type.select">
     <option value="1">Creation for the sale order</option>
     <option value="2">Creation for every sale order lines</option>

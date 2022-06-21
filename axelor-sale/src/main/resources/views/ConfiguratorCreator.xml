@@ -19,7 +19,7 @@
   <form name="configurator-creator-form" title="ConfiguratorCreator"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
     <panel name="mainPanel"
-      showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; (configuratorProductFormulaList.length + configuratorSOLineFormulaList.length) &gt; 0">
+      showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; configuratorFormulaList.length &gt; 0">
       <!--it does not matter which field is used here, as long as it is not a boolean -->
       <field name="name" readonly="true" showTitle="false">
         <viewer><![CDATA[
@@ -49,19 +49,15 @@
         readonlyIf="isActive || !(attributes.length &gt; 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0)"/>
       <button name="testBtn" title="Test this creator" showIf="generateProduct"
         readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
-      <field name="generateProduct" widget="boolean-switch"/>
+      <field name="generateProduct"
+        readonlyIf="configuratorFormulaList &amp;&amp; configuratorFormulaList.length > 0"
+        widget="boolean-switch"/>
       <field name="isActive" hidden="true"/>
     </panel>
 
-    <panel-related name="configuratorProductFormulaListPanel"
-      field="configuratorProductFormulaList" hideIf="id == null || !generateProduct"
-      onChange="action-configurator-creator-record-desactivate,save"
-      form-view="configurator-product-formula-form" grid-view="configurator-product-formula-grid"/>
-
-    <panel-related name="configuratorSOLineFormulaListPanel"
-      field="configuratorSOLineFormulaList" hideIf="id == null || generateProduct"
-      onChange="action-configurator-creator-record-desactivate,save"
-      form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
+    <panel-related name="configuratorFormulaListPanel" field="configuratorFormulaList"
+      hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
+      form-view="configurator-formula-form" grid-view="configurator-formula-grid"/>
 
     <panel name="authorizationsPanel" title="Authorizations" hideIf="id == null">
       <field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false"

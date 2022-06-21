@@ -24,9 +24,9 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.ConfiguratorFormulaRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -55,7 +55,6 @@ import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -66,8 +65,7 @@ import java.util.stream.Collectors;
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   protected AppBaseService appBaseService;
-
-  private ConfiguratorFormulaService configuratorFormulaService;
+  protected ConfiguratorFormulaService configuratorFormulaService;
 
   private ProductRepository productRepository;
 
@@ -139,12 +137,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected List<MetaJsonField> filterIndicators(
       Configurator configurator, List<MetaJsonField> indicators) {
 
-    List<ConfiguratorFormula> formulas = new ArrayList<>();
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
-
     return indicators.stream()
-        .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
+        .filter(
+            metaJsonField ->
+                !isOneToManyNotAttr(
+                    configurator.getConfiguratorCreator().getConfiguratorFormulaList(),
+                    metaJsonField))
         .collect(Collectors.toList());
   }
 
@@ -207,11 +205,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     Mapper mapper = Mapper.of(Product.class);
     Product product = new Product();
+
+    List<ConfiguratorFormula> configuratorFormulaList =
+        configuratorFormulaService.filterListOnType(
+            configurator.getConfiguratorCreator().getConfiguratorFormulaList(),
+            ConfiguratorFormulaRepository.TYPE_PRODUCT);
+
     configuratorMetaJsonFieldService.fillAttrs(
-        configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
-        jsonIndicators,
-        Product.class,
-        product);
+        configuratorFormulaList, jsonIndicators, Product.class, product);
     for (String key : jsonIndicators.keySet()) {
       mapper.set(product, key, jsonIndicators.get(key));
     }
@@ -295,11 +296,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throws AxelorException {
     // update a field if its formula has updateFromSelect to update
     // from configurator
-    List<ConfiguratorSOLineFormula> formulas =
-        configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList();
+    List<ConfiguratorFormula> formulas =
+        configurator.getConfiguratorCreator().getConfiguratorFormulaList();
     if (formulas != null) {
+      formulas =
+          formulas.stream()
+              .filter(f -> f.getTypeSelect() == ConfiguratorFormulaRepository.TYPE_SALE_ORDER_LINE)
+              .collect(Collectors.toList());
       Mapper mapper = Mapper.of(SaleOrderLine.class);
-      for (ConfiguratorSOLineFormula formula : formulas) {
+      for (ConfiguratorFormula formula : formulas) {
         // exclude the product field
         if (formula.getUpdateFromSelect() == ConfiguratorRepository.UPDATE_FROM_CONFIGURATOR) {
           // we add "_1" because computeIndicatorValue expect an indicator name.
@@ -329,26 +334,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected Object computeIndicatorValue(
       Configurator configurator, String indicatorName, JsonContext jsonAttributes) {
     ConfiguratorCreator creator = configurator.getConfiguratorCreator();
-    List<? extends ConfiguratorFormula> formulas;
-    if (creator.getGenerateProduct()) {
-      formulas = creator.getConfiguratorProductFormulaList();
-    } else {
-      formulas = creator.getConfiguratorSOLineFormulaList();
-    }
+    List<ConfiguratorFormula> formulas;
+    formulas = creator.getConfiguratorFormulaList();
     String groovyFormula = null;
     for (ConfiguratorFormula formula : formulas) {
       String fieldName = indicatorName;
       fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
-      MetaField metaField = formula.getMetaField();
-      // Adding this check since meta json can be specified in ConfiguratorFormula
-      if (formula.getMetaJsonField() != null
-          && fieldName.equals(
-              formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
-        // fieldName should be like attr.fieldName, so we must only keep fieldName
-        groovyFormula = formula.getFormula();
-        break;
-      } else if (metaField.getName().equals(fieldName)) {
+      if (formula.getFieldName() != null && formula.getFieldName().equals(fieldName)) {
         groovyFormula = formula.getFormula();
         break;
       }
@@ -398,11 +391,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
+
+    List<ConfiguratorFormula> configuratorFormulaList =
+        configuratorFormulaService.filterListOnType(
+            configurator.getConfiguratorCreator().getConfiguratorFormulaList(),
+            ConfiguratorFormulaRepository.TYPE_SALE_ORDER_LINE);
     configuratorMetaJsonFieldService.fillAttrs(
-        configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList(),
-        jsonIndicators,
-        SaleOrderLine.class,
-        saleOrderLine);
+        configuratorFormulaList, jsonIndicators, SaleOrderLine.class, saleOrderLine);
     fixRelationalFields(saleOrderLine);
     fetchManyToManyFields(saleOrderLine);
     fillOneToManyFields(configurator, saleOrderLine, jsonAttributes);
@@ -440,17 +435,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     try {
 
       ConfiguratorCreator creator = configurator.getConfiguratorCreator();
-      List<? extends ConfiguratorFormula> configuratorFormulaList;
+      List<ConfiguratorFormula> configuratorFormulaList;
       Class[] methodArg = new Class[1];
-      if (creator.getGenerateProduct()) {
-        configuratorFormulaList = creator.getConfiguratorProductFormulaList();
-        methodArg[0] = Product.class;
-      } else {
-        configuratorFormulaList = creator.getConfiguratorSOLineFormulaList();
-        methodArg[0] = SaleOrderLine.class;
-      }
       configuratorFormulaList =
-          configuratorFormulaList.stream()
+          creator.getConfiguratorFormulaList().stream()
               .filter(
                   configuratorFormula ->
                       "OneToMany".equals(configuratorFormula.getMetaField().getRelationship()))
@@ -460,6 +448,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             (List<? extends Model>) computeFormula(formula.getFormula(), jsonAttributes);
         if (computedValue == null) {
           continue;
+        }
+        if (formula.getTypeSelect() == ConfiguratorFormulaRepository.TYPE_PRODUCT) {
+          methodArg[0] = Product.class;
+        } else if (formula.getTypeSelect() == ConfiguratorFormulaRepository.TYPE_SALE_ORDER_LINE) {
+          methodArg[0] = SaleOrderLine.class;
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.CONFIGURATOR_FORMULA_UNKNOWN_TYPE_SELECT),
+              formula.getTypeSelect());
         }
         Method setMappedByMethod = computeMappedByMethod(formula);
         for (Model listElement : computedValue) {
