@@ -3,6 +3,45 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
+  <grid name="invoice-term-grid" title="Invoice terms"
+        model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    <hilite color="danger"
+            if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="name"/>
+    <field name="invoice.invoiceId"/>
+    <field name="moveLine.name"/>
+    <field name="moveLine.partner"/>
+    <field name="dueDate"/>
+    <field name="amount" title="To pay / To use"/>
+    <field name="amountRemaining" title="Left to pay / to use"/>
+    <field name="isHoldBack"/>
+    <field name="percentage"/>
+    <field name="paymentMode"/>
+    <field name="financialDiscount.discountRate"
+           if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+           if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountDeadlineDate"
+           if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+  </grid>
+
+  <grid name="invoice-term-pfp-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    <hilite color="danger"
+            if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="invoice.invoiceId"/>
+    <field name="moveLine.name"/>
+    <field name="companyName"/>
+    <field name="origin"/>
+    <field name="originDate"/>
+    <field name="partnerName"/>
+    <field name="dueDate"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="percentage" aggregate="sum"/>
+    <field name="paymentMode"/>
+    <field name="amountRemaining" aggregate="sum"/>
+    <field name="currencyName"/>
+  </grid>
+
   <grid name="invoice-term-move-line-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
@@ -146,6 +185,7 @@
         <field name="isCustomized"/>
         <field name="isPaid"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+        <field name="partnerName"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -291,6 +331,7 @@
         <field name="isPaid" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
+        <field name="partnerName" readonly="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -451,6 +492,7 @@
         <field name="isPaid" title="Paid / Used" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
+        <field name="partnerName" readonly="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"

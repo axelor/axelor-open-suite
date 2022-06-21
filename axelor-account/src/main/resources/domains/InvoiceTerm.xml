@@ -84,6 +84,60 @@
             return "";
 	    ]]>
     </string>
+    <string name="companyName" title="Company">
+      <![CDATA[
+        if (invoice != null) {
+          return invoice.getCompany().getName();
+        } else if (moveLine != null) {
+          return moveLine.getMove().getCompany().getName();
+        }
+        return "";
+      ]]>
+    </string>
+    <string name="origin" title="Origin">
+      <![CDATA[
+        if (invoice != null && !invoice.getSupplierInvoiceNb().isEmpty()) {
+          return invoice.getSupplierInvoiceNb();
+        } else if (moveLine != null) {
+          return moveLine.getOrigin();
+        }
+        return "";
+      ]]>
+    </string>
+    <date name="originDate" title="Origin date">
+      <![CDATA[
+        if (invoice != null && invoice.getOriginDate() != null) {
+          return invoice.getOriginDate();
+        } else if (moveLine != null) {
+          return moveLine.getMove().getOriginDate();
+        }
+        return null;
+      ]]>
+    </date>
+    <string name="partnerName" title="Partner">
+      <![CDATA[
+        if (invoice != null) {
+          return invoice.getPartner().getFullName();
+        } else if (moveLine != null) {
+          if (moveLine.getPartner() != null) {
+            return moveLine.getPartner().getFullName();
+          } else if (moveLine.getMove().getPartner() != null) {
+            return moveLine.getMove().getPartner().getFullName();
+          }
+        }
+        return "";
+      ]]>
+    </string>
+    <string name="currencyName" title="Currency">
+      <![CDATA[
+        if (invoice != null && invoice.getCurrency() != null) {
+          return invoice.getCurrency().getName();
+        } else if (moveLine != null && moveLine.getMove().getCurrency() != null) {
+          return moveLine.getMove().getCurrency().getName();
+        }
+        return "";
+      ]]>
+    </string>
 
     <extra-code><![CDATA[
 
