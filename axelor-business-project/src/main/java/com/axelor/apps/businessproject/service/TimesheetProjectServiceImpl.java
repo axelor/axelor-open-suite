@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -33,10 +34,12 @@ import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.repo.TeamTaskRepository;
@@ -178,5 +181,17 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
   public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {
     return timesheetLineService.computeHoursDuration(
         timesheetLine.getTimesheet(), timesheetLine.getDurationForCustomer(), true);
+  }
+
+  @Override
+  protected TimesheetLine createTimeSheetLineFromPPT(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    TimesheetLine line = super.createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
+    if (ObjectUtils.notEmpty(projectPlanningTime.getTask())
+        && projectPlanningTime.getTask().getInvoicingType()
+            == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+      line.setToInvoice(projectPlanningTime.getTask().getToInvoice());
+    }
+    return line;
   }
 }

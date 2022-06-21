@@ -113,12 +113,6 @@ public class StockMoveController {
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
-      if (stockMove.getStatusSelect() == null
-          || stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_REALIZATION_WRONG_STATUS));
-      }
       String newSeq = Beans.get(StockMoveService.class).realize(stockMove);
 
       response.setReload(true);

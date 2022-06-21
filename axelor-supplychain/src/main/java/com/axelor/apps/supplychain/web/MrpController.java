@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
@@ -52,11 +53,16 @@ public class MrpController {
 
     Mrp mrp = request.getContext().asType(Mrp.class);
     MrpService mrpService = Beans.get(MrpService.class);
+    MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
-      mrpService.runCalculation(Beans.get(MrpRepository.class).find(mrp.getId()));
+      if (mrpService.isOnGoing(mrpRepository.find(mrp.getId()))) {
+        response.setFlash(I18n.get(IExceptionMessage.MRP_ALREADY_STARTED));
+        return;
+      }
+      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      mrpService.onError(Beans.get(MrpRepository.class).find(mrp.getId()), e);
+      mrpService.onError(mrpRepository.find(mrp.getId()), e);
     } finally {
       response.setReload(true);
     }

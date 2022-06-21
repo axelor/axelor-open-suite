@@ -43,7 +43,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -188,16 +187,18 @@ public class SaleOrderController {
 
   public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    Beans.get(SaleOrderWorkflowService.class)
-        .cancelSaleOrder(
-            Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
-            saleOrder.getCancelReason(),
-            saleOrder.getCancelReasonStr());
-
-    response.setFlash(I18n.get("The sale order was canceled"));
-    response.setCanClose(true);
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderWorkflowService.class)
+          .cancelSaleOrder(
+              Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
+              saleOrder.getCancelReason(),
+              saleOrder.getCancelReasonStr());
+      response.setFlash(I18n.get("The sale order was canceled"));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void finalizeQuotation(ActionRequest request, ActionResponse response) {
@@ -218,7 +219,7 @@ public class SaleOrderController {
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     try {
-      Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
+      Beans.get(SaleOrderWorkflowService.class).completeSaleOrder(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

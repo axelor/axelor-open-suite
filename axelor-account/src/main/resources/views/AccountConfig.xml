@@ -352,22 +352,9 @@
         <field name="profitAccount" domain="self.company = :company" grid-view="account-grid"
           form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-        <field name="clearanceAccountSet"
+        <panel-related field="clearanceAccountSet"
           domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
-          grid-view="account-grid" form-view="account-form">
-          <!-- TODO:Check whether this Editor works or not -->
-          <editor x-show-titles="false" x-layout="table">
-            <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="12"/>
-            <field name="name" colSpan="6"/>
-            <field name="accountType" colSpan="6" form-view="account-type-form"
-              grid-view="account-type-grid"/>
-            <field name="reconcileOk" colSpan="6"/>
-            <field name="parentAccount" colSpan="6" grid-view="account-grid"
-              form-view="account-form"/>
-            <field name="company" canEdit="false" widget="SuggestBox" colSpan="6"
-              form-view="company-form" grid-view="company-grid"/>
-          </editor>
-        </field>
+          grid-view="account-grid" form-view="account-form"/>
       </panel>
 
     </panel-tabs>

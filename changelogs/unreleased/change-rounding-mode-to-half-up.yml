@@ -1,5 +1,0 @@
----
-title: "ROUNDING MODE : replaced half even rounding mode by half up rounding mode."
-type: fix
-description: |
-  Replaced all occurences of rounding mode half even by rounding mode half up to prevent rounding inconsistencies 

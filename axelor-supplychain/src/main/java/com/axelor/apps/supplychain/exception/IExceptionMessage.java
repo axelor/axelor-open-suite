@@ -31,6 +31,9 @@ public interface IExceptionMessage {
   static final String PURCHASE_ORDER_2 = /*$$(*/
       "Error : you have exceeded the budget %s for this period" /*)*/;
 
+  static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only return to validated from finished purchase order." /*)*/;
+
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
@@ -130,6 +133,13 @@ public interface IExceptionMessage {
 
   static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
+  static final String MRP_ALREADY_STARTED = /*$$(*/ "Mrp calculation is already on going." /*)*/;
+
+  //  Mrp Forecast
+  static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only be confirmed from drafted forecast." /*)*/;
+  static final String MRP_FORECAST_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only be cancelled from drafted or confirmed forecast." /*)*/;
 
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
@@ -275,4 +285,7 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
       "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
+
+  static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
+      "Can only go back to confirmed if completed." /*)*/;
 }

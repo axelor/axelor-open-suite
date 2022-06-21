@@ -28,11 +28,10 @@
           readonly="true"/>
         <panel name="buttonPanel" colSpan="12">
           <button name="previousBtn" icon="fa-caret-left"
-            onClick="validate,action-user-record-step-status-previous"
-            readonlyIf="stepStatusSelect &lt; 1" colSpan="1"/>
+            onClick="action-user-group-previous-button" readonlyIf="stepStatusSelect &lt; 1"
+            colSpan="1"/>
           <button name="nextBtn" icon="fa-caret-right"
-            onClick="validate,action-user-record-step-status-next"
-            readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
+            onClick="action-user-group-next-button" readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
           <button name="validateBtn" title="Validate"
             onClick="action-user-record-step-status-next,save" showIf="stepStatusSelect == 4"/>
         </panel>
@@ -467,6 +466,18 @@
   <action-method name="action-user-method-generate-random-passwords">
     <call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
   </action-method>
+
+  <action-group name="action-user-group-previous-button">
+    <action name="validate"/>
+    <action name="action-user-record-step-status-previous"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-user-group-next-button">
+    <action name="validate"/>
+    <action name="action-user-record-step-status-next"/>
+    <action name="save"/>
+  </action-group>
 
   <action-view name="action-user-view-show-all-permissions" title="All permissions"
     model="com.axelor.auth.db.Permission">

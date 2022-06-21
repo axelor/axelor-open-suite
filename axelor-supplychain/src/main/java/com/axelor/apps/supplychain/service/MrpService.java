@@ -54,4 +54,13 @@ public interface MrpService {
    * @param e the exception thrown during the computation
    */
   void onError(Mrp mrp, Exception e);
+
+  /**
+   * Methods that checks if mrp is currenctly started.
+   *
+   * @param mrp
+   * @return
+   * @throws AxelorException
+   */
+  boolean isOnGoing(Mrp mrp) throws AxelorException;
 }

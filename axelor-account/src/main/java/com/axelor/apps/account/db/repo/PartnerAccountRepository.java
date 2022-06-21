@@ -52,7 +52,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       }
 
       if (appService.isApp("account")) {
-        if (partner.getIsContact() == false || partner.getIsEmployee()) {
+        if (!partner.getIsContact() || partner.getIsEmployee()) {
           // Create & fill
           Beans.get(AccountingSituationService.class)
               .createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));

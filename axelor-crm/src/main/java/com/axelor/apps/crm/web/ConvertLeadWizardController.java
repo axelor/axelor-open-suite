@@ -29,11 +29,13 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -230,21 +232,29 @@ public class ConvertLeadWizardController {
     }
   }
 
-  public void setContactDefaults(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setContactDefaults(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = findLead(request);
 
-    Lead lead = findLead(request);
-
-    response.setAttr("firstName", "value", lead.getFirstName());
-    response.setAttr("name", "value", lead.getName());
-    response.setAttr("titleSelect", "value", lead.getTitleSelect());
-    response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("fax", "value", lead.getFax());
-    response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-    response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-    response.setAttr("user", "value", lead.getUser());
-    response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
+      if (lead.getPicture() != null) {
+        MetaFile picture =
+            Beans.get(ConvertBinaryToMetafileService.class)
+                .convertByteTabPictureInMetafile(lead.getPicture());
+        response.setAttr("picture", "value", picture);
+      }
+      response.setAttr("firstName", "value", lead.getFirstName());
+      response.setAttr("name", "value", lead.getName());
+      response.setAttr("titleSelect", "value", lead.getTitleSelect());
+      response.setAttr("emailAddress", "value", lead.getEmailAddress());
+      response.setAttr("fax", "value", lead.getFax());
+      response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+      response.setAttr("fixedPhone", "value", lead.getFixedPhone());
+      response.setAttr("user", "value", lead.getUser());
+      response.setAttr("team", "value", lead.getTeam());
+      response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)

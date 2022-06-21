@@ -68,8 +68,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 
     AccountingSituation accountingSituation = super.createAccountingSituation(partner, company);
 
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
-    if (appAccountService.getAppAccount().getManageCustomerCredit()
+    if (partner.getIsCustomer()
+        && appAccountService.getAppAccount().getManageCustomerCredit()
         && appAccountService.isApp("supplychain")) {
       SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());
       if (config != null) {

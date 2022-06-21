@@ -37,7 +37,7 @@
     model="com.axelor.apps.purchase.db.PurchaseRequest">
     <toolbar>
       <button name="generatePoBtn" title="Generate PO"
-        onClick="action-purchase-request-open-generate-po-wizard" readonlyIf="!_ids"/>
+        onClick="action-purchase-request-open-generate-po-wizard"/>
     </toolbar>
     <hilite if="statusSelect == 2" color="info"/>
     <hilite if="statusSelect == 3" color="primary"/>
@@ -87,11 +87,11 @@
 
     <panel name="detailPanel" sidebar="true">
       <button name="requestBtn" title="Request" icon="fa-bullhorn" showIf="statusSelect == 1"
-        onClick="save,action-purchase-request-set-status-requested,save"/>
+        onClick="action-purchase-request-group-request-button"/>
       <button name="acceptBtn" title="Accept" icon="fa-check" showIf="statusSelect == 2"
-        onClick="save,action-purchase-request-set-status-accepted,save"/>
+        onClick="action-purchase-request-group-accept-button"/>
       <button name="purchaseBtn" title="Purchase" icon="fa-shopping-cart"
-        showIf="statusSelect == 3" onClick="action-purchase-request-group-update-status"/>
+        showIf="statusSelect == 3" onClick="action-purchase-request-group-purchase-button"/>
       <button name="deliverPartiallyBtn" title="Deliver Partially" icon="fa-truck"
         showIf="statusSelect == 4"
         onClick="save,action-purchase-request-set-status-delivered-partially,save"/>
@@ -99,11 +99,11 @@
         showIf="statusSelect == 5 || statusSelect == 4" icon="fa-truck"
         onClick="save,action-purchase-request-set-status-delivered,save"/>
       <button name="refuseBtn" title="Refuse" icon="fa-times" css="btn-danger"
-        showIf="statusSelect == 2" onClick="save,action-purchase-request-set-status-refused,save"/>
+        showIf="statusSelect == 2" onClick="action-purchase-request-group-refuse-button"/>
       <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
-        onClick="save,action-purchase-request-set-status-cancel,save" hideIf="statusSelect == 8"/>
+        onClick="action-purchase-request-group-cancel-button" hideIf="statusSelect == 8"/>
       <button name="draftBtn" title="Draft" icon="fa-edit" showIf="statusSelect == 8"
-        onClick="save,action-purchase-request-set-status-draft, save"/>
+        onClick="action-purchase-request-group-draft-button"/>
     </panel>
     <panel sidebar="true" name="characteristicsPanel" title="Characteristics"
       canCollapse="true">
@@ -153,20 +153,20 @@
   </action-record>
 
   <!-- update status -->
-  <action-record name="action-purchase-request-set-status-requested"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="statusSelect" expr="eval:2"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-status-requested">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="requestPurchaseRequest"/>
+  </action-method>
 
-  <action-record name="action-purchase-request-set-status-accepted"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="statusSelect" expr="eval:3"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-status-accepted">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="acceptPurchaseRequest"/>
+  </action-method>
 
-  <action-record name="action-purchase-request-set-status-purchased"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="statusSelect" expr="eval:4"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-status-purchased">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="purchasePurchaseRequest"/>
+  </action-method>
 
   <action-record name="action-purchase-request-set-status-delivered-partially"
     model="com.axelor.apps.purchase.db.PurchaseRequest">
@@ -178,20 +178,20 @@
     <field name="statusSelect" expr="eval:6"/>
   </action-record>
 
-  <action-record name="action-purchase-request-set-status-refused"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="statusSelect" expr="eval:7"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-status-refused">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="refusePurchaseRequest"/>
+  </action-method>
 
-  <action-record name="action-purchase-request-set-status-cancel"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="statusSelect" expr="eval:8"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-status-cancelled">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="cancelPurchaseRequest"/>
+  </action-method>
 
-  <action-record name="action-purchase-request-set-status-draft"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="statusSelect" expr="eval:1"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-status-drafted">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="draftPurchaseRequest"/>
+  </action-method>
   <!-- update status end -->
 
   <action-method name="action-purchase-request-method-confirm-cart">
@@ -216,10 +216,42 @@
     <context name="_ids" expr="eval: _ids"/>
   </action-view>
 
-  <action-group name="action-purchase-request-group-update-status">
+  <action-group name="action-purchase-request-group-request-button">
+    <action name="save"/>
+    <action name="action-purchase-request-method-set-status-requested"/>
+    <action name="action-purchase-request-record-set-requester-user"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-accept-button">
+    <action name="save"/>
+    <action name="action-purchase-request-method-set-status-accepted"/>
+    <action name="action-purchase-request-record-set-validator-user"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-purchase-button">
     <action name="save"/>
     <action name="action-purchase-request-validate-check-supplier-user" if="!supplierUser"/>
-    <action name="action-purchase-request-set-status-purchased" if="supplierUser"/>
+    <action name="action-purchase-request-method-set-status-purchased" if="supplierUser"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-refuse-button">
+    <action name="save"/>
+    <action name="action-purchase-request-method-set-status-refused"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-cancel-button">
+    <action name="save"/>
+    <action name="action-purchase-request-method-set-status-cancelled"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-draft-button">
+    <action name="save"/>
+    <action name="action-purchase-request-method-set-status-drafted"/>
     <action name="save"/>
   </action-group>
 

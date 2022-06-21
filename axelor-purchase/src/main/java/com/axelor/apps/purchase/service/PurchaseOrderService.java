@@ -101,11 +101,42 @@ public interface PurchaseOrderService {
 
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  public void draftPurchaseOrder(PurchaseOrder purchaseOrder);
+  /**
+   * Set the purchase order status to draft.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  public void draftPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
+  /**
+   * Set the the validator and the validation date to the purchase and change the order status to
+   * validated.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  public void finishPurchaseOrder(PurchaseOrder purchaseOrder);
+  /**
+   * Set the purchase order status to finished.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  /**
+   * Set the purchase order status to canceled.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  public void finishPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
+  /**
+   * Set the purchase order status to canceled.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 }

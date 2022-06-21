@@ -1324,7 +1324,6 @@
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
-    <action name="action-sale-order-method-check-analytic-distribution-template"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-validate-check-on-confirm"/>
@@ -1962,12 +1961,6 @@
     <attribute name="required" for="$_projectGeneratorType"
       expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
   </action-attrs>
-
-  <action-method name="action-sale-order-method-check-analytic-distribution-template">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
-      method="checkSaleOrderAnalyticDistributionTemplate"
-      if="company?.saleConfig?.isAnalyticDistributionRequired"/>
-  </action-method>
 
   <action-method name="action-sale-order-method-generate-advance-payment">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
