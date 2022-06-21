@@ -512,15 +512,6 @@
       if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
   </search-filters>
 
-  <action-record name="action-record-fixed-asset-initialize-first-dates"
-    model="com.axelor.apps.account.db.FixedAsset">
-    <field name="firstServiceDate" expr="eval: acquisitionDate"
-      if="!firstServiceDate &amp;&amp; acquisitionDate"/>
-    <field name="firstDepreciationDate"
-      expr="call: com.axelor.apps.account.service.AnalyticFixedAssetService:computeFirstDepreciationDate(__this__,acquisitionDate)"
-      if="id &amp;&amp; acquisitionDate &amp;&amp; statusSelect == 1"/>
-  </action-record>
-
   <action-group name="action-group-fixed-asset-panels-copy-fiscal-depreciation">
     <action name="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
     <action name="action-attrs-fixed-asset-ifrs-depreciation-equal"
