@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
@@ -43,7 +44,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
@@ -682,6 +685,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .fetch();
 
     eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
+    eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
     eligibleInvoiceTermList.forEach(
         invoiceTerm -> {
           fillEligibleTerm(paymentSession, invoiceTerm);
@@ -715,6 +719,56 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " AND self.amountRemaining > 0"
             + " AND self.paymentSession IS NULL";
     return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
+  }
+
+  protected List<InvoiceTerm> filterBlocking(
+      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
+    return invoiceTermList.stream()
+        .filter(it -> !this.isBlocking(it, paymentSession))
+        .collect(Collectors.toList());
+  }
+
+  protected boolean isBlocking(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
+    if (paymentSession.getPaymentMode().getTypeSelect() != PaymentModeRepository.TYPE_DD) {
+      return false;
+    }
+
+    if (invoiceTerm.getInvoice() != null) {
+      Invoice invoice = invoiceTerm.getInvoice();
+
+      if (invoice.getDebitBlockingOk()
+          && !paymentSession.getPaymentDate().isAfter(invoice.getDebitBlockingToDate())) {
+        return true;
+      }
+
+      if (this.isBlocking(invoice.getPartner(), paymentSession)) {
+        return true;
+      }
+    }
+
+    if (invoiceTerm.getMoveLine() != null) {
+      MoveLine moveLine = invoiceTerm.getMoveLine();
+
+      if (moveLine.getPartner() != null && this.isBlocking(moveLine.getPartner(), paymentSession)) {
+        return true;
+      } else if (moveLine.getMove().getPartner() != null
+          && this.isBlocking(moveLine.getMove().getPartner(), paymentSession)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  protected boolean isBlocking(Partner partner, PaymentSession paymentSession) {
+    for (Blocking blocking : partner.getBlockingList()) {
+      if (blocking.getBlockingSelect().equals(BlockingRepository.DEBIT_BLOCKING)
+          && !paymentSession.getPaymentDate().isAfter(blocking.getBlockingToDate())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
