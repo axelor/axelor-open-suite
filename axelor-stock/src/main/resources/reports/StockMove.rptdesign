@@ -2744,6 +2744,9 @@ row._outer["first_name"]
                             <structure>
                                 <property name="name">total_qty_per_product</property>
                                 <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2756,6 +2759,9 @@ row._outer["first_name"]
                             <structure>
                                 <property name="name">description_list</property>
                                 <property name="dataType">string</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">CONCATENATE</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2778,6 +2784,9 @@ row._outer["first_name"]
                             <structure>
                                 <property name="name">tracking_no_list</property>
                                 <property name="dataType">string</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">CONCATENATE</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2810,6 +2819,7 @@ row._outer["first_name"]
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
                         <list-property name="filter">
                             <structure>
