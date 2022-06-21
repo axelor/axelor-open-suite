@@ -231,22 +231,29 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
+        invoice.getInTaxTotal(),
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
         invoice.getRemainingAmountAfterFinDiscount());
   }
 
-  protected void computeFinancialDiscount(
+  @Override
+  public void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
+      BigDecimal totalAmount,
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount) {
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()
+        && financialDiscount != null) {
       BigDecimal percentage =
-          invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+          this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
+              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
+      invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
@@ -255,6 +262,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
+    } else {
+      invoiceTerm.setApplyFinancialDiscount(false);
+      invoiceTerm.setFinancialDiscount(null);
+      invoiceTerm.setFinancialDiscountDeadlineDate(null);
+      invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
+      invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+      invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
     }
   }
 
@@ -404,6 +418,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getInvoiceDate() != null) {
       LocalDate invoiceDate = invoiceTerm.getInvoice().getInvoiceDate();
       deadlineDate = deadlineDate.isBefore(invoiceDate) ? invoiceDate : deadlineDate;
+    } else if (invoiceTerm.getMoveLine() != null && invoiceTerm.getMoveLine().getDate() != null) {
+      LocalDate moveDate = invoiceTerm.getMoveLine().getDate();
+      deadlineDate = deadlineDate.isBefore(moveDate) ? moveDate : deadlineDate;
     }
 
     return deadlineDate;
