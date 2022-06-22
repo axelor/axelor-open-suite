@@ -5,13 +5,13 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestPostStructure;
+import com.axelor.apps.tool.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockMoveLinePostRequest extends RequestPostStructure {
+public class StockMoveLinePostRequest extends RequestStructure {
 
   @NotNull
   @Min(0)
