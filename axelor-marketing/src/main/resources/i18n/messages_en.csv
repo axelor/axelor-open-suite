@@ -67,6 +67,7 @@
 "Leads template",,,
 "Manage an event per target",,,
 "Manage attendees",,,
+"Manual",,,
 "Marketing",,,
 "Marketing Campaigns",,,
 "Minutes",,,
@@ -119,5 +120,4 @@
 "Tools",,,
 "Type",,,
 "Weeks",,,
-"target.Manual","Manual",,
 "value:Marketing Management",,,
