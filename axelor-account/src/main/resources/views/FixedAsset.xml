@@ -256,7 +256,8 @@
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid"/>
       <field name="saleAccountMove" domain="self.company = :company"
-        showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
+        showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
+        form-view="move-form" grid-view="move-grid"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
