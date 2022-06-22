@@ -4,9 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms"
-        model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <hilite color="danger"
-            if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+      if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="name"/>
     <field name="invoice.invoiceId"/>
     <field name="moveLine.name"/>
@@ -18,16 +18,25 @@
     <field name="percentage"/>
     <field name="paymentMode"/>
     <field name="financialDiscount.discountRate"
-           if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
-           if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountDeadlineDate"
-           if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </grid>
 
-  <grid name="invoice-term-pfp-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+  <grid name="invoice-term-pfp-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    <toolbar>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+        title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+        onClick="action-invoiceterm-view-refusal-to-pay"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    </toolbar>
     <hilite color="danger"
-            if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+      if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="invoice.invoiceId"/>
     <field name="moveLine.name"/>
     <field name="companyName"/>
