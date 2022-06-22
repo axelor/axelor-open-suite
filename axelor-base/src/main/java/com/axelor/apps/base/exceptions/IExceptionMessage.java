@@ -447,7 +447,6 @@ public interface IExceptionMessage {
       "The scheduler service is enabled." /*)*/;
 
   /* Geonames import */
-  public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
   public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
@@ -466,5 +465,19 @@ public interface IExceptionMessage {
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
-      "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+      "An error occurred : Cities cannot be imported. Please refer to the attached error file for more details." /*)*/;
+  public static final String COUNTRY_LINES_NOT_FOUND = /*$$(*/
+      "The country code %s does not have any matching with a database record. Record line %s not imported" /*)*/;
+  public static final String COUNTRY_RECORD_NOT_IMPORTED = /*$$(*/
+      "The country code %s does not have any matching with a database record. %s records haven't been imported." /*)*/;
+  public static final String NO_COUNTRY_IMPORTED = /*$$(*/
+      "There is no country record in the database table. Please import or fill in countries table before proceeding to the import of cities." /*)*/;
+  public static final String IMPORT_FILE_EMPTY = /*$$(*/
+      "The source file %s to import is empty. No record has been imported." /*)*/;
+  public static final String COUNTRY_CODE_NOT_AVAILABLE = /*$$(*/
+      "The country code %s does not have any matching with a database record. File hasn't been imported. Please create a country with the aforementionned code to properly run the import." /*)*/;
+  public static final String COUNTRY_FILE_MISSING = /*$$(*/
+      "The source file %s to import is not found from the path %s or %s. No record has been imported." /*)*/;
+  public static final String FEW_CITIES_IMPORTED = /*$$(*/
+      "Errors have been detected : some cities haven't been imported. Please refer to the error log file for more details." /*)*/;
 }

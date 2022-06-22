@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.translation.ITranslation;
+import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -51,6 +53,8 @@ public class ImportCityController {
       MetaFile errorFile = null;
 
       String typeSelect = (String) request.getContext().get("typeSelect");
+      Query<City> cityQuery = Beans.get(CityRepository.class).all();
+      long cityCountBeforeImport = cityQuery.count();
       if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
 
         String importTypeSelect = (String) request.getContext().get("importTypeSelect");
@@ -79,7 +83,11 @@ public class ImportCityController {
         importHistoryList = (List<ImportHistory>) importCityMap.get("importHistoryList");
         errorFile = (MetaFile) importCityMap.get("errorFile");
         if (errorFile != null) {
-          response.setFlash(I18n.get(IExceptionMessage.CITIES_IMPORT_FAILED));
+          response.setFlash(
+              I18n.get(
+                  cityCountBeforeImport == cityQuery.count()
+                      ? IExceptionMessage.CITIES_IMPORT_FAILED
+                      : IExceptionMessage.FEW_CITIES_IMPORTED));
           response.setAttr("errorFile", "hidden", false);
           response.setValue("errorFile", errorFile);
         } else {

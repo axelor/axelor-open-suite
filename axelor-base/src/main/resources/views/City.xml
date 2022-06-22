@@ -49,6 +49,7 @@
       <field name="typeSelect" type="string" title="Type"
         selection="iterritory.city.type.select"/>
       <field name="importTypeSelect" type="string" title="Import type"
+        onChange="action-wizard-import-city-import-type-select-on-change"
         selection="base.city.import.type.select"
         help="Uploaded file must have the same format as the selected type."/>
     </panel>
@@ -74,6 +75,11 @@
     model="com.axelor.apps.base.db.Wizard">
     <field name="typeSelect" expr="eval: __repo__(City).TYPE_SELECT_GEONAMES"/>
     <field name="importTypeSelect" expr="eval: __repo__(City).IMPORT_TYPE_SELECT_AUTO"/>
+  </action-record>
+
+  <action-record name="action-wizard-import-city-import-type-select-on-change"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="autoImportTypeSelect" expr="eval: null"/>
   </action-record>
 
   <action-method name="action-base-method-import-city">
