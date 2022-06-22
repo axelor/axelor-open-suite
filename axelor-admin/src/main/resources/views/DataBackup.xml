@@ -11,7 +11,8 @@
   </grid>
 
   <form model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
-    name="data-create-backup-form" onNew="action-data-backup-group-on-new" width="large">
+    name="data-create-backup-form" onNew="action-data-backup-group-on-new" width="large"
+    readonlyIf="backupMetaFile">
     <panel name="mainPanel" large="true">
       <panel name="userPanel" colSpan="9">
         <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
@@ -75,11 +76,6 @@
     </panel>
   </form>
 
-  <action-record name="action-data-backup-record-set-today-datetime"
-    model="com.axelor.apps.base.db.DataBackup">
-    <field name="backupDate" expr="eval: __datetime__"/>
-  </action-record>
-
   <action-record name="action-data-backup-record-set-default-fetch-limit"
     model="com.axelor.apps.base.db.DataBackup">
     <field name="fetchLimit" expr="100"/>
@@ -103,7 +99,6 @@
 
   <action-group name="action-data-backup-group-on-new">
     <action name="action-data-backup-record-set-default-fetch-limit"/>
-    <action name="action-data-backup-record-set-today-datetime"/>
   </action-group>
 
   <action-method name="action.data.backup.call.createbackup">
