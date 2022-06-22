@@ -60,7 +60,7 @@ public interface IExceptionMessage {
       "Please fill all inventory lines" /*)*/;
 
   static final String INVENTORY_LINE_STOCK_LOCATION_MISSING = /*$$(*/
-      "Stock location is missing on an inventory line." /*)*/;
+      "Stock location is missing for these lines : %s" /*)*/;
 
   /** Stock Location Line Service Impl */
   static final String LOCATION_LINE_1 = /*$$(*/

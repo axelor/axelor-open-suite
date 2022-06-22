@@ -40,6 +40,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -411,13 +412,8 @@ public class InventoryService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVENTORY_VALIDATE_WRONG_STATUS));
     }
-    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-      if (inventoryLine.getStockLocation() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.INVENTORY_LINE_STOCK_LOCATION_MISSING));
-      }
-    }
+
+    checkMissingStockLocation(inventory.getInventoryLineList());
     inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
@@ -934,6 +930,43 @@ public class InventoryService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.INVENTORY_VALIDATE_INVENTORY_LINE_LIST));
+    }
+  }
+
+  protected void checkMissingStockLocation(List<InventoryLine> inventoryLineList)
+      throws AxelorException {
+    List<InventoryLine> inventoryLinesWithMissingStockLocation = new ArrayList<>();
+    for (InventoryLine inventoryLine : inventoryLineList) {
+      if (inventoryLine.getStockLocation() == null) {
+        inventoryLinesWithMissingStockLocation.add(inventoryLine);
+      }
+    }
+
+    StringHTMLListBuilder stringHTMLListInventoryLine = new StringHTMLListBuilder();
+    inventoryLinesWithMissingStockLocation.stream()
+        .limit(15)
+        .forEach(
+            inventoryLine -> {
+              if (inventoryLine.getTrackingNumber() == null) {
+                stringHTMLListInventoryLine.append(inventoryLine.getProduct().getFullName());
+              } else {
+                stringHTMLListInventoryLine.append(
+                    String.format(
+                        "%s : %s",
+                        inventoryLine.getProduct().getFullName(),
+                        inventoryLine.getTrackingNumber().getTrackingNumberSeq()));
+              }
+            });
+
+    if (!inventoryLinesWithMissingStockLocation.isEmpty()) {
+      if (inventoryLinesWithMissingStockLocation.size() > 15) {
+        stringHTMLListInventoryLine.append("...");
+      }
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          String.format(
+              I18n.get(IExceptionMessage.INVENTORY_LINE_STOCK_LOCATION_MISSING),
+              stringHTMLListInventoryLine));
     }
   }
 }
