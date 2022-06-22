@@ -99,6 +99,7 @@ public class DataBackupServiceImpl implements DataBackupService {
             if (status != DataBackupRepository.DATA_BACKUP_STATUS_ERROR) {
               obj.setBackupMetaFile(zipFile);
               obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_CREATED);
+              obj.setBackupDate(LocalDateTime.now());
             } else {
               obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_ERROR);
             }
