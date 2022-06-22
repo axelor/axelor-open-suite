@@ -515,7 +515,6 @@ public class IrrecoverableService {
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
   }
 
@@ -536,7 +535,7 @@ public class IrrecoverableService {
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    moveValidateService.accounting(move);
+
     irrecoverable.getMoveSet().add(move);
 
     invoice.setIrrecoverableStatusSelect(
@@ -933,6 +932,8 @@ public class IrrecoverableService {
             invoice.getInvoiceId());
     move.getMoveLineList().add(creditMoveLine);
 
+    moveValidateService.accounting(move);
+
     Reconcile reconcile =
         reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
     if (reconcile != null) {
@@ -988,11 +989,6 @@ public class IrrecoverableService {
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine);
 
-    Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
-    if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
-    }
-
     Tax tax = accountConfig.getIrrecoverableStandardRateTax();
 
     BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate(company));
@@ -1031,6 +1027,13 @@ public class IrrecoverableService {
             irrecoverableName,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine2);
+
+    moveValidateService.accounting(move);
+
+    Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
 
     return move;
   }

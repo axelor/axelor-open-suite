@@ -1,0 +1,3 @@
+---
+title: "MOVE: removed auto reconcile for reverse wizard if move is draft"
+type: fix

@@ -458,7 +458,8 @@
     onLoad="action-move-attrs-set-generate-reverse-wizard-defaults"
     model="com.axelor.apps.account.db.Move">
     <panel name="mainPanel">
-      <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
+      <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"
+        readonlyIf="statusSelect != 2 &amp;&amp; statusSelect != 3"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
         selection="account.move.date.of.reversion.type.select"
         onChange="action-move-record-set-date-of-revision"/>
@@ -473,6 +474,7 @@
       <button name="generateReverseBtn" title="Reverse" icon="fa-exchange"
         onClick="action-move-validate-check-date-of-reversion,action-move-method-generate-reverse-move"
         readonlyIf="dateOfReversionSelect == 4 &amp;&amp; !dateOfReversion"/>
+      <field name="statusSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -669,7 +671,10 @@
   </action-attrs>
 
   <action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
-    <attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
+    <attribute name="value" for="isAutomaticReconcile" expr="eval: true"
+      if="statusSelect == 2 || statusSelect == 3"/>
+    <attribute name="value" for="isAutomaticReconcile" expr="eval: false"
+      if="statusSelect != 2 &amp;&amp; statusSelect != 3"/>
     <attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
     <attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
     <attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>

@@ -155,7 +155,6 @@ public class AccountClearanceService {
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveValidateService.accounting(move);
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
@@ -239,14 +238,17 @@ public class AccountClearanceService {
             null);
     move.getMoveLineList().add(creditMoveLine2);
 
+    debitMoveLine.setAccountClearance(accountClearance);
+    creditMoveLine1.setAccountClearance(accountClearance);
+    creditMoveLine2.setAccountClearance(accountClearance);
+
+    moveValidateService.accounting(move);
+
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
     if (reconcile != null) {
       reconcileService.confirmReconcile(reconcile, true);
     }
 
-    debitMoveLine.setAccountClearance(accountClearance);
-    creditMoveLine1.setAccountClearance(accountClearance);
-    creditMoveLine2.setAccountClearance(accountClearance);
     return move;
   }
 

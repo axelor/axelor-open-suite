@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -49,6 +50,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
@@ -177,6 +179,7 @@ public class ReimbursementExportService {
     Partner partner = null;
     Move newMove = null;
     boolean first = true;
+    List<Reconcile> reconcileList = new ArrayList<>();
 
     AccountConfig accountConfig = company.getAccountConfig();
 
@@ -227,9 +230,7 @@ public class ReimbursementExportService {
           // Création de la réconciliation
           Reconcile reconcile =
               reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining, false);
-          if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
-          }
+          reconcileList.add(reconcile);
         }
       }
       // Création de la ligne au crédit
@@ -250,6 +251,13 @@ public class ReimbursementExportService {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
       moveValidateService.accounting(newMove);
+
+      if (!ObjectUtils.isEmpty(reconcileList)) {
+        for (Reconcile reconcile : reconcileList) {
+          reconcileService.confirmReconcile(reconcile, true);
+        }
+      }
+
       moveRepo.save(newMove);
     }
   }
