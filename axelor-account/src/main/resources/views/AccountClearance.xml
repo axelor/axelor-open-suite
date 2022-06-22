@@ -25,17 +25,19 @@
       <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"
         canEdit="false" canView="false"/>
       <field name="company" widget="SuggestBox" form-view="company-form" canEdit="false"
-        grid-view="company-grid"/>
+        grid-view="company-grid" readonlyIf="statusSelect == 2"/>
       <field name="statusSelect"/>
     </panel>
 
-    <panel name="clearanceSettingsPanel" title="Clearance settings">
+    <panel name="clearanceSettingsPanel" title="Clearance settings"
+      readonlyIf="statusSelect == 2">
       <field name="amountThreshold"/>
       <field name="dateThreshold"/>
     </panel>
 
     <panel-related name="moveLineSetPanel" field="moveLineSet"
-      form-view="move-line-form" grid-view="move-line-grid"/>
+      readonlyIf="statusSelect == 2" form-view="move-line-form" grid-view="move-line-grid"
+      onSelect="action-account-clearance-method-set-excess-payment-domain"/>
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="getExcessPaymentBtn" title="Get overdue payments"
@@ -54,6 +56,11 @@
   <action-method name="action-method-account-clearance-get-excesspayment">
     <call class="com.axelor.apps.account.web.AccountClearanceController"
       method="getExcessPayment"/>
+  </action-method>
+
+  <action-method name="action-account-clearance-method-set-excess-payment-domain">
+    <call class="com.axelor.apps.account.web.AccountClearanceController"
+      method="setExcessPaymentDomain"/>
   </action-method>
 
   <action-method name="action-method-account-clearance-validate">

@@ -31,6 +31,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Singleton
 public class AccountClearanceController {
@@ -42,6 +43,25 @@ public class AccountClearanceController {
     try {
       Beans.get(AccountClearanceService.class).setExcessPayment(accountClearance);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setExcessPaymentDomain(ActionRequest request, ActionResponse response) {
+    AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
+
+    try {
+      String moveLineIds =
+          Beans.get(AccountClearanceService.class).getExcessPayment(accountClearance).stream()
+              .map(MoveLine::getId)
+              .map(Object::toString)
+              .collect(Collectors.joining(","));
+
+      response.setAttr(
+          "moveLineSet",
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
