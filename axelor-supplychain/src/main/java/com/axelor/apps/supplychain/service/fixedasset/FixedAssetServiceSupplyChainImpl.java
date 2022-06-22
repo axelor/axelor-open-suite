@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
@@ -44,6 +45,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
 
   @Inject
   public FixedAssetServiceSupplyChainImpl(
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
@@ -53,6 +55,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
       AppBaseService appBaseService,
       FixedAssetValidateService fixedAssetValidateService) {
     super(
+        fixedAssetDateService,
         fixedAssetLineService,
         fixedAssetDerogatoryLineService,
         fixedAssetRepository,

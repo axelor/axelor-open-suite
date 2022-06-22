@@ -237,4 +237,17 @@ public class PaymentVoucherController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setReceiptDisplay(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      boolean displayReceipt =
+          Beans.get(PaymentVoucherControlService.class).isReceiptDisplayed(paymentVoucher);
+
+      response.setAttr("receiptNo", "hidden", !displayReceipt);
+      response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -646,7 +646,22 @@ public class MoveLineController {
       BigDecimal oldTotal =
           moveLineDb == null ? null : moveLineDb.getCredit().max(moveLineDb.getDebit());
       Beans.get(MoveLineInvoiceTermService.class).computeInvoiceTerms(moveLine, oldTotal);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
+  public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+
+      response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
+      response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
       response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

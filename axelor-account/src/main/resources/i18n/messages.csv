@@ -2909,6 +2909,7 @@
 "This period is already in use by some accounting moves. The dates can't be modified.",,,
 "This period is closed and you do not have the necessary permissions to create entries",,,
 "This period is temporarily closed and you do not have the necessary permissions to create entries",,,
+"This process requires the parent invoice to be saved then reloaded, do you wish to continue ?",,,
 "This regular expression must be of the SQL syntax. The most useful terms are :",,,
 "This state allows to create a custom rule to be shown in the report.",,,
 "This value is already selected in another field, please select another value",,,

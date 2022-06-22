@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -26,9 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
@@ -54,6 +53,13 @@ public interface InvoiceTermService {
 
   public void computeInvoiceTerm(
       InvoiceTerm invoiceTerm, BigDecimal newTotalAmount, BigDecimal oldTotalAmount);
+
+  void computeFinancialDiscount(
+      InvoiceTerm invoiceTerm,
+      BigDecimal totalAmount,
+      FinancialDiscount financialDiscount,
+      BigDecimal financialDiscountAmount,
+      BigDecimal remainingAmountAfterFinDiscount);
 
   /**
    * Method that creates a customized invoiceTerm
@@ -216,9 +222,6 @@ public interface InvoiceTermService {
    */
   public MoveLine getExistingInvoiceTermMoveLine(Invoice invoice);
 
-  public void refusalToPay(
-      InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
-
   InvoiceTerm createInvoiceTerm(
       MoveLine moveLine,
       BankDetails bankDetails,
@@ -246,19 +249,6 @@ public interface InvoiceTermService {
   public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
-
-  public void generateInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm,
-      BigDecimal invoiceAmount,
-      BigDecimal pfpGrantedAmount,
-      PfpPartialReason partialReason);
-
-  public void validatePfp(InvoiceTerm invoiceTerm, User currenctUser);
-
-  public Integer massValidatePfp(List<Long> invoiceTermIds);
-
-  public Integer massRefusePfp(
-      List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
