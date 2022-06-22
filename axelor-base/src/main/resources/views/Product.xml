@@ -843,6 +843,7 @@
     <view type="grid" name="product-product-variant-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :id</domain>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-product-view-other-product-variant" title="Other variants"
@@ -851,6 +852,7 @@
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :parentId</domain>
     <context name="parentId" expr="eval: parentProduct?.id"/>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-product-view-total-variants" title="${fullName} variants"
@@ -858,6 +860,7 @@
     <view type="grid" name="product-product-variant-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :_id</domain>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
