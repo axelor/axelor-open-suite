@@ -41,16 +41,14 @@ public class MrpJob implements Job {
       MetaSchedule metaSchedule = metaScheduleRepo.findByName(jobDetail.getKey().getName());
 
       if (!metaSchedule.getParams().isEmpty()) {
-        String code =
-            metaSchedule
-                .getParams()
-                .stream()
-                .filter(param -> param.getName().equals("code"))
+        String mrqSeq =
+            metaSchedule.getParams().stream()
+                .filter(param -> param.getName().equals("mrpSeq"))
                 .findFirst()
                 .get()
                 .getValue();
 
-        Mrp mrp = Beans.get(MrpRepository.class).findByCode(code);
+        Mrp mrp = Beans.get(MrpRepository.class).findByMrpSeq(mrqSeq);
         if (mrp != null) {
           Beans.get(MrpService.class).runCalculation(mrp);
         }
