@@ -27,68 +27,80 @@ import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
-import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProductStockRepository extends ProductBaseRepository {
 
-  @Inject private StockMoveService stockMoveService;
-
-  @Inject private StockLocationRepository stockLocationRepo;
-
-  @Inject private AppStockService appStockService;
-
-  @Inject private StockLocationLineService stockLocationLineService;
-
-  @Inject private StockLocationService stockLocationService;
+  @Inject protected StockMoveService stockMoveService;
+  @Inject protected StockLocationRepository stockLocationRepo;
+  @Inject protected StockLocationLineService stockLocationLineService;
+  @Inject protected StockLocationService stockLocationService;
+  @Inject protected WeightedAveragePriceService weightedAveragePriceService;
 
   public Product save(Product product) {
-    WeightedAveragePriceService weightedAveragePriceService =
-        Beans.get(WeightedAveragePriceService.class);
+    addProductCompanies(product);
+    return super.save(product);
+  }
+
+  protected void addProductCompanies(Product product) {
     Set<MetaField> specificProductFieldSet =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
-    if (!specificProductFieldSet.isEmpty() && appBaseService.getAppBase().getEnableMultiCompany()) {
-      ArrayList<Company> productCompanyList = new ArrayList<>();
-      if (product.getProductCompanyList() != null) {
-        for (ProductCompany productCompany : product.getProductCompanyList()) {
-          productCompanyList.add(productCompany.getCompany());
-        }
-      }
-      Mapper mapper = Mapper.of(Product.class);
-      List<StockConfig> stockConfigList = Beans.get(StockConfigRepository.class).all().fetch();
-      for (StockConfig stockConfig : stockConfigList) {
-        if (stockConfig.getCompany() != null
-            && !productCompanyList.contains(stockConfig.getCompany())
-            && stockConfig.getReceiptDefaultStockLocation() != null
-            && (stockConfig.getCompany().getArchived() == null
-                || !stockConfig.getCompany().getArchived())) {
-          ProductCompany productCompany = new ProductCompany();
-          for (MetaField specificField : specificProductFieldSet) {
-            mapper.set(
-                productCompany,
-                specificField.getName(),
-                mapper.get(product, specificField.getName()));
-          }
-          // specific case for avgPrice per company
-          productCompany.setAvgPrice(
-              weightedAveragePriceService.computeAvgPriceForCompany(
-                  product, stockConfig.getCompany()));
-          productCompany.setCompany(stockConfig.getCompany());
-          productCompany.setProduct(product);
-          product.addProductCompanyListItem(productCompany);
-        }
+    if (specificProductFieldSet.isEmpty()
+        || !appBaseService.getAppBase().getEnableMultiCompany()
+        || ObjectUtils.isEmpty(product.getProductCompanyList())) {
+      return;
+    }
+
+    List<Company> productCompanies =
+        product.getProductCompanyList().stream()
+            .map(ProductCompany::getCompany)
+            .collect(Collectors.toList());
+
+    List<StockConfig> stockConfigList = Beans.get(StockConfigRepository.class).all().fetch();
+    if (ObjectUtils.isEmpty(stockConfigList)) {
+      return;
+    }
+
+    for (StockConfig stockConfig : stockConfigList) {
+      Company company = stockConfig.getCompany();
+      if (company != null
+          && !productCompanies.contains(company)
+          && stockConfig.getReceiptDefaultStockLocation() != null
+          && (company.getArchived() == null || !company.getArchived())) {
+        ProductCompany productCompany =
+            createProductCompany(product, specificProductFieldSet, company);
+        product.addProductCompanyListItem(productCompany);
       }
     }
-    return super.save(product);
+  }
+
+  protected ProductCompany createProductCompany(
+      Product product, Set<MetaField> specificProductFieldSet, Company company) {
+    Mapper mapper = Mapper.of(Product.class);
+
+    ProductCompany productCompany = new ProductCompany();
+    for (MetaField specificField : specificProductFieldSet) {
+      mapper.set(
+          productCompany, specificField.getName(), mapper.get(product, specificField.getName()));
+    }
+
+    // specific case for avgPrice per company
+    productCompany.setAvgPrice(
+        weightedAveragePriceService.computeAvgPriceForCompany(product, company));
+    productCompany.setCompany(company);
+    productCompany.setProduct(product);
+    return productCompany;
   }
 
   @Override
@@ -134,14 +146,14 @@ public class ProductStockRepository extends ProductBaseRepository {
         json.put("$stockMax", maxQty);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
 
     return json;
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
-  private void setAvailableQty(Map<String, Object> json, Map<String, Object> context) {
+  protected void setAvailableQty(Map<String, Object> json, Map<String, Object> context) {
     try {
       Long productId = (Long) json.get("id");
       Product product = find(productId);
@@ -173,8 +185,9 @@ public class ProductStockRepository extends ProductBaseRepository {
       } else if (product.getParentProduct() != null) {
         json.put("$availableQty", stockLocationService.getRealQty(productId, null, null));
       }
+
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
   }
 
