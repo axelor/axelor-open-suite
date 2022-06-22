@@ -279,7 +279,7 @@
   <action-attrs
     name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-compute-total-of-selected-move-lines">
     <attribute name="value" for="$selectedMoveLineTotal"
-      expr="eval: toReconcileMoveLineSet.collect{new BigDecimal(it.debit).add(new BigDecimal(it.credit))}.sum()"/>
+      expr="eval: toReconcileMoveLineSet.collect{__repo__(MoveLine).find(it.id)}.collect{new BigDecimal(it.debit).add(new BigDecimal(it.credit))}.sum()"/>
   </action-attrs>
 
   <action-method name="action-bank-reconciliation-method-validate-multiple-reconciles">
