@@ -487,4 +487,9 @@ public interface IExceptionMessage {
       "Error: The type of the field %s does not match the type of the value %s" /*)*/;
   public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
+
+  public static final String PARTNER_LANGUAGE_MISSING = /*$$(*/ "%s language is missing." /*)*/;
+
+  public static final String CURRENT_USER_LANGUAGE_MISSING = /*$$(*/
+      "The current user language is missing." /*)*/;
 }

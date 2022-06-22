@@ -164,6 +164,15 @@
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
+          <field name="$partnerLanguage" hidden="true"/>
+          <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+            showTitle="false">
+            <viewer depends="$partnerLanguage">
+              <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;</span>{{record.$partnerLanguage}}</div>
+              ]]>
+            </viewer>
+          </field>
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
       </panel>
@@ -333,6 +342,7 @@
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -347,6 +357,7 @@
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -356,6 +367,7 @@
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
     <action name="action-budget-validate-exceed-line-amount"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
+    <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -515,6 +527,12 @@
       method="checkDifferentSupplier"/>
   </action-method>
 
+  <action-method
+    name="action-purchase-order-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="translateProductDescriptionAndName"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-purchase-order-line-attrs-product-domain">
@@ -574,6 +592,15 @@
     name="action-purchase-order-line-attrs-hide-different-supplier-warning-label">
     <attribute name="hidden" for="differentSupplierLabel" expr="true"/>
   </action-attrs>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__.supplierPartner.language.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__.supplierPartner.language.code.toUpperCase()"/>
+  </action-attrs>
+
   <!-- ACTION VIEW -->
   <action-view name="action-purchase-order-line-view-stock-move-line" title=""
     model="com.axelor.apps.stock.db.StockMoveLine">

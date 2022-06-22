@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -30,6 +32,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -287,5 +290,33 @@ public class StockMoveLineController {
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+      StockMove stockMove =
+          context.getParent() != null
+              ? context.getParent().asType(StockMove.class)
+              : stockMoveLine.getStockMove();
+      Partner partner = stockMove.getPartner();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+      String partnerLanguage = partner.getLanguage().getCode();
+
+      if (!internationalService.compareCurrentLanguageWithPartner(partner)) {
+        response.setValue(
+            "description",
+            internationalService.translate(
+                stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+        response.setValue(
+            "productName",
+            internationalService.translate(
+                stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
