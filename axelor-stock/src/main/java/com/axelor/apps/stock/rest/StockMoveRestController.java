@@ -58,7 +58,7 @@ public class StockMoveRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
 
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, ObjectFinder.NO_VERSION);
+    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
     Beans.get(StockMoveLineService.class)
         .createStockMoveLine(
@@ -70,11 +70,10 @@ public class StockMoveRestController {
             requestBody.fetchUnit(),
             requestBody.getConformity());
 
+    Beans.get(StockMoveService.class).updateStocks(stockmove);
+
     return ResponseConstructor.build(
-        Response.Status.OK,
-        "Line successfully added to stock move with id "
-            + stockmove.getId()
-            + " successfully updated.");
+        Response.Status.OK, "Line successfully added to stock move with id " + stockmove.getId());
   }
 
   /**
