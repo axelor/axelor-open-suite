@@ -398,6 +398,7 @@ public class InventoryService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVENTORY_COMPLETE_WRONG_STATUS));
     }
+    validateInventoryLineList(inventory);
     inventory.setStatusSelect(InventoryRepository.STATUS_COMPLETED);
     inventory.setCompletedBy(AuthUtils.getUser());
   }
@@ -918,5 +919,14 @@ public class InventoryService {
         + (!Strings.isNullOrEmpty(entity.getDescription())
             ? "-" + StringUtils.abbreviate(entity.getDescription(), 10)
             : "");
+  }
+
+  protected void validateInventoryLineList(Inventory inventory) throws AxelorException {
+    if (inventory.getInventoryLineList().stream()
+        .anyMatch(inventoryLine -> inventoryLine.getRealQty() == null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.INVENTORY_VALIDATE_INVENTORY_LINE_LIST));
+    }
   }
 }

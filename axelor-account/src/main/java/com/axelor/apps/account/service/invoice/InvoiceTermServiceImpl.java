@@ -27,9 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -45,11 +43,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
@@ -142,11 +138,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
-
     BigDecimal sum = BigDecimal.ZERO;
+    BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
+
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
-        sum = sum.add(invoiceTerm.getPercentage());
+        sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
       }
     }
     return sum;
@@ -234,22 +231,29 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
+        invoice.getInTaxTotal(),
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
         invoice.getRemainingAmountAfterFinDiscount());
   }
 
-  protected void computeFinancialDiscount(
+  @Override
+  public void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
+      BigDecimal totalAmount,
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount) {
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()
+        && financialDiscount != null) {
       BigDecimal percentage =
-          invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+          this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
+              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
+      invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
@@ -258,6 +262,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
+    } else {
+      invoiceTerm.setApplyFinancialDiscount(false);
+      invoiceTerm.setFinancialDiscount(null);
+      invoiceTerm.setFinancialDiscountDeadlineDate(null);
+      invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
+      invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+      invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
     }
   }
 
@@ -332,7 +343,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
-    invoiceTerm.setPercentage(invoiceTermPercentage);
+    invoiceTerm.setPercentage(
+        invoiceTermPercentage.setScale(
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     BigDecimal amount;
     if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
       amount = moveLine.getDebit();
@@ -405,6 +418,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getInvoiceDate() != null) {
       LocalDate invoiceDate = invoiceTerm.getInvoice().getInvoiceDate();
       deadlineDate = deadlineDate.isBefore(invoiceDate) ? invoiceDate : deadlineDate;
+    } else if (invoiceTerm.getMoveLine() != null && invoiceTerm.getMoveLine().getDate() != null) {
+      LocalDate moveDate = invoiceTerm.getMoveLine().getDate();
+      deadlineDate = deadlineDate.isBefore(moveDate) ? moveDate : deadlineDate;
     }
 
     return deadlineDate;
@@ -655,23 +671,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void refusalToPay(
-      InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
-    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-    invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    invoiceTerm.setPfpRejectedAmount(invoiceTerm.getAmount());
-    invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
-    invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
-    invoiceTerm.setReasonOfRefusalToPayStr(
-        reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
-
-    invoiceTermRepo.save(invoiceTerm);
-  }
-
-  @Override
   @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> eligibleInvoiceTermList =
@@ -766,67 +765,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-    invoiceTerm.setPfpGrantedAmount(invoiceTerm.getAmount());
-    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-    invoiceTerm.setPfpValidatorUser(currentUser);
-    invoiceTermRepo.save(invoiceTerm);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Integer massValidatePfp(List<Long> invoiceTermIds) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_VALIDATED)
-            .fetch();
-    User currentUser = AuthUtils.getUser();
-    int updatedRecords = 0;
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
-        validatePfp(invoiceTerm, currentUser);
-        updatedRecords++;
-      }
-    }
-    return updatedRecords;
-  }
-
-  @Override
-  public Integer massRefusePfp(
-      List<Long> invoiceTermIds,
-      CancelReason reasonOfRefusalToPay,
-      String reasonOfRefusalToPayStr) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_LITIGATION)
-            .fetch();
-    User currentUser = AuthUtils.getUser();
-    int updatedRecords = 0;
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      boolean invoiceTermCheck =
-          ObjectUtils.notEmpty(invoiceTerm.getInvoice())
-              && ObjectUtils.notEmpty(invoiceTerm.getInvoice().getCompany())
-              && ObjectUtils.notEmpty(reasonOfRefusalToPay);
-      if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
-        refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
-        updatedRecords++;
-      }
-    }
-    return updatedRecords;
-  }
-
-  @Override
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() != null
         && invoiceTerm.getFinancialDiscount() != null
@@ -863,97 +801,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
-  protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
-    boolean isValidUser =
-        currentUser.getIsSuperPfpUser()
-            || (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-                && currentUser.equals(invoiceTerm.getPfpValidatorUser()));
-    if (isValidUser) {
-      return true;
-    }
-    return validateUser(invoiceTerm, currentUser)
-        && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-            && invoiceTerm
-                .getPfpValidatorUser()
-                .equals(invoiceService.getPfpValidatorUser(invoiceTerm.getInvoice())))
-        && !invoiceTerm.getIsPaid();
-  }
-
-  protected boolean validateUser(InvoiceTerm invoiceTerm, User currentUser) {
-    boolean isValidUser = false;
-    if (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())) {
-      List<SubstitutePfpValidator> substitutePfpValidatorList =
-          invoiceTerm.getPfpValidatorUser().getSubstitutePfpValidatorList();
-      LocalDate todayDate =
-          Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany());
-
-      for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-        if (substitutePfpValidator.getSubstitutePfpValidatorUser().equals(currentUser)) {
-          LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-          LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
-          if (substituteStartDate == null) {
-            if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-              isValidUser = true;
-              break;
-            }
-          } else {
-            if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-              isValidUser = true;
-              break;
-            } else if (substituteStartDate.isBefore(todayDate)
-                && substituteEndDate.isAfter(todayDate)) {
-              isValidUser = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-    return isValidUser;
-  }
-
   @Override
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
+    return this.computeCustomizedPercentageUnscaled(amount, inTaxTotal)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal computeCustomizedPercentageUnscaled(
+      BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       percentage =
-          amount
-              .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 10, RoundingMode.HALF_UP);
     }
     return percentage;
-  }
-
-  @Override
-  @Transactional
-  public void generateInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm,
-      BigDecimal invoiceAmount,
-      BigDecimal pfpGrantedAmount,
-      PfpPartialReason partialReason) {
-    BigDecimal amount = invoiceAmount.subtract(pfpGrantedAmount);
-    Invoice invoice = originalInvoiceTerm.getInvoice();
-    createInvoiceTerm(originalInvoiceTerm, invoice, amount);
-    updateOriginalTerm(originalInvoiceTerm, pfpGrantedAmount, partialReason, amount, invoice);
-
-    initInvoiceTermsSequence(originalInvoiceTerm.getInvoice());
-  }
-
-  @Transactional
-  protected InvoiceTerm createInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
-    return invoiceTermRepo.save(
-        this.createInvoiceTerm(
-            invoice,
-            originalInvoiceTerm.getMoveLine(),
-            originalInvoiceTerm.getBankDetails(),
-            originalInvoiceTerm.getPfpValidatorUser(),
-            originalInvoiceTerm.getPaymentMode(),
-            originalInvoiceTerm.getDueDate(),
-            originalInvoiceTerm.getEstimatedPaymentDate(),
-            amount,
-            computeCustomizedPercentage(amount, invoice.getInTaxTotal()),
-            originalInvoiceTerm.getIsHoldBack()));
   }
 
   @Override
@@ -1003,8 +864,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setBankDetails(bankDetails);
     newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     newInvoiceTerm.setPfpValidatorUser(pfpUser);
-    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
     if (moveLine != null) {
@@ -1014,46 +875,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return newInvoiceTerm;
   }
 
-  @Transactional
-  protected void updateOriginalTerm(
-      InvoiceTerm originalInvoiceTerm,
-      BigDecimal pfpGrantedAmount,
-      PfpPartialReason partialReason,
-      BigDecimal amount,
-      Invoice invoice) {
-    originalInvoiceTerm.setIsCustomized(true);
-    originalInvoiceTerm.setIsPaid(false);
-    originalInvoiceTerm.setAmount(pfpGrantedAmount);
-    originalInvoiceTerm.setPercentage(
-        computeCustomizedPercentage(pfpGrantedAmount, invoice.getInTaxTotal()));
-    originalInvoiceTerm.setAmountRemaining(pfpGrantedAmount);
-    originalInvoiceTerm.setPfpValidateStatusSelect(
-        InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
-    originalInvoiceTerm.setPfpGrantedAmount(pfpGrantedAmount);
-    originalInvoiceTerm.setPfpRejectedAmount(amount);
-    originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
-    originalInvoiceTerm.setPfpPartialReason(partialReason);
-  }
-
-  public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {
+  public void setPaymentAmount(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
-      boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
-      if (accountConfigService
-              .getAccountConfig(invoiceTerm.getInvoice().getCompany())
-              .getIsManagePassedForPayment()
-          && invoiceTerm.getInvoice().getOperationTypeSelect()
-              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-        if (isSignedNegative) {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount().negate());
-        } else {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
-        }
+      if (this.getIsSignedNegative(invoiceTerm)) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
       } else {
-        if (isSignedNegative) {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
-        } else {
-          invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-        }
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
     }
   }
@@ -1063,7 +890,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException {
     if (invoiceTerm != null) {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
-      managePassedForPayment(invoiceTerm);
+      setPaymentAmount(invoiceTerm);
       computeAmountPaid(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
     }

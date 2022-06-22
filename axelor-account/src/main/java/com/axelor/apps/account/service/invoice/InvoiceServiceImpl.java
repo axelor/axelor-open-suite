@@ -113,6 +113,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected MoveToolService moveToolService;
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
 
   private final int RETURN_SCALE = 2;
@@ -131,6 +132,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceTermService invoiceTermService,
+      InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
       TaxService taxService) {
 
@@ -145,6 +147,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
   }
@@ -1012,7 +1015,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     User currentUser = AuthUtils.getUser();
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermService.refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
+      invoiceTermPfpService.refusalToPay(
+          invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
@@ -1178,7 +1182,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     User currentUser = AuthUtils.getUser();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermService.validatePfp(invoiceTerm, currentUser);
+      invoiceTermPfpService.validatePfp(invoiceTerm, currentUser);
     }
 
     invoice.setPfpValidatorUser(currentUser);

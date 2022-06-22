@@ -928,7 +928,6 @@ public interface IExceptionMessage {
 
   static final String INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO = /*$$(*/
       "The PFP granted amount can't be equal to zero in order to partially pass-for-payment a term." /*)*/;
-
   static final String INVOICE_INVOICE_TERM_NOT_SAVED = /*$$(*/
       "Please save this invoice term first." /*)*/;
   static final String INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD = /*$$(*/

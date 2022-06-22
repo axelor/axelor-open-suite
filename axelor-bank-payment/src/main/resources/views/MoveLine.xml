@@ -5,10 +5,10 @@
 
   <grid name="move-line-bank-reconciliation-grid" orderBy="date" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canArchive="false" canNew="false">
-    <hilite if="debit > 0" color="green"/>
-    <hilite if="credit > 0" color="red"/>
-    <hilite if="isSelectedBankReconciliation" background="grey"/>
-    <hilite if="!isSelectedBankReconciliation" background="white"/>
+    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
+    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
+      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="name"/>
     <field name="date"/>
@@ -16,13 +16,15 @@
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="description"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
-    <field name="debit" aggregate="sum"/>
-    <field name="credit" aggregate="sum"/>
+    <field name="debit" aggregate="sum">
+      <hilite if="debit > 0" color="green"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite if="credit > 0" color="red"/>
+    </field>
     <field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
     <field name="move.statusSelect"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
-    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
-      title="Select / Unselect" icon="fa-check-circle"/>
   </grid>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange"
@@ -30,7 +32,10 @@
     <action name="action-move-line-debit-credit-validate"/>
     <action name="action-move-line-debit-credit-clean"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action
       name="action-account-group-move-line-check-bank-reconcile-amount-debitcredit-on-change"/>
   </action-group>
