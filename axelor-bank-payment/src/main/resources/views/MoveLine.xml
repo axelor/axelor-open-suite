@@ -34,12 +34,12 @@
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-compute-invoice-terms"
+      if="account?.hasInvoiceTerm &amp;&amp; !invoiceTermList?.isEmpty() &amp;&amp; id"/>
     <action name="action-move-line-method-compute-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action
       name="action-account-group-move-line-check-bank-reconcile-amount-debitcredit-on-change"/>
-    <action name="action-move-line-method-compute-invoice-terms"
-      if="account?.hasInvoiceTerm &amp;&amp; !invoiceTermList?.isEmpty()"/>
   </action-group>
 
   <action-group

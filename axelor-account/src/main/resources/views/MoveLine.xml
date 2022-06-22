@@ -758,7 +758,7 @@
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
     <action name="action-move-line-method-compute-invoice-terms"
-      if="account?.hasInvoiceTerm &amp;&amp; !invoiceTermList?.isEmpty()"/>
+      if="account?.hasInvoiceTerm &amp;&amp; !invoiceTermList?.isEmpty() &amp;&amp; id"/>
     <action name="action-move-line-method-compute-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
