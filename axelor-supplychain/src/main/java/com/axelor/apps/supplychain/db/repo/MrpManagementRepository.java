@@ -72,6 +72,7 @@ public class MrpManagementRepository extends MrpRepository {
 
     Mrp copy = super.copy(entity, deep);
     copy.setMrpSeq(null);
+    copy.setStatusSelect(MrpRepository.STATUS_DRAFT);
     return copy;
   }
 }
