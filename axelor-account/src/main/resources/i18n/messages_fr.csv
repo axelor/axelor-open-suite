@@ -2150,6 +2150,7 @@
 "Please select 'Draft' or 'Simulated' moves","Veuillez sélectionner une écriture 'Brouillon' ou 'Simulée'",,
 "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)","Veuillez sélectionner un compte comptable de TVA à régulariser à l'achat pour la taxe : %s (Société : %s)",,
 "Please select a VAT Regularization account on sale for Tax: %s (company: %s)","Veuillez sélectionner un compte comptable de TVA à régulariser à la vente pour la taxe : %s (Société : %s)",,
+"Please select a cash account in config of the payment mode %s","Veuillez sélectionner un compte de vente dans la configuration du mode de paiement %s",,
 "Please select a payment mode to generate the counterpart","Veuillez sélectionner un mode de paiement pour générer la contrepartie",,
 "Please select a status.","Veuillez sélectionner un statut.",,
 "Please select something to validate","Veuillez sélectionner quelque chose à valider",,
