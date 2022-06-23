@@ -94,6 +94,8 @@ public class InventoryService {
   private final String LAST_INVENTORY_DATE = I18n.get("Last Inventory date");
   private final String STOCK_LOCATION = I18n.get("Stock Location");
 
+  static final int INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT = 15;
+
   protected InventoryLineService inventoryLineService;
   protected SequenceService sequenceService;
   protected StockConfigService stockConfigService;
@@ -944,7 +946,7 @@ public class InventoryService {
 
     StringHTMLListBuilder stringHTMLListInventoryLine = new StringHTMLListBuilder();
     inventoryLinesWithMissingStockLocation.stream()
-        .limit(15)
+        .limit(INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT)
         .forEach(
             inventoryLine -> {
               if (inventoryLine.getTrackingNumber() == null) {
@@ -959,7 +961,8 @@ public class InventoryService {
             });
 
     if (!inventoryLinesWithMissingStockLocation.isEmpty()) {
-      if (inventoryLinesWithMissingStockLocation.size() > 15) {
+      if (inventoryLinesWithMissingStockLocation.size()
+          > INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT) {
         stringHTMLListInventoryLine.append("...");
       }
       throw new AxelorException(
