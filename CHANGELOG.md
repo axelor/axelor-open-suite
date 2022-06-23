@@ -1,3 +1,23 @@
+## [6.0.25] (2022-06-23)
+
+#### Fixed
+
+* Reimbursement: fixed bank details and move line filter by filtering by partner.
+* Menu builder: fixed menu builder copy.
+* Payment mode: hide the bank order panel on a payment mode when it cannot generate pending payments.
+* Weighted average price in product company is now correctly computed in company currency instead of purchase currency.
+* Bank Reconciliation: fixed duplicated other bank statements during the loading process.
+* Purchase order line: fixed NPE when trying to select supplier in supplier request tab.
+* Sale order line: prevent user from modifying delivery quantity manually.
+* Payment voucher: Manage multi banks for receipt.
+* Advanced export: fixed export without archived and with ids selected.
+* Translation: fix typo in "Manual" french translation.
+* Expense: corrected wrong bank details on bank order generated from expense.
+* Move: fixed technical error being displayed when trying to delete a single move.
+* Invoice line: corrected JNPE error on updating account.
+* Product: fixed an issue where an error message was displayed when emptying product pull of date.
+* Stock config: when the parameter `displayLineDetailsOnPrinting` is turned off, quantities are now correctly aggregated by product.
+
 ## [6.0.24] (2022-06-10)
 
 #### Changes
@@ -813,6 +833,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.25]: https://github.com/axelor/axelor-open-suite/compare/v6.0.24...v6.0.25
 [6.0.24]: https://github.com/axelor/axelor-open-suite/compare/v6.0.23...v6.0.24
 [6.0.23]: https://github.com/axelor/axelor-open-suite/compare/v6.0.22...v6.0.23
 [6.0.22]: https://github.com/axelor/axelor-open-suite/compare/v6.0.21...v6.0.22
