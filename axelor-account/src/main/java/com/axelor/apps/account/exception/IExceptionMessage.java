@@ -1184,7 +1184,7 @@ public interface IExceptionMessage {
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
 
-static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+  static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
 
   /** Accounting cut off service */
