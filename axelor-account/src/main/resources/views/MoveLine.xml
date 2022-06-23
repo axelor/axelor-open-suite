@@ -255,7 +255,8 @@
       </field>
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange"/>
-        <field name="dueDate" showIf="dueDate"/>
+        <field name="dueDate" showIf="dueDate"
+          onChange="account-move-line-group-due-date-onchange"/>
         <field name="originDate"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
@@ -412,7 +413,8 @@
       </field>
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange"/>
-        <field name="dueDate" showIf="dueDate"/>
+        <field name="dueDate" showIf="dueDate"
+          onChange="account-move-line-group-due-date-onchange"/>
         <field name="originDate"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
@@ -624,6 +626,12 @@
     <action name="action-move-line-validate-check-date-in-period"/>
   </action-group>
 
+  <action-group name="account-move-line-group-due-date-onchange">
+    <action name="action-move-line-validate-due-date-later-than-origin-date"/>
+    <action name="action-move-line-attrs-set-due-date-to-origin-date"
+      if="originDate &gt; dueDate"/>
+  </action-group>
+
   <action-method name="action-move-line-method-compute-analytic-distribution">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeAnalyticDistribution"/>
@@ -678,6 +686,10 @@
       expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
 
+  <action-attrs name="action-move-line-attrs-set-due-date-to-origin-date">
+    <attribute for="dueDate" name="value" expr="eval: originDate"/>
+  </action-attrs>
+
   <action-record name="action-account-move-line-record-calculate-balance"
     model="com.axelor.apps.base.db.Wizard">
     <field name="$credit" expr="eval: _credit" if="_credit != null"/>
@@ -689,7 +701,7 @@
     model="com.axelor.apps.account.db.MoveLine">
     <field name="partner" expr="eval: __parent__?.partner"/>
     <field name="date" expr="eval: __parent__?.date"/>
-    <field name="dueDate" expr="eval: __parent__?.date"/>
+    <field name="dueDate" expr="eval: __parent__?.originDate"/>
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
     <field name="description" expr="eval: __parent__?.description"/>
@@ -748,6 +760,12 @@
       if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
     <alert message="Debit and credit value cannot be negative."
       if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
+  </action-validate>
+
+  <action-validate name="action-move-line-validate-due-date-later-than-origin-date">
+    <alert
+      message="An inconsistency has been detected. The input due date is before the move origin date. However, by nature, this date must be either equal to or later than the date of the origin document."
+      if="originDate &gt; dueDate"/>
   </action-validate>
 
   <action-record name="action-move-line-debit-credit-clean"

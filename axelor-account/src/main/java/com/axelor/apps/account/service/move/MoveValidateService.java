@@ -439,4 +439,16 @@ public class MoveValidateService {
       return "" + partner.getId();
     }
   }
+
+  public void checkDueDateLaterThanOriginDate(Move move) throws AxelorException {
+    if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getDueDate().isBefore(moveLine.getOriginDate())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MOVE_LINE_DUE_DATE_BEFORE_ORIGIN_DATE));
+        }
+      }
+    }
+  }
 }

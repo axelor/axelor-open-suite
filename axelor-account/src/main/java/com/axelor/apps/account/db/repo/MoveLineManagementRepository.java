@@ -50,6 +50,16 @@ public class MoveLineManagementRepository extends MoveLineRepository {
   @Override
   public MoveLine save(MoveLine entity) {
 
+    if (entity.getDueDate().isBefore(entity.getOriginDate())) {
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_DUE_DATE_BEFORE_ORIGIN_DATE));
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
+
     List<AnalyticMoveLine> analyticMoveLineList = entity.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {

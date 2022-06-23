@@ -244,6 +244,9 @@ public interface IExceptionMessage {
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
+
+  static final String MOVE_LINE_DUE_DATE_BEFORE_ORIGIN_DATE = /*$$(*/
+      "An inconsistency has been detected. At least one move line has its due date prior to the move origin date. However, by nature, this date must be either equal to or later than the date of the origin document." /*)*/;
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
