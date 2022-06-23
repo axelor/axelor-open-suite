@@ -227,6 +227,9 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   @Override
   public Account getCashAccount(AccountManagement accountManagement, PaymentMode paymentMode)
       throws AxelorException {
+    if (accountManagement == null || paymentMode == null) {
+      return null;
+    }
     if (accountManagement != null && accountManagement.getCashAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
