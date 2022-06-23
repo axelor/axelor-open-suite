@@ -262,4 +262,10 @@ public interface IExceptionMessage {
 
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
 }
