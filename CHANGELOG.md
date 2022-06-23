@@ -1,3 +1,28 @@
+## [6.1.14] (2022-06-23)
+
+#### Changes
+
+* webapp: Add data.export.locale property in application.properties file.
+
+#### Fixed
+
+* Reimbursement: fixed bank details and move line filter by filtering by partner.
+* Menu builder: fixed menu builder copy.
+* Payment mode: hide the bank order panel on a payment mode when it cannot generate pending payments.
+* Bank Reconciliation: fixed duplicated other bank statements during the loading process.
+* Purchase order line: fixed NPE when trying to select supplier in supplier request tab.
+* Sale order line: prevent user from modifying delivery quantity manually.
+* Payment voucher: Manage multi banks for receipt.
+* Advanced export: fixed export without archived and with ids selected.
+* Sale order: In form view, sale order line panel is now hidden when trading name is empty and required.
+* Translation: fix typo in "Manual" french translation.
+* Expense: corrected wrong bank details on bank order generated from expense.
+* Move: fixed technical error being displayed when trying to delete a single move.
+* Invoice line: corrected JNPE error on updating account.
+* Product: fixed an issue where an error message was displayed when emptying product pull of date.
+* Stock config: when the parameter `displayLineDetailsOnPrinting` is turned off, quantities are now correctly aggregated by product.
+* Backup: fixed form view of backup for more consistency.
+
 ## [6.1.13] (2022-06-10)
 
 #### Changes
@@ -607,6 +632,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.14]: https://github.com/axelor/axelor-open-suite/compare/v6.1.13...v6.1.14
 [6.1.13]: https://github.com/axelor/axelor-open-suite/compare/v6.1.12...v6.1.13
 [6.1.12]: https://github.com/axelor/axelor-open-suite/compare/v6.1.11...v6.1.12
 [6.1.11]: https://github.com/axelor/axelor-open-suite/compare/v6.1.10...v6.1.11
