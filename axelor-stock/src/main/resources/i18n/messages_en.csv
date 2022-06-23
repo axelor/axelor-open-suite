@@ -699,6 +699,7 @@
 "Stock location content",,,
 "Stock location details",,,
 "Stock location filters",,,
+"Stock location is missing for these lines : %s",,,
 "Stock location line",,,
 "Stock location lines",,,
 "Stock location value",,,
