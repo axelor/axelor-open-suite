@@ -222,6 +222,7 @@ public class PricingComputer extends AbstractObservablePricing {
               Object result = scriptHelper.eval(resultPricingRule.getFormula());
               if (fieldToPopulate != null) {
                 Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+                putInContext(fieldToPopulate.getName(), result);
               }
               if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
                 LOG.debug(
