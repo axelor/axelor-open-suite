@@ -381,7 +381,9 @@
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
           domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" required="true"
@@ -460,7 +462,7 @@
         css="bold red"/>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="clientPartner == null || ($enableSalesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content">
         <panel-related name="detailLinesPanel"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
@@ -1376,7 +1378,7 @@
     <action name="action-sale-order-attrs-availability"/>
     <action name="action-sale-order-group-set-defualts-from-opportunity"
       if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
-    <action name="action-sale-order-record-load-trading-name-config"/>
+    <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
   </action-group>
 
@@ -1397,10 +1399,10 @@
     <field name="salespersonUser" expr="eval: __parent__?.user"/>
   </action-record>
 
-  <action-record name="action-sale-order-record-load-trading-name-config"
+  <action-record name="action-sale-order-record-get-trading-names-management-config"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="$enableSalesProductByTradName"
-      expr="eval: __config__.app.getApp('sale').enableSalesProductByTradName"/>
+    <field name="$enableTradingNamesManagement"
+      expr="eval: __config__.app.getApp('base').enableTradingNamesManagement"/>
   </action-record>
 
   <action-group name="action-group-sale-saleorder-onload">
@@ -1414,7 +1416,7 @@
     <action name="action-sale-order-attrs-availability"/>
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
-    <action name="action-sale-order-record-load-trading-name-config"/>
+    <action name="action-sale-order-record-get-trading-names-management-config"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
