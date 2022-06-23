@@ -24,11 +24,9 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.translation.ITranslation;
@@ -66,8 +64,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
-
-  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDateService fixedAssetDateService;
 
   protected FixedAssetLineService fixedAssetLineService;
 
@@ -87,19 +84,19 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineComputationService fixedAssetLineComputationService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      AnalyticFixedAssetService analyticFixedAssetService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
-      FixedAssetGenerationService fixedAssetGenerationService) {
+      FixedAssetGenerationService fixedAssetGenerationService,
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
-    this.analyticFixedAssetService = analyticFixedAssetService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
@@ -231,41 +228,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             }
           }
         }
-      }
-    }
-  }
-
-  /**
-   * If firstDepreciationDateInitSeelct if acquisition Date THEN : -If PeriodicityTypeSelect = 12
-   * (Year) >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.acquisitionDate -if
-   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
-   * fixedAsset.acquisitionDate Else (== first service date) -If PeriodicityTypeSelect = 12 (Year)
-   * >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.firstServiceDate -if
-   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
-   * fixedAsset.firstServiceDate
-   */
-  @Override
-  public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
-
-    FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-    if (fixedAssetCategory == null) {
-      return;
-    }
-    Integer periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
-    Integer firstDepreciationDateInitSelect =
-        fixedAssetCategory.getFirstDepreciationDateInitSelect();
-    if (fixedAssetCategory != null
-        && periodicityTypeSelect != null
-        && firstDepreciationDateInitSelect != null) {
-      if (firstDepreciationDateInitSelect
-          == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION) {
-        fixedAsset.setFirstDepreciationDate(
-            analyticFixedAssetService.computeFirstDepreciationDate(
-                fixedAsset, fixedAsset.getAcquisitionDate()));
-      } else {
-        fixedAsset.setFirstDepreciationDate(
-            analyticFixedAssetService.computeFirstDepreciationDate(
-                fixedAsset, fixedAsset.getFirstServiceDate()));
       }
     }
   }

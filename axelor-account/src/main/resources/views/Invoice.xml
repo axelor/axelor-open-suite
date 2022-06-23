@@ -498,7 +498,7 @@
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
       <field name="partner" colSpan="3" canEdit="false"
         readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"
-        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
+        onChange="action-group-account-invoice-partner-onchange"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" colSpan="3" canEdit="false"
@@ -1109,7 +1109,7 @@ InvoiceSet.length > 0))"
     <panel name="invoicingInfoPanel" title="Invoicing information">
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
         readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))"
-        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str"
+        onChange="action-group-account-invoice-partner-onchange-client"
         onSelect="action-invoice-method-set-partner-domain" canView="false"/>
       <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain"
         domain="self.isContact = true AND :company member of self.companySet"
@@ -1512,6 +1512,12 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
+    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-group-account-invoice-partner-onchange-client"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+  </action-group>
+
+  <action-group name="action-group-account-invoice-partner-onchange-client">
     <action name="action-invoice-record-partner-change"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-due-date"/>
@@ -1527,6 +1533,7 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
+    <action name="action-method-invoice-address-str"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -2410,15 +2417,16 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Related Analytic Movelines">
     <view type="grid" name="analytic-move-line-invoice-grid"/>
     <view type="form" name="analytic-move-line-move-line-form"/>
-    <domain>self.invoiceLine.id IN :invoiceLineListId</domain>
-    <context name="invoiceLineListId"
-      expr="call:com.axelor.apps.account.service.invoice.InvoiceService:getInvoiceLineIds(__self__)"/>
+    <domain>self.invoiceLine.invoice.id = :invoiceId</domain>
+    <context name="invoiceId" expr="eval: __self__?.id != null ? __self__.id : 0"/>
   </action-view>
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
     <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !partner"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"

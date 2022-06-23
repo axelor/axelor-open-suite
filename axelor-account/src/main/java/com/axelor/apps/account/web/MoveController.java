@@ -26,12 +26,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -284,6 +286,8 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      String flashMessage = I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE);
+
       if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
@@ -296,18 +300,19 @@ public class MoveController {
                     MoveRepository.STATUS_CANCELED,
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
+
         if (!moveList.isEmpty()) {
           int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
-          if (errorNB > 0) {
-            response.setFlash(
-                String.format(
-                    I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
-          } else {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
-            response.setReload(true);
-          }
-        } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+
+          flashMessage =
+              errorNB > 0
+                  ? String.format(
+                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB)
+                  : I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK);
+        }
+      }
+
+      response.setFlash(flashMessage);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -625,6 +630,34 @@ public class MoveController {
       if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
         for (MoveLine moveline : move.getMoveLineList()) {
           moveLineService.checkDateInPeriod(move, moveline);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      String journalPartnerCompatibleDomain =
+          Beans.get(JournalService.class).filterJournalPartnerCompatibleType(move);
+      if (journalPartnerCompatibleDomain != null) {
+        response.setAttr("partner", "domain", journalPartnerCompatibleDomain);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeJournal(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getPartner() != null) {
+        boolean isPartnerNotCompatible =
+            Beans.get(MoveCreateFromInvoiceService.class).isPartnerNotCompatible(move);
+        if (isPartnerNotCompatible) {
+          response.setValue("partner", null);
         }
       }
     } catch (Exception e) {

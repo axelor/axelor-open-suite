@@ -812,14 +812,16 @@ public interface IExceptionMessage {
       "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
-  static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
+  static final String PAYMENT_MODE_1 = /*$$(*/
+      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
 
   static final String PAYMENT_MODE_2 = /*$$(*/
-      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_4 = /*$$(*/
+  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
+
+  static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
+      "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
@@ -1164,6 +1166,9 @@ public interface IExceptionMessage {
   static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
+  static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
+      "Please select a cash account in config of the payment mode %s" /*)*/;
+
   static final String MASS_UPDATE_SUCCESSFUL =
       /*$$(*/ "Operation successful : %s record(s) updated." /*)*/;
 
@@ -1178,7 +1183,8 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
-  static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+
+static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
 
   /** Accounting cut off service */
@@ -1188,4 +1194,18 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
   static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
       "You must select at least one line to validate" /*)*/;
+
+  static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
+      "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)" /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
+
+  static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+  static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
 }

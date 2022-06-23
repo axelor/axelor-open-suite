@@ -282,12 +282,37 @@
       showIf="account.analyticDistributionAuthorized"
       readonlyIf="move.period.statusSelect == 2 || $validatePeriod">
       <field name="analyticDistributionTemplate"
-        grid-view="analytic-distribution-template-grid"
+        grid-view="analytic-distribution-template-grid" colSpan="12"
         form-view="analytic-distribution-template-form"
-        onChange="action-move-line-method-create-analytic-distribution"
+        onChange="action-move-line-method-create-analytic-distribution,action-method-move-line-set-required-analytic-accounts"
         onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
-        readonlyIf="!account.analyticDistributionAuthorized"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+        readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
+      <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form"
+        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+        onSelect="action-attrs-move-line-set-domain-axis"
+        onChange="action-group-analytic-axis-onchange"/>
+      <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form"
+        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+        onSelect="action-attrs-move-line-set-domain-axis"
+        onChange="action-group-analytic-axis-onchange"/>
+      <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form"
+        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+        onSelect="action-attrs-move-line-set-domain-axis"
+        onChange="action-group-analytic-axis-onchange"/>
+      <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form"
+        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+        onSelect="action-attrs-move-line-set-domain-axis"
+        onChange="action-group-analytic-axis-onchange"/>
+      <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form"
+        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+        onSelect="action-attrs-move-line-set-domain-axis"
+        onChange="action-group-analytic-axis-onchange"/>
       <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
         grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form" colSpan="12"
@@ -361,6 +386,7 @@
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
       </panel>
+      <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
         field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid"
@@ -518,7 +544,7 @@
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
-      <spacer colSpan="6"/>
+      <field name="isOtherCurrency" hidden="true"/>
       <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
@@ -545,44 +571,6 @@
       <field name="move.period.statusSelect" hidden="true"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     </panel>
-    <panel name="analyticDistributionPanel"
-      if="__config__.app.getApp('account').getManageAnalyticAccounting()">
-      <field name="analyticDistributionTemplate"
-        grid-view="analytic-distribution-template-grid" colSpan="12"
-        form-view="analytic-distribution-template-form"
-        onChange="action-move-line-group-analytic-distribution-template-onchange"
-        onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
-        readonlyIf="!account.analyticDistributionAuthorized"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
-      <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"
-        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
-      <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"
-        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
-      <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"
-        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
-      <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"
-        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
-      <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"
-        readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
-      <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
-        form-view="analytic-move-line-move-line-form" colSpan="12"
-        onChange="action-move-line-method-check-analytic-account-on-move-line"/>
-    </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
@@ -590,6 +578,7 @@
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
       </panel>
+      <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
         field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid"
@@ -662,7 +651,6 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
       </panel>
-      <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"

@@ -160,4 +160,6 @@ public interface PartnerService {
   String getSirenFromRegistrationCode(Partner partner);
 
   boolean isRegistrationCodeValid(Partner partner);
+
+  List<Long> getPartnerIdsByType(String type);
 }

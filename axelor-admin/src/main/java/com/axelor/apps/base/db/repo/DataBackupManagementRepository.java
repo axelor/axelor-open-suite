@@ -15,14 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.meta.CallMethod;
-import java.time.LocalDate;
+import com.axelor.apps.base.db.DataBackup;
 
-public interface AnalyticFixedAssetService {
+public class DataBackupManagementRepository extends DataBackupRepository {
 
-  @CallMethod
-  public LocalDate computeFirstDepreciationDate(FixedAsset fixedAsset, LocalDate date);
+  @Override
+  public DataBackup copy(DataBackup entity, boolean deep) {
+    DataBackup copy = super.copy(entity, deep);
+
+    copy.setStatusSelect(DATA_BACKUP_STATUS_DRAFT);
+    copy.setBackupMetaFile(null);
+    copy.setBackupDate(null);
+    copy.setLogMetaFile(null);
+
+    return copy;
+  }
 }

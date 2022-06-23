@@ -87,7 +87,7 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-account-move-method-filter-partner"
+            onSelect="action-move-group-partner-on-select"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -641,6 +641,7 @@
   <action-record name="action-account-move-record-set-currency"
     model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency"/>
+    <field name="currencyCode" expr="eval: partner?.currency?.code"/>
   </action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
@@ -888,10 +889,25 @@
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
 
   </action-method>
+  <action-method
+    name="action-account-move-method-filter-journal-partner-compatible-type">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="filterJournalPartnerCompatibleType"/>
+  </action-method>
+
+  <action-group name="action-move-group-partner-on-select">
+    <action name="action-account-move-method-filter-partner"/>
+    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
+  </action-group>
+
+  <action-method name="action-move-method-journal-on-change">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
 
   <action-group name="action-move-group-journal-on-change">
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-journal-on-change"/>
   </action-group>
 
 </object-views>
