@@ -1,3 +1,0 @@
----
-title: "Inventory : now alert user if stock location is missing on an inventory line when validating"
-type: fix
