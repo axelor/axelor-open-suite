@@ -1,3 +1,21 @@
+## [5.4.18] (2022-06-23)
+
+#### Fixed
+
+* Reimbursement: fixed bank details and move line filter by filtering by partner.
+* Menu builder: fixed menu builder copy.
+* Payment mode: hide the bank order panel on a payment mode when it cannot generate pending payments.
+* Bank Reconciliation: fixed duplicated other bank statements during the loading process.
+* Purchase order line: fixed NPE when trying to select supplier in supplier request tab.
+* Sale order line: prevent user from modifying delivery quantity manually.
+* Payment voucher: Manage multi banks for receipt.
+* Advanced export: fixed export without archived and with ids selected.
+* Expense: corrected wrong bank details on bank order generated from expense.
+* Move: fixed technical error being displayed when trying to delete a single move.
+* Invoice line: corrected JNPE error on updating account.
+* Product: fixed an issue where an error message was displayed when emptying product pull of date.
+* Stock config: when the parameter `displayLineDetailsOnPrinting` is turned off, quantities are now correctly aggregated by product.
+
 ## [5.4.17] (2022-06-10)
 
 #### Changes
@@ -588,6 +606,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.18]: https://github.com/axelor/axelor-open-suite/compare/v5.4.17...v5.4.18
 [5.4.17]: https://github.com/axelor/axelor-open-suite/compare/v5.4.16...v5.4.17
 [5.4.16]: https://github.com/axelor/axelor-open-suite/compare/v5.4.15...v5.4.16
 [5.4.15]: https://github.com/axelor/axelor-open-suite/compare/v5.4.14...v5.4.15
