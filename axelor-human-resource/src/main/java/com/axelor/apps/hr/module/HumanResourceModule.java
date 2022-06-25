@@ -23,7 +23,6 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
@@ -45,13 +44,13 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.observer.BankOrderHRObserver;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
 import com.axelor.apps.hr.service.app.AppTimesheetService;
 import com.axelor.apps.hr.service.app.AppTimesheetServiceImpl;
 import com.axelor.apps.hr.service.bankorder.BankOrderLineOriginServiceHRImpl;
 import com.axelor.apps.hr.service.bankorder.BankOrderMergeHRServiceImpl;
-import com.axelor.apps.hr.service.bankorder.BankOrderServiceHRImpl;
 import com.axelor.apps.hr.service.batch.BatchCreditTransferExpensePaymentHR;
 import com.axelor.apps.hr.service.batch.MailBatchServiceHR;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -116,7 +115,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
     bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
     bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
-    bind(BankOrderServiceImpl.class).to(BankOrderServiceHRImpl.class);
     bind(BankOrderLineOriginServiceImpl.class).to(BankOrderLineOriginServiceHRImpl.class);
     bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
     bind(ProjectPlanningTimeRepository.class).to(ProjectPlanningTimeHRRepository.class);
@@ -132,5 +130,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(EmploymentAmendmentTypeService.class).to(EmploymentAmendmentTypeServiceImpl.class);
     bind(ProjectDashboardServiceImpl.class).to(ProjectDashboardHRServiceImpl.class);
     bind(ProjectActivityDashboardServiceImpl.class).to(ProjectActivityDashboardServiceHRImpl.class);
+    bind(BankOrderHRObserver.class);
   }
 }

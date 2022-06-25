@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
+import com.axelor.apps.bankpayment.event.BankOrderEvent;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
@@ -52,6 +53,9 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.event.Event;
+import com.axelor.event.NamedLiteral;
+import com.axelor.event.ObserverException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -77,6 +81,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
+  protected static final String AXELOR_EXCEPTION_PREFIX = "com.axelor.exception.AxelorException: ";
+
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderLineService bankOrderLineService;
@@ -87,6 +93,8 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderMoveService bankOrderMoveService;
   protected AppBaseService appBaseService;
+
+  protected Event<BankOrderEvent> bankOrderValidatedEvent;
 
   @Inject
   public BankOrderServiceImpl(
@@ -99,7 +107,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderMoveService bankOrderMoveService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      Event<BankOrderEvent> bankOrderValidatedEvent) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -111,6 +120,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderMoveService = bankOrderMoveService;
     this.appBaseService = appBaseService;
+
+    this.bankOrderValidatedEvent = bankOrderValidatedEvent;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -280,6 +291,10 @@ public class BankOrderServiceImpl implements BankOrderService {
         }
       }
     }
+
+    bankOrderValidatedEvent
+        .select(NamedLiteral.of(BankOrderEvent.VALIDATE_PAYMENT))
+        .fire(new BankOrderEvent(bankOrder));
   }
 
   @Override
@@ -294,6 +309,10 @@ public class BankOrderServiceImpl implements BankOrderService {
         invoicePaymentCancelService.cancel(invoicePayment);
       }
     }
+
+    bankOrderValidatedEvent
+        .select(NamedLiteral.of(BankOrderEvent.CANCEL_PAYMENT))
+        .fire(new BankOrderEvent(bankOrder));
   }
 
   @Override
@@ -339,6 +358,23 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
+
+    // this event is used in AOS PRO module axelor-ebics-ts
+    try {
+      bankOrderValidatedEvent
+          .select(NamedLiteral.of(BankOrderEvent.VALIDATE))
+          .fire(new BankOrderEvent(bankOrder));
+    } catch (ObserverException e) {
+      String msg = e.getMessage();
+      if (e.getCause() instanceof AxelorException) {
+        throw new AxelorException(
+            bankOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            msg.replace(AXELOR_EXCEPTION_PREFIX, ""));
+      } else {
+        throw new RuntimeException(msg, e);
+      }
+    }
 
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
