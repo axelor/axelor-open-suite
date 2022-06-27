@@ -324,9 +324,6 @@ public interface InvoiceService {
   public String getPfpValidatorUserDomain(Invoice invoice);
 
   @CallMethod
-  public List<Long> getInvoiceLineIds(Invoice invoice);
-
-  @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
 
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);

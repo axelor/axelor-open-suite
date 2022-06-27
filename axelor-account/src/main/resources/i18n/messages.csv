@@ -2275,6 +2275,7 @@
 "Please select 'Draft' or 'Simulated' moves",,,
 "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)",,,
 "Please select a VAT Regularization account on sale for Tax: %s (company: %s)",,,
+"Please select a cash account in config of the payment mode %s",,,
 "Please select a payment mode to generate the counterpart",,,
 "Please select a purchase financial discount account in account config for company %s.",,,
 "Please select a sale financial discount account in account config for company %s.",,,
