@@ -34,7 +34,6 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -43,9 +42,28 @@ import java.util.Map;
 
 public class StockCorrectionServiceImpl implements StockCorrectionService {
 
-  @Inject private StockConfigService stockConfigService;
+  protected StockConfigService stockConfigService;
+  protected ProductCompanyService productCompanyService;
+  protected StockLocationLineService stockLocationLineService;
+  protected AppBaseService baseService;
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
 
-  @Inject private ProductCompanyService productCompanyService;
+  @Inject
+  public StockCorrectionServiceImpl(
+      StockConfigService stockConfigService,
+      ProductCompanyService productCompanyService,
+      StockLocationLineService stockLocationLineService,
+      AppBaseService baseService,
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService) {
+    this.stockConfigService = stockConfigService;
+    this.productCompanyService = productCompanyService;
+    this.stockLocationLineService = stockLocationLineService;
+    this.baseService = baseService;
+    this.stockMoveService = stockMoveService;
+    this.stockMoveLineService = stockMoveLineService;
+  }
 
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
@@ -69,7 +87,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     Map<String, Object> stockCorrectionQtys = new HashMap<>();
 
-    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
     StockLocationLine stockLocationLine;
 
     if (stockCorrection.getTrackingNumber() == null) {
@@ -99,7 +116,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
     }
-    AppBaseService baseService = Beans.get(AppBaseService.class);
+
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {
       stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_VALIDATED);
@@ -116,11 +133,11 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     StockLocation fromStockLocation =
         stockConfigService.getInventoryVirtualStockLocation(
             stockConfigService.getStockConfig(company));
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
     StockLocationLine stockLocationLine = null;
-    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
+    BigDecimal realQty = stockCorrection.getRealQty();
+    Product product = stockCorrection.getProduct();
+    TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
 
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
@@ -134,9 +151,10 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
               stockCorrection.getTrackingNumber());
     }
 
-    BigDecimal realQty = stockCorrection.getRealQty();
-    Product product = stockCorrection.getProduct();
-    TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
+    if (stockLocationLine == null) {
+      stockLocationLine = stockLocationLineService.createLocationLine(toStockLocation, product);
+    }
+
     BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
 
     StockMove stockMove = null;
@@ -190,19 +208,16 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   public StockMove createStockMoveHeader(
       Company company, StockLocation fromStockLocation, StockLocation toStockLocation)
       throws AxelorException {
-    StockMove stockMove =
-        Beans.get(StockMoveService.class)
-            .createStockMove(
-                null,
-                null,
-                company,
-                fromStockLocation,
-                toStockLocation,
-                null,
-                null,
-                null,
-                StockMoveRepository.TYPE_INTERNAL);
-    return stockMove;
+    return stockMoveService.createStockMove(
+        null,
+        null,
+        company,
+        fromStockLocation,
+        toStockLocation,
+        null,
+        null,
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   @Override
