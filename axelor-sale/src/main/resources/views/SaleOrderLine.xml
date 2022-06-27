@@ -287,7 +287,7 @@
       <panel name="deliveryPanel" title="Delivery">
         <field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
-        <field name="deliveredQty" readonly="true"/>
+        <field name="deliveredQty" readonly="true" hidden="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
@@ -580,6 +580,7 @@
     <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -601,6 +602,7 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-attrs-hide-ati"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -920,6 +922,11 @@
   <action-attrs name="action-sale-order-line-attrs-selection-in-type-select">
     <attribute name="selection-in" for="typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-delivered-qty-hidden">
+    <attribute for="deliveredQty" name="hidden"
+      expr="__parent__.statusSelect == 1 || __parent__.statusSelect == 2" if="__parent__ != null"/>
   </action-attrs>
 
   <!-- ACTION VIEW -->
