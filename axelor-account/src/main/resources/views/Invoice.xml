@@ -47,6 +47,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -92,6 +93,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="billOfExchangeBlockingOk"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -195,6 +197,7 @@
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -255,6 +258,7 @@
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -311,6 +315,7 @@
       name="pfpValidateStatusSelect" title="PFP"/>
     <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
