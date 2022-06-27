@@ -110,7 +110,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
-  protected AppBaseService appBaseService;
   protected TaxService taxService;
 
   private final int RETURN_SCALE = 2;
@@ -128,7 +127,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      AppBaseService appBaseService,
       TaxService taxService) {
 
     this.validateFactory = validateFactory;
@@ -141,7 +139,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
-    this.appBaseService = appBaseService;
     this.taxService = taxService;
   }
 
@@ -1112,17 +1109,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .size();
   }
 
-  @Override
-  public List<Long> getInvoiceLineIds(Invoice invoice) {
-    List<Long> invoiceLineListIds = new ArrayList<Long>();
-    if (invoice != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLineListIds.add(invoiceLine.getId());
-      }
-    }
-    return invoiceLineListIds;
-  }
-
   public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
       throws AxelorException {
     return calculateFinancialDiscountAmountUnscaled(invoice, amount)
@@ -1152,7 +1138,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
-                  appBaseService.getTodayDate(company))
+                  appAccountService.getTodayDate(company))
               .getValue()
               .add(new BigDecimal(1)),
           CALCULATION_SCALE,
@@ -1165,7 +1151,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return baseAmount.divide(
           taxService
               .getTaxLine(
-                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+                  accountConfig.getSaleFinancialDiscountTax(),
+                  appAccountService.getTodayDate(company))
               .getValue()
               .add(new BigDecimal(1)),
           CALCULATION_SCALE,
@@ -1202,7 +1189,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
-                  appBaseService.getTodayDate(company))
+                  appAccountService.getTodayDate(company))
               .getValue());
     } else if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
@@ -1210,7 +1197,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return financialDiscountAmount.multiply(
           taxService
               .getTaxLine(
-                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+                  accountConfig.getSaleFinancialDiscountTax(),
+                  appAccountService.getTodayDate(company))
               .getValue());
     }
     return BigDecimal.ZERO;
@@ -1263,7 +1251,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && invoice
                 .getFinancialDiscountDeadlineDate()
-                .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
+                .compareTo(appAccountService.getTodayDate(invoice.getCompany()))
             >= 0);
   }
 

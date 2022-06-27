@@ -42,6 +42,8 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.rest.StockProductRestService;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
+import com.axelor.apps.stock.service.InventoryProductService;
+import com.axelor.apps.stock.service.InventoryProductServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
@@ -117,6 +119,7 @@ public class StockModule extends AxelorModule {
     bind(WeightedAveragePriceService.class).to(WeightedAveragePriceServiceImpl.class);
     bind(StockHistoryService.class).to(StockHistoryServiceImpl.class);
     bind(StockCorrectionRepository.class).to(StockCorrectionStockRepository.class);
+    bind(InventoryProductService.class).to(InventoryProductServiceImpl.class);
     bind(TrackingNumberConfigurationService.class).to(TrackingNumberConfigurationServiceImpl.class);
     bind(ProductVariantServiceImpl.class).to(ProductVariantServiceStockImpl.class);
     bind(WapHistoryService.class).to(WapHistoryServiceImpl.class);
