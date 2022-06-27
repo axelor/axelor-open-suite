@@ -99,11 +99,16 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
       }
       if (invoiceTermList.stream()
-                  .map(InvoiceTerm::getPercentage)
-                  .reduce(BigDecimal.ZERO, BigDecimal::add)
-                  .compareTo(new BigDecimal(100))
-              != 0
-          || (invoiceAttached == null
+              .map(InvoiceTerm::getPercentage)
+              .reduce(BigDecimal.ZERO, BigDecimal::add)
+              .compareTo(new BigDecimal(100))
+          != 0) {
+        throw new AxelorException(
+            moveLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
+            moveLine.getAccount().getCode());
+      } else if ((invoiceAttached == null
               && invoiceTermList.stream()
                       .map(InvoiceTerm::getAmount)
                       .reduce(BigDecimal.ZERO, BigDecimal::add)
@@ -118,7 +123,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM),
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
             moveLine.getAccount().getCode());
       }
     }
