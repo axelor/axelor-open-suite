@@ -140,6 +140,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
+    <field name="paymentDelay"/>
     <field name="paymentDelayReason"/>
     <field name="nextActionDate"/>
     <field name="paymentDelayReasonComments" widget="html"/>
