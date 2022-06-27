@@ -535,8 +535,7 @@
       </field>
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange"/>
-        <field name="dueDate" showIf="dueDate"
-          onChange="action-move-line-validate-invoice-term-alert"/>
+        <field name="dueDate" onChange="action-move-line-validate-invoice-term-alert"/>
         <field name="originDate"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
