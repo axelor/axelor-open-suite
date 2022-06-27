@@ -2,7 +2,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.interfaces.PricedOrder;
 
-public interface PricedOrderService {
+public interface PricedOrderDomainService {
   /**
    * Generate domain when changing client partner and priced order line list is not empty.
    *

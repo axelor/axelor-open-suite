@@ -2,7 +2,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.interfaces.PricedOrder;
 
-public class PricedOrderServiceImpl implements PricedOrderService {
+public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
 
   @Override
   public String getPartnerDomain(PricedOrder pricedOrder, String domain) {
