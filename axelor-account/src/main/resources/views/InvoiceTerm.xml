@@ -9,7 +9,7 @@
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="name"/>
     <field name="invoice.invoiceId"/>
-    <field name="moveLine.name"/>
+    <field name="moveLine.name" title="Move Line"/>
     <field name="moveLine.partner"/>
     <field name="dueDate"/>
     <field name="amount" title="To pay / To use"/>
