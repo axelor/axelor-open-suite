@@ -15,11 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.stock.db.Inventory;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.db.DataBackup;
 
-public interface InventoryProductService {
-  void checkDuplicate(Inventory inventory) throws AxelorException;
+public class DataBackupManagementRepository extends DataBackupRepository {
+
+  @Override
+  public DataBackup copy(DataBackup entity, boolean deep) {
+    DataBackup copy = super.copy(entity, deep);
+
+    copy.setStatusSelect(DATA_BACKUP_STATUS_DRAFT);
+    copy.setBackupMetaFile(null);
+    copy.setBackupDate(null);
+    copy.setLogMetaFile(null);
+
+    return copy;
+  }
 }

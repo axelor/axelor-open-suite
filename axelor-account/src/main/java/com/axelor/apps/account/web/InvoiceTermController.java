@@ -116,7 +116,7 @@ public class InvoiceTermController {
     }
   }
 
-  public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
+  public void initInvoiceTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
@@ -377,6 +377,32 @@ public class InvoiceTermController {
       Beans.get(PaymentSessionService.class)
           .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      MoveLine moveLine = invoiceTerm.getMoveLine();
+      if (moveLine == null) {
+        moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+        if (moveLine == null) {
+          return;
+        }
+      }
+
+      Beans.get(InvoiceTermService.class)
+          .computeFinancialDiscount(
+              invoiceTerm,
+              moveLine.getCredit().max(moveLine.getDebit()),
+              moveLine.getFinancialDiscount(),
+              moveLine.getFinancialDiscountTotalAmount(),
+              moveLine.getRemainingAmountAfterFinDiscount());
+
+      response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -147,6 +147,14 @@
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.moveline.select" default="0"/>
 
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
     <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>

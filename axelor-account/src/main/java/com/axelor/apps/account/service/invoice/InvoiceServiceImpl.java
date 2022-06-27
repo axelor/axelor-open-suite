@@ -1134,17 +1134,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public List<Long> getInvoiceLineIds(Invoice invoice) {
-    List<Long> invoiceLineListIds = new ArrayList<Long>();
-    if (invoice != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLineListIds.add(invoiceLine.getId());
-      }
-    }
-    return invoiceLineListIds;
-  }
-
-  @Override
   public boolean checkInvoiceLinesCutOffDates(Invoice invoice) {
     return invoice.getInvoiceLineList() == null
         || invoice.getInvoiceLineList().stream().allMatch(invoiceLineService::checkCutOffDates);

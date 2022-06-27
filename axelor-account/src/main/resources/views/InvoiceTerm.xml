@@ -355,10 +355,10 @@
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
+          onChange="action-invoice-term-group-amount-onchange"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"/>
+          onChange="action-invoice-term-group-invoice-percentage-onchange"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonlyIf="isPaid" required="true"/>
         <field name="bankDetails"
@@ -488,8 +488,7 @@
   </form>
 
   <form name="invoice-term-move-line-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm"
-    onLoad="action-invoice-term-group-check-pfp-validator-user"
+    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload"
     onNew="action-invoice-term-group-onnew">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
@@ -512,10 +511,9 @@
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
-          validIf="amount > 0"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
+          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
-          onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
+          onChange="action-invoice-term-group-move-line-percentage-onchange"
           validIf="percentage > 0"/>
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
         <field name="paymentMode" requiredIf="invoice != null"/>
@@ -524,18 +522,22 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
+        <field name="applyFinancialDiscount"
+          hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount" readonlyIf="paymentSession">
-        <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
-        <field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
-        <field name="financialDiscountAmount" readonly="true" showIf="applyFinancialDiscount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
+        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
+        readonlyIf="paymentSession">
+        <field name="financialDiscount" readonly="true"/>
+        <field name="financialDiscount.discountRate"/>
+        <field name="financialDiscountDeadlineDate"/>
+        <field name="financialDiscountAmount" readonly="true"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
@@ -668,7 +670,10 @@
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
     <action name="action-invoice-term-record-update-customized-true"/>
-    <action name="action-invoice-term-record-set-show-financial-discount"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -688,7 +693,33 @@
 
   <action-group name="action-invoice-term-group-onload">
     <action name="action-invoice-term-group-check-pfp-validator-user"/>
-    <action name="action-invoice-term-record-set-show-financial-discount"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-amount-onchange">
+    <action name="action-invoice-term-method-compute-customized-percentage"/>
+    <action name="action-invoice-term-record-update-customized-true"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-move-line-amount-onchange">
+    <action name="action-invoice-term-group-amount-onchange"/>
+    <action name="action-invoice-term-method-compute-financial-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-percentage-onchange">
+    <action name="action-invoice-term-method-compute-customized-amount"/>
+    <action name="action-invoice-term-record-update-customized-true"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-move-line-percentage-onchange">
+    <action name="action-invoice-term-group-percentage-onchange"/>
+    <action name="action-invoice-term-method-compute-financial-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-invoice-percentage-onchange">
+    <action name="action-invoice-term-record-update-customized"/>
+    <action name="action-invoice-term-group-percentage-onchange"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-refusal-to-pay">
@@ -716,7 +747,16 @@
       expr="eval: moveLine?.move?.statusSelect != 1 || moveLine?.move?.statusSelect != 5"
       if="id != null &amp;&amp; __parent__ == null &amp;&amp; invoice == null"/>
     <field name="$showFinancialDiscount"
-      expr="eval: id == null ? __parent__?.statusSelect == 4 : invoice?.statusSelect == 3"/>
+      expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
+      if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+    <field name="$showFinancialDiscount"
+      expr="eval: __parent__?.move?.statusSelect != 1 || __parent__?.move?.statusSelect != 5"
+      if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
+    <field name="$showFinancialDiscount"
+      expr="eval: invoice?.statusSelect == 3 || invoice?.statusSelect == 4" if="invoice != null"/>
+    <field name="$showFinancialDiscount"
+      expr="eval: moveLine?.move?.statusSelect != 1 || moveLine?.move?.statusSelect != 5"
+      if="invoice == null &amp;&amp; moveLine != null"/>
   </action-record>
 
   <action-validate name="action-invoice-term-validate-pfp-stock-move">
@@ -764,8 +804,7 @@
   </action-method>
 
   <action-method name="action-method-invoice-init-invoice-term">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="initInvoiceTermFromInvoice"/>
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="initInvoiceTerm"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-refusal-to-pay">
@@ -817,6 +856,11 @@
   <action-method name="action-invoice-term-method-compute-total-payment-session">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="computeTotalPaymentSession"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-compute-financial-discount">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="computeFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"

@@ -337,10 +337,22 @@ public class BankReconciliationService {
       debit = bankReconciliationLine.getCredit();
       credit = bankReconciliationLine.getDebit();
       account = bankStatementRule.getAccountManagement().getCashAccount();
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
+            bankStatementRule.getSearchLabel());
+      }
     } else {
       debit = bankReconciliationLine.getDebit();
       credit = bankReconciliationLine.getCredit();
       account = bankStatementRule.getCounterpartAccount();
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING),
+            bankStatementRule.getSearchLabel());
+      }
     }
     boolean isDebit = debit.compareTo(credit) > 0;
     moveLine =

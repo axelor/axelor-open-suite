@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -49,6 +50,13 @@ public interface InvoiceTermService {
    */
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
+
+  void computeFinancialDiscount(
+      InvoiceTerm invoiceTerm,
+      BigDecimal totalAmount,
+      FinancialDiscount financialDiscount,
+      BigDecimal financialDiscountAmount,
+      BigDecimal remainingAmountAfterFinDiscount);
 
   /**
    * Method that creates a customized invoiceTerm
