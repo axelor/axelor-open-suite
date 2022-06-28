@@ -89,7 +89,6 @@
     <field name="date" width="100" onChange="account-move-line-group-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onChange="action-move-line-group-partner-onchange"
       onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
@@ -543,7 +542,6 @@
         readonlyIf="amountPaid &gt; 0"
         onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onChange="action-move-line-group-partner-onchange"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
@@ -846,13 +844,6 @@
     <action name="action-move-line-method-print-analytic-account-on-move-line"/>
   </action-group>
 
-  <action-group name="action-move-line-group-partner-onchange">
-    <action name="action-move-line-record-set-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-move-line-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
   <action-method name="action-move-line-method-compute-analytic-distribution">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeAnalyticDistribution"/>
@@ -1026,14 +1017,6 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
-  </action-record>
-
-  <action-record name="action-move-line-record-set-financial-discount"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="financialDiscount" expr="eval: partner?.financialDiscount"
-      if="partner &amp;&amp; partner?.financialDiscount"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner || !partner?.financialDiscount"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
