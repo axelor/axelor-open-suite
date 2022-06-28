@@ -880,10 +880,13 @@
   <action-attrs name="action-invoice-term-attrs-display-actions">
     <attribute name="hidden" for="actionPanel"
       expr="eval: !invoice.company?.accountConfig?.isManagePassedForPayment
-                || (invoice.operationTypeSelect != 1 &amp;&amp; (!invoice.company?.accountConfig?.isManagePFPInRefund || invoice.operationTypeSelect != 2 ))
-                || ![2,3,4].contains(invoice.statusSelect)"
+                  || (invoice.operationTypeSelect != 1 &amp;&amp; (!invoice.company?.accountConfig?.isManagePFPInRefund || invoice.operationTypeSelect != 2 ))
+                  || ![2,3,4].contains(invoice.statusSelect)"
       if="invoice != null"/>
-    <attribute name="hidden" for="actionPanel" expr="eval: false"
+    <attribute name="hidden" for="actionPanel"
+      expr="eval: !move.company?.accountConfig?.isManagePassedForPayment
+                  || (move.journal?.journalType?.technicalTypeSelect != 1 &amp;&amp; (!move.company?.accountConfig?.isManagePFPInRefund || move.journal?.journalType?.technicalTypeSelect != 3))
+                  || ![2,3,4].contains(move.statusSelect)"
       if="invoice == null &amp;&amp; moveLine != null"/>
   </action-attrs>
 </object-views>
