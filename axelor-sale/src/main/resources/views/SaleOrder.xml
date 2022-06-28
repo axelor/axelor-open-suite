@@ -695,7 +695,7 @@
       <button name="seperateInNewQuotationBtn" title="Separate in a new quotation"
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
-        onClick="action-sale-order-method-update-sale-order-line-list" showIf="statusSelect == 1"
+        onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
         if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
@@ -2146,6 +2146,11 @@
   <action-method name="action-sale-order-method-update-sale-order-line-list">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineList"/>
   </action-method>
+
+  <action-group name="action-sale-order-group-compute-pricing-scale-btn">
+    <action name="action-sale-order-method-update-sale-order-line-list"/>
+    <action name="action-sale-order-method-compute"/>
+  </action-group>
 
   <action-attrs name="action-sale-order-attrs-template-deafult-currency">
     <attribute name="value" for="currency" expr="eval: _clientPartnerCurrency"
