@@ -70,7 +70,6 @@ public class BatchAccountingCutOff extends BatchStrategy {
     LocalDate moveDate = accountingBatch.getMoveDate();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
     updateBatch(moveDate, accountingCutOffTypeSelect);
-
     if (this.recordIdList == null) {
       this._processMovesByQuery(accountingBatch);
     } else {

@@ -79,28 +79,11 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
   protected StockMoveRepository stockMoverepository;
   protected StockMoveLineRepository stockMoveLineRepository;
-  protected MoveCreateService moveCreateService;
-  protected MoveLineCreateService moveLineCreateService;
-  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AccountConfigSupplychainService accountConfigSupplychainService;
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
-  protected MoveToolService moveToolService;
-  protected AccountManagementAccountService accountManagementAccountService;
-  protected TaxAccountService taxAccountService;
-  protected AppAccountService appAccountService;
-  protected AnalyticMoveLineService analyticMoveLineService;
-  protected MoveRepository moveRepository;
-  protected MoveValidateService moveValidateService;
-  protected UnitConversionService unitConversionService;
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
-  protected ReconcileService reconcileService;
-  protected AccountConfigService accountConfigService;
   protected SaleOrderService saleOrderService;
   protected StockMoveLineServiceSupplychain stockMoveLineService;
-  protected MoveSimulateService moveSimulateService;
-  protected MoveLineService moveLineService;
-  protected CurrencyService currencyService;
   protected int counter = 0;
 
   @Inject
