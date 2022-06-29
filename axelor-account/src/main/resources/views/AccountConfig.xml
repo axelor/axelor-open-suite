@@ -483,7 +483,7 @@
     <action name="action-account-config-validate-is-activate-simulated-move"/>
     <action name="action-account-config-method-deactivate-simulated-moves"/>
     <action name="action-validate-account-config-on-save-analytic"/>
-    <action name="action-method-check-account-config-changes-in-analytic"/>
+    <action name="action-method-check-account-config-changes-in-analytic" if="id != null"/>
   </action-group>
 
   <action-validate name="action-account-config-validate-is-activate-simulated-move"
