@@ -141,9 +141,9 @@
         onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false"
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
-        grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-        canView="false" if="__config__.app.isApp('employee')"
-        readonlyIf="employee.contactPartner.id == partner.id"/>
+        grid-view="employee-grid" domain="self.contactPartner = :partner" canNew="false"
+        canEdit="false" canView="false" if="__config__.app.isApp('employee')"
+        readonlyIf="partner == null" readonly="true"/>
       <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
         title="Create employee" if-module="axelor-human-resource"
         showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
@@ -232,7 +232,8 @@
           onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
         <field name="partner" showTitle="false" colSpan="12" canNew="true"
           domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
-          form-view="partner-employee-form" grid-view="partner-employee-grid">
+          form-view="partner-employee-form" grid-view="partner-employee-grid"
+          onChange="action-user-group-edit-partner-on-change">
           <editor x-viewer="true">
             <field name="fullName" readonly="true"/>
             <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
@@ -558,6 +559,14 @@
     <action name="action-user-attrs-employee-readonly" if="stepStatusSelect == 3"/>
     <action name="save"/>
   </action-group>
+
+  <action-group name="action-user-group-edit-partner-on-change">
+    <action name="action-user-attrs-remove-linked-employee" if="partner == null"/>
+  </action-group>
+
+  <action-attrs name="action-user-attrs-remove-linked-employee">
+    <attribute for="employee" name="value" expr="eval: null"/>
+  </action-attrs>
 
   <action-attrs name="action-user-attrs-set-pfp-validator-panel-show">
     <attribute name="hidden"
