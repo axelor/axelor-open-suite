@@ -537,7 +537,7 @@
     <attribute name="hidden"
       expr="eval: !companySet?.any{it->it.accountConfig?.isManagePassedForPayment}"
       for="substitutePfpValidatorTabPanel"
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account') != null &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
   </action-attrs>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
