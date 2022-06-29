@@ -378,7 +378,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     int accountingReportTypeSelect = accountingReport.getReportType().getTypeSelect();
 
-    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000) {
+    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000
+        || accountingReportTypeSelect == 3000) {
       String seq =
           sequenceService.getSequenceNumber(
               SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
@@ -410,18 +411,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    } else if (accountingReportTypeSelect == 3000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.CUSTOM_ACCOUNTING_REPORT, accountingReport.getCompany());
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_7),
             I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
