@@ -181,6 +181,7 @@
     <action name="action-payment-session-validate-cancel"/>
     <action name="save"/>
     <action name="action-payment-session-method-cancel"/>
+    <action name="action-method-payment-session-compute-total"/>
   </action-group>
 
   <action-group name="action-group-payment-session-on-load">
