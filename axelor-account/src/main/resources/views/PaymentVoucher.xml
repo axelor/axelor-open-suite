@@ -343,6 +343,7 @@
   <action-group name="action-payment-voucher-group-search-elements-to-pay">
     <action name="action-payment-voucher-method-load-move-lines"/>
     <action name="action-payment-voucher-method-reset-imputation"/>
+    <action name="save"/>
   </action-group>
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
