@@ -25,7 +25,9 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.db.Role;
@@ -44,10 +46,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected MoveLineToolService moveLineToolService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
-  public MoveLineControlServiceImpl(MoveLineToolService moveLineToolService) {
+  public MoveLineControlServiceImpl(
+      MoveLineToolService moveLineToolService, InvoiceTermService invoiceTermService) {
     this.moveLineToolService = moveLineToolService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -189,5 +194,14 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       }
     }
     return move;
+  }
+
+  public boolean canReconcile(MoveLine moveLine) {
+    return (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+            || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
+        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+        && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+            || moveLine.getInvoiceTermList().stream()
+                .allMatch(invoiceTermService::isNotAwaitingPayment));
   }
 }

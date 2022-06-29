@@ -152,7 +152,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
           invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
-          availableAmount = baseAvailableAmount.subtract(invoicePayment.getAmount());
+          availableAmount =
+              baseAvailableAmount.subtract(this.getCurrentInvoicePaymentAmount(invoicePayment));
           invoicePayment.setAmount(
               previousAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount()));
           invoicePayment.setTotalAmountWithFinancialDiscount(
@@ -162,6 +163,13 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     }
 
     return invoiceTermPaymentList;
+  }
+
+  protected BigDecimal getCurrentInvoicePaymentAmount(InvoicePayment invoicePayment) {
+    return invoicePayment.getInvoiceTermPaymentList().stream()
+        .map(it -> it.getPaidAmount().add(it.getFinancialDiscountAmount()))
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   protected InvoiceTerm getInvoiceTermToPay(

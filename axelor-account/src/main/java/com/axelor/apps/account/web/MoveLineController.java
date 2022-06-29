@@ -163,9 +163,7 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
             moveLineList.add(moveLine);
           }
         }
