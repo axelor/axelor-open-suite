@@ -20,7 +20,8 @@
     model="com.axelor.apps.maintenance.db.MaintenanceRequest"
     onNew="action-maintenance-request-record-default" width="large">
     <panel name="main">
-      <field name="statusSelect" colSpan="12" widget="NavSelect" readonly="true"/>
+      <field name="statusSelect" colSpan="12" widget="NavSelect" readonly="true"
+        showTitle="false"/>
       <field name="equipementMaintenance" colSpan="4" requiredIf="!$popup()" hideIf="$popup()"
         onChange="action-maintenance-request-attrs-equi-maintenance-onchange"/>
       <field name="machine" readonly="true" colSpan="4"/>
