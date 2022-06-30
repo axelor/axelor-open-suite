@@ -116,7 +116,6 @@
       if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
     <action name="action-sale-order-attrs-interco"/>
     <action name="action-sale-order-record-interco"/>
-    <action name="supplychain-action-create-shipment-cost-line"/>
     <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
@@ -299,7 +298,6 @@
 
   <action-record name="action-sale-order-record-partner-supplychain"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
     <field name="carrierPartner"
       expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>

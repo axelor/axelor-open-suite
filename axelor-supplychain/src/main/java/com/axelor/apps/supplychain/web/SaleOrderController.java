@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderShipmentCostLineCreationService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -942,7 +943,8 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       String message =
-          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+          Beans.get(SaleOrderShipmentCostLineCreationService.class)
+              .createShipmentCostLine(saleOrder);
       if (message != null) {
         response.setFlash(message);
       }

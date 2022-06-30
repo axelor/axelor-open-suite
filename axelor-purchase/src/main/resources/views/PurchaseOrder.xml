@@ -718,7 +718,6 @@
       if="supplierPartner?.outPaymentMode == null"/>
     <field name="contactPartner"
       expr="eval: supplierPartner?.contactPartnerSet?.size() == 1 ? supplierPartner?.contactPartnerSet[0] : null"/>
-    <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
     <field name="stockLocation"

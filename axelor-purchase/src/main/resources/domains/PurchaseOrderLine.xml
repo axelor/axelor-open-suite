@@ -5,7 +5,8 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrderLine" lang="java">
+  <entity name="PurchaseOrderLine" lang="java"
+    implements="com.axelor.apps.base.interfaces.OrderLine">
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
 	  		String fullName = "";
