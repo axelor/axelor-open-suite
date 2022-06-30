@@ -216,6 +216,10 @@
           hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="company" hidden="true"/>
+        <field name="origin" hidden="true"/>
+        <field name="originDate" hidden="true"/>
+        <field name="currency" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
