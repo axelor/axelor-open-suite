@@ -239,6 +239,8 @@ public interface InvoiceTermService {
       BigDecimal percentage,
       boolean isHoldBack);
 
+  void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
+
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
