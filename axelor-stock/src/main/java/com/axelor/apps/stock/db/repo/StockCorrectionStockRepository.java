@@ -25,6 +25,7 @@ public class StockCorrectionStockRepository extends StockCorrectionRepository {
   public StockCorrection copy(StockCorrection entity, boolean deep) {
     StockCorrection copy = super.copy(entity, deep);
     copy.setStatusSelect(STATUS_DRAFT);
+    copy.setValidationDateT(null);
     return copy;
   }
 }
