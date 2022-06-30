@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
@@ -104,8 +105,9 @@ public class BatchContract extends BatchStrategy {
     super.stop();
     addComment(
         String.format(
-            "%d contract(s) treated and %d anomaly(ies) reported !",
-            batch.getDone(), batch.getAnomaly()));
+            I18n.get(ITranslation.CONTRACT_BATCH_EXECUTION_RESULT),
+            batch.getDone(),
+            batch.getAnomaly()));
   }
 
   protected void setBatchTypeSelect() {
