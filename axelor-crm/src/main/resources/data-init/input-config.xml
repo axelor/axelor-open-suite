@@ -29,6 +29,9 @@
   <input file="crm_opportunityType.csv" separator=";"
     type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
 
+  <input file="crm_opportunityStatus.csv" separator=";"
+    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
+
   <input file="base_importConfiguration.csv" separator=";"
     type="com.axelor.apps.base.db.ImportConfiguration"
     call="com.axelor.csv.script.ImportLeadConfiguration:importFiles"/>
