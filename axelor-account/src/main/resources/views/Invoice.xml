@@ -2237,6 +2237,7 @@ InvoiceSet.length > 0))"
     title="Register a payment" model="com.axelor.apps.account.db.PaymentVoucher">
     <view type="form" name="payment-voucher-form"/>
     <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="true"/>

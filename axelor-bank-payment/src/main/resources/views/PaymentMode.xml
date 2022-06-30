@@ -63,7 +63,8 @@
 
   <action-record name="action-payment-mode-record-generate-bank-order-onchange"
     model="com.axelor.apps.account.db.PaymentMode">
-    <field name="accountingTriggerSelect" expr="eval: 2" if="accountingTriggerSelect > 2"/>
+    <field name="accountingTriggerSelect" expr="eval: 1"
+      if="accountingTriggerSelect > 1 &amp;&amp; !generateBankOrder"/>
   </action-record>
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">
