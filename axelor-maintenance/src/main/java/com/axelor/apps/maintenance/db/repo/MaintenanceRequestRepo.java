@@ -17,8 +17,13 @@
  */
 package com.axelor.apps.maintenance.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
 
@@ -37,5 +42,20 @@ public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
     }
 
     return super.save(entity);
+  }
+
+  @Override
+  public MaintenanceRequest copy(MaintenanceRequest entity, boolean deep) {
+    MaintenanceRequest copy = super.copy(entity, deep);
+    LocalDate todayDate =
+        Beans.get(AppBaseService.class)
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+    copy.setStatusSelect(MaintenanceRequestRepository.STATUS_PLANNED);
+    copy.setRequestDate(todayDate);
+    copy.setExpectedDate(todayDate);
+    copy.setDoneOn(null);
+    copy.setManufOrder(null);
+    return copy;
   }
 }
