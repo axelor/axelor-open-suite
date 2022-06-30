@@ -53,7 +53,7 @@
       ref="com.axelor.apps.base.db.Duration"/>
     <many-to-one name="priorNoticeDuration" title="Prior notice duration"
       ref="com.axelor.apps.base.db.Duration"/>
-    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
 
     <one-to-one name="contract" ref="com.axelor.apps.contract.db.Contract"
       title="Contract" mappedBy="currentContractVersion" copy="false"/>
