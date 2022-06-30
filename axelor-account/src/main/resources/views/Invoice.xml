@@ -581,9 +581,9 @@
           onClick="save,action-invoice-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
-          onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting,action-invoice-record-due-dates"
-          colSpan="12" form-view="invoice-term-move-line-invoice-form"
-          grid-view="invoice-term-move-line-invoice-grid"/>
+          edit-window="blank" colSpan="12" form-view="invoice-term-move-line-invoice-form"
+          grid-view="invoice-term-move-line-invoice-grid"
+          onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting,action-invoice-record-due-dates"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
