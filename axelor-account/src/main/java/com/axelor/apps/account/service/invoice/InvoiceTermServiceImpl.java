@@ -134,10 +134,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal sum = BigDecimal.ZERO;
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        sum = sum.add(invoiceTerm.getPercentage());
+        sum =
+            sum.add(
+                invoiceTerm.getAmount().divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP));
       }
     }
-    return sum;
+    return sum.multiply(BigDecimal.valueOf(100));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
