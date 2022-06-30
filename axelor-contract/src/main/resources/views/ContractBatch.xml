@@ -12,7 +12,8 @@
   </grid>
 
   <form name="contract-batch-form" title="Contract batch"
-    model="com.axelor.apps.contract.db.ContractBatch">
+    model="com.axelor.apps.contract.db.ContractBatch"
+    onNew="action-contract-batch-record-default-onnew">
     <panel name="mainPanel">
       <field name="actionSelect"/>
       <field name="code"/>
@@ -22,6 +23,7 @@
     <panel-tabs name="mainPanelTab">
       <panel name="invoicingPanel" title="Invoicing" showIf="actionSelect == 1">
         <field name="targetTypeSelect"/>
+        <field name="invoicingDate"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -46,4 +48,10 @@
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-record name="action-contract-batch-record-default-onnew"
+    model="com.axelor.apps.contract.db.ContractBatch">
+    <field name="invoicingDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-record>
 </object-views>

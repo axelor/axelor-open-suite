@@ -25,7 +25,6 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.time.format.DateTimeFormatter;
 
 public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
@@ -44,15 +43,12 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
                 + "AND self.currentContractVersion.automaticInvoicing = TRUE "
                 + "AND self.invoicingDate <= :date "
                 + "AND :batch NOT MEMBER of self.batchSet "
-                + "AND self.statusSelect != 3"
+                + "AND self.statusSelect != :statusSelect"
                 + "AND self.targetTypeSelect = :targetTypeSelect")
-        .bind(
-            "date",
-            baseService
-                .getTodayDate(batch.getContractBatch().getCompany())
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+        .bind("date", batch.getContractBatch().getInvoicingDate())
         .bind("batch", batch)
-        .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect());
+        .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect())
+        .bind("statusSelect", ContractRepository.CLOSED_CONTRACT);
   }
 
   @Override
