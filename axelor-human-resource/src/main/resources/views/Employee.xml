@@ -204,7 +204,7 @@
 
     <!-- User creation -->
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
-      <field name="user" title="Attach to"/>
+      <field name="user" title="Attach to" onSelect="action-employee-attrs-change-domain"/>
       <button name="createUserBtn" title="Create new user"
         onClick="save,action-employee-view-open-user-creation-wizard"/>
     </panel>
@@ -720,6 +720,15 @@
     <check error="Invalid date" field="endDate"
       if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
   </action-condition>
+
+  <action-attrs name="action-employee-attrs-change-domain">
+    <attribute for="user" name="domain"
+      expr="eval: &quot;self.employee = null AND self.partner = null&quot;"
+      if="__this__.contactPartner.user == null"/>
+    <attribute for="user" name="domain"
+      expr="eval: &quot;self.employee = null AND self.partner = :contactPartner&quot;"
+      if="__this__.contactPartner.user != null"/>
+  </action-attrs>
 
   <action-attrs name="action-employee-attrs-set-seniority-date">
     <attribute name="value" for="seniorityDate" expr="eval: hireDate"
