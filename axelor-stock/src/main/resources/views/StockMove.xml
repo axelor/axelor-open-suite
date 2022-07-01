@@ -841,7 +841,9 @@
 
   <action-group name="action-group-stock-stockmove-onnew">
     <action name="action-stock-move-record-new"/>
-    <action name="action-stock-move-record-mail-configuration"/>
+    <action name="action-stock-move-record-company-fields-configuration" if="company != null"/>
+    <action name="action-stock-move-record-company-mail-configuration" if="company != null"/>
+    <action name="action-stock-move-record-mail-configuration" if="company == null"/>
     <action name="action-stock-move-attrs-typeselect-change"/>
     <action name="action-stock-move-generate-invoice-button"/>
     <action name="action-stock-move-hide-reserved-qty"/>
@@ -922,7 +924,8 @@
 
   <action-group name="action-stock-move-group-onchange-company">
     <action name="action-stock-move-record-update-info-company"/>
-    <action name="action-stock-move-record-mail-configuration"/>
+    <action name="action-stock-move-record-company-mail-configuration" if="company != null"/>
+    <action name="action-stock-move-record-mail-configuration" if="company == null"/>
     <action name="action-stock-move-record-set-stock-locations-company-onchange"/>
   </action-group>
 
@@ -1024,22 +1027,6 @@
     <field name="estimatedDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.pickupDefaultStockLocation"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
-    <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
-      if="__user__.activeCompany != null"/>
-    <field name="isWithBackorder"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithBackorder"
-      if="__user__.activeCompany != null"/>
-    <field name="isWithReturnSurplus"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithReturnSurplus"
-      if="__user__.activeCompany != null &amp;&amp; _typeSelect == 3"/>
     <field name="isWithReturnSurplus" expr="eval:false" if="_typeSelect != 3"/>
     <field name="_userType" expr="eval: _userType"/>
     <!-- force boolean conversion -->
@@ -1118,26 +1105,10 @@
 
   <action-record name="action-stock-move-record-mail-configuration"
     model="com.axelor.apps.stock.db.StockMove">
-    <field
-      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
-      name="plannedStockMoveAutomaticMail"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"/>
-    <field
-      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
-      name="realStockMoveAutomaticMail"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"/>
-    <field
-      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"
-      name="plannedStockMoveMessageTemplate"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveMessageTemplate"/>
-    <field
-      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"
-      name="realStockMoveMessageTemplate"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveMessageTemplate"/>
-    <field if="company == null" name="plannedStockMoveAutomaticMail" expr="eval: false"/>
-    <field if="company == null" name="realStockMoveAutomaticMail" expr="eval: false"/>
-    <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
-    <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
+    <field name="plannedStockMoveAutomaticMail" expr="eval: false"/>
+    <field name="realStockMoveAutomaticMail" expr="eval: false"/>
+    <field name="plannedStockMoveMessageTemplate" expr="eval: null"/>
+    <field name="realStockMoveMessageTemplate" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-stock-move-record-set-stock-locations-company-onchange"
@@ -1161,6 +1132,41 @@
     <field name="toAddress"
       expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(partner)"
       if="partner != null"/>
+  </action-record>
+
+  <action-record name="action-stock-move-record-company-fields-configuration"
+    model="com.axelor.apps.stock.db.StockMove">
+    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation"
+      expr="eval:company?.stockConfig?.receiptDefaultStockLocation"/>
+    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation"
+      expr="eval:company?.stockConfig?.supplierVirtualStockLocation"/>
+    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation"
+      expr="eval:company?.stockConfig?.pickupDefaultStockLocation"/>
+    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation"
+      expr="eval:company?.stockConfig?.customerVirtualStockLocation"/>
+    <field name="printingSettings" expr="eval: company?.printingSettings"/>
+    <field name="isWithBackorder" expr="eval:company?.stockConfig?.isWithBackorder"/>
+    <field name="isWithReturnSurplus" expr="eval:company?.stockConfig?.isWithReturnSurplus"
+      if="_typeSelect == 3"/>
+  </action-record>
+
+  <action-record name="action-stock-move-record-company-mail-configuration"
+    model="com.axelor.apps.stock.db.StockMove">
+    <field
+      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
+      name="plannedStockMoveAutomaticMail"
+      expr="eval:company?.stockConfig?.plannedStockMoveAutomaticMail"/>
+    <field
+      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
+      name="realStockMoveAutomaticMail" expr="eval:company?.stockConfig?.realStockMoveAutomaticMail"/>
+    <field
+      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; company?.stockConfig?.plannedStockMoveAutomaticMail"
+      name="plannedStockMoveMessageTemplate"
+      expr="eval:company?.stockConfig?.plannedStockMoveMessageTemplate"/>
+    <field
+      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; company?.stockConfig?.realStockMoveAutomaticMail"
+      name="realStockMoveMessageTemplate"
+      expr="eval:company?.stockConfig?.realStockMoveMessageTemplate"/>
   </action-record>
 
   <action-method name="action-stock-move-method-plan">
