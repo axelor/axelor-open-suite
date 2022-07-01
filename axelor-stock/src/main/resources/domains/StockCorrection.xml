@@ -13,6 +13,8 @@
       required="true"/>
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
       title="Tracking Number"/>
+    <decimal name="baseQty" title="Quantity in database" precision="20" scale="10"
+      readonly="true"/>
     <decimal name="realQty" title="Real Qty" precision="20" scale="10"/>
     <many-to-one name="stockCorrectionReason"
       ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Reason"/>
