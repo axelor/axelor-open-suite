@@ -473,7 +473,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       int transferredReason,
       LocalDate disposalDate)
       throws AxelorException {
-
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
@@ -501,7 +500,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-      Account chargeAccount;
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
       BigDecimal chargeAmount =
@@ -510,53 +508,58 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               : fixedAsset.getAccountingValue();
       BigDecimal cumulativeDepreciationAmount =
           fixedAssetLine != null ? fixedAssetLine.getCumulativeDepreciation() : null;
-      if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
-          || transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
-        if (fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount() == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(
-                  IExceptionMessage
-                      .IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING),
-              I18n.get("Realised Assets Value Account"));
+      if (chargeAmount.signum() > 0) {
+        Account chargeAccount;
+        if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
+            || transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
+          if (fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(
+                    IExceptionMessage
+                        .IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING),
+                I18n.get("Realised Assets Value Account"));
+          }
+          chargeAccount = fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount();
+        } else {
+          chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
         }
-        chargeAccount = fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount();
-      } else {
-        chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
-      }
-      MoveLine chargeAccountDebitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              chargeAccount,
-              chargeAmount,
-              true,
-              disposalDate,
-              1,
-              origin,
-              fixedAsset.getName());
-      moveLines.add(chargeAccountDebitMoveLine);
-
-      this.addAnalyticToMoveLine(
-          fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
-
-      if (cumulativeDepreciationAmount != null && cumulativeDepreciationAmount.signum() > 0) {
-
-        MoveLine deprecationAccountDebitMoveLine =
+        MoveLine chargeAccountDebitMoveLine =
             moveLineCreateService.createMoveLine(
                 move,
                 partner,
-                depreciationAccount,
-                cumulativeDepreciationAmount,
+                chargeAccount,
+                chargeAmount,
                 true,
                 disposalDate,
                 1,
                 origin,
                 fixedAsset.getName());
-        moveLines.add(deprecationAccountDebitMoveLine);
+        moveLines.add(chargeAccountDebitMoveLine);
+
         this.addAnalyticToMoveLine(
-            fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
+            fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
       }
+      if (chargeAmount.signum() == 0
+          && (cumulativeDepreciationAmount == null
+              || (cumulativeDepreciationAmount != null
+                  && cumulativeDepreciationAmount.signum() > 0))) {
+        cumulativeDepreciationAmount = fixedAsset.getGrossValue();
+      }
+      MoveLine deprecationAccountDebitMoveLine =
+          moveLineCreateService.createMoveLine(
+              move,
+              partner,
+              depreciationAccount,
+              cumulativeDepreciationAmount,
+              true,
+              disposalDate,
+              1,
+              origin,
+              fixedAsset.getName());
+      moveLines.add(deprecationAccountDebitMoveLine);
+      this.addAnalyticToMoveLine(
+          fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
 
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(
