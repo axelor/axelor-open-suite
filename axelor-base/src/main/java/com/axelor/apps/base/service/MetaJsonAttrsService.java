@@ -35,14 +35,14 @@ public class MetaJsonAttrsService {
         throws JsonParseException, JsonMappingException, IOException {
 
       if (attrs == null || attrs.isEmpty()) {
-        this.attrs = new HashMap<String, Object>();
+        this.attrs = new HashMap<>();
       } else {
         this.attrs = readValue(attrs);
       }
     }
 
     public MetaJsonAttrsBuilder() {
-      this.attrs = new HashMap<String, Object>();
+      this.attrs = new HashMap<>();
     }
 
     @SuppressWarnings("unchecked")
