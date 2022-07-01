@@ -155,6 +155,8 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
@@ -162,5 +164,5 @@ public interface MoveToolService {
   @CallMethod
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 
-  boolean getEditAuthorization(Move move) throws AxelorException;
+  void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 }

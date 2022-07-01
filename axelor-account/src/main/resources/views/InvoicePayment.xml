@@ -29,7 +29,8 @@
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
-      <field name="paymentDate"/>
+      <field name="paymentDate"
+        onChange="action-invoice-payment-method-apply-financial-discount"/>
       <field name="delayReason" showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
       <field name="invoice.dueDate" showIf="paymentDate &gt; invoice.dueDate"/>
       <field name="companyBankDetails" canEdit="false"
@@ -46,10 +47,9 @@
         if="__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
     </panel>
-    <panel name="discountPanel" title="Financial Discount"
+    <panel name="discountPanel" title="Financial Discount" showIf="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"
-        onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
+      <field name="applyFinancialDiscount" readonly="true"/>
       <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
       <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"
         readonly="true"/>
@@ -99,6 +99,11 @@
       <field name="chequeNumber"
         showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
       <field name="description" colSpan="12"/>
+      <panel name="discountPanel" title="Financial Discount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()">
+        <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"/>
+        <field name="financialDiscount" hidden="true"/>
+      </panel>
       <field name="paymentMode.typeSelect" hidden="true"/>
       <field name="invoicesSelected" hidden="true"/>
       <button name="validateBtn" title="Validate"
@@ -140,6 +145,10 @@
     <field name="typeSelect" expr="2"/>
     <field name="_selectedInvoices" expr="eval: _invoices"/>
     <field name="_invoice" expr="eval: __repo__(Invoice).find(_invoices[0])"/>
+    <field name="applyFinancialDiscount"
+      expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne() != null"/>
+    <field name="financialDiscount"
+      expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne()?.financialDiscount"/>
   </action-record>
 
 
@@ -158,6 +167,11 @@
   <action-method name="action-invoice-payment-method-new-discount">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="computeDatasForFinancialDiscount"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-apply-financial-discount">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="applyFinancialDiscount"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-change-amount">
@@ -194,12 +208,6 @@
       expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)"
       if="invoice"/>
   </action-record>
-
-  <action-attrs name="action-attrs-on-change-invoice-payment-financial-discount">
-    <attribute name="title" for="amount"
-      expr="call:com.axelor.apps.account.service.invoice.InvoiceService:setAmountTitle(applyFinancialDiscount)"/>
-  </action-attrs>
-
 
 </object-views>
 

@@ -22,7 +22,7 @@
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
-    search="self.importId = :importId">
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
       if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -32,5 +32,19 @@
 
   <input file="bankpayment_bankStatementRule.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId"/>
+
+  <input file="base_template_context.csv" separator=";"
+    type="com.axelor.apps.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+    search="self.name = :name">
+    <bind to="language" search="self.code = :languageCode"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
+    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
+      search="self.importId in :birtTemplateSet_importId"
+      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
 
 </csv-inputs>

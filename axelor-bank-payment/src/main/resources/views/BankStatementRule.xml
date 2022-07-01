@@ -21,8 +21,9 @@
     <panel name="accountManagementPanel"
       title="BankDetails/Payment Mode/Interbank code configuration">
       <field name="accountManagement"
-        onChange="account-bank-statement-rule-record-set-temp-company" domain="self.typeSelect = 3"
-        form-view="account-management-form" grid-view="account-management-bank-statement-rule-grid"/>
+        onChange="action-bank-statement-rule-group-onchange-account-management"
+        domain="self.typeSelect = 3" form-view="account-management-form"
+        grid-view="account-management-bank-statement-rule-grid"/>
       <field name="accountManagement.bankDetails" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
       <field name="accountManagement.journal" grid-view="journal-grid"
@@ -36,14 +37,21 @@
       readonlyIf="!accountManagement">
       <field name="ruleTypeSelect" readonlyIf="!accountManagement"
         requiredIf="ruleTypeSelect == 0"/>
+      <field name="partnerFetchMethodSelect"/>
       <field name="partner" domain="self.partnerTypeSelect = 1"
-        requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect == 0"
-        form-view="partner-form" grid-view="partner-grid"/>
+        requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect == 0 &amp;&amp; partnerFetchMethoSelect == 1"
+        form-view="partner-form" grid-view="partner-grid" showIf="partnerFetchMethodSelect == 1"
+        hidden="true"/>
+      <field name="partnerBankStatementQuery" requiredIf="partnerFetchMethodSelect == 2"
+        showIf="partnerFetchMethodSelect == 2" hidden="true" domain="self.ruleTypeSelect = 2"/>
       <field name="bankStatementQuery" domain="self.ruleTypeSelect = :ruleTypeSelect"
         form-view="bank-statement-query-form" grid-view="bank-statement-query-grid"/>
       <field name="counterpartAccount" requiredIf=""
         onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
       <field name="searchLabel"/>
+      <field name="letterToInvoice"/>
+      <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
+        showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
     </panel>
   </form>
 
@@ -51,5 +59,16 @@
     <attribute name="domain" for="counterpartAccount"
       expr="eval: &quot; self.company = ${accountManagement.company?.id} &quot;"/>
   </action-attrs>
+
+  <action-group name="action-bank-statement-rule-group-onchange-account-management">
+    <action name="account-bank-statement-rule-record-set-main-panel-fields-nullable"/>
+  </action-group>
+
+  <action-record
+    name="account-bank-statement-rule-record-set-main-panel-fields-nullable"
+    model="com.axelor.apps.bankpayment.db.BankStatementRule">
+    <field name="ruleTypeSelect,partner,bankStatementQuery,counterpartAccount,searchLabel"
+      expr="eval: null" if="counterpartAccount?.company?.id != accountManagement?.company?.id"/>
+  </action-record>
 
 </object-views>

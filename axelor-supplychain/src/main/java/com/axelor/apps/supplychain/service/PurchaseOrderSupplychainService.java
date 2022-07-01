@@ -35,7 +35,7 @@ import java.util.List;
 
 public interface PurchaseOrderSupplychainService {
 
-  void updateToValidatedStatus(PurchaseOrder purchaseOrder);
+  void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException;
 
   void generateBudgetDistribution(PurchaseOrder purchaseOrder);
 

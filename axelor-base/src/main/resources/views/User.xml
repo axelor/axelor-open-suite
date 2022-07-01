@@ -31,11 +31,10 @@
           readonly="true"/>
         <panel name="buttonPanel" colSpan="12">
           <button name="previousBtn" icon="fa-caret-left"
-            onClick="validate,action-user-record-step-status-previous"
-            readonlyIf="stepStatusSelect &lt; 1" colSpan="1"/>
+            onClick="action-user-group-previous-button" readonlyIf="stepStatusSelect &lt; 1"
+            colSpan="1"/>
           <button name="nextBtn" icon="fa-caret-right"
-            onClick="validate,action-user-record-step-status-next"
-            readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
+            onClick="action-user-group-next-button" readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
           <button name="validateBtn" title="Validate"
             onClick="action-user-record-step-status-next,save" showIf="stepStatusSelect == 4"/>
         </panel>
@@ -355,6 +354,11 @@
     <panel hidden="true" colSpan="12" name="transientPasswordPanel">
       <field name="transientPassword"/>
     </panel>
+    <panel name="testingPanel" title="Testing" sidebar="true"
+      if="com.axelor.app.AppSettings.get().get('application.mode') == 'dev'">
+      <field name="today"/>
+    </panel>
+
   </form>
 
   <form name="generate-random-passwords-wizard" title="Generate random passwords"
@@ -517,10 +521,23 @@
     <context name="userId" expr="eval: id"/>
   </action-view>
 
+  <action-group name="action-user-group-previous-button">
+    <action name="validate"/>
+    <action name="action-user-record-step-status-previous"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-user-group-next-button">
+    <action name="validate"/>
+    <action name="action-user-record-step-status-next"/>
+    <action name="save"/>
+  </action-group>
+
   <action-attrs name="action-user-attrs-set-pfp-validator-panel-show">
     <attribute name="hidden"
-      expr="eval: !companySet?.any{it->it.accountConfig.isManagePassedForPayment}"
-      for="substitutePfpValidatorTabPanel"/>
+      expr="eval: !companySet?.any{it->it.accountConfig?.isManagePassedForPayment}"
+      for="substitutePfpValidatorTabPanel"
+      if="__config__.app.getApp('account') != null &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
   </action-attrs>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"

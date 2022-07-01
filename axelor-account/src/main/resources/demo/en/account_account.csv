@@ -383,7 +383,7 @@
 382;408400;408000;"Fixed asset suppliers";"payable";"true";1;;;;;2;"NDAS";;1
 383;408800;408000;"Suppliers - Accrued interest";"payable";"true";1;;;;;2;"NDAS";;1
 384;409;40;"Receivables from suppliers";"payable";;1;;;;;2;"NDAS";;1
-385;409100;409;"Suppliers - Advances and prepayments";"currentAsset";"true";1;;;;;2;"NDAS";;1
+385;409100;409;"Suppliers - Advances and prepayments";"payable";"true";1;;"true";;;2;"NDAS";;1
 386;409600;409;"Suppliers - Claims for packaging and equipment to make";"currentAsset";"true";1;;;;;2;"NDAS";;1
 387;409700;409;"Suppliers - Other assets";"currentAsset";"true";1;;;;;2;"NDAS";;1
 388;409710;409700;"Providers operating";"currentAsset";"true";1;;;;;2;"NDAS";;1

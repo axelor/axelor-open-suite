@@ -72,12 +72,12 @@
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
-            canView="false" readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
+            canView="false" readonly="true"/>
           <field name="date"
             readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-move-method-get-period,action-move-method-check-period-permissions"
-            hideIf="statusSelect == 3" colSpan="3" required="true"/>
+            onChange="action-group-move-date-onchange" hideIf="statusSelect == 3" colSpan="3"/>
           <field name="originDate" colSpan="3"
+            onChange="action-move-method-set-moveline-origin-dates"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -87,7 +87,7 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-account-move-method-filter-partner"
+            onSelect="action-move-group-partner-on-select"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -150,6 +150,8 @@
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
+
+                      	  <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
                       </h4>
                     ]]>
           </viewer>
@@ -316,7 +318,7 @@
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
           <field name="date" hideIf="statusSelect == 3" colSpan="3"
-            onChange="action-move-method-get-period"/>
+            onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
           <field if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
@@ -512,6 +514,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
+    <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
     <action name="save"/>
@@ -520,6 +523,7 @@
 
   <action-group name="action-account-move-group-generate-counterpart">
     <action name="save"/>
+    <action name="action-account-move-method-exception-counterpart"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-generate-counterpart"/>
     <action name="action-account-move-method-compute-totals"/>
@@ -550,9 +554,16 @@
 
   <action-group name="action-group-move-company-onchange">
     <action name="action-move-record-journal"/>
-    <action name="action-move-method-get-period"/>
+    <action name="action-group-move-date-onchange"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+  </action-group>
+
+  <action-group name="action-group-move-date-onchange">
+    <action name="action-move-method-get-period"/>
+    <action name="action-record-initialize-permission-validation-move"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-set-moveline-dates"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
@@ -607,12 +618,13 @@
   <action-record name="action-account-move-record-set-currency"
     model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency"/>
+    <field name="currencyCode" expr="eval: partner?.currency?.code"/>
   </action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
     model="com.axelor.apps.account.db.Move">
     <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType.technicalTypeSelect"/>
+      expr="eval: journal?.journalType?.technicalTypeSelect"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -730,6 +742,14 @@
       method="setOriginAndDescriptionOnLines"/>
   </action-method>
 
+  <action-method name="action-move-method-set-moveline-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="setMoveLineDates"/>
+  </action-method>
+
+  <action-method name="action-move-method-set-moveline-origin-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="setMoveLineOriginDates"/>
+  </action-method>
+
   <action-method name="action-move-method-set-status-simulate">
     <call class="com.axelor.apps.account.web.MoveController" method="setSimulate"/>
   </action-method>
@@ -747,6 +767,14 @@
     <field name="$validatePeriod"
       expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__user__)"/>
   </action-record>
+
+  <action-method name="action-move-method-check-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDates"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-exception-counterpart">
+    <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
+  </action-method>
 
   <!-- ACTION VIEW -->
   <action-view name="action-move-view-open-generate-reverse-wizard"
@@ -825,10 +853,25 @@
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
 
   </action-method>
+  <action-method
+    name="action-account-move-method-filter-journal-partner-compatible-type">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="filterJournalPartnerCompatibleType"/>
+  </action-method>
+
+  <action-group name="action-move-group-partner-on-select">
+    <action name="action-account-move-method-filter-partner"/>
+    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
+  </action-group>
+
+  <action-method name="action-move-method-journal-on-change">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
 
   <action-group name="action-move-group-journal-on-change">
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-journal-on-change"/>
   </action-group>
 
 </object-views>

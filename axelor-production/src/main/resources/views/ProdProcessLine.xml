@@ -87,6 +87,7 @@
     <field name="stockLocation"
       expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
     <field name="workCenterTypeSelect" expr="eval: 1"/>
+    <field name="outsourcing" expr="eval: __parent__?.outsourcing"/>
   </action-record>
 
   <action-view name="action-production-view-work-center-group-wizard"

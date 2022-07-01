@@ -38,6 +38,7 @@ import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSequence;
 import com.axelor.exception.AxelorException;
@@ -55,6 +56,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
@@ -234,13 +236,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     if (soLines != null && !soLines.isEmpty()) {
       try {
-        saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-        Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+        saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
 
-      Beans.get(SaleOrderRepository.class).save(saleOrder);
+      saleOrderRepo.save(saleOrder);
     }
     return saleOrder;
   }
@@ -267,8 +269,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (originSoLine != null
         && originSoLine.getProduct() != null
         && originSoLine.getSelectedComplementaryProductList() != null) {
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-      AppBaseService appBaseService = Beans.get(AppBaseService.class);
       for (ComplementaryProductSelected compProductSelected :
           originSoLine.getSelectedComplementaryProductList()) {
         // Search if there is already a line for this product to modify or remove
@@ -389,6 +389,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       throws AxelorException {
 
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
+    List<SaleOrderLine> seperatedSOLines;
 
     SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
@@ -402,8 +404,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLine saleOrderLine =
           Beans.get(SaleOrderLineRepository.class)
               .find(Long.parseLong(soLine.get("id").toString()));
-      copySaleOrder.addSaleOrderLineListItem(saleOrderLine);
-      saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+      seperatedSOLines = new ArrayList<>();
+      seperatedSOLines.add(saleOrderLine);
+      seperatedSOLines.addAll(
+          originalSOLines.stream()
+              .filter(
+                  soline ->
+                      StringUtils.notBlank(saleOrderLine.getManualId())
+                          && saleOrderLine.getManualId().equals(soline.getParentId()))
+              .collect(Collectors.toList()));
+      manageSeperatedSOLines(seperatedSOLines, originalSOLines, copySaleOrder);
     }
 
     copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
@@ -412,6 +422,27 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     Beans.get(SaleOrderRepository.class).save(copySaleOrder);
 
     return copySaleOrder;
+  }
+
+  private void manageSeperatedSOLines(
+      List<SaleOrderLine> seperatedSOLines,
+      List<SaleOrderLine> originalSOLines,
+      SaleOrder copySaleOrder) {
+
+    for (SaleOrderLine SSOLine : seperatedSOLines) {
+      copySaleOrder.addSaleOrderLineListItem(SSOLine);
+
+      List<SaleOrderLine> partnerComplementarySOLines =
+          originalSOLines.stream()
+              .filter(
+                  soline ->
+                      soline.getMainSaleOrderLine() != null
+                          && soline.getMainSaleOrderLine().equals(SSOLine))
+              .collect(Collectors.toList());
+      for (SaleOrderLine PCSOLine : partnerComplementarySOLines) {
+        copySaleOrder.addSaleOrderLineListItem(PCSOLine);
+      }
+    }
   }
 
   @Override

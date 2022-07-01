@@ -52,7 +52,8 @@ public class OpportunityController {
         opportunityService.saveOpportunity(opportunity);
       }
     } else {
-      response.setNotify(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+      response.setNotify(
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
       return;
     }
 
