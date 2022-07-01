@@ -1,0 +1,3 @@
+---
+title: "SaleOrder : Fix sequence issue in sale order report at finalized stage."
+type: fix
