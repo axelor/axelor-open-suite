@@ -1,4 +1,0 @@
-title: Display the today field in dev mode in User Preference form
-type: change
-description: |
-      Add a new testing  panel in user preference form which is only visible in dev mode

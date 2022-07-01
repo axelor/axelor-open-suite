@@ -407,7 +407,7 @@ if (row["rule_type"] == 2) {
 	ConfigLine.hidden 					  as hidden,
 	ConfigLine.rule	 					  as rule,
 	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE (Report.period IS NULL OR Move.period = Report.period)) as account_diff,
-	
+
 	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE ((((date_part('day',Year.to_date) = 31 AND
 	date_part('day',Year.from_date) = 01 AND
     ((date_part('year',Year.from_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.from_date) = 04 AND date_part('year',Year.to_date) = date_part('year', current_date - interval '1 year') AND date_part('month', Year.to_date) = 03) OR (
@@ -417,7 +417,6 @@ if (row["rule_type"] == 2) {
 	date_part('day',Year.from_date) = 01 AND
     ((date_part('year',Year.from_date) = date_part('year', current_date - interval '3 year') AND date_part('month', Year.from_date) = 04 AND date_part('year',Year.to_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.to_date) = 03) OR (
 	date_part('year',Year.from_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.from_date) = 01 AND date_part('year', Year.to_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.to_date) = 12))))) AND ReportType.comparison = 2) OR (Move.period IN (Select id FROM base_period WHERE from_date = Report.date_from - interval '2 year' AND to_date = Report.date_to - interval '2 year') AND ReportType.comparison = 3)) as account_diffn2
-
 FROM account_accounting_report as Report
 
 JOIN account_accounting_report_type as ReportType

@@ -84,7 +84,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, previousFixedAssetLine);
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
-    BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
+    BigDecimal accountingValue = getAccountingValue(previousFixedAssetLine).subtract(depreciation);
 
     LocalDate depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine);
 
@@ -372,18 +372,17 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected BigDecimal computeOnGoingDegressiveDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
+    BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
     BigDecimal degressiveDepreciation =
-        computeDegressiveDepreciation(previousFixedAssetLine.getAccountingValue(), fixedAsset);
+        computeDegressiveDepreciation(previousAccountingValue, fixedAsset);
 
     int remainingNumberOfDepreciation =
         getNumberOfDepreciation(fixedAsset) - numberOfDepreciationDone(fixedAsset);
     BigDecimal linearDepreciation =
-        previousFixedAssetLine
-            .getAccountingValue()
-            .divide(
-                BigDecimal.valueOf(remainingNumberOfDepreciation),
-                RETURNED_SCALE,
-                RoundingMode.HALF_UP);
+        previousAccountingValue.divide(
+            BigDecimal.valueOf(remainingNumberOfDepreciation),
+            RETURNED_SCALE,
+            RoundingMode.HALF_UP);
     return degressiveDepreciation.max(linearDepreciation);
   }
 
@@ -438,7 +437,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     BigDecimal depreciation;
-
+    BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
+    // If we are at the last line, we depreciate the remaining amount
+    if (!isProrataTemporis(fixedAsset)
+        && getNumberOfDepreciation(fixedAsset) == numberOfDepreciationDone(fixedAsset) + 1) {
+      return previousAccountingValue;
+    }
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);
@@ -446,10 +450,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     } else {
       depreciation = computeLinearDepreciation(fixedAsset, baseValue);
     }
-    if (BigDecimal.ZERO.compareTo(
-            previousFixedAssetLine.getAccountingValue().subtract(depreciation))
-        > 0) {
-      depreciation = previousFixedAssetLine.getAccountingValue();
+    if (BigDecimal.ZERO.compareTo(previousAccountingValue.subtract(depreciation)) > 0) {
+      depreciation = previousAccountingValue;
     }
     return depreciation;
   }
@@ -459,7 +461,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return previousFixedAssetLine.getAccountingValue();
+      return getAccountingValue(previousFixedAssetLine);
     }
     return previousFixedAssetLine.getDepreciationBase();
   }
@@ -473,5 +475,14 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
     }
     return d;
+  }
+
+  protected BigDecimal getAccountingValue(FixedAssetLine fixedAssetLine) {
+    if (fixedAssetLine == null) {
+      return BigDecimal.ZERO;
+    }
+    return fixedAssetLine.getCorrectedAccountingValue().signum() != 0
+        ? fixedAssetLine.getCorrectedAccountingValue()
+        : fixedAssetLine.getAccountingValue();
   }
 }

@@ -29,9 +29,11 @@ import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -57,8 +59,10 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
@@ -84,6 +88,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,6 +123,8 @@ public class BankReconciliationService {
   protected AccountRepository accountRepository;
   protected AccountConfigRepository accountConfigRepository;
   protected BankPaymentConfigService bankPaymentConfigService;
+  protected BankStatementRuleService bankStatementRuleService;
+  protected ReconcileService reconcileService;
 
   @Inject
   public BankReconciliationService(
@@ -144,7 +151,9 @@ public class BankReconciliationService {
       JournalRepository journalRepository,
       AccountRepository accountRepository,
       AccountConfigRepository accountConfigRepository,
-      BankPaymentConfigService bankPaymentConfigService) {
+      BankPaymentConfigService bankPaymentConfigService,
+      BankStatementRuleService bankStatementRuleService,
+      ReconcileService reconcileService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -170,6 +179,8 @@ public class BankReconciliationService {
     this.accountRepository = accountRepository;
     this.accountConfigRepository = accountConfigRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
+    this.bankStatementRuleService = bankStatementRuleService;
+    this.reconcileService = reconcileService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -211,18 +222,25 @@ public class BankReconciliationService {
 
         for (BankStatementRule bankStatementRule : bankStatementRules) {
 
-          if (Boolean.TRUE.equals(
-              new GroovyScriptHelper(scriptContext)
-                  .eval(
-                      bankStatementRule
-                          .getBankStatementQuery()
-                          .getQuery()
-                          .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+          if (bankStatementRule != null
+              && bankStatementRule.getBankStatementQuery() != null
+              && !Strings.isNullOrEmpty(bankStatementRule.getBankStatementQuery().getQuery())
+              && Boolean.TRUE.equals(
+                  new GroovyScriptHelper(scriptContext)
+                      .eval(
+                          bankStatementRule
+                              .getBankStatementQuery()
+                              .getQuery()
+                              .replaceAll(
+                                  "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
             move = generateMove(bankReconciliationLine, bankStatementRule);
             moveValidateService.accounting(move);
+            if (bankStatementRule.getLetterToInvoice()) {
+              letterToInvoice(bankStatementRule, bankReconciliationLine, move);
+            }
             break;
           }
         }
@@ -233,6 +251,31 @@ public class BankReconciliationService {
           bankReconciliationLineRepository
               .findByBankReconciliation(bankReconciliation)
               .fetch(limit, offset);
+    }
+  }
+
+  protected void letterToInvoice(
+      BankStatementRule bankStatementRule, BankReconciliationLine bankReconciliationLine, Move move)
+      throws AxelorException {
+
+    MoveLine fetchedMoveLine =
+        bankStatementRuleService
+            .getMoveLine(bankStatementRule, bankReconciliationLine, move)
+            .orElse(null);
+    // Will reconcile move line that has as account the counterpart account specified in
+    // bankstatementrule
+    MoveLine generatedMoveLineToLetter =
+        move.getMoveLineList().stream()
+            .filter(
+                moveLine -> moveLine.getAccount().equals(bankStatementRule.getCounterpartAccount()))
+            .findFirst()
+            .orElse(null);
+    if (fetchedMoveLine != null && generatedMoveLineToLetter != null) {
+      if (generatedMoveLineToLetter.getDebit().signum() > 0) {
+        reconcileService.reconcile(generatedMoveLineToLetter, fetchedMoveLine, false, true);
+      } else {
+        reconcileService.reconcile(fetchedMoveLine, generatedMoveLineToLetter, false, true);
+      }
     }
   }
 
@@ -253,18 +296,18 @@ public class BankReconciliationService {
       description = description.concat(reference);
     }
     AccountManagement accountManagement = bankStatementRule.getAccountManagement();
+    Partner partner =
+        bankStatementRuleService.getPartner(bankStatementRule, bankReconciliationLine).orElse(null);
     Move move =
         moveCreateService.createMove(
             accountManagement.getJournal(),
             accountManagement.getCompany(),
             bankReconciliationLine.getBankStatementLine().getCurrency(),
-            bankStatementRule.getPartner(),
+            partner,
             bankReconciliationLine.getEffectDate(),
             bankReconciliationLine.getEffectDate(),
             accountManagement.getPaymentMode(),
-            bankStatementRule.getPartner() != null
-                ? bankStatementRule.getPartner().getFiscalPosition()
-                : null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankReconciliationLine.getBankStatementLine().getOrigin(),
@@ -294,10 +337,22 @@ public class BankReconciliationService {
       debit = bankReconciliationLine.getCredit();
       credit = bankReconciliationLine.getDebit();
       account = bankStatementRule.getAccountManagement().getCashAccount();
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
+            bankStatementRule.getSearchLabel());
+      }
     } else {
       debit = bankReconciliationLine.getDebit();
       credit = bankReconciliationLine.getCredit();
       account = bankStatementRule.getCounterpartAccount();
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING),
+            bankStatementRule.getSearchLabel());
+      }
     }
     boolean isDebit = debit.compareTo(credit) > 0;
     moveLine =
@@ -701,7 +756,8 @@ public class BankReconciliationService {
             + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
             + " AND self.move.statusSelect != :statusSelect"
             + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
-            + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))";
+            + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))"
+            + " AND self.move.company = :company";
     if (bankReconciliation.getJournal() != null) {
       query = query + " AND self.move.journal = :journal";
     }
@@ -724,6 +780,7 @@ public class BankReconciliationService {
     params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
     params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    params.put("company", bankReconciliation.getCompany());
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
     }
@@ -863,9 +920,11 @@ public class BankReconciliationService {
           bankStatementLineAFB120Repository
               .all()
               .filter(
-                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
+                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect "
+                      + "AND self.bankDetails = :bankDetails")
               .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
               .bind("bankStatement", bankReconciliation.getBankStatement())
+              .bind("bankDetails", bankDetails)
               .order("sequence")
               .fetchOne();
       startingBalance =
@@ -943,8 +1002,12 @@ public class BankReconciliationService {
   public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
     BankReconciliationLine bankReconciliationLine =
         bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
-    bankReconciliationLine.setIsSelectedBankReconciliation(
-        !bankReconciliationLineContext.getIsSelectedBankReconciliation());
+    if (bankReconciliationLine.getIsSelectedBankReconciliation() != null) {
+      bankReconciliationLine.setIsSelectedBankReconciliation(
+          !bankReconciliationLineContext.getIsSelectedBankReconciliation());
+    } else {
+      bankReconciliationLine.setIsSelectedBankReconciliation(true);
+    }
     return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 
@@ -967,7 +1030,8 @@ public class BankReconciliationService {
     return domain;
   }
 
-  public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation) {
+  public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation)
+      throws AxelorException {
     boolean uniqueBankDetails = true;
     BankDetails bankDetails = null;
     bankReconciliation.setToDate(bankReconciliation.getBankStatement().getToDate());
@@ -979,6 +1043,12 @@ public class BankReconciliationService {
     for (BankStatementLine bankStatementLine : bankStatementLines) {
       if (bankDetails == null) {
         bankDetails = bankStatementLine.getBankDetails();
+      }
+      // If it is still null
+      if (bankDetails == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL));
       }
       if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
         uniqueBankDetails = false;
@@ -1080,5 +1150,67 @@ public class BankReconciliationService {
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
+  }
+
+  public String getDomainForWizard(
+      BankReconciliation bankReconciliation,
+      BigDecimal bankStatementCredit,
+      BigDecimal bankStatementDebit) {
+    if (bankReconciliation != null
+        && bankReconciliation.getCompany() != null
+        && bankStatementCredit != null
+        && bankStatementDebit != null) {
+      String query =
+          "(self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)"
+              + " AND self.move.company.id = "
+              + bankReconciliation.getCompany().getId()
+              + " AND (self.move.statusSelect = "
+              + MoveRepository.STATUS_ACCOUNTED
+              + " OR self.move.statusSelect = "
+              + MoveRepository.STATUS_DAYBOOK
+              + ")";
+      if (bankStatementCredit.signum() > 0) {
+        query = query.concat(" AND self.debit > 0");
+      }
+      if (bankStatementDebit.signum() > 0) {
+        query = query.concat(" AND self.credit > 0");
+      }
+      if (bankReconciliation.getCashAccount() != null) {
+        query =
+            query.concat(" AND self.account.id = " + bankReconciliation.getCashAccount().getId());
+      } else {
+        query =
+            query.concat(
+                " AND self.account.accountType.technicalTypeSelect LIKE '"
+                    + AccountTypeRepository.TYPE_CASH
+                    + "'");
+      }
+      if (bankReconciliation.getJournal() != null) {
+        query =
+            query.concat(" AND self.move.journal.id = " + bankReconciliation.getJournal().getId());
+      } else {
+        query =
+            query.concat(
+                " AND self.move.journal.journalType.technicalTypeSelect = "
+                    + JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY);
+      }
+      return query;
+    }
+    return "self id in (0)";
+  }
+
+  public BigDecimal getSelectedMoveLineTotal(List<LinkedHashMap> toReconcileMoveLineSet) {
+    BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
+    List<MoveLine> moveLineList = new ArrayList<>();
+    toReconcileMoveLineSet.forEach(
+        m ->
+            moveLineList.add(
+                moveLineRepository.find(
+                    Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
+    for (MoveLine moveLine : moveLineList) {
+      selectedMoveLineTotal =
+          selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
+    }
+    return selectedMoveLineTotal;
   }
 }

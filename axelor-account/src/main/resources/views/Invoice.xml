@@ -477,7 +477,7 @@
       <field name="tradingName" canEdit="false" grid-view="trading-name-grid"
         form-view="trading-name-form"
         if="__config__.app.getApp('base').enableTradingNamesManagement"
-        requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+        requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
         readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet"
         onChange="action-invoice-method-printing-settings-default-values"/>
       <field name="companyBankDetails" canEdit="false"
@@ -493,8 +493,6 @@
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
         readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
-      <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-        grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
@@ -544,10 +542,10 @@
         onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
-        <viewer>
+        <viewer depends="$supplierInvoiceNbStatic">
                 <![CDATA[
                	  <h4>
-               	    <span class="label label-default" style="background-color: #B6473F; color: #FFFFFF;"> <span x-translate>Watch out, an invoice with the same number</span> ({{record.supplierInvoiceNb}}) <span x-translate>already exists for this supplier</span> {{record.partner.fullName}} <span x-translate>and the year</span> {{record.originDate|date:'YYYY'}} </span>
+               	    <span class="label label-default" style="background-color: #B6473F; color: #FFFFFF;"> <span x-translate>Watch out, an invoice with the same number</span> ({{record.$supplierInvoiceNbStatic}}) <span x-translate>already exists for this supplier</span> {{record.partner.fullName}} <span x-translate>and the year</span> {{record.originDate|date:'YYYY'}} </span>
                   </h4>
               	]]>
         </viewer>
@@ -555,6 +553,7 @@
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-record-due-date,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+      <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
@@ -584,6 +583,8 @@
             onSelect="action-invoice-attrs-domain-delivery-address"
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
+          <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
+            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer>{{record.addressStr}}</viewer>
@@ -775,15 +776,18 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
         </panel>
-        <panel name="financialDiscountPanel" colSpan="12"
+        <panel name="financialDiscountPanel" colSpan="12" showIf="statusSelect &gt;= 3"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
-          <field name="financialDiscount"
-            onChange="action-record-invoice-set-financial-discount-informations"
-            showIf="statusSelect &gt;=3"/>
-          <field name="financialDiscountRate" readonly="true"
-            showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
+          <field name="financialDiscount" readonlyIf="amountPaid > 0"
+            onChange="action-record-invoice-set-financial-discount-informations"/>
           <field name="financialDiscountDeadlineDate" readonly="true"
-            showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
+            showIf="financialDiscount"/>
+          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+            <field name="financialDiscountRate" readonly="true"/>
+            <field name="financialDiscountTotalAmount" readonly="true"/>
+            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          </panel>
+          <field name="amountPaid" hidden="true"/>
         </panel>
 
 
@@ -2099,7 +2103,7 @@ InvoiceSet.length > 0))"
     <view type="grid" name="subrogation-release-grid"/>
     <view type="form" name="subrogation-release-form"/>
     <domain>:_invoice MEMBER OF self.invoiceSet</domain>
-    <context name="_invoice" expr="eval: __self__"/>
+    <context name="_invoice" expr="eval: __this__"/>
   </action-view>
 
   <action-view name="action-invoice-view-reports-wizard" title="Reports"
@@ -2368,35 +2372,52 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Related Analytic Movelines">
     <view type="grid" name="analytic-move-line-invoice-grid"/>
     <view type="form" name="analytic-move-line-move-line-form"/>
-    <domain>self.invoiceLine.id IN :invoiceLineListId</domain>
-    <context name="invoiceLineListId"
-      expr="call:com.axelor.apps.account.service.invoice.InvoiceService:getInvoiceLineIds(__self__)"/>
+    <domain>self.invoiceLine.invoice.id = :invoiceId</domain>
+    <context name="invoiceId" expr="eval: __self__?.id != null ? __self__.id : 0"/>
   </action-view>
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
     <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
-      if="partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+    <field name="financialDiscountTotalAmount"
+      expr="eval: financialDiscountRate * inTaxTotal / 100"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount"
+      expr="eval: inTaxTotal - (financialDiscountRate * inTaxTotal / 100)"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
-      if="partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
-      if="dueDate"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate"/>
   </action-record>
 
   <action-record name="action-record-invoice-set-financial-discount-informations"
     model="com.axelor.apps.account.db.Invoice">
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
-      if="financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="financialDiscount &amp;&amp; financialDiscount.discountRate"/>
-    <field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
-    <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+    <field name="financialDiscountTotalAmount"
+      expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount"
+      expr="eval: inTaxTotal - (financialDiscount.discountRate * inTaxTotal / 100)"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+    <field name="legalNotice" expr="eval: null"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: BigDecimal.ZERO"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount" expr="eval: BigDecimal.ZERO"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
-      if="dueDate &amp;&amp; financialDiscount"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
   </action-record>
 
   <action-method
@@ -2411,5 +2432,14 @@ InvoiceSet.length > 0))"
       if="duplicateInvoiceNbrSameYear"/>
   </action-validate>
 
+  <action-method name="action-customer-invoice-line-menu">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="showCustomerInvoiceLines"/>
+  </action-method>
+
+  <action-method name="action-supplier-invoice-line-menu">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="showSupplierInvoiceLines"/>
+  </action-method>
 
 </object-views>

@@ -8,11 +8,14 @@
     <field name="name"/>
     <field name="authTypeSelect"/>
     <field name="isAuthenticated"/>
+    <field name="appBuilder"/>
   </grid>
 
   <form name="ws-authenticator-form" model="com.axelor.studio.db.WsAuthenticator"
     title="Authenticator" width="large">
     <panel name="mainPanel">
+      <field name="appBuilder"/>
+      <spacer/>
       <field name="name"/>
       <button name="btnAuthenticate" title="Authenticate"
         onClick="save,action-studio-ws-authenticator-authenticate" colSpan="3"
@@ -21,9 +24,9 @@
       <field name="authWsRequest" canEdit="true" canNew="true"/>
       <field name="authTypeSelect"/>
       <field name="tokenWsRequest" canEdit="true" canNew="true" hidden="true"
-        showIf="authTypeSelect == 'oauth2'"/>
+        showIf="authTypeSelect == 'oauth2'" requiredIf="authTypeSelect == 'oauth2'"/>
       <field name="refreshTokenWsRequest" canEdit="true" canNew="true" hidden="true"
-        showIf="authTypeSelect == 'oauth2'"/>
+        showIf="authTypeSelect == 'oauth2'" requiredIf="authTypeSelect == 'oauth2'"/>
     </panel>
     <panel-tabs>
       <panel name="panelTabAuthResponse" title="Auth response">

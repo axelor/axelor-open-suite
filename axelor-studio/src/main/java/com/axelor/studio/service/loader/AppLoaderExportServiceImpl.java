@@ -81,7 +81,10 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
         "dashboard-builder",
         "dashlet-builder",
         "chart-builder",
-        "selection-builder"
+        "selection-builder",
+        "ws-connector",
+        "ws-request",
+        "ws-authenticator"
       };
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

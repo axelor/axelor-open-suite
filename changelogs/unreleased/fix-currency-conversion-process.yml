@@ -1,6 +1,0 @@
----
-title: "CurrencyConversionLine: Error handling if rates or currency can't be retrieved"
-type: change
-description: |
- Fill fromDate with date in which currency is retrieved and add check to avoid overlapping of periods.
- Also avoid overlapping of periods in case of bulk update

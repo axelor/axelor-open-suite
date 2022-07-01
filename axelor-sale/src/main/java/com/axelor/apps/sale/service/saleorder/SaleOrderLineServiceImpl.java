@@ -139,7 +139,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
 
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
-    if (pricing.isPresent()) {
+    if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
           getPricingComputer(pricing.get(), saleOrderLine)
               .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
@@ -167,7 +167,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return pricingService.getRandomPricing(
         saleOrder.getCompany(),
         saleOrderLine.getProduct(),
-        saleOrderLine.getProduct().getProductCategory(),
+        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
         SaleOrderLine.class.getSimpleName(),
         null);
   }
@@ -312,6 +312,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
     line.setSelectedComplementaryProductList(null);
     return line;
+  }
+
+  @Override
+  public void resetPrice(SaleOrderLine line) {
+    if (!line.getEnableFreezeFields()) {
+      line.setPrice(null);
+      line.setInTaxPrice(null);
+    }
   }
 
   @Override
