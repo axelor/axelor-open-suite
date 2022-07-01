@@ -446,6 +446,8 @@
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
     </panel-tabs>
+    <panel-dashlet name="bankReconciliationLinePanel"
+      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
