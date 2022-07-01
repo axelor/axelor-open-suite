@@ -255,9 +255,10 @@
       <field name="disposalValue" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid"/>
-      <field name="saleAccountMove" domain="self.company = :company"
+      <field name="saleAccountMove"
+        domain="self.company = :company AND self.journal.journalType.technicalTypeSelect = 2 AND (self.functionalOriginSelect = 3 OR self.functionalOriginSelect = 7)"
         showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
-        readonly="true"/>
+        form-view="move-form" grid-view="move-grid" readonly="true"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>

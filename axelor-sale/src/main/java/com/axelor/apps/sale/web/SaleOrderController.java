@@ -753,8 +753,7 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-      Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-      response.setValues(saleOrder);
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

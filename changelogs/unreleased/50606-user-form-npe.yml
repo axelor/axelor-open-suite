@@ -1,0 +1,3 @@
+---
+title: "User : fix an error occurring on the form view if account module wasn't installed"
+type: fix

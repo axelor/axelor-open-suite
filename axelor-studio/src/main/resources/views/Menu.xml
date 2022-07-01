@@ -172,4 +172,13 @@
     <view type="form" name="ws-authenticator-form"/>
   </action-view>
 
+  <action-view name="admin.root.app.management" title="Apps management"
+    model="com.axelor.apps.base.db.App" id="admin.root.custom.app.management">
+    <view type="cards" name="app-cards"/>
+    <view type="grid" name="app-grid"/>
+    <view type="form" name="app-form"/>
+    <domain>self.isCustom = null OR self.isCustom = false OR (self.isCustom = true AND
+      self.isInAppView = true)</domain>
+  </action-view>
+
 </object-views>
