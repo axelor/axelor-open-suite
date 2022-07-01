@@ -15,22 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.fleet.module;
+package com.axelor.apps.fleet.db.repo;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.fleet.db.repo.VehicleFleetRepository;
-import com.axelor.apps.fleet.db.repo.VehicleRepository;
-import com.axelor.apps.fleet.service.VehicleFuelLogService;
-import com.axelor.apps.fleet.service.VehicleFuelLogServiceImpl;
-import com.axelor.apps.fleet.service.VehicleService;
-import com.axelor.apps.fleet.service.VehicleServiceImpl;
+import com.axelor.apps.fleet.db.Vehicle;
 
-public class FleetModule extends AxelorModule {
+public class VehicleFleetRepository extends VehicleRepository {
 
   @Override
-  protected void configure() {
-    bind(VehicleService.class).to(VehicleServiceImpl.class);
-    bind(VehicleFuelLogService.class).to(VehicleFuelLogServiceImpl.class);
-    bind(VehicleRepository.class).to(VehicleFleetRepository.class);
+  public Vehicle copy(Vehicle entity, boolean deep) {
+    Vehicle copy = super.copy(entity, deep);
+    copy.setPlateNo(null);
+    copy.setVehicleOdometer(null);
+    copy.setCarValue(null);
+    copy.setChasisNo(null);
+    copy.setVehicleFuelLogList(null);
+    copy.setVehicleServiceLogList(null);
+    copy.setVehicleContractList(null);
+    copy.setVehicleCostList(null);
+    copy.setVehicleRepairList(null);
+    return copy;
   }
 }
