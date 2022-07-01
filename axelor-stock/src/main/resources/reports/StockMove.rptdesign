@@ -240,6 +240,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">integer</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">0</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -2842,17 +2845,44 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                     <text id="3426">
                         <property name="fontWeight">bold</property>
                         <property name="marginLeft">0pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["title_select"] == "1"){'M.'}
+else if(row["title_select"] == "2"){'Ms.'}
+else if(row["title_select"] == "3"){'Dr'}
+else if(row["title_select"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
-    if(row["title_select"]== "1"){"M."}
-    else if(row["title_select"]=="2"){"Mme"}
-    else if(row["title_select"]=="3"){"Mlle"}
-    else if(row["title_select"]=="4"){"Dr"}
-    else if(row["title_select"]=="5"){"Prof."}
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
+    if(params["Locale"].value != 'en') {
+				row["translation"]
+			} else {
+				row["key"]
+			}
 }</VALUE-OF> 
-<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["name"]</VALUE-OF>
-<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["partner_type_select"] != "1"){
-row["first_name"]
+<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["name"]</VALUE-OF>
+<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row._outer["partner_type_select"] != "1"){
+row._outer["first_name"]
 }</VALUE-OF>]]></text-property>
                     </text>
                     <text id="4093">
@@ -3553,6 +3583,9 @@ row["first_name"]
                             <structure>
                                 <property name="name">total_qty_per_product</property>
                                 <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -3565,6 +3598,9 @@ row["first_name"]
                             <structure>
                                 <property name="name">description_list</property>
                                 <property name="dataType">string</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">CONCATENATE</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -3587,6 +3623,9 @@ row["first_name"]
                             <structure>
                                 <property name="name">tracking_no_list</property>
                                 <property name="dataType">string</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>ProductGroup</value>
+                                </simple-property-list>
                                 <property name="aggregateFunction">CONCATENATE</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -3625,6 +3664,7 @@ row["first_name"]
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
                         <list-property name="filter">
                             <structure>
