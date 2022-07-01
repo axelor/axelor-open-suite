@@ -7,8 +7,7 @@
     model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true"
     onNew="action-extra-hours-line-record-default" orderBy="date">
     <field name="date" width="100"/>
-    <field name="qty" width="100" onChange="action-extra-hours-line-validate-qty"
-      aggregate="sum"/>
+    <field name="qty" width="100" aggregate="sum"/>
     <field name="extraHoursType" width="200"/>
     <field name="project" width="200"/>
     <field name="description" width="400"/>
@@ -21,7 +20,7 @@
 
     <panel name="headPanel">
       <field name="date"/>
-      <field name="qty" onChange="action-extra-hours-line-validate-qty"/>
+      <field name="qty"/>
       <field name="extraHoursType"/>
       <field name="project"/>
       <field name="description" colSpan="12"/>
@@ -47,16 +46,5 @@
     <action name="action-extra-hours-line-record-default"/>
     <action name="action-extra-hours-line-attrs-title-project"/>
   </action-group>
-
-  <action-validate name="action-extra-hours-line-validate-qty">
-    <error message="Maximum value for hours exceeded (configure daily work hours in employee)"
-      if="employee == null || employee?.dailyWorkHours &lt; qty"
-      action="action-extra-hours-line-record-qty"/>
-  </action-validate>
-
-  <action-record name="action-extra-hours-line-record-qty"
-    model="com.axelor.apps.hr.db.ExtraHoursLine">
-    <field name="qty" expr="eval: employee != null ? employee?.dailyWorkHours : 0"/>
-  </action-record>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -245,7 +245,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
-    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    if (moveLine.getIsSelectedBankReconciliation() != null) {
+      moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    } else {
+      moveLine.setIsSelectedBankReconciliation(true);
+    }
     return moveLineRepository.save(moveLine);
   }
 

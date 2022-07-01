@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
@@ -32,6 +33,16 @@ public class MrpLineManagementRepository extends MrpLineRepository {
     MrpLine mrpLine = find(mrpLineId);
 
     Map<String, Object> mrpLineMap = super.populate(json, context);
+    if (mrpLine.getEstimatedDeliveryMrpLine() != null
+        && mrpLine.getMaturityDate() != null
+        && !mrpLine.getMaturityDate().isEqual(mrpLine.getDeliveryDelayDate())) {
+      json.put("respectDeliveryDelayDate", mrpLine.getDeliveryDelayDate());
+    } else if (mrpLine.getMrpLineType().getElementSelect()
+            == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY
+        && mrpLine.getMaturityDate() != null
+        && !mrpLine.getMaturityDate().isEqual(mrpLine.getEstimatedDeliveryDate())) {
+      json.put("respectDeliveryDelayDate", mrpLine.getEstimatedDeliveryDate());
+    }
     if (PurchaseOrder.class.getName().equals(mrpLine.getProposalSelect())) {
       PurchaseOrder purchaseOrder =
           Beans.get(PurchaseOrderRepository.class).find(mrpLine.getProposalSelectId());
@@ -49,5 +60,23 @@ public class MrpLineManagementRepository extends MrpLineRepository {
           mrpLine.getIsOutDayNbBetweenPurchaseAndProposal());
     }
     return mrpLineMap;
+  }
+
+  @Override
+  public MrpLine save(MrpLine entity) {
+    if (entity.getIsEditedByUser()
+        && entity.getMaturityDate() != null
+        && entity.getEstimatedDeliveryMrpLine() != null) {
+      Product product = entity.getProduct();
+      MrpLine mrpLine = entity.getEstimatedDeliveryMrpLine();
+      mrpLine.setMaturityDate(entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
+      mrpLine.setQty(entity.getQty());
+      mrpLine.setIsEditedByUser(true);
+      mrpLine.setEstimatedDeliveryDate(
+          entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
+      entity.setDeliveryDelayDate(
+          mrpLine.getMaturityDate().minusDays(product.getSupplierDeliveryTime()));
+    }
+    return super.save(entity);
   }
 }

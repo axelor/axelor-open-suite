@@ -147,7 +147,7 @@
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
     <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-simplified-move" parent="account-root-move"
@@ -450,17 +450,6 @@
     <view-param name="search-filters" value="fixed-asset-filters"/>
   </action-view>
 
-  <menuitem title="Asset disposal reasons"
-    name="account-root-asset-management-asset-disposal-reasons"
-    parent="account-root-asset-management"
-    action="account.root.asset.management.asset-disposal-reasons" order="5"/>
-
-  <action-view name="account.root.asset.management.asset-disposal-reasons"
-    title="Asset disposal reasons" model="com.axelor.apps.account.db.AssetDisposalReason">
-    <view type="grid" name="asset-disposal-reason-grid"/>
-    <view type="form" name="asset-disposal-reason-form"/>
-  </action-view>
-
   <menuitem title="Configurations" name="account-root-asset-management-conf"
     parent="account-root-asset-management" icon="fa-cog" order="10"/>
 
@@ -484,6 +473,17 @@
     title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType">
     <view type="grid" name="fixed-asset-type-grid"/>
     <view type="form" name="fixed-asset-type-form"/>
+  </action-view>
+
+  <menuitem title="Asset disposal reasons"
+    name="account-root-asset-management-asset-disposal-reasons"
+    parent="account-root-asset-management-conf"
+    action="account.root.asset.management.asset-disposal-reasons" order="2"/>
+
+  <action-view name="account.root.asset.management.asset-disposal-reasons"
+    title="Asset disposal reasons" model="com.axelor.apps.account.db.AssetDisposalReason">
+    <view type="grid" name="asset-disposal-reason-grid"/>
+    <view type="form" name="asset-disposal-reason-form"/>
   </action-view>
 
 
@@ -620,7 +620,8 @@
     <view type="form" name="financial-discount-form"/>
   </action-view>
 
-  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"/>
+  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
+    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
     title="Analytic journals" action="account.conf.analytic.journal"/>
@@ -864,24 +865,6 @@
     <view type="grid" name="move-template-type-grid"/>
     <view type="form" name="move-template-type-form"/>
   </action-view>
-
-
-  <action-view name="action-customer-invoice-line-menu" title="Customer Invoice Line"
-    model="com.axelor.apps.account.db.InvoiceLine">
-    <view type="grid" name="invoice-line-menu-grid"/>
-    <view type="form" name="invoice-line-menu-form"/>
-    <view-param name="search-filters" value="invoice-line-filters"/>
-    <domain>self.invoice.operationTypeSelect in (3,4)</domain>
-  </action-view>
-
-  <action-view name="action-supplier-invoice-line-menu" title="Supplier Invoice Line"
-    model="com.axelor.apps.account.db.InvoiceLine">
-    <view type="grid" name="invoice-line-menu-grid"/>
-    <view type="form" name="invoice-line-menu-form"/>
-    <view-param name="search-filters" value="invoice-line-filters"/>
-    <domain>self.invoice.operationTypeSelect in (1,2)</domain>
-  </action-view>
-
 
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50"
     icon="fa-cog" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>

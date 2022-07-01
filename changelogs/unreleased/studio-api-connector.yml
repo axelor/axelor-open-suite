@@ -4,3 +4,4 @@ type: feature
 description: |
   The 'API Connector' allows to call REST api dynamically.
   A new type of script node on bpm is added to call api connector from bpm.
+  Export and import api connector with app loader.

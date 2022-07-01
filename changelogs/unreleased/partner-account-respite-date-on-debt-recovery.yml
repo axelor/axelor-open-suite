@@ -1,6 +1,0 @@
----
-title: "Partner : set a respite date on debt recoveries to prevent customer account blocking."
-type: feature
-description: |
-  - New field for partner 'Respite date before account blocking' that prevents customer account to be blocked before the respite date
-  - Customer late payment batch now uses invoice in debt recoveries instead of every invoice

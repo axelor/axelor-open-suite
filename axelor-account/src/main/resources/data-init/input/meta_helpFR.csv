@@ -1,5 +1,5 @@
 "module";"object";"view";"field";"help"
-"axelor-account";"AccountingSituation";"accounting-situation-partner-form";"company";"Permet la sélection de la société active pour laquelle on créer la situation comptable ( fonction multi-sociétés)"
+"axelor-account";"AccountingSituation";"accounting-situation-partner-form";"company";"Permet la sélection de la société active pour laquelle on crée la situation comptable ( fonction multi-sociétés)"
 "axelor-account";"TaxAccount";"tax-account-form";"company";"Permet de sélectionner parmi les sociétés paramétrées dans Axelor celle pour laquelle le paramétrage de la configuration de compte de taxe affichée à l'écran est réalisé. Seul les comptes comptables de cette société seront sélectionnables dans le champ ""Compte comptable"" juxtaposé."
 "axelor-account";"TaxAccount";"tax-account-form";"account";"Permet de sélectionner parmi les comptes comptables de la société sélectionnée dans le champ ""Société"" celui sur lequel seront imputées les écritures comptables relatives à la taxe affichée à l'écran."
 "axelor-account";"Invoice";"invoice-form";"currency";"Cette devise définit la devise de la facture. Si la devise de la comptabilité de l'entreprise ou du journal est différente de la devise de la facture, le système convertira automatiquement les montants dans la devise de la comptabilité ou du journal."

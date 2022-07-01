@@ -33,6 +33,12 @@ public interface IExceptionMessage {
 
   static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only return to validated from finished purchase order." /*)*/;
+
+  static final String PURCHASE_ORDER_TRADING_NAME_MISSING = /*$$(*/
+      "The purchase order trading name is missing." /*)*/;
+
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
@@ -301,6 +307,9 @@ public interface IExceptionMessage {
 
   static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
       "The customer account is blocked because he has late payments." /*)*/;
+
+  static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
+      "Can only go back to confirmed if completed." /*)*/;
 
   /*
    * MRP Service

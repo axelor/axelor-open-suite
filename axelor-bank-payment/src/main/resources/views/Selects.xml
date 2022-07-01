@@ -275,6 +275,8 @@
   <selection name="bank.payment.bank.statement.rule.rule.type.select">
     <option value="0">Accounting auto</option>
     <option value="1">Reconciliation auto</option>
+    <option value="2">Partner's fetching</option>
+    <option value="3">Move line's fetching</option>
   </selection>
 
   <selection name="bank.payment.bank.statement.query.confidence.index.select">
@@ -301,6 +303,12 @@
     <option value="0">Not accepted LCR</option>
     <option value="1">Accepted LCR</option>
     <option value="2">BOR</option>
+  </selection>
+
+  <selection name="bank.payment.bank.statement.rule.partner.fetch.method.select">
+    <option value="0">None</option>
+    <option value="1">Select</option>
+    <option value="2">With formula</option>
   </selection>
 
 </object-views>

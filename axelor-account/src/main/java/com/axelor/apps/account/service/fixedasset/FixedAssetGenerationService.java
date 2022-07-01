@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -42,6 +43,16 @@ public interface FixedAssetGenerationService {
    * @throws AxelorException
    */
   void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
+
+  /**
+   * Generate and computes fixedAssetLines for fixedAsset but instead of generate the initial fixed
+   * asset line, it starts from fixedAssetLine.
+   *
+   * @param fixedAsset
+   * @throws AxelorException
+   */
+  void generateAndComputeFixedAssetLinesStartingWith(
+      FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
 
   /**
    * Allow to create fixed asset from invoice

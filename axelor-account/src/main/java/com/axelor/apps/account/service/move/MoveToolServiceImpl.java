@@ -1,7 +1,23 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -21,7 +37,6 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -34,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -450,9 +467,14 @@ public class MoveToolServiceImpl implements MoveToolService {
         && period.getYear().getCompany() != null
         && user.getGroup() != null
         && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(period.getYear().getCompany());
-      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+      Set<Role> roleSet =
+          accountConfigService
+              .getAccountConfig(period.getYear().getCompany())
+              .getClosureAuthorizedRoleList();
+      if (CollectionUtils.isEmpty(roleSet)) {
+        return false;
+      }
+      for (Role role : roleSet) {
         if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
           return false;
         }
@@ -460,20 +482,6 @@ public class MoveToolServiceImpl implements MoveToolService {
       return true;
     }
     return false;
-  }
-
-  @Override
-  public boolean getEditAuthorization(Move move) throws AxelorException {
-    boolean result = false;
-    Company company = move.getCompany();
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    Period period = move.getPeriod();
-    if (ObjectUtils.isEmpty(period)) {
-      return true;
-    }
-    if (ObjectUtils.isEmpty(accountConfig)) {}
-
-    return result;
   }
 
   public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
