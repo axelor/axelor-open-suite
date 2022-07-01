@@ -18,6 +18,8 @@
 package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsControlService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -28,7 +30,9 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
@@ -78,6 +82,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   public SaleOrder save(SaleOrder saleOrder) {
     try {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+      controlBankDetails(saleOrder);
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
@@ -97,6 +102,16 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void controlBankDetails(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getCompanyBankDetails() != null
+        && !Beans.get(BankDetailsControlService.class)
+            .isAuthorizedWithCurrency(saleOrder.getCompanyBankDetails(), saleOrder.getCurrency())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CURRENCY_NOT_AUTHORIZED_IN_BANK_DETAILS));
     }
   }
 

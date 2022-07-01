@@ -23,27 +23,29 @@
     <string name="ibanBic" title="IBAN / BBAN + BIC" max="255"/>
     <string name="label" title="Label"/>
     <boolean name="isDefault" title="Default"/>
+    <boolean name="isAuthorizedOnDifferentCurrency"
+      title="Authorize to use with a different currency"/>
     <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
         <![CDATA[
             String str = "";
-            if (!(code == null || code.isEmpty())) {
-              str = str.concat(code);
+            if (code != null && !code.isEmpty()) {
+            	str = str.concat(code);
             }
-            if (!(label == null || label.isEmpty())) {
+            if (label != null && !label.isEmpty()) {
               if (str.length() == 0) {
                 str = str.concat(label);
               } else {
                 str = str.concat(" - ").concat(label);
               }
             }
-            if (!(iban == null || iban.isEmpty())) {
+            if (iban != null && !iban.isEmpty()) {
               if (str.length() == 0) {
                 str = str.concat(iban);
               } else {
                 str = str.concat(" - ").concat(iban);
               }
             }
-            if (!(bank.getBankName() == null || bank.getBankName().isEmpty())) {
+            if (bank != null && bank.getBankName() != null && !bank.getBankName().isEmpty()) {
               str = str.concat(" - ").concat(bank.getBankName());
             }
             return str;

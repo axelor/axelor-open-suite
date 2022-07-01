@@ -22,7 +22,12 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsControlService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +36,7 @@ import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
+
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
 
@@ -43,6 +49,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
   public Invoice save(Invoice invoice) {
     try {
+      controlBankDetails(invoice);
       List<InvoicePayment> invoicePayments = invoice.getInvoicePaymentList();
       if (CollectionUtils.isNotEmpty(invoicePayments)) {
         LocalDate latestPaymentDate =
@@ -63,6 +70,16 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void controlBankDetails(Invoice invoice) throws AxelorException {
+    if (invoice.getBankDetails() != null
+        && !Beans.get(BankDetailsControlService.class)
+            .isAuthorizedWithCurrency(invoice.getBankDetails(), invoice.getCurrency())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CURRENCY_NOT_AUTHORIZED_IN_BANK_DETAILS));
     }
   }
 

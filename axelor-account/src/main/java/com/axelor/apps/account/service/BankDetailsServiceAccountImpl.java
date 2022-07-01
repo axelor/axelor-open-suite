@@ -31,15 +31,24 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsControlService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
+
+  protected BankDetailsControlService bankDetailsControlService;
+
+  @Inject
+  public BankDetailsServiceAccountImpl(BankDetailsControlService bankDetailsControlService) {
+    this.bankDetailsControlService = bankDetailsControlService;
+  }
 
   /**
    * In this implementation, we use the O2M in payment mode.
@@ -87,17 +96,17 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
         }
         List<AccountManagement> accountManagementList = paymentMode.getAccountManagementList();
 
-        authorizedBankDetails = new ArrayList<>();
-
-        for (AccountManagement accountManagement : accountManagementList) {
-          if (accountManagement.getCompany() != null
-              && accountManagement.getBankDetails() != null
-              && accountManagement.getBankDetails().getCurrency() != null
-              && accountManagement.getCompany().equals(company)
-              && accountManagement.getBankDetails().getCurrency().equals(currency)) {
-            authorizedBankDetails.add(accountManagement.getBankDetails());
-          }
-        }
+        authorizedBankDetails =
+            accountManagementList.stream()
+                .filter(
+                    accountManagement ->
+                        accountManagement.getCompany() != null
+                            && accountManagement.getCompany().equals(company)
+                            && accountManagement.getBankDetails() != null
+                            && bankDetailsControlService.isAuthorizedWithCurrency(
+                                accountManagement.getBankDetails(), currency))
+                .map(AccountManagement::getBankDetails)
+                .collect(Collectors.toList());
       }
 
       if (authorizedBankDetails.isEmpty()) {
@@ -117,7 +126,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
     return bankDetailsList.stream()
         .filter(
-            bankDetails -> bankDetails.getActive() && bankDetails.getCurrency().equals(currency))
+            bankDetails ->
+                bankDetails.getActive()
+                    && bankDetailsControlService.isAuthorizedWithCurrency(bankDetails, currency))
         .collect(Collectors.toList());
   }
 

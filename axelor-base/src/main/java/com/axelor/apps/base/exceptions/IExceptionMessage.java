@@ -476,4 +476,7 @@ public interface IExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+
+  public static final String CURRENCY_NOT_AUTHORIZED_IN_BANK_DETAILS = /*$$(*/
+      "The currency is not authorized with the current bank details" /*)*/;
 }

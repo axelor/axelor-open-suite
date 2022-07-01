@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.purchase.db.repo;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsControlService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -51,11 +56,23 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
     try {
       purchaseOrder = super.save(purchaseOrder);
+      controlBankDetails(purchaseOrder);
       Beans.get(PurchaseOrderService.class).setDraftSequence(purchaseOrder);
       return purchaseOrder;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void controlBankDetails(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder.getCompanyBankDetails() != null
+        && !Beans.get(BankDetailsControlService.class)
+            .isAuthorizedWithCurrency(
+                purchaseOrder.getCompanyBankDetails(), purchaseOrder.getCurrency())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CURRENCY_NOT_AUTHORIZED_IN_BANK_DETAILS));
     }
   }
 }
