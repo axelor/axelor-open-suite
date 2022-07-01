@@ -153,7 +153,7 @@
 
   <action-group name="action-journal-group-on-load-actions">
     <action name="action-journal-method-set-totals"
-      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+      if="journalType != null &amp;&amp; journalType?.isDisplayBalances"/>
     <action name="action-method-account-journal-readonly-if-journal-in-move"/>
     <action name="action-attrs-account-journal-status-show-title"/>
   </action-group>
