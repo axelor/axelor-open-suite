@@ -863,8 +863,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal computeCustomizedPercentageUnscaled(
-      BigDecimal amount, BigDecimal inTaxTotal) {
+  @Override
+  public BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       percentage =
