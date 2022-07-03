@@ -208,11 +208,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     BigDecimal debit = BigDecimal.ZERO;
     BigDecimal credit = BigDecimal.ZERO;
 
-    if (amountInCompanyCurrency.compareTo(BigDecimal.ZERO) < 0) {
-      isDebit = !isDebit;
-      amountInCompanyCurrency = amountInCompanyCurrency.negate();
-    }
-
     if (isDebit) {
       debit = amountInCompanyCurrency;
     } else {

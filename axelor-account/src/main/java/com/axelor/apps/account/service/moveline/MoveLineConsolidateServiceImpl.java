@@ -205,7 +205,9 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
           moveLines.add(moveLine);
         }
 
-      } else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1) {
+      } else if (debit.compareTo(BigDecimal.ZERO) == 1
+          || credit.compareTo(BigDecimal.ZERO) == 1
+          || debit.compareTo(BigDecimal.ZERO) == -1) {
         moveLine.setCounter(moveLineId++);
         moveLines.add(moveLine);
       }
