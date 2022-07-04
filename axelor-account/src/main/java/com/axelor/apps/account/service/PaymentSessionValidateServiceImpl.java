@@ -468,7 +468,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
                 it.getPaymentSession() != null
                     && it.getPaymentSession().equals(paymentSession)
                     && it.getInvoiceTermPaymentList().stream()
-                        .anyMatch(itp -> itp.getInvoiceTerm().equals(invoiceTerm)))
+                        .anyMatch(itp -> invoiceTerm.equals(itp.getInvoiceTerm())))
         .findFirst()
         .orElse(null);
   }

@@ -104,6 +104,7 @@
           <panel name="informationPanel" colSpan="6">
             <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
               grid-view="user-grid"/>
+            <field name="blockingComment" widget="html" colSpan="12"/>
             <field name="createdOn" colSpan="3" showIf="createdOn"/>
             <field name="updatedOn" colSpan="3" showIf="updatedOn"/>
             <field name="updatedBy" form-view="user-form" grid-view="user-grid"

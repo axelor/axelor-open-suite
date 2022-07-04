@@ -116,9 +116,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
 
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
-
   @Inject
   public InvoiceServiceImpl(
       ValidateFactory validateFactory,
