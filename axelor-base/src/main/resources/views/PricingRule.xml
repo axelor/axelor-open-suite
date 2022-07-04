@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid model="com.axelor.apps.base.db.PricingRule" title="Pricing rules"
-    name="pricing-rule-grid" orderBy="typeSelect,name">
+    name="pricing-rule-grid" groupBy="concernedModel,typeSelect" orderBy="name">
     <field name="name"/>
     <field name="concernedModel"/>
     <field name="company"/>
@@ -18,7 +18,8 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="concernedModel"
-        onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
+        onChange="action-pricing-rule-attrs-field-to-populate-clear"
+        domain="self.name = 'SaleOrderLine'"/>
       <field name="company"/>
       <field name="typeSelect" onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="fieldTypeSelect" showIf="typeSelect == 1"/>

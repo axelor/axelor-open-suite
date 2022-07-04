@@ -586,4 +586,16 @@ public class PurchaseOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void draftPurchaseOrder(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+      Beans.get(PurchaseOrderWorkflowService.class).draftPurchaseOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

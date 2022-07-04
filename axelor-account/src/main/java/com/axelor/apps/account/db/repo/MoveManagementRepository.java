@@ -78,7 +78,7 @@ public class MoveManagementRepository extends MoveRepository {
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     return copy;
@@ -106,8 +106,7 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
@@ -131,7 +130,7 @@ public class MoveManagementRepository extends MoveRepository {
       return super.save(move);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -145,7 +144,7 @@ public class MoveManagementRepository extends MoveRepository {
             I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getReference());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);

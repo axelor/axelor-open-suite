@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -169,7 +170,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         manufOrderRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
+                "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
+                    + "self.prodProcess.producedProductStockLocation in (?2)) "
                     + "AND self.statusSelect IN (?3)",
                 this.productMap.keySet(),
                 this.stockLocationList,
@@ -213,12 +215,18 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       if ((this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
           && this.isMrpProduct(product)) {
+        Unit unit = product.getUnit();
+        BigDecimal qty = prodProduct.getQty();
+        if (!unit.equals(prodProduct.getUnit())) {
+          qty =
+              unitConversionService.convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
+        }
         MrpLine mrpLine =
             this.createMrpLine(
                 mrp,
                 product,
                 manufOrderMrpLineType,
-                prodProduct.getQty(),
+                qty,
                 maturityDate,
                 BigDecimal.ZERO,
                 stockLocation,
@@ -251,12 +259,20 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
             maturityDate = this.computeMaturityDate(maturityDate, manufOrderNeedMrpLineType);
 
+            Unit unit = product.getUnit();
+            BigDecimal qty = computeQtyLeftToConsume(operationOrder, prodProduct);
+            if (!unit.equals(prodProduct.getUnit())) {
+              qty =
+                  unitConversionService.convert(
+                      prodProduct.getUnit(), unit, qty, qty.scale(), product);
+            }
+
             MrpLine mrpLine =
                 this.createMrpLine(
                     mrp,
                     prodProduct.getProduct(),
                     manufOrderNeedMrpLineType,
-                    computeQtyLeftToConsume(operationOrder, prodProduct),
+                    qty,
                     maturityDate,
                     BigDecimal.ZERO,
                     stockLocation,
@@ -284,12 +300,20 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                 product, manufOrder.getProdProcess().getStockLocation());
           }
 
+          Unit unit = product.getUnit();
+          BigDecimal qty = computeQtyLeftToConsume(manufOrder, prodProduct);
+          if (!unit.equals(prodProduct.getUnit())) {
+            qty =
+                unitConversionService.convert(
+                    prodProduct.getUnit(), unit, qty, qty.scale(), product);
+          }
+
           MrpLine mrpLine =
               this.createMrpLine(
                   mrp,
                   product,
                   manufOrderNeedMrpLineType,
-                  computeQtyLeftToConsume(manufOrder, prodProduct),
+                  qty,
                   maturityDate,
                   BigDecimal.ZERO,
                   stockLocation,
@@ -572,6 +596,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
           if (defaultBOM != null) {
             this.assignProductLevel(defaultBOM, level);
+          }
+          List<BillOfMaterial> alternativesBOM =
+              billOfMaterialService.getAlternativesBOM(subProduct, company);
+          for (BillOfMaterial alternativeBom : alternativesBOM) {
+            this.assignProductLevel(alternativeBom, level);
           }
         }
       }

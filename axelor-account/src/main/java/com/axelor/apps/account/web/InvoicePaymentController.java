@@ -172,7 +172,8 @@ public class InvoicePaymentController {
                 invoicePayment.getCompanyBankDetails(),
                 invoicePayment.getPaymentDate(),
                 invoicePayment.getBankDepositDate(),
-                invoicePayment.getChequeNumber());
+                invoicePayment.getChequeNumber(),
+                invoicePayment.getApplyFinancialDiscount());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -235,6 +236,17 @@ public class InvoicePaymentController {
         response.setValues(invoicePayment);
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void applyFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      response.setValue(
+          "applyFinancialDiscount",
+          Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

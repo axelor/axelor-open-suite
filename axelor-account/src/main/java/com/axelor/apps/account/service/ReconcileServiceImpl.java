@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -332,13 +333,14 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   public void updateInvoicePayments(Reconcile reconcile) throws AxelorException {
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
     Move debitMove = debitMoveLine.getMove();
     Move creditMove = creditMoveLine.getMove();
-    Invoice debitInvoice = debitMove.getInvoice();
-    Invoice creditInvoice = creditMove.getInvoice();
+    Invoice debitInvoice = invoiceRepository.findByMove(debitMove);
+    Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
     BigDecimal amount = reconcile.getAmount();
 
     if (debitInvoice != null
@@ -380,6 +382,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param creditMoveLine
    * @throws AxelorException
    */
+  @Override
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,

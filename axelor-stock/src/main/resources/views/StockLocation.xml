@@ -7,7 +7,7 @@
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-stock-location-method-open-print-wizard"/>
+        onClick="action-stock-location-method-open-print-wizard"/>
     </toolbar>
     <field name="name"/>
     <field name="parentStockLocation" form-view="stock-location-form"
@@ -153,7 +153,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="usableOnProduction" expr="eval:_productionWorkshop"/>
     <field name="isWorkshop" expr="eval:_productionWorkshop"/>
     <field name="barcodeTypeConfig"
@@ -224,8 +224,11 @@
 
   <action-attrs
     name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
-    <attribute name="value" for="$printingType" expr="1"/>
+    <attribute name="value" for="$printingType"
+      expr="eval: _stockLocation?.isValued ? '1' : '2'"/>
     <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
+    <attribute name="selection-in" for="$printingType" expr="eval:['2']"
+      if="!_stockLocation?.isValued"/>
   </action-attrs>
 
   <action-attrs name="action-stock-location-attrs-set-is-valued">

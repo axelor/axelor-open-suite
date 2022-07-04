@@ -30,22 +30,26 @@ public interface IExceptionMessage {
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
+      /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
+      /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed  category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of these accounts : %s" /*)*/;
   static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
   static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
-      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+      /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
@@ -197,6 +201,8 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
+  static final String ACCOUNTING_REPORT_9 = /*$$(*/
+      "Error : Missing accounting report type for %s" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
   static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
@@ -275,6 +281,8 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
+  static final String MOVE_LINE_8 = /*$$(*/
+      "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
@@ -291,7 +299,7 @@ public interface IExceptionMessage {
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
   static final String MOVE_9 = /*$$(*/
-      "Tax is mandatory for the account %s on the move line %s" /*)*/;
+      "Tax is mandatory for the account %s (%s) on the move line %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
@@ -604,6 +612,8 @@ public interface IExceptionMessage {
       "%s : You must configure a year closure account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_45 = /*$$(*/
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_46 = /*$$(*/
+      "%s : You must configure an supplier advance payment account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -794,14 +804,16 @@ public interface IExceptionMessage {
       "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
-  static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
+  static final String PAYMENT_MODE_1 = /*$$(*/
+      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
 
   static final String PAYMENT_MODE_2 = /*$$(*/
-      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_4 = /*$$(*/
+  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
+
+  static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
+      "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
@@ -870,7 +882,7 @@ public interface IExceptionMessage {
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
-  static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
+  static final String EMPLOYEE_PARTNER = /*$$(*/ "You must create a contact for employee %s" /*)*/;
 
   /*
    * Deposit slip
@@ -973,8 +985,23 @@ public interface IExceptionMessage {
   static final String ACCOUNT_PERIOD_TEMPORARILY_CLOSED = /*$$(*/
       "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves" /*)*/;
 
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL = /*$$(*/
+      "Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS = /*$$(*/
+      "Selected AnalyticAxis doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
+      "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
+
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
+      "The selected date is out of the accounting period." /*)*/;
 
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
@@ -1024,4 +1051,46 @@ public interface IExceptionMessage {
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
+
+  static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
+      "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
+
+  static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
+      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
+
+  static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
+      "Please select a payment mode to generate the counterpart" /*)*/;
+
+  static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
+      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
+
+  static final String FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL = /*$$(*/
+      "The quantity selected is the same as that of the fixed asset. The disposal will therefore be treated as a total disposal" /*)*/;
+
+  static final String IMPORT_FEC_ACCOUNT_NOT_FOUND = /*$$(*/
+      "The account with the code %s cannot be found. The move line cannot be created." /*)*/;
+
+  static final String IMPORT_FEC_JOURNAL_NOT_FOUND = /*$$(*/
+      "The journal with the code %s cannot be found. The move cannot be created." /*)*/;
+
+  static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
+      "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
+      "Please select a cash account in config of the payment mode %s" /*)*/;
+
+  static final String MASS_UPDATE_SUCCESSFUL =
+      /*$$(*/ "Operation successful : %s record(s) updated." /*)*/;
+
+  static final String MASS_UPDATE_SELECTED_NO_RECORD =
+      /*$$(*/ "No record has been updated. Please make sure the selection can be updated accordingly." /*)*/;
+
+  static final String MASS_UPDATE_ALL_NO_RECORD =
+      /*$$(*/ "No record has been updated. Please make sure the selection can be updated accordingly (e.g. Status different from selected one)." /*)*/;
+
+  static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
+
+  static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+  static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
+      "Capital Depreciation Derogatory Account" /*)*/;
 }

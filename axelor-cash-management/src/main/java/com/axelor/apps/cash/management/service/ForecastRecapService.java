@@ -32,4 +32,7 @@ public interface ForecastRecapService {
 
   String getForecastRecapFileLink(ForecastRecap forecastRecap, String reportType)
       throws AxelorException;
+
+  ForecastRecap computeStartingBalanceForReporting(ForecastRecap forecastRecap)
+      throws AxelorException;
 }

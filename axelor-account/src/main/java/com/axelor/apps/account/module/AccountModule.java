@@ -84,8 +84,6 @@ import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
 import com.axelor.apps.account.service.AnalyticAxisControlServiceImpl;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
-import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -147,6 +145,8 @@ import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
@@ -163,6 +163,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -205,6 +207,8 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.MoveViewHelperServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
+import com.axelor.apps.account.service.move.SimulatedMoveService;
+import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -217,6 +221,8 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
+import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
+import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -401,8 +407,6 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveCreateService.class).to(MoveCreateServiceImpl.class);
 
-    bind(AnalyticFixedAssetService.class).to(AnalyticFixedAssetServiceImpl.class);
-
     bind(FixedAssetDerogatoryLineService.class).to(FixedAssetDerogatoryLineServiceImpl.class);
 
     bind(FixedAssetDerogatoryLineMoveService.class)
@@ -473,5 +477,13 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
 
     bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
+
+    bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
+
+    bind(FixedAssetDateService.class).to(FixedAssetDateServiceImpl.class);
+
+    bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
+
+    bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
   }
 }

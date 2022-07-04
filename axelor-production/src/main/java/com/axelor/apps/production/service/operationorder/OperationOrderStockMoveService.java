@@ -98,9 +98,10 @@ public class OperationOrderStockMoveService {
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
+    ManufOrder manufOrder = operationOrder.getManufOrder();
     StockLocation virtualStockLocation =
         stockConfigService.getProductionVirtualStockLocation(
-            stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());
+            stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation;
 
@@ -109,13 +110,15 @@ public class OperationOrderStockMoveService {
         && prodProcessLine != null
         && prodProcessLine.getStockLocation() != null) {
       fromStockLocation = prodProcessLine.getStockLocation();
-    } else if (!operationOrder.getManufOrder().getIsConsProOnOperation()
+    } else if (!manufOrder.getIsConsProOnOperation()
         && prodProcessLine != null
         && prodProcessLine.getProdProcess() != null
         && prodProcessLine.getProdProcess().getStockLocation() != null) {
       fromStockLocation = prodProcessLine.getProdProcess().getStockLocation();
     } else {
-      fromStockLocation = stockConfigService.getComponentDefaultStockLocation(stockConfig);
+      fromStockLocation =
+          stockConfigService.getComponentDefaultStockLocation(
+              manufOrder.getWorkshopStockLocation(), stockConfig);
     }
 
     return stockMoveService.createStockMove(
@@ -316,6 +319,7 @@ public class OperationOrderStockMoveService {
                   !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(operationOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 }

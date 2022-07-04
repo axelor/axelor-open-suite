@@ -72,4 +72,7 @@ public interface BillOfMaterialService {
   @CallMethod
   public BillOfMaterial getDefaultBOM(Product originalProduct, Company company)
       throws AxelorException;
+
+  List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
+      throws AxelorException;
 }

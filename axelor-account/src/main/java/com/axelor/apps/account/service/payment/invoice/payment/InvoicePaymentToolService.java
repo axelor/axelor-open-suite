@@ -43,7 +43,17 @@ public interface InvoicePaymentToolService {
 
   List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
 
-  List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
+  /**
+   * Method to get move lines from payment. The move lines are either credit or debit depending on
+   * the value of getCreditLine
+   *
+   * @param payments
+   * @param getCreditLine
+   * @return
+   */
+  List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLine);
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+
+  boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 }

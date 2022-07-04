@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -90,7 +90,7 @@ public class DataBackupServiceImpl implements DataBackupService {
           @Override
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
-            DataBackup obj = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+            DataBackup obj = dataBackupRepository.find(dataBackup.getId());
             obj = createService.create(obj);
             MetaFile logFile = obj.getLogMetaFile();
             MetaFile zipFile = obj.getBackupMetaFile();
@@ -99,6 +99,7 @@ public class DataBackupServiceImpl implements DataBackupService {
             if (status != DataBackupRepository.DATA_BACKUP_STATUS_ERROR) {
               obj.setBackupMetaFile(zipFile);
               obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_CREATED);
+              obj.setBackupDate(LocalDateTime.now());
             } else {
               obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_ERROR);
             }
@@ -113,7 +114,7 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   @Override
   public void restoreBackUp(DataBackup dataBackup) {
-    DataBackup obj = setStatus(dataBackup);
+    setStatus(dataBackup);
 
     try {
       executor.submit(
@@ -136,7 +137,7 @@ public class DataBackupServiceImpl implements DataBackupService {
           @Override
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
-            DataBackup obj = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+            DataBackup obj = dataBackupRepository.find(dataBackup.getId());
             File logFile = restoreService.restore(obj.getBackupMetaFile());
             save(logFile, obj);
             LOG.info("Data Restore Saved");
@@ -146,14 +147,14 @@ public class DataBackupServiceImpl implements DataBackupService {
           public void save(File logFile, DataBackup obj) {
             try {
               JPA.em().getTransaction().begin();
-              obj = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+              obj = dataBackupRepository.find(dataBackup.getId());
               if (logFile != null) {
                 obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_RESTORE);
                 obj.setLogMetaFile(metaFiles.upload(logFile));
               } else {
                 obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_RESTORE_ERROR);
               }
-              Beans.get(DataBackupRepository.class).save(obj);
+              dataBackupRepository.save(obj);
               JPA.em().getTransaction().commit();
             } catch (Exception e) {
               e.printStackTrace();
@@ -187,7 +188,7 @@ public class DataBackupServiceImpl implements DataBackupService {
     for (MetaModel metaModel : metaModelList) {
       try {
         Class.forName(metaModel.getFullName());
-        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
+        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter) + "'";
         String query =
             "Update "
                 + metaModel.getName()

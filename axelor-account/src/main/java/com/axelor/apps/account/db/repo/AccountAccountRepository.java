@@ -58,7 +58,7 @@ public class AccountAccountRepository extends AccountRepository {
       return super.save(account);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -67,6 +67,7 @@ public class AccountAccountRepository extends AccountRepository {
     Account account = super.copy(entity, deep);
     account.setCode(String.format("%s (copy)", account.getCode()));
     account.setName(String.format("%s (copy)", account.getName()));
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
     return account;
   }
 }

@@ -306,6 +306,7 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
+    <option value="7">Irrecoverable Debt</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -395,6 +396,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="noteBills">Note bills</option>
   </selection>
 
   <selection name="account.notification.item.type.select">
@@ -507,6 +509,8 @@
     <option value='5'>Payment</option>
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
+
+    <option value='9'>Irrecoverable</option>
   </selection>
 
   <selection name="account.year.period.duration.select">

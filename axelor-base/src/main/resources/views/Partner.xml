@@ -278,14 +278,13 @@
 								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
 								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
 								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
 							</h4>
                         ]]>
           </viewer>
         </field>
-        <field name="$isSubcontractor" type="boolean" hidden="true" colSpan="12"/>
         <field name="isContact" hidden="true" colSpan="12"/>
         <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
@@ -431,7 +430,8 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
         </panel>
 
         <panel name="employeePanel" hidden="true">
@@ -659,7 +659,8 @@
           <field name="fax" widget="phone"/>
           <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
           <field name="mobilePhone" widget="phone"/>
-          <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -727,7 +728,7 @@
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
           </editor>
         </field>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
@@ -825,7 +826,8 @@
       <field name="fax" widget="phone"/>
       <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
       <field name="mobilePhone" widget="phone"/>
-      <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+      <field name="webSite" placeholder="http://www.url.com" widget="url"
+        pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
     </panel>
   </form>
 
@@ -854,10 +856,10 @@
     <field name="registrationCode"/>
     <field name="companyStr"/>
     <field name="mainAddress"/>
-    <field name="isSupplier"/>
-    <field name="isCustomer"/>
     <field name="isProspect"/>
     <field name="isEmployee"/>
+    <field name="isCustomer"/>
+    <field name="isSupplier"/>
     <field name="isSubcontractor"/>
     <field name="isFactor"/>
     <field name="isCarrier"/>
@@ -1065,8 +1067,6 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
     <action name="action-partner-attrs-set-canselect"/>
-    <action name="action-partner-attrs-set-subcontactor"
-      if="__config__.app.isApp('production')"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1522,10 +1522,6 @@
       if="__config__.app.getApp('crm').assignableUsers == 1"/>
   </action-attrs>
 
-  <action-attrs name="action-partner-attrs-set-subcontactor">
-    <attribute name="value" for="$isSubcontractor"
-      expr="eval:__config__.app.getApp('production')?.getManageOutsourcing()"/>
-  </action-attrs>
 
   <action-view name="action-partner-view-subsidiary-partners" title="Subsidiaries"
     model="com.axelor.apps.base.db.Partner">

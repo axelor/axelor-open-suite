@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -54,18 +55,22 @@ public class OpportunitySaleOrderController {
   }
 
   public void cancelSaleOrders(ActionRequest request, ActionResponse response) {
-    Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
-    if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
-      List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
-      if (saleOrderList != null && !saleOrderList.isEmpty()) {
-        for (SaleOrder saleOrder : saleOrderList) {
-          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
-              || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-            saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+    try {
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+      SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
+      if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
+        List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
+        if (saleOrderList != null && !saleOrderList.isEmpty()) {
+          for (SaleOrder saleOrder : saleOrderList) {
+            if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+                || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+              saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+            }
           }
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

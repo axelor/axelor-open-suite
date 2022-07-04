@@ -93,6 +93,12 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public boolean validate(StockCorrection stockCorrection) throws AxelorException {
+    if (stockCorrection.getStatusSelect() == null
+        || stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
+    }
     AppBaseService baseService = Beans.get(AppBaseService.class);
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {
@@ -157,7 +163,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
             product.getDescription(),
             diff.abs(),
             productCostPrice,
-            productCostPrice,
+            stockLocationLine.getAvgPrice(),
             product.getUnit(),
             stockMove,
             StockMoveLineService.TYPE_NULL,
@@ -202,6 +208,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   public void getDefaultQtys(
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
+    stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("futureQty", stockLocationLine.getFutureQty());
   }
