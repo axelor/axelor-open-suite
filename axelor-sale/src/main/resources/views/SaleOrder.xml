@@ -1474,7 +1474,8 @@
     <action name="action-sale-order-record-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-sale-order-method-address-str"/>
-    <action name="action-sale-order-method-fill-price-list" if="!template"/>
+    <action name="action-sale-order-method-fill-price-list"
+      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-set-contact-partner"/>
@@ -1731,8 +1732,10 @@
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
-    <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"/>
-    <field name="currency" expr="eval: clientPartner?.currency" if="!template"/>
+    <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
+      if="saleOrderLineList?.isEmpty()"/>
+    <field name="currency" expr="eval: clientPartner?.currency"
+      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode != null"/>
     <field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode"

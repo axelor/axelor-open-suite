@@ -1444,7 +1444,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-specific-note-on-invoice"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-set-default-mail"/>
-    <action name="action-invoice-method-fill-price-list"/>
+    <action name="action-invoice-method-fill-price-list"
+      if="eval: invoiceLineList?.isEmpty()"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
@@ -1577,10 +1578,11 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"
-      if="partner?.fiscalPosition != null"/>
+      if="eval: invoiceLineList?.isEmpty()"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
-    <field name="currency" expr="eval: partner?.currency"/>
+    <field name="currency" expr="eval: partner?.currency"
+      if="eval: invoiceLineList?.isEmpty()"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
