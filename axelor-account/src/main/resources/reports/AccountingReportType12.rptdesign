@@ -1404,7 +1404,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'AccountingReportType15.title'</value>
+                                            <value type="javascript">'AccountingReportType12.title'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
