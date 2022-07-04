@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Invoice" lang="java">
+  <entity sequential="true" name="Invoice" lang="java"
+    implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
