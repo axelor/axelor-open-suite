@@ -167,6 +167,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceDomainService;
+import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
@@ -485,5 +487,7 @@ public class AccountModule extends AxelorModule {
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
 
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
+
+    bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
   }
 }
