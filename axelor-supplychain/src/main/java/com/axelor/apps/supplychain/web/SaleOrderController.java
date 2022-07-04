@@ -39,7 +39,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -143,7 +143,8 @@ public class SaleOrderController {
                               I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
-          response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+          response.setFlash(
+              I18n.get(SupplychainExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
     } catch (Exception e) {
@@ -200,7 +201,7 @@ public class SaleOrderController {
           }
 
           if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
                 ActionView.define("SaleOrder")
@@ -277,7 +278,8 @@ public class SaleOrderController {
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
       if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+        throw new AxelorException(
+            3, I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {
       supplierPartner =
@@ -504,7 +506,7 @@ public class SaleOrderController {
     if (commonCurrency == null) {
       fieldErrors.append(
           I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
+              com.axelor.apps.sale.exception.SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
     }
     if (commonClientPartner == null) {
       if (fieldErrors.length() > 0) {
@@ -512,7 +514,7 @@ public class SaleOrderController {
       }
       fieldErrors.append(
           I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
+              com.axelor.apps.sale.exception.SaleExceptionMessage
                   .SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
     }
     if (commonCompany == null) {
@@ -521,7 +523,7 @@ public class SaleOrderController {
       }
       fieldErrors.append(
           I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+              com.axelor.apps.sale.exception.SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
     }
 
     if (existTaxNumberDiff) {
@@ -530,7 +532,8 @@ public class SaleOrderController {
       }
       fieldErrors.append(
           I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+              com.axelor.apps.sale.exception.SaleExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
     }
 
     if (existFiscalPositionDiff) {
@@ -539,7 +542,7 @@ public class SaleOrderController {
       }
       fieldErrors.append(
           I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
+              com.axelor.apps.sale.exception.SaleExceptionMessage
                   .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
@@ -792,7 +795,7 @@ public class SaleOrderController {
     if (stockMove != null) {
       response.setNotify(
           String.format(
-              I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
               stockMove.getStockMoveSeq()));
     }
   }
