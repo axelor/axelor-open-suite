@@ -308,7 +308,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     if (saleOrdersToMerge.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IExceptionMessage.SALE_ORDER_MERGE_LIST_EMPTY);
+          I18n.get(IExceptionMessage.SALE_ORDER_MERGE_LIST_EMPTY));
     }
 
     SaleOrder firstSaleOrder = saleOrdersToMerge.get(0);

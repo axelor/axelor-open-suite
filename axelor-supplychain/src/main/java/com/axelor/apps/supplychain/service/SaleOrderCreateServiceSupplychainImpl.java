@@ -141,6 +141,42 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Partner clientPartner,
       Team team,
       TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+
+    return createSaleOrder(
+        salespersonUser,
+        company,
+        contactPartner,
+        currency,
+        deliveryDate,
+        internalReference,
+        externalReference,
+        stockLocation,
+        priceList,
+        clientPartner,
+        team,
+        taxNumber,
+        fiscalPosition,
+        null,
+        null,
+        null,
+        null);
+  }
+
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      StockLocation stockLocation,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
       TradingName tradingName,
       Incoterm incoterm,
