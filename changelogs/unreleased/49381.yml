@@ -1,3 +1,0 @@
----
-title: "Invoice: Fix AxelorException when we delete the operationTypeSelect"
-type: fix

@@ -411,7 +411,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             .getAccountConfig(invoice.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-      productInformation.put("analyticMoveLineList", null);
+      productInformation.put("analyticMoveLineList", new ArrayList<AnalyticMoveLine>());
     }
     return productInformation;
   }

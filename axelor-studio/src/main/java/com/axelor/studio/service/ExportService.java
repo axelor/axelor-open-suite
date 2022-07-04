@@ -22,6 +22,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
+import com.axelor.studio.db.WsKeyValue;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.common.base.Strings;
 import java.io.File;
@@ -157,6 +158,44 @@ public class ExportService {
               + "</subLines>"
               + indent
               + "</line>";
+    }
+
+    return StringEscapeUtils.unescapeXml(xml);
+  }
+
+  public static String exportWsKeyValueLines(List<WsKeyValue> wsKeyValues, int count, String type) {
+    String xml = "";
+
+    String indent = "\n" + Strings.repeat("\t", count);
+    String indentPlus = "\n" + Strings.repeat("\t", count + 1);
+
+    for (WsKeyValue wsKeyValue : wsKeyValues) {
+      xml +=
+          indent
+              + "<"
+              + type
+              + ">"
+              + indentPlus
+              + "<key>"
+              + wsKeyValue.getWsKey()
+              + "</key>"
+              + indentPlus
+              + "<value>"
+              + wsKeyValue.getWsValue()
+              + "</value>"
+              + indentPlus
+              + "<isList>"
+              + wsKeyValue.getIsList()
+              + "</isList>"
+              + indentPlus
+              + "<subWsKeyValues>"
+              + exportWsKeyValueLines(wsKeyValue.getSubWsKeyValueList(), count + 2, type)
+              + indentPlus
+              + "</subWsKeyValues>"
+              + indent
+              + "</"
+              + type
+              + ">";
     }
 
     return StringEscapeUtils.unescapeXml(xml);

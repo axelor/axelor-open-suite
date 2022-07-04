@@ -70,7 +70,7 @@
         showIf="statusSelect == 2"/>
       <button name="exportBtn" title="Export"
         onClick="save,action-unit-cost-calculation-method-export-csv" hideIf="statusSelect == 1"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         onClick="save,action-unit-cost-calculation-view-import-csv" showIf="statusSelect == 2"/>
     </panel>
     <panel name="datePanel" sidebar="true" showIf="statusSelect != 1">
@@ -88,7 +88,7 @@
     <panel name="wizardPanel">
       <field name="metaFile" title="Input file" type="many-to-one"
         target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
-      <button name="importBtn" colSpan="4" title="Import" readonlyIf="metaFile == null"
+      <button name="importBtn" colSpan="4" title="import.verb" readonlyIf="metaFile == null"
         onClick="action-unit-cost-calculation-method-import-csv"/>
     </panel>
   </form>
@@ -118,7 +118,7 @@
       method="importUnitCostCalc"/>
   </action-method>
 
-  <action-view name="action-unit-cost-calculation-view-import-csv" title="Import"
+  <action-view name="action-unit-cost-calculation-view-import-csv" title="import.name"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="wizard-unit-cost-calc-import-form"/>
     <view-param name="show-toolbar" value="false"/>

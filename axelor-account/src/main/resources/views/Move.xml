@@ -72,11 +72,10 @@
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
-            canView="false" readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
+            canView="false" readonly="true"/>
           <field name="date"
             readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-move-method-get-period,action-move-method-check-period-permissions,action-move-method-set-moveline-dates"
-            hideIf="statusSelect == 3" colSpan="3"/>
+            onChange="action-group-move-date-onchange" hideIf="statusSelect == 3" colSpan="3"/>
           <field name="originDate" colSpan="3"
             onChange="action-move-method-set-moveline-origin-dates"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
@@ -88,7 +87,7 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-account-move-method-filter-partner"
+            onSelect="action-move-group-partner-on-select"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -319,7 +318,7 @@
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
           <field name="date" hideIf="statusSelect == 3" colSpan="3"
-            onChange="action-move-method-get-period"/>
+            onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
           <field if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
@@ -555,9 +554,16 @@
 
   <action-group name="action-group-move-company-onchange">
     <action name="action-move-record-journal"/>
-    <action name="action-move-method-get-period"/>
+    <action name="action-group-move-date-onchange"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+  </action-group>
+
+  <action-group name="action-group-move-date-onchange">
+    <action name="action-move-method-get-period"/>
+    <action name="action-record-initialize-permission-validation-move"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-set-moveline-dates"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
@@ -612,6 +618,7 @@
   <action-record name="action-account-move-record-set-currency"
     model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency"/>
+    <field name="currencyCode" expr="eval: partner?.currency?.code"/>
   </action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
@@ -846,10 +853,25 @@
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
 
   </action-method>
+  <action-method
+    name="action-account-move-method-filter-journal-partner-compatible-type">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="filterJournalPartnerCompatibleType"/>
+  </action-method>
+
+  <action-group name="action-move-group-partner-on-select">
+    <action name="action-account-move-method-filter-partner"/>
+    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
+  </action-group>
+
+  <action-method name="action-move-method-journal-on-change">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
 
   <action-group name="action-move-group-journal-on-change">
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-journal-on-change"/>
   </action-group>
 
 </object-views>

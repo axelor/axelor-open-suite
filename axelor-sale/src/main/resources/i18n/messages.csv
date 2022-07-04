@@ -644,6 +644,7 @@
 "gives access to connected user.",,,
 "gives access to the id of parent sale order (when adding a sale order line with this configurator)",,,
 "gives access to today date and",,,
+"import.verb",,,
 "important",,,
 "info",,,
 "is used for concatenation",,,

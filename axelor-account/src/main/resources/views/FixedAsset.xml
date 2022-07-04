@@ -231,7 +231,7 @@
         hidden="true"/>
       <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
         onClick="save,action-fixed-asset-view-show-split-wizard" hidden="true"/>
-      <field name="$canUpdateDepreciation" type="integer" hidden="true"/>
+      <field name="$canUpdateDepreciation" type="boolean" hidden="true"/>
     </panel>
     <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
       <field name="acquisitionDate"
@@ -271,9 +271,10 @@
       <field name="disposalValue" readonly="true" showIf="statusSelect == 4" hidden="true"/>
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid" hidden="true"/>
-      <field name="saleAccountMove" domain="self.company = :company"
+      <field name="saleAccountMove"
+        domain="self.company = :company AND self.journal.journalType.technicalTypeSelect = 2 AND (self.functionalOriginSelect = 3 OR self.functionalOriginSelect = 7)"
         showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
-        hidden="true"/>
+        form-view="move-form" grid-view="move-grid" hidden="true"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
@@ -506,15 +507,6 @@
       if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
   </search-filters>
 
-  <action-record name="action-record-fixed-asset-initialize-first-dates"
-    model="com.axelor.apps.account.db.FixedAsset">
-    <field name="firstServiceDate" expr="eval: acquisitionDate"
-      if="!firstServiceDate &amp;&amp; acquisitionDate"/>
-    <field name="firstDepreciationDate"
-      expr="call: com.axelor.apps.account.service.AnalyticFixedAssetService:computeFirstDepreciationDate(__this__,acquisitionDate)"
-      if="id &amp;&amp; acquisitionDate &amp;&amp; statusSelect == 1"/>
-  </action-record>
-
   <action-group name="action-group-fixed-asset-panels-copy-fiscal-depreciation">
     <action name="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
     <action name="action-attrs-fixed-asset-ifrs-depreciation-equal"
@@ -657,12 +649,12 @@
   </action-attrs>
 
   <action-attrs name="action-attrs-account-fixed-asset-set-can-update-depreciation">
-    <attribute name="value" for="$canUpdateDepreciation" expr="eval:1"
-      if="$canUpdateDepreciation == null || $canUpdateDepreciation == 0"/>
+    <attribute name="value" for="$canUpdateDepreciation" expr="eval: true"/>
   </action-attrs>
+
   <action-attrs
     name="action-attrs-account-fixed-asset-set-false-can-update-depreciation">
-    <attribute name="value" for="$canUpdateDepreciation" expr="eval:0"/>
+    <attribute name="value" for="$canUpdateDepreciation" expr="eval: false"/>
   </action-attrs>
 
   <action-record name="action-record-account-fixed-asset-compute-fiscal-duration"
