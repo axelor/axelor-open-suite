@@ -96,7 +96,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.mail.MessagingException;
-import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -115,6 +114,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected PaymentModeService paymentModeService;
+  protected PeriodRepository periodRepository;
 
   @Inject
   public ExpenseServiceImpl(
@@ -130,6 +130,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
+      PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService) {
 
     this.moveCreateService = moveCreateService;
@@ -144,6 +145,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
+    this.periodRepository = periodRepository;
     this.moveLineConsolidateService = moveLineConsolidateService;
   }
 
@@ -201,17 +203,22 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) {
+
+    LocalDate date =
+        Optional.ofNullable(expenseLine.getExpenseDate())
+            .orElse(
+                appAccountService.getTodayDate(
+                    expenseLine.getExpense() != null
+                        ? expenseLine.getExpense().getCompany()
+                        : Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null)));
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             expenseLine.getAnalyticDistributionTemplate(),
             expenseLine.getUntaxedAmount(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate(
-                expenseLine.getExpense() != null
-                    ? expenseLine.getExpense().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
+            date);
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;
@@ -470,6 +477,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               expenseLine.getComments() != null
                   ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                   : "");
+      moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
@@ -688,7 +696,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public void addPayment(Expense expense) throws AxelorException {
-    addPayment(expense, expense.getCompany().getDefaultBankDetails());
+    addPayment(expense, expense.getBankDetails());
   }
 
   @Override
@@ -1052,18 +1060,33 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Expense updateMoveDateAndPeriod(Expense expense) {
-    if (CollectionUtils.isNotEmpty(expense.getGeneralExpenseLineList())) {
-      LocalDate recentDate =
-          expense.getGeneralExpenseLineList().stream()
-              .map(ExpenseLine::getExpenseDate)
-              .max(LocalDate::compareTo)
-              .get();
-      expense.setMoveDate(recentDate);
+    updateMoveDate(expense);
+    updatePeriod(expense);
+    return expense;
+  }
 
-      PeriodRepository periodRepository = Beans.get(PeriodRepository.class);
+  protected void updateMoveDate(Expense expense) {
+    List<ExpenseLine> expenseLines = new ArrayList<>();
+
+    if (expense.getGeneralExpenseLineList() != null) {
+      expenseLines.addAll(expense.getGeneralExpenseLineList());
+    }
+    if (expense.getKilometricExpenseLineList() != null) {
+      expenseLines.addAll(expense.getKilometricExpenseLineList());
+    }
+    expense.setMoveDate(
+        expenseLines.stream()
+            .map(ExpenseLine::getExpenseDate)
+            .max(LocalDate::compareTo)
+            .orElse(null));
+  }
+
+  protected void updatePeriod(Expense expense) {
+    if (expense.getMoveDate() != null) {
+      LocalDate moveDate = expense.getMoveDate();
       if (expense.getPeriod() == null
-          || !(recentDate.compareTo(expense.getPeriod().getFromDate()) >= 0)
-          || !(recentDate.compareTo(expense.getPeriod().getToDate()) <= 0)) {
+          || !(moveDate.compareTo(expense.getPeriod().getFromDate()) >= 0)
+          || !(moveDate.compareTo(expense.getPeriod().getToDate()) <= 0)) {
         expense.setPeriod(
             periodRepository
                 .all()
@@ -1076,6 +1099,5 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .fetchOne());
       }
     }
-    return expense;
   }
 }

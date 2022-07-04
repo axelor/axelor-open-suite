@@ -136,6 +136,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceDomainService;
+import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
@@ -405,6 +407,8 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceMergingService.class).to(InvoiceMergingServiceImpl.class);
 
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
+
+    bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
 
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
   }

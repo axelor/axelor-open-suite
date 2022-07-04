@@ -142,16 +142,16 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.partner.id = :id</domain>
-    <context name="id" expr="eval: id"/>
+    <domain>self.partner.id = :partnerId</domain>
+    <context name="partnerId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
-    <context name="id" expr="eval: id"/>
+    <domain>self.partner.id = :partnerId AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
+    <context name="partnerId" expr="eval: id"/>
   </action-view>
 
   <action-method name="action-partner-method-show-client-situation">

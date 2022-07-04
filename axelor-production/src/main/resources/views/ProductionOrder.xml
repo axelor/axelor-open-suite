@@ -54,8 +54,6 @@
         grid-view="project-grid"
         if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
     </panel>
-    <!-- <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order"
-      showIf="businessProject"/> -->
     <panel-tabs name="mainPanelTab">
       <panel-related name="manufOrderListPanel" field="manufOrderSet" colSpan="12"
         edit-window="blank" canNew="false" form-view="manuf-order-form">

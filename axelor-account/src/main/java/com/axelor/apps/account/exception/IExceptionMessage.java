@@ -161,6 +161,8 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
+  static final String ACCOUNTING_REPORT_9 = /*$$(*/
+      "Error : Missing accounting report type for %s" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
   static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
@@ -742,14 +744,16 @@ public interface IExceptionMessage {
       "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
-  static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
+  static final String PAYMENT_MODE_1 = /*$$(*/
+      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
 
   static final String PAYMENT_MODE_2 = /*$$(*/
-      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_4 = /*$$(*/
+  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
+
+  static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
+      "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
@@ -952,4 +956,16 @@ public interface IExceptionMessage {
 
   static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
+
+  static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
+      "Please select a cash account in config of the payment mode %s" /*)*/;
+
+  static final String FIXED_ASSET_CATEGORY_MISSING_CHARGE_OR_DEPRECIATION_ACCOUNT = /*$$(*/
+      "Please select a charge and depreciation account in fixed asset category %s" /*)*/;
+
+  static final String FIXED_ASSET_MISSING_PURCHASE_ACCOUNT = /*$$(*/
+      "Please select a purchase account" /*)*/;
+
+  static final String FIXED_ASSET_CATEGORY_MISSING_DEBIT_OR_CREDIT_ACCOUNT = /*$$(*/
+      "Please select a debit and credit account in fixed asset category %s" /*)*/;
 }
