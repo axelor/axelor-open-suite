@@ -115,15 +115,15 @@ public class DebtRecoverySessionService {
     if ((appAccountService.getTodayDate(debtRecovery.getCompany()).isAfter(referenceDate)
             || appAccountService.getTodayDate(debtRecovery.getCompany()).isEqual(referenceDate))
         && balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
-      log.debug(
-          "If the current date is equal or after the reference date and the balance due debt recovery is positive");
+      // If the current date is equal or after the reference date and the balance due debt recovery
+      // is positive
       // Pour les client à haut risque vital, on passe directement du niveau de relance 2 au niveau
       // de relance 4
       if (debtRecoveryLevel < levelMax) {
-        log.debug("Else this is not a high risk vital customer");
+        // Else this is not a high risk vital customer"
         theoricalDebtRecoveryLevel = debtRecoveryLevel + 1;
       } else {
-        log.debug("Else this is a high risk vital customer");
+        // Else this is a high risk vital customer
         theoricalDebtRecoveryLevel = levelMax;
       }
 
@@ -133,24 +133,24 @@ public class DebtRecoverySessionService {
       if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
               .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
           && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
-        log.debug(
-            "If the threshold of the balance due debt recovery is respected and the deadline is respected");
+        // If the threshold of the balance due debt recovery is respected and the deadline is
+        // respected
 
         if (!debtRecoveryMethodLine.getManualValidationOk()) {
-          log.debug("If the debt recovery level doesn't need manual validation");
+          // If the debt recovery level doesn't need manual validation
           debtRecovery.setDebtRecoveryMethodLine(
               debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
           debtRecovery.setWaitDebtRecoveryMethodLine(null);
           // et lancer les autres actions du niveau
         } else {
-          log.debug("If the debt recovery level need manual validation");
+          // If the debt recovery level need manual validation
           debtRecovery.setWaitDebtRecoveryMethodLine(
               debtRecoveryMethodLine); // Si le passage est manuel
         }
       }
 
     } else {
-      log.debug("Else we reset");
+      // Else we reset
       this.debtRecoveryInitialization(debtRecovery);
     }
     log.debug("End debtRecoverySession service");

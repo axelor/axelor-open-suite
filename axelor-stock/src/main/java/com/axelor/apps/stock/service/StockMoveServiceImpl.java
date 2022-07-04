@@ -1013,7 +1013,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException {
 
     LOG.debug(
-        "Creation of a reverded stock move of the stock move : {} ",
+        "Creation of a reversed stock move of the stock move : {} ",
         new Object[] {stockMove.getStockMoveSeq()});
 
     return copyAndSplitStockMoveReverse(stockMove, false);
