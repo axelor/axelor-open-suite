@@ -456,9 +456,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (invoiceTermList != null) {
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment,
-              invoiceTermList,
-              invoicePayment != null ? invoicePayment.getAmount() : amount);
+              invoicePayment, invoiceTermList, amount);
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         invoiceTermService.updateInvoiceTermsPaidAmount(
