@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplierportal.exceptions;
 
+/** @deprecated Replaced by {@link SupplierPortalExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
   static final String PRODUCT_SUPPLIER_NO_NAME = /*$$(*/ "Product has no name." /*)*/;

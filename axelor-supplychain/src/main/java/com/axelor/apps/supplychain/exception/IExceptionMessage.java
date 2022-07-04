@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.supplychain.exception;
 
-/** @author axelor */
+/**
+ * @author axelor *
+ * @deprecated Replaced by {@link SupplychainExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
   /** Purchase order Invoice Service and controller */

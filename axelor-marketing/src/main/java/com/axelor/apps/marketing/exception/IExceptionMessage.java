@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.marketing.exception;
 
+/** @deprecated Replaced by {@link MarketingExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
 

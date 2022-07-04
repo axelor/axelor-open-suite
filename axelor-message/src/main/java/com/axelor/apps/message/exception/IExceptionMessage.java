@@ -18,7 +18,10 @@
 /** */
 package com.axelor.apps.message.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link MessageExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

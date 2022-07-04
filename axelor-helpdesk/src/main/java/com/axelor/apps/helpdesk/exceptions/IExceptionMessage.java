@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.helpdesk.exceptions;
 
+/** @deprecated Replaced by {@link HelpdeskExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
 

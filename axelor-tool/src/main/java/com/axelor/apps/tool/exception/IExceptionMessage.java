@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.tool.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link ToolExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

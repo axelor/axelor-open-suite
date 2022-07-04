@@ -18,7 +18,10 @@
 /** */
 package com.axelor.apps.stock.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link StockExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

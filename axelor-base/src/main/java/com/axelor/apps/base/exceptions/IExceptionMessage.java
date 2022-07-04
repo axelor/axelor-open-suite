@@ -20,6 +20,7 @@ package com.axelor.apps.base.exceptions;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link BaseExceptionMessage}
  * @author dubaux
  */
 @Deprecated

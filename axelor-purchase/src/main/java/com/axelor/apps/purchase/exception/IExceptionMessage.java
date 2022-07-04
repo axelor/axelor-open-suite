@@ -18,7 +18,10 @@
 /** */
 package com.axelor.apps.purchase.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link PurchaseExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

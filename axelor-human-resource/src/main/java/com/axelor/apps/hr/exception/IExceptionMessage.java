@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.hr.exception;
 
-/** Interface of Exceptions. Enum all exception of axelor-human-resource. */
+/**
+ * Interface of Exceptions. Enum all exception of axelor-human-resource.
+ *
+ * @deprecated Replaced by {@link HumanResourceExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

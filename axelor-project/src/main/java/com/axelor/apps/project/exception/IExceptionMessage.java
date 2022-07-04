@@ -20,6 +20,7 @@ package com.axelor.apps.project.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link ProjectExceptionMessage}
  * @author dubaux
  */
 @Deprecated

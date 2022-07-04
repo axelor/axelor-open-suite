@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.exceptions;
 
+/** @deprecated Replaced by {@link AdminExceptionMessage} */
 @Deprecated
 public interface IExceptionMessages {
 

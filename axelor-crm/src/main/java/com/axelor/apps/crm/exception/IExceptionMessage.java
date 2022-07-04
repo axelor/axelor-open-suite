@@ -18,7 +18,10 @@
 /** */
 package com.axelor.apps.crm.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link CrmExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

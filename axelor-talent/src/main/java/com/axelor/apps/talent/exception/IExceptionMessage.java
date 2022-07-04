@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.talent.exception;
 
+/** @deprecated Replaced by {@link TalentExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
 

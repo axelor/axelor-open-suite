@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.projectdms.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link ProjectDmsExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

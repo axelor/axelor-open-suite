@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.exception;
 
+/** @deprecated Replaced by {@link ContractExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
 

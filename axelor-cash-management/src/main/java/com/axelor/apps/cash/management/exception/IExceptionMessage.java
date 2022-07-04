@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.cash.management.exception;
 
+/** @deprecated Replaced by {@link CashManagementExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
 

@@ -18,7 +18,10 @@
 /** */
 package com.axelor.apps.quality.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link QualityExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
 

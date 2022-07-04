@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.maintenance.exception;
 
-/** Interface of Exceptions. Enum all exception of axelor-maintenance. */
+/**
+ * Interface of Exceptions. Enum all exception of axelor-maintenance.
+ *
+ * @deprecated Replaced by {@link MaintenanceExceptionMessage}
+ */
 @Deprecated
 public interface IExceptionMessage {
   static final String EQUIPEMENT_MAINTENANCE_MISSING_SEQUENCE = /*$$(*/

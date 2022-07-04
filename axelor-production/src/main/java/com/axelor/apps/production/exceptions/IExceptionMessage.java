@@ -20,6 +20,7 @@ package com.axelor.apps.production.exceptions;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link ProductionExceptionMessage}
  * @author dubaux
  */
 @Deprecated

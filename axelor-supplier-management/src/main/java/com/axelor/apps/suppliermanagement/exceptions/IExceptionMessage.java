@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.suppliermanagement.exceptions;
 
+/** @deprecated Replaced by {@link SupplierManagementExceptionMessage} */
 @Deprecated
 public interface IExceptionMessage {
 

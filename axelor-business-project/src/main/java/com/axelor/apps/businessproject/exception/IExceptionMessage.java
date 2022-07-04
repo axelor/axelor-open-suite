@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BusinessProjectExceptionMessage}
  * @author dubaux
  */
 @Deprecated
