@@ -19,6 +19,7 @@ package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -164,12 +165,14 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
   @Override
   public ProjectTask copy(ProjectTask entity, boolean deep) {
     ProjectTask task = super.copy(entity, deep);
+    ProjectStatus projectStatus = projectTaskService.getStatus(task.getProject());
     task.setAssignedTo(null);
     task.setTaskDate(null);
     task.setPriority(null);
     task.setProgressSelect(null);
     task.setTaskEndDate(null);
     task.setMetaFile(null);
+    task.setStatus(projectStatus);
     return task;
   }
 }
