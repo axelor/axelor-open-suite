@@ -328,7 +328,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       move.setStockMove(stockMove);
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;
@@ -465,8 +465,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             product, company, fiscalPosition, isPurchase, isFixedAssets);
 
     boolean isDebit = false;
-    if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == 1)
-        || !isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == -1) {
+    if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) > 0)
+        || !isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) < 0) {
       isDebit = true;
     }
     if (isReverse) {
@@ -535,7 +535,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             move.getPartner(),
             taxAccount,
             currencyTaxAmount,
-            productMoveLine.getDebit().compareTo(BigDecimal.ZERO) == 1,
+            productMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
             productMoveLine.getOriginDate(),
             ++counter,
             origin,
@@ -566,7 +566,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             currencyBalance.abs(),
             balance.abs(),
             null,
-            balance.compareTo(BigDecimal.ZERO) == -1,
+            balance.compareTo(BigDecimal.ZERO) < 0,
             moveDate,
             moveDate,
             originDate,

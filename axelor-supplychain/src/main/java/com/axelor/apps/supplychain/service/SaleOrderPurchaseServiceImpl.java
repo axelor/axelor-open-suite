@@ -100,7 +100,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         }
 
         if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
+          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<>());
         }
 
         saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);

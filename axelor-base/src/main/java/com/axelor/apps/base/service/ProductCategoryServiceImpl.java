@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -188,5 +189,21 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         .filter("self.parentProductCategory.id = :productCategoryId")
         .bind("productCategoryId", productCategory.getId())
         .fetch();
+  }
+
+  @Override
+  public BigDecimal getGrowthCoeff(ProductCategory productCategory) {
+    Objects.requireNonNull(productCategory);
+    return getGrowthCoeffBis(productCategory, 0);
+  }
+
+  protected BigDecimal getGrowthCoeffBis(ProductCategory productCategory, int i) {
+    if (productCategory.getGrowthCoef().compareTo(BigDecimal.ONE) != 0
+        || productCategory.getParentProductCategory() == null
+        || i == MAX_ITERATION) {
+      return productCategory.getGrowthCoef();
+    }
+
+    return getGrowthCoeffBis(productCategory.getParentProductCategory(), ++i);
   }
 }

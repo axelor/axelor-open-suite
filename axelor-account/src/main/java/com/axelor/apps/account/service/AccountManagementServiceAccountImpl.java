@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -221,5 +222,20 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     }
 
     return fixedAssetCategory;
+  }
+
+  @Override
+  public Account getCashAccount(AccountManagement accountManagement, PaymentMode paymentMode)
+      throws AxelorException {
+    if (accountManagement == null || paymentMode == null) {
+      return null;
+    }
+    if (accountManagement != null && accountManagement.getCashAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
+          paymentMode.getCode());
+    }
+    return accountManagement.getCashAccount();
   }
 }

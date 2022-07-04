@@ -236,13 +236,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     if (soLines != null && !soLines.isEmpty()) {
       try {
-        saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-        Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+        saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
 
-      Beans.get(SaleOrderRepository.class).save(saleOrder);
+      saleOrderRepo.save(saleOrder);
     }
     return saleOrder;
   }
@@ -269,8 +269,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (originSoLine != null
         && originSoLine.getProduct() != null
         && originSoLine.getSelectedComplementaryProductList() != null) {
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-      AppBaseService appBaseService = Beans.get(AppBaseService.class);
       for (ComplementaryProductSelected compProductSelected :
           originSoLine.getSelectedComplementaryProductList()) {
         // Search if there is already a line for this product to modify or remove

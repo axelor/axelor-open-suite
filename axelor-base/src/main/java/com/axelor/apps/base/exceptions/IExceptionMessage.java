@@ -365,6 +365,8 @@ public interface IExceptionMessage {
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
+  public static final String ABC_ANALYSIS_ALREADY_STARTED = /*$$(*/
+      "Analysis is already on going." /*)*/;
 
   /* DMS Import */
   public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
@@ -462,6 +464,15 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String PRICING_3 = /*$$(*/
+      "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
+      "The previous period is not closed or temporarily closed." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
+      "The previous period is not closed." /*)*/;
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;

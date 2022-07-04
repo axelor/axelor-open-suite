@@ -45,8 +45,8 @@ public class HRMenuTagService {
 
       filter +=
           (employee == null || employee.getManagerUser() == null)
-              ? " AND (self.user.id = :_userId OR self.user.employee.managerUser.id = :_userId)"
-              : " AND self.user.employee.managerUser.id = :_userId";
+              ? " AND (self.employee.user.id = :_userId OR self.employee.managerUser.id = :_userId)"
+              : " AND self.employee.managerUser.id = :_userId";
 
       return Long.toString(
           JPA.all(modelConcerned)

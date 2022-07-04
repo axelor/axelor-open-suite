@@ -1,9 +1,0 @@
----
-title: "Stock location : Add barcode"
-type: feature
-description: |
-  Add barcode generation process to stock location :
-  - Add related settings field for barcode generation on App Stock
-  - Rename tracking number barcode fields in order to have a clear difference
-  - Add barcode, serial number and barcode type on Stock location model and view with a defaulting on barcode type from App Stock
-  - Add a serial number defaulting to Stock location name at creation only

@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -183,5 +184,27 @@ public class AccountService {
                     + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account");
     query.setParameter("account", account.getCode());
     return query.getResultList();
+  }
+
+  @Transactional
+  public void toggleStatusSelect(Account account) {
+    if (account != null) {
+      if (account.getStatusSelect() == AccountRepository.STATUS_INACTIVE) {
+        account = activate(account);
+      } else {
+        account = desactivate(account);
+      }
+      accountRepository.save(account);
+    }
+  }
+
+  protected Account activate(Account account) {
+    account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
+    return account;
+  }
+
+  protected Account desactivate(Account account) {
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
+    return account;
   }
 }

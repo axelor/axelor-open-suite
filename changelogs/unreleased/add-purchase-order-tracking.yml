@@ -1,4 +1,0 @@
-title: "PURCHASE ORDER : tracking"
-type: feature
-description: |
-  Added field tracking of desiredDelivDate and estimatedDelivDate in PurchaseOrderLine and of deliveryDate in PurchaseOrder

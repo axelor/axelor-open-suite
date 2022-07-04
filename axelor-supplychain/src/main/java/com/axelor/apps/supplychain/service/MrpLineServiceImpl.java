@@ -231,16 +231,16 @@ public class MrpLineServiceImpl implements MrpLineService {
   }
 
   protected String getPurchaseOrderOrigin(MrpLine mrpLine) {
-    String origin = "";
+    StringBuilder origin = new StringBuilder();
     int count = 0;
     for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
       count++;
-      origin += getMrpLineOriginStr(mrpLineOrigin);
+      origin.append(getMrpLineOriginStr(mrpLineOrigin));
       if (count < mrpLine.getMrpLineOriginList().size()) {
-        origin += " & ";
+        origin.append(" & ");
       }
     }
-    return origin;
+    return origin.toString();
   }
 
   protected String getMrpLineOriginStr(MrpLineOrigin mrpLineOrigin) {

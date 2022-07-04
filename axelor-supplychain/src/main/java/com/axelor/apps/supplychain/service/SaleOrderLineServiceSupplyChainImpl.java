@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
@@ -40,7 +41,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.pricing.PricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -121,7 +121,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
-    if (Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (appAccountService.isApp("supplychain")) {
       saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
       this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
@@ -201,7 +201,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (!appAccountService.isApp("supplychain")) {
       return super.getAvailableStock(saleOrder, saleOrderLine);
     }
 
@@ -218,7 +218,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (!appAccountService.isApp("supplychain")) {
       return super.getAllocatedStock(saleOrder, saleOrderLine);
     }
 
@@ -287,9 +287,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     List<Integer> statusList = new ArrayList<>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     String status =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getsOFilterOnStockDetailStatusSelect();
+        appSupplychainService.getAppSupplychain().getsOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
     }
@@ -329,9 +327,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
     BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) < 0 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
-    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) < 0) {
       return deliveredQty;
     }
 

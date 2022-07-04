@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
@@ -47,6 +48,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -61,6 +63,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -339,7 +342,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
+            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -387,7 +390,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     } else {
       moveQueryStr += " AND self.accountingOk = false ";
     }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
 
     LocalDate interfaceDate = accountingReport.getDate();
 
@@ -529,7 +532,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
+            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -578,7 +581,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     } else {
       moveQueryStr += " AND self.accountingOk = false ";
     }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
 
     LocalDate interfaceDate = accountingReport.getDate();
 
@@ -719,7 +722,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
+            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -767,7 +770,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     } else {
       moveQueryStr += " AND self.accountingOk = false ";
     }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
 
     LocalDate interfaceDate = accountingReport.getDate();
 
@@ -908,7 +911,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
+            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -956,7 +959,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     } else {
       moveQueryStr += " AND self.accountingOk = false ";
     }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
 
     LocalDate interfaceDate = accountingReport.getDate();
 
@@ -1125,10 +1128,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     LocalDate interfaceDate = accountingReport.getDate();
 
     String moveLineQueryStr =
-        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_VALIDATED);
+        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
     if (!administration) {
       moveLineQueryStr +=
-          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
+          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
     }
     moveLineQueryStr += ")";
 
@@ -1176,7 +1179,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         moveLineRepo
             .all()
             .filter(moveLineQueryStr)
-            .order("move.validationDate")
+            .order("move.accountingDate")
             .order("date")
             .order("name")
             .fetch();
@@ -1232,9 +1235,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[14] = "";
         }
 
-        if (move.getValidationDate() != null) {
+        if (move.getAccountingDate() != null) {
           items[15] =
-              move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+              move.getAccountingDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
 
         items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
@@ -1325,7 +1328,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     moveLineQueryStr +=
         String.format(
             " AND (self.move.statusSelect = %s OR self.move.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
+            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
 
     Query queryDate =
         JPA.em()
@@ -1705,9 +1708,18 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
       throws AxelorException {
 
+    Optional<AccountingReportType> optionalAccountingReportType =
+        getAccountingReportType(company, exportTypeSelect);
+    if (!optionalAccountingReportType.isPresent()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          IExceptionMessage.ACCOUNTING_REPORT_9,
+          exportTypeSelect);
+    }
+
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(company);
-    accountingReport.getReportType().setTypeSelect(exportTypeSelect);
+    accountingReport.setReportType(optionalAccountingReportType.get());
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
@@ -1726,6 +1738,20 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReportRepo.save(accountingReport);
 
     return accountingReport;
+  }
+
+  protected Optional<AccountingReportType> getAccountingReportType(
+      Company company, int exportTypeSelect) {
+
+    ImmutableMap<String, Object> params =
+        ImmutableMap.of(
+            "company", company, "reportExportTypeSelect", 2, "typeSelect", exportTypeSelect);
+    return Optional.ofNullable(
+        com.axelor.db.Query.of(AccountingReportType.class)
+            .filter(
+                "self.company = :company and self.reportExportTypeSelect = :reportExportTypeSelect and self.typeSelect = :typeSelect")
+            .bind(params)
+            .fetchOne());
   }
 
   @Transactional(rollbackOn = {Exception.class})

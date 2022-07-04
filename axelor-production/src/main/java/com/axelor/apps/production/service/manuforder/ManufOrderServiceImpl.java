@@ -146,7 +146,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      ManufOrderOriginType manufOrderOrigin)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -172,10 +172,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             plannedStartDateT,
             plannedEndDateT);
 
-    if (originType == ORIGIN_TYPE_SALE_ORDER
+    if (manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER)
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
-        || originType == ORIGIN_TYPE_MRP
-        || originType == ORIGIN_TYPE_OTHER) {
+        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
+        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
     }
 
@@ -462,7 +462,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
@@ -532,7 +531,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         Beans.get(OperationOrderStockMoveService.class)
             .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
-        Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+        operationOrderService.updateDiffProdProductList(operationOrder);
       }
     }
 
@@ -734,6 +733,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     // update stock location by cancelling then planning stock move.
     stockMoveService.cancel(stockMove);
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 
@@ -1187,7 +1187,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 billOfMaterial,
                 null,
                 manufOrder.getPlannedStartDateT(),
-                ORIGIN_TYPE_OTHER);
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
         manufOrder.setManualMOSeq(backupSeq);
         seqMOMap.put(backupSeq, manufOrder);

@@ -38,6 +38,7 @@ import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderF
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160DCOService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
@@ -317,8 +318,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         && paymentMode != null
         && paymentMode.getAutomaticTransmission()) {
 
-      bankOrder.setConfirmationDateTime(
-          Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+      bankOrder.setConfirmationDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
       bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
       makeEbicsUserFollow(bankOrder);
 
@@ -638,6 +638,10 @@ public class BankOrderServiceImpl implements BankOrderService {
         file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
         break;
 
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_DCO:
+        file = new BankOrderFileAFB160DCOService(bankOrder).generateFile();
+        break;
+
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
         file =
             new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE)
@@ -689,8 +693,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   protected Sequence getSequence(BankOrder bankOrder) throws AxelorException {
     BankPaymentConfig bankPaymentConfig =
-        Beans.get(BankPaymentConfigService.class)
-            .getBankPaymentConfig(bankOrder.getSenderCompany());
+        bankPaymentConfigService.getBankPaymentConfig(bankOrder.getSenderCompany());
 
     switch (bankOrder.getOrderTypeSelect()) {
       case BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT:
@@ -710,6 +713,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
       case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER:
         return bankPaymentConfigService.getIntTreasuryTransSequence(bankPaymentConfig);
+
+      case BankOrderRepository.ORDER_TYPE_BILL_OF_EXCHANGE:
+        return bankPaymentConfigService.getBillOfExchangeSequence(bankPaymentConfig);
 
       default:
         return bankPaymentConfigService.getOtherBankOrderSequence(bankPaymentConfig);

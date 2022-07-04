@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
@@ -81,7 +80,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService,
       IntercoService intercoService,
       TaxService taxService,
       StockMoveRepository stockMoveRepository) {
@@ -96,7 +94,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        appBaseService,
         taxService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
@@ -139,9 +136,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
-        Beans.get(AccountConfigService.class)
-            .getAccountConfig(company)
-            .getGenerateMoveForInvoicePayment();
+        accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment();
 
     String filter = writeGeneralFilterForAdvancePayment();
     if (saleOrder != null) {
@@ -154,7 +149,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       filter += " AND self.currency = :_currency";
     }
     Query<Invoice> query =
-        Beans.get(InvoiceRepository.class)
+        invoiceRepo
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)

@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.*;
@@ -178,6 +195,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPosition fiscalPosition = null;
       if (move.getInvoice() != null) {
         fiscalPosition = move.getInvoice().getFiscalPosition();
+        if (fiscalPosition == null) {
+          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        }
       } else {
         fiscalPosition = partner.getFiscalPosition();
       }
@@ -524,27 +544,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     Company company = move.getCompany();
     Account newAccount = null;
 
-    if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-        || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
-    } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
-    } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
-    }
-
-    if (newAccount == null) {
-      throw new AxelorException(
-          move,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_6),
-          taxLine.getName(),
-          company.getName());
-    }
-
     FiscalPosition fiscalPosition = null;
     if (move.getInvoice() != null) {
       fiscalPosition = move.getInvoice().getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
     } else {
       if (ObjectUtils.notEmpty(move.getPartner())
           && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
@@ -555,6 +560,38 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     if (fiscalPosition != null) {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
     }
+
+    if (newAccount == null) {
+
+      if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+          || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
+        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
+      } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
+        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
+      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
+      }
+    }
+
+    if (newAccount == null) {
+      if (fiscalPosition != null) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_8),
+            taxLine.getName(),
+            fiscalPosition.getName(),
+            company.getName());
+      } else {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_6),
+            taxLine.getName(),
+            company.getName());
+      }
+    }
+
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
     MoveLine newOrUpdatedMoveLine;
 
@@ -567,11 +604,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
     }
 
+    newOrUpdatedMoveLine.setMove(move);
+    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
+    newOrUpdatedMoveLine.setDescription(move.getDescription());
+
     newOrUpdatedMoveLine.setDebit(
         newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setCredit(
         newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
+    newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);

@@ -136,7 +136,7 @@ public class BatchBankStatement extends AbstractBatch {
   }
 
   private Collection<EbicsPartner> getAllActiveEbicsPartners() {
-    return Beans.get(EbicsPartnerRepository.class)
+    return ebicsPartnerRepository
         .all()
         .filter("self.transportEbicsUser.statusSelect = :statusSelect")
         .bind("statusSelect", EbicsUserRepository.STATUS_ACTIVE_CONNECTION)

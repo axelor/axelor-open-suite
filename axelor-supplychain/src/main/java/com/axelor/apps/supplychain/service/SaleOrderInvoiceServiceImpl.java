@@ -38,7 +38,7 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
@@ -86,7 +86,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected StockMoveRepository stockMoveRepository;
 
-  protected SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl;
+  protected SaleOrderWorkflowService saleOrderWorkflowService;
 
   protected CommonInvoiceService commonInvoiceService;
 
@@ -99,7 +99,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceServiceSupplychainImpl invoiceService,
       SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl,
+      SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService) {
 
     this.appBaseService = appBaseService;
@@ -109,7 +109,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
-    this.saleOrderWorkflowServiceImpl = saleOrderWorkflowServiceImpl;
+    this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
   }
 
@@ -186,6 +186,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+
+    invoice.setIncoterm(saleOrder.getIncoterm());
 
     invoice = invoiceRepo.save(invoice);
 
@@ -670,8 +672,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     saleOrder.setAmountInvoiced(amountInvoiced);
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
-        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0) {
-      saleOrderWorkflowServiceImpl.completeSaleOrder(saleOrder);
+        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      saleOrderWorkflowService.completeSaleOrder(saleOrder);
     }
   }
 
@@ -805,28 +808,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder)
       throws AxelorException {
     if (saleOrder != null) {
-      String numSeq = "";
-      String externalRef = "";
+      StringBuilder numSeq = new StringBuilder();
+      StringBuilder externalRef = new StringBuilder();
 
       for (Invoice invoiceLocal : invoiceList) {
-        if (!numSeq.isEmpty()) {
-          numSeq += "-";
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
         }
         if (invoiceLocal.getInternalReference() != null) {
-          numSeq += invoiceLocal.getInternalReference();
+          numSeq.append(invoiceLocal.getInternalReference());
         }
 
-        if (!externalRef.isEmpty()) {
-          externalRef += "|";
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
         }
         if (invoiceLocal.getExternalReference() != null) {
-          externalRef += invoiceLocal.getExternalReference();
+          externalRef.append(invoiceLocal.getExternalReference());
         }
       }
       InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
       Invoice invoiceMerged = invoiceGenerator.generate();
-      invoiceMerged.setExternalReference(externalRef);
-      invoiceMerged.setInternalReference(numSeq);
+      invoiceMerged.setExternalReference(externalRef.toString());
+      invoiceMerged.setInternalReference(numSeq.toString());
 
       if (paymentMode != null) {
         invoiceMerged.setPaymentMode(paymentMode);
@@ -868,7 +871,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
     boolean allowTimetableInvoicing =
-        Beans.get(AppSupplychainService.class).getAppSupplychain().getAllowTimetableInvoicing();
+        appSupplychainService.getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
     Invoice invoice =

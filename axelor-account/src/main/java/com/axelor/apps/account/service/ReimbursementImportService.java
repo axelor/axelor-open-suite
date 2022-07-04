@@ -113,7 +113,8 @@ public class ReimbursementImportService {
             moveLineCreateService.createMoveLine(
                 move,
                 null,
-                company.getAccountConfig().getReimbursementAccount(),
+                accountConfigService.getReimbursementAccount(
+                    accountConfigService.getAccountConfig(company)),
                 this.getTotalAmount(move),
                 true,
                 rejectDate,
@@ -157,7 +158,7 @@ public class ReimbursementImportService {
         moveLineCreateService.createMoveLine(
             move,
             partner,
-            company.getAccountConfig().getCustomerAccount(),
+            accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company)),
             amount,
             false,
             rejectDate,
@@ -216,7 +217,8 @@ public class ReimbursementImportService {
         moveLineCreateService.createMoveLine(
             move,
             null,
-            move.getCompany().getAccountConfig().getReimbursementAccount(),
+            accountConfigService.getReimbursementAccount(
+                accountConfigService.getAccountConfig(move.getCompany())),
             this.getTotalAmount(move),
             true,
             rejectDate,
@@ -230,7 +232,7 @@ public class ReimbursementImportService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void validateMove(Move move) throws AxelorException {
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
     moveRepo.save(move);
   }
 

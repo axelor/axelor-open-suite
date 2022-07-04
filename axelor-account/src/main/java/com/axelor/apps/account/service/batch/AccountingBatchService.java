@@ -153,6 +153,11 @@ public class AccountingBatchService extends AbstractBatchService {
         I18n.get("This batch requires the bank payment module."));
   }
 
+  public Batch billOfExchange(AccountingBatch accountingBatch) {
+    throw new UnsupportedOperationException(
+        I18n.get("This batch requires the bank payment module."));
+  }
+
   public Batch realizeFixedAssetLines(AccountingBatch accountingBatch) {
 
     return Beans.get(BatchRealizeFixedAssetLine.class).run(accountingBatch);

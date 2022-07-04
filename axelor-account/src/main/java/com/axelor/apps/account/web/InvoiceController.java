@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -37,6 +38,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
@@ -46,6 +48,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -57,6 +60,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -233,7 +237,7 @@ public class InvoiceController {
   public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationTypeSelect() == null) {
+      if (invoice.getOperationTypeSelect() == null || invoice.getOperationTypeSelect() == 0) {
         return;
       }
       PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
@@ -363,7 +367,9 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null) {
+      } else if (context.get("id") != null
+          && (Wizard.class.equals(context.getContextClass())
+              || Invoice.class.equals(context.getContextClass()))) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
         Integer reportType =
             context.get("reportType") != null
@@ -456,7 +462,8 @@ public class InvoiceController {
       List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
       if (ObjectUtils.isEmpty(ids)) {
-        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+        response.setError(
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 
@@ -801,14 +808,22 @@ public class InvoiceController {
     response.setAttr("partner", "domain", domain);
   }
 
-  public void showDuplicateInvoiceNbrWarning(ActionRequest request, ActionResponse response) {
+  public void checkDuplicateInvoice(ActionRequest request, ActionResponse response) {
     try {
+
       Invoice invoice = request.getContext().asType(Invoice.class);
-      boolean isDuplicateInvoiceNbr =
-          Beans.get(InvoiceService.class).getIsDuplicateInvoiceNbr(invoice);
-      response.setAttr("$duplicateInvoiceNbr", "hidden", !isDuplicateInvoiceNbr);
+      if (invoice != null) {
+        Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
+        response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
+        response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+
+        if (isDuplicate) {
+          response.setAttr("$supplierInvoiceNbStatic", "value", invoice.getSupplierInvoiceNb());
+        }
+      }
+
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(e);
     }
   }
 
@@ -825,11 +840,64 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
         InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+        Mapper mapper = Mapper.of(InvoiceLine.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
-          response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+          Map<String, Object> invoiceLineMap =
+              invoiceLineService.fillProductInformation(invoice, invoiceLine);
+
+          String errorMsg = (String) invoiceLineMap.get("error");
+          if (!Strings.isNullOrEmpty(errorMsg)) {
+            response.setFlash(errorMsg);
+          }
+
+          for (Map.Entry<String, Object> entry : invoiceLineMap.entrySet()) {
+            mapper.set(invoiceLine, entry.getKey(), entry.getValue());
+          }
+
+          invoiceLineService.compute(invoice, invoiceLine);
         }
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Customer Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (3,4) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Supplier Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (1,2) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

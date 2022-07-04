@@ -21,10 +21,14 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -37,21 +41,29 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
+public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServiceImpl {
 
   @Inject
   public FixedAssetServiceSupplyChainImpl(
-      FixedAssetRepository fixedAssetRepo,
-      FixedAssetLineMoveService fixedAssetLineMoveService,
-      FixedAssetLineComputationService fixedAssetLineComputationService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      AccountConfigService accountConfigService) {
+      FixedAssetDateService fixedAssetDateService,
+      FixedAssetLineService fixedAssetLineService,
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
+      FixedAssetRepository fixedAssetRepository,
+      FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
+      SequenceService sequenceService,
+      AccountConfigService accountConfigService,
+      AppBaseService appBaseService,
+      FixedAssetValidateService fixedAssetValidateService) {
     super(
-        fixedAssetRepo,
-        fixedAssetLineMoveService,
-        fixedAssetLineComputationService,
-        moveLineComputeAnalyticService,
-        accountConfigService);
+        fixedAssetDateService,
+        fixedAssetLineService,
+        fixedAssetDerogatoryLineService,
+        fixedAssetRepository,
+        fixedAssetLineServiceFactory,
+        sequenceService,
+        accountConfigService,
+        appBaseService,
+        fixedAssetValidateService);
   }
 
   @Transactional

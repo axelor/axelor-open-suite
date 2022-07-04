@@ -72,6 +72,14 @@
     <!-- REALIZED FIXED ASSET LINES -->
     <boolean name="updateAllRealizedFixedAssetLines"
       title="Update all realized fixed asset lines"/>
+
+    <!-- Bill of exchange -->
+    <integer name="billOfExchangeTypeSelect" title="Bill of exchange type"
+      selection="iaccount.account.batch.bill.of.exchange.type.select"/>
+
+    <many-to-one ref="com.axelor.apps.account.db.Journal" name="billOfExchangeJournal"
+      title="Bill of exchange journal"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
@@ -84,6 +92,7 @@
 		public static final int ACTION_REALIZE_FIXED_ASSET_LINES = 20;
 		public static final int ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS = 21;
 		public static final int ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING = 23;
+		public static final int ACTION_BILL_OF_EXCHANGE = 24;
 
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;
@@ -111,7 +120,9 @@
 
 	]]></extra-code>
 
-
+    <track>
+      <field name="billOfExchangeTypeSelect" on="UPDATE"/>
+    </track>
 
   </entity>
 

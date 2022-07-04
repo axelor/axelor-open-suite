@@ -1,6 +1,0 @@
----
-title: "Account :  add of financial discount"
-type: feature
-description: |
-  The objective of this feature is to be able to manage financialDiscount on AOS. By financialDiscount which differs and contrary to the commercialDiscount, there is a financial impact on accounting. 
-  You can now set a financial Discount (in Accounting/Configuration/Financial Discount) on the partner. When an invoice is created, and when you select the partner, the financial discount is selected and use in the payment view.

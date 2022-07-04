@@ -177,7 +177,7 @@ public class BankReconciliationValidateService {
 
     moveRepository.save(move);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 

@@ -1,0 +1,7 @@
+"importId";"name";"code";"disposalTypeSelect"
+1;"Casse";"BRKGE";1
+2;"Sinistre";"DAMGE";1
+3;"Transfert";"TRANS";1
+4;"Obsolescence";"OBSOL";1
+5;"Externe";"C_EXT";2
+6;"Interne";"C_INT";2

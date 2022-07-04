@@ -52,8 +52,10 @@
   </form>
 
   <action-group name="action-maintenance-bill-of-material-group-onnew">
+    <action name="action-bill-of-material-default-record"/>
     <action name="action-bill-of-material-group-on-load"/>
     <action name="action-maintenance-bill-of-material-attrs-set-attributes"/>
+    <action name="action-maintenance-bill-of-material-attrs-set-default"/>
   </action-group>
 
   <action-group name="action-maintenance-bill-of-material-group-onload">

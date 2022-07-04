@@ -112,7 +112,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
                       + "AND self.move.statusSelect = ?2 AND self.move.adjustingMove = true AND self.date >= ?3 AND self.date <= ?4 AND self.move.company = ?5");
 
       q.setParameter(1, year);
-      q.setParameter(2, MoveRepository.STATUS_VALIDATED);
+      q.setParameter(2, MoveRepository.STATUS_ACCOUNTED);
       q.setParameter(3, adjustHistory.getStartDate().toLocalDate());
       q.setParameter(4, adjustHistory.getEndDate().toLocalDate());
     } else {
@@ -124,7 +124,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
                       + "AND self.move.statusSelect = ?2 AND self.date >= ?3 AND self.date <= ?4 AND self.move.company = ?5");
 
       q.setParameter(1, year);
-      q.setParameter(2, MoveRepository.STATUS_VALIDATED);
+      q.setParameter(2, MoveRepository.STATUS_ACCOUNTED);
       q.setParameter(3, year.getFromDate());
       q.setParameter(4, year.getToDate());
     }
@@ -207,7 +207,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     q.setParameter(2, fromDate);
     q.setParameter(3, toDate);
     q.setParameter(4, year);
-    q.setParameter(5, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(5, MoveRepository.STATUS_ACCOUNTED);
 
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Annual balance : {} for partner : {}", result, partner.getPartnerSeq());

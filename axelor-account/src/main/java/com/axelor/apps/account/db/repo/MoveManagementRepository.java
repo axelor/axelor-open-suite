@@ -63,7 +63,7 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setExportNumber(null);
       copy.setExportDate(null);
       copy.setAccountingReport(null);
-      copy.setValidationDate(null);
+      copy.setAccountingDate(null);
       copy.setPeriod(period);
       copy.setAccountingOk(false);
       copy.setIgnoreInDebtRecoveryOk(false);
@@ -106,8 +106,7 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
