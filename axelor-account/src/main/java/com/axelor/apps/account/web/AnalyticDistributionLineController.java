@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -63,10 +64,9 @@ public class AnalyticDistributionLineController {
       Class<?> parentClass = request.getContext().getParent().getContextClass();
       if (AnalyticLine.class.isAssignableFrom(parentClass)) {
         AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
-        AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
-        response.setValue(
-            "analyticJournal", analyticMoveLineService.getAnalyticJournalFromParent(parent));
-        response.setValue("date", analyticMoveLineService.getDateFromParent(parent));
+        AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
+        response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
+        response.setValue("date", analyticMoveLineService.getDate(parent));
       }
 
     } catch (Exception e) {
@@ -83,7 +83,7 @@ public class AnalyticDistributionLineController {
         AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
         response.setValue(
             "amount",
-            Beans.get(AnalyticMoveLineService.class)
+            Beans.get(AnalyticLineService.class)
                 .getAnalyticAmountFromParent(parent, analyticMoveLine));
       }
 

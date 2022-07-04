@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -226,42 +225,5 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAmount(moveLine.getDebit());
     }
     return analyticMoveLine;
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmountFromParent(
-      AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
-
-    if (parent.getLineAmount().signum() > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(parent.getLineAmount())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public AnalyticJournal getAnalyticJournalFromParent(AnalyticLine line) throws AxelorException {
-    if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-      return accountConfigService
-          .getAccountConfig(line.getAccount().getCompany())
-          .getAnalyticJournal();
-    }
-    return null;
-  }
-
-  @Override
-  public LocalDate getDateFromParent(AnalyticLine parent) {
-    if (parent instanceof MoveLine) {
-      MoveLine line = (MoveLine) parent;
-      if (line.getDate() != null) {
-        return line.getDate();
-      }
-    }
-    if (parent.getAccount() != null && parent.getAccount().getCompany() != null) {
-      return appBaseService.getTodayDate(parent.getAccount().getCompany());
-    }
-    return LocalDate.now();
   }
 }
