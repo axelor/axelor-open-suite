@@ -379,7 +379,7 @@
           showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
-        <field name="e=" hidden="true"/>
+        <field name="$validatePeriod" hidden="true" type="boolean"/>
       </panel>
     </panel>
     <panel>
