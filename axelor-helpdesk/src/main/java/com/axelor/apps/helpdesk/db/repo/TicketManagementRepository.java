@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.helpdesk.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.google.inject.Inject;
@@ -24,6 +25,7 @@ import com.google.inject.Inject;
 public class TicketManagementRepository extends TicketRepository {
 
   @Inject private TicketService ticketService;
+  @Inject private AppBaseService appBaseService;
 
   @Override
   public Ticket save(Ticket ticket) {
@@ -32,5 +34,15 @@ public class TicketManagementRepository extends TicketRepository {
     ticketService.computeSLA(ticket);
     ticketService.checkSLAcompleted(ticket);
     return super.save(ticket);
+  }
+
+  @Override
+  public Ticket copy(Ticket entity, boolean deep) {
+    Ticket copy = super.copy(entity, deep);
+    copy.setStatusSelect(null);
+    copy.setProgressSelect(null);
+    copy.setStartDateT(appBaseService.getTodayDateTime().toLocalDateTime());
+    copy.setTicketSeq(null);
+    return copy;
   }
 }
