@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveDaybookService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -81,6 +82,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveSimulateService moveSimulateService;
   protected MoveLineService moveLineService;
   protected CurrencyService currencyService;
+  protected MoveDaybookService moveDaybookService;
   protected int counter = 0;
 
   @Inject
@@ -101,7 +103,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      MoveDaybookService moveDaybookService) {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
@@ -120,6 +123,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveSimulateService = moveSimulateService;
     this.moveLineService = moveLineService;
     this.currencyService = currencyService;
+    this.moveDaybookService = moveDaybookService;
   }
 
   @Override
@@ -285,18 +289,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   }
 
   protected void updateStatus(Move move, int cutOffMoveStatusSelect) throws AxelorException {
-    if (cutOffMoveStatusSelect == MoveRepository.STATUS_SIMULATED) {
-      moveSimulateService.simulate(move);
-    } else {
-      moveValidateService.updateValidateStatus(
-          move, cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK);
-
-      if (cutOffMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
+    switch (cutOffMoveStatusSelect) {
+      case MoveRepository.STATUS_SIMULATED:
+        moveSimulateService.simulate(move);
+        break;
+      case MoveRepository.STATUS_ACCOUNTED:
         moveValidateService.accounting(move);
-      } else if (cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK
-          && move.getStatusSelect() != MoveRepository.STATUS_DAYBOOK) {
-        move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
-      }
+        break;
+      case MoveRepository.STATUS_DAYBOOK:
+        moveDaybookService.daybook(move);
+        break;
     }
   }
 
@@ -394,6 +396,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             company.getAccountConfig(), accountingCutOffTypeSelect);
 
     this.generatePartnerMoveLine(cutOffMove, origin, account, moveDescription, originDate);
+    counter = 0;
   }
 
   protected void copyAnalyticMoveLines(
@@ -550,7 +553,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             ++counter,
             origin,
             moveDescription);
-
     move.addMoveLineListItem(moveLine);
 
     return moveLine;

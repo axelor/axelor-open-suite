@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveDaybookService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -111,7 +112,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       StockMoveLineServiceSupplychain stockMoveLineService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      MoveDaybookService moveDaybookService) {
 
     super(
         moveCreateService,
@@ -130,7 +132,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         moveLineComputeAnalyticService,
         moveSimulateService,
         moveLineService,
-        currencyService);
+        currencyService,
+        moveDaybookService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.accountConfigSupplychainService = accountConfigSupplychainService;
@@ -341,7 +344,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         includeNotStockManagedProduct);
 
     this.generatePartnerMoveLine(move, origin, partnerAccount, moveDescription, originDate);
-
+    counter = 0;
     // Status
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       move.setStockMove(stockMove);
@@ -448,7 +451,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     if (isReverse) {
       isDebit = !isDebit;
     }
-
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
@@ -462,7 +464,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             moveDescription);
     moveLine.setDate(moveDate);
     moveLine.setDueDate(moveDate);
-
     getAndComputeAnalyticDistribution(product, move, moveLine);
 
     move.addMoveLineListItem(moveLine);
@@ -481,7 +482,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         }
       }
     }
-
     return moveLine;
   }
 
