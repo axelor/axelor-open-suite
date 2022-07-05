@@ -529,10 +529,9 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
 
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
-    
+
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
-
   }
 }
