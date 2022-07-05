@@ -115,15 +115,23 @@ public class DebtRecoverySessionService {
     if ((appAccountService.getTodayDate(debtRecovery.getCompany()).isAfter(referenceDate)
             || appAccountService.getTodayDate(debtRecovery.getCompany()).isEqual(referenceDate))
         && balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
-      // If the current date is equal or after the reference date and the balance due debt recovery
-      // is positive
+      log.debug(
+          "Current date {} is after reference date {} and balance due debt recovery is positive",
+          appAccountService.getTodayDate(debtRecovery.getCompany()),
+          referenceDate);
       // Pour les client à haut risque vital, on passe directement du niveau de relance 2 au niveau
       // de relance 4
       if (debtRecoveryLevel < levelMax) {
-        // Else this is not a high risk vital customer"
+        log.debug(
+            "This is not a high risk vital customer, debt recovery level {} is under the level max {}",
+            debtRecoveryLevel,
+            levelMax);
         theoricalDebtRecoveryLevel = debtRecoveryLevel + 1;
       } else {
-        // Else this is a high risk vital customer
+        log.debug(
+            "This is a high risk vital customer, debt recovery level {} equal to the level max {}",
+            debtRecoveryLevel,
+            levelMax);
         theoricalDebtRecoveryLevel = levelMax;
       }
 
@@ -133,24 +141,26 @@ public class DebtRecoverySessionService {
       if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
               .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
           && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
-        // If the threshold of the balance due debt recovery is respected and the deadline is
-        // respected
+        log.debug(
+            "The threshold of the balance due debt recovery is respected and the deadline is respected, Threshold : {} < Balance due deb recovery : {}",
+            debtRecoveryMethodLine.getMinThreshold(),
+            balanceDueDebtRecovery);
 
         if (!debtRecoveryMethodLine.getManualValidationOk()) {
-          // If the debt recovery level doesn't need manual validation
+          log.debug("The debt recovery level doesn't need manual validation");
           debtRecovery.setDebtRecoveryMethodLine(
               debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
           debtRecovery.setWaitDebtRecoveryMethodLine(null);
           // et lancer les autres actions du niveau
         } else {
-          // If the debt recovery level need manual validation
+          log.debug("The debt recovery level needs manual validation");
           debtRecovery.setWaitDebtRecoveryMethodLine(
               debtRecoveryMethodLine); // Si le passage est manuel
         }
       }
 
     } else {
-      // Else we reset
+      log.debug("We reset");
       this.debtRecoveryInitialization(debtRecovery);
     }
     log.debug("End debtRecoverySession service");
