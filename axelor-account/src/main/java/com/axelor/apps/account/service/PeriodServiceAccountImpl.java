@@ -82,7 +82,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
       if (CollectionUtils.isEmpty(accountConfig.getClosureAuthorizedRoleList())) {
-        return true;
+        return false;
       }
       for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
         if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
@@ -97,8 +97,8 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
-      if (CollectionUtils.isEmpty(accountConfig.getClosureAuthorizedRoleList())) {
-        return true;
+      if (CollectionUtils.isEmpty(accountConfig.getTemporaryClosureAuthorizedRoleList())) {
+        return false;
       }
       for (Role role : accountConfig.getTemporaryClosureAuthorizedRoleList()) {
         if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {

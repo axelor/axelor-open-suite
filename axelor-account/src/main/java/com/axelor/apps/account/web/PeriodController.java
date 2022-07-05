@@ -93,13 +93,9 @@ public class PeriodController {
         response.setAttr(
             "temporarilyCloseBtn",
             "hidden",
-            period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED);
+            period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED);
       }
       if (periodServiceAccount.isManageClosedPeriod(period, user)) {
-        response.setAttr(
-            "temporarilyCloseBtn",
-            "hidden",
-            period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED);
         response.setAttr(
             "closeBtn", "hidden", period.getStatusSelect() == PeriodRepository.STATUS_CLOSED);
         response.setAttr(
