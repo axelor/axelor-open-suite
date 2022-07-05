@@ -14,10 +14,7 @@
     onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
     onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
     width="large">
-    <toolbar>
-      <button name="showInvoiceBtn" title="Invoices"
-        onClick="save,action-company-view-invoice"/>
-    </toolbar>
+
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
@@ -458,14 +455,6 @@
     <call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
   </action-method>
 
-  <action-view name="action-company-view-invoice" title="Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
-    <domain>self.company.id = :id</domain>
-    <context name="id" expr="eval: company.id"/>
-  </action-view>
-
   <action-view name="action-company-view-account-config"
     title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
     <view type="form" name="account-config-form"/>
@@ -483,7 +472,7 @@
     <action name="action-account-config-validate-is-activate-simulated-move"/>
     <action name="action-account-config-method-deactivate-simulated-moves"/>
     <action name="action-validate-account-config-on-save-analytic"/>
-    <action name="action-method-check-account-config-changes-in-analytic"/>
+    <action name="action-method-check-account-config-changes-in-analytic" if="id != null"/>
   </action-group>
 
   <action-validate name="action-account-config-validate-is-activate-simulated-move"

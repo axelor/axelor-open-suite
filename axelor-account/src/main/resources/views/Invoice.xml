@@ -1525,7 +1525,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-specific-note-on-invoice"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-set-default-mail"/>
-    <action name="action-invoice-method-fill-price-list"/>
+    <action name="action-invoice-method-fill-price-list"
+      if="eval: invoiceLineList?.isEmpty()"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
@@ -1534,6 +1535,9 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-method-invoice-address-str"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -1676,10 +1680,11 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"
-      if="partner?.fiscalPosition != null"/>
+      if="eval: invoiceLineList?.isEmpty()"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
-    <field name="currency" expr="eval: partner?.currency"/>
+    <field name="currency" expr="eval: partner?.currency"
+      if="eval: invoiceLineList?.isEmpty()"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
@@ -2423,23 +2428,30 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !partner"/>
+    <field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner"/>
+    <field name="financialDiscount" expr="eval: null" if="!partner"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
       expr="eval: financialDiscountRate * inTaxTotal / 100"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="remainingAmountAfterFinDiscount"
       expr="eval: inTaxTotal - (financialDiscountRate * inTaxTotal / 100)"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate"/>
+      if="dueDate"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="financialDiscountRate" expr="eval: 0"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: 0"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount" expr="eval: 0"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="legalNotice" expr="eval: null" if="!partner || !partner.financialDiscount"/>
   </action-record>
 
   <action-record name="action-record-invoice-set-financial-discount-informations"

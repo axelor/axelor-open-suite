@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix financial discount not being retrieved from partner"
+type: fix
