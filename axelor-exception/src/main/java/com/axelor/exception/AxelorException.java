@@ -29,32 +29,6 @@ public class AxelorException extends Exception {
   private final Class<? extends Model> refClass;
   private final Long refId;
 
-  /** Default constructor */
-  @Deprecated
-  public AxelorException() {
-    this.refClass = null;
-    this.refId = 0L;
-    this.category = 0;
-  }
-
-  /**
-   * Create an exception with his message and his type.
-   *
-   * @param message The exception message
-   * @param category
-   *     <ul>
-   *       <li>1: Missing field
-   *       <li>2: No unique key
-   *       <li>3: No value
-   *       <li>4: configuration error
-   *       <li>5: CATEGORY_INCONSISTENCY
-   *     </ul>
-   */
-  @Deprecated
-  public AxelorException(String message, int category, Object... messageArgs) {
-    this(category, String.format(message, messageArgs));
-  }
-
   /**
    * Create an exception with a category and a message.
    *
@@ -93,27 +67,6 @@ public class AxelorException extends Exception {
     this.refClass = null;
     this.refId = 0L;
     this.category = category;
-  }
-
-  /**
-   * Create an exception with his message, his cause and his type.
-   *
-   * @param message The exception message
-   * @param cause The exception cause
-   * @param category The exception category
-   *     <ul>
-   *       <li>1: Missing field
-   *       <li>2: No unique key
-   *       <li>3: No value
-   *       <li>4: configuration error
-   *       <li>5: CATEGORY_INCONSISTENCY
-   *     </ul>
-   *
-   * @see Throwable
-   */
-  @Deprecated
-  public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
-    this(cause, category, String.format(message, messageArgs));
   }
 
   /**

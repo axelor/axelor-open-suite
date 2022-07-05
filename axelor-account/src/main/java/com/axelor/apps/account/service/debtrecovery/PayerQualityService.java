@@ -67,7 +67,7 @@ public class PayerQualityService {
         .filter(
             "(self.debtRecovery.accountingSituation.partner = ?1 OR self.debtRecovery.tradingNameAccountingSituation.partner = ?1) AND self.debtRecoveryDate > ?2",
             partner,
-            appAccountService.getTodayDate().minusYears(1))
+            appAccountService.getTodayDate(null).minusYears(1))
         .fetch();
   }
 

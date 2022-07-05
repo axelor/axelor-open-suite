@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
@@ -35,7 +34,6 @@ import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -113,26 +111,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
               .computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
     }
     return saleOrder;
-  }
-
-  @Override
-  @Deprecated
-  public String getReportLink(
-      SaleOrder saleOrder, String name, String language, boolean proforma, String format)
-      throws AxelorException {
-
-    return ReportFactory.createReport(IReport.SALES_ORDER, name + "-${date}")
-        .addParam("Locale", language)
-        .addParam(
-            "Timezone",
-            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
-        .addParam("SaleOrderId", saleOrder.getId())
-        .addParam("ProformaInvoice", proforma)
-        .addParam(
-            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(format)
-        .generate()
-        .getFileLink();
   }
 
   @Override

@@ -97,7 +97,7 @@
     model="com.axelor.apps.cmms.db.MaintenanceRequest">
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="requestBy" expr="eval:__user__"/>
-    <field name="requestDate" expr="eval:__config__.app.getTodayDate()"/>
+    <field name="requestDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-record>
 
   <action-method name="acttion-maintenance-request-method-confirm">

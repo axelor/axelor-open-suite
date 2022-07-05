@@ -87,10 +87,4 @@ public class QueryBuilder<T extends Model> {
 
     return query;
   }
-
-  /** @deprecated (use build() instead) */
-  @Deprecated
-  public Query<T> create() {
-    return build();
-  }
 }

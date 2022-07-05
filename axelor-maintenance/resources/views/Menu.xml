@@ -26,7 +26,7 @@
     <view type="grid" name="maintenance-request-grid"/>
     <view type="form" name="maintenance-request-form"/>
     <domain>self.statusSelect in (0,1)</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="cmms-root-my-maintenance-requests" parent="cmms-root"
@@ -38,7 +38,7 @@
     <view type="calendar" name="maintenance-request-calendar-per-user"/>
     <view type="form" name="maintenance-request-form"/>
     <domain>self.statusSelect in (0,1) and self.assignedTo = :__user__</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="cmms-root-machine-unavailable" parent="cmms-root"
@@ -48,7 +48,7 @@
     model="com.axelor.apps.cmms.db.MaintenanceRequest">
     <view type="calendar" name="maintenance-request-calendar-per-machine"/>
     <domain>self.statusSelect != 3 and self.equipementMaintenance.machine is not null</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="cmms-root-maintenance-request-history" parent="cmms-root"
@@ -60,7 +60,7 @@
     <view type="kanban" name="maintenance-request-kanban"/>
     <view type="calendar" name="maintenance-request-calendar-per-user"/>
     <view type="form" name="maintenance-request-form"/>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="cmms-root-manuf-order" parent="cmms-root" order="33"

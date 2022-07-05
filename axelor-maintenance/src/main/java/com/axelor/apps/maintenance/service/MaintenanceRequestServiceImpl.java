@@ -41,7 +41,7 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
   public MaintenanceRequest complete(MaintenanceRequest maintenanceRequest) {
 
     maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_COMPLETED);
-    maintenanceRequest.setDoneOn(appBaseService.getTodayDate());
+    maintenanceRequest.setDoneOn(appBaseService.getTodayDate(null));
 
     return maintenanceRequestRepo.save(maintenanceRequest);
   }

@@ -79,12 +79,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public LocalDate getTodayDate() {
-
-    return getTodayDateTime().toLocalDate();
-  }
-
-  @Override
   public LocalDate getTodayDate(Company company) {
 
     return getTodayDateTime(company).toLocalDate();
