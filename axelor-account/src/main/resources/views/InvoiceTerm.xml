@@ -487,7 +487,7 @@
         <field name="amountRemainingAfterFinDiscount" readonly="true"/>
         <field name="invoice.company" hidden="true"/>
         <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
-               hidden="true"/>
+          hidden="true"/>
         <field name="moveLine.move.company.accountConfig.isManagePFPInRefund" hidden="true"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
         <field name="moveLine.move.statusSelect" hidden="true"/>
