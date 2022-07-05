@@ -47,7 +47,7 @@
     <decimal name="personalExpenseAmount" title="Personal expense amount" hidden="true"/>
 
     <!-- Payment -->
-    <date name="paymentDate" title="Payment Date" readonly="true"/>
+    <date name="paymentDate" title="Payment Date"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
     <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder"
