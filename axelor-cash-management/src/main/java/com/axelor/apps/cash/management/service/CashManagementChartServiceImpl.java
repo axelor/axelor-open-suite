@@ -28,15 +28,17 @@ public class CashManagementChartServiceImpl implements CashManagementChartServic
   }
 
   @Override
-  public List<Map<String, Object>> getCashBalanceData(User user, BankDetails bankDetails) {
+  public List<Map<String, Object>> getCashBalanceData(
+      User user, BankDetails bankDetails, boolean isMultiBank) {
     List<Map<String, Object>> dataList = new ArrayList<>();
     ForecastRecap recap =
         forecastRepo
             .all()
             .filter(
-                "self.isReport = true AND (self.userRecap = :user OR :user is null) AND (:bankDetails is null OR :bankDetails MEMBER OF self.bankDetailsSet)")
+                "self.isReport = true AND (self.userRecap = :user OR :user is null) AND (:isMultiBank = false OR :bankDetails MEMBER OF self.bankDetailsSet)")
             .bind("user", user)
             .bind("bankDetails", bankDetails)
+            .bind("isMultiBank", isMultiBank)
             .fetchOne();
 
     if (recap == null) {
@@ -51,20 +53,13 @@ public class CashManagementChartServiceImpl implements CashManagementChartServic
 
     LocalDate startDate = recap.getFromDate();
     LocalDate toDate = recap.getToDate();
-    final String keyWeek = "week";
+    final String keyWeek = "date";
     final String keyBalance = "balance";
-
-    int i = 1;
-
-    Map<String, Object> firstEntry = new HashMap<>();
-    firstEntry.put(keyWeek, i++);
-    firstEntry.put(keyBalance, recap.getStartingBalance());
-    dataList.add(firstEntry);
 
     LocalDate date = startDate;
     while (date.isBefore(toDate)) {
       Map<String, Object> entry = new HashMap<>();
-      entry.put(keyWeek, i++);
+      entry.put(keyWeek, date);
       entry.put(keyBalance, getRecapLinesTotal(recap, recapLineList, startDate, date.plusWeeks(1)));
       dataList.add(entry);
       date = date.plusWeeks(1);

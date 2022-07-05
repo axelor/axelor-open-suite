@@ -49,15 +49,15 @@
     <dataset type="jpql"><![CDATA[
 
 		SELECT self.amount as amount,
-		MONTH(self.estimatedDate) as month
+		to_char(self.estimatedDate,'yyyy-MM') as month
 		FROM
 			ForecastRecapLine AS self
 		INNER JOIN self.forecastRecap AS recap ON recap.isReport = true
 		WHERE self.estimatedDate is not null
-		AND (:bankDetails is null OR :bankDetails MEMBER OF recap.bankDetailsSet)
-		AND (recap.userRecap = :_user OR :_user is null)
+		AND (:_isMultiBank = false OR :bankDetails MEMBER OF recap.bankDetailsSet)
+		AND (recap.userRecap.id = :_userId OR :_userId = 0)
 		AND self.estimatedDate BETWEEN :fromDate AND :toDate
-
+		ORDER BY month
 	   ]]></dataset>
     <category key="month" type="month" title="Month"/>
     <series key="amount" type="bar" title="Amount" aggregate="sum"/>

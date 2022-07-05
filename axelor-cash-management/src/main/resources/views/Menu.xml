@@ -68,6 +68,20 @@
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="forecast-dashboard-form"/>
     <context name="_userId" expr="eval: 0"/>
+    <context name="_getAllUserData" expr="eval: true"/>
+    <context name="_isMultiBank"
+      expr="eval: __config__.app.getApp('base').getManageMultiBanks()"/>
+  </action-view>
+
+  <menuitem name="forecast-root-my-forecast-dashboard" title="My forecast dashboard"
+    action="forecast.root.my.forecast.dashboard" parent="forecast-root"/>
+
+  <action-view name="forecast.root.my.forecast.dashboard" title="My forecast dashboard"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="forecast-dashboard-form"/>
+    <context name="_userId" expr="eval: __user__.id"/>
+    <context name="_isMultiBank"
+      expr="eval: __config__.app.getApp('base').getManageMultiBanks()"/>
   </action-view>
 
 </object-views>

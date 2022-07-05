@@ -9,6 +9,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +20,18 @@ public class ChartController {
     try {
       User user = null;
       BankDetails bankDetails = null;
-      if (request.getContext().get("_getAllUserData") == null) {
+      Context context = request.getContext();
+      if (context.get("_getAllUserData") == null) {
         user = AuthUtils.getUser();
       }
-      Map<String, Object> map = (Map<String, Object>) request.getContext().get("bankDetails");
+      Map<String, Object> map = (Map<String, Object>) context.get("bankDetails");
       if (map != null) {
         bankDetails = Mapper.toBean(BankDetails.class, map);
       }
+      boolean isMultiBank = (boolean) context.get("_isMultiBank");
       List<Map<String, Object>> dataList =
-          Beans.get(CashManagementChartService.class).getCashBalanceData(user, bankDetails);
+          Beans.get(CashManagementChartService.class)
+              .getCashBalanceData(user, bankDetails, isMultiBank);
       response.setData(dataList);
     } catch (Exception e) {
       TraceBackService.trace(e);

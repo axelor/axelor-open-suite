@@ -54,8 +54,10 @@
     <view name="forecast-recap-line-dashboard-grid" type="grid"/>
     <view name="forecast-recap-line-form" type="form"/>
     <view-param name="limit" value="100"/>
-    <domain>self.forecastRecap.isReport = true AND (:bankDetails is null OR :bankDetails MEMBER OF
-      self.forecastRecap.bankDetailsSet)</domain>
+    <domain>self.forecastRecap.isReport = true AND (:_isMultiBank = false OR :bankDetails MEMBER OF
+      self.forecastRecap.bankDetailsSet)
+      AND (self.forecastRecap.userRecap.id = :_userId OR :_userId
+      = 0)</domain>
     <context name="_fromForecastDashboard" expr="eval: true"/>
   </action-view>
 
@@ -69,12 +71,11 @@
   <action-view name="dashlet.cash.balance.over.time"
     model="com.axelor.apps.cash.management.db.ForecastRecapLine" title="Cash balance over time">
     <view name="chart.cash.balance.over.time" type="chart"/>
-    <context name="_getAllUserData" expr="eval: true"/>
   </action-view>
 
   <chart name="chart.cash.balance.over.time" title="Cash balance over time">
     <dataset type="rpc"><![CDATA[com.axelor.apps.cash.management.web.ChartController:getCashBalanceData]]></dataset>
-    <category key="week" type="text" title="Week"/>
+    <category key="date" type="date" title="Date"/>
     <series key="balance" type="line" title="Balance"/>
   </chart>
 

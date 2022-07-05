@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface CashManagementChartService {
 
-  public List<Map<String, Object>> getCashBalanceData(User user, BankDetails bankDetails);
+  public List<Map<String, Object>> getCashBalanceData(
+      User user, BankDetails bankDetails, boolean isMultiBank);
 }

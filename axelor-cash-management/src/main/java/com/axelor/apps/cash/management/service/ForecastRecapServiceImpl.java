@@ -319,7 +319,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
-            + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.companyBankDetails IN :bankDetailsSet) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
             + "AND self.estimatedPaymentDate BETWEEN :fromDate AND :toDate "
@@ -332,7 +332,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.company = :company "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.inTaxTotal != 0 "
-            + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.companyBankDetails IN :bankDetailsSet) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
         return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
@@ -341,7 +341,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.company = :company "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.inTaxTotal != 0 "
-            + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.companyBankDetails IN :bankDetailsSet) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         return "self.validationDate BETWEEN :fromDate AND :toDate "
@@ -349,18 +349,18 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.statusSelect = "
             + ExpenseRepository.STATUS_VALIDATED
             + " "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.bankDetails IN :bankDetailsSet)";
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         return "self.estimatedDate BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails) "
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.bankDetails IN :bankDetailsSet) "
             + "AND self.realizationDate IS NULL "
             + "AND self.forecastRecapLineType.id = :forecastRecapLineTypeId";
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         return "self.company = :company "
             + "AND self.expectedCloseDate BETWEEN :fromDate AND :toDate "
             + "AND self.saleOrderList IS EMPTY "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails) "
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.bankDetails IN :bankDetailsSet) "
             + ((forecastRecapLineType.getStatusSelect() == null
                     || forecastRecapLineType.getStatusSelect().isEmpty())
                 ? ""
@@ -368,7 +368,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         return "self.mainEmploymentContract.payCompany = :company "
             + "AND self.mainEmploymentContract.monthlyGlobalCost != 0 "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
+            + "AND (COALESCE(:bankDetailsSet) IS NULL OR self.bankDetails IN :bankDetailsSet)";
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
