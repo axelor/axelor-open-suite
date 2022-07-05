@@ -2534,6 +2534,7 @@
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.","Le paiement ne peut pas être réalisé car le montant restant sur la facture %s est inférieur ou égale à 0.",,
 "The payment mode is not in adequacy with the invoice type","Le paiement n'est pas en adéquation avec le type de facture ",,
 "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves","La période de l’écriture %s est temporairement clôturée et vous n'avez pas les autorisations nécessaires pour modifier des écritures comptables.",,
+"The period of the move is closed or temporary closed and can not be accounted","La période de l'écriture est clôturée ou provisoirement clôturée et ne peux pas être comptabilisée",,
 "The project must be the same for all invoices","Le projet doit être le même pour tout les factures",,
 "The purchase order must be the same for all invoices","La Comm. fournisseur doit être la même pour l'ensemble des factures",,
 "The quantity selected is the same as that of the fixed asset. The disposal will therefore be treated as a total disposal","La quantité sélectionnée est la même que celle de l'immobilisation. La sortie va donc être traitée comme une sortie totale.",,

@@ -108,4 +108,23 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     }
     return false;
   }
+
+  @Override
+  public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException {
+
+    if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      return false;
+    }
+    if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(period.getYear().getCompany());
+      for (Role role : accountConfig.getMoveOnTempClosureAuthorizedRoleList()) {
+        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return true;
+  }
 }

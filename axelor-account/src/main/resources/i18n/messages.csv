@@ -2534,6 +2534,7 @@
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.",,,
 "The payment mode is not in adequacy with the invoice type",,,
 "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves",,,
+"The period of the move is closed or temporary closed and can not be accounted",,,
 "The project must be the same for all invoices",,,
 "The purchase order must be the same for all invoices",,,
 "The quantity selected is the same as that of the fixed asset. The disposal will therefore be treated as a total disposal",,,

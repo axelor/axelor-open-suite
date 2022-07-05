@@ -33,4 +33,6 @@ public interface PeriodServiceAccount {
 
   @CallMethod
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+
+  public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException;
 }
