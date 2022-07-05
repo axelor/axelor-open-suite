@@ -223,7 +223,9 @@ public class DuplicateObjectsController {
             (List<HashMap<String, Object>>) context.get("fieldsSet");
         for (HashMap<String, Object> field : fieldsSet) {
           MetaField metaField = metaFieldRepository.find(((Integer) field.get("id")).longValue());
-          fields.add(metaField.getName());
+          if (metaField != null) {
+            fields.add(metaField.getName());
+          }
         }
       }
     }
