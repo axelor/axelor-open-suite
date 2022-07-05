@@ -268,4 +268,6 @@ public interface InvoiceTermService {
   boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
 
   BigDecimal computeParentTotal(Context context);
+
+  void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }

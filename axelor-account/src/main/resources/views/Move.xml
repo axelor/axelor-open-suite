@@ -543,6 +543,7 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
     <action name="save"/>
+    <action name="action-move-method-round-invoice-term-percentages"/>
     <action name="action-move-method-update-in-day-book-mode"/>
   </action-group>
 
@@ -794,6 +795,11 @@
 
   <action-method name="action-move-method-apply-cut-off-dates">
     <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
+  </action-method>
+
+  <action-method name="action-move-method-round-invoice-term-percentages">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="roundInvoiceTermPercentages"/>
   </action-method>
 
   <action-record name="action-record-initialize-permission-validation-move"

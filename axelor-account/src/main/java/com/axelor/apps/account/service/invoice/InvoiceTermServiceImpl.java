@@ -1170,4 +1170,35 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
     return total;
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    boolean isSubtract = true;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (this.isUnevenRounding(invoiceTerm, total)) {
+        if (isSubtract) {
+          invoiceTerm.setPercentage(invoiceTerm.getPercentage().subtract(BigDecimal.valueOf(0.01)));
+        }
+
+        isSubtract = !isSubtract;
+      }
+    }
+  }
+
+  protected boolean isUnevenRounding(InvoiceTerm invoiceTerm, BigDecimal total) {
+    BigDecimal percentageUp =
+        invoiceTerm
+            .getAmount()
+            .multiply(BigDecimal.valueOf(100))
+            .divide(total, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal percentageDown =
+        invoiceTerm
+            .getAmount()
+            .multiply(BigDecimal.valueOf(100))
+            .divide(total, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_DOWN);
+
+    return percentageUp.compareTo(percentageDown) != 0;
+  }
 }
