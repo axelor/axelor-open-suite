@@ -46,7 +46,7 @@
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
     onLoad="action-group-payment-session-on-load" model="com.axelor.apps.account.db.PaymentSession"
-    width="large">
+    width="large" canDelete="statusSelect == 4">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
