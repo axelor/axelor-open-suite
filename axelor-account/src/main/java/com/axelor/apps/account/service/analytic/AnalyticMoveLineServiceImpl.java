@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -36,7 +35,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -227,85 +225,5 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAmount(moveLine.getDebit());
     }
     return analyticMoveLine;
-  }
-
-  protected BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  protected BigDecimal getAnalyticAmount(
-      InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
-    if (invoiceLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(invoiceLine.getCompanyExTaxTotal())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmountFromParent(Context parent, AnalyticMoveLine analyticMoveLine) {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (analyticMoveLine != null && line != null) {
-        return getAnalyticAmount(line, analyticMoveLine);
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (analyticMoveLine != null && line != null) {
-        return getAnalyticAmount(line, analyticMoveLine);
-      }
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public AnalyticJournal getAnalyticJournalFromParent(Context parent) throws AxelorException {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return accountConfigService
-            .getAccountConfig(line.getAccount().getCompany())
-            .getAnalyticJournal();
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return accountConfigService
-            .getAccountConfig(line.getAccount().getCompany())
-            .getAnalyticJournal();
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public LocalDate getDateFromParent(Context parent) {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (line.getDate() != null) {
-        return line.getDate();
-      } else if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return appBaseService.getTodayDate(line.getAccount().getCompany());
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return appBaseService.getTodayDate(line.getAccount().getCompany());
-      }
-    }
-    return LocalDate.now();
   }
 }
