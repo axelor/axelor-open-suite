@@ -13,13 +13,13 @@
     </extend>
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
-        <field name="_xFillProductAvailableQty" type="boolean" readonly="true"/>
+        <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
       </insert>
     </extend>
   </form>
 
   <action-attrs name="action-sale-order-line-attrs-fill-ctx">
-    <attribute name="value" for="_xFillProductAvailableQty" expr="eval: true"/>
+    <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
   </action-attrs>
 
   <form name="allocated-qty-sale-order-line-form" title="Change allocated qty"
