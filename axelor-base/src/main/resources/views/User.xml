@@ -115,7 +115,7 @@
         <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
           grid-view="employee-grid" canNew="false" canEdit="false" canView="false"
           if="__config__.app.isApp('employee')" onSelect="action-user-attrs-change-employee-domain"
-          domain="self.user == null"/>
+          domain="self.user == null" onChange="action-user-attrs-fill-contact"/>
         <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
           title="Create employee" if-module="axelor-human-resource"
           showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
@@ -427,18 +427,18 @@
   <action-record name="action-user-record-step-status-next"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 2"
-      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.user == null))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 1"
-      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.user != null) || (stepStatusSelect == 2 &amp;&amp; __this__.partner == null)"/>
     <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
   </action-record>
 
   <action-record name="action-user-record-step-status-previous"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 2"
-      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.user == null))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 1"
-      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.user != null) || (stepStatusSelect == 4 &amp;&amp; __this__.partner == null)"/>
   </action-record>
 
   <action-validate name="action-user-check-company">
@@ -590,6 +590,11 @@
 
   <action-attrs name="action-user-attrs-employee-readonly-false">
     <attribute for="employee" name="readonly" expr="false"/>
+  </action-attrs>
+
+  <action-attrs name="action-user-attrs-fill-contact">
+    <attribute for="partner" name="value" expr="eval: employee?.contactPartner"
+      if="partner == null &amp;&amp; employee?.contactPartner != null"/>
   </action-attrs>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
