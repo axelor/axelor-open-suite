@@ -90,7 +90,7 @@
         form-view="analytic-account-form"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
       <field name="percentage" colSpan="4" min="0" max="100"
-        onChange="action-analytic-move-line-method-compute-amount"/>
+        onChange="action-analytic-move-line-method-compute-amount,action-method-calculate-amount-with-percentage-analytic-move-line"/>
       <field name="originalPieceAmount" aggregate="sum"/>
       <field name="amount" colSpan="4" readonly="true"/>
       <field name="date" colSpan="4"/>
@@ -150,7 +150,7 @@
 
   <action-attrs name="action-analytic-move-line-attrs-hide-fields">
     <attribute for="date" name="hidden"
-      expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+      expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
     <attribute for="typeSelect" name="hidden"
       expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
     <attribute for="accountType" name="hidden"
@@ -162,6 +162,7 @@
     <action name="action-analytic-move-line-attrs-set-original-piece-amount"/>
     <action name="action-analytic-move-line-attrs-hide-fields"/>
     <action name="action-analytic-move-line-attrs-set-type-select"/>
+    <action name="action-method-analytic-move-line-move-line-onnew"/>
   </action-group>
 
   <action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
@@ -180,6 +181,17 @@
     <action name="action-analytic-move-line-attrs-valid-analytic-move-line-list"/>
     <action name="action-analytic-move-line-condition-valid-analytic-move-line-list"/>
   </action-group>
+
+  <action-method name="action-method-analytic-move-line-move-line-onnew">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="manageNewAnalyticDistributionLine"/>
+  </action-method>
+
+  <action-method
+    name="action-method-calculate-amount-with-percentage-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="calculateAmountWithPercentage"/>
+  </action-method>
 
   <search-filters name="analytic-move-line-filters"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
