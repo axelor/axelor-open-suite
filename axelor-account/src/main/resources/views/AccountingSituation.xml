@@ -224,6 +224,7 @@
   <action-group name="action-accounting-situation-group-company-onchange">
     <action name="action-supplychain-method-compute-used-credit"/>
     <action name="action-accounting-situation-method-set-holdback-accounts"/>
+    <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
   </action-group>
 
   <action-attrs name="action-accounting-situation-attrs-hide-supplier-account">

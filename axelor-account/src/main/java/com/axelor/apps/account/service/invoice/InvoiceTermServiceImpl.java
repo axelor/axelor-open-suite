@@ -135,10 +135,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal sum = BigDecimal.ZERO;
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        sum = sum.add(invoiceTerm.getPercentage());
+        sum =
+            sum.add(
+                invoiceTerm.getAmount().divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP));
       }
     }
-    return sum;
+    return sum.multiply(BigDecimal.valueOf(100));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -862,8 +864,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal computeCustomizedPercentageUnscaled(
-      BigDecimal amount, BigDecimal inTaxTotal) {
+  @Override
+  public BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       percentage =
@@ -1202,5 +1204,36 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return total;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    boolean isSubtract = true;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (this.isUnevenRounding(invoiceTerm, total)) {
+        if (isSubtract) {
+          invoiceTerm.setPercentage(invoiceTerm.getPercentage().subtract(BigDecimal.valueOf(0.01)));
+        }
+
+        isSubtract = !isSubtract;
+      }
+    }
+  }
+
+  protected boolean isUnevenRounding(InvoiceTerm invoiceTerm, BigDecimal total) {
+    BigDecimal percentageUp =
+        invoiceTerm
+            .getAmount()
+            .multiply(BigDecimal.valueOf(100))
+            .divide(total, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal percentageDown =
+        invoiceTerm
+            .getAmount()
+            .multiply(BigDecimal.valueOf(100))
+            .divide(total, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_DOWN);
+
+    return percentageUp.compareTo(percentageDown) != 0;
   }
 }
