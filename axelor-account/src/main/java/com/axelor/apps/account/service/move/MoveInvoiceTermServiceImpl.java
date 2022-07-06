@@ -1,15 +1,20 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
-  public MoveInvoiceTermServiceImpl(MoveLineInvoiceTermService moveLineInvoiceTermService) {
+  public MoveInvoiceTermServiceImpl(
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermService invoiceTermService) {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -23,5 +28,14 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
                       && CollectionUtils.isEmpty(it.getInvoiceTermList()))
           .forEach(moveLineInvoiceTermService::generateDefaultInvoiceTerm);
     }
+  }
+
+  public void roundInvoiceTermPercentages(Move move) {
+    move.getMoveLineList().stream()
+        .filter(it -> CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
+        .forEach(
+            it ->
+                invoiceTermService.roundPercentages(
+                    it.getInvoiceTermList(), it.getDebit().max(it.getCredit())));
   }
 }

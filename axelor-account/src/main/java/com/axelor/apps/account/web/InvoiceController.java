@@ -1130,4 +1130,15 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void roundInvoiceTermPercentages(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+      Beans.get(InvoiceTermService.class)
+          .roundPercentages(invoice.getInvoiceTermList(), invoice.getInTaxTotal());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

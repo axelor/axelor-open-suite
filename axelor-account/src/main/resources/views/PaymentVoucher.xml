@@ -394,16 +394,21 @@
     <call class="com.axelor.apps.account.web.PaymentVoucherController"
       method="setReceiptDisplay"/>
   </action-method>
+
   <action-method name="action-payment-voucher-method-reset-imputation">
     <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
   </action-method>
-  <action-method name="action-payment-voucher-method-load-move-lines">
-    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="loadMoveLines"/>
+
+  <action-method name="action-payment-voucher-method-load-lines">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="loadInvoiceTerms"/>
   </action-method>
+
   <action-group name="action-payment-voucher-group-search-elements-to-pay">
-    <action name="action-payment-voucher-method-load-move-lines"/>
+    <action name="action-payment-voucher-method-load-lines"/>
     <action name="action-payment-voucher-method-reset-imputation"/>
   </action-group>
+
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <attribute name="hidden" for="tradingName"

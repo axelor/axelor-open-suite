@@ -44,7 +44,7 @@
           </panel>
         </panel>
         <field name="valueForCollectionAccount"
-          domain="self.accountType.technicalTypeSelect = 'cash'"
+          domain="self.accountType.technicalTypeSelect = 'cash' AND self.company = :company"
           onChange="action-deposit-slip-attrs-payment-voucher-list-hide-column"
           requiredIf="!companyBankDetails &amp;&amp; !valueForCollectionAccount"
           readonlyIf="companyBankDetails" colSpan="4"/>

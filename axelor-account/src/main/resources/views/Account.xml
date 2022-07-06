@@ -104,7 +104,6 @@
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
-        <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
         <field name="compatibleAccountSet" widget="TagSelect"
           showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>

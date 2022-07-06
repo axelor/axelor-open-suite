@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.db.Role;
@@ -44,10 +45,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected MoveLineToolService moveLineToolService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
-  public MoveLineControlServiceImpl(MoveLineToolService moveLineToolService) {
+  public MoveLineControlServiceImpl(
+      MoveLineToolService moveLineToolService, InvoiceTermService invoiceTermService) {
     this.moveLineToolService = moveLineToolService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -98,11 +102,15 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       if (invoiceAttached != null) {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
       }
-      if (invoiceTermList.stream()
-              .map(InvoiceTerm::getPercentage)
-              .reduce(BigDecimal.ZERO, BigDecimal::add)
-              .compareTo(new BigDecimal(100))
-          != 0) {
+      if (invoiceAttached != null
+          && invoiceTermList.stream()
+                  .map(
+                      it ->
+                          invoiceTermService.computeCustomizedPercentageUnscaled(
+                              it.getAmount(), invoiceAttached.getInTaxTotal()))
+                  .reduce(BigDecimal.ZERO, BigDecimal::add)
+                  .compareTo(new BigDecimal(100))
+              != 0) {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
