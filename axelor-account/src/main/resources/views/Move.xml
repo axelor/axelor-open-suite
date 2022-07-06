@@ -102,7 +102,7 @@
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
-          <field name="$validatePeriod" hidden="true"/>
+          <field name="$validatePeriod" hidden="true" type="boolean"/>
         </panel>
       </panel>
 
@@ -379,7 +379,7 @@
           showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
-        <field name="$validatePeriod" hidden="true"/>
+        <field name="$validatePeriod" hidden="true" type="boolean"/>
       </panel>
     </panel>
     <panel>
@@ -494,7 +494,7 @@
     <action name="action-attrs-move-hide-trading-name"/>
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
-    <action name="action-record-initialize-permission-validation-move"/>
+    <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
   </action-group>
 
@@ -508,8 +508,7 @@
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
-    <action name="action-record-initialize-permission-validation-move"/>
-    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
   </action-group>
 
@@ -561,7 +560,7 @@
 
   <action-group name="action-group-move-date-onchange">
     <action name="action-move-method-get-period"/>
-    <action name="action-record-initialize-permission-validation-move"/>
+    <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
   </action-group>
@@ -765,8 +764,12 @@
   <action-record name="action-record-initialize-permission-validation-move"
     model="com.axelor.apps.account.db.Move">
     <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__user__)"/>
+      expr="call:com.axelor.apps.account.service.PeriodServiceAccount:isAuthorizedToAccountOnPeriod(__this__.period,__user__)"/>
   </action-record>
+
+  <action-method name="action-method-initialize-permission-validation-move">
+    <call class="com.axelor.apps.account.web.MoveController" method="isAuthorizedOnPeriod"/>
+  </action-method>
 
   <action-method name="action-move-method-check-dates">
     <call class="com.axelor.apps.account.web.MoveController" method="checkDates"/>

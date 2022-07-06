@@ -1093,4 +1093,6 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+  static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
+      "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 }
