@@ -73,14 +73,14 @@
     <extend target="//panel[@name='configPanel']">
       <insert position="after">
         <panel name="hiddenPanel" hidden="true">
-          <field name="_xFillProductAvailableQty" type="boolean" readonly="true"/>
+          <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
         </panel>
       </insert>
     </extend>
   </form>
 
   <action-attrs name="action-stock-move-attrs-fill-ctx">
-    <attribute name="value" for="_xFillProductAvailableQty" expr="eval: true"/>
+    <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
   </action-attrs>
 
   <form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove"
