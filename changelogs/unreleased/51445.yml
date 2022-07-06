@@ -1,0 +1,3 @@
+---
+title: "AccountReportconfigLine: Fixed demo's data where the lines were associated to the wrong account report type"
+type: fix
