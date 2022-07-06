@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="payment-session-grid" title="Payment sessions"
+  <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="name"/>
     <field name="createdOn"/>
@@ -46,7 +46,7 @@
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
     onLoad="action-group-payment-session-on-load" model="com.axelor.apps.account.db.PaymentSession"
-    width="large">
+    width="large" canDelete="statusSelect == 4">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
