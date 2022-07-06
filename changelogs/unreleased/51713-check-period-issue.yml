@@ -1,3 +1,0 @@
----
-title: "Move : When changing the date, now correctly prevents the user from editing if the date is linked to a permanently or temporally closed period"
-type: fix
