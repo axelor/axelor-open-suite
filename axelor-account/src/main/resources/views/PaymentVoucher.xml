@@ -55,7 +55,7 @@
       <panel hidden="true" showIf="statusSelect == 2" itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
-          showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+          showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
         <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>
         <field name="receiptNo"/>
       </panel>
@@ -79,9 +79,9 @@
       <field name="paymentMode.inOutSelect" colSpan="12" hidden="true"/>
       <field name="paymentMode.accountingTriggerSelect" colSpan="12" hidden="true"/>
       <panel name="chequePanel" colSpan="12" title="Cheque" hidden="true"
-        showIf="paymentMode.typeSelect == 7">
+        showIf="paymentMode &amp;&amp; paymentMode.typeSelect == 7">
         <panel colSpan="12" hidden="true"
-          showIf="paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5">
+          showIf="paymentMode &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5">
           <field name="bankEntryGenWithoutValEntryCollectionOk" widget="boolean-switch"/>
           <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
             hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
@@ -94,8 +94,8 @@
           <field name="chequeOwner"
             requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
           <field name="chequeDueDate" title="Due date"
-            validIf="paymentMode.typeSelect != 7 || paymentMode.inOutSelect != 1 || chequeDueDate >= paymentDate"
-            hidden="true" showIf="paymentMode.inOutSelect == 1"/>
+            validIf="paymentMode &amp;&amp; (paymentMode.typeSelect != 7 || paymentMode.inOutSelect != 1) || chequeDueDate >= paymentDate"
+            hidden="true" showIf="paymentMode &amp;&amp; paymentMode.inOutSelect == 1"/>
         </panel>
       </panel>
       <field name="depositSlip" showIf="depositSlip" colSpan="12"/>
@@ -189,7 +189,7 @@
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-method-fill-bank-details"/>
     <action name="action-payment-voucher-record-value-for-collection-account"
-      if="paymentMode.typeSelect == 7"/>
+      if="paymentMode &amp;&amp; paymentMode.typeSelect == 7"/>
     <action name="action-payment-voucher-record-cheque-owner"/>
     <action name="action-payment-voucher-record-cheque-due-date"/>
   </action-group>
