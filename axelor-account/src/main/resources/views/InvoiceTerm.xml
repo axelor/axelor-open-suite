@@ -242,7 +242,7 @@
           colSpan="4" css="btn-success" onClick="action-invoice-term-group-validate-pfp"/>
         <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
           showIf="$isValidPfpValidatorUser &amp;&amp; [1].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
-          css="btn-warning" colSpan="4" onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
+          css="btn-warning" colSpan="4" onClick="action-invoice-term-group-partial-pfp"/>
         <button name="refusalToPayBtn" title="Refuse to pay"
           showIf="$isValidPfpValidatorUser &amp;&amp;[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
           colSpan="4" css="btn-danger" onClick="action-invoice-term-group-refusal-to-pay,save"/>
@@ -397,7 +397,7 @@
           colSpan="4" css="btn-success" onClick="action-invoice-term-group-validate-pfp"/>
         <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
           showIf="$isValidPfpValidatorUser &amp;&amp; [1].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
-          css="btn-warning" colSpan="4" onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
+          css="btn-warning" colSpan="4" onClick="action-invoice-term-group-partial-pfp"/>
         <button name="refusalToPayBtn" title="Refuse to pay"
           showIf="$isValidPfpValidatorUser &amp;&amp;[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
           colSpan="4" css="btn-danger" onClick="action-invoice-term-group-refusal-to-pay,save"/>
@@ -452,8 +452,7 @@
         onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
       <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
-        onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
-        colOffset="4" colSpan="4"/>
+        onClick="action-invoice-term-group-refusal-to-pay-wizard" colOffset="4" colSpan="4"/>
     </panel>
   </form>
 
@@ -489,7 +488,7 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-validate-pfp">
-    <action name="action-invoice-term-validate-save-invoice"/>
+    <action name="action-invoice-term-validate-before-pfp"/>
     <action name="save"/>
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -529,8 +528,18 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-refusal-to-pay">
-    <action name="action-invoice-term-validate-save-invoice"/>
+    <action name="action-invoice-term-validate-before-pfp"/>
     <action name="action-invoiceterm-view-refusal-to-pay"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-partial-pfp">
+    <action name="action-invoice-term-validate-before-pfp"/>
+    <action name="action-invoice-term-view-pfp-partial-reason-wizard"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-refusal-to-pay-wizard">
+    <action name="action-invoiceterm-refusal-to-pay-cancel-reason-check"/>
+    <action name="action-invoice-term-method-refusal-to-pay"/>
   </action-group>
 
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
@@ -566,10 +575,13 @@
       if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice.id).fetch().size &gt;= 1"/>
   </action-validate>
 
-  <action-validate name="action-invoice-term-validate-save-invoice">
+  <action-validate name="action-invoice-term-validate-before-pfp">
     <alert
-      message="This process requires the parent invoice to be saved then reloaded, do you wish to continue ?"
+      message="All the invoice's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the invoice when the process is done."
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+    <alert
+      message="All the move's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the move when the process is done."
+      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
   </action-validate>
 
   <action-record name="action-invoice-term-record-update-customized"
