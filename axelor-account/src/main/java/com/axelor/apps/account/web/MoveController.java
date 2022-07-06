@@ -106,7 +106,7 @@ public class MoveController {
       if (move.getDate() != null && move.getCompany() != null) {
         Period period =
             Beans.get(PeriodService.class)
-                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+                .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
         if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
 
           response.setValue("period", period);
@@ -560,12 +560,11 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
       User user = AuthUtils.getUser();
-      if (move.getPeriod() != null
-          && !periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
-        response.setError(
-            I18n.get(
-                "This period is temporarily closed and you do not have the necessary permissions to create entries"));
-      }
+      Period period = move.getPeriod();
+      boolean isAuthorizedToAccountOnPeriod =
+          periodServiceAccount.isAuthorizedToAccountOnPeriod(period, user);
+
+      Beans.get(PeriodService.class).checkClosedPeriod(period, isAuthorizedToAccountOnPeriod);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
