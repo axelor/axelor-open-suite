@@ -561,11 +561,12 @@ public class MoveController {
       PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
       User user = AuthUtils.getUser();
       Period period = move.getPeriod();
-      boolean manageClosedPeriod = periodServiceAccount.isAuthorizedToAccountOnPeriod(period, user);
+      boolean isAuthorizedToAccountOnPeriod =
+          periodServiceAccount.isAuthorizedToAccountOnPeriod(period, user);
 
-      Beans.get(PeriodService.class).checkClosedPeriod(period, manageClosedPeriod);
+      Beans.get(PeriodService.class).checkClosedPeriod(period, isAuthorizedToAccountOnPeriod);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

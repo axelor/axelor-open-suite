@@ -78,7 +78,8 @@ public interface PeriodService {
    * @param period
    * @throws AxelorException if the period is permanently or temporally closed
    */
-  void checkClosedPeriod(Period period, Boolean manageClosedPeriod) throws AxelorException;
+  void checkClosedPeriod(Period period, boolean isAuthorizedToAccountOnPeriod)
+      throws AxelorException;
 
   public void validateTempClosure(Period period) throws AxelorException;
 
