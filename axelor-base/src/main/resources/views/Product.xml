@@ -217,7 +217,7 @@
             hideIf="isShippingCostsProduct || !sellable"/>
           <panel name="unitsPanel" title="Units" colSpan="12">
             <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
-              grid-view="unit-grid"/>
+              grid-view="unit-grid" onChange="action-product-group-unit-onchange"/>
             <button name="updateUnitBtn" title="Update stock location" colSpan="6"
               showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
               onClick="save,action-product-method-update-stock-location" if-module="axelor-stock"
@@ -225,7 +225,7 @@
             <field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6"
               form-view="unit-form" grid-view="unit-grid"
               if="__config__.app.getApp('sale')?.getManageSalesUnits()"
-              onChange="action-product-group-sales-unit-onchange"/>
+              onChange="action-product-group-unit-onchange"/>
             <spacer colSpan="6"/>
             <field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6"
               form-view="unit-form" grid-view="unit-grid"
@@ -660,7 +660,7 @@
     <action name="action-product-method-update-sale-price"/>
   </action-group>
 
-  <action-group name="action-product-group-sales-unit-onchange">
+  <action-group name="action-product-group-unit-onchange">
     <action name="action-product-method-update-sale-price"/>
     <action name="action-product-method-update-product-company-sale-price-with-sales-unit"/>
   </action-group>
