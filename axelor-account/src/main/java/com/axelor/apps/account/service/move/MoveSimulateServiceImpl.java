@@ -40,6 +40,7 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
   public void simulate(Move move) throws AxelorException {
     moveValidateService.checkPreconditions(move);
     moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    moveValidateService.completeMoveLines(move);
     move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
     moveRepository.save(move);
   }

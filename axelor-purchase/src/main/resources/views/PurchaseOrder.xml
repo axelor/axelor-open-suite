@@ -853,7 +853,7 @@
     <view name="stock-move-form" type="form"/>
     <domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId
       = :purchaseOrder</domain>
-    <context name="purchaseOrder" expr="eval: __self__.id"/>
+    <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
   <action-validate name="action-purchase-order-validate-stock-location">

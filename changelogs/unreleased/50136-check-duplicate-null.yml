@@ -1,0 +1,6 @@
+---
+title: "Check Duplicate : Fix an error occurring when using the the Check Duplicate function"
+type: fix
+description: |
+  Objects where you could check the duplicate depending on the chosen fields (e.g. Contacts, Products...)
+  now correctly open a window with the duplicated entries instead of an error message.
