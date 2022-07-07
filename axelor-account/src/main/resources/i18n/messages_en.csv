@@ -625,6 +625,7 @@
 "CFONB Import",,,
 "Calculation",,,
 "Calculation of totals",,,
+"Can only go back to accounted from a cleared or cancelled subrogation release.",,,
 "Cancel",,,
 "Cancel invoice n°",,,
 "Cancel release",,,
