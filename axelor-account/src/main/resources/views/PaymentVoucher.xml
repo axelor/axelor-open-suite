@@ -55,7 +55,7 @@
       <panel hidden="true" showIf="statusSelect == 2" itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
-          showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+          showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
         <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>
         <field name="receiptNo"/>
       </panel>
