@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
@@ -76,6 +78,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppSupplychainService appSupplyChainService;
+
+  protected AccountConfigService accountConfigService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected SaleOrderRepository saleOrderRepo;
   protected UnitConversionService unitConversionService;
@@ -93,6 +97,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
       AppSupplychainService appSupplyChainService,
+      AccountConfigService accountConfigService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
@@ -108,6 +113,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         partnerProductQualityRatingService,
         productRepository);
     this.appSupplyChainService = appSupplyChainService;
+    this.accountConfigService = accountConfigService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.unitConversionService = unitConversionService;
@@ -553,7 +559,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             note,
             typeSelect);
 
-    if (stockMove.getCompany().getAccountConfig().getIsManagePassedForPayment()
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    if (accountConfig.getIsManagePassedForPayment()
         && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && !stockMove.getIsReversion()) {
       stockMove.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
