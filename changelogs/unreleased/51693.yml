@@ -1,0 +1,3 @@
+---
+title : Studio:Fix issue of delete of a custom model when it is in reference on other model
+type : fix
