@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubrogationReleaseWorkflowServiceImpl implements SubrogationReleaseWorkflowService {
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class})
   @Override
   public void goBackToAccounted(SubrogationRelease subrogationRelease) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
