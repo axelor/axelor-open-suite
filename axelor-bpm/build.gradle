@@ -16,10 +16,9 @@ test {
 	exclude "com/axelor/apps/baml/test/**"
 }
 
-
 dependencies {
-  compile ("org.camunda.bpm:camunda-engine:7.15.0")
-  compile ("org.camunda.bpm:camunda-engine-plugin-spin:7.15.0")
-  compile ("org.camunda.spin:camunda-spin-dataformat-json-jackson:1.10.1")
+  compile ("org.camunda.bpm:camunda-engine:7.17.0")
+  compile ("org.camunda.bpm:camunda-engine-plugin-spin:7.17.0")
+  compile ("org.camunda.spin:camunda-spin-dataformat-json-jackson:1.17.0")
   api project(":modules:axelor-studio")
 }
