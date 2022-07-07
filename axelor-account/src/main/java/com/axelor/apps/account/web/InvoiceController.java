@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -40,10 +41,11 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -659,6 +661,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       Partner partner = invoice.getPartner();
       if (partner == null) {
+        response.setValue("priceList", null);
         return;
       }
       int priceListTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
@@ -774,35 +777,25 @@ public class InvoiceController {
   }
 
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    Company company = invoice.getCompany();
-
-    long companyId = company.getPartner() == null ? 0 : company.getPartner().getId();
-
-    String domain = String.format("self.id != %d AND self.isContact = false ", companyId);
-    domain += " AND :company member of self.companySet";
-
-    int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
-
-    if (invoiceTypeSelect == 1) {
-      domain += " AND self.isCustomer = true ";
-    } else {
-      domain += " AND self.isSupplier = true ";
-    }
-
     try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Company company = invoice.getCompany();
+      List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+      int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
 
-      if ((!(invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()))
-          && (invoiceTypeSelect == 1)) {
+      String domain =
+          Beans.get(InvoiceDomainService.class)
+              .getPartnerBaseDomain(company, invoice, invoiceTypeSelect);
 
-        domain += Beans.get(PartnerService.class).getPartnerDomain(invoice.getPartner());
+      if ((!(invoiceLineList == null || invoiceLineList.isEmpty()))
+          && (invoiceTypeSelect == PriceListRepository.TYPE_SALE)) {
+        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(invoice, domain);
       }
 
+      response.setAttr("partner", "domain", domain);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("partner", "domain", domain);
   }
 
   public void showDuplicateInvoiceNbrWarning(ActionRequest request, ActionResponse response) {

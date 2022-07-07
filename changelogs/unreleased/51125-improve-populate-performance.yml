@@ -1,0 +1,12 @@
+---
+title: "Skip expensive computation of available qty of product when possible"
+type: change
+description: |
+  The dummy field `$availableQty` appears on `Product` grid views. It's computation done on 
+  StockMoveRepository.populate will now be triggered if and only if the boolean `_xFillProductAvailableQty`
+  is true.
+  
+  Migration steps:
+  1. Locate usages of `$availableQty` in `Product` views
+  2. Locate the action-views using these views and set the context variable `_xFillProductAvailableQty` to true
+  3. Locate usages of the views from point 1 in `grid-view` attributes and set the context variable `_xFillProductAvailableQty` to true thanks to onLoad and onNew attributes of the parent view.

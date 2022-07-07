@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.account.service.invoice.generator.tax;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
