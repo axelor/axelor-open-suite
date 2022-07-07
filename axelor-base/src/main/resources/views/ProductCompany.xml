@@ -110,7 +110,7 @@
   </action-group>
 
   <action-group name="action-product-company-group-onload">
-    <action name="action-product-company-attrs-scale-and-precision,,,"/>
+    <action name="action-product-company-attrs-scale-and-precision"/>
     <action name="action-product-company-attrs-change-title-based-on-inAti"/>
     <action name="action-product-company-attrs-company-domain"/>
     <action name="action-product-company-attrs-sale-price-readonly"/>

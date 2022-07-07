@@ -30,6 +30,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.meta.db.MetaField;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -37,6 +38,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Singleton;
 
 @Singleton
@@ -230,5 +232,16 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     } else {
       return processTimeout;
     }
+  }
+
+  @Override
+  public boolean isFieldSpecificToCompany(String fieldName) {
+    Set<MetaField> companySpecificFields = getAppBase().getCompanySpecificProductFieldsSet();
+    for (MetaField field : companySpecificFields) {
+      if (field.getName().equals(fieldName)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

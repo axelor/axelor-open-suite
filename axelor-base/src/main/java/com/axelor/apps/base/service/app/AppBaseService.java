@@ -107,4 +107,6 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  boolean isFieldSpecificToCompany(String fieldName);
 }

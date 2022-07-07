@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyComputeService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -204,6 +205,17 @@ public class ProductController {
           Beans.get(ProductService.class)
               .computeSalePrice(
                   product.getManagPriceCoef(), product.getCostPrice(), product, null));
+    }
+  }
+
+  public void updateProductCompanySalePriceWithSalesUnit(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      Beans.get(ProductCompanyComputeService.class)
+          .updateProductCompanySalePriceWithSalesUnit(product);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -224,7 +224,8 @@
               if="__config__.app.isApp('stock')"/>
             <field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6"
               form-view="unit-form" grid-view="unit-grid"
-              if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
+              if="__config__.app.getApp('sale')?.getManageSalesUnits()"
+              onChange="action-product-group-sales-unit-onchange"/>
             <spacer colSpan="6"/>
             <field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6"
               form-view="unit-form" grid-view="unit-grid"
@@ -659,6 +660,11 @@
     <action name="action-product-method-update-sale-price"/>
   </action-group>
 
+  <action-group name="action-product-group-sales-unit-onchange">
+    <action name="action-product-method-update-sale-price"/>
+    <action name="action-product-method-update-product-company-sale-price-with-sales-unit"/>
+  </action-group>
+
   <action-record name="action-product-record-sellable"
     model="com.axelor.apps.base.db.Product">
     <field name="sellable" expr="eval: false"
@@ -991,6 +997,12 @@
 
   <action-method name="action-product-method-update-sale-price">
     <call class="com.axelor.apps.base.web.ProductController" method="updateSalePrice"/>
+  </action-method>
+
+  <action-method
+    name="action-product-method-update-product-company-sale-price-with-sales-unit">
+    <call class="com.axelor.apps.base.web.ProductController"
+      method="updateProductCompanySalePriceWithSalesUnit"/>
   </action-method>
 
 </object-views>
