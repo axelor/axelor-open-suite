@@ -103,13 +103,13 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
       }
       if (invoiceTermList.stream()
-                      .map(
-                          it ->
-                              invoiceTermService.computeCustomizedPercentageUnscaled(
-                                  it.getAmount(),
-                                  invoiceAttached != null
-                                      ? invoiceAttached.getInTaxTotal()
-                                      : moveLine.getCredit().max(moveLine.getDebit())))
+                  .map(
+                      it ->
+                          invoiceTermService.computeCustomizedPercentageUnscaled(
+                              it.getAmount(),
+                              invoiceAttached != null
+                                  ? invoiceAttached.getInTaxTotal()
+                                  : moveLine.getCredit().max(moveLine.getDebit())))
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
                   .compareTo(new BigDecimal(100))
               != 0
