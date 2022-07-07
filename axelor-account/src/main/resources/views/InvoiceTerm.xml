@@ -10,7 +10,7 @@
     <field name="name"/>
     <field name="invoice.invoiceId"/>
     <field name="moveLine.name" title="Move Line"/>
-    <field name="moveLine.partner"/>
+    <field name="partner"/>
     <field name="dueDate"/>
     <field name="amount" title="To pay / To use"/>
     <field name="amountRemaining" title="Left to pay / to use"/>
