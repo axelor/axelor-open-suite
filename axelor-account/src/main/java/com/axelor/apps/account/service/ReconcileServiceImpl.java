@@ -64,6 +64,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveLineService moveLineService;
   protected AppBaseService appBaseService;
+  protected SubrogationReleaseWorkflowService subrogationReleaseWorkflowService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -76,7 +77,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       MoveLineService moveLineService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SubrogationReleaseWorkflowService subrogationReleaseWorkflowService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -88,6 +90,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.moveLineService = moveLineService;
     this.appBaseService = appBaseService;
+    this.subrogationReleaseWorkflowService = subrogationReleaseWorkflowService;
   }
 
   /**
@@ -405,6 +408,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    Invoice invoice = debitMoveLine.getMove().getInvoice();
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
@@ -419,6 +423,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
+    if (invoice != null && invoice.getSubrogationRelease() != null) {
+      subrogationReleaseWorkflowService.goBackToAccounted(invoice.getSubrogationRelease());
+    }
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
   }

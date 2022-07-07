@@ -637,6 +637,7 @@
 "CFONB Import","Import CFONB",,
 "Calculation","Calcul",,
 "Calculation of totals","Calcul des totaux",,
+"Can only go back to accounted from a cleared or cancelled subrogation release.","Vous pouvez seulement retourner au statut comptabilisé depuis une quittance soldée ou annulée.",,
 "Cancel","Annuler",,
 "Cancel invoice n°","Facture annulée n°",,
 "Cancel release","Annuler la quittance",,
