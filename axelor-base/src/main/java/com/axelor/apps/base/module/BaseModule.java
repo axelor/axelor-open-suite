@@ -101,10 +101,10 @@ import com.axelor.apps.base.service.ProductCategoryDomainCreatorService;
 import com.axelor.apps.base.service.ProductCategoryDomainCreatorServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
-import com.axelor.apps.base.service.ProductCompanyComputeService;
-import com.axelor.apps.base.service.ProductCompanyComputeServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductCompanyServiceImpl;
+import com.axelor.apps.base.service.ProductComputePriceService;
+import com.axelor.apps.base.service.ProductComputePriceServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -256,6 +256,6 @@ public class BaseModule extends AxelorModule {
         .to(ProductCategoryDomainCreatorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
     bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
-    bind(ProductCompanyComputeService.class).to(ProductCompanyComputeServiceImpl.class);
+    bind(ProductComputePriceService.class).to(ProductComputePriceServiceImpl.class);
   }
 }

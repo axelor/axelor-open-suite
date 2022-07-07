@@ -1,7 +1,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ProductCompany;
-import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.ProductComputePriceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -15,7 +15,7 @@ public class ProductCompanyController {
       if (productCompany.getAutoUpdateSalePrice()) {
         response.setValue(
             "salePrice",
-            Beans.get(ProductService.class)
+            Beans.get(ProductComputePriceService.class)
                 .computeSalePrice(
                     productCompany.getManagPriceCoef(),
                     productCompany.getCostPrice(),

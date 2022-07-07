@@ -19,7 +19,9 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface ProductCompanyService {
 
@@ -47,4 +49,9 @@ public interface ProductCompanyService {
    */
   public void set(Product originalProduct, String fieldName, Object fieldValue, Company company)
       throws AxelorException;
+
+  void computeAndUpdateProductCompanySalePrice(Product product, ProductCompany productCompany)
+      throws AxelorException;
+
+  List<ProductCompany> updateProductsCompanySalesPrice(Product product) throws AxelorException;
 }

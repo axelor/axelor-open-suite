@@ -29,11 +29,21 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 public class ProductCompanyServiceImpl implements ProductCompanyService {
 
-  @Inject protected AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
+  protected ProductComputePriceService productComputePriceService;
+
+  @Inject
+  public ProductCompanyServiceImpl(
+      AppBaseService appBaseService, ProductComputePriceService productComputePriceService) {
+    this.appBaseService = appBaseService;
+    this.productComputePriceService = productComputePriceService;
+  }
 
   @Override
   @CallMethod
@@ -98,5 +108,29 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
     }
 
     return product;
+  }
+
+  public void computeAndUpdateProductCompanySalePrice(
+      Product product, ProductCompany productCompany) throws AxelorException {
+    BigDecimal salePrice =
+        productComputePriceService.computeSalePrice(
+            productCompany.getManagPriceCoef(),
+            productCompany.getCostPrice(),
+            product,
+            productCompany.getCompany());
+    set(product, "salePrice", salePrice, productCompany.getCompany());
+  }
+
+  public List<ProductCompany> updateProductsCompanySalesPrice(Product product)
+      throws AxelorException {
+    List<ProductCompany> productCompanyList = product.getProductCompanyList();
+    if (appBaseService.isFieldSpecificToCompany("salePrice")) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        if ((boolean) get(product, "autoUpdateSalePrice", productCompany.getCompany())) {
+          computeAndUpdateProductCompanySalePrice(product, productCompany);
+        }
+      }
+    }
+    return productCompanyList;
   }
 }

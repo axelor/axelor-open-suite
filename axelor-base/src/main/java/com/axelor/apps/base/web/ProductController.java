@@ -19,11 +19,13 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductCompanyComputeService;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductComputePriceService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -202,7 +204,7 @@ public class ProductController {
       if (product.getAutoUpdateSalePrice()) {
         response.setValue(
             "salePrice",
-            Beans.get(ProductService.class)
+            Beans.get(ProductComputePriceService.class)
                 .computeSalePrice(
                     product.getManagPriceCoef(), product.getCostPrice(), product, null));
       }
@@ -211,12 +213,12 @@ public class ProductController {
     }
   }
 
-  public void updateProductCompanySalePriceWithSalesUnit(
-      ActionRequest request, ActionResponse response) {
+  public void updateProductsCompanySalePrice(ActionRequest request, ActionResponse response) {
     try {
       Product product = request.getContext().asType(Product.class);
-      Beans.get(ProductCompanyComputeService.class)
-          .updateProductCompanySalePriceWithSalesUnit(product);
+      List<ProductCompany> newProductCompanyList =
+          Beans.get(ProductCompanyService.class).updateProductsCompanySalesPrice(product);
+      response.setValue("productCompanyList", newProductCompanyList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

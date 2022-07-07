@@ -662,7 +662,7 @@
 
   <action-group name="action-product-group-unit-onchange">
     <action name="action-product-method-update-sale-price"/>
-    <action name="action-product-method-update-product-company-sale-price-with-sales-unit"/>
+    <action name="action-product-method-update-product-company-sale-price"/>
   </action-group>
 
   <action-record name="action-product-record-sellable"
@@ -999,10 +999,9 @@
     <call class="com.axelor.apps.base.web.ProductController" method="updateSalePrice"/>
   </action-method>
 
-  <action-method
-    name="action-product-method-update-product-company-sale-price-with-sales-unit">
+  <action-method name="action-product-method-update-product-company-sale-price">
     <call class="com.axelor.apps.base.web.ProductController"
-      method="updateProductCompanySalePriceWithSalesUnit"/>
+      method="updateProductsCompanySalePrice"/>
   </action-method>
 
 </object-views>
