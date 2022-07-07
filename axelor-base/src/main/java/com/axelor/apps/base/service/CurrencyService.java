@@ -169,13 +169,24 @@ public class CurrencyService {
   public BigDecimal getAmountCurrencyConvertedAtDate(
       Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
       throws AxelorException {
+    return this.getAmountCurrencyConvertedAtDate(
+        startCurrency, endCurrency, amount, date, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getAmountCurrencyConvertedAtDate(
+      Currency startCurrency,
+      Currency endCurrency,
+      BigDecimal amount,
+      LocalDate date,
+      RoundingMode roundingMode)
+      throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency)) {
 
       return this.getAmountCurrencyConvertedUsingExchangeRate(
-          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date));
+          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date), roundingMode);
     }
 
     return amount;
@@ -193,12 +204,19 @@ public class CurrencyService {
    */
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
       BigDecimal amount, BigDecimal exchangeRate) throws AxelorException {
+    return this.getAmountCurrencyConvertedUsingExchangeRate(
+        amount, exchangeRate, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
+      BigDecimal amount, BigDecimal exchangeRate, RoundingMode roundingMode)
+      throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
+      return amount.multiply(exchangeRate).setScale(2, roundingMode);
     }
 
     return amount;
@@ -252,5 +270,18 @@ public class CurrencyService {
             endCurrency.getCode());
       }
     }
+  }
+
+  public boolean isUnevenRounding(
+      Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
+      throws AxelorException {
+    BigDecimal downAmount =
+        this.getAmountCurrencyConvertedAtDate(
+            startCurrency, endCurrency, amount, date, RoundingMode.DOWN);
+    BigDecimal upAmount =
+        this.getAmountCurrencyConvertedAtDate(
+            startCurrency, endCurrency, amount, date, RoundingMode.UP);
+
+    return downAmount.compareTo(upAmount) != 0;
   }
 }
