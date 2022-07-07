@@ -675,14 +675,4 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
-
-  public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRepository.class).find(move.getId());
-      Beans.get(MoveInvoiceTermService.class).updateInvoiceTermsParentFields(move);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 }

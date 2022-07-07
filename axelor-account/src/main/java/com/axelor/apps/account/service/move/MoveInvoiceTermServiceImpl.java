@@ -4,7 +4,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
@@ -42,11 +41,5 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
             it ->
                 invoiceTermService.roundPercentages(
                     it.getInvoiceTermList(), it.getDebit().max(it.getCredit())));
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateInvoiceTermsParentFields(Move move) {
-    move.getMoveLineList().forEach(moveLineInvoiceTermService::updateInvoiceTermsParentFields);
-    moveRepo.save(move);
   }
 }

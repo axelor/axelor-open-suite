@@ -6,6 +6,4 @@ public interface MoveInvoiceTermService {
   public void generateInvoiceTerms(Move move);
 
   void roundInvoiceTermPercentages(Move move);
-
-  void updateInvoiceTermsParentFields(Move move);
 }

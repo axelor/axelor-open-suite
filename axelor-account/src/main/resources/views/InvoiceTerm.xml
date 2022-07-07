@@ -38,7 +38,7 @@
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="invoice.invoiceId"/>
-    <field name="moveLine.name"/>
+    <field name="moveLine"/>
     <field name="company"/>
     <field name="origin"/>
     <field name="originDate"/>
