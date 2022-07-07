@@ -196,15 +196,18 @@ public class ProductController {
     return displayedProductIdList;
   }
 
-  public void updateSalePrice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Product product = request.getContext().asType(Product.class);
-    if (product.getAutoUpdateSalePrice()) {
-      response.setValue(
-          "salePrice",
-          Beans.get(ProductService.class)
-              .computeSalePrice(
-                  product.getManagPriceCoef(), product.getCostPrice(), product, null));
+  public void updateSalePrice(ActionRequest request, ActionResponse response) {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      if (product.getAutoUpdateSalePrice()) {
+        response.setValue(
+            "salePrice",
+            Beans.get(ProductService.class)
+                .computeSalePrice(
+                    product.getManagPriceCoef(), product.getCostPrice(), product, null));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

@@ -26,9 +26,11 @@ public class ProductCompanyComputeServiceImpl implements ProductCompanyComputeSe
 
   @Transactional(rollbackOn = {Exception.class})
   public void updateProductCompanySalePriceWithSalesUnit(Product product) throws AxelorException {
-    if (appBaseService.isFieldSpecificToCompany("autoUpdateSalePrice")) {
+    if (appBaseService.isFieldSpecificToCompany("salePrice")) {
       for (ProductCompany productCompany : product.getProductCompanyList()) {
-        if (productCompany.getAutoUpdateSalePrice()) {
+        if ((boolean)
+            productCompanyService.get(
+                product, "autoUpdateSalePrice", productCompany.getCompany())) {
           BigDecimal salePrice =
               productService.computeSalePrice(
                   productCompany.getManagPriceCoef(),
