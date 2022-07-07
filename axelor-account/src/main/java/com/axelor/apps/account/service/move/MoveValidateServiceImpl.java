@@ -328,12 +328,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     this.completeMoveLines(move);
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
-
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()
-        && move.getStatusSelect() != MoveRepository.STATUS_DAYBOOK) {
-      this.computeFinancialDiscount(move);
-    }
-
     this.updateValidateStatus(move, dayBookMode);
     moveRepository.save(move);
 
@@ -698,17 +692,5 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
     }
     return false;
-  }
-
-  public void computeFinancialDiscount(Move move) {
-    if (move.getInvoice() == null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getPartner() != null) {
-          moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
-        }
-
-        moveLineService.computeFinancialDiscount(moveLine);
-      }
-    }
   }
 }
