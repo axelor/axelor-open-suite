@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Invoice" lang="java">
+  <entity sequential="true" name="Invoice" lang="java"
+    implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -228,8 +229,8 @@
     <integer name="paymentDelay" title="Payment delay (days)" formula="true">
       <![CDATA[
 	      SELECT CASE WHEN
-	      ((DATE(NOW())::DATE - inv.due_date::DATE)-1 > 0 AND inv.amount_remaining != 0) THEN
-	      (DATE(NOW())::DATE - inv.due_date::DATE) -1 ELSE 0 END from account_invoice inv WHERE inv.id =
+	      ((DATE(NOW())::DATE - inv.due_date::DATE) > 0 AND inv.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv.due_date::DATE) ELSE 0 END from account_invoice inv WHERE inv.id =
 	      id]]>
     </integer>
 
