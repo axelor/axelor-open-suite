@@ -45,7 +45,7 @@
       <button name="adjustBtn" title="Adjust period"
         onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" hidden="true"/>
       <button name="openBtn" title="Open period"
-        onClick="save,action-period-record-status-open" hidden="true"/>
+        onClick="save,action-method-period-status-open" hidden="true"/>
     </panel>
   </form>
 
@@ -78,7 +78,7 @@
         onClick="action-validate-period-is-adjusting-year,action-method-period-adjust"
         showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 2 &amp;&amp; !$popup()"/>
       <button name="openBtn" title="Open period"
-        onClick="save,action-period-record-status-open,save"
+        onClick="save,action-method-period-status-open"
         showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 1 &amp;&amp; !$popup()"/>
     </panel>
   </form>
@@ -155,9 +155,8 @@
     <attribute for="toDate" name="value" expr="eval: null"/>
   </action-attrs>
 
-  <action-record name="action-period-record-status-open"
-    model="com.axelor.apps.base.db.Period">
-    <field name="statusSelect" expr="eval: __repo__(Period).STATUS_OPENED"/>
-  </action-record>
+  <action-method name="action-method-period-status-open">
+    <call class="com.axelor.apps.base.web.PeriodController" method="open"/>
+  </action-method>
 
 </object-views>

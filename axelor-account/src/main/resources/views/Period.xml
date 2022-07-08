@@ -16,20 +16,23 @@
     model="com.axelor.apps.base.db.Period" extension="true">
     <extend target="/">
       <attribute name="onLoad"
-        value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-period-show-buttons,action-method-account-readonly-if-period-in-move"/>
+        value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-period-show-buttons,action-method-account-set-readonly"/>
       <attribute name="onSave"
         value="action-method-period-show-buttons,action-method-account-period-control-dates"/>
     </extend>
     <extend target="//button[@name='openBtn']">
       <attribute name="onClick"
-        value="save,action-period-record-status-open,action-method-period-show-buttons,save"/>
+        value="save,action-method-period-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <attribute name="readonlyIf" value=""/>
     </extend>
   </form>
   <form id="account-period-year-form" name="period-year-form" title="Period"
     model="com.axelor.apps.base.db.Period" extension="true">
     <extend target="/">
       <attribute name="onLoad"
-        value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-account-readonly-if-period-in-move"/>
+        value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-account-set-readonly"/>
       <attribute name="onSave" value="action-method-account-period-control-dates"/>
     </extend>
   </form>
@@ -38,7 +41,7 @@
     <call class="com.axelor.apps.account.web.PeriodController" method="controlDates"/>
   </action-method>
 
-  <action-method name="action-method-account-readonly-if-period-in-move">
+  <action-method name="action-method-account-set-readonly">
     <call class="com.axelor.apps.account.web.PeriodController" method="setReadOnly"/>
   </action-method>
 

@@ -280,4 +280,13 @@ public class PeriodServiceImpl implements PeriodService {
       }
     }
   }
+
+  @Override
+  @Transactional
+  public void openPeriod(Period period) {
+
+    if (period != null) {
+      period.setStatusSelect(PeriodRepository.STATUS_OPENED);
+    }
+  }
 }
