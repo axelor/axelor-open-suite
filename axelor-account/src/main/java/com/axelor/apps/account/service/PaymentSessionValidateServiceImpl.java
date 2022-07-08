@@ -465,7 +465,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTerm.getInvoice().getInvoicePaymentList().stream()
         .filter(
             it ->
-                paymentSession.equals(it.getPaymentSession())
+                it.getPaymentSession() != null
+                    && it.getPaymentSession().equals(paymentSession)
                     && it.getInvoiceTermPaymentList().stream()
                         .anyMatch(itp -> invoiceTerm.equals(itp.getInvoiceTerm())))
         .findFirst()

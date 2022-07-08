@@ -103,4 +103,6 @@ public interface ReconcileService {
       throws AxelorException;
 
   void checkReconcile(Reconcile reconcile) throws AxelorException;
+
+  List<Long> getAllowedMoveLines(Reconcile reconcile, boolean isDebit);
 }

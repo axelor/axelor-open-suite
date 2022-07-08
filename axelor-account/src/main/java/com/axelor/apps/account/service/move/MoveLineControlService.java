@@ -41,4 +41,6 @@ public interface MoveLineControlService {
   Move setMoveLineDates(Move move) throws AxelorException;
 
   Move setMoveLineOriginDates(Move move) throws AxelorException;
+
+  boolean canReconcile(MoveLine moveLine);
 }
