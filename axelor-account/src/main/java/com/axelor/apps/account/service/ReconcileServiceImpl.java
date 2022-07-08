@@ -68,6 +68,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveLineTaxService moveLineTaxService;
   protected AppBaseService appBaseService;
   protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
+  protected SubrogationReleaseWorkflowService subrogationReleaseWorkflowService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -81,7 +82,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       InvoicePaymentCreateService invoicePaymentCreateService,
       MoveLineTaxService moveLineTaxService,
       AppBaseService appBaseService,
-      PaymentMoveLineDistributionService paymentMoveLineDistributionService) {
+      PaymentMoveLineDistributionService paymentMoveLineDistributionService,
+      SubrogationReleaseWorkflowService subrogationReleaseWorkflowService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -94,6 +96,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveLineTaxService = moveLineTaxService;
     this.appBaseService = appBaseService;
     this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
+    this.subrogationReleaseWorkflowService = subrogationReleaseWorkflowService;
   }
 
   /**
@@ -414,6 +417,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    Invoice invoice = debitMoveLine.getMove().getInvoice();
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
@@ -430,6 +434,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
+    if (invoice != null && invoice.getSubrogationRelease() != null) {
+      subrogationReleaseWorkflowService.goBackToAccounted(invoice.getSubrogationRelease());
+    }
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
   }

@@ -38,6 +38,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
@@ -511,10 +512,8 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       Company company = purchaseOrder.getCompany();
-      long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
-      String domain =
-          String.format(
-              "self.id != %d AND self.isContact = false AND self.isSupplier = true", companyId);
+      String domain = Beans.get(PurchaseOrderDomainService.class).getPartnerBaseDomain(company);
+
       String blockedPartnerQuery =
           Beans.get(BlockingService.class)
               .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
@@ -523,7 +522,6 @@ public class PurchaseOrderController {
         domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
       }
 
-      domain += " AND :company member of self.companySet";
       response.setAttr("supplierPartner", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -1794,6 +1794,7 @@
 "This partner is categorized as a customer due to existing records in the database. This category can't be removed.",,,
 "This partner is categorized as a factor due to existing records in the database. This category can't be removed.",,,
 "This partner is categorized as a supplier due to existing records in the database. This category can't be removed.",,,
+"This period is closed and you do not have the necessary permissions to create entries",,,
 "Thursday",,,
 "Thursdays",,,
 "Ticket",,,

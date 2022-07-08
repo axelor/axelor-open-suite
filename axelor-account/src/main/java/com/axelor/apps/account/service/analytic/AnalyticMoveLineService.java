@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
@@ -28,7 +27,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -55,10 +53,4 @@ public interface AnalyticMoveLineService {
 
   AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException;
-
-  AnalyticJournal getAnalyticJournalFromParent(Context parent) throws AxelorException;
-
-  LocalDate getDateFromParent(Context parent);
-
-  BigDecimal getAnalyticAmountFromParent(Context parent, AnalyticMoveLine analyticMoveLine);
 }
