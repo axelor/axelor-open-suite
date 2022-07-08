@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.MetaJsonAttrsService.MetaJsonAttrsBuilder;
+import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
