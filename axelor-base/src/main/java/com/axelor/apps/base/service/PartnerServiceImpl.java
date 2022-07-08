@@ -58,6 +58,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -673,29 +674,6 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public String getPartnerDomain(Partner partner) {
-    String domain = "";
-
-    if (partner != null) {
-      if (partner.getCurrency() != null) {
-        domain += String.format(" AND self.currency.id = %d", partner.getCurrency().getId());
-      }
-      if (partner.getSalePartnerPriceList() != null) {
-        domain +=
-            String.format(
-                " AND self.salePartnerPriceList.id = %s",
-                partner.getSalePartnerPriceList().getId());
-      }
-      if (partner.getFiscalPosition() != null) {
-        domain +=
-            String.format(" AND self.fiscalPosition.id = %s", partner.getFiscalPosition().getId());
-      }
-    }
-
-    return domain;
-  }
-
-  @Override
   public String getTaxNbrFromRegistrationCode(Partner partner) {
     String taxNbr = "";
 
@@ -790,5 +768,18 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return siren;
+  }
+
+  @Override
+  public List<Long> getPartnerIdsByType(String type) {
+    StringBuilder query = new StringBuilder();
+    query.append("self.");
+    query.append(type);
+    query.append("=true");
+    return (!StringUtils.isEmpty(type))
+        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
+            .map(m -> (long) m.get("id"))
+            .collect(Collectors.toList())
+        : new ArrayList<>();
   }
 }

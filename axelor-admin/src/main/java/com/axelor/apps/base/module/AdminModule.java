@@ -18,6 +18,8 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
+import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.db.repo.ObjectDataConfigExportManagementRepository;
 import com.axelor.apps.base.db.repo.ObjectDataConfigExportRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
@@ -51,5 +53,6 @@ public class AdminModule extends AxelorModule {
         .to(ObjectDataConfigExportManagementRepository.class);
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
     bind(FakerService.class).to(FakerServiceImpl.class);
+    bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
   }
 }

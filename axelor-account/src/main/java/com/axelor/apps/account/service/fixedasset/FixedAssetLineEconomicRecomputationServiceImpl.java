@@ -6,7 +6,6 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -28,10 +27,10 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
 
   @Inject
   public FixedAssetLineEconomicRecomputationServiceImpl(
-      AnalyticFixedAssetService analyticFixedAssetService,
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService) {
-    super(analyticFixedAssetService, fixedAssetFailOverControlService, appBaseService);
+    super(fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
   }
 
   @Override
@@ -116,7 +115,7 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return previousFixedAssetLine.getAccountingValue();
+      return getAccountingValue(previousFixedAssetLine);
     }
 
     return linearDepreciationBase;
@@ -126,7 +125,7 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     if (linearDepreciationBase == null) {
-      linearDepreciationBase = previousFixedAssetLine.getAccountingValue();
+      linearDepreciationBase = getAccountingValue(previousFixedAssetLine);
     }
     return super.computeDepreciation(fixedAsset, previousFixedAssetLine, linearDepreciationBase);
   }

@@ -7,12 +7,20 @@
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"/>
+        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-attrs-fill-ctx"/>
       <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"/>
+        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-attrs-fill-ctx"/>
+    </extend>
+    <extend target="//panel[@name='statusPanel']">
+      <insert position="inside">
+        <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
+      </insert>
     </extend>
   </form>
 
+  <action-attrs name="action-sale-order-line-attrs-fill-ctx">
+    <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
+  </action-attrs>
 
   <form name="allocated-qty-sale-order-line-form" title="Change allocated qty"
     model="com.axelor.apps.sale.db.SaleOrderLine"

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -48,10 +49,14 @@ public class PaymentModeServiceImpl implements PaymentModeService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppAccountService appAccountService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
-  public PaymentModeServiceImpl(AppAccountService appAccountService) {
+  public PaymentModeServiceImpl(
+      AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService) {
     this.appAccountService = appAccountService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   @Override
@@ -144,20 +149,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    if (accountManagement != null && accountManagement.getCashAccount() != null) {
-      return accountManagement.getCashAccount();
-    }
-
-    throw new AxelorException(
-        paymentMode,
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get("Company")
-            + " : %s, "
-            + I18n.get("Payment mode")
-            + " : %s: "
-            + I18n.get(IExceptionMessage.PAYMENT_MODE_1),
-        company.getName(),
-        paymentMode.getName());
+    return accountManagementAccountService.getCashAccount(accountManagement, paymentMode);
   }
 
   @Override
@@ -207,7 +199,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_4),
+          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
@@ -215,7 +207,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_2),
+          I18n.get(IExceptionMessage.PAYMENT_MODE_1),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
@@ -235,7 +227,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_4),
+          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
@@ -243,7 +235,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
+          I18n.get(IExceptionMessage.PAYMENT_MODE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SelectionBuilderService {
 
@@ -45,6 +46,10 @@ public class SelectionBuilderService {
     boolean allSame = true;
     List<String> values = new ArrayList<>();
     List<String> valuesWithTitles = new ArrayList<String>();
+
+    if (CollectionUtils.isEmpty(options)) {
+      return Joiner.on("\n").join(allSame ? values : valuesWithTitles);
+    }
 
     for (Option option : options) {
       if (option.getHidden() != null && option.getHidden()) {

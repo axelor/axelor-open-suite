@@ -151,11 +151,11 @@ public interface PartnerService {
 
   String computeCompanyStr(Partner partner);
 
-  String getPartnerDomain(Partner partner);
-
   String getTaxNbrFromRegistrationCode(Partner partner);
 
   String getNicFromRegistrationCode(Partner partner);
 
   String getSirenFromRegistrationCode(Partner partner);
+
+  List<Long> getPartnerIdsByType(String type);
 }
