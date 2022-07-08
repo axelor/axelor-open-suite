@@ -15,10 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import java.math.BigDecimal;
+import java.util.List;
 
-public interface PurchaseOrderDomainService {
-  String getPartnerBaseDomain(Company company);
+public interface AnalyticLine {
+
+  public BigDecimal getLineAmount();
+
+  public Account getAccount();
+
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate();
+
+  public List<AnalyticMoveLine> getAnalyticMoveLineList();
 }

@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.account.service;
 
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.account.db.SubrogationRelease;
+import com.axelor.exception.AxelorException;
 
-public interface PurchaseOrderDomainService {
-  String getPartnerBaseDomain(Company company);
+public interface SubrogationReleaseWorkflowService {
+  void goBackToAccounted(SubrogationRelease subrogationRelease) throws AxelorException;
 }

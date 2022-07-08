@@ -113,6 +113,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
+import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
+import com.axelor.apps.account.service.SubrogationReleaseWorkflowServiceImpl;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineServiceImpl;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
@@ -133,6 +135,8 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -489,5 +493,9 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
 
     bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
+
+    bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
+
+    bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
   }
 }
