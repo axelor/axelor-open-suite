@@ -170,7 +170,7 @@ public class CurrencyService {
       Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
       throws AxelorException {
     return this.getAmountCurrencyConvertedAtDate(
-        startCurrency, endCurrency, amount, date, RoundingMode.HALF_UP);
+        startCurrency, endCurrency, amount, date, RoundingMode.HALF_UP, 2);
   }
 
   protected BigDecimal getAmountCurrencyConvertedAtDate(
@@ -178,7 +178,8 @@ public class CurrencyService {
       Currency endCurrency,
       BigDecimal amount,
       LocalDate date,
-      RoundingMode roundingMode)
+      RoundingMode roundingMode,
+      int scale)
       throws AxelorException {
 
     // If the start currency is different from end currency
@@ -186,7 +187,10 @@ public class CurrencyService {
     if (startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency)) {
 
       return this.getAmountCurrencyConvertedUsingExchangeRate(
-          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date), roundingMode);
+          amount,
+          this.getCurrencyConversionRate(startCurrency, endCurrency, date),
+          roundingMode,
+          scale);
     }
 
     return amount;
@@ -205,18 +209,18 @@ public class CurrencyService {
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
       BigDecimal amount, BigDecimal exchangeRate) throws AxelorException {
     return this.getAmountCurrencyConvertedUsingExchangeRate(
-        amount, exchangeRate, RoundingMode.HALF_UP);
+        amount, exchangeRate, RoundingMode.HALF_UP, 2);
   }
 
   protected BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
-      BigDecimal amount, BigDecimal exchangeRate, RoundingMode roundingMode)
+      BigDecimal amount, BigDecimal exchangeRate, RoundingMode roundingMode, int scale)
       throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(2, roundingMode);
+      return amount.multiply(exchangeRate).setScale(scale, roundingMode);
     }
 
     return amount;
@@ -277,10 +281,12 @@ public class CurrencyService {
       throws AxelorException {
     BigDecimal downAmount =
         this.getAmountCurrencyConvertedAtDate(
-            startCurrency, endCurrency, amount, date, RoundingMode.DOWN);
+                startCurrency, endCurrency, amount, date, RoundingMode.HALF_EVEN, 3)
+            .setScale(2, RoundingMode.HALF_DOWN);
     BigDecimal upAmount =
         this.getAmountCurrencyConvertedAtDate(
-            startCurrency, endCurrency, amount, date, RoundingMode.UP);
+                startCurrency, endCurrency, amount, date, RoundingMode.HALF_EVEN, 3)
+            .setScale(2, RoundingMode.HALF_UP);
 
     return downAmount.compareTo(upAmount) != 0;
   }
