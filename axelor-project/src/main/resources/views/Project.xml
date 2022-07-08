@@ -937,7 +937,8 @@
     title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
     <view type="form" name="contract-form"/>
     <context name="_xTargetType" expr="eval:1"/>
-    <context name="_project" expr="eval:__self__"/>
+    <context name="_project" expr="eval: __self__"/>
+    <context name="_clientPartner" expr="eval: __self__.clientPartner"/>
   </action-view>
 
   <action-view name="action-project-view-create-new-supplier-contract"
