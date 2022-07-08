@@ -131,6 +131,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
+import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
+import com.axelor.apps.account.service.SubrogationReleaseWorkflowServiceImpl;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineServiceImpl;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
@@ -581,5 +583,9 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermPfpService.class).to(InvoiceTermPfpServiceImpl.class);
 
     bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
+
+    bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
+
+    bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
   }
 }
