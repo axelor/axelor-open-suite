@@ -298,11 +298,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
     MailBuilder builder = sender.compose();
-    for (String recipient : recipients) {
-      builder.to(recipient);
-    }
 
-    this.setRecipientsFromTemplate(builder, related, recipients);
+    this.updateRecipientsTemplatesContext(recipients);
+    this.setRecipientsFromTemplate(builder, recipients);
 
     for (MetaAttachment attachment : messages.findAttachments(message)) {
       final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
@@ -435,21 +433,34 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     return null;
   }
 
-  protected void setRecipientsFromTemplate(
-      MailBuilder builder, Model entity, Set<String> recipients) {
+  protected void setRecipientsFromTemplate(MailBuilder builder, Set<String> recipients) {
 
     if (messageTemplate == null) {
       return;
     }
+
     String[] ccRcp = getRecipients(messageTemplate.getCcRecipients());
+    String[] toRcp = getRecipients(messageTemplate.getToRecipients());
+
     if (ccRcp.length == 0) {
       ccRcp = recipients.toArray(new String[0]);
     }
 
-    templatesContext.put("ccRecipients", ccRcp);
+    if (toRcp.length == 0) {
+      toRcp = recipients.toArray(new String[0]);
+    }
+
+    builder.to(toRcp);
     builder.cc(ccRcp);
     builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
-    builder.to(getRecipients(messageTemplate.getToRecipients()));
+  }
+
+  void updateRecipientsTemplatesContext(Set<String> recipients) {
+    String contRecipients = String.join(", ", recipients);
+
+    // Creating 2 same keys as it could be useful for a future update
+    templatesContext.put("toRecipients", contRecipients);
+    templatesContext.put("ccRecipients", contRecipients);
   }
 
   protected String[] getRecipients(String recipients) {
