@@ -191,7 +191,7 @@ public class MoveController {
         }
       }
 
-      response.setError(IExceptionMessage.NO_MOVES_SELECTED_MASS_REVERSE);
+      response.setError(I18n.get(IExceptionMessage.NO_MOVES_SELECTED_MASS_REVERSE));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
