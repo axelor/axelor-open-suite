@@ -89,7 +89,6 @@
     <field name="date" width="100" onChange="account-move-line-group-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onChange="action-move-line-group-partner-onchange"
       onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
@@ -333,7 +332,8 @@
         <field name="originDate"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
         onChange="action-move-line-group-account-onchange"/>
@@ -543,9 +543,8 @@
         readonlyIf="amountPaid &gt; 0"
         onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onChange="action-move-line-group-partner-onchange"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-update-invoice-terms"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
@@ -707,6 +706,8 @@
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
     </panel-tabs>
+    <panel-dashlet name="bankReconciliationLinePanel"
+      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -844,14 +845,6 @@
     <action name="action-move-line-method-check-analytic-on-move-line"/>
     <action name="action-move-line-method-create-analytic-distribution"/>
     <action name="action-move-line-method-print-analytic-account-on-move-line"/>
-  </action-group>
-
-  <action-group name="action-move-line-group-partner-onchange">
-    <action name="action-move-line-record-set-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-move-line-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-move-line-method-update-invoice-terms"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -1027,14 +1020,6 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
-  </action-record>
-
-  <action-record name="action-move-line-record-set-financial-discount"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="financialDiscount" expr="eval: partner?.financialDiscount"
-      if="partner &amp;&amp; partner?.financialDiscount"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner || !partner?.financialDiscount"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"

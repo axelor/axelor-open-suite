@@ -334,4 +334,10 @@ public interface IExceptionMessage {
 
   static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
 }

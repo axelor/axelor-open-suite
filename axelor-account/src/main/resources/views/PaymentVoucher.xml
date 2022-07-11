@@ -189,7 +189,7 @@
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-method-fill-bank-details"/>
     <action name="action-payment-voucher-record-value-for-collection-account"
-      if="paymentMode.typeSelect == 7"/>
+      if="paymentMode?.typeSelect == 7"/>
     <action name="action-payment-voucher-record-cheque-owner"/>
     <action name="action-payment-voucher-record-cheque-due-date"/>
   </action-group>
