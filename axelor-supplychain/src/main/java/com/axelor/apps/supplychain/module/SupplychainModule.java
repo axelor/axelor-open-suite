@@ -51,6 +51,8 @@ import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
@@ -136,6 +138,8 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderMergingViewServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
@@ -277,6 +281,9 @@ public class SupplychainModule extends AxelorModule {
     bind(StockHistoryServiceImpl.class).to(StockHistoryServiceSupplyChainImpl.class);
     bind(AccountingSituationInitServiceImpl.class)
         .to(AccountingSituationInitSupplychainServiceImpl.class);
+    bind(SaleOrderMergingViewServiceImpl.class)
+        .to(SaleOrderMergingViewServiceSupplyChainImpl.class);
+    bind(SaleOrderMergingServiceImpl.class).to(SaleOrderMergingServiceSupplyChainImpl.class);
     bind(InvoiceMergingServiceImpl.class).to(InvoiceMergingServiceSupplychainImpl.class);
     bind(ClosureAssistantLineServiceImpl.class)
         .to(ClosureAssistantLineSupplychainServiceImpl.class);

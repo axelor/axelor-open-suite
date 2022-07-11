@@ -20,6 +20,8 @@
     <integer name="operatorSelect" title="Operator"
       selection="base.pricing.rule.operator.select"/>
     <string name="tempVarName" title="Name of temporary variable"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="metaJsonField"
+      title="Meta json"/>
 
     <extra-code><![CDATA[
 			//TYPE SELECT
