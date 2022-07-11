@@ -38,6 +38,7 @@ public class ProductVariantServiceStockImpl extends ProductVariantServiceImpl {
     product = super.copyAdditionalFields(product, productModel);
     if (Beans.get(AppBaseService.class).isApp("stock")) {
       product.setUsedInDEB(productModel.getUsedInDEB());
+      product.setCustomsCodeNomenclature(productModel.getCustomsCodeNomenclature());
       product.setStockManaged(productModel.getStockManaged());
       product.setControlOnReceipt(productModel.getControlOnReceipt());
       product.setTrackingNumberConfiguration(productModel.getTrackingNumberConfiguration());
