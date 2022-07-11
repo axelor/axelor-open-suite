@@ -107,7 +107,10 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                   .map(
                       it ->
                           invoiceTermService.computeCustomizedPercentageUnscaled(
-                              it.getAmount(), invoiceAttached.getInTaxTotal()))
+                              it.getAmount(),
+                              invoiceAttached != null
+                                  ? invoiceAttached.getInTaxTotal()
+                                  : moveLine.getCredit().max(moveLine.getDebit())))
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
                   .compareTo(new BigDecimal(100))
               != 0

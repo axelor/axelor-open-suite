@@ -17,12 +17,19 @@
  */
 package com.axelor.apps.account.service.extract;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface ExtractContextMoveService {
 
   public Map<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
+      throws AxelorException;
+
+  Map<String, Object> getMapFromMoveWizardMassReverseForm(Context context);
+
+  LocalDate getDateOfReversion(Context context, Move move, int dateOfReversionSelect)
       throws AxelorException;
 }

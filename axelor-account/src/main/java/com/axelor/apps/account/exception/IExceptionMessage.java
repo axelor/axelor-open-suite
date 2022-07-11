@@ -77,6 +77,9 @@ public interface IExceptionMessage {
   static final String NO_NEW_MOVES_SELECTED = /*$$(*/
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
+  static final String NO_MOVES_SELECTED_MASS_REVERSE = /*$$(*/
+      "Please select moves that are not simulated." /*)*/;
+
   static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
       "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
   static final String MOVE_ACCOUNTING_OK = /*$$(*/

@@ -67,6 +67,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -144,6 +146,52 @@ public class MoveController {
                 .map());
         response.setCanClose(true);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void massReverseMove(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+
+      if (CollectionUtils.isNotEmpty(moveIds)) {
+        List<Move> moveList =
+            Beans.get(MoveRepository.class)
+                .all()
+                .filter("self.id IN :moveList AND self.statusSelect <> :simulatedStatus")
+                .bind("moveList", moveIds)
+                .bind("simulatedStatus", MoveRepository.STATUS_SIMULATED)
+                .fetch();
+
+        if (CollectionUtils.isNotEmpty(moveList)) {
+          Map<String, Object> assistantMap =
+              Beans.get(ExtractContextMoveService.class)
+                  .getMapFromMoveWizardMassReverseForm(request.getContext());
+
+          String reverseMoveIds =
+              Beans.get(MoveReverseService.class).massReverse(moveList, assistantMap).stream()
+                  .map(Move::getId)
+                  .map(Objects::toString)
+                  .collect(Collectors.joining(","));
+
+          response.setView(
+              ActionView.define(I18n.get("Account move"))
+                  .model("com.axelor.apps.account.db.Move")
+                  .add("grid", "move-grid")
+                  .add("form", "move-form")
+                  .param("forceEdit", "true")
+                  .domain(
+                      String.format(
+                          "self.id IN (%s)", reverseMoveIds.isEmpty() ? "0" : reverseMoveIds))
+                  .map());
+
+          return;
+        }
+      }
+
+      response.setError(IExceptionMessage.NO_MOVES_SELECTED_MASS_REVERSE);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -9,6 +9,8 @@
       <button name="accountingMoveBtn" title="Accounting.toAccount"
         prompt="By clicking on this button, if validity conditions are satisfied and depending on the status of the move(s) selected, move(s) status will be updated. Depending if Daybook option is activated which will bring a status before the move being Accounted, please be aware that Accounting a move brings irrevocable integration of the move in their respective moves book. Do you wish to continue ?"
         onClick="action-move-method-accounting-multiple-moves"/>
+      <button name="reverseBtn" title="Reverse" icon="fa-exchange"
+        onClick="action-move-view-open-mass-reverse-wizard"/>
       <button name="deleteMovesBtn" title="Delete" icon="fa-trash"
         onClick="action-move-method-delete-multiple-moves"/>
       <button name="moveLinesBtn" title="See Move Lines"
@@ -480,14 +482,35 @@
         onChange="action-move-record-set-date-of-revision"/>
       <field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
       <field name="dateOfReversion" type="date" showTitle="false"
-        requiredIf="dateOfReversionSelect == 4" readonlyIf="dateOfReversionSelect != 4"
-        onChange="action-move-validate-check-date-of-reversion"/>
+        requiredIf="dateOfReversionSelect == 4" readonlyIf="dateOfReversionSelect != 4"/>
       <field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
       <field name="isHiddenMoveLinesInBankReconciliation"
         title="Hide move lines in bank reconciliation" type="boolean"
         if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" colSpan="12"/>
       <button name="generateReverseBtn" title="Reverse" icon="fa-exchange"
-        onClick="action-move-validate-check-date-of-reversion,action-move-method-generate-reverse-move"
+        onClick="action-move-method-generate-reverse-move"
+        readonlyIf="dateOfReversionSelect == 4 &amp;&amp; !dateOfReversion"/>
+    </panel>
+  </form>
+
+  <form name="move-wizard-mass-reverse-form" title="Mass Generate Reverse Move"
+    onNew="action-move-attrs-set-generate-reverse-wizard-defaults"
+    model="com.axelor.apps.base.db.Wizard">
+    <panel name="mainPanel">
+      <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
+      <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
+        selection="account.move.date.of.reversion.type.select"/>
+      <field name="isAutomaticAccounting" title="Automatic accounting of reversions"
+        type="boolean"/>
+      <field name="dateOfReversion" type="date" showTitle="false"
+        showIf="dateOfReversionSelect == 4" requiredIf="dateOfReversionSelect == 4"/>
+      <field name="isUnreconcileOriginalMove" title="Unreconcile original moves"
+        type="boolean"/>
+      <field name="isHiddenMoveLinesInBankReconciliation"
+        title="Hide move lines in bank reconciliation" type="boolean"
+        if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" colSpan="12"/>
+      <button name="generateReverseBtn" title="Reverse" icon="fa-exchange"
+        onClick="action-move-method-mass-reverse-move,close"
         readonlyIf="dateOfReversionSelect == 4 &amp;&amp; !dateOfReversion"/>
     </panel>
   </form>
@@ -594,12 +617,6 @@
   <action-validate name="action-account-accounting-prompt">
     <alert
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
-  </action-validate>
-
-  <action-validate name="action-move-validate-check-date-of-reversion">
-    <error
-      message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})."
-      if="dateOfReversionSelect==4 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
   </action-validate>
 
   <action-method name="action-account-move-method-origin-description-is-empty">
@@ -801,6 +818,10 @@
       method="roundInvoiceTermPercentages"/>
   </action-method>
 
+  <action-method name="action-move-method-mass-reverse-move">
+    <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
+  </action-method>
+
   <action-record name="action-record-initialize-permission-validation-move"
     model="com.axelor.apps.account.db.Move">
     <field name="$validatePeriod"
@@ -837,6 +858,19 @@
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_moveDate" expr="eval: date"/>
   </action-view>
+
+  <action-view name="action-move-view-open-mass-reverse-wizard"
+    title="Generate Reverse Move" model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="move-wizard-mass-reverse-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_ids" expr="eval: _ids"/>
+    <context name="_moveDate" expr="eval: null"/>
+  </action-view>
+
 
   <action-view name="action-move-view-related-cut-off-moves"
     title="Related cut off moves" model="com.axelor.apps.account.db.Move">
