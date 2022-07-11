@@ -868,7 +868,7 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_ids" expr="eval: _ids"/>
-    <context name="_moveDate" expr="eval: null"/>
+    <context name="_moveDate" expr="eval: __date__"/>
   </action-view>
 
 
