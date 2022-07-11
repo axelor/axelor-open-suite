@@ -54,13 +54,16 @@ public class StockHistoryServiceImpl implements StockHistoryService {
 
   protected StockMoveLineRepository stockMoveLineRepository;
   protected UnitConversionService unitConversionService;
+  protected StockLocationRepository stockLocationRepository;
 
   @Inject
   public StockHistoryServiceImpl(
       StockMoveLineRepository stockMoveLineRepository,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      StockLocationRepository stockLocationRepository) {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.unitConversionService = unitConversionService;
+    this.stockLocationRepository = stockLocationRepository;
   }
 
   @Transactional
