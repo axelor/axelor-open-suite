@@ -141,18 +141,19 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
-          stockLocationLineService.getStockLocationLine(
+          stockLocationLineService.getOrCreateStockLocationLine(
               stockCorrection.getStockLocation(), stockCorrection.getProduct());
     } else {
       stockLocationLine =
-          stockLocationLineService.getDetailLocationLine(
+          stockLocationLineService.getOrCreateDetailLocationLine(
               stockCorrection.getStockLocation(),
               stockCorrection.getProduct(),
               stockCorrection.getTrackingNumber());
     }
 
     if (stockLocationLine == null) {
-      stockLocationLine = stockLocationLineService.createLocationLine(toStockLocation, product);
+      stockLocationLine =
+          stockLocationLineService.getOrCreateStockLocationLine(toStockLocation, product);
     }
 
     BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
@@ -162,9 +163,29 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     if (diff.compareTo(BigDecimal.ZERO) == 0) {
       return null;
     } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
-      stockMove = this.createStockMoveHeader(company, fromStockLocation, toStockLocation);
+      stockMove =
+          stockMoveService.createStockMove(
+              null,
+              null,
+              company,
+              fromStockLocation,
+              toStockLocation,
+              null,
+              null,
+              null,
+              StockMoveRepository.TYPE_INTERNAL);
     } else {
-      stockMove = this.createStockMoveHeader(company, toStockLocation, fromStockLocation);
+      stockMove =
+          stockMoveService.createStockMove(
+              null,
+              null,
+              company,
+              toStockLocation,
+              fromStockLocation,
+              null,
+              null,
+              null,
+              StockMoveRepository.TYPE_INTERNAL);
     }
 
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_STOCK_CORRECTION);
@@ -203,21 +224,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockMoveService.realize(stockMove, false);
 
     return stockMove;
-  }
-
-  public StockMove createStockMoveHeader(
-      Company company, StockLocation fromStockLocation, StockLocation toStockLocation)
-      throws AxelorException {
-    return stockMoveService.createStockMove(
-        null,
-        null,
-        company,
-        fromStockLocation,
-        toStockLocation,
-        null,
-        null,
-        null,
-        StockMoveRepository.TYPE_INTERNAL);
   }
 
   @Override
