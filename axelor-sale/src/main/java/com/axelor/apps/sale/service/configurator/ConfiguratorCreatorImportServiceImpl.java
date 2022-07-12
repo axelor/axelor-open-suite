@@ -138,6 +138,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
     fixAttributesName(creator);
     configuratorCreatorService.updateAttributes(creator);
+    configuratorCreatorService.removeTemporalAttributesAndIndicators(creator);
     configuratorCreatorService.updateIndicators(creator);
   }
 
