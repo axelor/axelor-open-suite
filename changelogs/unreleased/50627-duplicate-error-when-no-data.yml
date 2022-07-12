@@ -1,0 +1,3 @@
+---
+title: "Check duplicate : fix an issue occurring when checking duplicate on an empty list"
+type: fix
