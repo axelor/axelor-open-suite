@@ -309,10 +309,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
     ProdProcess prodProcess = manufOrder.getProdProcess();
 
-    if (manufOrder.getPlannedStartDateT() == null) {
-      manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
-    }
-
     if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
 
       for (ProdProcessLine prodProcessLine :
@@ -321,10 +317,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
       }
     }
-
-    manufOrderRepo.save(manufOrder);
-
-    manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
     manufOrderRepo.save(manufOrder);
   }
