@@ -379,9 +379,11 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public void computeFromInvoiceTermPayments(InvoicePayment invoicePayment) {
     BigDecimal newAmount = invoicePayment.getAmount();
     BigDecimal taxRate =
-        invoicePayment
-            .getFinancialDiscountTaxAmount()
-            .divide(invoicePayment.getFinancialDiscountTotalAmount(), 10, RoundingMode.HALF_UP);
+        invoicePayment.getFinancialDiscountTotalAmount().signum() == 0
+            ? BigDecimal.ZERO
+            : invoicePayment
+                .getFinancialDiscountTaxAmount()
+                .divide(invoicePayment.getFinancialDiscountTotalAmount(), 10, RoundingMode.HALF_UP);
 
     invoicePayment.setAmount(BigDecimal.ZERO);
     invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);

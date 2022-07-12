@@ -425,11 +425,11 @@ public class DebtRecoveryService {
       if (invoiceTerm.getDueDate() != null
           && invoiceTerm.getMoveLine() != null
           && invoiceTerm.getMoveLine().getMove() != null
-          && invoiceTerm.getMoveLine().getMove().getOriginDate() != null
+          && invoiceTerm.getMoveLine().getMove().getDate() != null
           && invoiceTerm
               .getMoveLine()
               .getMove()
-              .getOriginDate()
+              .getDate()
               .plusDays(mailTransitTime)
               .isBefore(appAccountService.getTodayDate(company))
           && (appAccountService.getTodayDate(company).isAfter(invoiceTerm.getDueDate())

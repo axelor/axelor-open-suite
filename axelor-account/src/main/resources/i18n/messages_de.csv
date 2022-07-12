@@ -593,7 +593,6 @@
 "Allow accounting daybook",,,
 "Allow cancelation of ventilated invoice","Stornierung der belüfteten Rechnung zulassen",,
 "Allow payments greater than due amount","Zahlungen zulassen, die über den fälligen Betrag hinausgehen.",,
-"Allow removal of validated move","Erlaubt das Entfernen des validierten Zuges",,
 "Allowed payment range","Erlaubter Zahlungsrahmen",,
 "Already Depreciated Amount",,,
 "Already printed","Bereits gedruckt",,

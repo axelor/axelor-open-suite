@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -39,13 +40,15 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       ReconcileService reconcileService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      ExtractContextMoveService extractContextMoveService) {
     super(
         moveCreateService,
         reconcileService,
         moveValidateService,
         moveRepository,
-        moveLineCreateService);
+        moveLineCreateService,
+        extractContextMoveService);
   }
 
   @Override
