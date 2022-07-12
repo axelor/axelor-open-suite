@@ -200,6 +200,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
+    invoiceTerm.setIsCustomized(true);
     invoiceTermRepo.save(invoiceTerm);
   }
 
