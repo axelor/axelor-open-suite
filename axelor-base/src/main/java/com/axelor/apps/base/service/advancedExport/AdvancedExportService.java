@@ -23,7 +23,6 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.filter.Filter;
 import java.io.File;
 import java.util.List;
-import javax.persistence.Query;
 
 public interface AdvancedExportService {
 
@@ -32,9 +31,6 @@ public interface AdvancedExportService {
   public static final String PDF = "PDF";
   public static final String EXCEL = "EXCEL";
   public static final String CSV = "CSV";
-
-  public Query getAdvancedExportQuery(AdvancedExport advancedExport, List<Long> recordIds)
-      throws AxelorException;
 
   public File export(AdvancedExport advancedExport, List<Long> recordIds, String fileType)
       throws AxelorException;

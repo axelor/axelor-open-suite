@@ -23,17 +23,9 @@ import com.itextpdf.text.DocumentException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AdvancedExportGenerator {
-
-  private final Logger log = LoggerFactory.getLogger(AdvancedExportGenerator.class);
-
-  private boolean isReachMaxExportLimit;
 
   /**
    * This method generate the header of export file.
@@ -92,44 +84,12 @@ public abstract class AdvancedExportGenerator {
    * @throws IOException
    * @throws DocumentException
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public File generateFile(Query query) throws AxelorException {
-
-    AdvancedExport advancedExport = getAdvancedExport();
-
-    log.debug("Export file : {}", getFileName());
-
+  @SuppressWarnings({"rawtypes"})
+  public File generateFile(List<List> dataList) throws AxelorException {
     generateHeader();
-
-    int startPosition = 0;
-    int reachLimit = 0;
-    int maxExportLimit = advancedExport.getMaxExportLimit();
-    int queryFetchLimit = advancedExport.getQueryFetchSize();
-    List<List> dataList = new ArrayList<>();
-    query.setMaxResults(queryFetchLimit);
-
-    while (startPosition < maxExportLimit) {
-      if ((maxExportLimit - startPosition) < queryFetchLimit) {
-        query.setMaxResults((maxExportLimit - startPosition));
-      }
-      query.setFirstResult(startPosition);
-      dataList = query.getResultList();
-      if (dataList.isEmpty()) break;
-
-      generateBody(dataList);
-
-      startPosition = startPosition + queryFetchLimit;
-      reachLimit += dataList.size();
-    }
-    if (maxExportLimit == reachLimit) {
-      isReachMaxExportLimit = true;
-    }
+    generateBody(dataList);
     close();
     return getExportFile();
-  }
-
-  public boolean getIsReachMaxExportLimit() {
-    return isReachMaxExportLimit;
   }
 
   public String getExportFileName() {
