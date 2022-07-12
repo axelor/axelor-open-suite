@@ -51,6 +51,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -924,11 +925,45 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
+    this.setParentFields(newInvoiceTerm, moveLine, invoice);
+
     if (moveLine != null) {
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
     }
 
     return newInvoiceTerm;
+  }
+
+  public void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice) {
+    if (invoice != null) {
+      invoiceTerm.setCompany(invoice.getCompany());
+      invoiceTerm.setPartner(invoice.getPartner());
+      invoiceTerm.setCurrency(invoice.getCurrency());
+
+      if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
+        invoiceTerm.setOrigin(invoice.getInvoiceId());
+      } else {
+        invoiceTerm.setOrigin(invoice.getSupplierInvoiceNb());
+      }
+
+      if (invoice.getOriginDate() != null) {
+        invoiceTerm.setOriginDate(invoice.getOriginDate());
+      }
+    } else if (moveLine != null) {
+      invoiceTerm.setCompany(moveLine.getMove().getCompany());
+      invoiceTerm.setCurrency(moveLine.getMove().getCurrency());
+      invoiceTerm.setOrigin(moveLine.getOrigin());
+
+      if (moveLine.getPartner() != null) {
+        invoiceTerm.setPartner(moveLine.getPartner());
+      } else {
+        invoiceTerm.setPartner(moveLine.getMove().getPartner());
+      }
+    }
+
+    if (moveLine != null && invoiceTerm.getOriginDate() == null) {
+      invoiceTerm.setOriginDate(moveLine.getMove().getOriginDate());
+    }
   }
 
   public void setPaymentAmount(InvoiceTerm invoiceTerm) {

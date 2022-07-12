@@ -548,7 +548,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+        onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
         <viewer depends="$supplierInvoiceNbStatic">
@@ -1529,6 +1529,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-hide-cancel-button"/>
     <action name="action-invoice-record-update-info-company"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1567,6 +1568,7 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-currency-onchange">
     <action name="action-invoice-attrs-change-total-title"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -1637,6 +1639,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-due-dates"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1689,6 +1692,12 @@ InvoiceSet.length > 0))"
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
@@ -2253,6 +2262,10 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-round-invoice-term-percentages">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="roundInvoiceTermPercentages"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="updateInvoiceTerms"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
