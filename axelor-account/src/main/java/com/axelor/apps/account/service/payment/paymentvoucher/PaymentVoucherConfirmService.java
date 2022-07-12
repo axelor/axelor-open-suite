@@ -646,7 +646,6 @@ public class PaymentVoucherConfirmService {
               .filter(it -> it.getCompany().equals(company))
               .findFirst()
               .orElse(null);
-      System.err.println(accountManagement);
       if (accountManagement != null) {
         move.addMoveLineListItem(
             moveLineCreateService.createMoveLine(
