@@ -550,9 +550,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     return invoice.getInvoicePaymentList().stream()
         .filter(
             it ->
-                (it.getMove() != null
+                it.getMove() != null
                     && it.getMove().equals(move)
-                    && CollectionUtils.isEmpty(it.getReconcileList())))
+                    && CollectionUtils.isEmpty(it.getReconcileList()))
         .findFirst()
         .orElse(null);
   }

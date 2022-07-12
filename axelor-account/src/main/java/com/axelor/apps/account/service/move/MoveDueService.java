@@ -25,11 +25,12 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,21 +48,21 @@ public class MoveDueService {
     this.moveLineRepository = moveLineRepository;
   }
 
-  public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {
+  public List<MoveLine> getOrignalInvoiceFromRefund(Invoice invoice) {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
     if (originalInvoice != null && originalInvoice.getMove() != null) {
-      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
-        if (moveLine.getAccount().getUseForPartnerBalance()
-            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-          return moveLine;
-        }
-      }
+      return originalInvoice.getMove().getMoveLineList().stream()
+          .filter(
+              it ->
+                  it.getAccount().getUseForPartnerBalance()
+                      && it.getDebit().compareTo(BigDecimal.ZERO) > 0
+                      && it.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)
+          .collect(Collectors.toList());
     }
 
-    return null;
+    return new ArrayList<>();
   }
 
   public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue)
@@ -69,16 +70,9 @@ public class MoveDueService {
     Company company = invoice.getCompany();
     Partner partner = invoice.getPartner();
 
-    List<MoveLine> debitMoveLines = Lists.newArrayList();
-
-    debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
-
     // Ajout de la facture d'origine
-    MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
-
-    if (originalInvoice != null) {
-      debitMoveLines.add(originalInvoice);
-    }
+    List<MoveLine> debitMoveLines = this.getOrignalInvoiceFromRefund(invoice);
+    debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
 
     // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
     List<? extends MoveLine> othersDebitMoveLines = null;
