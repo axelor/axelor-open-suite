@@ -116,6 +116,15 @@
         <panel name="productInfoPanel" colSpan="12"
           readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0">
           <panel name="tagPanel" colSpan="12">
+            <field name="$partnerLanguage" hidden="true"/>
+            <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+              showTitle="false">
+              <viewer depends="$partnerLanguage">
+                <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;</span>{{record.$partnerLanguage}}</div>
+              ]]>
+              </viewer>
+            </field>
             <field name="$viewerTag" showTitle="false" showIf="product != null"
               readonly="true" colSpan="2">
               <viewer depends="product.isUnrenewed,product.isPrototype"><![CDATA[
@@ -298,15 +307,6 @@
           showIf="selectedComplementaryProductList != null &amp;&amp; selectedComplementaryProductList.length &gt; 0"/>
         <panel name="descriptionPanel" title="Description" colSpan="12"
           readonlyIf="$isReadOnly !== false">
-          <field name="$partnerLanguage" hidden="true"/>
-          <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
-            showTitle="false">
-            <viewer depends="$partnerLanguage">
-              <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;</span>{{record.$partnerLanguage}}</div>
-              ]]>
-            </viewer>
-          </field>
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
         <panel name="lineProductionCommentPanel" title="Line production commentary"

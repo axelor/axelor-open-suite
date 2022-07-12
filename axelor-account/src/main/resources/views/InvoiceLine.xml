@@ -64,6 +64,15 @@
     </panel>
     <panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
       <panel name="informationsPanel" title="Information">
+        <field name="$partnerLanguage" hidden="true"/>
+        <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+          showTitle="false">
+          <viewer depends="$partnerLanguage">
+            <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;</span>{{record.$partnerLanguage}}</div>
+              ]]>
+          </viewer>
+        </field>
         <panel name="customerInvoicePanel" colSpan="12">
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
@@ -118,15 +127,6 @@
         <field name="companyExTaxTotal" hidden="true"/>
         <field name="companyInTaxTotal" hidden="true"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
-          <field name="$partnerLanguage" hidden="true"/>
-          <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
-            showTitle="false">
-            <viewer depends="$partnerLanguage">
-              <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;</span>{{record.$partnerLanguage}}</div>
-              ]]>
-            </viewer>
-          </field>
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
       </panel>
