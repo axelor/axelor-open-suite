@@ -35,6 +35,7 @@
         grid-view="company-grid"
         onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+      <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
     </panel>
     <panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
