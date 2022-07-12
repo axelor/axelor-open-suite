@@ -337,7 +337,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) {
     if (move != null) {
       invoiceTerm.setInvoice(move.getInvoice());
+      invoiceTerm.setPaymentMode(move.getPaymentMode());
+      invoiceTerm.setBankDetails(move.getPartnerBankDetails());
     }
+
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
     invoiceTerm.setIsCustomized(true);
@@ -345,18 +348,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(false);
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(moveLine);
+
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
+
     invoiceTerm.setPercentage(
         invoiceTermPercentage.setScale(
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
     BigDecimal amount;
     if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
       amount = moveLine.getDebit();
     } else {
       amount = moveLine.getCredit();
     }
+
     amount =
         amount
             .multiply(invoiceTermPercentage)

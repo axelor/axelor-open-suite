@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -110,6 +111,41 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         description);
   }
 
+  @Override
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      LocalDate originDate,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      String origin,
+      String description)
+      throws AxelorException {
+    return this.createMove(
+        journal,
+        company,
+        currency,
+        partner,
+        date,
+        originDate,
+        paymentMode,
+        fiscalPosition,
+        bankDetails,
+        technicalOriginSelect,
+        functionalOriginSelect,
+        false,
+        false,
+        false,
+        origin,
+        description);
+  }
+
   /**
    * create an account move
    *
@@ -148,6 +184,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         originDate,
         paymentMode,
         fiscalPosition,
+        null,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
@@ -183,6 +220,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate originDate,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -240,6 +278,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setFiscalPosition(fiscalPosition);
+    move.setPartnerBankDetails(bankDetails);
     move.setTechnicalOriginSelect(technicalOriginSelect);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
@@ -270,6 +309,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -285,6 +325,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             null,
             paymentMode,
             fiscalPosition,
+            bankDetails,
             technicalOriginSelect,
             functionalOriginSelect,
             origin,
@@ -322,6 +363,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             null,
             paymentMode,
             fiscalPosition,
+            null,
             technicalOriginSelect,
             functionalOriginSelect,
             ignoreInDebtRecoveryOk,

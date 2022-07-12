@@ -48,6 +48,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -79,6 +80,7 @@ public class PaymentVoucherConfirmService {
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected AccountConfigService accountConfigService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected PartnerService partnerService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
 
@@ -95,6 +97,7 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherToolService paymentVoucherToolService,
       AccountConfigService accountConfigService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
+      PartnerService partnerService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository) {
 
@@ -109,6 +112,7 @@ public class PaymentVoucherConfirmService {
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.accountConfigService = accountConfigService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.partnerService = partnerService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
   }
@@ -262,6 +266,7 @@ public class PaymentVoucherConfirmService {
             date,
             paymentVoucher.getPaymentMode(),
             null,
+            partnerService.getDefaultBankDetails(payerPartner),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentVoucher.getRef(),
@@ -389,6 +394,7 @@ public class PaymentVoucherConfirmService {
               paymentDate,
               paymentVoucher.getPaymentMode(),
               null,
+              partnerService.getDefaultBankDetails(payerPartner),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               paymentVoucher.getRef(),
