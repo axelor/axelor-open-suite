@@ -389,6 +389,9 @@
         <field name="billOfMaterial.prodResidualProductList" title="Residual products"
           colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
       </panel>
+      <panel name="printingPanel" title="Printing">
+        <field name="hideReportDetails"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
