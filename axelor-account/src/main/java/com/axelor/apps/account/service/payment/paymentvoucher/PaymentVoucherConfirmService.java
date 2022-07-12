@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -83,6 +84,7 @@ public class PaymentVoucherConfirmService {
   protected PartnerService partnerService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -99,7 +101,8 @@ public class PaymentVoucherConfirmService {
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       PartnerService partnerService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      PaymentVoucherRepository paymentVoucherRepository) {
+      PaymentVoucherRepository paymentVoucherRepository,
+      AccountManagementAccountService accountManagementAccountService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -115,6 +118,7 @@ public class PaymentVoucherConfirmService {
     this.partnerService = partnerService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   /**
@@ -648,13 +652,13 @@ public class PaymentVoucherConfirmService {
               .filter(it -> it.getCompany().equals(company))
               .findFirst()
               .orElse(null);
-
       if (accountManagement != null) {
         move.addMoveLineListItem(
             moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
-                accountManagement.getFinancialDiscountAccount(),
+                accountManagementAccountService.getFinancialDiscountAccount(
+                    accountManagement, financialDiscountTax, company),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),
                 isDebitToPay,
                 paymentDate,

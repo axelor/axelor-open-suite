@@ -1269,6 +1269,7 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
 
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
 
@@ -1287,10 +1288,18 @@ public interface IExceptionMessage {
   static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
 
+  static final String ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
+
   static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
       "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
   static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
       "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
   static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
+
+  static final String MOVE_FUNCTIONAL_ORIGIN_MISSING = /*$$(*/
+      "The functional origin cannot be empty for the move %s" /*)*/;
+  static final String MOVE_14 = /*$$(*/
+      "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }
