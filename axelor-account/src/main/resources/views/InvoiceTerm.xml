@@ -9,7 +9,7 @@
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="name"/>
     <field name="invoice.invoiceId"/>
-    <field name="moveLine.name" title="Move Line"/>
+    <field name="moveLine"/>
     <field name="partner"/>
     <field name="dueDate"/>
     <field name="amount" title="To pay / To use"/>
@@ -251,7 +251,7 @@
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12" itemSpan="4">
           <field name="decisionPfpTakenDate"/>
-          <field name="pfpGrantedAmount"/>
+          <field name="initialPfpAmount"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
@@ -263,8 +263,8 @@
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
-          <field name="pfpGrantedAmount"/>
-          <field name="pfpRejectedAmount"/>
+          <field name="initialPfpAmount"/>
+          <field name="remainingPfpAmount"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3" itemSpan="4">
