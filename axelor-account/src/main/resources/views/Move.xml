@@ -90,13 +90,22 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             form-view="partner-form" grid-view="partner-grid"
             onSelect="action-move-group-partner-on-select"
-            onChange="action-account-move-record-set-currency"/>
+            onChange="action-move-group-partner-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode" colSpan="3"
-            readonlyIf="period.statusSelect == 2 || $validatePeriod"/>
+            readonlyIf="period.statusSelect == 2 || $validatePeriod" form-view="payment-mode-form"
+            grid-view="payment-mode-grid"/>
+          <spacer/>
+          <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
+            form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+          <field name="partnerBankDetails" colSpan="3"
+            showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
+            onSelect="action-move-attrs-bank-details-from-partner-domain"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="period.statusSelect" hidden="true"/>
+          <field name="paymentMode.typeSelect" hidden="true"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
@@ -614,6 +623,22 @@
     <action name="action-move-method-set-moveline-dates"/>
   </action-group>
 
+  <action-group name="action-move-group-journal-on-change">
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-journal-on-change"/>
+    <action name="action-move-record-set-payment-mode"/>
+    <action name="action-move-record-set-payment-condition"/>
+    <action name="action-move-record-set-bank-details"/>
+  </action-group>
+
+  <action-group name="action-move-group-partner-onchange">
+    <action name="action-account-move-record-set-currency"/>
+    <action name="action-move-record-set-payment-mode"/>
+    <action name="action-move-record-set-payment-condition"/>
+    <action name="action-move-record-set-bank-details"/>
+  </action-group>
+
   <action-validate name="action-account-accounting-prompt">
     <alert
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
@@ -669,6 +694,29 @@
       expr="eval: journal?.journalType?.technicalTypeSelect"/>
   </action-record>
 
+  <action-record name="action-move-record-set-payment-mode"
+    model="com.axelor.apps.account.db.Move">
+    <field name="paymentMode" expr="eval: null"/>
+    <field name="paymentMode" expr="eval: partner?.outPaymentMode"
+      if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect == 1"/>
+    <field name="paymentMode" expr="eval: partner?.inPaymentMode"
+      if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect == 2"/>
+  </action-record>
+
+  <action-record name="action-move-record-set-payment-condition"
+    model="com.axelor.apps.account.db.Move">
+    <field name="paymentCondition" expr="eval: null"/>
+    <field name="paymentCondition" expr="eval: partner?.paymentCondition"
+      if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect != 4"/>
+  </action-record>
+
+  <action-record name="action-move-record-set-bank-details"
+    model="com.axelor.apps.account.db.Move">
+    <field name="partnerBankDetails" expr="eval: null"/>
+    <field name="partnerBankDetails"
+      expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault }" if="partner"/>
+  </action-record>
+
   <!-- ACTION ATTRS -->
   <action-attrs name="action-move-attrs-set-domain-payment-mode">
     <attribute name="domain" for="paymentMode"
@@ -716,6 +764,14 @@
   <action-attrs name="action-move-attrs-check-related-cut-off-moves">
     <attribute name="value" for="$isThereRelatedCutOffMoves"
       expr="eval: __repo__(Move).all().filter('self.cutOffOriginMove = ?', id).count() > 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-bank-details-from-partner-domain">
+    <attribute name="domain" for="partnerBankDetails"
+      expr="eval: &quot; self = null &quot;"/>
+    <attribute name="domain" for="partnerBankDetails"
+      expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active IS TRUE &quot;"
+      if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->
@@ -948,11 +1004,5 @@
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
   </action-method>
-
-  <action-group name="action-move-group-journal-on-change">
-    <action name="action-move-account-record-set-journal-technical-type-select"/>
-    <action name="action-move-attrs-validate-button-title"/>
-    <action name="action-move-method-journal-on-change"/>
-  </action-group>
 
 </object-views>
