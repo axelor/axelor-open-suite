@@ -1,0 +1,24 @@
+"importId";"name";"value"
+"2";"emailTo";"def s = []
+def stockRules = com.axelor.db.JPA.find(com.axelor.apps.stock.db.StockRules.class, id)
+def user = stockRules.user
+def team = stockRules.team
+
+if (user) {
+	def userAddress = user.partner.emailAddress?.address
+	if(userAddress) {
+		s << userAddress
+	}
+}
+
+if (team) {
+	def members = stockRules.team.members
+	members.each {
+	def memberAddress = it.partner.emailAddress?.address
+		if(memberAddress) {
+			s << memberAddress
+		}
+	}
+}
+
+s.toSet().join(',')"
