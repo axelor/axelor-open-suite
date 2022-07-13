@@ -1,8 +1,10 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -22,15 +24,15 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  public void generateInvoiceTerms(Move move) {
+  public void generateInvoiceTerms(Move move) throws AxelorException {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      move.getMoveLineList().stream()
-          .filter(
-              it ->
-                  it.getAccount() != null
-                      && it.getAccount().getUseForPartnerBalance()
-                      && CollectionUtils.isEmpty(it.getInvoiceTermList()))
-          .forEach(moveLineInvoiceTermService::generateDefaultInvoiceTerm);
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount() != null
+            && moveLine.getAccount().getUseForPartnerBalance()
+            && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+          moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine);
+        }
+      }
     }
   }
 
