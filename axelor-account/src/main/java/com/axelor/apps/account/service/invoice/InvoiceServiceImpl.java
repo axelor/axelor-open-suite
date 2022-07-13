@@ -1207,4 +1207,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         ? invoice.getInvoiceDate()
         : deadlineDate;
   }
+
+  public void updateInvoiceTermsParentFields(Invoice invoice) {
+    invoice
+        .getInvoiceTermList()
+        .forEach(it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
+  }
 }

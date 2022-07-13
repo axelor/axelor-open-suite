@@ -25,8 +25,8 @@
       showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; id == null &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2">
       <field name="$invoiceTerms" title="Unpaid invoice terms" type="one-to-many"
         target="com.axelor.apps.account.db.InvoiceTerm"
-        grid-view="invoice-term-invoice-payment-grid" form-view="invoice-term-move-line-form"
-        readonly="true" colSpan="12"/>
+        grid-view="invoice-term-invoice-payment-grid" form-view="invoice-term-form" readonly="true"
+        colSpan="12"/>
     </panel>
     <panel-related name="invoiceTermPaymentPanel" field="invoiceTermPaymentList"
       grid-view="invoice-term-payment-grid" form-view="invoice-term-payment-form" colSpan="12"

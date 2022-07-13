@@ -62,14 +62,20 @@
     if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
 
   <action-view name="invoice.root.my.awaiting.pfp" title="My awaiting PFP"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3) and
-      self.pfpValidatorUser = :_currentUser</domain>
+    <domain>(self.invoice.company.accountConfig.isManagePassedForPayment IS TRUE OR
+      self.moveLine.move.company.accountConfig.isManagePassedForPayment IS TRUE) AND ((self.invoice
+      IS NOT NULL AND self.invoice.statusSelect IN (2,3) AND (self.invoice.operationTypeSelect = 1
+      OR (self.invoice.company.accountConfig.isManagePFPInRefund IS TRUE AND
+      self.invoice.operationTypeSelect = 2))) OR (self.invoice IS NULL AND
+      self.moveLine.move.statusSelect IN (2,3) AND
+      (self.moveLine.move.journal.journalType.technicalTypeSelect = 1 OR
+      (self.moveLine.move.company.accountConfig.isManagePFPInRefund IS TRUE AND
+      self.moveLine.move.journal.journalType.technicalTypeSelect = 3)))) AND
+      self.pfpValidateStatusSelect = 1 AND self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
   </action-view>
@@ -79,13 +85,20 @@
     if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
 
   <action-view name="invoice.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3)</domain>
+    <domain>(self.invoice.company.accountConfig.isManagePassedForPayment IS TRUE OR
+      self.moveLine.move.company.accountConfig.isManagePassedForPayment IS TRUE) AND ((self.invoice
+      IS NOT NULL AND self.invoice.statusSelect IN (2,3) AND (self.invoice.operationTypeSelect = 1
+      OR (self.invoice.company.accountConfig.isManagePFPInRefund IS TRUE AND
+      self.invoice.operationTypeSelect = 2))) OR (self.invoice IS NULL AND
+      self.moveLine.move.statusSelect IN (2,3) AND
+      (self.moveLine.move.journal.journalType.technicalTypeSelect = 1 OR
+      (self.moveLine.move.company.accountConfig.isManagePFPInRefund IS TRUE AND
+      self.moveLine.move.journal.journalType.technicalTypeSelect = 3)))) AND
+      self.pfpValidateStatusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
@@ -108,9 +121,8 @@
 
   <action-view name="invoice.root.invoice.terms" title="Terms list"
     model="com.axelor.apps.account.db.InvoiceTerm">
-    <view type="grid" name="invoice-term-move-line-grid"/>
-    <view type="form" name="invoice-term-move-line-form"/>
-    <domain>self.invoice IS NOT NULL</domain>
+    <view type="grid" name="invoice-term-grid"/>
+    <view type="form" name="invoice-term-form"/>
   </action-view>
 
   <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="25"

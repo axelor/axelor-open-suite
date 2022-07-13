@@ -7,6 +7,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
   protected InvoiceTermService invoiceTermService;
@@ -38,5 +39,13 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         amount,
         BigDecimal.valueOf(100),
         false);
+  }
+
+  public void updateInvoiceTermsParentFields(MoveLine moveLine) {
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine
+          .getInvoiceTermList()
+          .forEach(it -> invoiceTermService.setParentFields(it, moveLine, it.getInvoice()));
+    }
   }
 }

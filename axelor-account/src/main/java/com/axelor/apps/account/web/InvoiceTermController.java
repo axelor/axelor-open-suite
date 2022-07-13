@@ -120,22 +120,30 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      Invoice invoice = null;
+      MoveLine moveLine = null;
+
       if (request.getContext().getParent() != null) {
-        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
         if (invoice != null) {
           invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
           response.setValues(invoiceTerm);
         } else {
-          MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+          moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
           if (moveLine != null) {
             Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
             invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-            response.setValues(invoiceTerm);
+
+            if (move != null) {
+              moveLine.setMove(move);
+            }
           }
         }
       }
 
+      invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
+      response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

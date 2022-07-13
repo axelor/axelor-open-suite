@@ -14,7 +14,7 @@
   <form name="invoice-term-payment-form" title="Invoice term payment"
     model="com.axelor.apps.account.db.InvoiceTermPayment">
     <panel name="mainPanel" readonly="true">
-      <field name="invoiceTerm" form-view="invoice-term-move-line-form"
+      <field name="invoiceTerm" form-view="invoice-term-form"
         grid-view="invoice-term-move-line-grid"/>
       <field name="paidAmount"/>
       <field name="financialDiscount" showIf="financialDiscount"
