@@ -1034,7 +1034,7 @@ AccountingReport.display_name_account_column_on_printing as display_name_account
 AccountingReport.display_only_not_completely_lettered_move_lines,
 AccountingReport.display_cumulative_balance,
 AccountingReport.display_simulated_move as display_simulated_move,
-AccountingReport.content_currency_select
+AccountingReport.displayed_currency_select
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -1550,7 +1550,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <structure>
                     <property name="name">content_currency</property>
                     <text-property name="displayName">content_currency</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["content_currency_select"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["displayed_currency_select"]</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>

@@ -665,8 +665,8 @@
   </selection>
 
   <selection name="account.accounting.report.content.currency.select">
-    <option value="1">Company's currency</option>
-    <option value="2">Origin's currency</option>
+    <option value="1">Company currency</option>
+    <option value="2">Original currency</option>
   </selection>
 
 </object-views>

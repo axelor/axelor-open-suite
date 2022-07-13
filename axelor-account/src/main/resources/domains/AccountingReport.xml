@@ -13,7 +13,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-    <string name="contentCurrencySelect" title="Content's currency" default="1"
+    <string name="displayedCurrencySelect" title="Displayed currency" default="1"
       selection="account.accounting.report.content.currency.select"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
     <many-to-one name="journal" ref="Journal" title="Journal"/>

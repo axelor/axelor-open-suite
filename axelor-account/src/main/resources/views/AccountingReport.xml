@@ -156,7 +156,7 @@
           onChange="action-accounting-report-record-global-by-partner"/>
         <field name="detailed" hideIf="reportType.typeSelect != 4"
           onChange="action-accounting-report-record-detailed"/>
-        <field name="contentCurrencySelect" widget="MultiSelect"
+        <field name="displayedCurrencySelect" widget="MultiSelect"
           showIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"
           hidden="true"
           requiredIf="reportType.typeSelect == 1 || reportType.typeSelect == 14 || reportType.typeSelect == 7"/>
