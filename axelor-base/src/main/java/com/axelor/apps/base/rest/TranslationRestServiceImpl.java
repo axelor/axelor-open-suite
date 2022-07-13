@@ -13,7 +13,12 @@ import wslite.json.JSONObject;
 
 public class TranslationRestServiceImpl implements TranslationRestService {
 
-  @Inject private MetaTranslationRepository translationRepo;
+  protected MetaTranslationRepository translationRepo;
+
+  @Inject
+  public TranslationRestServiceImpl(MetaTranslationRepository translationRepo) {
+    this.translationRepo = translationRepo;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
