@@ -9,6 +9,10 @@
 
     <boolean name="isSubcontractor" title="Subcontractor"/>
 
+    <track>
+      <field name="isSubcontractor"/>
+    </track>
+
   </entity>
 
 </domain-models>
