@@ -191,7 +191,7 @@ public class InventoryLineService {
             getCurrentQty(inventory.getStockLocation(), product),
             rack,
             trackingNumber,
-            null,
+            inventory.getStockLocation(),
             null);
     updateInventoryLine(inventoryLine, realQty, null);
     return inventoryLine;

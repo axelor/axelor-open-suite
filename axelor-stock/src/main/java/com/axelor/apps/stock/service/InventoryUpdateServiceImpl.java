@@ -9,8 +9,15 @@ import com.google.inject.persist.Transactional;
 
 public class InventoryUpdateServiceImpl implements InventoryUpdateService {
 
-  @Inject private InventoryService inventoryService;
-  @Inject private InventoryProductService inventoryProductService;
+  protected InventoryService inventoryService;
+  protected InventoryProductService inventoryProductService;
+
+  @Inject
+  public InventoryUpdateServiceImpl(
+      InventoryService inventoryService, InventoryProductService inventoryProductService) {
+    this.inventoryService = inventoryService;
+    this.inventoryProductService = inventoryProductService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public void updateInventoryStatus(Inventory inventory, Integer wantedStatus, User user)
