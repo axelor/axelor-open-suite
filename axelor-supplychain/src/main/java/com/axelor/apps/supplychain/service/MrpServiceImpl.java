@@ -965,17 +965,14 @@ public class MrpServiceImpl implements MrpService {
    */
   public List<Long> getSaleOrderLinesComplyingToMrpLineTypes(Mrp mrp) {
 
-    List<Long> idList = new ArrayList<Long>();
-    idList.add(new Long(-1));
+    List<Long> idList = new ArrayList<>();
+    idList.add((long) -1);
 
     List<MrpLineType> saleOrderMrpLineTypeList =
         this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp);
 
     if ((saleOrderMrpLineTypeList != null || !saleOrderMrpLineTypeList.isEmpty())
         && mrp.getStockLocation() != null) {
-      MrpRepository mrpRepository = Beans.get(MrpRepository.class);
-      SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
-      ProductRepository productRepository = Beans.get(ProductRepository.class);
 
       for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
         List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
@@ -1016,25 +1013,24 @@ public class MrpServiceImpl implements MrpService {
                 .all()
                 .filter(
                     filter,
-                    saleOrderLineRepository.DELIVERY_STATE_DELIVERED,
+                    SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
                     mrp.getStockLocation() != null
                         ? mrp.getStockLocation().getCompany().getId()
                         : -1,
                     stockLocationList,
                     mrp.getMrpTypeSelect(),
-                    mrpRepository.MRP_TYPE_MRP,
-                    productRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT,
+                    MrpRepository.MRP_TYPE_MRP,
+                    ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT,
                     statusList,
                     idList)
                 .fetch());
 
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-          if (saleOrderLine.getSaleOrder() != null) {
+          if (saleOrderLine.getSaleOrder() != null
+              && checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
             // Checking the late sales parameter
-            if (checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
-              idList.add(saleOrderLine.getId());
-            }
+            idList.add(saleOrderLine.getId());
           }
         }
       }
