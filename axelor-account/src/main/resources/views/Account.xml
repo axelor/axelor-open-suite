@@ -106,7 +106,8 @@
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
         <field name="compatibleAccountSet" widget="TagSelect"
-          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
+          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
+          domain="self.company = :company"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
