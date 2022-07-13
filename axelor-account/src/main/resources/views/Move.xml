@@ -785,12 +785,12 @@
 
   <action-attrs name="action-move-attrs-set-functional-origin-select-domain">
     <attribute name="selection-in" for="functionalOriginSelect"
-               expr="eval: journal ? (journal.authorizedFunctionalOriginSelect ? journal.authorizedFunctionalOriginSelect : '0') : null "/>
+      expr="eval: journal ? (journal.authorizedFunctionalOriginSelect ? journal.authorizedFunctionalOriginSelect : '0') : null "/>
   </action-attrs>
 
   <action-attrs name="action-move-attrs-set-functional-origin-select">
     <attribute name="value" for="functionalOriginSelect"
-               expr="eval: (journal?.authorizedFunctionalOriginSelect?.split(',')?.length == 1) ? (journal?.authorizedFunctionalOriginSelect) : null"/>
+      expr="eval: (journal?.authorizedFunctionalOriginSelect?.split(',')?.length == 1) ? (journal?.authorizedFunctionalOriginSelect) : null"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->
