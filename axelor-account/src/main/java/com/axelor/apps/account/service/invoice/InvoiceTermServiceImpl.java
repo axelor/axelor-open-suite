@@ -51,6 +51,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -337,7 +338,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) {
     if (move != null) {
       invoiceTerm.setInvoice(move.getInvoice());
+      invoiceTerm.setPaymentMode(move.getPaymentMode());
+      invoiceTerm.setBankDetails(move.getPartnerBankDetails());
     }
+
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
     invoiceTerm.setIsCustomized(true);
@@ -345,18 +349,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(false);
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(moveLine);
+
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
+
     invoiceTerm.setPercentage(
         invoiceTermPercentage.setScale(
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
     BigDecimal amount;
     if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
       amount = moveLine.getDebit();
     } else {
       amount = moveLine.getCredit();
     }
+
     amount =
         amount
             .multiply(invoiceTermPercentage)
@@ -924,11 +932,45 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
+    this.setParentFields(newInvoiceTerm, moveLine, invoice);
+
     if (moveLine != null) {
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
     }
 
     return newInvoiceTerm;
+  }
+
+  public void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice) {
+    if (invoice != null) {
+      invoiceTerm.setCompany(invoice.getCompany());
+      invoiceTerm.setPartner(invoice.getPartner());
+      invoiceTerm.setCurrency(invoice.getCurrency());
+
+      if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
+        invoiceTerm.setOrigin(invoice.getInvoiceId());
+      } else {
+        invoiceTerm.setOrigin(invoice.getSupplierInvoiceNb());
+      }
+
+      if (invoice.getOriginDate() != null) {
+        invoiceTerm.setOriginDate(invoice.getOriginDate());
+      }
+    } else if (moveLine != null) {
+      invoiceTerm.setCompany(moveLine.getMove().getCompany());
+      invoiceTerm.setCurrency(moveLine.getMove().getCurrency());
+      invoiceTerm.setOrigin(moveLine.getOrigin());
+
+      if (moveLine.getPartner() != null) {
+        invoiceTerm.setPartner(moveLine.getPartner());
+      } else {
+        invoiceTerm.setPartner(moveLine.getMove().getPartner());
+      }
+    }
+
+    if (moveLine != null && invoiceTerm.getOriginDate() == null) {
+      invoiceTerm.setOriginDate(moveLine.getMove().getOriginDate());
+    }
   }
 
   public void setPaymentAmount(InvoiceTerm invoiceTerm) {

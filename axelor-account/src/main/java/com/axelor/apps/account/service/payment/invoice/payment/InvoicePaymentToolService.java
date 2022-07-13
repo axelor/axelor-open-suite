@@ -60,11 +60,14 @@ public interface InvoicePaymentToolService {
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
 
-  BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList, LocalDate date);
+  BigDecimal getPayableAmount(
+      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange);
 
   void computeFinancialDiscount(InvoicePayment invoicePayment);
 
   BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
 
   boolean applyFinancialDiscount(InvoicePayment invoicePayment);
+
+  void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
 }

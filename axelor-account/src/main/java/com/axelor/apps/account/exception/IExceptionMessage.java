@@ -77,6 +77,9 @@ public interface IExceptionMessage {
   static final String NO_NEW_MOVES_SELECTED = /*$$(*/
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
+  static final String NO_MOVES_SELECTED_MASS_REVERSE = /*$$(*/
+      "Please select moves that are not simulated." /*)*/;
+
   static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
       "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
   static final String MOVE_ACCOUNTING_OK = /*$$(*/
@@ -1009,6 +1012,8 @@ public interface IExceptionMessage {
       "Missing subrogation release sequence for company %s" /*)*/;
   static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
       "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
+  public static final String SUBROGATION_RELEASE_BACK_TO_ACCOUNTED_WRONG_STATUS = /*$$(*/
+      "Can only go back to accounted from a cleared or cancelled subrogation release." /*)*/;
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
@@ -1267,6 +1272,7 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
 
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
 
@@ -1285,8 +1291,18 @@ public interface IExceptionMessage {
   static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
 
+  static final String ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
+
   static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
       "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
   static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
       "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
+  static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
+      "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
+
+  static final String MOVE_FUNCTIONAL_ORIGIN_MISSING = /*$$(*/
+      "The functional origin cannot be empty for the move %s" /*)*/;
+  static final String MOVE_14 = /*$$(*/
+      "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }

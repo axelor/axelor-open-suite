@@ -265,4 +265,17 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     }
     return accountManagement.getSaleVatRegulationAccount();
   }
+
+  @Override
+  public Account getFinancialDiscountAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException {
+    if (accountManagement != null && accountManagement.getFinancialDiscountAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX),
+          tax.getCode(),
+          company.getCode());
+    }
+    return accountManagement.getFinancialDiscountAccount();
+  }
 }

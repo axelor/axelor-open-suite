@@ -3,6 +3,54 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
+  <grid name="invoice-term-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    <hilite color="danger"
+      if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="name"/>
+    <field name="invoice.invoiceId"/>
+    <field name="moveLine"/>
+    <field name="partner"/>
+    <field name="dueDate"/>
+    <field name="amount" title="To pay / To use"/>
+    <field name="amountRemaining" title="Left to pay / to use"/>
+    <field name="isHoldBack"/>
+    <field name="percentage"/>
+    <field name="paymentMode"/>
+    <field name="financialDiscount.discountRate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountDeadlineDate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+  </grid>
+
+  <grid name="invoice-term-pfp-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    <toolbar>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+        title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+        onClick="action-invoiceterm-view-refusal-to-pay"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    </toolbar>
+    <hilite color="danger"
+      if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="invoice.invoiceId"/>
+    <field name="moveLine"/>
+    <field name="company"/>
+    <field name="origin"/>
+    <field name="originDate"/>
+    <field name="partner"/>
+    <field name="dueDate"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="percentage" aggregate="sum"/>
+    <field name="paymentMode"/>
+    <field name="amountRemaining" aggregate="sum"/>
+    <field name="currency"/>
+  </grid>
+
   <grid name="invoice-term-move-line-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
@@ -146,6 +194,7 @@
         <field name="isCustomized"/>
         <field name="isPaid"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+        <field name="partner"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -166,6 +215,10 @@
         <field name="applyFinancialDiscount" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="company" hidden="true"/>
+        <field name="origin" hidden="true"/>
+        <field name="originDate" hidden="true"/>
+        <field name="currency" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
@@ -224,8 +277,7 @@
             css="btn-success" onClick="action-invoice-term-group-validate-pfp"
             showIf="[1,3].includes(pfpValidateStatusSelect)"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-            css="btn-warning"
-            onClick="action-invoice-term-set-partial-validate-status-select,action-invoice-term-view-pfp-partial-reason-wizard"
+            css="btn-warning" onClick="action-invoice-term-group-partial-pfp"
             showIf="pfpValidateStatusSelect == 1"/>
           <button name="refusalToPayBtn" title="Refuse to pay" css="btn-danger"
             onClick="action-invoiceterm-view-refusal-to-pay,save"
@@ -290,6 +342,7 @@
         <field name="isPaid" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
+        <field name="partner" readonly="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -320,6 +373,10 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="company" hidden="true"/>
+        <field name="origin" hidden="true"/>
+        <field name="originDate" hidden="true"/>
+        <field name="currency" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
@@ -382,7 +439,7 @@
             onClick="action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             showIf="pfpValidateStatusSelect == 1" css="btn-warning"
-            onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
+            onClick="action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" css="btn-danger"
             onClick="action-invoice-term-group-refusal-to-pay,save"/>
@@ -449,6 +506,7 @@
         <field name="isPaid" title="Paid / Used" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
+        <field name="partner" readonly="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -473,6 +531,10 @@
           hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="company" hidden="true"/>
+        <field name="origin" hidden="true"/>
+        <field name="originDate" hidden="true"/>
+        <field name="currency" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
@@ -543,7 +605,7 @@
             onClick="action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             showIf="pfpValidateStatusSelect == 1" css="btn-warning"
-            onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
+            onClick="action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" colSpan="4" css="btn-danger"
             onClick="action-invoice-term-group-refusal-to-pay,save"/>
@@ -591,8 +653,7 @@
         onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
       <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
-        onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
-        colOffset="4" colSpan="4"/>
+        onClick="action-invoice-term-group-refusal-to-pay-wizard" colOffset="4" colSpan="4"/>
     </panel>
   </form>
 
@@ -633,7 +694,7 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-validate-pfp">
-    <action name="action-invoice-term-validate-save-invoice"/>
+    <action name="action-invoice-term-validate-before-pfp"/>
     <action name="save"/>
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -678,8 +739,18 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-refusal-to-pay">
-    <action name="action-invoice-term-validate-save-invoice"/>
+    <action name="action-invoice-term-validate-before-pfp"/>
     <action name="action-invoiceterm-view-refusal-to-pay"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-partial-pfp">
+    <action name="action-invoice-term-validate-before-pfp"/>
+    <action name="action-invoice-term-view-pfp-partial-reason-wizard"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-refusal-to-pay-wizard">
+    <action name="action-invoiceterm-refusal-to-pay-cancel-reason-check"/>
+    <action name="action-invoice-term-method-refusal-to-pay"/>
   </action-group>
 
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
@@ -720,10 +791,13 @@
       if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice.id).fetch().size &gt;= 1"/>
   </action-validate>
 
-  <action-validate name="action-invoice-term-validate-save-invoice">
+  <action-validate name="action-invoice-term-validate-before-pfp">
     <alert
-      message="This process requires the parent invoice to be saved then reloaded, do you wish to continue ?"
+      message="All the invoice's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the invoice when the process is done."
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+    <alert
+      message="All the move's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the move when the process is done."
+      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
   </action-validate>
 
   <action-record name="action-invoice-term-record-update-customized"

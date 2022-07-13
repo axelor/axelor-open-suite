@@ -245,9 +245,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList, LocalDate date) {
+  public BigDecimal getPayableAmount(
+      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange) {
     return invoiceTermList.stream()
-        .map(it -> invoiceTermService.getAmountRemaining(it, date))
+        .map(
+            it ->
+                manualChange
+                    ? invoiceTermService.getAmountRemaining(it, date)
+                    : it.getAmountRemaining())
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -369,5 +374,47 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && deadLineDate != null
         && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
+  }
+
+  public void computeFromInvoiceTermPayments(InvoicePayment invoicePayment) {
+    BigDecimal newAmount = invoicePayment.getAmount();
+    BigDecimal taxRate =
+        invoicePayment.getFinancialDiscountTotalAmount().signum() == 0
+            ? BigDecimal.ZERO
+            : invoicePayment
+                .getFinancialDiscountTaxAmount()
+                .divide(invoicePayment.getFinancialDiscountTotalAmount(), 10, RoundingMode.HALF_UP);
+
+    invoicePayment.setAmount(BigDecimal.ZERO);
+    invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);
+    invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
+    invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+
+    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+      invoicePayment.setAmount(invoicePayment.getAmount().add(invoiceTermPayment.getPaidAmount()));
+      invoicePayment.setFinancialDiscountTotalAmount(
+          invoicePayment
+              .getFinancialDiscountTotalAmount()
+              .add(invoiceTermPayment.getFinancialDiscountAmount()));
+    }
+
+    invoicePayment.setFinancialDiscountTotalAmount(
+        invoicePayment
+            .getFinancialDiscountTotalAmount()
+            .multiply(newAmount)
+            .divide(
+                invoicePayment.getAmount(),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP));
+    invoicePayment.setAmount(newAmount);
+    invoicePayment.setFinancialDiscountTaxAmount(
+        invoicePayment
+            .getFinancialDiscountTotalAmount()
+            .multiply(taxRate)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    invoicePayment.setFinancialDiscountAmount(
+        invoicePayment
+            .getFinancialDiscountTotalAmount()
+            .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
   }
 }

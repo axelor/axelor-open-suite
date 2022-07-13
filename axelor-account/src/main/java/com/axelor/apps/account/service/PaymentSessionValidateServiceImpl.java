@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -65,6 +66,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected PartnerRepository partnerRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigService accountConfigService;
+  protected PartnerService partnerService;
   protected int counter = 0;
 
   @Inject
@@ -83,7 +85,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PartnerService partnerService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -99,6 +102,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.partnerRepo = partnerRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.accountConfigService = accountConfigService;
+    this.partnerService = partnerService;
   }
 
   @Override
@@ -359,6 +363,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
+            partnerService.getDefaultBankDetails(partner),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
@@ -465,7 +470,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTerm.getInvoice().getInvoicePaymentList().stream()
         .filter(
             it ->
-                paymentSession.equals(it.getPaymentSession())
+                it.getPaymentSession() != null
+                    && it.getPaymentSession().equals(paymentSession)
                     && it.getInvoiceTermPaymentList().stream()
                         .anyMatch(itp -> invoiceTerm.equals(itp.getInvoiceTerm())))
         .findFirst()

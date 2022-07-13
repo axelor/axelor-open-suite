@@ -230,7 +230,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN ( "
                     + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
                     + "FROM public.account_invoice_term AS term "
-                    + "WHERE (term.due_date IS NOT NULL AND (term.due_date + :mailTransitTime ) <= :todayDate ) "
+                    + "WHERE (move.date_val IS NOT NULL AND (move.date_val + :mailTransitTime ) <= :todayDate ) "
                     + "GROUP BY term.move_line, term.amount_remaining ) AS t2 ON (t2.term_ml = m2.moveline_id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "

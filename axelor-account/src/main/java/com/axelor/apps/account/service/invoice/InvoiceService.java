@@ -345,4 +345,6 @@ public interface InvoiceService {
    * @return true if there would be at least one invoice term in the invoice payment
    */
   boolean checkInvoiceTerms(Invoice invoice);
+
+  void updateInvoiceTermsParentFields(Invoice invoice);
 }
