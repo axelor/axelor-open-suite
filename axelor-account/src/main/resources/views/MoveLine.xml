@@ -799,7 +799,6 @@
     <action name="action-move-line-method-refresh-account-informations"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-method-change-account-set-default-distribution-template"/>
-    <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
   </action-group>
 
@@ -808,7 +807,6 @@
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
   </action-group>
 
@@ -841,6 +839,7 @@
   </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
+    <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-method-clear-analytic-move-line"/>
     <action name="action-move-line-method-check-analytic-on-move-line"/>
     <action name="action-move-line-method-create-analytic-distribution"/>
