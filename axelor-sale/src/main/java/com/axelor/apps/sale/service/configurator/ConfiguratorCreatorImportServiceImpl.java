@@ -178,10 +178,14 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
         Mapper mapper = Mapper.of(attribute.getClass());
         Method getter = mapper.getGetter(field.getName());
         String fieldString = (String) getter.invoke(attribute);
+
         if (fieldString != null && fieldString.contains("_")) {
-          Method setter = mapper.getSetter(field.getName());
+          String attributeName =
+              attribute.getName().substring(0, attribute.getName().lastIndexOf('_'));
+          String updatedAttributeName = String.format("%s_%d", attributeName, creator.getId());
           String updatedFieldString =
-              fieldString.substring(0, fieldString.lastIndexOf('_')) + '_' + creator.getId();
+              fieldString.replaceAll(attributeName + "_\\d+", updatedAttributeName);
+          Method setter = mapper.getSetter(field.getName());
           setter.invoke(attribute, updatedFieldString);
         }
       }
