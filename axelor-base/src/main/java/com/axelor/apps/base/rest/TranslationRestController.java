@@ -33,6 +33,8 @@ public class TranslationRestController {
   @Transactional(rollbackOn = {Exception.class})
   public Response setTranslationJSON(@PathParam("lng") String language, JSONObject translationJson)
       throws AxelorException, JSONException {
+    LanguageChecker.check(language);
+
     int addedTranslation =
         Beans.get(TranslationRestService.class).createNewTranslation(translationJson, language);
 
@@ -48,12 +50,15 @@ public class TranslationRestController {
   @HttpExceptionHandler
   public Response sendTranslationJSON(@PathParam("lng") String language)
       throws AxelorException, JSONException {
+    LanguageChecker.check(language);
+
     Query<MetaTranslation> query =
         Beans.get(MetaTranslationRepository.class)
             .all()
             .filter("self.language = :language " + " AND self.key LIKE :key");
     query.bind("language", language);
     query.bind("key", "mobile_app_%");
+
     return ResponseConstructor.build(
         Response.Status.OK,
         new GlobalTranslationsResponse(
