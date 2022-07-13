@@ -1209,8 +1209,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   public void updateInvoiceTermsParentFields(Invoice invoice) {
-    invoice
-        .getInvoiceTermList()
-        .forEach(it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+    invoiceTermList.forEach(
+        it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
   }
 }
