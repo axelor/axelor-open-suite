@@ -103,6 +103,7 @@
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"/>
           <field name="partnerBankDetails" colSpan="3"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
             onSelect="action-move-attrs-bank-details-from-partner-domain"
