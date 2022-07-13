@@ -196,4 +196,9 @@ public class UnitConversionService {
         startUnit.getName(),
         endUnit.getName());
   }
+
+  public void coefficientExists(Unit startUnit, Unit endUnit, Product product)
+      throws AxelorException, IOException, ClassNotFoundException {
+    this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit, product);
+  }
 }

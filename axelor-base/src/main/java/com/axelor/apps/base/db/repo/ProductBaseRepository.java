@@ -19,8 +19,11 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.exception.service.TraceBackService;
@@ -40,6 +43,10 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Inject protected BarcodeGeneratorService barcodeGeneratorService;
 
+  @Inject protected UnitConversionService unitConversionService;
+
+  @Inject protected ProductCompanyService productCompanyService;
+
   @Override
   public Product save(Product product) {
     try {
@@ -47,6 +54,12 @@ public class ProductBaseRepository extends ProductRepository {
           && Strings.isNullOrEmpty(product.getCode())) {
         product.setCode(Beans.get(ProductService.class).getSequence(product));
       }
+
+      unitConversionService.coefficientExists(
+          (Unit) productCompanyService.get(product, "unit", null),
+          (Unit) productCompanyService.get(product, "salesUnit", null),
+          product);
+
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
