@@ -37,8 +37,9 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
     }
     if (accountingSituation != null) {
-      if (accountingSituation.getVatSystemSelect()
-          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+      if (account != null
+          && accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
         return account.getVatSystemSelect().intValue();
       } else if (accountingSituation.getVatSystemSelect()
           == AccountingSituationRepository.VAT_DELIVERY) {
@@ -74,8 +75,9 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           company.getName(),
           partner.getFullName());
     }
-    if (account.getVatSystemSelect() == null
-        || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+    if (account != null
+        && (account.getVatSystemSelect() == null
+            || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.ACCOUNT_VAT_SYSTEM_NOT_FOUND),
@@ -110,8 +112,9 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           company.getName(),
           company.getPartner().getFullName());
     }
-    if (account.getVatSystemSelect() == null
-        || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+    if (account != null
+        && (account.getVatSystemSelect() == null
+            || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.ACCOUNT_VAT_SYSTEM_NOT_FOUND),
