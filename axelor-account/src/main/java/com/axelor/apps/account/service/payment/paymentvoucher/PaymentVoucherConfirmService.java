@@ -81,7 +81,6 @@ public class PaymentVoucherConfirmService {
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected AccountConfigService accountConfigService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
-  protected PartnerService partnerService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected AccountManagementAccountService accountManagementAccountService;
@@ -99,7 +98,6 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherToolService paymentVoucherToolService,
       AccountConfigService accountConfigService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      PartnerService partnerService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository,
       AccountManagementAccountService accountManagementAccountService) {
@@ -115,7 +113,6 @@ public class PaymentVoucherConfirmService {
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.accountConfigService = accountConfigService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
-    this.partnerService = partnerService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.accountManagementAccountService = accountManagementAccountService;
@@ -270,7 +267,6 @@ public class PaymentVoucherConfirmService {
             date,
             paymentVoucher.getPaymentMode(),
             null,
-            partnerService.getDefaultBankDetails(payerPartner),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentVoucher.getRef(),
@@ -398,7 +394,6 @@ public class PaymentVoucherConfirmService {
               paymentDate,
               paymentVoucher.getPaymentMode(),
               null,
-              partnerService.getDefaultBankDetails(payerPartner),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               paymentVoucher.getRef(),

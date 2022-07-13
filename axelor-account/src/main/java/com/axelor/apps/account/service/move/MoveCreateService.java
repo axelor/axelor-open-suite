@@ -156,7 +156,6 @@ public interface MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
-      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
