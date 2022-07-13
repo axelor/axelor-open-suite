@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -39,8 +40,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
+    Company company =
+        invoiceTerm.getInvoice() != null
+            ? invoiceTerm.getInvoice().getCompany()
+            : invoiceTerm.getMoveLine().getMove().getCompany();
+
+    invoiceTerm.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate(company));
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
@@ -195,6 +200,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
+    invoiceTerm.setIsCustomized(true);
     invoiceTermRepo.save(invoiceTerm);
   }
 

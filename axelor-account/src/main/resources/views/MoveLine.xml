@@ -355,7 +355,8 @@
         <field name="originDate"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
         onChange="action-move-line-group-account-onchange"/>
@@ -558,7 +559,7 @@
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange"/>
         <field name="dueDate" showIf="dueDate"/>
-        <field name="originDate"/>
+        <field name="originDate" onChange="action-move-line-method-update-invoice-terms"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"
@@ -566,7 +567,7 @@
         onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-update-invoice-terms"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
@@ -582,7 +583,7 @@
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4 || move.statusSelect == 5"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
-      <field name="origin" colSpan="6"/>
+      <field name="origin" colSpan="6" onChange="action-move-line-method-update-invoice-terms"/>
       <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"
         colSpan="3"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
@@ -1168,6 +1169,10 @@
 
   <action-method name="action-move-line-method-validate-cut-off-batch">
     <call class="com.axelor.apps.account.web.MoveLineController" method="validateCutOffBatch"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="updateInvoiceTerms"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
