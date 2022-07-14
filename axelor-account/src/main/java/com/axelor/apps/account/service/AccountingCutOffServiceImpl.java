@@ -584,8 +584,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     return moveLine;
   }
 
-  protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine)
-      throws AxelorException {
+  protected void getAndComputeAnalyticDistribution(
+      Product product, Move move, MoveLine moveLine, boolean isPurchase) throws AxelorException {
 
     if (accountConfigService.getAccountConfig(move.getCompany()).getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
@@ -594,7 +594,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            move.getPartner(), product, move.getCompany());
+            move.getPartner(), product, move.getCompany(), isPurchase);
 
     moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
