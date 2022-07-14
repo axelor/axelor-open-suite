@@ -31,6 +31,8 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection.Option;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -134,31 +136,36 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     if (company == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_3), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_3),
+          move.getReference());
     }
 
     if (journal == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_2), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_2),
+          move.getReference());
     }
 
     if (move.getPeriod() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_4), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_4),
+          move.getReference());
     }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_8),
+          move.getReference());
     }
 
     if (move.getCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_12), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_12),
+          move.getReference());
     }
 
     if (move.getMoveLineList().stream()
@@ -167,7 +174,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                 moveLine.getDebit().add(moveLine.getCredit()).compareTo(BigDecimal.ZERO) == 0)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_8),
+          move.getReference());
     }
 
     checkClosurePeriod(move);
@@ -176,32 +184,33 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveAnalyticAccount(move);
     checkInactiveJournal(move);
 
-    if (move.getFunctionalOriginSelect() == null) {
+    Integer functionalOriginSelect = move.getFunctionalOriginSelect();
+    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(IExceptionMessage.MOVE_13, move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_13),
+          move.getReference());
     }
-    if (journal.getAuthorizedFunctionalOriginSelect() != null
-        && !(journal
-            .getAuthorizedFunctionalOriginSelect()
-            .contains(move.getFunctionalOriginSelect().toString()))) {
-      String functionalOriginSelect =
+    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+    if (authorizedFunctionalOriginSelect != null
+        && !(Splitter.on(",")
+            .splitToList(authorizedFunctionalOriginSelect)
+            .contains(functionalOriginSelect.toString()))) {
+
+      Option selectionItem =
           MetaStore.getSelectionItem(
-                  "iaccount.move.functional.origin.select",
-                  move.getFunctionalOriginSelect().toString())
-              .getTitle();
+              "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(IExceptionMessage.MOVE_14),
-              functionalOriginSelect,
-              move.getReference(),
-              journal.getName(),
-              journal.getCode()));
+          I18n.get(IExceptionMessage.MOVE_14),
+          selectionItem.getLocalizedTitle(),
+          move.getReference(),
+          journal.getName(),
+          journal.getCode());
     }
 
-    if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
-        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
+    if (functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
+        && functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         Account account = moveLine.getAccount();
         if (account.getIsTaxAuthorizedOnMoveLine()
@@ -209,11 +218,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             && moveLine.getTaxLine() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              String.format(
-                  I18n.get(IExceptionMessage.MOVE_9),
-                  account.getCode(),
-                  account.getName(),
-                  moveLine.getName()));
+              I18n.get(IExceptionMessage.MOVE_9),
+              account.getCode(),
+              account.getName(),
+              moveLine.getName());
         }
 
         if (moveLine.getAnalyticDistributionTemplate() == null
@@ -222,8 +230,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             && account.getAnalyticDistributionRequiredOnMoveLines()) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              String.format(
-                  I18n.get(IExceptionMessage.MOVE_10), account.getName(), moveLine.getName()));
+              I18n.get(IExceptionMessage.MOVE_10),
+              account.getName(),
+              moveLine.getName());
         }
 
         if (account != null
@@ -234,7 +243,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           throw new AxelorException(
               move,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
+              I18n.get(IExceptionMessage.MOVE_11),
+              moveLine.getName());
         }
 
         moveLineControlService.validateMoveLine(moveLine);
