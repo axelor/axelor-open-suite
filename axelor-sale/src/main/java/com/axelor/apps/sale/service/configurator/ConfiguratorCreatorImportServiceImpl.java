@@ -138,6 +138,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
     fixAttributesName(creator);
     configuratorCreatorService.updateAttributes(creator);
+    configuratorCreatorService.removeTemporalAttributesAndIndicators(creator);
     configuratorCreatorService.updateIndicators(creator);
   }
 
@@ -149,8 +150,11 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     }
     for (MetaJsonField attribute : attributes) {
       String name = attribute.getName();
-      if (name != null && name.contains("_")) {
-        attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
+      if (name != null) {
+        name = name.replace("$AXELORTMP", "");
+        if (name.contains("_")) {
+          attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
+        }
       }
       updateOtherFieldsInAttribute(creator, attribute);
       updateAttributeNameInFormulas(creator, name, attribute.getName());
