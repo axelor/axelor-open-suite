@@ -36,6 +36,9 @@
     <many-to-one name="metaViewGenerated" title="View generated"
       ref="com.axelor.meta.db.MetaView"/>
     <many-to-one name="appBuilder" ref="AppBuilder" title="App builder"/>
+    <boolean name="isJpql" title="Jpql"/>
+    <string name="filter" title="Filter" large="true"/>
+    <string name="filterMetadata" title="Filter metadata" large="true"/>
   </entity>
 
 
