@@ -1282,6 +1282,12 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
       "Please select a sale financial discount account in account config for company %s." /*)*/;
 
+  static final String ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX = /*$$(*/
+      "Please select a purchase financial discount tax in account config for company %s." /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX = /*$$(*/
+      "Please select a sale financial discount tax in account config for company %s." /*)*/;
+
   static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
       "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;
 

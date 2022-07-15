@@ -112,7 +112,8 @@ public class AccountController {
   public void manageAnalytic(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (!Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+      if (account.getCompany() == null
+          || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           || !Beans.get(AccountConfigService.class)
               .getAccountConfig(account.getCompany())
               .getManageAnalyticAccounting()) {
