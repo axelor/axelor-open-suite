@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -28,6 +29,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -36,6 +38,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -45,6 +48,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -212,7 +216,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     User pfpUser = null;
     if (getPfpValidatorUserCondition(invoice)) {
-      pfpUser = invoiceService.getPfpValidatorUser(invoice);
+      pfpUser = getPfpValidatorUser(invoice.getPartner(), invoice.getCompany());
     }
 
     InvoiceTerm invoiceTerm =
@@ -307,7 +311,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
 
-    BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
+    BigDecimal invoiceTermPercentage = new BigDecimal(100);
     BigDecimal percentageSum = computePercentageSum(invoice);
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
@@ -347,7 +351,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsCustomized(true);
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
-    BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
+    BigDecimal invoiceTermPercentage = new BigDecimal(100);
     BigDecimal percentageSum = computePercentageSum(moveLine);
 
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
@@ -441,7 +445,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public void initInvoiceTermsSequence(Invoice invoice) {
-
+    if (invoice == null) {
+      return;
+    }
     invoice.getInvoiceTermList().sort(Comparator.comparing(InvoiceTerm::getDueDate));
     int sequence = 1;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -1242,5 +1248,58 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .divide(total, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_DOWN);
 
     return percentageUp.compareTo(percentageDown) != 0;
+  }
+
+  @Override
+  public User getPfpValidatorUser(Partner partner, Company company) {
+    AccountingSituation accountingSituation =
+        Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
+    if (accountingSituation == null) {
+      return null;
+    }
+    return accountingSituation.getPfpValidatorUser();
+  }
+
+  @Override
+  public String getPfpValidatorUserDomain(Partner partner, Company company) {
+
+    User pfpValidatorUser = getPfpValidatorUser(partner, company);
+    if (pfpValidatorUser == null) {
+      return "self.id in (0)";
+    }
+    List<SubstitutePfpValidator> substitutePfpValidatorList =
+        pfpValidatorUser.getSubstitutePfpValidatorList();
+    List<User> validPfpValidatorUserList = new ArrayList<>();
+    StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
+    LocalDate todayDate = appAccountService.getTodayDate(company);
+
+    validPfpValidatorUserList.add(pfpValidatorUser);
+
+    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
+      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+
+      if (substituteStartDate == null) {
+        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        }
+      } else {
+        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        } else if (substituteStartDate.isBefore(todayDate)
+            && substituteEndDate.isAfter(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        }
+      }
+    }
+
+    pfpValidatorUserDomain
+        .append("(")
+        .append(
+            validPfpValidatorUserList.stream()
+                .map(pfpValidator -> pfpValidator.getId().toString())
+                .collect(Collectors.joining(",")))
+        .append(")");
+    return pfpValidatorUserDomain.toString();
   }
 }

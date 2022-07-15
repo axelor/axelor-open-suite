@@ -185,7 +185,7 @@
 
   <form name="invoice-term-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-generic-onnew"
-    onLoad="action-invoice-term-group-generic-onload">
+    onLoad="action-invoice-term-group-generic-onload" canNew="false">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonly="true">
         <field name="sequence"/>
@@ -274,13 +274,13 @@
         <panel name="pfpButtonPanel" itemSpan="4"
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
-            css="btn-success" onClick="action-invoice-term-group-validate-pfp"
+            css="btn-success" onClick="save,action-invoice-term-group-validate-pfp"
             showIf="[1,3].includes(pfpValidateStatusSelect)"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-            css="btn-warning" onClick="action-invoice-term-group-partial-pfp"
+            css="btn-warning" onClick="save,action-invoice-term-group-partial-pfp"
             showIf="pfpValidateStatusSelect == 1"/>
           <button name="refusalToPayBtn" title="Refuse to pay" css="btn-danger"
-            onClick="action-invoiceterm-view-refusal-to-pay,save"
+            onClick="save,action-invoiceterm-view-refusal-to-pay,save"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)"/>
         </panel>
         <panel name="pfpEmailPanel" colSpan="6">
@@ -436,13 +436,13 @@
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
             showIf="[1,3].includes(pfpValidateStatusSelect)" css="btn-success"
-            onClick="action-invoice-term-group-validate-pfp"/>
+            onClick="save,action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             showIf="pfpValidateStatusSelect == 1" css="btn-warning"
-            onClick="action-invoice-term-group-partial-pfp"/>
+            onClick="save,action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" css="btn-danger"
-            onClick="action-invoice-term-group-refusal-to-pay,save"/>
+            onClick="save,action-invoice-term-group-refusal-to-pay,save"/>
         </panel>
         <panel name="pfpEmailPanel">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
@@ -602,13 +602,13 @@
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
             showIf="[1,3].includes(pfpValidateStatusSelect)" css="btn-success"
-            onClick="action-invoice-term-group-validate-pfp"/>
+            onClick="save,action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             showIf="pfpValidateStatusSelect == 1" css="btn-warning"
-            onClick="action-invoice-term-group-partial-pfp"/>
+            onClick="save,action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" colSpan="4" css="btn-danger"
-            onClick="action-invoice-term-group-refusal-to-pay,save"/>
+            onClick="save,action-invoice-term-group-refusal-to-pay,save"/>
         </panel>
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
@@ -788,7 +788,7 @@
   <action-validate name="action-invoice-term-validate-pfp-stock-move">
     <alert
       message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
-      if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice.id).fetch().size &gt;= 1"/>
+      if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).fetch()?.size &gt;= 1"/>
   </action-validate>
 
   <action-validate name="action-invoice-term-validate-before-pfp">
@@ -941,8 +941,8 @@
   <action-attrs name="action-invoice-term-attrs-bank-details-from-partner-domain">
     <attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
     <attribute name="domain" for="bankDetails"
-      expr="eval: &quot; (self.id IN (${invoice?.partner?.bankDetailsList?.collect{it.id}?.join(',')}) OR self.id IN (${moveLine?.partner?.bankDetailsList?.collect{it.id}?.join(',')})) AND self.active = true &quot;"
-      if="(invoice?.partner?.bankDetailsList &amp;&amp; !invoice?.partner.bankDetailsList.isEmpty()) || (moveLine?.partner?.bankDetailsList &amp;&amp; !moveLine?.partner.bankDetailsList.isEmpty())"/>
+      expr="eval: &quot; self.id IN (${partner?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true &quot;"
+      if="!partner?.bankDetailsList?.isEmpty() || !partner?.bankDetailsList?.isEmpty()"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-term-attrs-set-initial-pfp-amount"
@@ -957,9 +957,9 @@
                   || ![2,3,4].contains(invoice.statusSelect)"
       if="invoice != null"/>
     <attribute name="hidden" for="actionPanel"
-      expr="eval: !move.company?.accountConfig?.isManagePassedForPayment
-                  || (move.journal?.journalType?.technicalTypeSelect != 1 &amp;&amp; (!move.company?.accountConfig?.isManagePFPInRefund || move.journal?.journalType?.technicalTypeSelect != 3))
-                  || ![2,3,4].contains(move.statusSelect)"
+      expr="eval: !moveLine?.move?.company?.accountConfig?.isManagePassedForPayment
+                  || (moveLine?.move?.journal?.journalType?.technicalTypeSelect != 1 &amp;&amp; (!moveLine?.move?.company?.accountConfig?.isManagePFPInRefund || moveLine?.move?.journal?.journalType?.technicalTypeSelect != 3))
+                  || ![2,3,4].contains(moveLine?.move?.statusSelect)"
       if="invoice == null &amp;&amp; moveLine != null"/>
   </action-attrs>
 </object-views>
