@@ -691,10 +691,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             accountConfigService.getAccountConfig(company));
   }
 
-  protected Tax getFinancialDiscountTax(Company company, boolean out) {
+  protected Tax getFinancialDiscountTax(Company company, boolean out) throws AxelorException {
     return out
-        ? company.getAccountConfig().getPurchFinancialDiscountTax()
-        : company.getAccountConfig().getSaleFinancialDiscountTax();
+        ? accountConfigService.getPurchFinancialDiscountTax(
+            accountConfigService.getAccountConfig(company))
+        : accountConfigService.getSaleFinancialDiscountTax(
+            accountConfigService.getAccountConfig(company));
   }
 
   @Override
