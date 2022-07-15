@@ -66,6 +66,7 @@
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true" onSelect="action-attrs-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true" readonly="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
