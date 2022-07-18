@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public interface MoveSimulateService {
@@ -32,6 +31,5 @@ public interface MoveSimulateService {
    */
   void simulate(Move move) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void simulateMultiple(List<? extends Move> moveList) throws AxelorException;
 }
