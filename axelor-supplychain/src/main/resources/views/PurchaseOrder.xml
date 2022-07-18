@@ -7,10 +7,6 @@
   <form name="purchase-order-form" title="Purchase order"
     model="com.axelor.apps.purchase.db.PurchaseOrder" id="supplychain-purchase-order-form"
     extension="true">
-    <extend target="/">
-      <attribute name="onNew"
-        value="action-group-purchase-order-on-new-actions,supplychain-action-create-shipment-cost-line-purchase"/>
-    </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange"
         value="action-purchase-order-record-empty-freight-carrier-mode,supplychain-action-create-shipment-cost-line-purchase"/>

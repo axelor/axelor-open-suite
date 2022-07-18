@@ -315,4 +315,7 @@ public interface IExceptionMessage {
   String MRP_FINISHED_MESSAGE_SUBJECT = /*$$(*/ "MRP n°%s is now finished" /*)*/;
   String MRP_FINISHED_MESSAGE_BODY = /*$$(*/
       "The execution of MRP n°%s is now finished, you can click above to see the results." /*)*/;
+
+  static final String SHIPMENT_MODE_MISSING_SHIPPING_COST = /*$$(*/
+      "Please fill shipping cost for the shipment mode." /*)*/;
 }

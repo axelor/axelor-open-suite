@@ -5,7 +5,8 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" lang="java">
+  <entity name="SaleOrderLine" lang="java"
+    implements="com.axelor.apps.base.interfaces.OrderLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
