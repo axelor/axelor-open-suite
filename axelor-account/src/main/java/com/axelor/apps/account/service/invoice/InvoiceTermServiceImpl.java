@@ -144,11 +144,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
     BigDecimal sum = BigDecimal.ZERO;
-    BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
+    BigDecimal total = getTotalInvoiceTermsAmount(moveLine);
+    Move move = moveLine.getMove();
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
         sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
+      }
+    }
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLineIt : move.getMoveLineList()) {
+        if (!moveLineIt.equals(moveLine)
+            && moveLineIt.getAccount() != null
+            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && moveLineIt.getInvoiceTermList() != null) {
+          for (InvoiceTerm invoiceTerm : moveLineIt.getInvoiceTermList()) {
+            sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
+          }
+        }
       }
     }
     return sum;
@@ -357,12 +370,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermPercentage.setScale(
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
-    BigDecimal amount;
-    if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
-      amount = moveLine.getDebit();
-    } else {
-      amount = moveLine.getCredit();
-    }
+    BigDecimal amount = getTotalInvoiceTermsAmount(moveLine);
 
     amount =
         amount
@@ -1296,5 +1304,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 .collect(Collectors.joining(",")))
         .append(")");
     return pfpValidatorUserDomain.toString();
+  }
+
+  public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    BigDecimal total = moveLine.getDebit().max(moveLine.getCredit());
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLineIt : move.getMoveLineList()) {
+        if (!moveLineIt.equals(moveLine)
+            && moveLineIt.getAccount() != null
+            && moveLineIt.getAccount().getHasInvoiceTerm()) {
+          total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
+        }
+      }
+    }
+    return total;
   }
 }
