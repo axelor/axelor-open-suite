@@ -229,16 +229,10 @@
 
     <panel name="actionsPanel" sidebar="true">
       <button name="grabLeadBtn" title="Assign to me"
-        hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5"
-        icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
-      <button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play"
+        hideIf="user.id == _internalUserId || statusSelect == 3" icon="fa-suitcase"
+        onClick="save,action-lead-method-assign-to-me"/>
+      <button name="startBtn" title="Start" hideIf="statusSelect > 1" icon="fa-play"
         onClick="save,action-lead-method-start,save"/>
-      <button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id"
-        icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
-      <button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle"
-        onClick="save,action-lead-method-recycle,save"/>
-      <button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times"
-        onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
       <button name="convertBtn" title="Convert" hideIf="statusSelect > 2 || !id"
         icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
       <button name="recycleBtn" title="Recycle" hideIf="statusSelect != 3" icon="fa-recycle"
@@ -522,14 +516,6 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.lead.id = :_id</domain>
-  </action-view>
-
-  <action-view name="action-lead-view-opportunities" title="Opportunities"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <view type="cards" name="opportunity-cards"/>
-    <view type="grid" name="opportunity-dashlet-grid"/>
-    <view type="form" name="opportunity-form"/>
     <domain>self.lead.id = :_id</domain>
   </action-view>
 
