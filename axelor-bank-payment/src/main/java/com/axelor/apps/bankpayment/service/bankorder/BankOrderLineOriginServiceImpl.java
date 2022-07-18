@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
@@ -54,8 +55,14 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
   protected String computeRelatedToSelectName(Model model) {
 
     if (model instanceof Invoice) {
-
-      return ((Invoice) model).getSupplierInvoiceNb();
+      Invoice invoice = ((Invoice) model);
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+          || invoice.getOperationTypeSelect()
+              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        return invoice.getSupplierInvoiceNb();
+      } else {
+        return ((Invoice) model).getInvoiceId();
+      }
 
     } else if (model instanceof PaymentScheduleLine) {
 
@@ -66,15 +73,23 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
       return ((Reimbursement) model).getRef();
     } else if (model instanceof Move) {
 
-      return ((Move) model).getDescription();
+      return ((Move) model).getDescription() != null
+          ? ((Move) model).getDescription()
+          : ((Move) model).getReference();
     }
     return null;
   }
 
   protected LocalDate computeRelatedToSelectDate(Model model) {
     if (model instanceof Invoice) {
-
-      return ((Invoice) model).getOriginDate();
+      Invoice invoice = ((Invoice) model);
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+          || invoice.getOperationTypeSelect()
+              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        return ((Invoice) model).getOriginDate();
+      } else {
+        return ((Invoice) model).getInvoiceDate();
+      }
 
     } else if (model instanceof PaymentScheduleLine) {
 
@@ -85,7 +100,9 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
       return null;
     } else if (model instanceof Move) {
 
-      return ((Move) model).getOriginDate();
+      return ((Move) model).getOriginDate() != null
+          ? ((Move) model).getOriginDate()
+          : ((Move) model).getDate();
     }
     return null;
   }
@@ -119,7 +136,6 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
     bankOrderLineOrigin.setRelatedToSelectName(relatedToSelectName);
     bankOrderLineOrigin.setRelatedToSelectDate(relatedToSelectDate);
     bankOrderLineOrigin.setRelatedToSelectDueDate(relatedToSelectDueDate);
-
     return bankOrderLineOrigin;
   }
 
