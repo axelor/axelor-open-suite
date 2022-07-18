@@ -1302,4 +1302,7 @@ public interface IExceptionMessage {
       "The functional origin cannot be empty for the move %s" /*)*/;
   static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
+
+  static final String FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE = /*$$(*/
+      "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan." /*)*/;
 }
