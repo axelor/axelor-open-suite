@@ -103,6 +103,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     if (stockLocationLine != null) {
       getDefaultQtys(stockLocationLine, stockCorrectionQtys);
+    } else {
+      stockCorrectionQtys.put("realQty", BigDecimal.ZERO);
     }
     return stockCorrectionQtys;
   }
