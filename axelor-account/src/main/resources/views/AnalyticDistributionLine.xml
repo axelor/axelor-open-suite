@@ -25,7 +25,7 @@
       hidden="true"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
-      form-view="analytic-journal-form"/>
+      form-view="analytic-journal-form" onSelect="action-attrs-domain-journal-distribution-line"/>
   </grid>
 
   <grid name="analytic-distribution-line-personalized-grid" title="Analytic distribution lines"
@@ -37,7 +37,7 @@
       onChange="action-analytic-distribution-account-on-change"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
-      form-view="analytic-journal-form"/>
+      form-view="analytic-journal-form" onSelect="action-attrs-domain-journal-distribution-line"/>
   </grid>
 
   <form name="analytic-distribution-line-form" title="Analytic distribution line"
@@ -52,7 +52,8 @@
         onChange="action-axis-change-remove-account" required="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
-        form-view="analytic-journal-form" required="true"/>
+        form-view="analytic-journal-form" required="true"
+        onSelect="action-attrs-domain-journal-distribution-line"/>
     </panel>
   </form>
 
@@ -65,6 +66,7 @@
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true" onSelect="action-attrs-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true" readonly="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"

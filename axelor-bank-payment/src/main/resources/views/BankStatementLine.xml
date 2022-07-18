@@ -74,7 +74,8 @@
       <field name="$fromDate" title="From" type="date" required="true"/>
       <field name="$toDate" title="To" type="date" required="true"/>
       <field name="$bankDetails" title="Bank details" type="many-to-one"
-        x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true"/>
+        x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true"
+        domain="self.company IS NOT null"/>
       <field name="$exportTypeSelect" title="Export type select" type="string"
         selection="iadministration.export.type.select"/>
       <button name="printLinesBtn" title="Print"
