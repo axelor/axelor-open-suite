@@ -62,7 +62,13 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
       return ((PaymentScheduleLine) model).getName();
 
     } else if (model instanceof InvoiceTerm) {
-      return ((InvoiceTerm) model).getName();
+      InvoiceTerm invoiceTerm = ((InvoiceTerm) model);
+      if (invoiceTerm.getMoveLine() != null && invoiceTerm.getMoveLine().getMove() != null) {
+        return invoiceTerm.getMoveLine().getOrigin() != null
+            ? invoiceTerm.getMoveLine().getOrigin()
+            : invoiceTerm.getMoveLine().getMove().getReference();
+      }
+      return invoiceTerm.getName();
     } else if (model instanceof Reimbursement) {
 
       return ((Reimbursement) model).getRef();
@@ -79,6 +85,14 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
       return ((PaymentScheduleLine) model).getScheduleDate();
 
+    } else if (model instanceof InvoiceTerm) {
+      InvoiceTerm invoiceTerm = ((InvoiceTerm) model);
+      if (invoiceTerm.getMoveLine() != null) {
+        return invoiceTerm.getMoveLine().getOriginDate() != null
+            ? invoiceTerm.getMoveLine().getOriginDate()
+            : invoiceTerm.getMoveLine().getDate();
+      }
+      return invoiceTerm.getOriginDate();
     } else if (model instanceof Reimbursement) {
 
       return null;

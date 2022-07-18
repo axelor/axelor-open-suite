@@ -16,6 +16,9 @@
     <panel name="mainPanel">
       <field name="relatedToSelect" title="Related to" widget="RefSelect"
         x-related="relatedToSelectId" colSpan="12"/>
+      <field name="relatedToSelectName" colSpan="4"/>
+      <field name="relatedToSelectDate" colSpan="4"/>
+      <field name="relatedToSelectDueDate" colSpan="4"/>
     </panel>
   </form>
 
