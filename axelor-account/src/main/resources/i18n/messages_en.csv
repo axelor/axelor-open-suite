@@ -2281,6 +2281,7 @@
 "Please input values between 1 to 100",,,
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.",,,
 "Please make sure that the journal configured for annual closure and openning, does support simulated moves.",,,
+"Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan.",,,
 "Please put AnalyticDistribution Template",,,
 "Please put AnalyticDistributionLines in the Analytic Distribution Template",,,
 "Please save this invoice term first.",,,

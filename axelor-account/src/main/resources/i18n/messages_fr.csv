@@ -2281,6 +2281,7 @@
 "Please input values between 1 to 100","Veuillez saisir une valeur comprise entre 1 et 100,",,
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.","Merci de vous assurer que le compte client utilisé est bien lettrable et utilisable pour le solde des tiers.",,
 "Please make sure that the journal configured for annual closure and openning, does support simulated moves.","Veuillez vérifier en amont que le journal configuré pour la clôture et ouverture annuelle autorise la génération d'écritures au statut simulé.",,
+"Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan.","Attention les plans Fiscal et Economique ne sont pas identiques, il est conseillé d’appliquer un plan d’amortissement Dérogatoire",,
 "Please put AnalyticDistribution Template","Veuillez saisir un modèle de répartition analytique",,
 "Please put AnalyticDistributionLines in the Analytic Distribution Template","Veuillez sélectionner des lignes dans le modèle de répartition analytique",,
 "Please save this invoice term first.","Veuillez sauvegarder avant toute chose cet échéancier.",,

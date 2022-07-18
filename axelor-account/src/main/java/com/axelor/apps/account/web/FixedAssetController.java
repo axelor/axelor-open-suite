@@ -448,4 +448,17 @@ public class FixedAssetController {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
+
+  public void checkDepreciationPlans(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      boolean showDepreciationMessage =
+          Beans.get(FixedAssetService.class).checkDepreciationPlans(fixedAsset);
+      if (showDepreciationMessage) {
+        response.setFlash(I18n.get(IExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

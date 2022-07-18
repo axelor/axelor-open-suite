@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -611,5 +612,24 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
     }
+  }
+
+  @Override
+  public boolean checkDepreciationPlans(FixedAsset fixedAsset) {
+    List<String> depreciationPlans =
+        Arrays.asList((fixedAsset.getDepreciationPlanSelect().replace(" ", "")).split(","));
+    return !fixedAsset.getIsEqualToFiscalDepreciation()
+        && (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)
+            && depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
+            && !depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION))
+        && (!fixedAsset
+                .getComputationMethodSelect()
+                .equals(fixedAsset.getFiscalComputationMethodSelect())
+            || !fixedAsset
+                .getNumberOfDepreciation()
+                .equals(fixedAsset.getFiscalNumberOfDepreciation())
+            || !fixedAsset
+                .getPeriodicityTypeSelect()
+                .equals(fixedAsset.getFiscalPeriodicityTypeSelect()));
   }
 }
