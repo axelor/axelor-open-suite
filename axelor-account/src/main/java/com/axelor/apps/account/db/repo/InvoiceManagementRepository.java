@@ -37,6 +37,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     Invoice copy = super.copy(entity, deep);
 
     InvoiceToolService.resetInvoiceStatusOnCopy(copy);
+    copy.setSubrogationRelease(null);
+    copy.setSubrogationReleaseMove(null);
     return copy;
   }
 
