@@ -188,8 +188,7 @@
             domain="self.company = :company AND self.statusSelect = 1"/>
           <field name="researchJournal" colSpan="6"
             onSelect="action-attrs-accounting-batch-set-journal-domain"
-            hideIf="accountingCutOffTypeSelect &lt;= 2"
-            domain="self.company = :company AND self.statusSelect = 1"/>
+            hideIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="cutOffMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
           <field name="previewRecordsToProcess" colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
@@ -487,11 +486,11 @@
 
   <action-attrs name="action-attrs-accounting-batch-set-journal-domain">
     <attribute name="domain"
-      expr="eval: &quot;self.journalType.technicalTypeSelect = 1&quot;" for="researchJournal"
-      if="accountingCutOffTypeSelect == 3"/>
+      expr="eval: &quot;self.journalType.technicalTypeSelect = 1 AND self.company = :company AND self.statusSelect = 1&quot;"
+      for="researchJournal" if="accountingCutOffTypeSelect == 3"/>
     <attribute name="domain"
-      expr="eval: &quot;self.journalType.technicalTypeSelect = 2&quot;" for="researchJournal"
-      if="accountingCutOffTypeSelect == 4"/>
+      expr="eval: &quot;self.journalType.technicalTypeSelect = 2 AND self.company = :company AND self.statusSelect = 1&quot;"
+      for="researchJournal" if="accountingCutOffTypeSelect == 4"/>
   </action-attrs>
 
   <action-view name="action-accounting-batch-view-preview-move-lines-to-process"

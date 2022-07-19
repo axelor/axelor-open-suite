@@ -35,7 +35,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveDaybookService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -82,7 +81,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveSimulateService moveSimulateService;
   protected MoveLineService moveLineService;
   protected CurrencyService currencyService;
-  protected MoveDaybookService moveDaybookService;
   protected int counter = 0;
 
   @Inject
@@ -103,8 +101,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
-      CurrencyService currencyService,
-      MoveDaybookService moveDaybookService) {
+      CurrencyService currencyService) {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
@@ -123,7 +120,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveSimulateService = moveSimulateService;
     this.moveLineService = moveLineService;
     this.currencyService = currencyService;
-    this.moveDaybookService = moveDaybookService;
   }
 
   @Override
@@ -278,6 +274,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     // Status
     if (CollectionUtils.isNotEmpty(cutOffMove.getMoveLineList())) {
+
       cutOffMove.setCutOffOriginMove(move);
       this.updateStatus(cutOffMove, cutOffMoveStatusSelect);
     } else {
@@ -294,10 +291,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveSimulateService.simulate(move);
         break;
       case MoveRepository.STATUS_ACCOUNTED:
+        move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
         moveValidateService.accounting(move);
         break;
       case MoveRepository.STATUS_DAYBOOK:
-        moveDaybookService.daybook(move);
+        moveValidateService.accounting(move);
         break;
     }
   }

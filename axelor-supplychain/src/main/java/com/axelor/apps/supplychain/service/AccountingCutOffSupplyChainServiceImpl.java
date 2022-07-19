@@ -37,7 +37,6 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveDaybookService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -112,8 +111,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       StockMoveLineServiceSupplychain stockMoveLineService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
-      CurrencyService currencyService,
-      MoveDaybookService moveDaybookService) {
+      CurrencyService currencyService) {
 
     super(
         moveCreateService,
@@ -132,8 +130,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         moveLineComputeAnalyticService,
         moveSimulateService,
         moveLineService,
-        currencyService,
-        moveDaybookService);
+        currencyService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.accountConfigSupplychainService = accountConfigSupplychainService;
@@ -350,8 +347,10 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     counter = 0;
     // Status
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
+
       move.setStockMove(stockMove);
       this.updateStatus(move, cutOffMoveStatusSelect);
+
     } else {
       moveRepository.remove(move);
       return null;

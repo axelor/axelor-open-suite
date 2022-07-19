@@ -692,6 +692,7 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return account;
+  }
 
   public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
     if (accountConfig.getPurchFinancialDiscountTax() == null) {
