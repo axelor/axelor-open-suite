@@ -21,10 +21,10 @@
     <field name="name"/>
     <field name="reference"/>
     <field name="debit" aggregate="sum">
-      <hilite if="debit > 0" color="green"/>
+      <hilite if="debit > 0" color="red"/>
     </field>
     <field name="credit" aggregate="sum">
-      <hilite if="credit > 0" color="red"/>
+      <hilite if="credit > 0" color="green"/>
     </field>
     <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
