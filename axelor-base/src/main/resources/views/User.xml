@@ -427,18 +427,18 @@
   <action-record name="action-user-record-step-status-next"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 2"
-      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.user == null))"/>
+      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.employee != null))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 1"
-      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.user != null) || (stepStatusSelect == 2 &amp;&amp; __this__.partner == null)"/>
+      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.employee == null) || (stepStatusSelect == 2 &amp;&amp; __this__.partner == null)"/>
     <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
   </action-record>
 
   <action-record name="action-user-record-step-status-previous"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 2"
-      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.user == null))"/>
+      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.employee != null))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 1"
-      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.user != null) || (stepStatusSelect == 4 &amp;&amp; __this__.partner == null)"/>
+      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.employee == null) || (stepStatusSelect == 4 &amp;&amp; __this__.partner == null)"/>
   </action-record>
 
   <action-validate name="action-user-check-company">
