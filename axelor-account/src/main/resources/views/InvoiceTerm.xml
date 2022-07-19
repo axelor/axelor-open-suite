@@ -149,7 +149,7 @@
     <field name="moveLine.partner"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
-    <field name="moveLine.origin" title="MoveLine.origin"/>
+    <field name="moveLine.origin"/>
     <field name="dueDate"/>
     <field name="moveLine.move.statusSelect"/>
     <field name="isSelectedOnPaymentSession"/>

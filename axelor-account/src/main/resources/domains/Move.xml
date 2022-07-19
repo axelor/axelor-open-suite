@@ -60,7 +60,7 @@
       title="Trading name"/>
     <date name="originDate" title="Origin date"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
-    <string name="origin" title="Origin"
+    <string name="origin" title="move.origin"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
