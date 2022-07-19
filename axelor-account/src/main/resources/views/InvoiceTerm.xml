@@ -209,8 +209,8 @@
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
-          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
@@ -364,9 +364,9 @@
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonlyIf="isPaid" required="true"/>
         <field name="bankDetails"
-          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           readonlyIf="isPaid"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount"
           hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
@@ -524,8 +524,8 @@
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
-          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount"
           hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
