@@ -285,8 +285,11 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
-  static final String MOVE_LINE_INVOICE_TERM_SUM = /*$$(*/
+  static final String MOVE_LINE_INVOICE_TERM_SUM_AMOUNT = /*$$(*/
       "The sum of all invoice terms is not equal to the move line amount" /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE = /*$$(*/
+      "The sum of all invoice terms percentages is not equal to 100." /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
   static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
       "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
@@ -1321,4 +1324,7 @@ public interface IExceptionMessage {
 
   static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
       "You must select at least one line to validate" /*)*/;
+
+  static final String FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE = /*$$(*/
+      "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan." /*)*/;
 }

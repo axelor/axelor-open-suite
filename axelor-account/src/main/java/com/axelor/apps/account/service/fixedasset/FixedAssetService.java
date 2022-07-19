@@ -143,4 +143,6 @@ public interface FixedAssetService {
 
   void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
       throws AxelorException;
+
+  public boolean checkDepreciationPlans(FixedAsset fixedAsset);
 }
