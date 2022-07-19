@@ -19,13 +19,14 @@
 
   <form name="cheque-rejection-form" title="Cheque Rejection"
     model="com.axelor.apps.account.db.ChequeRejection" onNew="default-cheque-rejection-record">
-    <panel name="mainPanel">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="name"/>
       <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"
         widget="SuggestBox"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     </panel>
-    <panel name="rejectInformationPanel" title="Reject Information">
+    <panel name="rejectInformationPanel" title="Reject Information"
+      readonlyIf="statusSelect == 2">
       <field name="rejectionDate"
         onChange="action-account-chaque-rejection-validate-if-rejection-date-is-not-from-the-future"/>
       <field name="interbankCodeLine" domain="self.chequeOk = 't'"
@@ -34,7 +35,7 @@
       <field name="amountRejected"/>
     </panel>
 
-    <panel name="paymentRejectedPanel" title="Payment Rejected">
+    <panel name="paymentRejectedPanel" title="Payment Rejected" readonlyIf="statusSelect == 2">
       <!-- TODO:check whether this Editor is working or not -->
       <field name="paymentVoucher"
         onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
@@ -84,6 +85,10 @@
     <attribute name="domain" for="paymentVoucher"
       expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 3 and self.partner.id = ${partner?.id}&quot;"
       if="partner != null"/>
+    <attribute name="domain" for="paymentVoucher"
+      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 3 &quot;"
+      if="partner == null"/>
+
   </action-attrs>
 
   <action-record name="default-cheque-rejection-record"
@@ -98,8 +103,7 @@
 
   <action-record name="action-cheque-rejection-record-amount-rejected"
     model="com.axelor.apps.account.db.ChequeRejection">
-    <field name="amountRejected" expr="eval: paymentVoucher?.paidAmount"
-      if="eval: paymentVoucher != null"/>
+    <field name="amountRejected" expr="eval: __this__?.paymentVoucher?.paidAmount"/>
   </action-record>
 
   <action-record name="action-cheque-rejection-record-partner"
