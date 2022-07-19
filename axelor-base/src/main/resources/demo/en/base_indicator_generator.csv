@@ -3,14 +3,14 @@
 "Number of delivery orders",1,"SELECT COUNT(*) FROM StockMove WHERE typeSelect = 2",7
 "Number of goods receipts",1,"SELECT COUNT(*) FROM StockMove WHERE typeSelect = 3",5
 "Number of customer invoices",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 3",7
-"Number of customer refunds",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 4",0
+"Number of customer credit note",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 4",0
 "Number of users",1,"SELECT COUNT(*) FROM User",22
 "Number of partners",1,"SELECT COUNT(*) FROM Partner",68
 "Number of addresses",1,"SELECT COUNT(*) FROM Address",252
 "Number of leads",1,"SELECT COUNT(*) FROM Lead",30
 "Number of events",1,"SELECT COUNT(*) FROM Event",51
 "Number of supplier invoices",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 1",6
-"Number of supplier refunds",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 2",0
+"Number of supplier credit note",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 2",0
 "Number of calls",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 1",14
 "Number of meetings",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 2",25
 "Number of tasks",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 3",6

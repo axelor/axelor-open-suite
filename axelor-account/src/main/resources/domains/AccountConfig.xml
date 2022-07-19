@@ -196,11 +196,11 @@
     <many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Customer invoices sequence"/>
     <many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Customer refunds sequence"/>
+      title="Customer credit notes sequence"/>
     <many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Supplier invoices sequence"/>
     <many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Supplier refunds sequence"/>
+      title="Supplier credit notes sequence"/>
 
     <!--Product -->
 
@@ -231,7 +231,7 @@
       ref="com.axelor.apps.message.db.Template"/>
 
     <boolean name="isManagePassedForPayment" title="Passed for payment"/>
-    <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <boolean name="isManagePFPInCreditNote" title="Manage PFP on supplier credit notes"/>
 
     <!-- Account Report -->
     <integer name="lineMinBeforeLongReportGenerationMessageNumber"

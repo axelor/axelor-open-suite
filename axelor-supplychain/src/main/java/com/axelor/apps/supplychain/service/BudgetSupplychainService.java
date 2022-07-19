@@ -112,7 +112,7 @@ public class BudgetSupplychainService extends BudgetService {
                     && (toDate.isAfter(date) || toDate.isEqual(date))) {
                   budgetLine.setAmountRealized(
                       invoice.getOperationTypeSelect()
-                              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE
                           ? budgetLine.getAmountRealized().subtract(budgetDistribution.getAmount())
                           : budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
                   break;

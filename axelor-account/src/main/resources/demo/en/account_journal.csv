@@ -1,8 +1,8 @@
 "importId";"code";"name";"journalType.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId";"sequence.importId"
 1;"SAL";"Sales";1;"false";"false";"Cust. Inv.";"true";"false";;"1";1;110
-2;"CREF";"Refunds";2;"false";"false";"Cust. Refund";"true";"false";;"1";1;111
+2;"CREF";"Credit notes";2;"false";"false";"Cust. Credit note";"true";"false";;"1";1;111
 3;"PCH";"Purchase";4;"false";"false";"Suppl. Inv.";"true";"false";;"1";1;112
-4;"SREF";"Supplier Refund";2;"false";"false";"Suppl. Refund";"true";"false";;"1";1;113
+4;"SREF";"Supplier Credit note";2;"false";"false";"Suppl. Credit note";"true";"false";;"1";1;113
 5;"IN_CSH";"Cash Cashing";3;"false";"true";"Payment Rec.";"true";"false";;"1";1;115
 6;"IN_CHQ";"Cheque Cashing";3;"true";"false";"Payment Rec.";"true";"false";;"1";1;116
 7;"IN_CC";"Credit Card Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1;117

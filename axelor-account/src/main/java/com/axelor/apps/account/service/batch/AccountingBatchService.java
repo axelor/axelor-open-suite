@@ -123,7 +123,7 @@ public class AccountingBatchService extends AbstractBatchService {
         break;
       case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
         switch (accountingBatch.getCustomerReimbursementTypeSelect()) {
-          case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND:
+          case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_CREDIT_NOTE:
             batchStrategyClass = BatchCreditTransferCustomerRefund.class;
             break;
           case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:

@@ -4906,7 +4906,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'Expense.totalToRefund'</value>
+                                                <value type="javascript">'Expense.totalToCreditNote'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>

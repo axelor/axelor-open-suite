@@ -52,13 +52,14 @@ public interface ITranslation {
       "Invoice.purchaseInvoiceAdvPaymentNo"; /*)*/
   public static final String INVOICE_PURCHASE_INVOICE_BALANCE_NO = /*$$(*/
       "Invoice.purchaseInvoiceBalanceNo"; /*)*/
-  public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
+  public static final String INVOICE_PURCHASE_CREDIT_NOTE_NO = /*$$(*/
+      "Invoice.purchaseCreditNoteNo"; /*)*/
   public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
   public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/
       "Invoice.invoiceAdvPaymentNo"; /*)*/
   public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
   public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
-  public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
+  public static final String INVOICE_CREDIT_NOTE_NO = /*$$(*/ "Invoice.creditNoteNo"; /*)*/
   public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
   public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
   public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/

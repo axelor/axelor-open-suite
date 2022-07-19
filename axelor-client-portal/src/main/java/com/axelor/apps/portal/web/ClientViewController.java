@@ -405,7 +405,7 @@ public class ClientViewController {
     }
   }
 
-  public void showClientMyRefund(ActionRequest request, ActionResponse response) {
+  public void showClientMyCreditNote(ActionRequest request, ActionResponse response) {
     try {
       ClientViewService clientViewService = Beans.get(ClientViewService.class);
       User clientUser = clientViewService.getClientUser();
@@ -415,11 +415,11 @@ public class ClientViewController {
         Filter filter = clientViewService.getRefundOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
-              ActionView.define(I18n.get("My refund"))
+              ActionView.define(I18n.get("My credit note"))
                   .model(Invoice.class.getName())
-                  .add("grid", "invoice-refund-grid")
+                  .add("grid", "invoice-credit-note-grid")
                   .add("form", "invoice-form")
-                  .param("search-filters", "customer-refunds-filters")
+                  .param("search-filters", "customer-credit-notes-filters")
                   .domain(filter.getQuery())
                   .map());
         }

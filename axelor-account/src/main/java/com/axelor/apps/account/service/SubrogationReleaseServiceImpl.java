@@ -250,7 +250,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
 
       boolean isRefund = false;
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE) {
         isRefund = true;
       }
 

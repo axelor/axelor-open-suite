@@ -483,11 +483,11 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/
-      "%s : Please, configure a sequence for the customer refunds and the company %s" /*)*/;
+      "%s : Please, configure a sequence for the customer credit notes and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_3 = /*$$(*/
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
-      "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+      "%s : Please, configure a sequence for the supplier credit notes and the company %s" /*)*/;
 
   /** Cfonb config service */
   static final String CFONB_CONFIG_1 = /*$$(*/
@@ -599,8 +599,8 @@ public interface IExceptionMessage {
 
   static final String BATCH_VENTILATION_2 = /*$$(*/ "Invoice(s) ventilated" /*)*/;
 
-  /** Refund invoice */
-  static final String REFUND_INVOICE_1 = /*$$(*/
+  /** Credit note invoice */
+  static final String CREDIT_NOTE_INVOICE_1 = /*$$(*/
       "%s : Payment mode must be filled either in the partner or in the company configuration." /*)*/;
 
   /** Validate state */
@@ -718,7 +718,7 @@ public interface IExceptionMessage {
 
   static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
+  static final String INVOICE_4 = /*$$(*/ "Credit notes from invoice %s" /*)*/;
 
   static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
   static final String
@@ -795,11 +795,11 @@ public interface IExceptionMessage {
   static final String USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION = /*$$(*/
       "No Accounting Situation related to %s." /*)*/;
 
-  /* Check refunds */
-  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
-      "Note: there are existing not imputed client refunds."; /*)*/
-  String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
-      "Note: there are existing not imputed supplier refunds."; /*)*/
+  /* Check Credit notes */
+  String INVOICE_NOT_IMPUTED_CLIENT_CREDIT_NOTES = /*$$(*/
+      "Note: there are existing not imputed client credit notes."; /*)*/
+  String INVOICE_NOT_IMPUTED_SUPPLIER_CREDIT_NOTES = /*$$(*/
+      "Note: there are existing not imputed supplier credit notes."; /*)*/
 
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_1 = /*$$(*/
       "Disposal date must be after the date of the last depreciation." /*)*/;

@@ -2,15 +2,15 @@
 100;"accountClearance";"Overpayment clearance";"NUMBERS";"UPPERCASE";1;4;"ACCCLR_%YY_";;1;1
 101;"chequeReject";"Cheque reject";"NUMBERS";"UPPERCASE";1;4;"CHQREJ_%YY_";;1;1
 102;"invoice";"Customer Invoice";"NUMBERS";"UPPERCASE";1;4;"INV_%YY";;1;1
-103;"invoice";"Customer Refund";"NUMBERS";"UPPERCASE";1;4;"REF_%YY";;1;1
+103;"invoice";"Customer Credit note";"NUMBERS";"UPPERCASE";1;4;"REF_%YY";;1;1
 104;"invoice";"Supplier Invoice";"NUMBERS";"UPPERCASE";1;4;"SINV_%YY";;1;1
-105;"invoice";"Supplier Refund";"NUMBERS";"UPPERCASE";1;4;"SREF_%YY";;1;1
+105;"invoice";"Supplier Credit note";"NUMBERS";"UPPERCASE";1;4;"SREF_%YY";;1;1
 106;"debit";"Direct debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"DDINV_%YY_";;1;1
 109;"irrecoverable";"Transfer in irrecoverables";"NUMBERS";"UPPERCASE";1;4;"IRRECOV_%YY_";;1;1
 110;"move";"Sales move line";"NUMBERS";"UPPERCASE";1;4;"MVSAL_%YY_";;1;1
-111;"move";"Refund move line";"NUMBERS";"UPPERCASE";1;4;"MVREF_%YY_";;1;1
+111;"move";"Credit note move line";"NUMBERS";"UPPERCASE";1;4;"MVREF_%YY_";;1;1
 112;"move";"Purchase move line";"NUMBERS";"UPPERCASE";1;4;"MVPUR_%YY_";;1;1
-113;"move";"Purchase refund move line";"NUMBERS";"UPPERCASE";1;4;"MVSREF_%YY_";;1;1
+113;"move";"Purchase credit note move line";"NUMBERS";"UPPERCASE";1;4;"MVSREF_%YY_";;1;1
 114;"move";"Virtual move line";"NUMBERS";"UPPERCASE";1;4;"MVVIRT_%YY_";;1;1
 115;"move";"Move line for payments received in Cash";"NUMBERS";"UPPERCASE";1;4;"MVCSH_%YY_";;1;1
 116;"move";"Move line for payments received in Cheque";"NUMBERS";"UPPERCASE";1;4;"MVCHQ_%YY_";;1;1
@@ -55,7 +55,7 @@
 155;"paymentVoucher";"N° for payments executed by other means";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_OTH_%YY_";;1;1
 156;"paymentVoucherReceiptNo";"Voucher Receipt N°";"NUMBERS";"UPPERCASE";1;4;"RECPT_%YY_";;1;1
 157;"purchaseInterface";"Purchase interface";"NUMBERS";"UPPERCASE";1;4;"PURINT_%YY_";;1;1
-158;"refundInterface";"Refund interface";"NUMBERS";"UPPERCASE";1;4;"REFINT_%YY_";;1;1
+158;"creditNoteInterface";"Credit note interface";"NUMBERS";"UPPERCASE";1;4;"REFINT_%YY_";;1;1
 159;"reimbursement";"Reimbursement proposals";"NUMBERS";"UPPERCASE";1;4;"REIMB_%YY_";;1;1
 160;"saleInterface";"Sale interface";"NUMBERS";"UPPERCASE";1;4;"SALINT_%YY_";;1;1
 161;"treasuryInterface";"Cash flow interface";"NUMBERS";"UPPERCASE";1;4;"CSHFLWINT_%YY_";;1;1

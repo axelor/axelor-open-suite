@@ -144,7 +144,7 @@
 		                        <dd ng-show="record.advanceAmount != 0">-{{record.advanceAmount | number:2}}</dd>
 		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
 		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{record.paymentAmount  | number:2}}</dd>
-		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
+		                        <dt class="order-subtotal-total" x-translate>TotalToCreditNote</dt>
 		                        <dd class="order-subtotal-total">{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}</dd>
 		                    </dl>
 		                    ]]>

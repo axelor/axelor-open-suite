@@ -40,13 +40,13 @@ public class PaymentVoucherToolService {
       case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         isDebitToPay = false;
         break;
-      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         isDebitToPay = true;
         break;
       case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
         isDebitToPay = true;
         break;
-      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         isDebitToPay = false;
         break;
 
@@ -76,13 +76,13 @@ public class PaymentVoucherToolService {
       case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         isPurchase = true;
         break;
-      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         isPurchase = true;
         break;
       case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
         isPurchase = false;
         break;
-      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         isPurchase = false;
         break;
 

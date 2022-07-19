@@ -30,7 +30,7 @@
     <dashlet action="dashlet.invoice.purchase.amount.by.month" height="350"/>
     <dashlet action="dashlet.invoice.purchase.amount.by.currency" height="350"/>
     <dashlet action="dashlet.invoice.purchase.paymentCondition.distribution" height="350"/>
-    <dashlet action="dashlet.invoice.sale.refund.situation" height="350"/>
+    <dashlet action="dashlet.invoice.sale.creditNote.situation" height="350"/>
     <dashlet action="dashlet.invoice.sale.situation" height="350"/>
     <dashlet action="dashlet.invoice.purchase.situation" height="350"/>
     <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.nbr"
@@ -52,7 +52,8 @@
     <dashlet action="dashlet.total.revenue.by.geo.region" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoiced.turnover.ytd.vs.lastyear" height="350"
       canSearch="true"/>
-    <dashlet action="dashlet.invoice.sale.refund.situation" height="350" canSearch="true"/>
+    <dashlet action="dashlet.invoice.sale.creditNote.situation" height="350"
+      canSearch="true"/>
     <dashlet action="dashlet.invoice.sale.situation" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.sale.amount.by.month" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.sale.amount.by.currency" height="350" canSearch="true"/>
@@ -256,9 +257,9 @@
 
   </action-view>
 
-  <action-view name="dashlet.invoice.sale.refund.situation"
-    title="Invoice and Refunds Sale situation (tax incl.)">
-    <view type="chart" name="chart.invoice.sale.refund.situation"/>
+  <action-view name="dashlet.invoice.sale.creditNote.situation"
+    title="Invoice and Credit notes Sale situation (tax incl.)">
+    <view type="chart" name="chart.invoice.sale.creditNote.situation"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 

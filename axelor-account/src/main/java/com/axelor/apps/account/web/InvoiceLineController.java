@@ -398,7 +398,7 @@ public class InvoiceLineController {
     if (!product.getAccountManagementList().isEmpty()
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || invoice.getOperationTypeSelect()
-                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE)) {
 
       Optional<AccountManagement> optionalFixedAssetCategory =
           product.getAccountManagementList().stream()

@@ -1,7 +1,7 @@
 "code";"actionSelect";"company.importId";"bankDetails.importId";"currency.code";"reimbursementTypeSelect";"reimbursementExportTypeSelect";"debtRecoveryTypeSelect";"directDebitDataTypeSelect";"dueDate";"interbankPaymentOrderTypeSelect";"updateCustAccountOk";"updateDueCustAccountOk";"updateDueDebtRecoveryCustAccountOk";"moveLineExportTypeSelect";"startDate";"endDate";"description"
 "AX_DOUBT";16;1;;;;;;;;;"false";"false";"false";;;;"Permet de passer toutes les créances non payées depuis un certain temps (paramétrable dans les sociétés) sur un compte de créances douteuses."
 "AX_EXP_PURCHASE_MOVE";18;1;;;;;;;;;"false";"false";"false";9;"TODAY[1d]";"TODAY[30d]";"Permet d'exporter les écritures d'achat vers un logiciel de compta."
-"AX_EXP_REFUND_MOVE";18;1;;;;;;;;;"false";"false";"false";7;"TODAY[1d]";"TODAY[30d]";"Permet d'exporter les écritures d'avoir vers un logiciel de compta."
+"AX_EXP_CREDIT_NOTE_MOVE";18;1;;;;;;;;;"false";"false";"false";7;"TODAY[1d]";"TODAY[30d]";"Permet d'exporter les écritures d'avoir vers un logiciel de compta."
 "AX_EXP_REIMB";11;1;90000;"EUR";1;2;;;;;"false";"false";"false";;;;"Permet d'exporter les remboursements au statut validé"
 "AX_EXP_SALES_MOVE";18;1;;;;;;;;;"false";"false";"false";6;"TODAY[1d]";"TODAY[30d]";"Permet d'exporter les écritures de vente vers un logiciel de compta."
 "AX_EXP_TREASURY_MOVE";18;1;;;;;;;;;"false";"false";"false";8;"TODAY[1d]";"TODAY[30d]";"Permet d'exporter les écritures de trésorerie vers un logiciel de compta."

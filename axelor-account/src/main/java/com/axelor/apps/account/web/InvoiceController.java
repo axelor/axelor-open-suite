@@ -251,12 +251,12 @@ public class InvoiceController {
     }
   }
 
-  public void checkNotImputedRefunds(ActionRequest request, ActionResponse response) {
+  public void checkNotImputedCreditNotes(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
-      String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
+      String msg = Beans.get(InvoiceService.class).checkNotImputedCreditNotes(invoice);
       if (msg != null) {
         response.setFlash(msg);
       }
@@ -286,14 +286,14 @@ public class InvoiceController {
    * @param request
    * @param response
    */
-  public void createRefund(ActionRequest request, ActionResponse response) {
+  public void createCreditNote(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     try {
 
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-      Invoice refund = Beans.get(InvoiceService.class).createRefund(invoice);
+      Invoice refund = Beans.get(InvoiceService.class).createCreditNote(invoice);
       response.setReload(true);
       response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
 

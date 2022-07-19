@@ -566,7 +566,7 @@
     </search-fields>
     <dataset type="sql">
       SELECT
-      invoice_ex_tax_total - refund_ex_tax_total as ex_tax_total,
+      invoice_ex_tax_total - credit_note_ex_tax_total as ex_tax_total,
       _month
       FROM (
       SELECT
@@ -580,8 +580,9 @@
       WHEN self.operation_type_select=4 THEN
       self.ex_tax_total
       END
-      ),0.00) AS refund_ex_tax_total,
-      to_char(self.invoice_date,'yyyy-MM') AS
+      ),0.00) AS credit_note_ex_tax_total,
+      to_char(self.invoice_date,'yyyy-MM')
+      AS
       _month
       FROM
       account_invoice self
@@ -589,7 +590,8 @@
       auth_user AS _user
       ON _user.id = :__user__
       JOIN
-      base_company AS
+      base_company
+      AS
       _company
       ON _company.id = _user.active_company
       AND _company.id = self.company
@@ -809,8 +811,8 @@
     <series key="ex_tax_total" type="donut" title="Amount"/>
   </chart>
   <chart onInit="action.account.chart.default.month.value"
-    name="chart.invoice.sale.refund.situation"
-    title="Invoice and Refunds Sale situation (tax incl.)">
+    name="chart.invoice.sale.creditNote.situation"
+    title="Invoice and Credit notes Sale situation (tax incl.)">
 
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
@@ -867,15 +869,17 @@
       )
       UNION ALL
       (SELECT
-      'Refunds' AS _label,
-      self.in_tax_total AS _sum
+      'Credit notes' AS _label,
+      self.in_tax_total AS
+      _sum
       FROM
       account_invoice AS self
       JOIN
       auth_user AS _user
       ON _user.id = :__user__
       JOIN
-      base_company AS
+      base_company
+      AS
       _company
       ON _company.id = _user.active_company
       AND _company.id = self.company

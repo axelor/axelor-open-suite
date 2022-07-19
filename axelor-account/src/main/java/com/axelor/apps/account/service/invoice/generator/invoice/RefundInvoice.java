@@ -68,7 +68,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
     if (refund.getPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.REFUND_INVOICE_1),
+          I18n.get(IExceptionMessage.CREDIT_NOTE_INVOICE_1),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 

@@ -72,7 +72,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @param currency
    * @param paymentMode
    * @param invoice
-   * @param typeSelect 1 : Advance Payment 2 : Payment 3 : Refund invoice 4 : Other
+   * @param typeSelect 1 : Advance Payment 2 : Payment 3 : Credit note invoice 4 : Other
    * @return
    */
   public InvoicePayment createInvoicePayment(
@@ -114,7 +114,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
     PaymentMode paymentMode;
     InvoicePayment invoicePayment;
-    if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE
+    if (typePaymentMove == InvoicePaymentRepository.TYPE_CREDIT_NOTE_INVOICE
         || typePaymentMove == InvoicePaymentRepository.TYPE_INVOICE) {
       paymentMode = null;
     } else {
@@ -149,7 +149,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
               == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         return InvoicePaymentRepository.TYPE_INVOICE;
       } else {
-        return InvoicePaymentRepository.TYPE_REFUND_INVOICE;
+        return InvoicePaymentRepository.TYPE_CREDIT_NOTE_INVOICE;
       }
     } else if (move.getPaymentVoucher() != null) {
       return InvoicePaymentRepository.TYPE_PAYMENT;

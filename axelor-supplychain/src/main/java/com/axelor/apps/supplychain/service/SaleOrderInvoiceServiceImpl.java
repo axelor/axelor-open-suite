@@ -519,13 +519,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         total = total.add(invoice.getInTaxTotal());
       }
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE) {
         total = total.subtract(invoice.getInTaxTotal());
       }
     }
 
-    if (invoice.getRefundInvoiceList() != null) {
-      for (Invoice refund : invoice.getRefundInvoiceList()) {
+    if (invoice.getCreditNoteInvoiceList() != null) {
+      for (Invoice refund : invoice.getCreditNoteInvoiceList()) {
         total = total.add(this.computeInTaxTotalInvoiced(refund));
       }
     }
@@ -720,7 +720,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             saleOrder,
             currentInvoiceId,
             excludeCurrentInvoice,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+            InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE);
 
     if (saleAmount != null) {
       invoicedAmount = invoicedAmount.add(saleAmount);
@@ -988,8 +988,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected BigDecimal computeSumInvoices(List<Invoice> invoices) {
     BigDecimal sumInvoices = BigDecimal.ZERO;
     for (Invoice invoice : invoices) {
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE
+          || invoice.getOperationTypeSelect()
+              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE) {
         sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
       } else {
         sumInvoices = sumInvoices.add(invoice.getExTaxTotal());

@@ -349,7 +349,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       case AccountingReportRepository.EXPORT_SALES:
         return accountConfigService.getSaleJournalType(accountConfig);
 
-      case AccountingReportRepository.EXPORT_REFUNDS:
+      case AccountingReportRepository.EXPORT_CREDIT_NOTES:
         return accountConfigService.getCreditNoteJournalType(accountConfig);
 
       case AccountingReportRepository.EXPORT_TREASURY:

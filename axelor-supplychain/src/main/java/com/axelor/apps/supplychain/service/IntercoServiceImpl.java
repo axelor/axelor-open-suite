@@ -336,8 +336,8 @@ public class IntercoServiceImpl implements IntercoService {
         priceListRepositoryType = PriceListRepository.TYPE_SALE;
         isPurchase = false;
         break;
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE;
         priceListRepositoryType = PriceListRepository.TYPE_SALE;
         isPurchase = false;
         break;
@@ -346,8 +346,8 @@ public class IntercoServiceImpl implements IntercoService {
         priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
         isPurchase = true;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE;
         priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
         isPurchase = true;
         break;

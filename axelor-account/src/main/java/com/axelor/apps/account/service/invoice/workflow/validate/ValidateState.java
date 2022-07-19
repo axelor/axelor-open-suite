@@ -75,7 +75,7 @@ public class ValidateState extends WorkflowInvoice {
     if (invoice.getAddress() == null
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
             || invoice.getOperationTypeSelect()
-                == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+                == InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_5),
@@ -112,7 +112,8 @@ public class ValidateState extends WorkflowInvoice {
     }
 
     if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE)
         && appAccountService.isApp("budget")) {
       if (!appAccountService.getAppBudget().getManageMultiBudget()) {
         this.generateBudgetDistribution(invoice);

@@ -178,7 +178,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         return invoice.getInTaxTotal().signum() < 0
             ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
             : accountConfigService.getSupplierPurchaseJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         return invoice.getInTaxTotal().signum() < 0
             ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
             : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
@@ -186,7 +186,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         return invoice.getInTaxTotal().signum() < 0
             ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
             : accountConfigService.getCustomerSalesJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         return invoice.getInTaxTotal().signum() < 0
             ? accountConfigService.getCustomerSalesJournal(accountConfig)
             : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
@@ -372,26 +372,27 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
+  public String checkNotImputedCreditNotes(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
     if (!accountConfig.getAutoReconcileOnInvoice()) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE);
 
         if (clientRefundsAmount > 0) {
-          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_CREDIT_NOTES);
         }
       }
 
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         long supplierRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE);
 
         if (supplierRefundsAmount > 0) {
-          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_CREDIT_NOTES);
         }
       }
     }
@@ -424,10 +425,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Invoice createRefund(Invoice invoice) throws AxelorException {
+  public Invoice createCreditNote(Invoice invoice) throws AxelorException {
 
     Invoice refund = new RefundInvoice(invoice).generate();
-    invoice.addRefundInvoiceListItem(refund);
+    invoice.addCreditNoteInvoiceListItem(refund);
     invoiceRepo.save(invoice);
 
     return refund;
@@ -756,11 +757,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public int getPurchaseTypeOrSaleType(Invoice invoice) {
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        || invoice.getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE) {
       return PriceListRepository.TYPE_SALE;
     } else if (invoice.getOperationTypeSelect()
             == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        || invoice.getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE) {
       return PriceListRepository.TYPE_PURCHASE;
     }
     return -1;
@@ -977,14 +980,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        || invoice.getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE) {
       return false;
     }
     if (invoice.getId() != null) {
       return invoiceRepo
               .all()
               .filter(
-                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.creditNoteInvoiceList is empty OR :id NOT IN self.creditNoteInvoiceList.id)")
               .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
               .bind("id", invoice.getId())
               .fetchOne()

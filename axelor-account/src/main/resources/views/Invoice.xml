@@ -52,8 +52,8 @@
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
-    orderBy="-invoiceDate">
+  <grid name="invoice-credit-note-grid" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <menubar>
       <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
         <item name="printInvoicesItem" title="Print invoices"
@@ -160,7 +160,7 @@
       onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-supplier-refund-grid" title="Invoices"
+  <grid name="invoice-supplier-credit-note-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <menubar>
       <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -256,7 +256,7 @@
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-refund-invoice-grid" title="Invoices"
+  <grid name="invoice-credit-note-invoice-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <hilite color="primary" if="statusSelect == 1"/>
     <hilite color="danger"
@@ -304,9 +304,9 @@
 	                    <![CDATA[
 	                        <h4 class="text-right">
 	                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 1" x-translate>Supplier purchase</span>
-	                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 2" x-translate>Supplier refund</span>
+	                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 2" x-translate>Supplier credit note</span>
 	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 3" x-translate>Customer sale</span>
-	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 4" x-translate>Customer refund</span>
+	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 4" x-translate>Customer credit note</span>
 
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 1 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Standard invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 2 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Advance payment invoice</span>
@@ -327,9 +327,9 @@
           <viewer>
 	                    <![CDATA[
 	                        <h4 class="text-right">
-                                    <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInRefund && record.operationTypeSelect == 2 ))  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 1">Awaiting PFP</span>
-                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInRefund && record.operationTypeSelect == 2 )) && ( record.statusSelect == 2 || record.statusSelect == 3 )  && record.pfpValidateStatusSelect == 2">PFP validated</span>
-                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInRefund && record.operationTypeSelect == 2 ))  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 3">Litigation</span>
+                                    <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInCreditNote && record.operationTypeSelect == 2 ))  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 1">Awaiting PFP</span>
+                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInCreditNote && record.operationTypeSelect == 2 )) && ( record.statusSelect == 2 || record.statusSelect == 3 )  && record.pfpValidateStatusSelect == 2">PFP validated</span>
+                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInCreditNote && record.operationTypeSelect == 2 ))  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 3">Litigation</span>
 	                        </h4>
 	                    ]]>
           </viewer>
@@ -513,17 +513,17 @@
           <field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
           <field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
         </panel>
-        <panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"
-          colSpan="12" showTitle="false">
-          <button name="createRefundBtn" title="Generate refund" colSpan="3"
+        <panel name="creditNotePanel" title="Credit note"
+          showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
+          <button name="createCreditNoteBtn" title="Generate credit note" colSpan="3"
             showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
-            onClick="save,action-invoice-method-create-refund,save"/>
+            onClick="save,action-invoice-method-create-credit-note,save"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
-          <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
-            readonly="true"
-            showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12"
-            form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
+          <panel-related name="creditNoteInvoiceListPanel"
+            field="creditNoteInvoiceList" readonly="true"
+            showIf="creditNoteInvoiceList != null &amp;&amp; !creditNoteInvoiceList.isEmpty()"
+            colSpan="12" form-view="invoice-form" grid-view="invoice-credit-note-invoice-grid"/>
         </panel>
         <panel colSpan="12" name="irrecoverablePanel" title="Irrecoverable"
           showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"
@@ -624,7 +624,7 @@ InvoiceSet.length > 0))"
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
         <panel name="pfpValidationPanel" colSpan="12"
           if="__config__.app.getApp('account').getActivatePassedForPayment()"
-          showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))">
+          showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2 ))">
           <field name="pfpValidateStatusSelect" hidden="true" colSpan="4"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"
             showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
@@ -642,7 +642,7 @@ InvoiceSet.length > 0))"
           <field name="reasonOfRefusalToPay"/>
           <field name="company.accountConfig"/>
           <field name="company.accountConfig.isManagePassedForPayment"/>
-          <field name="company.accountConfig.isManagePFPInRefund"/>
+          <field name="company.accountConfig.isManagePFPInCreditNote"/>
         </panel>
       </panel>
       <panel name="budgetPanel" title="Budget"
@@ -669,16 +669,16 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save"
+        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-credit-notes,action-invoice-method-ventilate,save"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
-        onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+        onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-credit-notes,action-invoice-method-validate-and-ventilate"/>
       <button name="passedForPaymentValidationBtn" css="btn-success"
-        showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; [1,3].includes(pfpValidateStatusSelect)"
+        showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2 )) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; [1,3].includes(pfpValidateStatusSelect)"
         title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
       <button name="refusalToPayBtn" css="btn-danger"
-        showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))  &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1"
+        showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2 ))  &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1"
         title="Refusal to pay" onClick="save,action-invoice-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
       <button name="cancelBtn" css="btn-warning" hidden="true" title="Cancel"
@@ -687,11 +687,11 @@ InvoiceSet.length > 0))"
       <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
         onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
       <button name="addPaymentBtn" title="Register payment"
-        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
+        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInCreditNote || (company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
         colSpan="12" onClick="action-invoice-group-add-invoice-payment"
         if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
       <button name="addPaymentBtn" title="Register payment"
-        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
+        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInCreditNote || (company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
         colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
         if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
       <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
@@ -699,7 +699,7 @@ InvoiceSet.length > 0))"
       <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
       <field name="pfpValidatorUser" hidden="true"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
-        showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1"
+        showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1"
         readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
         onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
         onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
@@ -707,10 +707,10 @@ InvoiceSet.length > 0))"
       <panel name="pfpEmailPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
         <field name="decisionPfpTakenDate" hidden="true"
-          showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate"
+          showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate"
           colSpan="12"/>
         <button name="sendPfpNotifyEmailBtn" hidden="true"
-          showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1"
+          showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1"
           colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
       </panel>
       <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
@@ -877,9 +877,9 @@ InvoiceSet.length > 0))"
 
 			 			<h3>
 			             <span class="label label-important" ng-if="operationTypeSelect = 1" x-translate ng-show="record.operationTypeSelect == 1">Supplier purchase</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 2" x-translate ng-show="record.operationTypeSelect == 2">Supplier refund</span>
+			             <span class="label label-important" ng-if="operationTypeSelect = 2" x-translate ng-show="record.operationTypeSelect == 2">Supplier credit note</span>
 			             <span class="label label-important" ng-if="operationTypeSelect = 3" x-translate ng-show="record.operationTypeSelect == 3">Customer sale</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 4" x-translate ng-show="record.operationTypeSelect == 4">Customer refund</span>
+			             <span class="label label-important" ng-if="operationTypeSelect = 4" x-translate ng-show="record.operationTypeSelect == 4">Customer credit note</span>
 			           </h3>
 
 					]]>
@@ -1189,7 +1189,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-attrs-change-create-credit-note-title"/>
     <action name="action-invoice-record-printing-fields"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
@@ -1204,14 +1204,14 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-hidden-bank-details"/>
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-attrs-change-create-credit-note-title"/>
     <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     <action name="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
-      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
+      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2)) "/>
     <action name="action-invoice-method-hide-send-email-pfp-btn"
-      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
+      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2)) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
   </action-group>
 
@@ -1241,7 +1241,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-method-set-pfp-validator-user"
-      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "/>
+      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInCreditNote &amp;&amp; operationTypeSelect == 2) ) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
   </action-group>
 
@@ -1522,10 +1522,10 @@ InvoiceSet.length > 0))"
       for="validateAndVentilateBtn"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-change-create-refund-title">
-    <attribute name="title" for="createRefundBtn"
+  <action-attrs name="action-invoice-attrs-change-create-credit-note-title">
+    <attribute name="title" for="createCreditNoteBtn"
       expr="eval: com.axelor.i18n.I18n.get('Generate invoice')"
-      if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
+      if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_CREDIT_NOTE || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_CREDIT_NOTE"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-invoice-other-reason">
@@ -1670,8 +1670,8 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController" method="cancel"/>
   </action-method>
 
-  <action-method name="action-invoice-method-create-refund">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="createRefund"/>
+  <action-method name="action-invoice-method-create-credit-note">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="createCreditNote"/>
   </action-method>
 
   <action-method name="action-invoice-method-compute">
@@ -1738,8 +1738,9 @@ InvoiceSet.length > 0))"
       method="massPaymentOnSupplierInvoices"/>
   </action-method>
 
-  <action-method name="action-invoice-method-check-not-imputed-refunds">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="checkNotImputedRefunds"/>
+  <action-method name="action-invoice-method-check-not-imputed-credit-notes">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkNotImputedCreditNotes"/>
   </action-method>
 
   <action-method
@@ -1855,7 +1856,7 @@ InvoiceSet.length > 0))"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
-    <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
+    <field name="company.accountConfig.isManagePFPInCreditNote" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1895,8 +1896,8 @@ InvoiceSet.length > 0))"
     </filter>
   </search-filters>
 
-  <search-filters name="customer-refunds-filters"
-    model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
+  <search-filters name="customer-credit-notes-filters"
+    model="com.axelor.apps.account.db.Invoice" title="Customer credit notes filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
@@ -1919,7 +1920,7 @@ InvoiceSet.length > 0))"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
-    <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
+    <field name="company.accountConfig.isManagePFPInCreditNote" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1974,7 +1975,7 @@ InvoiceSet.length > 0))"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
-    <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
+    <field name="company.accountConfig.isManagePFPInCreditNote" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2008,8 +2009,8 @@ InvoiceSet.length > 0))"
     </filter>
   </search-filters>
 
-  <search-filters name="supplier-refunds-filters"
-    model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+  <search-filters name="supplier-credit-note-filters"
+    model="com.axelor.apps.account.db.Invoice" title="Supplier credit notes filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
@@ -2032,7 +2033,7 @@ InvoiceSet.length > 0))"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
-    <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
+    <field name="company.accountConfig.isManagePFPInCreditNote" hidden="true"
       if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>

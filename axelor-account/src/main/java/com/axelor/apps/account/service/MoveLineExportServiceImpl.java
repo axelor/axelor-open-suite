@@ -232,7 +232,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getRefundExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.REFUND_INTERFACE, company);
+        sequenceService.getSequenceNumber(SequenceRepository.CREDIT_NOTE_INTERFACE, company);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -1560,7 +1560,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 + "Date de l'écriture;"
                 + "Période de l'écriture;";
         return header.split(";");
-      case AccountingReportRepository.EXPORT_REFUNDS:
+      case AccountingReportRepository.EXPORT_CREDIT_NOTES:
         header =
             "Société;"
                 + "Journal d'Avoir;"
@@ -1649,7 +1649,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         this.exportMoveLineTypeSelect1006(accountingReport, false);
         break;
 
-      case AccountingReportRepository.EXPORT_REFUNDS:
+      case AccountingReportRepository.EXPORT_CREDIT_NOTES:
         this.exportMoveLineTypeSelect1007(accountingReport, false);
         break;
 
@@ -1684,7 +1684,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       case AccountingReportRepository.EXPORT_SALES:
         this.exportMoveLineTypeSelect1006(accountingReport, true);
         break;
-      case AccountingReportRepository.EXPORT_REFUNDS:
+      case AccountingReportRepository.EXPORT_CREDIT_NOTES:
         this.exportMoveLineTypeSelect1007(accountingReport, true);
         break;
       case AccountingReportRepository.EXPORT_TREASURY:

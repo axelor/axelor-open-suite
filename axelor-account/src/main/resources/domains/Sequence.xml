@@ -28,7 +28,7 @@
     public static final String RECONCILE_GROUP_FINAL = "reconcileGroupFinal";
 		public static final String REIMBOURSEMENT = "reimbursement";
 		public static final String SALES_INTERFACE = "saleInterface";
-        public static final String REFUND_INTERFACE = "refundInterface";
+        public static final String CREDIT_NOTE_INTERFACE = "creditNoteInterface";
         public static final String TREASURY_INTERFACE = "treasuryInterface";
         public static final String PURCHASE_INTERFACE = "purchaseInterface";
         public static final String SUB_ROGATION_RELEASE = "subrogationRelease";
