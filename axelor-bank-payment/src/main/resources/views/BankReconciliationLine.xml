@@ -43,6 +43,29 @@
     <field name="isSelectedBankReconciliation" hidden="true"/>
   </grid>
 
+  <grid name="bank-reconciliation-line-move-line-grid" title="Bank reconciliation Lines"
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <field name="postedNbr"/>
+    <field name="confidenceIndex">
+      <hilite if="confidenceIndex == 1" color="green"/>
+      <hilite if="confidenceIndex == 2" color="orange"/>
+      <hilite if="confidenceIndex == 3" color="red"/>
+    </field>
+    <field name="bankStatementQuery"/>
+    <field name="effectDate"/>
+    <field name="name"/>
+    <field name="reference"/>
+    <field name="debit" aggregate="sum">
+      <hilite if="debit > 0" color="red"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite if="credit > 0" color="green"/>
+    </field>
+    <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
+    <field name="moveLine" width="135"/>
+    <field name="isPosted"/>
+  </grid>
+
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
     <panel name="bankStatementPanel" title="Bank statement details">
