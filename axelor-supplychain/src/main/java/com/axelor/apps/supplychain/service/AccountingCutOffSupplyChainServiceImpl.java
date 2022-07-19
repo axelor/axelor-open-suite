@@ -248,7 +248,10 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       }
       moveList.add(reverseMove);
 
-      if (automaticReconcile) {
+      if (automaticReconcile
+          && (cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK
+              || cutOffMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED)) {
+
         reconcile(move, reverseMove);
       }
     }
