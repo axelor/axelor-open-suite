@@ -508,14 +508,10 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
-
-    for (BankDetails bankDetails : partner.getBankDetailsList()) {
-      if (bankDetails.getIsDefault()) {
-        return bankDetails;
-      }
-    }
-
-    return null;
+    return partner.getBankDetailsList().stream()
+        .filter(BankDetails::getIsDefault)
+        .findFirst()
+        .orElse(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})

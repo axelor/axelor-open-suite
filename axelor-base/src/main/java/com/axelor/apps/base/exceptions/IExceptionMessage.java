@@ -148,8 +148,8 @@ public interface IExceptionMessage {
   public static final String CATEGORY_NO_SEQUENCE = /*$$(*/
       "There is no configured sequence for the category" /*)*/;
 
-  public static final String APP_BASE_NO_SEQUENCE =
-      "There is no configured product sequence in the app base config";
+  public static final String APP_BASE_NO_SEQUENCE = /*$$(*/
+      "There is no configured product sequence in the app base config" /*)*/;
 
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;

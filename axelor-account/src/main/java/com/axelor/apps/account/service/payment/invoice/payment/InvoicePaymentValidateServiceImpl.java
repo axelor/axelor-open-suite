@@ -237,6 +237,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             paymentMode,
             invoice.getFiscalPosition(),
+            invoice.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             getOriginFromInvoicePayment(invoicePayment),
@@ -401,9 +402,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
 
       Account purchAccount = new Account();
+      Tax purchFinancialDiscountTax =
+          accountConfigService.getPurchFinancialDiscountTax(accountConfig);
 
       for (AccountManagement accountManagement :
-          accountConfig.getPurchFinancialDiscountTax().getAccountManagementList()) {
+          purchFinancialDiscountTax.getAccountManagementList()) {
         if (accountManagement.getCompany().equals(company)) {
           purchAccount = accountManagement.getFinancialDiscountAccount();
         }
@@ -416,13 +419,16 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               customerAccount,
               purchAccount,
               accountConfigService.getPurchFinancialDiscountAccount(accountConfig),
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountTax());
+              purchFinancialDiscountTax);
 
     } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
 
       Account saleAccount = new Account();
+      Tax saleFinancialDiscountTax =
+          accountConfigService.getSaleFinancialDiscountTax(accountConfig);
+
       for (AccountManagement accountManagement :
-          accountConfig.getSaleFinancialDiscountTax().getAccountManagementList()) {
+          saleFinancialDiscountTax.getAccountManagementList()) {
         if (accountManagement.getCompany().equals(company)) {
           saleAccount = accountManagement.getFinancialDiscountAccount();
         }
@@ -435,7 +441,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               customerAccount,
               saleAccount,
               accountConfigService.getSaleFinancialDiscountAccount(accountConfig),
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountTax());
+              saleFinancialDiscountTax);
     }
 
     return move;
@@ -556,8 +562,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Tax tax =
         InvoiceToolService.isPurchase(invoice)
-            ? accountConfig.getPurchFinancialDiscountTax()
-            : accountConfig.getSaleFinancialDiscountTax();
+            ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+            : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
 
     return tax.getAccountManagementList().stream()
         .filter(it -> it.getCompany().equals(company))
