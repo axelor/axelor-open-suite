@@ -291,6 +291,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveSimulateService.simulate(move);
         break;
       case MoveRepository.STATUS_ACCOUNTED:
+        moveValidateService.checkPreconditions(move);
         move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
         moveValidateService.accounting(move);
         break;
