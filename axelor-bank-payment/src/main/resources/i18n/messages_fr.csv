@@ -365,7 +365,7 @@
 "C2 - Sender company name","C2 - Raison sociale du cédant",,
 "C3 - Receiver address: ZIP code","C3 - Adresse du tiré: Code postale",,
 "C3 - Sender company name","C3 - Raison sociale du cédant ",,
-"Can't load while another reconciliation is open","Impossible de charger ce relevé car une autre réconciliation est ouverte",,
+"Can't load while another bank reconciliation is in progress","Impossible de charger ce relevé tant qu'une autre session de rapprochement bancaire est en cours",,
 "Cancel","Annuler",,
 "Canceled","Annulé",,
 "Carried out","Réalisé",,

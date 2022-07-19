@@ -359,7 +359,7 @@
 "C2 - Sender company name",,,
 "C3 - Receiver address: ZIP code",,,
 "C3 - Sender company name",,,
-"Can't load while another reconciliation is open",,,
+"Can't load while another bank reconciliation is in progress",,,
 "Cancel","Annuleren",,
 "Canceled","Geannuleerd",,
 "Carried out","Uitgevoerd",,
