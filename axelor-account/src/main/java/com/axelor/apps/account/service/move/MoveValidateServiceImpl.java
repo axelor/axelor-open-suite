@@ -389,6 +389,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     moveInvoiceTermService.generateInvoiceTerms(move);
+    moveInvoiceTermService.updateMoveLineDueDates(move);
 
     this.completeMoveLines(move);
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);

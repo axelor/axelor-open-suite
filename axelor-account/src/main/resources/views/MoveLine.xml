@@ -387,7 +387,8 @@
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
-          grid-view="invoice-term-move-line-grid"/>
+          grid-view="invoice-term-move-line-grid"
+          onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
@@ -401,7 +402,8 @@
           </viewer>
         </field>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
-          grid-view="invoice-term-move-line-invoice-grid"/>
+          grid-view="invoice-term-move-line-invoice-grid"
+          onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
@@ -621,7 +623,8 @@
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
-          grid-view="invoice-term-move-line-grid"/>
+          grid-view="invoice-term-move-line-grid"
+          onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
@@ -635,7 +638,8 @@
           </viewer>
         </field>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
-          grid-view="invoice-term-move-line-invoice-grid"/>
+          grid-view="invoice-term-move-line-invoice-grid"
+          onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
@@ -913,6 +917,8 @@
       expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
     <attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel"
       expr="eval: move?.statusSelect == 3 "/>
+    <attribute name="readonly" for="dueDate"
+      expr="eval: !__parent__.paymentCondition.isFree" if="__parent__?.paymentCondition"/>
   </action-attrs>
 
   <action-attrs name="action-move-line-attrs-domain-account">
@@ -1187,6 +1193,11 @@
 
   <action-method name="action-move-line-method-generate-invoice-terms">
     <call class="com.axelor.apps.account.web.MoveLineController" method="generateInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-update-due-dates">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="updateDueDates"
+      if="move.originDate"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
