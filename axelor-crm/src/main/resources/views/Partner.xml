@@ -34,6 +34,33 @@
     </menubar>
   </form>
 
+  <grid id="crm-partner-customer-grid" name="partner-customer-grid" title="Customers"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//field[@name='fiscalPosition.code']">
+      <replace></replace>
+    </extend>
+    <extend target="//field[@name='registrationCode']">
+      <replace></replace>
+    </extend>
+    <extend target="//field[@name='mainAddress']">
+      <replace></replace>
+    </extend>
+    <extend target="//field[@name='mainAddress.zip']">
+      <replace></replace>
+    </extend>
+    <extend target="//field[@name='mainAddress.city']">
+      <replace></replace>
+    </extend>
+    <extend target="//field[@name='simpleFullName']">
+      <attribute name="width" value="300px"/>
+    </extend>
+    <extend target="//field[@name='partnerCategory']">
+      <insert position="after">
+        <field name="user"/>
+      </insert>
+    </extend>
+  </grid>
+
   <!-- CREATE CRM OBJECT FROM PARTNER -->
 
   <action-view name="action-partner-view-schedule-event"
