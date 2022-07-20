@@ -44,7 +44,7 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
 
   @Override
   public LocalDate computeLastDayOfPeriodicity(FixedAsset fixedAsset, LocalDate date) {
-    if (fixedAsset.getPeriodicityTypeSelect() == null) {
+    if (fixedAsset.getPeriodicityTypeSelect() == null || date == null) {
       return date;
     }
     if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
