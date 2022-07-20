@@ -64,6 +64,7 @@ import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
+  protected static final String AXELOR_TMP_FIX_CONSTRAINT = "$AXELORTMP";
   private ConfiguratorCreatorRepository configuratorCreatorRepo;
   private AppBaseService appBaseService;
   private MetaFieldRepository metaFieldRepository;
@@ -133,7 +134,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     for (MetaJsonField indicatorToRemove : fieldsToRemove) {
       if (indicatorToRemove.getName() != null) {
         // This is needed as there is a constraint issue
-        indicatorToRemove.setName(indicatorToRemove.getName() + "$AXELORTMP" + creator.getId());
+        indicatorToRemove.setName(
+            indicatorToRemove.getName() + AXELOR_TMP_FIX_CONSTRAINT + creator.getId());
       }
       indicatorToRemove.setHidden(
           true); // Adding this line to fix field still showing even when removed indictor
@@ -623,7 +625,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       String name = metaJsonField.getName();
       if (name != null) {
         // FIX FOR CONSTRAINT ISSUE
-        metaJsonField.setName(name.replace("$AXELORTMP", ""));
+        metaJsonField.setName(name.replace(AXELOR_TMP_FIX_CONSTRAINT, ""));
       }
     }
   }

@@ -33,6 +33,8 @@ import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
 
+  protected static final String AXELOR_TMP_FIX_CONSTRAINT = "$AXELORTMP";
+
   @Override
   public ConfiguratorCreator copy(ConfiguratorCreator entity, boolean deep) {
     ConfiguratorCreator copy = super.copy(entity, deep);
@@ -79,7 +81,7 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
       String name = metaJsonField.getName();
       if (name != null) {
         // FIX FOR CONSTRAINT ISSUE
-        metaJsonField.setName(name + "$AXELORTMP");
+        metaJsonField.setName(name + AXELOR_TMP_FIX_CONSTRAINT);
       }
     }
   }

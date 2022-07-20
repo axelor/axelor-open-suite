@@ -47,6 +47,7 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 
 public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreatorImportService {
 
+  protected static final String AXELOR_TMP_FIX_CONSTRAINT = "$AXELORTMP";
   protected ConfiguratorCreatorService configuratorCreatorService;
 
   @Inject
@@ -151,7 +152,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     for (MetaJsonField attribute : attributes) {
       String name = attribute.getName();
       if (name != null) {
-        name = name.replace("$AXELORTMP", "");
+        name = name.replace(AXELOR_TMP_FIX_CONSTRAINT, "");
         if (name.contains("_")) {
           attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
         }
