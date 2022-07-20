@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -327,6 +328,12 @@ public class MoveLineController {
             response.setValue("account", accountingAccount);
             if (!accountingAccount.getUseForPartnerBalance()) {
               response.setValue("partner", null);
+            }
+            AnalyticDistributionTemplate analyticDistributionTemplate =
+                accountingAccount.getAnalyticDistributionTemplate();
+            if (accountingAccount.getAnalyticDistributionAuthorized()
+                && analyticDistributionTemplate != null) {
+              response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
             }
           }
 
