@@ -384,7 +384,8 @@
     </panel>
 
     <panel-dashlet name="bankReconciliationLinePanel"
-      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
+      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"
+      showIf="account.accountType.technicalTypeSelect == 'cash'"/>
   </form>
 
   <form name="move-line-move-form" title="Move line"
@@ -517,7 +518,8 @@
       </panel>
     </panel-tabs>
     <panel-dashlet name="bankReconciliationLinePanel"
-      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
+      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"
+      showIf="account.accountType.technicalTypeSelect == 'cash'"/>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
