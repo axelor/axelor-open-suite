@@ -33,7 +33,7 @@ import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
 
-  protected static final String AXELOR_TMP_FIX_CONSTRAINT = "$AXELORTMP";
+  public static final String AXELOR_TMP_FIX_CONSTRAINT = "$AXELORTMP";
 
   @Override
   public ConfiguratorCreator copy(ConfiguratorCreator entity, boolean deep) {

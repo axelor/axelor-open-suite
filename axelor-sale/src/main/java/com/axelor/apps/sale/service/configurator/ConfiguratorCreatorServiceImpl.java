@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.db.repo.ConfiguratorCreatorSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.apps.tool.StringTool;
@@ -64,7 +65,6 @@ import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
-  protected static final String AXELOR_TMP_FIX_CONSTRAINT = "$AXELORTMP";
   private ConfiguratorCreatorRepository configuratorCreatorRepo;
   private AppBaseService appBaseService;
   private MetaFieldRepository metaFieldRepository;
@@ -135,7 +135,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       if (indicatorToRemove.getName() != null) {
         // This is needed as there is a constraint issue
         indicatorToRemove.setName(
-            indicatorToRemove.getName() + AXELOR_TMP_FIX_CONSTRAINT + creator.getId());
+            indicatorToRemove.getName()
+                + ConfiguratorCreatorSaleRepository.AXELOR_TMP_FIX_CONSTRAINT
+                + creator.getId());
       }
       indicatorToRemove.setHidden(
           true); // Adding this line to fix field still showing even when removed indictor
@@ -625,7 +627,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       String name = metaJsonField.getName();
       if (name != null) {
         // FIX FOR CONSTRAINT ISSUE
-        metaJsonField.setName(name.replace(AXELOR_TMP_FIX_CONSTRAINT, ""));
+        metaJsonField.setName(
+            name.replace(ConfiguratorCreatorSaleRepository.AXELOR_TMP_FIX_CONSTRAINT, ""));
       }
     }
   }
