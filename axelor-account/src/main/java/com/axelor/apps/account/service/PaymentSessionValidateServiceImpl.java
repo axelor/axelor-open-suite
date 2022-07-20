@@ -363,7 +363,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
-            partnerService.getDefaultBankDetails(partner),
+            partner != null ? partnerService.getDefaultBankDetails(partner) : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
