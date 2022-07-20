@@ -742,6 +742,9 @@
   <action-group name="action-account-move-line-onnew-group">
     <action name="action-move-line-record-get-move-informations"/>
     <action name="action-move-line-method-get-account-informations"/>
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-method-hide-axis-analytic-account"/>
+    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
     <action name="action-move-line-record-get-first-move-line-informations"/>
     <action name="action-move-line-method-get-creditdebit-balance"/>
     <action name="action-move-line-attrs-hidden-reconcileLists"/>
