@@ -19,6 +19,7 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEService;
 import com.axelor.exception.service.TraceBackService;
