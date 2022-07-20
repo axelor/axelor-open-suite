@@ -1,0 +1,3 @@
+---
+title: "MOVE: corrected bank details npe if partner is null on move automatic generation"
+type: fix
