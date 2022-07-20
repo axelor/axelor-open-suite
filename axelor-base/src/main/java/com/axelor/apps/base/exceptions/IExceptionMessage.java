@@ -92,6 +92,10 @@ public interface IExceptionMessage {
 
   String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
   String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/ "Error when closing period %s" /*)*/;
+
+  public static final String PERIOD_CLOSED_AND_NO_PERMISSIONS =
+      /*$$(*/ "This period is closed and you do not have the necessary permissions to create entries" /*)*/;
+
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
@@ -476,4 +480,9 @@ public interface IExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+
+  public static final String META_JSON_TYPE_NO_MATCH_OBJECT_VALUE = /*$$(*/
+      "Error: The type of the field %s does not match the type of the value %s" /*)*/;
+  public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
+      "Error: The type of the field %s is not managed by the adapter" /*)*/;
 }

@@ -14,10 +14,7 @@
     onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
     onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
     width="large">
-    <toolbar>
-      <button name="showInvoiceBtn" title="Invoices"
-        onClick="save,action-company-view-invoice"/>
-    </toolbar>
+
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
@@ -29,7 +26,6 @@
         onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="allowRemovalValidatedMove"/>
       <field name="generateMoveForAdvancePayment" colSpan="4"/>
       <field name="accountingDaybook" colSpan="4"/>
       <field name="isActivateSimulatedMove" colSpan="4"/>
@@ -141,6 +137,7 @@
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
           <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
           <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
         </panel>
         <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
@@ -444,14 +441,6 @@
   <action-method name="action-method-account-config-install-chart">
     <call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
   </action-method>
-
-  <action-view name="action-company-view-invoice" title="Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
-    <domain>self.company.id = :id</domain>
-    <context name="id" expr="eval: company.id"/>
-  </action-view>
 
   <action-view name="action-company-view-account-config"
     title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">

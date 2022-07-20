@@ -81,7 +81,7 @@
 
     <panel name="loadMoveLinesInfoPanel" colSpan="12" showIf="statusSelect == 1">
       <button name="loadMoveLinesBtn" title="Search elements to pay"
-        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines" colSpan="6"/>
+        onClick="action-payment-voucher-group-search-elements-to-pay" colSpan="6"/>
     </panel>
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
@@ -128,7 +128,7 @@
     <action name="action-record-payment-voucher-default-record"/>
     <action name="action-payment-voucher-getDate"/>
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
-    <action name="action-attrs-payment-voucher-hidden-receipt"/>
+    <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
     <action name="action-attrs-payment-voucher-hidden-bank-details"/>
@@ -139,7 +139,7 @@
 
   <action-group name="action-account-payment-voucher-onload-group">
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
-    <action name="action-attrs-payment-voucher-hidden-receipt"/>
+    <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
     <action name="action-attrs-payment-voucher-hidden-bank-details"/>
@@ -155,7 +155,7 @@
 
   <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
-    <action name="action-attrs-payment-voucher-hidden-receipt"/>
+    <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-method-fill-bank-details"/>
   </action-group>
@@ -190,15 +190,6 @@
 
   <action-attrs name="action-pv-moveLine-attrs">
     <attribute name="readonly" for="paidAmount" expr="eval: moveLine != null"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-payment-voucher-hidden-receipt">
-    <attribute name="hidden" for="receiptNo"
-      expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"
-      if="paymentMode != null"/>
-    <attribute name="hidden" for="printPaymentVoucherBtn"
-      expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"
-      if="paymentMode != null"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-payment-voucher-readonly-status">
@@ -339,6 +330,20 @@
       method="loadSelectedLines"/>
   </action-method>
 
+  <action-method name="action-payment-voucher-method-set-receipt-display">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="setReceiptDisplay"/>
+  </action-method>
+  <action-method name="action-payment-voucher-method-reset-imputation">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
+  </action-method>
+  <action-method name="action-payment-voucher-method-load-move-lines">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="loadMoveLines"/>
+  </action-method>
+  <action-group name="action-payment-voucher-group-search-elements-to-pay">
+    <action name="action-payment-voucher-method-load-move-lines"/>
+    <action name="action-payment-voucher-method-reset-imputation"/>
+  </action-group>
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <attribute name="hidden" for="tradingName"
