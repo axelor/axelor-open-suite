@@ -104,8 +104,6 @@
     search="self.importId = :importId"/>
 
   <input file="sale_complementaryProduct.csv" separator=";"
-    type="com.axelor.apps.sale.db.ComplementaryProduct">
-    <bind to="optional" eval="optional ? optional : 'false'"/>
-  </input>
+    type="com.axelor.apps.sale.db.ComplementaryProduct" search="self.importId = :importId"/>
 
 </csv-inputs>
