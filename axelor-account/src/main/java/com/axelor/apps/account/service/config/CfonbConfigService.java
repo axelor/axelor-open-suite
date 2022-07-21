@@ -24,7 +24,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class CfonbConfigService extends AccountConfigService {
 
   public CfonbConfig getCfonbConfig(AccountConfig accountConfig) throws AxelorException {

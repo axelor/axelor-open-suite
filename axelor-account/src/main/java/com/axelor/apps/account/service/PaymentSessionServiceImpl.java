@@ -30,10 +30,12 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   protected PaymentSessionRepository paymentSessionRepository;
