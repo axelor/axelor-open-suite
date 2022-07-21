@@ -38,7 +38,6 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -73,9 +72,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected ReconcileService reconcileService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
   protected AppAccountService appAccountService;
-  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -87,8 +84,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
-      InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService,
       AppAccountService appAccountService) {
 
     this.paymentModeService = paymentModeService;
@@ -99,8 +94,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.reconcileService = reconcileService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
   }
 

@@ -45,7 +45,6 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
@@ -81,36 +80,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
-  protected InvoiceService invoiceService;
   protected AppAccountService appAccountService;
   protected InvoiceToolService invoiceToolService;
   protected InvoiceVisibilityService invoiceVisibilityService;
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
-  protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
 
   @Inject
   public InvoiceTermServiceImpl(
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
-      InvoiceService invoiceService,
       AppAccountService appAccountService,
       InvoiceToolService invoiceToolService,
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
-      InvoiceTermPaymentService invoiceTermPaymentService,
       InvoicePaymentCreateService invoicePaymentCreateService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
-    this.invoiceService = invoiceService;
     this.appAccountService = appAccountService;
     this.invoiceToolService = invoiceToolService;
     this.invoiceVisibilityService = invoiceVisibilityService;
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
-    this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
   }
 
