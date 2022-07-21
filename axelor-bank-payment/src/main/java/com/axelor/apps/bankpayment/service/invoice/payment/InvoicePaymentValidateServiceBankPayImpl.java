@@ -45,10 +45,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+@RequestScoped
 public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
 
   protected BankOrderCreateService bankOrderCreateService;

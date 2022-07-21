@@ -33,9 +33,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.time.LocalDate;
 import java.util.List;
 
+@RequestScoped
 public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl {
 
   @Inject

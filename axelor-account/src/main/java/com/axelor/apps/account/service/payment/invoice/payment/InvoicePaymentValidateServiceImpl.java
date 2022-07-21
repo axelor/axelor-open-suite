@@ -53,6 +53,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,6 +63,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
 
   protected PaymentModeService paymentModeService;

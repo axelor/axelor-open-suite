@@ -61,6 +61,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -76,6 +77,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected InvoiceTermRepository invoiceTermRepo;

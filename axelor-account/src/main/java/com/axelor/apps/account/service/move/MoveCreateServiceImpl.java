@@ -41,12 +41,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveCreateServiceImpl implements MoveCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

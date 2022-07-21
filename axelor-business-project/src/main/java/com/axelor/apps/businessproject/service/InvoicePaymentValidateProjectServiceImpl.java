@@ -40,10 +40,12 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+@RequestScoped
 public class InvoicePaymentValidateProjectServiceImpl
     extends InvoicePaymentValidateServiceBankPayImpl {
 
