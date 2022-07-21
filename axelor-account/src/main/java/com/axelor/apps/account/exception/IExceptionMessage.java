@@ -1307,10 +1307,11 @@ public interface IExceptionMessage {
   static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
-  static final String MOVE_FUNCTIONAL_ORIGIN_MISSING = /*$$(*/
-      "The functional origin cannot be empty for the move %s" /*)*/;
   static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
+
+  static final String MOVE_15 = /*$$(*/
+      "The functional origin cannot be empty for the move %s. Please fill it in." /*)*/;
 
   static final String FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE = /*$$(*/
       "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan." /*)*/;
