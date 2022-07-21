@@ -326,7 +326,7 @@
 
   <selection name="bank.order.accounting.trigger.select">
     <option value="0">None</option>
-    <option value="1">External origin</option>
+    <option value="1">Already accounted</option>
     <option value="2">Bank order confirmation</option>
     <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>
