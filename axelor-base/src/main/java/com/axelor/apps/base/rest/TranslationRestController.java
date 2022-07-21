@@ -6,10 +6,14 @@ import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,17 +36,25 @@ public class TranslationRestController {
   @HttpExceptionHandler
   @Transactional(rollbackOn = {Exception.class})
   public Response setTranslationJSON(@PathParam("lng") String language, JSONObject translationJson)
-      throws AxelorException, JSONException {
-    LanguageChecker.check(language);
+      throws AxelorException {
+    try {
+      LanguageChecker.check(language);
+      Map<String, String> translationMap =
+          new ObjectMapper().readValue(translationJson.toString(), Map.class);
 
-    int addedTranslation =
-        Beans.get(TranslationRestService.class).createNewTranslation(translationJson, language);
+      int addedTranslation =
+          Beans.get(TranslationRestService.class).createNewTranslation(translationMap, language);
 
-    if (addedTranslation == 0) {
-      return ResponseConstructor.build(Response.Status.OK, "Translations already up-to-date.");
+      if (addedTranslation == 0) {
+        return ResponseConstructor.build(Response.Status.OK, "Translations already up-to-date.");
+      }
+      return ResponseConstructor.build(
+          Response.Status.CREATED, addedTranslation + " translation(s) successfully added.");
+
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Error while mapping json file.");
     }
-    return ResponseConstructor.build(
-        Response.Status.CREATED, addedTranslation + " translation(s) successfully added.");
   }
 
   @Path("/{lng}")

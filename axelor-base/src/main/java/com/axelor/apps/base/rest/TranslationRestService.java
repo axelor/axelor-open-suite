@@ -1,11 +1,10 @@
 package com.axelor.apps.base.rest;
 
 import com.axelor.exception.AxelorException;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
+import java.util.Map;
 
 public interface TranslationRestService {
 
-  Integer createNewTranslation(JSONObject translationFile, String language)
-      throws AxelorException, JSONException;
+  Integer createNewTranslation(Map<String, String> translationMap, String language)
+      throws AxelorException;
 }

@@ -8,8 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Iterator;
 import java.util.List;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
+import java.util.Map;
 
 public class TranslationRestServiceImpl implements TranslationRestService {
 
@@ -22,33 +21,29 @@ public class TranslationRestServiceImpl implements TranslationRestService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Integer createNewTranslation(JSONObject translationFile, String language)
+  public Integer createNewTranslation(Map<String, String> translationMap, String language)
       throws AxelorException {
-    try {
-      Iterator<String> keys = translationFile.keys();
-      int addedTranslation = 0;
+    Iterator<String> keys = translationMap.keySet().iterator();
+    int addedTranslation = 0;
 
-      while (keys.hasNext()) {
-        String currentKey = keys.next();
+    while (keys.hasNext()) {
+      String currentKey = keys.next();
 
-        Query<MetaTranslation> query =
-            translationRepo.all().filter("self.language = :language " + "AND self.key LIKE :key");
-        query.bind("language", language);
-        query.bind("key", "mobile_app_" + currentKey);
+      Query<MetaTranslation> query =
+          translationRepo.all().filter("self.language = :language " + "AND self.key LIKE :key");
+      query.bind("language", language);
+      query.bind("key", "mobile_app_" + currentKey);
 
-        List<MetaTranslation> translationList = query.fetch();
-        if (translationList.size() == 0) {
-          MetaTranslation newTranslation = new MetaTranslation();
-          newTranslation.setKey("mobile_app_" + currentKey);
-          newTranslation.setMessage((String) translationFile.get(currentKey));
-          newTranslation.setLanguage(language);
-          translationRepo.save(newTranslation);
-          addedTranslation++;
-        }
+      List<MetaTranslation> translationList = query.fetch();
+      if (translationList.size() == 0) {
+        MetaTranslation newTranslation = new MetaTranslation();
+        newTranslation.setKey("mobile_app_" + currentKey);
+        newTranslation.setMessage(translationMap.get(currentKey));
+        newTranslation.setLanguage(language);
+        translationRepo.save(newTranslation);
+        addedTranslation++;
       }
-      return addedTranslation;
-    } catch (JSONException e) {
-      throw new AxelorException();
     }
+    return addedTranslation;
   }
 }
