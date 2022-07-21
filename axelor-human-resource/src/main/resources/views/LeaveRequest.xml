@@ -27,9 +27,9 @@
         title="Show leaves to be validated by my subordinates"
         onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
     </toolbar>
-    <hilite background="danger" if="$moment(fromDateT).diff(todayDate,'days') &lt;= 0"/>
-    <hilite background="warning"
-      if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/>
+    <hilite background="danger"
+      if="statusSelect != 3 &amp;&amp; $moment(fromDateT).diff(todayDate,'days') &lt;= 0"/>
+    <hilite background="warning" if="statusSelect != 3"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="user" form-view="user-form" grid-view="user-grid"
