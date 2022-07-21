@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -56,7 +55,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveRepository moveRepository;
   protected TaxAccountToolService taxAccountToolService;
-  protected AccountingSituationRepository accountingSituationRepository;
   protected MoveLineToolService moveLineToolService;
 
   @Inject
@@ -67,7 +65,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       MoveLineCreateService moveLineCreateService,
       MoveRepository moveRepository,
       TaxAccountToolService taxAccountToolService,
-      AccountingSituationRepository accountingSituationRepository,
       MoveLineToolService moveLineToolService) {
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
@@ -75,7 +72,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveRepository = moveRepository;
     this.taxAccountToolService = taxAccountToolService;
-    this.accountingSituationRepository = accountingSituationRepository;
     this.moveLineToolService = moveLineToolService;
   }
 

@@ -37,7 +37,6 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -85,7 +84,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AppAccountService appAccountService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
   protected MoveLineTaxService moveLineTaxService;
-  protected MoveLineService moveLineService;
   protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
@@ -103,7 +101,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       AppAccountService appAccountService,
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
-      MoveLineService moveLineService,
       PeriodServiceAccount periodServiceAccount) {
 
     this.moveLineControlService = moveLineControlService;
@@ -119,7 +116,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.appAccountService = appAccountService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.moveLineTaxService = moveLineTaxService;
-    this.moveLineService = moveLineService;
     this.periodServiceAccount = periodServiceAccount;
   }
 
