@@ -201,7 +201,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       for (AnalyticAxisByCompany analyticAxisByCompany :
           accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
         for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
-          System.err.println(analyticMoveLine.getAnalyticAxis());
           if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
             analyticMoveLineList.add(analyticMoveLine);
           }
