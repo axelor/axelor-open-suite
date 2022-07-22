@@ -6,8 +6,10 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
 
