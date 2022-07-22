@@ -114,7 +114,7 @@ public class PriceListService {
         .fetch();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void setPriceListLineAnomaly(Product product) {
     if (!product.getSellable()) {
       product
@@ -279,7 +279,7 @@ public class PriceListService {
     return discounts;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PriceList historizePriceList(PriceList priceList) {
     PriceList historizedPriceList = priceListRepo.copy(priceList, false);
     historizedPriceList.setIsActive(false);

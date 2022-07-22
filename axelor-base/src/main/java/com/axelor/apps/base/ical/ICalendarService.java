@@ -279,7 +279,7 @@ public class ICalendarService {
     return null;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected ICalendarEvent findOrCreateEvent(VEvent vEvent, ICalendar calendar) {
 
     String uid = vEvent.getUid().getValue();
@@ -750,7 +750,7 @@ public class ICalendarService {
     return calendar;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void removeDeletedEventsInRange(
       Set<String> allRemoteUids,
       ICalendar calendar,
@@ -967,7 +967,7 @@ public class ICalendarService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeOldEvents(List<ICalendarEvent> oldEvents) {
 
     for (ICalendarEvent event : oldEvents) {

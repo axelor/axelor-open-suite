@@ -47,7 +47,7 @@ public class DuplicateObjectsService {
   private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
   @Inject private MetaFieldRepository metaFieldRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeDuplicate(List<Long> selectedIds, String modelName) {
 
     List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
@@ -119,7 +119,7 @@ public class DuplicateObjectsService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object getOriginalObject(List<Long> selectedIds, String modelName) {
     Query originalObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
@@ -127,7 +127,7 @@ public class DuplicateObjectsService {
     return originalObj.getSingleResult();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Object> getDuplicateObject(List<Long> selectedIds, String modelName) {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
@@ -135,7 +135,7 @@ public class DuplicateObjectsService {
     return duplicateObj.getResultList();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Object> getAllSelectedObject(List<Long> selectedIds, String modelName) {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
@@ -143,7 +143,7 @@ public class DuplicateObjectsService {
     return duplicateObj.getResultList();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object getWizardValue(Long id, String modelName, String nameColumn) {
     Query selectedObj;
     if (nameColumn == null) {

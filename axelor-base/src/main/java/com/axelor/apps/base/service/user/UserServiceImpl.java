@@ -257,7 +257,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPartner(User user) {
     Partner partner = new Partner();
     partner.setPartnerTypeSelect(2);

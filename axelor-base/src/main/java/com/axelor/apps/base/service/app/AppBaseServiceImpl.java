@@ -198,7 +198,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
   /** {@inheritDoc} */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void setManageMultiBanks(boolean manageMultiBanks) {
     getAppBase().setManageMultiBanks(manageMultiBanks);
   }

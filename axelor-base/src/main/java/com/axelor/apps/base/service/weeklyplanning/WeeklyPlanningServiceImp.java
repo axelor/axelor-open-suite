@@ -79,7 +79,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public WeeklyPlanning initPlanning(WeeklyPlanning planning) {
     String[] dayTab =
         new String[] {

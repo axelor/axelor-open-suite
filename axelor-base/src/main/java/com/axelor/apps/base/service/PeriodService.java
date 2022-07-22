@@ -47,7 +47,7 @@ public interface PeriodService {
 
   public void closeTemporarily(Period period) throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void adjust(Period period);
 
   /**

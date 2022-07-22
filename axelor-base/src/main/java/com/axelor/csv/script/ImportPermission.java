@@ -36,7 +36,7 @@ public class ImportPermission {
 
   @Inject PermissionRepository permissionRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPermission(Object bean, Map<String, Object> values) {
     assert bean instanceof Permission;
     try {
@@ -67,7 +67,7 @@ public class ImportPermission {
     return bean;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPermissionToRole(Object bean, Map<String, Object> values) {
 
     assert bean instanceof Permission;

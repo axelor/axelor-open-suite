@@ -90,7 +90,7 @@ public class ExportDbObjectService {
 
   private Group group = null;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile exportObject() {
     group = Beans.get(GroupRepository.class).all().filter("self.code = 'admins'").fetchOne();
     try {

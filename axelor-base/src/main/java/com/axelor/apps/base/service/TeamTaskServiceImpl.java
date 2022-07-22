@@ -39,7 +39,7 @@ public class TeamTaskServiceImpl implements TeamTaskService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateTasks(TeamTask teamTask, Frequency frequency) {
     List<LocalDate> taskDates =
         Beans.get(FrequencyService.class)
@@ -78,7 +78,7 @@ public class TeamTaskServiceImpl implements TeamTaskService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateNextTask(TeamTask teamTask) {
     TeamTask nextTeamTask = teamTask.getNextTeamTask();
     if (nextTeamTask != null) {
@@ -100,7 +100,7 @@ public class TeamTaskServiceImpl implements TeamTaskService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeNextTasks(TeamTask teamTask) {
     List<TeamTask> teamTasks = getAllNextTasks(teamTask);
     teamTask.setNextTeamTask(null);

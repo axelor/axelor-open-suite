@@ -122,7 +122,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void onRunnerException(Exception e) {
     TraceBackService.trace(e);
     Beans.get(MailMessageService.class)

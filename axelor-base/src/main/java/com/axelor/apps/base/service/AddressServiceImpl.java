@@ -227,7 +227,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void resetLatLong(Address address) {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
     setLatLong(address, Pair.of(null, null));

@@ -41,7 +41,7 @@ public class CalendarConfigurationService {
 
   @Inject protected CalendarConfigurationRepository calendarConfigurationRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createEntryMenu(CalendarConfiguration calendarConfiguration) {
 
     String menuName =
@@ -74,7 +74,7 @@ public class CalendarConfigurationService {
     calendarConfigurationRepo.save(calendarConfiguration);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void deleteEntryMenu(CalendarConfiguration calendarConfiguration) {
 
     MetaAction metaAction = calendarConfiguration.getMetaAction();

@@ -103,7 +103,7 @@ public interface UserService {
   @CallMethod
   public Partner getUserPartner();
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPartner(User user);
 
   public String getLanguage();
@@ -178,7 +178,7 @@ public interface UserService {
    */
   boolean verifyCurrentUserPassword(String password);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateRandomPasswordForUsers(List<Long> userIds);
 
   /**
@@ -188,6 +188,6 @@ public interface UserService {
    * @param user
    * @return
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Partner setUserPartner(Partner partner, User user);
 }

@@ -81,7 +81,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeGlobalTrackingLogs(List<GlobalTrackingLog> globalTrackingLogList) {
     for (GlobalTrackingLog globalTrackingLog : globalTrackingLogList) {
       MetaFile metaFile = globalTrackingLog.getMetaFile();
