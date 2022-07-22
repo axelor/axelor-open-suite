@@ -264,7 +264,7 @@ public class BatchEventReminder extends BatchStrategy {
     addComment(comment);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected EmailAddress findOrCreateEmailAddress(String email, String name) {
     EmailAddress emailAddress =
         emailAddressRepo.all().filter("self.name = '" + name + "'").fetchOne();

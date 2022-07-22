@@ -44,7 +44,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
   @Inject private AppCrmRepository appCrmRepo;
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateCrmConfigurations() {
 
     List<Company> companies = companyRepo.all().filter("self.crmConfig is null").fetch();

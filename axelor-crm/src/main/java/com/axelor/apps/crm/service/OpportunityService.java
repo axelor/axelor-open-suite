@@ -26,7 +26,7 @@ import java.util.List;
 
 public interface OpportunityService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveOpportunity(Opportunity opportunity);
 
   public void setSequence(Opportunity opportunity) throws AxelorException;
