@@ -168,14 +168,14 @@ public class DataBackupServiceImpl implements DataBackupService {
     return restoreService.sequencesOrMrpLineTypesExist();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected DataBackup setStatus(DataBackup dataBackup) {
     DataBackup obj = dataBackupRepository.find(dataBackup.getId());
     obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_IN_PROGRESS);
     return dataBackupRepository.save(obj);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateImportId() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
     String filterStr =

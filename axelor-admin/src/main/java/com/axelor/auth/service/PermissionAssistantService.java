@@ -453,7 +453,7 @@ public class PermissionAssistantService {
     return errorLog;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveGroups(Map<String, Group> groupMap) {
 
     for (Group group : groupMap.values()) {
@@ -461,7 +461,7 @@ public class PermissionAssistantService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveRoles(Map<String, Role> roleMap) {
 
     for (Role role : roleMap.values()) {

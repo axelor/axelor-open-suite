@@ -114,7 +114,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Map<Integer, AccessConfig> getAccessConfig(Row row, App app) {
 
     Map<Integer, AccessConfig> configMap = new HashMap<>();
@@ -160,7 +160,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     return !"rwcde".startsWith(value);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Permission getPermission(String model, String value, AccessConfig config) {
 
     String[] objs = model.split("\\.");
@@ -215,7 +215,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     return permissionRepo.save(permission);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addRole(AccessConfig config, Permission permission) {
 
     String name = config.getApp().getCode() + "." + config.getName();
@@ -261,7 +261,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addRole(AccessConfig config, String menu) {
 
     String name = config.getApp().getCode() + "." + config.getName();

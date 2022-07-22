@@ -116,7 +116,7 @@ public class AppServiceImpl implements AppService {
     return saveApp(app);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public App saveApp(App app) {
     return appRepo.save(app);
   }

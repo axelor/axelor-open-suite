@@ -122,7 +122,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void deleteLink(Mapper mapper, String path, List<? extends Model> data) {
 
     path = path.split("\\.")[0];
@@ -162,7 +162,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void deleteFields(Set<MetaField> fields, Mapper mapper, List<? extends Model> data) {
 
     if (fields.isEmpty()) {

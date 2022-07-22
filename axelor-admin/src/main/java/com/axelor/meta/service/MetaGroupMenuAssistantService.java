@@ -335,7 +335,7 @@ public class MetaGroupMenuAssistantService {
     return errorLog;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveMenus() {
 
     for (MetaMenu menu : updatedMenus) {
