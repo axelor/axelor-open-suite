@@ -21,18 +21,15 @@ import java.util.List;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
-  protected InvoiceService invoiceService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo) {
     this.invoiceTermService = invoiceTermService;
-    this.invoiceService = invoiceService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
   }
