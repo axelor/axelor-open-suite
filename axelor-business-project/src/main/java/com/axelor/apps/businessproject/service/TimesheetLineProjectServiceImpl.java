@@ -127,14 +127,14 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLine;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);
     return timesheetLineRepo.save(timesheetLine);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException {
     Timesheet timesheet = getTimesheetQuery(timesheetLine).order("id").fetchOne();
     if (timesheet == null) {

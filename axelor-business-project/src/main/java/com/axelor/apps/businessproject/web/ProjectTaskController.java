@@ -66,7 +66,7 @@ public class ProjectTaskController {
    * @param request
    * @param response
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     ProjectTaskRepository projectTaskRepository = Beans.get(ProjectTaskRepository.class);
     try {

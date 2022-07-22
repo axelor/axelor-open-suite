@@ -78,7 +78,7 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         saleOrderMarginService);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void setProject(List<Long> saleOrderLineIds, Project project) {
 

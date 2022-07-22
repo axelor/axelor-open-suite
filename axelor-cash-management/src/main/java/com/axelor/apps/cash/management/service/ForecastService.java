@@ -35,7 +35,7 @@ public class ForecastService {
   @Inject protected AppBaseService appBaseService;
   @Inject protected ForecastRepository forecastRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generate(ForecastGenerator forecastGenerator) {
     LocalDate fromDate = forecastGenerator.getFromDate();
     LocalDate toDate = forecastGenerator.getToDate();
@@ -83,7 +83,7 @@ public class ForecastService {
     return forecast;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void reset(ForecastGenerator forecastGenerator) {
     forecastRepo
         .all()

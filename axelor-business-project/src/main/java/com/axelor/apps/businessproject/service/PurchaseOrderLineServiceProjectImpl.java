@@ -51,7 +51,7 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
     return line;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void setProject(List<Long> purchaseOrderLineIds, Project project) {
 

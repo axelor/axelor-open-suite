@@ -28,7 +28,7 @@ public class ExpenseLineProjectServiceImpl implements ExpenseLineProjectService 
 
   @Inject private ExpenseLineRepository expenseLineRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void setProject(List<Long> expenseLineIds, Project project) {
 

@@ -81,7 +81,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void propagateIsToInvoice(ManufOrder manufOrder) {
 
     logger.debug(

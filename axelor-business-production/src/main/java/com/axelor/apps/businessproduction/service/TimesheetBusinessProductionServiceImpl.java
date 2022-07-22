@@ -88,7 +88,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Timesheet timesheet) {
     super.validate(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
@@ -101,7 +101,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) {
     super.refuse(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
@@ -114,7 +114,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Timesheet timesheet) {
     super.cancel(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
@@ -127,7 +127,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void draft(Timesheet timesheet) {
     super.draft(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);

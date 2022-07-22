@@ -98,7 +98,7 @@ public class ExpenseLineProjectController {
    * @param request
    * @param response
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     ExpenseLineRepository expenseLineRepository = Beans.get(ExpenseLineRepository.class);
     try {

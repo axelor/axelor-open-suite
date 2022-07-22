@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 public class OperationOrderTimesheetServiceImpl implements OperationOrderTimesheetService {
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateOperationOrder(
       OperationOrder operationOrder,
       List<TimesheetLine> oldTimesheetLineList,

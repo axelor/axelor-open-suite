@@ -69,7 +69,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         internationalService);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void setProject(List<Long> invoiceLineIds, Project project) {
 
