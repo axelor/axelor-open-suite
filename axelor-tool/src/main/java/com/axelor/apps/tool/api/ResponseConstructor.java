@@ -19,4 +19,8 @@ public class ResponseConstructor {
         .entity(new ResponseBody(statusCode, message))
         .build();
   }
+
+  public static Response build(Response.Status statusCode, Object object) {
+    return Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(object).build();
+  }
 }

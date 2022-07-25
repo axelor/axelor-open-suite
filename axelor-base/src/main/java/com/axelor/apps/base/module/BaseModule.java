@@ -57,6 +57,8 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.rest.TranslationRestService;
+import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.AddressService;
@@ -251,5 +253,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
   }
 }
