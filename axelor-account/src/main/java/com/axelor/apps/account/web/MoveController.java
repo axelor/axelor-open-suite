@@ -725,4 +725,22 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void checkDuplicatedMoveOrigin(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      if (Beans.get(MoveToolService.class).checkMoveOriginIsDuplicated(move)) {
+        response.setAlert(
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
+                move.getReference(),
+                move.getPartner() != null ? move.getPartner().getFullName() : "",
+                move.getPeriod().getYear().getName()));
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
