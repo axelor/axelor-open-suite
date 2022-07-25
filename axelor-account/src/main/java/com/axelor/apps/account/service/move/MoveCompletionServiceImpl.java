@@ -2,15 +2,21 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.moveline.MoveLineCompletionService;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveCompletionServiceImpl implements MoveCompletionService {
-
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected MoveLineCompletionService moveLineCompletionService;
   protected MoveSequenceService moveSequenceService;
 
+  @Inject
   public MoveCompletionServiceImpl(
       MoveLineCompletionService moveLineCompletionService,
       MoveSequenceService moveSequenceService) {
@@ -20,7 +26,7 @@ public class MoveCompletionServiceImpl implements MoveCompletionService {
 
   @Override
   public void completeMove(Move move) throws AxelorException {
-
+    log.debug("Completing move {}", move);
     Objects.requireNonNull(move);
 
     if (move.getCurrency() != null) {
@@ -31,6 +37,11 @@ public class MoveCompletionServiceImpl implements MoveCompletionService {
 
     if (move.getMoveLineList() != null) {
       moveLineCompletionService.completeAnalyticMoveLines(move.getMoveLineList());
+    }
+
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+        || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+      freezeAccountAndPartnerFieldsOnMoveLines(move);
     }
   }
 

@@ -3,13 +3,16 @@ package com.axelor.apps.account.db.repo.listener;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCompletionService;
-import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.move.control.MovePreSaveControlService;
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
+import com.axelor.apps.account.service.move.update.MoveUpdateService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,34 +20,32 @@ public class MoveListener {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveAccountingControlService moveAccountingControlService;
-  protected MoveCompletionService moveCompletionService;
-  protected MovePreSaveControlService movePreSaveControlService;
-
-  @Inject
-  public MoveListener(
-      MoveAccountingControlService moveAccountingControlService,
-      MoveCompletionService moveCompletionService,
-      MovePreSaveControlService movePreSaveControlService,
-      MoveCustAccountService moveCustAccountService) {
-    this.moveAccountingControlService = moveAccountingControlService;
-    this.moveCompletionService = moveCompletionService;
-    this.movePreSaveControlService = movePreSaveControlService;
-  }
-
   @PrePersist
+  @PreUpdate
   public void beforeSave(Move move) throws AxelorException {
 
-    log.debug("Applying pre-persist operations on move {}", move);
+    log.debug("Applying pre-save operations on move {}", move);
 
-    movePreSaveControlService.checkValidity(move);
+    Beans.get(MovePreSaveControlService.class).checkValidity(move);
+    Beans.get(MoveCompletionService.class).completeMove(move);
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
         || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED
         || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
-      moveAccountingControlService.controlAccounting(move);
+      Beans.get(MoveAccountingControlService.class).controlAccounting(move);
     }
 
-    log.debug("Applied pre-persist operations");
+    log.debug("Applied pre-save operations");
+  }
+
+  @PostPersist
+  @PostUpdate
+  public void afterSave(Move move) throws AxelorException {
+
+    log.debug("Applying post-save operations on move {}", move);
+
+    Beans.get(MoveUpdateService.class).updateInDayBookMode(move);
+
+    log.debug("Applied post-save operations on move {}", move);
   }
 }

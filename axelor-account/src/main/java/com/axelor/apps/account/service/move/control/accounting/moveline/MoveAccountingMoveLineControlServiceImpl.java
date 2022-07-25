@@ -34,7 +34,7 @@ public class MoveAccountingMoveLineControlServiceImpl
   @Override
   public void controlAccounting(MoveLine moveLine) throws AxelorException {
 
-    log.debug("Controlling accounintg of moveLine {}", moveLine);
+    log.debug("Controlling accounting of moveLine {}", moveLine);
 
     moveLineTaxControlService.checkMandatoryTax(moveLine);
     moveLineAnalyticControlService.checkAuthorizedAnalyticDistributionTemplate(moveLine);
