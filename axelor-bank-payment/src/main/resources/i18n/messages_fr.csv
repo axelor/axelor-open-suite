@@ -333,7 +333,7 @@
 "C1 - Sequence","C1 - Référence",,
 "C2 - Company name","C2 - Nom/raison sociale du donneur d'ordre",,
 "C2 - Receiver company name","C2 - Nom/raison sociale du bénéficiaire",,
-"Can't load while another reconciliation is open","Impossible de charger ce relevé car une autre réconciliation est ouverte",,
+"Can't load while another bank reconciliation is in progress","Impossible de charger ce relevé tant qu'une autre session de rapprochement bancaire est en cours",,
 "Cancel","Annuler",,
 "Canceled","Annulé",,
 "Carried out","Réalisé",,

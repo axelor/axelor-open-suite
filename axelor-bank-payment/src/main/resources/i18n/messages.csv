@@ -333,7 +333,7 @@
 "C1 - Sequence",,,
 "C2 - Company name",,,
 "C2 - Receiver company name",,,
-"Can't load while another reconciliation is open",,,
+"Can't load while another bank reconciliation is in progress",,,
 "Cancel",,,
 "Canceled",,,
 "Carried out",,,

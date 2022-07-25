@@ -256,7 +256,7 @@ public interface IExceptionMessage {
   static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/
       "Please select one move line" /*)*/;
   static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
-      "Can't load while another reconciliation is open" /*)*/;
+      "Can't load while another bank reconciliation is in progress" /*)*/;
   static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
       "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
 
