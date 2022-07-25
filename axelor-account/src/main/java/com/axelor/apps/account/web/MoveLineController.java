@@ -382,11 +382,14 @@ public class MoveLineController {
   public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
     boolean readonly = false;
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
     try {
       if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
         readonly = true;
       }
-      if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
+      if (moveLine.getAccount() != null
+          && move.getPartner() != null
+          && moveLine.getAccount().getUseForPartnerBalance()) {
         readonly = true;
       }
       response.setAttr("partner", "readonly", readonly);
