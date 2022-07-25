@@ -154,6 +154,8 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.move.MoveCompletionService;
+import com.axelor.apps.account.service.move.MoveCompletionServiceImpl;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveComputeServiceImpl;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -178,6 +180,36 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.move.control.MoveChangeControlService;
+import com.axelor.apps.account.service.move.control.MoveChangeControlServiceImpl;
+import com.axelor.apps.account.service.move.control.MovePreSaveControlService;
+import com.axelor.apps.account.service.move.control.MovePreSaveControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingNullControlService;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingNullControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.balance.MoveAccountingBalanceControlService;
+import com.axelor.apps.account.service.move.control.accounting.balance.MoveAccountingBalanceControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.moveline.MoveAccountingMoveLineControlService;
+import com.axelor.apps.account.service.move.control.accounting.moveline.MoveAccountingMoveLineControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.moveline.account.MoveAccountingMoveLineAccountControlService;
+import com.axelor.apps.account.service.move.control.accounting.moveline.account.MoveAccountingMoveLineAccountControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.moveline.amount.MoveAccountingMoveLineAmountControlService;
+import com.axelor.apps.account.service.move.control.accounting.moveline.amount.MoveAccountingMoveLineAmountControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.moveline.analytic.MoveAccountingMoveLineAnalyticControlService;
+import com.axelor.apps.account.service.move.control.accounting.moveline.analytic.MoveAccountingMoveLineAnalyticControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.moveline.tax.MoveAccountingMoveLineTaxControlService;
+import com.axelor.apps.account.service.move.control.accounting.moveline.tax.MoveAccountingMoveLineTaxControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.period.MoveAccountingPeriodControlService;
+import com.axelor.apps.account.service.move.control.accounting.period.MoveAccountingPeriodControlServiceImpl;
+import com.axelor.apps.account.service.move.control.moveline.MoveLinePreSaveControlService;
+import com.axelor.apps.account.service.move.control.moveline.MoveLinePreSaveControlServiceImpl;
+import com.axelor.apps.account.service.move.control.moveline.date.MoveLineDateControlService;
+import com.axelor.apps.account.service.move.control.moveline.date.MoveLineDateControlServiceImpl;
+import com.axelor.apps.account.service.move.update.MoveUpdateService;
+import com.axelor.apps.account.service.move.update.MoveUpdateServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineCompletionService;
+import com.axelor.apps.account.service.moveline.MoveLineCompletionServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -415,5 +447,37 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
     bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
+    
+    bind(MoveAccountingControlService.class).to(MoveAccountingControlServiceImpl.class);
+  
+    bind(MoveAccountingNullControlService.class).to(MoveAccountingNullControlServiceImpl.class);
+    
+    bind(MoveAccountingBalanceControlService.class).to(MoveAccountingBalanceControlServiceImpl.class);
+    
+    bind(MoveAccountingMoveLineControlService.class).to(MoveAccountingMoveLineControlServiceImpl.class);
+    
+    bind(MoveAccountingMoveLineAccountControlService.class).to(MoveAccountingMoveLineAccountControlServiceImpl.class);
+    
+    bind(MoveAccountingMoveLineAmountControlService.class).to(MoveAccountingMoveLineAmountControlServiceImpl.class);
+    
+    bind(MoveAccountingMoveLineAnalyticControlService.class).to(MoveAccountingMoveLineAnalyticControlServiceImpl.class);
+    
+    bind(MoveAccountingMoveLineTaxControlService.class).to(MoveAccountingMoveLineTaxControlServiceImpl.class);
+    
+    bind(MoveAccountingPeriodControlService.class).to(MoveAccountingPeriodControlServiceImpl.class);
+    
+    bind(MoveCompletionService.class).to(MoveCompletionServiceImpl.class);
+    
+    bind(MoveLineCompletionService.class).to(MoveLineCompletionServiceImpl.class);
+    
+    bind(MovePreSaveControlService.class).to(MovePreSaveControlServiceImpl.class);
+    
+    bind(MoveLinePreSaveControlService.class).to(MoveLinePreSaveControlServiceImpl.class);
+    
+    bind(MoveLineDateControlService.class).to(MoveLineDateControlServiceImpl.class);
+    
+    bind(MoveUpdateService.class).to(MoveUpdateServiceImpl.class);
+    
+    bind(MoveChangeControlService.class).to(MoveChangeControlServiceImpl.class);
   }
 }
