@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -27,19 +28,22 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
 
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
+  protected MoveAccountingControlService moveAccountingControlService;
 
   @Inject
   public MoveSimulateServiceImpl(
-      MoveValidateService moveValidateService, MoveRepository moveRepository) {
+      MoveValidateService moveValidateService,
+      MoveRepository moveRepository,
+      MoveAccountingControlService moveAccountingControlService) {
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
+    this.moveAccountingControlService = moveAccountingControlService;
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void simulate(Move move) throws AxelorException {
-    moveValidateService.checkPreconditions(move);
-    moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    moveAccountingControlService.controlAccounting(move);
     moveValidateService.completeMoveLines(move);
     move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
     moveRepository.save(move);
