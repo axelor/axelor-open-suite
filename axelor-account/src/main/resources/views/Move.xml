@@ -49,8 +49,8 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave">
+    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload">
+
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>

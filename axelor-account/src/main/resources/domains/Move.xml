@@ -119,5 +119,6 @@
       <message if="statusSelect == 5" tag="info">Simulated move</message>
     </track>
 
+    <entity-listener class="com.axelor.apps.account.db.repo.listener.MoveListener"/>
   </entity>
 </domain-models>
