@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -62,6 +63,7 @@ public class MoveValidateService {
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
+  protected MoveAccountingControlService moveAccountingControlService;
 
   @Inject
   public MoveValidateService(
@@ -72,7 +74,8 @@ public class MoveValidateService {
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      MoveAccountingControlService moveAccountingControlService) {
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -81,6 +84,7 @@ public class MoveValidateService {
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
+    this.moveAccountingControlService = moveAccountingControlService;
   }
 
   /**
@@ -225,14 +229,7 @@ public class MoveValidateService {
 
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
-    this.checkPreconditions(move);
-
-    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        && !move.getAutoYearClosureMove()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
-    }
+    moveAccountingControlService.controlAccounting(move);
 
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
@@ -246,8 +243,6 @@ public class MoveValidateService {
     }
 
     this.completeMoveLines(move);
-
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
     this.updateValidateStatus(move, dayBookMode);
 
@@ -313,7 +308,7 @@ public class MoveValidateService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateInDayBookMode(Move move) throws AxelorException {
 
-    this.checkPreconditions(move);
+    moveAccountingControlService.controlAccounting(move);
 
     Set<Partner> partnerSet = new HashSet<>();
 
@@ -323,7 +318,6 @@ public class MoveValidateService {
     List<Partner> partnerList = new ArrayList<>();
     partnerList.addAll(partnerSet);
 
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
     moveRepository.save(move);
 
     moveCustAccountService.updateCustomerAccount(partnerList, move.getCompany());
@@ -351,40 +345,6 @@ public class MoveValidateService {
       }
     }
     return partnerList;
-  }
-
-  /**
-   * Method that freeze the account and partner fields on move lines
-   *
-   * @param move
-   */
-  public void freezeAccountAndPartnerFieldsOnMoveLines(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-
-      Account account = moveLine.getAccount();
-
-      moveLine.setAccountId(account.getId());
-      moveLine.setAccountCode(account.getCode());
-      moveLine.setAccountName(account.getName());
-      moveLine.setServiceType(account.getServiceType());
-      moveLine.setServiceTypeCode(
-          account.getServiceType() != null ? account.getServiceType().getCode() : null);
-
-      Partner partner = moveLine.getPartner();
-
-      if (partner != null) {
-        moveLine.setPartnerId(partner.getId());
-        moveLine.setPartnerFullName(partner.getFullName());
-        moveLine.setPartnerSeq(partner.getPartnerSeq());
-        moveLine.setDas2Activity(partner.getDas2Activity());
-        moveLine.setDas2ActivityName(
-            partner.getDas2Activity() != null ? partner.getDas2Activity().getName() : null);
-      }
-      if (moveLine.getTaxLine() != null) {
-        moveLine.setTaxRate(moveLine.getTaxLine().getValue());
-        moveLine.setTaxCode(moveLine.getTaxLine().getTax().getCode());
-      }
-    }
   }
 
   public boolean validateMultiple(List<? extends Move> moveList) {
