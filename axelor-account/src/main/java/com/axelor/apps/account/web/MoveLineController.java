@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
@@ -63,6 +64,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveLineController {
@@ -654,6 +656,41 @@ public class MoveLineController {
       response.setValue(
           "remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
       response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void validateCutOffBatch(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      if (!context.containsKey("_ids")) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+      }
+
+      List<Long> ids =
+          (List)
+              (((List) context.get("_ids"))
+                  .stream()
+                      .filter(ObjectUtils::notEmpty)
+                      .map(input -> Long.parseLong(input.toString()))
+                      .collect(Collectors.toList()));
+      Long id = (long) (int) context.get("_batchId");
+
+      if (CollectionUtils.isEmpty(ids)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+      } else {
+        Batch batch = Beans.get(MoveLineService.class).validateCutOffBatch(ids, id);
+        response.setFlash(batch.getComments());
+      }
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

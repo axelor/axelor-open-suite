@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -672,6 +673,27 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleFinancialDiscountAccount();
+  }
+
+  public Account getPartnerAccount(AccountConfig accountConfig, int accountingCutOffTypeSelect)
+      throws AxelorException {
+    Account account = null;
+
+    if (accountingCutOffTypeSelect
+        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+      account = accountConfig.getPrepaidExpensesAccount();
+    } else if (accountingCutOffTypeSelect
+        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES) {
+      account = accountConfig.getDeferredIncomesAccount();
+    }
+
+    if (account == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return account;
   }
 
   public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {

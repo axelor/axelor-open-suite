@@ -251,6 +251,29 @@
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
   </grid>
 
+  <grid name="move-line-cut-off-grid" title="Move lines concerned by cut off"
+    model="com.axelor.apps.account.db.MoveLine" groupBy="move">
+    <toolbar>
+      <button name="validateBtn" title="Validate" icon="fa-check"
+        onClick="action-move-line-method-validate-cut-off-batch"/>
+    </toolbar>
+    <hilite color="danger" if="$get('move.cutOffMoveGenerated')"/>
+    <field name="move.reference"/>
+    <field name="name"/>
+    <field name="move.date"/>
+    <field name="partner"/>
+    <field name="move.journal"/>
+    <field name="account"/>
+    <field name="description"/>
+    <field name="move.statusSelect"/>
+    <field name="$cutOffProrataAmount" title="Prorata amount" type="decimal" x-scale="2"/>
+    <field name="cutOffStartDate"/>
+    <field name="cutOffEndDate"/>
+    <field name="move.cutOffMoveGenerated" hidden="true"/>
+    <field name="move" hidden="true"/>
+    <field name="id" hidden="true"/>
+  </grid>
+
   <form name="incl-analytic-distribution-move-line-form"
     model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
     onLoad="action-record-initialize-permission-validation-move-line">
@@ -1144,6 +1167,10 @@
   <action-method name="action-move-line-method-compute-financial-discount">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeFinancialDiscount"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-validate-cut-off-batch">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="validateCutOffBatch"/>
   </action-method>
 
   <action-method name="action-move-line-method-update-invoice-terms">

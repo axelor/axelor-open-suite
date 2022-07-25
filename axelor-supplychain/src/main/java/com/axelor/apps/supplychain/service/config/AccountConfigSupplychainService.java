@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.config;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -50,27 +49,5 @@ public class AccountConfigSupplychainService extends AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getForecastedInvSuppAccount();
-  }
-
-  public Account getPartnerAccount(AccountConfig accountConfig, int accountingCutOffTypeSelect)
-      throws AxelorException {
-    Account account = null;
-
-    if (accountingCutOffTypeSelect
-        == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
-      account = accountConfig.getPrepaidExpensesAccount();
-    } else if (accountingCutOffTypeSelect
-        == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES) {
-      account = accountConfig.getDeferredIncomesAccount();
-    }
-
-    if (account == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT),
-          accountConfig.getCompany().getName());
-    }
-
-    return account;
   }
 }
