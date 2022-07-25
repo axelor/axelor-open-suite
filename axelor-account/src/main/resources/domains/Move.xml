@@ -116,5 +116,6 @@
       <message if="statusSelect == 4" tag="warning">Move canceled</message>
     </track>
 
+    <entity-listener class="com.axelor.apps.account.db.repo.listener.MoveListener"/>
   </entity>
 </domain-models>
