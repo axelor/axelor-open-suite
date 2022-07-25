@@ -12,13 +12,16 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveUpdateServiceImpl implements MoveUpdateService {
-
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected MoveCustAccountService moveCustAccountService;
@@ -42,6 +45,8 @@ public class MoveUpdateServiceImpl implements MoveUpdateService {
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
         || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+
+      log.debug("Updating customer account of move {}", move);
       Set<Partner> partnerSet = new HashSet<>();
 
       partnerSet.addAll(this.getPartnerOfMoveBeforeUpdate(move));
@@ -49,9 +54,6 @@ public class MoveUpdateServiceImpl implements MoveUpdateService {
 
       List<Partner> partnerList = new ArrayList<>();
       partnerList.addAll(partnerSet);
-
-      // This line should probably be move in MoveListener pre-persist method
-      moveCompletionService.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
       moveCustAccountService.updateCustomerAccount(partnerList, move.getCompany());
     }

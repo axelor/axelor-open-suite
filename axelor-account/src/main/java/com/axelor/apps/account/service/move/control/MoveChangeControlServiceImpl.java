@@ -38,6 +38,9 @@ public class MoveChangeControlServiceImpl implements MoveChangeControlService {
 
     Move moveDB = moveRepository.find(move.getId());
     List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
+    if (moveDB.getMoveLineList() == null) {
+      return;
+    }
     for (MoveLine moveLineDB : moveDB.getMoveLineList()) {
       if (!move.getMoveLineList().contains(moveLineDB) && moveLineDB.getReconcileGroup() != null) {
         moveLineReconciledAndRemovedNameList.add(moveLineDB.getName());

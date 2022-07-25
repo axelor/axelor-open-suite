@@ -26,11 +26,15 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveCustAccountService {
 
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AccountCustomerService accountCustomerService;
 
   @Inject
@@ -61,6 +65,7 @@ public class MoveCustAccountService {
   public void updateCustomerAccount(List<Partner> partnerList, Company company)
       throws AxelorException {
 
+    log.debug("With company {} updating parters {}", company, partnerList);
     if (AccountingService.getUpdateCustomerAccount()) {
       accountCustomerService.updatePartnerAccountingSituation(
           partnerList, company, true, true, false);

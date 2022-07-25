@@ -22,9 +22,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveSequenceService;
-import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -100,38 +97,6 @@ public class MoveManagementRepository extends MoveRepository {
 
     if (analyticMoveLineList != null) {
       moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
-    }
-  }
-
-  @Override
-  public Move save(Move move) {
-    try {
-
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
-        Beans.get(MoveValidateService.class).checkPreconditions(move);
-      }
-      if (move.getCurrency() != null) {
-        move.setCurrencyCode(move.getCurrency().getCode());
-      }
-      Beans.get(MoveSequenceService.class).setDraftSequence(move);
-      MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
-      List<MoveLine> moveLineList = move.getMoveLineList();
-      if (moveLineList != null) {
-        for (MoveLine moveLine : moveLineList) {
-          List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-          if (analyticMoveLineList != null) {
-            for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-              analyticMoveLine.setAccount(moveLine.getAccount());
-              analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-            }
-          }
-          moveLineControlService.controlAccountingAccount(moveLine);
-        }
-      }
-      return super.save(move);
-    } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
