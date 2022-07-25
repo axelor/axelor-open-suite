@@ -218,7 +218,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     InvoicePayment invoicePayment =
         super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
-
+    if (invoicePayment == null) {
+      return null;
+    }
     invoicePayment.setBankOrder(paymentSession.getBankOrder());
 
     return invoicePaymentRepo.save(invoicePayment);

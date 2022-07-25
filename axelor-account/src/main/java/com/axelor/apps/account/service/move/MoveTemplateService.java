@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,6 +44,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +141,18 @@ public class MoveTemplateService {
         partner = creditPartner;
       }
       if (moveTemplate.getJournal().getCompany() != null) {
+        int[] functionalOriginTab = new int[0];
+        if (!ObjectUtils.isEmpty(moveTemplate.getJournal().getAuthorizedFunctionalOriginSelect())) {
+          functionalOriginTab =
+              Arrays.stream(
+                      moveTemplate
+                          .getJournal()
+                          .getAuthorizedFunctionalOriginSelect()
+                          .replace(" ", "")
+                          .split(","))
+                  .mapToInt(Integer::parseInt)
+                  .toArray();
+        }
         Move move =
             moveCreateService.createMove(
                 moveTemplate.getJournal(),
@@ -150,7 +164,7 @@ public class MoveTemplateService {
                 null,
                 partner != null ? partner.getFiscalPosition() : null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                0,
+                !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
                 null);
 
@@ -231,6 +245,18 @@ public class MoveTemplateService {
           moveTemplateRepo.find(Long.valueOf((Integer) moveTemplateMap.get("id")));
 
       if (moveTemplate.getJournal().getCompany() != null) {
+        int[] functionalOriginTab = new int[0];
+        if (!ObjectUtils.isEmpty(moveTemplate.getJournal().getAuthorizedFunctionalOriginSelect())) {
+          functionalOriginTab =
+              Arrays.stream(
+                      moveTemplate
+                          .getJournal()
+                          .getAuthorizedFunctionalOriginSelect()
+                          .replace(" ", "")
+                          .split(","))
+                  .mapToInt(Integer::parseInt)
+                  .toArray();
+        }
         Move move =
             moveCreateService.createMove(
                 moveTemplate.getJournal(),
@@ -242,7 +268,7 @@ public class MoveTemplateService {
                 null,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                0,
+                !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
                 null);
         int counter = 1;

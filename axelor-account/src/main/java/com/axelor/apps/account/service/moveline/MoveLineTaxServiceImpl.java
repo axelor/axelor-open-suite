@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -38,6 +37,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
@@ -56,7 +57,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveRepository moveRepository;
   protected TaxAccountToolService taxAccountToolService;
-  protected AccountingSituationRepository accountingSituationRepository;
   protected MoveLineToolService moveLineToolService;
 
   @Inject
@@ -67,7 +67,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       MoveLineCreateService moveLineCreateService,
       MoveRepository moveRepository,
       TaxAccountToolService taxAccountToolService,
-      AccountingSituationRepository accountingSituationRepository,
       MoveLineToolService moveLineToolService) {
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
@@ -75,7 +74,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveRepository = moveRepository;
     this.taxAccountToolService = taxAccountToolService;
-    this.accountingSituationRepository = accountingSituationRepository;
     this.moveLineToolService = moveLineToolService;
   }
 

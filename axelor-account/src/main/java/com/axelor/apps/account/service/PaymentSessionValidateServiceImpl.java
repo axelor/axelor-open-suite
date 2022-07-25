@@ -363,7 +363,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
-            partnerService.getDefaultBankDetails(partner),
+            partner != null ? partnerService.getDefaultBankDetails(partner) : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
@@ -784,5 +784,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return isHoldBackWithRefund;
+  }
+
+  @Override
+  public boolean isEmpty(PaymentSession paymentSession) {
+    return invoiceTermRepo.all().filter("self.paymentSession = :paymentSession")
+        .bind("paymentSession", paymentSession).fetch().stream()
+        .noneMatch(this::shouldBeProcessed);
   }
 }

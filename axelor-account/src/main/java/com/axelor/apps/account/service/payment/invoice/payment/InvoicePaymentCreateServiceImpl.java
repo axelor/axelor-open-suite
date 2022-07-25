@@ -45,6 +45,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -54,6 +55,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.shiro.util.CollectionUtils;
 
+@RequestScoped
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
 
   protected InvoicePaymentRepository invoicePaymentRepository;

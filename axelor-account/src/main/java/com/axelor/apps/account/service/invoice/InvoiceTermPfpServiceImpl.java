@@ -213,10 +213,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setIsCustomized(true);
     originalInvoiceTerm.setIsPaid(false);
     originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmount());
-    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setPercentage(
         invoiceTermService.computeCustomizedPercentage(
             grantedAmount, originalInvoiceTerm.getAmount()));
+    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setAmountRemaining(grantedAmount);
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
