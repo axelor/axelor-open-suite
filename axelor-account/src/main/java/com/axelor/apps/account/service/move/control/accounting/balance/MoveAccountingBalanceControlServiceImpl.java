@@ -1,57 +1,54 @@
 package com.axelor.apps.account.service.move.control.accounting.balance;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MoveAccountingBalanceControlServiceImpl implements MoveAccountingBalanceControlService{
-	
-	private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+public class MoveAccountingBalanceControlServiceImpl
+    implements MoveAccountingBalanceControlService {
 
-	@Override
-	public void checkWellBalanced(Move move) throws AxelorException {
-	    log.debug("Well-balanced validation on account move {}", move.getReference());
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	    if (move.getMoveLineList() != null) {
+  @Override
+  public void checkWellBalanced(Move move) throws AxelorException {
+    log.debug("Well-balanced validation on account move {}", move.getReference());
 
-	      BigDecimal totalDebit = BigDecimal.ZERO;
-	      BigDecimal totalCredit = BigDecimal.ZERO;
+    if (move.getMoveLineList() != null) {
 
-	      for (MoveLine moveLine : move.getMoveLineList()) {
+      BigDecimal totalDebit = BigDecimal.ZERO;
+      BigDecimal totalCredit = BigDecimal.ZERO;
 
-	        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-	            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-	          throw new AxelorException(
-	              move,
-	              TraceBackRepository.CATEGORY_INCONSISTENCY,
-	              I18n.get(IExceptionMessage.MOVE_6),
-	              moveLine.getName());
-	        }
+      for (MoveLine moveLine : move.getMoveLineList()) {
 
-	        totalDebit = totalDebit.add(moveLine.getDebit());
-	        totalCredit = totalCredit.add(moveLine.getCredit());
-	      }
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.MOVE_6),
+              moveLine.getName());
+        }
 
-	      if (totalDebit.compareTo(totalCredit) != 0) {
-	        throw new AxelorException(
-	            move,
-	            TraceBackRepository.CATEGORY_INCONSISTENCY,
-	            I18n.get(IExceptionMessage.MOVE_7),
-	            move.getReference(),
-	            totalDebit,
-	            totalCredit);
-	      }
-	    }
-		
-	}
+        totalDebit = totalDebit.add(moveLine.getDebit());
+        totalCredit = totalCredit.add(moveLine.getCredit());
+      }
 
+      if (totalDebit.compareTo(totalCredit) != 0) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.MOVE_7),
+            move.getReference(),
+            totalDebit,
+            totalCredit);
+      }
+    }
+  }
 }
