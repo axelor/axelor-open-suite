@@ -154,14 +154,20 @@
   </form>
 
   <form name="payment-session-validate-confirm-wizard" title="Validation"
-    model="com.axelor.apps.account.db.PaymentSession">
+    model="com.axelor.apps.account.db.PaymentSession"
+    onLoad="action-payment-session-method-check-is-all-invoice-terms">
     <panel name="mainPanel" itemSpan="12">
       <label
         title="Warning : The following invoice terms have been paid or partially paid since the payment session was created and thus won't be considered during validation. Do you wish to continue ?"/>
-      <button name="validateBtn" title="Continue" colSpan="4"
-        onClick="action-payment-session-group-process-invoice-terms"/>
+      <panel name="validateOrErrorPanel" stacked="true">
+        <button name="validateBtn" title="Continue" showIf="!$isAllInvoiceTerms"
+          onClick="action-payment-session-group-process-invoice-terms,close"/>
+        <label showIf="$isAllInvoiceTerms" css="label-danger"
+          title="Every invoice term from the payment session cannot be considered so it is not possible to continue."/>
+      </panel>
       <panel-dashlet name="releasedInvoiceTermsPanel" showTitle="false"
         action="action-payment-session-view-released-invoice-terms" readonly="true"/>
+      <field name="$isAllInvoiceTerms" type="boolean" hidden="true"/>
     </panel>
   </form>
 
@@ -301,6 +307,11 @@
 
   <action-method name="action-payment-session-method-check-session">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="checkSession"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-check-is-all-invoice-terms">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="checkIsAllInvoiceTerms"/>
   </action-method>
 
   <action-group name="action-group-payment-session-search-eligible-terms">

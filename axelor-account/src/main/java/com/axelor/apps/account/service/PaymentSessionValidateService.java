@@ -18,4 +18,6 @@ public interface PaymentSessionValidateService {
   public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException;
 
   public boolean checkIsHoldBackWithRefund(PaymentSession paymentSession) throws AxelorException;
+
+  boolean isEmpty(PaymentSession paymentSession);
 }

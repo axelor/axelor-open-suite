@@ -785,4 +785,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     return isHoldBackWithRefund;
   }
+
+  @Override
+  public boolean isEmpty(PaymentSession paymentSession) {
+    return invoiceTermRepo.all().filter("self.paymentSession = :paymentSession")
+        .bind("paymentSession", paymentSession).fetch().stream()
+        .noneMatch(this::shouldBeProcessed);
+  }
 }
