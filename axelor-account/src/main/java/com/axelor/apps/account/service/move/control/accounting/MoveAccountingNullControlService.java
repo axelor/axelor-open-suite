@@ -5,10 +5,11 @@ import com.axelor.exception.AxelorException;
 
 public interface MoveAccountingNullControlService {
 
-	/**
-	 * Check null or empty model
-	 * @param model
-	 * @throws AxelorException
-	 */
-	void checkNullFields(Move model) throws AxelorException;
+  /**
+   * Check null or empty model
+   *
+   * @param model
+   * @throws AxelorException
+   */
+  void checkNullFields(Move model) throws AxelorException;
 }

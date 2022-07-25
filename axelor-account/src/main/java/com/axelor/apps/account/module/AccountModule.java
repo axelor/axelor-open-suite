@@ -447,37 +447,43 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
     bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
-    
+
     bind(MoveAccountingControlService.class).to(MoveAccountingControlServiceImpl.class);
-  
+
     bind(MoveAccountingNullControlService.class).to(MoveAccountingNullControlServiceImpl.class);
-    
-    bind(MoveAccountingBalanceControlService.class).to(MoveAccountingBalanceControlServiceImpl.class);
-    
-    bind(MoveAccountingMoveLineControlService.class).to(MoveAccountingMoveLineControlServiceImpl.class);
-    
-    bind(MoveAccountingMoveLineAccountControlService.class).to(MoveAccountingMoveLineAccountControlServiceImpl.class);
-    
-    bind(MoveAccountingMoveLineAmountControlService.class).to(MoveAccountingMoveLineAmountControlServiceImpl.class);
-    
-    bind(MoveAccountingMoveLineAnalyticControlService.class).to(MoveAccountingMoveLineAnalyticControlServiceImpl.class);
-    
-    bind(MoveAccountingMoveLineTaxControlService.class).to(MoveAccountingMoveLineTaxControlServiceImpl.class);
-    
+
+    bind(MoveAccountingBalanceControlService.class)
+        .to(MoveAccountingBalanceControlServiceImpl.class);
+
+    bind(MoveAccountingMoveLineControlService.class)
+        .to(MoveAccountingMoveLineControlServiceImpl.class);
+
+    bind(MoveAccountingMoveLineAccountControlService.class)
+        .to(MoveAccountingMoveLineAccountControlServiceImpl.class);
+
+    bind(MoveAccountingMoveLineAmountControlService.class)
+        .to(MoveAccountingMoveLineAmountControlServiceImpl.class);
+
+    bind(MoveAccountingMoveLineAnalyticControlService.class)
+        .to(MoveAccountingMoveLineAnalyticControlServiceImpl.class);
+
+    bind(MoveAccountingMoveLineTaxControlService.class)
+        .to(MoveAccountingMoveLineTaxControlServiceImpl.class);
+
     bind(MoveAccountingPeriodControlService.class).to(MoveAccountingPeriodControlServiceImpl.class);
-    
+
     bind(MoveCompletionService.class).to(MoveCompletionServiceImpl.class);
-    
+
     bind(MoveLineCompletionService.class).to(MoveLineCompletionServiceImpl.class);
-    
+
     bind(MovePreSaveControlService.class).to(MovePreSaveControlServiceImpl.class);
-    
+
     bind(MoveLinePreSaveControlService.class).to(MoveLinePreSaveControlServiceImpl.class);
-    
+
     bind(MoveLineDateControlService.class).to(MoveLineDateControlServiceImpl.class);
-    
+
     bind(MoveUpdateService.class).to(MoveUpdateServiceImpl.class);
-    
+
     bind(MoveChangeControlService.class).to(MoveChangeControlServiceImpl.class);
   }
 }

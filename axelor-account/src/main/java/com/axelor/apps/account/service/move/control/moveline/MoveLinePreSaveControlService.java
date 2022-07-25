@@ -5,10 +5,11 @@ import com.axelor.exception.AxelorException;
 
 public interface MoveLinePreSaveControlService {
 
-	/**
-	 * Control the validity of the move
-	 * @param move
-	 * @throws AxelorException
-	 */
-	void checkValidity(MoveLine moveLine) throws AxelorException;
+  /**
+   * Control the validity of the move
+   *
+   * @param move
+   * @throws AxelorException
+   */
+  void checkValidity(MoveLine moveLine) throws AxelorException;
 }

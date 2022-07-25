@@ -5,11 +5,11 @@ import com.axelor.exception.AxelorException;
 
 public interface MoveAccountingBalanceControlService {
 
-	  /**
-	   * Checks that the move is balanced
-	   *
-	   * @param move: Move
-	   * @throws AxelorException
-	   */
-	void checkWellBalanced(Move move) throws AxelorException;
+  /**
+   * Checks that the move is balanced
+   *
+   * @param move: Move
+   * @throws AxelorException
+   */
+  void checkWellBalanced(Move move) throws AxelorException;
 }
