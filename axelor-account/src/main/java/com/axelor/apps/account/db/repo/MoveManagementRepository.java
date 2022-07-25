@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -77,7 +78,11 @@ public class MoveManagementRepository extends MoveRepository {
       List<MoveLine> moveLineList = copy.getMoveLineList();
 
       if (moveLineList != null) {
+        MoveLineInvoiceTermService moveLineInvoiceTermService =
+            Beans.get(MoveLineInvoiceTermService.class);
+
         moveLineList.forEach(moveLine -> resetMoveLine(moveLine, copy.getDate()));
+        moveLineList.forEach(moveLineInvoiceTermService::updateInvoiceTermsParentFields);
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

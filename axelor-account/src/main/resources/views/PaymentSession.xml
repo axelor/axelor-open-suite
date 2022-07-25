@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="payment-session-grid" title="Payment sessions"
+  <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="name"/>
     <field name="createdOn"/>
@@ -46,10 +46,10 @@
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
     onLoad="action-group-payment-session-on-load" model="com.axelor.apps.account.db.PaymentSession"
-    width="large">
+    width="large" canDelete="statusSelect == 4">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
-        onClick="save,action-view-account-payment-session-print-wizard"/>
+        onClick="save,action-view-account-payment-session-print-wizard" hidden="true"/>
     </toolbar>
     <panel name="statusSelectPanel" colSpan="7" stacked="true">
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
@@ -187,6 +187,7 @@
     <action name="action-payment-session-validate-cancel"/>
     <action name="save"/>
     <action name="action-payment-session-method-cancel"/>
+    <action name="action-method-payment-session-compute-total"/>
   </action-group>
 
   <action-group name="action-group-payment-session-on-load">
@@ -361,7 +362,7 @@
   <action-view name="action-payment-session-view-released-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
-    <view type="form" name="invoice-term-move-line-form"/>
+    <view type="form" name="invoice-form"/>
     <domain>self.paymentSession.id = :_id AND self.isSelectedOnPaymentSession IS TRUE AND
       (self.isPaid IS TRUE OR self.paymentAmount > self.amountRemaining)</domain>
     <context name="_id" expr="eval: id"/>

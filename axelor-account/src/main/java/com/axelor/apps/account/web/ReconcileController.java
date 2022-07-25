@@ -26,6 +26,8 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ReconcileController {
@@ -68,5 +70,32 @@ public class ReconcileController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void setMoveLineDomain(ActionRequest request, ActionResponse response, boolean isDebit) {
+    try {
+      Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+      String moveLineIds =
+          Beans.get(ReconcileService.class).getAllowedMoveLines(reconcile, isDebit).stream()
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
+
+      String moveLinePrefix = isDebit ? "debit" : "credit";
+      response.setAttr(
+          String.format("%sMoveLine", moveLinePrefix),
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDebitMoveLineDomain(ActionRequest request, ActionResponse response) {
+    this.setMoveLineDomain(request, response, true);
+  }
+
+  public void setCreditMoveLineDomain(ActionRequest request, ActionResponse response) {
+    this.setMoveLineDomain(request, response, false);
   }
 }

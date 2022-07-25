@@ -132,6 +132,17 @@
         return BigDecimal.ZERO;
 	   ]]>
     </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
 
     <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>

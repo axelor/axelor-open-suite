@@ -103,8 +103,7 @@
 
     <panel name="loadInvoiceTermsInfoPanel" colSpan="12" showIf="statusSelect == 1">
       <button name="loadInvoiceTermsBtn" title="Search elements to pay"
-        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadInvoiceTerms,save"
-        colSpan="6"/>
+        onClick="action-payment-voucher-group-search-elements-to-pay,save" colSpan="6"/>
     </panel>
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2" colSpan="12">
@@ -190,7 +189,7 @@
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-method-fill-bank-details"/>
     <action name="action-payment-voucher-record-value-for-collection-account"
-      if="paymentMode.typeSelect == 7"/>
+      if="paymentMode?.typeSelect == 7"/>
     <action name="action-payment-voucher-record-cheque-owner"/>
     <action name="action-payment-voucher-record-cheque-due-date"/>
   </action-group>
@@ -395,6 +394,20 @@
     <call class="com.axelor.apps.account.web.PaymentVoucherController"
       method="setReceiptDisplay"/>
   </action-method>
+
+  <action-method name="action-payment-voucher-method-reset-imputation">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
+  </action-method>
+
+  <action-method name="action-payment-voucher-method-load-lines">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="loadInvoiceTerms"/>
+  </action-method>
+
+  <action-group name="action-payment-voucher-group-search-elements-to-pay">
+    <action name="action-payment-voucher-method-load-lines"/>
+    <action name="action-payment-voucher-method-reset-imputation"/>
+  </action-group>
 
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">

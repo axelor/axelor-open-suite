@@ -1,0 +1,3 @@
+---
+title: "StringTool : Optimize getIdListString method and ignore null id's"
+type: change

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -35,6 +36,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -163,9 +165,7 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
             moveLineList.add(moveLine);
           }
         }
@@ -328,6 +328,12 @@ public class MoveLineController {
             response.setValue("account", accountingAccount);
             if (!accountingAccount.getUseForPartnerBalance()) {
               response.setValue("partner", null);
+            }
+            AnalyticDistributionTemplate analyticDistributionTemplate =
+                accountingAccount.getAnalyticDistributionTemplate();
+            if (accountingAccount.getAnalyticDistributionAuthorized()
+                && analyticDistributionTemplate != null) {
+              response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
             }
           }
 
@@ -648,6 +654,16 @@ public class MoveLineController {
       response.setValue(
           "remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
       response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
+      response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

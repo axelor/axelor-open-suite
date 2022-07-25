@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.tool.ContextTool;
@@ -120,22 +119,30 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      Invoice invoice = null;
+      MoveLine moveLine = null;
+
       if (request.getContext().getParent() != null) {
-        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
         if (invoice != null) {
           invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
           response.setValues(invoiceTerm);
         } else {
-          MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+          moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
           if (moveLine != null) {
             Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
             invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-            response.setValues(invoiceTerm);
+
+            if (move != null) {
+              moveLine.setMove(move);
+            }
           }
         }
       }
 
+      invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
+      response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -149,9 +156,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       if (ObjectUtils.notEmpty(invoiceTermId) && ObjectUtils.isEmpty(invoiceTermIds)) {
 
-        if (invoiceTerm.getInvoice() != null
-            && invoiceTerm.getInvoice().getCompany() != null
-            && invoiceTerm.getReasonOfRefusalToPay() != null) {
+        if (invoiceTerm.getCompany() != null && invoiceTerm.getReasonOfRefusalToPay() != null) {
           Beans.get(InvoiceTermPfpService.class)
               .refusalToPay(
                   Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
@@ -191,7 +196,8 @@ public class InvoiceTermController {
       response.setAttr(
           "pfpValidatorUser",
           "domain",
-          Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(invoiceTerm.getPartner(), invoiceTerm.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -208,7 +214,8 @@ public class InvoiceTermController {
             invoiceTerm
                 .getPfpValidatorUser()
                 .equals(
-                    Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+                    Beans.get(InvoiceTermService.class)
+                        .getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany())));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

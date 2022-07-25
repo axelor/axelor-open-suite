@@ -11,6 +11,7 @@
     <integer name="sequence" title="Sequence"/>
     <date name="dueDate" title="Due date"/>
     <date name="estimatedPaymentDate" title="Estimated payment date"/>
+    <date name="originDate" title="Origin date"/>
     <decimal name="amount" title="Amount"/>
     <decimal name="amountRemaining" title="Amount remaining"/>
     <decimal name="remainingPfpAmount" title="Remaining amount" scale="2" precision="20"
@@ -19,6 +20,7 @@
       help="This amount corresponds, in the event of a partial pass for payment, to the initial amount of the term."/>
     <boolean name="isPaid" title="Paid" default="false"/>
     <boolean name="isHoldBack" title="Holdback" default="false"/>
+    <string name="origin" title="Origin"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
     <many-to-one name="financialDiscount"
@@ -27,6 +29,9 @@
       ref="com.axelor.apps.account.db.PfpPartialReason" title="PFP Partial Reason"/>
     <many-to-one name="originInvoiceTerm" title="Origin invoice term"
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
       title="Remaining total amount after Fin. discount"/>

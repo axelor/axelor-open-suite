@@ -229,9 +229,13 @@ public class InvoicePaymentController {
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
         BigDecimal payableAmount =
             Beans.get(InvoicePaymentToolService.class)
-                .getPayableAmount(invoiceTerms, invoicePayment.getPaymentDate());
+                .getPayableAmount(
+                    invoiceTerms,
+                    invoicePayment.getPaymentDate(),
+                    invoicePayment.getManualChange());
 
-        if (invoicePayment.getAmount().compareTo(payableAmount) > 0) {
+        if (!invoicePayment.getManualChange()
+            || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
           amountError = invoicePayment.getManualChange();
         }
@@ -241,10 +245,17 @@ public class InvoicePaymentController {
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
+          BigDecimal amount = invoicePayment.getAmount();
+
+          if (invoicePayment.getManualChange()) {
+            Beans.get(InvoicePaymentToolService.class)
+                .computeFromInvoiceTermPayments(invoicePayment);
+            amount = amount.add(invoicePayment.getFinancialDiscountTotalAmount());
+          }
+
           invoicePayment.clearInvoiceTermPaymentList();
           Beans.get(InvoiceTermPaymentService.class)
-              .initInvoiceTermPaymentsWithAmount(
-                  invoicePayment, invoiceTerms, invoicePayment.getAmount());
+              .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount);
         }
         response.setValues(invoicePayment);
 

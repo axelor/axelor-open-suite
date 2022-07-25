@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
@@ -31,7 +30,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -90,7 +88,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -115,9 +112,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
-
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public InvoiceServiceImpl(
@@ -1028,61 +1022,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceRepo.save(invoice);
   }
 
-  @Override
-  public User getPfpValidatorUser(Invoice invoice) {
-
-    AccountingSituation accountingSituation =
-        Beans.get(AccountingSituationService.class)
-            .getAccountingSituation(invoice.getPartner(), invoice.getCompany());
-    if (accountingSituation == null) {
-      return null;
-    }
-    return accountingSituation.getPfpValidatorUser();
-  }
-
-  @Override
-  public String getPfpValidatorUserDomain(Invoice invoice) {
-
-    User pfpValidatorUser = getPfpValidatorUser(invoice);
-    if (pfpValidatorUser == null) {
-      return "self.id in (0)";
-    }
-    List<SubstitutePfpValidator> substitutePfpValidatorList =
-        pfpValidatorUser.getSubstitutePfpValidatorList();
-    List<User> validPfpValidatorUserList = new ArrayList<>();
-    StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
-    LocalDate todayDate = appBaseService.getTodayDate(invoice.getCompany());
-
-    validPfpValidatorUserList.add(pfpValidatorUser);
-
-    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
-
-      if (substituteStartDate == null) {
-        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        }
-      } else {
-        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        } else if (substituteStartDate.isBefore(todayDate)
-            && substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        }
-      }
-    }
-
-    pfpValidatorUserDomain
-        .append("(")
-        .append(
-            validPfpValidatorUserList.stream()
-                .map(pfpValidator -> pfpValidator.getId().toString())
-                .collect(Collectors.joining(",")))
-        .append(")");
-    return pfpValidatorUserDomain.toString();
-  }
-
   protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException {
     // isPurchase() = isSupplier()
     if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnSaleInvoice()
@@ -1162,7 +1101,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
     return invoice.getPfpValidatorUser() != null
-        && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
+        && invoice
+            .getPfpValidatorUser()
+            .equals(
+                invoiceTermService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -1209,5 +1151,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return deadlineDate.isBefore(invoice.getInvoiceDate())
         ? invoice.getInvoiceDate()
         : deadlineDate;
+  }
+
+  public void updateInvoiceTermsParentFields(Invoice invoice) {
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+    invoiceTermList.forEach(
+        it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
   }
 }

@@ -27,6 +27,8 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -206,6 +208,7 @@ public class DuplicateObjectsController {
 
     Context context = request.getContext();
     String model = (String) context.get("_contextModel");
+    MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
 
     if (model == null) {
       model = request.getModel();
@@ -219,7 +222,10 @@ public class DuplicateObjectsController {
         List<HashMap<String, Object>> fieldsSet =
             (List<HashMap<String, Object>>) context.get("fieldsSet");
         for (HashMap<String, Object> field : fieldsSet) {
-          fields.add((String) field.get("name"));
+          MetaField metaField = metaFieldRepository.find(((Integer) field.get("id")).longValue());
+          if (metaField != null) {
+            fields.add(metaField.getName());
+          }
         }
       }
     }

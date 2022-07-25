@@ -104,7 +104,8 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean getManagePfpCondition(Invoice invoice) {
-    return invoice.getCompany().getAccountConfig().getIsManagePassedForPayment();
+    return invoice.getCompany() != null
+        && invoice.getCompany().getAccountConfig().getIsManagePassedForPayment();
   }
 
   @Override

@@ -30,12 +30,14 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -47,6 +49,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -54,6 +57,7 @@ import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,6 +71,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -87,6 +92,9 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepo;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected MoveLineControlService moveLineControlService;
+  protected MoveLineRepository moveLineRepo;
+  protected SubrogationReleaseWorkflowService subrogationReleaseWorkflowService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -105,7 +113,10 @@ public class ReconcileServiceImpl implements ReconcileService {
       PaymentMoveLineDistributionService paymentMoveLineDistributionService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermPaymentRepository invoiceTermPaymentRepo,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      MoveLineControlService moveLineControlService,
+      MoveLineRepository moveLineRepo,
+      SubrogationReleaseWorkflowService subrogationReleaseWorkflowService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -123,6 +134,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermPaymentRepo = invoiceTermPaymentRepo;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.moveLineControlService = moveLineControlService;
+    this.moveLineRepo = moveLineRepo;
+    this.subrogationReleaseWorkflowService = subrogationReleaseWorkflowService;
   }
 
   /**
@@ -447,9 +461,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (invoiceTermList != null) {
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment,
-              invoiceTermList,
-              invoicePayment != null ? invoicePayment.getAmount() : amount);
+              invoicePayment, invoiceTermList, amount);
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         invoiceTermService.updateInvoiceTermsPaidAmount(
@@ -631,6 +643,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    Invoice invoice = debitMoveLine.getMove().getInvoice();
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
@@ -648,6 +661,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
+    if (invoice != null && invoice.getSubrogationRelease() != null) {
+      subrogationReleaseWorkflowService.goBackToAccounted(invoice.getSubrogationRelease());
+    }
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
   }
@@ -811,5 +827,38 @@ public class ReconcileServiceImpl implements ReconcileService {
       return creditReconcileList;
     }
     return Lists.newArrayList();
+  }
+
+  @Override
+  public List<Long> getAllowedMoveLines(Reconcile reconcile, boolean isDebit) {
+    MoveLine otherMoveLine = isDebit ? reconcile.getDebitMoveLine() : reconcile.getCreditMoveLine();
+    StringBuilder moveLineQueryStr =
+        new StringBuilder(
+            "self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+
+    if (isDebit) {
+      moveLineQueryStr.append(" AND self.debit > 0");
+    } else {
+      moveLineQueryStr.append(" AND self.credit > 0");
+    }
+
+    if (otherMoveLine != null) {
+      moveLineQueryStr.append(" AND self.partner = :partner");
+    }
+
+    Query<MoveLine> moveLineQuery =
+        moveLineRepo
+            .all()
+            .filter(moveLineQueryStr.toString())
+            .bind("company", reconcile.getCompany());
+
+    if (otherMoveLine != null) {
+      moveLineQuery = moveLineQuery.bind("partner", otherMoveLine.getPartner());
+    }
+
+    return moveLineQuery.fetch().stream()
+        .filter(moveLineControlService::canReconcile)
+        .map(MoveLine::getId)
+        .collect(Collectors.toList());
   }
 }

@@ -28,6 +28,8 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
@@ -239,6 +241,8 @@ public interface InvoiceTermService {
       BigDecimal percentage,
       boolean isHoldBack);
 
+  void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
+
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
@@ -246,6 +250,8 @@ public interface InvoiceTermService {
   public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
+
+  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
@@ -266,4 +272,10 @@ public interface InvoiceTermService {
   boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
 
   BigDecimal computeParentTotal(Context context);
+
+  void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
+
+  public User getPfpValidatorUser(Partner partner, Company company);
+
+  public String getPfpValidatorUserDomain(Partner partner, Company company);
 }

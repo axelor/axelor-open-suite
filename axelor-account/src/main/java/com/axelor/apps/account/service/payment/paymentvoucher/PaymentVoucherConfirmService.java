@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -81,6 +82,7 @@ public class PaymentVoucherConfirmService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -96,7 +98,8 @@ public class PaymentVoucherConfirmService {
       AccountConfigService accountConfigService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      PaymentVoucherRepository paymentVoucherRepository) {
+      PaymentVoucherRepository paymentVoucherRepository,
+      AccountManagementAccountService accountManagementAccountService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -111,6 +114,7 @@ public class PaymentVoucherConfirmService {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   /**
@@ -624,8 +628,8 @@ public class PaymentVoucherConfirmService {
     if (financialDiscountVat) {
       financialDiscountTax =
           isPurchase
-              ? accountConfig.getPurchFinancialDiscountTax()
-              : accountConfig.getSaleFinancialDiscountTax();
+              ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+              : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
 
       if (financialDiscountTax.getActiveTaxLine() != null) {
         financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
@@ -642,13 +646,13 @@ public class PaymentVoucherConfirmService {
               .filter(it -> it.getCompany().equals(company))
               .findFirst()
               .orElse(null);
-
       if (accountManagement != null) {
         move.addMoveLineListItem(
             moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
-                accountManagement.getFinancialDiscountAccount(),
+                accountManagementAccountService.getFinancialDiscountAccount(
+                    accountManagement, financialDiscountTax, company),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),
                 isDebitToPay,
                 paymentDate,

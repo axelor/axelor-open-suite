@@ -45,14 +45,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+@RequestScoped
 public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
+  protected InvoiceTermService invoiceTermService;
+  protected InvoicePaymentToolService invoicePaymentToolService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -78,11 +82,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
-        invoicePaymentToolService,
-        invoiceTermService,
         appAccountService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
+    this.invoiceTermService = invoiceTermService;
+    this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
   @Override

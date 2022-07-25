@@ -33,8 +33,10 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 import java.util.List;
 
+@RequestScoped
 public class AccountConfigService {
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
@@ -670,5 +672,25 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleFinancialDiscountAccount();
+  }
+
+  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getPurchFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getPurchFinancialDiscountTax();
+  }
+
+  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getSaleFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSaleFinancialDiscountTax();
   }
 }

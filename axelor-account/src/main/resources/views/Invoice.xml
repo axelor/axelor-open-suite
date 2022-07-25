@@ -48,6 +48,7 @@
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -93,6 +94,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="billOfExchangeBlockingOk"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -141,6 +143,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
+    <field name="paymentDelay"/>
     <field name="paymentDelayReason"/>
     <field name="nextActionDate"/>
     <field name="paymentDelayReasonComments" widget="html"/>
@@ -195,6 +198,7 @@
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -248,6 +252,15 @@
     <field name="currency"/>
     <field name="statusSelect"/>
     <field name="paymentProgress" widget="Progress"/>
+    <field name="pfpValidateStatusSelect" title="PFP"
+      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="pfpValidatorUser" title="PFP val."
+      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="company.accountConfig" hidden="true"
+      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
+      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -300,6 +313,11 @@
     <field name="amountRemaining" aggregate="sum"/>
     <field name="currency"/>
     <field name="statusSelect"/>
+    <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+      name="pfpValidateStatusSelect" title="PFP"/>
+    <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+      name="pfpValidatorUser" title="PFP val."/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -530,7 +548,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+        onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
         <viewer depends="$supplierInvoiceNbStatic">
@@ -582,7 +600,7 @@
           readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting,action-invoice-record-due-dates"
-          colSpan="12" form-view="invoice-term-move-line-invoice-form"
+          colSpan="12" form-view="invoice-term-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
@@ -757,6 +775,7 @@ InvoiceSet.length > 0))"
           <field name="debitBlockingToDate"/>
           <field name="debitBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnDebitBlocking" widget="html" colSpan="12"/>
         </panel>
         <panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlockingPanel"
           title="Debt recovery blocking" colSpan="12">
@@ -765,6 +784,7 @@ InvoiceSet.length > 0))"
           <field name="debtRecoveryBlockingToDate"/>
           <field name="debtRecoveryBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnRecoveryBlocking" widget="html" colSpan="12"/>
         </panel>
         <panel showIf="billOfExchangeBlockingOk" name="debtRecoveryBlockingPanel"
           title="Bill of exchange blocking" colSpan="12">
@@ -773,6 +793,7 @@ InvoiceSet.length > 0))"
           <field name="billOfExchangeBlockingToDate"/>
           <field name="billOfExchangeBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnExchangeBlocking" widget="html" colSpan="12"/>
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
@@ -841,39 +862,41 @@ InvoiceSet.length > 0))"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
-      <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
-        title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" css="btn-danger" hidden="true" title="Refusal to pay"
-        onClick="save,action-invoice-view-refusal-to-pay"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="cancelBtn" css="btn-warning" hidden="true" title="Cancel"
-        onClick="save,action-invoice-method-cancel,save"
-        prompt="Are you sure you want to cancel the invoice ?"/>
-      <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
-        onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
-      <button name="addPaymentBtn" title="Register payment" colSpan="12"
-        onClick="action-invoice-group-add-invoice-payment" hidden="true"
-        if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-      <button name="registerPaymentBtn" title="Register payment" colSpan="12"
-        onClick="save,action-invoice-view-register-payment-voucher" hidden="true"
-        if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-      <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
-      <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
-      <field name="pfpValidatorUser" hidden="true"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()"
-        readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
-        onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
-        onChange="action-invoice-group-pfp-validator-user-onchange" canEdit="false"/>
-      <panel name="pfpEmailPanel"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
-        <field name="decisionPfpTakenDate" colSpan="12" hidden="true"/>
-        <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
-          hidden="true" onClick="save,action-send-by-email-with-template"/>
+      <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
+        <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
+          title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
+          if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+        <button name="refusalToPayBtn" css="btn-danger" hidden="true" title="Refusal to pay"
+          onClick="save,action-invoice-view-refusal-to-pay"
+          if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+        <button name="cancelBtn" css="btn-warning" hidden="true" title="Cancel"
+          onClick="save,action-invoice-method-cancel,save"
+          prompt="Are you sure you want to cancel the invoice ?"/>
+        <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
+          onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
+        <button name="addPaymentBtn" title="Register payment" colSpan="12"
+          onClick="action-invoice-group-add-invoice-payment" hidden="true"
+          if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+        <button name="registerPaymentBtn" title="Register payment" colSpan="12"
+          onClick="save,action-invoice-view-register-payment-voucher" hidden="true"
+          if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+        <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
+        <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+        <field name="pfpValidatorUser" hidden="true"
+          if="__config__.app.getApp('account').getActivatePassedForPayment()"
+          readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
+          onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
+          onChange="action-invoice-group-pfp-validator-user-onchange" canEdit="false"/>
+        <panel name="pfpEmailPanel"
+          if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
+          <field name="decisionPfpTakenDate" colSpan="12" hidden="true"/>
+          <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
+            hidden="true" onClick="save,action-send-by-email-with-template"/>
+        </panel>
+        <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
+          canView="false"/>
+        <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
       </panel>
-      <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
-        canView="false"/>
-      <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
     </panel>
     <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"
       hideIf="partner == null">
@@ -1172,27 +1195,29 @@ InvoiceSet.length > 0))"
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
-      <button name="cancelBtn" title="Cancel"
-        onClick="save,action-invoice-method-cancel,save"
-        prompt="Are you sure you want to cancel the invoice ?"/>
-      <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
-        onClick="save,action-invoice-record-draft,save"/>
-      <button name="addPaymentBtn" title="Register payment"
-        showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
-        colSpan="12" onClick="action-invoice-group-add-invoice-payment"
-        if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-      <button name="addPaymentBtn" title="Register payment"
-        showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
-        colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
-        if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-      <field name="amountRemaining" hidden="true"/>
-      <field name="hasPendingPayments" hidden="true"/>
-      <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
-        canView="false"/>
-      <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
-      <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
-        canView="false"/>
-      <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+      <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
+        <button name="cancelBtn" title="Cancel"
+          onClick="save,action-invoice-method-cancel,save"
+          prompt="Are you sure you want to cancel the invoice ?"/>
+        <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
+          onClick="save,action-invoice-record-draft,save"/>
+        <button name="addPaymentBtn" title="Register payment"
+          showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
+          colSpan="12" onClick="action-invoice-group-add-invoice-payment"
+          if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+        <button name="addPaymentBtn" title="Register payment"
+          showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
+          colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
+          if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+        <field name="amountRemaining" hidden="true"/>
+        <field name="hasPendingPayments" hidden="true"/>
+        <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
+          canView="false"/>
+        <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+        <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
+          canView="false"/>
+        <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+      </panel>
     </panel>
 
     <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6">
@@ -1508,6 +1533,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-hide-cancel-button"/>
     <action name="action-invoice-record-update-info-company"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1526,7 +1552,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-specific-note-on-invoice"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-set-default-mail"/>
-    <action name="action-invoice-method-fill-price-list"/>
+    <action name="action-invoice-method-fill-price-list"
+      if="eval: invoiceLineList?.isEmpty()"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
@@ -1537,11 +1564,15 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
     <action name="action-invoice-attrs-change-total-title"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -1612,6 +1643,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-due-dates"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1622,6 +1654,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-date"/>
     <action name="action-invoice-method-update-unpaid-invoice-terms" if="statusSelect == 3"/>
+    <action name="save"/>
+    <action name="action-invoice-method-round-invoice-term-percentages"/>
   </action-group>
 
   <action-group name="action-invoice-group-ventilate-onclick">
@@ -1662,6 +1696,12 @@ InvoiceSet.length > 0))"
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
@@ -1671,7 +1711,8 @@ InvoiceSet.length > 0))"
     <attribute name="hidden" for="invoiceLineList.inTaxPrice" expr="!inAti"/>
     <attribute name="hidden" for="inAti"
       expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
-										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
+      if="company"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-domain-project">
@@ -1743,10 +1784,11 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"
-      if="partner?.fiscalPosition != null"/>
+      if="eval: invoiceLineList?.isEmpty()"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
-    <field name="currency" expr="eval: partner?.currency"/>
+    <field name="currency" expr="eval: partner?.currency"
+      if="eval: invoiceLineList?.isEmpty()"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
@@ -2222,6 +2264,15 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkInvoiceTerms"/>
   </action-method>
 
+  <action-method name="action-invoice-method-round-invoice-term-percentages">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="roundInvoiceTermPercentages"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="updateInvoiceTerms"/>
+  </action-method>
+
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
     model="com.axelor.apps.account.db.InvoicePayment">
     <view type="form" name="invoice-payment-form"/>
@@ -2237,6 +2288,7 @@ InvoiceSet.length > 0))"
     title="Register a payment" model="com.axelor.apps.account.db.PaymentVoucher">
     <view type="form" name="payment-voucher-form"/>
     <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="true"/>
@@ -2533,23 +2585,30 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !partner"/>
+    <field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner"/>
+    <field name="financialDiscount" expr="eval: null" if="!partner"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
       expr="eval: financialDiscountRate * inTaxTotal / 100"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="remainingAmountAfterFinDiscount"
       expr="eval: inTaxTotal - (financialDiscountRate * inTaxTotal / 100)"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+      if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate"/>
+      if="dueDate"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="financialDiscountRate" expr="eval: 0"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: 0"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount" expr="eval: 0"
+      if="!partner || !partner.financialDiscount"/>
+    <field name="legalNotice" expr="eval: null" if="!partner || !partner.financialDiscount"/>
   </action-record>
 
   <action-record name="action-record-invoice-set-financial-discount-informations"

@@ -557,8 +557,6 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 
-    expense.setPaymentDate(appAccountService.getTodayDate(expense.getCompany()));
-
     PaymentMode paymentMode = expense.getPaymentMode();
 
     if (paymentMode == null) {
@@ -628,7 +626,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             expense.getMove().getCurrency(),
             partner,
             paymentDate,
-            null,
+            paymentDate,
             paymentMode,
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,

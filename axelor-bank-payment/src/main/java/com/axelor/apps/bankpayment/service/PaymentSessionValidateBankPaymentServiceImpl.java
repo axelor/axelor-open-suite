@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -74,6 +75,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
       AccountConfigService accountConfigService,
+      PartnerService partnerService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -97,7 +99,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         moveRepo,
         partnerRepo,
         invoicePaymentRepo,
-        accountConfigService);
+        accountConfigService,
+        partnerService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -215,7 +218,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     InvoicePayment invoicePayment =
         super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
-
+    if (invoicePayment == null) {
+      return null;
+    }
     invoicePayment.setBankOrder(paymentSession.getBankOrder());
 
     return invoicePaymentRepo.save(invoicePayment);

@@ -80,4 +80,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
 
   public Account getSaleVatRegulationAccount(
       AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
+
+  public Account getFinancialDiscountAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
 }

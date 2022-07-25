@@ -38,7 +38,7 @@
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"
       required="true"/>
     <many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account"
-      title="Charge account"/>
+      title="Depreciation expense account"/>
     <many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account"
       title="Depreciation account"/>
 

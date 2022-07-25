@@ -72,9 +72,6 @@
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form" grid-view="account-grid"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
-          <field name="debtReceivableAccount"
-            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
-            form-view="account-form"/>
           <field name="provisionTangibleFixedAssetAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form"/>
@@ -101,6 +98,9 @@
             form-view="account-form"/>
           <field name="realisedAssetsIncomeAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income' "
+            form-view="account-form"/>
+          <field name="debtReceivableAccount"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
             form-view="account-form"/>
         </panel>
         <panel name="ifrsAccountsPanel" title="IFRS depreciation"

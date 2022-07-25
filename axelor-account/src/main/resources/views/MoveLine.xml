@@ -89,7 +89,6 @@
     <field name="date" width="100" onChange="account-move-line-group-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onChange="action-move-line-group-partner-onchange"
       onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
@@ -333,7 +332,8 @@
         <field name="originDate"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
         onChange="action-move-line-group-account-onchange"/>
@@ -377,8 +377,7 @@
           <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
           </viewer>
         </field>
-        <field name="invoiceTermList" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
@@ -507,7 +506,8 @@
     </panel>
 
     <panel-dashlet name="bankReconciliationLinePanel"
-      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
+      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"
+      showIf="account.accountType.technicalTypeSelect == 'cash'"/>
   </form>
 
   <form name="move-line-move-form" title="Move line"
@@ -536,16 +536,15 @@
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange"/>
         <field name="dueDate" showIf="dueDate"/>
-        <field name="originDate"/>
+        <field name="originDate" onChange="action-move-line-method-update-invoice-terms"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
         onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onChange="action-move-line-group-partner-onchange"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-update-invoice-terms"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
@@ -561,7 +560,7 @@
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4 || move.statusSelect == 5"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
-      <field name="origin" colSpan="6"/>
+      <field name="origin" colSpan="6" onChange="action-move-line-method-update-invoice-terms"/>
       <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"
         colSpan="3"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
@@ -610,8 +609,7 @@
           <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
           </viewer>
         </field>
-        <field name="invoiceTermList" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
@@ -707,6 +705,9 @@
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
     </panel-tabs>
+    <panel-dashlet name="bankReconciliationLinePanel"
+      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"
+      showIf="account.accountType.technicalTypeSelect == 'cash'"/>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -741,6 +742,9 @@
   <action-group name="action-account-move-line-onnew-group">
     <action name="action-move-line-record-get-move-informations"/>
     <action name="action-move-line-method-get-account-informations"/>
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-method-hide-axis-analytic-account"/>
+    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
     <action name="action-move-line-record-get-first-move-line-informations"/>
     <action name="action-move-line-method-get-creditdebit-balance"/>
     <action name="action-move-line-attrs-hidden-reconcileLists"/>
@@ -798,7 +802,6 @@
     <action name="action-move-line-method-refresh-account-informations"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-method-change-account-set-default-distribution-template"/>
-    <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
   </action-group>
 
@@ -807,7 +810,6 @@
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
   </action-group>
 
@@ -840,17 +842,11 @@
   </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
+    <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-method-clear-analytic-move-line"/>
     <action name="action-move-line-method-check-analytic-on-move-line"/>
     <action name="action-move-line-method-create-analytic-distribution"/>
     <action name="action-move-line-method-print-analytic-account-on-move-line"/>
-  </action-group>
-
-  <action-group name="action-move-line-group-partner-onchange">
-    <action name="action-move-line-record-set-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-move-line-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -1028,14 +1024,6 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
-  <action-record name="action-move-line-record-set-financial-discount"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="financialDiscount" expr="eval: partner?.financialDiscount"
-      if="partner &amp;&amp; partner?.financialDiscount"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner || !partner?.financialDiscount"/>
-  </action-record>
-
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
@@ -1158,6 +1146,10 @@
       method="computeFinancialDiscount"/>
   </action-method>
 
+  <action-method name="action-move-line-method-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="updateInvoiceTerms"/>
+  </action-method>
+
   <action-view name="action-move-line-view-open-move" title="Account move"
     model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-form"/>
@@ -1176,7 +1168,7 @@
   <action-view name="action-move-line-view-show-related-invoice-terms-from-invoice"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-move-line-invoice-form"/>
+    <view type="form" name="invoice-term-invoice-form"/>
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>

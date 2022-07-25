@@ -14,10 +14,7 @@
     onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
     onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
     width="large">
-    <toolbar>
-      <button name="showInvoiceBtn" title="Invoices"
-        onClick="save,action-company-view-invoice"/>
-    </toolbar>
+
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
@@ -30,7 +27,6 @@
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="allowRemovalValidatedMove"/>
       <field name="generateMoveForAdvancePayment" colSpan="4"/>
       <field name="accountingDaybook" colSpan="4"/>
       <field name="isActivateSimulatedMove" colSpan="4"/>
@@ -154,8 +150,9 @@
 
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
-          <field name="temporaryClosureAuthorizedRoleList" widget="TagSelect"/>
-          <field name="closureAuthorizedRoleList" widget="TagSelect"/>
+          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
         </panel>
         <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
@@ -433,10 +430,12 @@
         <field name="analyticJournal"
           domain="self.company = :company AND self.statusSelect = 1"
           showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
-        <field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew"
-          showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"
+        <panel-related field="analyticAxisByCompanyList" colSpan="12"
+          canNew="$isCanNew" canMove="true" showIf="manageAnalyticAccounting"
+          requiredIf="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"
-          form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+          form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"
+          orderBy="sequence"/>
         <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
 
@@ -467,14 +466,6 @@
     <call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
   </action-method>
 
-  <action-view name="action-company-view-invoice" title="Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
-    <domain>self.company.id = :id</domain>
-    <context name="id" expr="eval: company.id"/>
-  </action-view>
-
   <action-view name="action-company-view-account-config"
     title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
     <view type="form" name="account-config-form"/>
@@ -485,14 +476,14 @@
   <action-validate name="action-validate-account-config-on-save-analytic">
     <error
       if="manageAnalyticAccounting &amp;&amp; nbrOfAnalyticAxisSelect != analyticAxisByCompanyList.size"
-      message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
+      message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.size in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
   </action-validate>
 
   <action-group name="action-account-config-group-on-save">
     <action name="action-account-config-validate-is-activate-simulated-move"/>
     <action name="action-account-config-method-deactivate-simulated-moves"/>
     <action name="action-validate-account-config-on-save-analytic"/>
-    <action name="action-method-check-account-config-changes-in-analytic"/>
+    <action name="action-method-check-account-config-changes-in-analytic" if="id != null"/>
   </action-group>
 
   <action-validate name="action-account-config-validate-is-activate-simulated-move"

@@ -104,10 +104,10 @@
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
-        <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
         <field name="compatibleAccountSet" widget="TagSelect"
-          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
+          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
+          domain="self.company = :company"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
@@ -119,7 +119,7 @@
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
-          hideIf="accountType.technicalTypeSelect == 'view'">
+          hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
             onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"

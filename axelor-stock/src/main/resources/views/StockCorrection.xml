@@ -8,6 +8,7 @@
     <field name="stockLocation"/>
     <field name="product"/>
     <field name="trackingNumber"/>
+    <field name="baseQty" x-scale="2"/>
     <field name="realQty" x-scale="2"/>
     <field name="validationDateT"/>
     <field name="stockCorrectionReason"/>
@@ -41,7 +42,8 @@
         onSelect="action-stock-correction-on-select-tracking-number"
         onChange="action-stock-correction-method-set-deault-qtys"/>
       <spacer name="trackingNumberSpacer"/>
-      <field name="realQty" colSpan="4"/>
+      <field name="baseQty" colSpan="3"/>
+      <field name="realQty" colSpan="3"/>
     </panel>
     <panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
       <field name="stockCorrectionReason" canEdit="false" colSpan="12" required="true"/>
@@ -85,6 +87,8 @@
   </action-attrs>
 
   <action-attrs name="action-stock-correction-attrs-scale">
+    <attribute name="scale" for="baseQty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="realQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
