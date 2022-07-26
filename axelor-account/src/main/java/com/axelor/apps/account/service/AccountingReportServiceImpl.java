@@ -409,7 +409,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
             accountingReport.getCompany().getName());
       }
       return seq;
-    } else if (accountingReportTypeSelect == 3000) {
+    } else if (accountingReportTypeSelect >= 3000) {
       String seq =
           sequenceService.getSequenceNumber(
               SequenceRepository.CUSTOM_ACCOUNTING_REPORT, accountingReport.getCompany());
