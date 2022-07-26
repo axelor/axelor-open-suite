@@ -199,7 +199,7 @@
 "With engagement","Avec engagement",,
 "With prior notice","Avec préavis",,
 "You cannot remove a line which has been already invoiced.","Vous ne pouvez pas supprimer une ligne qui a été facturé.",,
-"You cannot terminate a contract before version activation date.","Vous ne pouvez pas terminer un contrat avant la date d'activitation de la version.",,
+"You cannot terminate a contract before version activation date.","Vous ne pouvez pas terminer un contrat avant la date d'activation de la version.",,
 "You need to save your contract for add lines.","Vous devez sauvegarder votre contrat pour ajouter des lignes.",,
 "com.axelor.apps.contract.batch.service.BatchContractService",,,
 "value:Contract","Contrat",,
