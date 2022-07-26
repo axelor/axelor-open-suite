@@ -403,14 +403,9 @@
         </viewer>
       </field>
 
-      <panel name="operationTypePanel" colSpan="6" itemSpan="12">
-        <field name="operationTypeSelect"
-          hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 1"
-          onChange="action-group-account-invoice-operationtype-onchange" selection-in="[1,2]"/>
-        <field name="operationTypeSelect"
-          hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 3"
-          onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
-      </panel>
+      <field name="operationTypeSelect"
+        hideIf="statusSelect &gt; 1 || partner != null || $readonly()"
+        onChange="action-group-account-invoice-operationtype-onchange"/>
       <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
       <field name="operationSubTypeSelect"
         hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
@@ -1399,6 +1394,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-display-stock-move-on-invoice-printing"
       if="__config__.app.isApp('supplychain')"/>
+    <action name="action-invoice-attrs-selection-in-operation-type-select"/>
     <action name="action-invoice-record-set-pfp-status"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
   </action-group>
@@ -1795,6 +1791,14 @@ InvoiceSet.length > 0))"
     <attribute name="value" for="$format" expr="pdf" if="_statusSelect == 3"/>
     <attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
     <attribute name="value" expr="eval: _language" for="$language"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-attrs-selection-in-operation-type-select">
+    <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2,3,4]"/>
+    <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2]"
+      if="_operationTypeSelect == 1"/>
+    <attribute name="selection-in" for="operationTypeSelect" expr="eval: [3,4]"
+      if="_operationTypeSelect == 3"/>
   </action-attrs>
 
   <!-- DOMAIN -->
