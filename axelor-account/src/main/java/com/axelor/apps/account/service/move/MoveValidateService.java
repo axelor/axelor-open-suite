@@ -64,6 +64,7 @@ public class MoveValidateService {
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
   protected MoveAccountingControlService moveAccountingControlService;
+  protected MoveCompletionService moveCompletionService;
 
   @Inject
   public MoveValidateService(
@@ -75,7 +76,8 @@ public class MoveValidateService {
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
-      MoveAccountingControlService moveAccountingControlService) {
+      MoveAccountingControlService moveAccountingControlService,
+      MoveCompletionService moveCompletionService) {
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -85,6 +87,7 @@ public class MoveValidateService {
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
     this.moveAccountingControlService = moveAccountingControlService;
+    this.moveCompletionService = moveCompletionService;
   }
 
   /**
@@ -243,6 +246,8 @@ public class MoveValidateService {
     }
 
     this.completeMoveLines(move);
+
+    moveCompletionService.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
     this.updateValidateStatus(move, dayBookMode);
 
