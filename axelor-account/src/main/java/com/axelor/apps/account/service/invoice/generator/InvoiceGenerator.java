@@ -317,7 +317,7 @@ public abstract class InvoiceGenerator {
     if (accountConfig.getIsManagePassedForPayment()
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                && invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()))) {
+                && accountConfig.getIsManagePFPInRefund()))) {
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     }
 
