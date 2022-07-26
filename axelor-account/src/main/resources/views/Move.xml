@@ -368,7 +368,8 @@
         </panel>
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
-        <field name="origin" colSpan="3" onChange="" requiredIf="journal.hasRequiredOrigin"/>
+        <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
+          onChange="action-account-move-group-set-origin"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
         <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
       </panel>
