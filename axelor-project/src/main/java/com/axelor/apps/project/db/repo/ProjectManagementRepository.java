@@ -113,6 +113,7 @@ public class ProjectManagementRepository extends ProjectRepository {
     Project project = super.copy(entity, false);
     project.setStatusSelect(STATE_NEW);
     project.setProgress(BigDecimal.ZERO);
+    project.setCode(null);
     return project;
   }
 }
