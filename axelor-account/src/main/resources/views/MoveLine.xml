@@ -567,7 +567,8 @@
         onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
-        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-update-invoice-terms"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-update-invoice-terms"
+        requiredIf="account.useForPartnerBalance &amp;&amp; account.hasInvoiceTerm"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
@@ -593,6 +594,8 @@
       <field name="account.reconcileOk" hidden="true"/>
       <field name="account.hasInvoiceTerm" hidden="true"/>
       <field name="account.manageCutOffPeriod" hidden="true"/>
+      <field name="account.useForPartnerBalance" hidden="true"/>
+      <field name="account.hasInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
@@ -826,6 +829,7 @@
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-method-change-account-set-default-distribution-template"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
+    <action name="action-move-line-record-set-partner"/>
   </action-group>
 
   <action-group name="action-account-move-line-move-form-account-group-on-change">
@@ -1045,6 +1049,11 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-set-partner"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="partner" expr="eval: __parent__?.partner"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
