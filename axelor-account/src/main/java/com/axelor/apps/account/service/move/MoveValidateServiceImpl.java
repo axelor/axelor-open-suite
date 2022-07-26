@@ -306,6 +306,18 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkTaxMoveLines(move);
 
       this.validateWellBalancedMove(move);
+
+      if (move.getJournal() != null
+          && move.getJournal().getHasDuplicateDetectionOnOrigin()
+          && moveToolService.checkMoveOriginIsDuplicated(move)) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
+            move.getReference(),
+            move.getPartner() != null ? move.getPartner().getFullName() : "",
+            move.getPeriod().getYear().getName());
+      }
     }
   }
 
