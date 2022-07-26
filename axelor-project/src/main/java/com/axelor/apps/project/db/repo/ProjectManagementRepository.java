@@ -68,4 +68,13 @@ public class ProjectManagementRepository extends ProjectRepository {
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
     return super.save(project);
   }
+
+  @Override
+  public Project copy(Project entity, boolean deep) {
+    Project project = super.copy(entity, false);
+    project.setStatusSelect(STATE_NEW);
+    project.setProgress(BigDecimal.ZERO);
+    project.setCode(null);
+    return project;
+  }
 }
