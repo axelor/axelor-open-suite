@@ -346,14 +346,9 @@
         </viewer>
       </field>
 
-      <panel name="operationTypePanel" colSpan="6" itemSpan="12">
-        <field name="operationTypeSelect"
-          hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 1"
-          onChange="action-group-account-invoice-operationtype-onchange" selection-in="[1,2]"/>
-        <field name="operationTypeSelect"
-          hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 3"
-          onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
-      </panel>
+      <field name="operationTypeSelect"
+        hideIf="statusSelect &gt; 1 || partner != null || $readonly()"
+        onChange="action-group-account-invoice-operationtype-onchange"/>
       <field name="operationSubTypeSelect"
         hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
       <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null"
@@ -1194,6 +1189,7 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-attrs-selection-in-operation-type-select"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1555,6 +1551,14 @@ InvoiceSet.length > 0))"
     <attribute name="value" for="$format" expr="pdf" if="_statusSelect == 3"/>
     <attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
     <attribute name="value" expr="eval: _language" for="$language"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-attrs-selection-in-operation-type-select">
+    <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2,3,4]"/>
+    <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2]"
+      if="_operationTypeSelect == 1"/>
+    <attribute name="selection-in" for="operationTypeSelect" expr="eval: [3,4]"
+      if="_operationTypeSelect == 3"/>
   </action-attrs>
 
   <!-- DOMAIN -->
