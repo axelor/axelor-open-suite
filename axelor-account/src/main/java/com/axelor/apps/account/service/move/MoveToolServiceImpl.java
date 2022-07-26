@@ -627,15 +627,15 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public boolean checkMoveOriginIsDuplicated(Move move) throws AxelorException {
     List<Move> moveList = null;
-    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getOriginDate())) {
+    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
       moveList =
           moveRepository
               .all()
               .filter(
-                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period = ?3  AND (?4 is null OR self.partner = ?4)",
+                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
                   move.getId(),
                   move.getOrigin(),
-                  move.getPeriod(),
+                  move.getPeriod().getYear(),
                   move.getPartner())
               .fetch();
     }
