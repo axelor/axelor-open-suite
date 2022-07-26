@@ -132,18 +132,18 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         if (nextSessionDate != null
             && invoiceTerm.getFinancialDiscount() != null
             && this.checkNextSessionDate(invoiceTerm, nextSessionDate)) {
-          return 1;
+          return VALIDATE_INVOICE_TERM_ERR_1;
         } else if (invoiceTerm.getIsPaid()
             || invoiceTerm.getPaymentAmount().compareTo(invoiceTerm.getAmountRemaining()) > 0
             || !invoiceTermService.isNotAwaitingPayment(invoiceTerm)) {
-          return 2;
+          return VALIDATE_INVOICE_TERM_ERR_2;
         }
       }
 
       JPA.clear();
     }
 
-    return 0;
+    return VALIDATE_INVOICE_TERM_ERR_0;
   }
 
   protected boolean checkNextSessionDate(InvoiceTerm invoiceTerm, LocalDate nextSessionDate) {

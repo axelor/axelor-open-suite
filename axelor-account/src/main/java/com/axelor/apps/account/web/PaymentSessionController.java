@@ -79,9 +79,9 @@ public class PaymentSessionController {
 
       int errorCode =
           Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
-      if (errorCode == 1) {
+      if (errorCode == PaymentSessionValidateService.VALIDATE_INVOICE_TERM_ERR_1) {
         response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
-      } else if (errorCode == 2) {
+      } else if (errorCode == PaymentSessionValidateService.VALIDATE_INVOICE_TERM_ERR_2) {
         ActionView.ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get("Invoice terms"))
                 .model(PaymentSession.class.getName())

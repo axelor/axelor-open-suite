@@ -6,6 +6,11 @@ import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PaymentSessionValidateService {
+
+  public static final int VALIDATE_INVOICE_TERM_ERR_0 = 0;
+  public static final int VALIDATE_INVOICE_TERM_ERR_1 = 1;
+  public static final int VALIDATE_INVOICE_TERM_ERR_2 = 2;
+
   public int validateInvoiceTerms(PaymentSession paymentSession);
 
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException;
