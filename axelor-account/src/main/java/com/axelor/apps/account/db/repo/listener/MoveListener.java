@@ -5,12 +5,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCompletionService;
 import com.axelor.apps.account.service.move.control.MovePreSaveControlService;
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
-import com.axelor.apps.account.service.move.update.MoveUpdateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import org.slf4j.Logger;
@@ -36,16 +33,5 @@ public class MoveListener {
     }
 
     log.debug("Applied pre-save operations");
-  }
-
-  @PostPersist
-  @PostUpdate
-  public void afterSave(Move move) throws AxelorException {
-
-    log.debug("Applying post-save operations on move {}", move);
-
-    Beans.get(MoveUpdateService.class).updateInDayBookMode(move);
-
-    log.debug("Applied post-save operations on move {}", move);
   }
 }
