@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -76,6 +77,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PartnerRepository partnerRepo,
       AccountConfigService accountConfigService,
       PartnerService partnerService,
+      PaymentModeService paymentModeService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -100,7 +102,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         partnerRepo,
         invoicePaymentRepo,
         accountConfigService,
-        partnerService);
+        partnerService,
+        paymentModeService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;

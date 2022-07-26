@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -21,6 +20,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.db.Company;
@@ -67,6 +67,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigService accountConfigService;
   protected PartnerService partnerService;
+  protected PaymentModeService paymentModeService;
   protected int counter = 0;
 
   @Inject
@@ -86,7 +87,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PartnerRepository partnerRepo,
       InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
-      PartnerService partnerService) {
+      PartnerService partnerService,
+      PaymentModeService paymentModeService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -103,6 +105,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.accountConfigService = accountConfigService;
     this.partnerService = partnerService;
+    this.paymentModeService = paymentModeService;
   }
 
   @Override
@@ -565,13 +568,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Account getCashAccount(PaymentSession paymentSession, boolean isGlobal)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    AccountManagement accountManagement =
-        paymentSession.getPaymentMode().getAccountManagementList().get(0);
 
     Account cashAccount =
-        isGlobal
-            ? accountManagement.getGlobalAccountingCashAccount()
-            : accountManagement.getCashAccount();
+        paymentModeService.getPaymentModeAccount(
+            paymentSession.getPaymentMode(),
+            paymentSession.getCompany(),
+            paymentSession.getBankDetails(),
+            isGlobal);
 
     if (cashAccount == null && isGlobal) {
       throw new AxelorException(
