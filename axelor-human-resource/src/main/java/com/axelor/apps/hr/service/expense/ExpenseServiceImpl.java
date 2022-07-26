@@ -482,6 +482,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
         analyticDistributionLine.setExpenseLine(null);
+        analyticDistributionLine.setAccount(
+            account); // Set account on analytic move line to avoid NPE
         moveLine.addAnalyticMoveLineListItem(analyticDistributionLine);
       }
       moveLines.add(moveLine);

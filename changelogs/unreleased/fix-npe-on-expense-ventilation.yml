@@ -1,0 +1,3 @@
+---
+title: "Expense : Fix NPE when expense is ventilated"
+type: fix
