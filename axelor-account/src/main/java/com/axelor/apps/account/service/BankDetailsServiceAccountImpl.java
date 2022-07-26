@@ -34,10 +34,12 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.servlet.RequestScoped;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequestScoped
 public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
   /**

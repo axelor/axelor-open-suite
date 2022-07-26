@@ -10,9 +10,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.util.Objects;
 import java.util.Optional;
 
+@RequestScoped
 public class BankStatementRuleServiceImpl implements BankStatementRuleService {
 
   protected BankStatementQueryService bankStatementQueryService;

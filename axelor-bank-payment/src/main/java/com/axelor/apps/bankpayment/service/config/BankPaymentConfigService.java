@@ -27,7 +27,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class BankPaymentConfigService {
 
   public BankPaymentConfig getBankPaymentConfig(Company company) throws AxelorException {

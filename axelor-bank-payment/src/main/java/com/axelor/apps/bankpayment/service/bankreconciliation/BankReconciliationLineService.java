@@ -29,12 +29,14 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@RequestScoped
 public class BankReconciliationLineService {
 
   public static final int BANK_RECONCILIATION_LINE_COMPLETE = 0;

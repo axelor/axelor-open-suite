@@ -29,10 +29,12 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadService {
 
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;

@@ -81,7 +81,7 @@
   </action-record>
 
   <action-method name="action-move-line-method-set-selected">
-    <call class="com.axelor.apps.account.web.MoveLineController"
+    <call class="com.axelor.apps.bankpayment.web.MoveLineController"
       method="setSelectedBankReconciliation"/>
   </action-method>
 

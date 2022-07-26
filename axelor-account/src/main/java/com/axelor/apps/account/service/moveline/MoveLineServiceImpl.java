@@ -37,13 +37,13 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +55,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -254,28 +255,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
       moveLineList.add(moveLine);
     }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
-    if (moveLine.getIsSelectedBankReconciliation() != null) {
-      moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
-    } else {
-      moveLine.setIsSelectedBankReconciliation(true);
-    }
-    return moveLineRepository.save(moveLine);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
-    String posted = moveLine.getPostedNbr();
-    List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
-    postedNbrs.remove(postedNbr);
-    posted = String.join(",", postedNbrs);
-    moveLine.setPostedNbr(posted);
-    return moveLine;
   }
 
   @Override

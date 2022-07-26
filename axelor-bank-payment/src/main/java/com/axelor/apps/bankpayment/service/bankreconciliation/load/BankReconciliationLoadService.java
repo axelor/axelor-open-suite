@@ -28,9 +28,11 @@ import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class BankReconciliationLoadService {
 
   protected BankReconciliationLineService bankReconciliationLineService;

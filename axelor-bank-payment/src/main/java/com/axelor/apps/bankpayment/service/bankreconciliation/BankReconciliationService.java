@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -34,11 +33,11 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -65,7 +64,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -81,6 +79,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -93,8 +92,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class BankReconciliationService {
 
   protected static final int RETURNED_SCALE = 2;
@@ -109,11 +110,9 @@ public class BankReconciliationService {
   protected BankStatementLineRepository bankStatementLineRepository;
   protected BankStatementRuleRepository bankStatementRuleRepository;
   protected MoveValidateService moveValidateService;
-  protected PeriodService periodService;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected MoveLineService moveLineService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
-  protected MoveLineToolService moveLineToolService;
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected BankDetailsService bankDetailsService;
@@ -121,10 +120,10 @@ public class BankReconciliationService {
   protected BankReconciliationLoadService bankReconciliationLoadService;
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
-  protected AccountConfigRepository accountConfigRepository;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected BankStatementRuleService bankStatementRuleService;
   protected ReconcileService reconcileService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public BankReconciliationService(
@@ -137,12 +136,10 @@ public class BankReconciliationService {
       MoveRepository moveRepository,
       BankStatementLineRepository bankStatementLineRepository,
       BankStatementRuleRepository bankStatementRuleRepository,
-      PeriodService periodService,
       MoveValidateService moveValidateService,
       BankReconciliationLineService bankReconciliationLineService,
       MoveLineService moveLineService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      MoveLineToolService moveLineToolService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       BankDetailsService bankDetailsService,
@@ -150,10 +147,10 @@ public class BankReconciliationService {
       BankReconciliationLoadService bankReconciliationLoadService,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
-      AccountConfigRepository accountConfigRepository,
       BankPaymentConfigService bankPaymentConfigService,
       BankStatementRuleService bankStatementRuleService,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      AccountConfigService accountConfigService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -165,11 +162,9 @@ public class BankReconciliationService {
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.moveValidateService = moveValidateService;
-    this.periodService = periodService;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.moveLineService = moveLineService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
-    this.moveLineToolService = moveLineToolService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.bankDetailsService = bankDetailsService;
@@ -177,10 +172,10 @@ public class BankReconciliationService {
     this.bankReconciliationLoadService = bankReconciliationLoadService;
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
-    this.accountConfigRepository = accountConfigRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.bankStatementRuleService = bankStatementRuleService;
     this.reconcileService = reconcileService;
+    this.accountConfigService = accountConfigService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -896,7 +891,7 @@ public class BankReconciliationService {
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
     for (MoveLine moveLine : moveLines) {
-      moveLine = moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLine = removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
       moveLine.setIsSelectedBankReconciliation(false);
     }
     bankReconciliationLine.setMoveLine(null);
@@ -970,12 +965,12 @@ public class BankReconciliationService {
     PrintingSettings printingSettings = bankReconciliation.getCompany().getPrintingSettings();
     String watermark = null;
     String fileLink = null;
-    if (accountConfigRepository.findByCompany(bankReconciliation.getCompany()).getInvoiceWatermark()
+    if (accountConfigService.getAccountConfig(bankReconciliation.getCompany()).getInvoiceWatermark()
         != null) {
       watermark =
           MetaFiles.getPath(
-                  accountConfigRepository
-                      .findByCompany(bankReconciliation.getCompany())
+                  accountConfigService
+                      .getAccountConfig(bankReconciliation.getCompany())
                       .getInvoiceWatermark())
               .toString();
     }
@@ -1213,5 +1208,22 @@ public class BankReconciliationService {
           selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
     }
     return selectedMoveLineTotal;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
+    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    return moveLineRepository.save(moveLine);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
+    String posted = moveLine.getPostedNbr();
+    String postedNbrs =
+        Stream.of(posted.split(","))
+            .filter(number -> !postedNbr.equals(number))
+            .collect(Collectors.joining(","));
+    moveLine.setPostedNbr(postedNbrs);
+    return moveLine;
   }
 }
