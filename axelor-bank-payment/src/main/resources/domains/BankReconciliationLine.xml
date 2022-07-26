@@ -7,11 +7,12 @@
 
   <entity name="BankReconciliationLine" lang="java">
 
-    <string name="name" title="Label" namecolumn="true" large="true" multiline="true"/>
+    <string name="name" title="Label" namecolumn="true" large="true" multiline="true"
+      readonly="true"/>
     <many-to-one name="bankReconciliation"
       ref="com.axelor.apps.bankpayment.db.BankReconciliation" title="Bank Reconciliation"/>
-    <date name="effectDate" title="Effect Date" required="true"/>
-    <string name="reference" title="Reference"/>
+    <date name="effectDate" title="Effect Date" required="true" readonly="true"/>
+    <string name="reference" title="Reference" readonly="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <integer name="typeSelect" title="Type"
       selection="bankpayment.bank.reconciliation.type.select"/>
@@ -20,15 +21,16 @@
     <decimal name="debit" title="Debit"/>
     <decimal name="credit" title="Credit"/>
     <many-to-one name="bankStatementLine"
-      ref="com.axelor.apps.bankpayment.db.BankStatementLine" title="Bank Statement detail"/>
+      ref="com.axelor.apps.bankpayment.db.BankStatementLine" title="Bank Statement detail"
+      readonly="true"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move Line"/>
     <boolean name="isPosted" title="Is posted" readonly="true"/>
     <boolean name="isSelectedBankReconciliation" default="false"/>
-    <string name="postedNbr" title="Posted number"/>
+    <string name="postedNbr" title="Posted number" readonly="true"/>
     <many-to-one name="bankStatementQuery"
       ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
-      title="Bank accounting / reconciliation rule"/>
+      title="Bank accounting / reconciliation rule" readonly="true"/>
     <integer name="confidenceIndex" title="Confidence index"
       selection="bankpayment.bank.reconciliation.confidenceIndex"/>
 
