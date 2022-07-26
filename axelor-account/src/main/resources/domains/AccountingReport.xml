@@ -98,6 +98,15 @@
     <integer name="fixedAssetLineTypeSelect" title="Type"
       selection="account.fixed.asset.line.type.select" default="1"/>
 
+    <!-- Report 3001 -->
+    <integer name="dateTypeSelect" title="Date type"
+      selection="accounting.report.date.type.select"/>
+    <date name="situationFromDate" title="Situation Date From"/>
+    <date name="situationToDate" title="Situation Date To"/>
+    <date name="comparisonFromDate" title="Comparison Date From"/>
+    <date name="comparisonToDate" title="Comparison Date To"/>
+    <string name="states" title="States" selection="iaccount.move.status.select"/>
+
     <unique-constraint columns="ref,company"/>
 
     <extra-code><![CDATA[
@@ -125,6 +134,7 @@
 		public static final int REPORT_PERSONNALIZED_REPORT = 23;
 		public static final int REPORT_PERSONNALIZED_REPORT_PAYMENT_DELAY = 24;
 		public static final int REPORT_CUSTOM_STATE = 3000;
+		public static final int REPORT_TRA = 3001;
 
 		// EXPORT TYPE SELECT
         public static final int EXPORT_ADMINISTRATION = 1000;

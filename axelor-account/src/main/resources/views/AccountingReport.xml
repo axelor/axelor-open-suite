@@ -42,6 +42,9 @@
         domain="self.reportExportTypeSelect = 1 AND self.company = :company"/>
       <field name="reportType.typeSelect" hidden="true"/>
       <field name="exportTypeSelect"/>
+      <field name="dateTypeSelect"
+        validIf="(dateTypeSelect > 0 &amp;&amp; reportType.typeSelect == 3001) || reportType.typeSelect != 3001"
+        showIf="reportType.typeSelect == 3001"/>
       <field name="currency"/>
       <field name="reportType.comparison" hidden="true"/>
     </panel>
@@ -69,18 +72,19 @@
           requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 ||  reportType.typeSelect == 16  || reportType.typeSelect == 17 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 3000"
           grid-view="year-account-grid" form-view="year-account-form"/>
         <field name="period" canEdit="false"
-          hideIf="reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22 || reportType.typeSelect == 23 || reportType.typeSelect == 24 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 2) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3 &amp;&amp; year == null)"
+          hideIf="reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22 || reportType.typeSelect == 23 || reportType.typeSelect == 24 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 2) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3 &amp;&amp; year == null) || reportType.typeSelect == 3001"
           onChange="action-group-account-accounting-report-period-onchange"
           requiredIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"
           onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
           grid-view="period-grid" canView="false"/>
         <field name="dateFrom"
           readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || reportType.typeSelect == 3000"
-          hideIf="reportType.typeSelect == 18" onChange="action-move-Live-report-record-set-date-to"
+          hideIf="reportType.typeSelect == 18 || reportType.typeSelect == 3001"
+          onChange="action-move-Live-report-record-set-date-to"
           requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
         <field name="dateTo"
           readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || reportType.typeSelect == 3000"
-          hideIf="reportType.typeSelect == 18"
+          hideIf="reportType.typeSelect == 18 || reportType.typeSelect == 3001"
           requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
         <field name="isComparativeBalance" widget="boolean-switch" colSpan="12"
           showIf="reportType.typeSelect == 2"/>
@@ -102,19 +106,25 @@
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
           grid-view="journal-grid" canEdit="false"
           onChange="action-accounting-report-record-reset-display-simulated-move"/>
+        <field name="states" widget="MultiSelect" selection-in="[2,3,5]"
+          showIf="reportType.typeSelect == 3001"/>
+        <field name="situationFromDate" showIf="reportType.typeSelect == 3001"/>
+        <field name="situationToDate" showIf="reportType.typeSelect == 3001"/>
+        <field name="comparisonFromDate" showIf="reportType.typeSelect == 3001"/>
+        <field name="comparisonToDate" showIf="reportType.typeSelect == 3001"/>
         <field name="journalSet" if-module="axelor-bank-payment"
           if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect"
           canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
           grid-view="journal-grid" canEdit="false"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
-          hideIf="[1,2,3,4,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24].indexOf(reportType.typeSelect) != -1"/>
+          hideIf="[1,2,3,4,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24,3001].indexOf(reportType.typeSelect) != -1"/>
         <field name="accountSet" requiredIf="reportType.typeSelect == 18"
-          hideIf="reportType.typeSelect == 3000 || reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 12 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22 || reportType.typeSelect == 23 || reportType.typeSelect == 24"
+          hideIf="reportType.typeSelect == 3001 || reportType.typeSelect == 3000 || reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 12 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22 || reportType.typeSelect == 23 || reportType.typeSelect == 24"
           colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect"
           canNew="false" onSelect="action-accounting-report-attrs-accountset-domain"/>
         <field name="partnerSet"
-          hideIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 17 || reportType.typeSelect == 12 || reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22 || reportType.typeSelect == 23 || reportType.typeSelect == 24"
+          hideIf="reportType.typeSelect == 3001 || reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 17 || reportType.typeSelect == 12 || reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22 || reportType.typeSelect == 23 || reportType.typeSelect == 24"
           colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect"
           canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
         <field name="analyticJournal"
@@ -146,7 +156,7 @@
           showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
       </panel>
       <panel name="printingInformationsPanel" title="Printing information"
-        hideIf="[16,17,18,19,20,21,22,23,24].indexOf(reportType.typeSelect) != -1">
+        hideIf="[16,17,18,19,20,21,22,23,24,3001].indexOf(reportType.typeSelect) != -1">
         <field name="global"
           hideIf="[0,1,3,4,10,12,13,15,16,17,21,22].indexOf(reportType.typeSelect) != -1"
           onChange="action-accounting-report-record-global"/>
@@ -437,6 +447,7 @@
     <field name="dateTo" expr="eval: null"/>
     <field name="analyticDistributionTemplate" expr="eval: null"/>
     <field name="subtotalByAnalyticDistribution" expr="eval: null"/>
+    <field name="states" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-default-global"
