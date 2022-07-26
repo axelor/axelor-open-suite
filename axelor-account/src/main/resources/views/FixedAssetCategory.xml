@@ -75,6 +75,9 @@
           <field name="provisionTangibleFixedAssetAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form"/>
+          <field name="appProvisionTangibleFixedAssetAccount"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
+            form-view="account-form"/>
           <field name="wbProvisionTangibleFixedAssetAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
             form-view="account-form"/>
