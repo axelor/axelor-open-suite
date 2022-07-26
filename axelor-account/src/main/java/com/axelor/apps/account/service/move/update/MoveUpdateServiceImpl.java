@@ -11,7 +11,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,7 +39,6 @@ public class MoveUpdateServiceImpl implements MoveUpdateService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void updateInDayBookMode(Move move) throws AxelorException {
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
