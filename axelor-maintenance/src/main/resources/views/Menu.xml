@@ -39,7 +39,7 @@
     <view type="calendar" name="maintenance-request-calendar-per-user"/>
     <view type="form" name="maintenance-request-form"/>
     <view-param name="kanban-hide-columns" value="2,3"/>
-    <domain>self.statusSelect in (0,1) and self.assignedTo = :__user__</domain>
+    <domain>self.statusSelect in (0,1) and self.assignedToUser = :__user__</domain>
     <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
   </action-view>
 

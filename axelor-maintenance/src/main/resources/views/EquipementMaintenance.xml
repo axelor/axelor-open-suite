@@ -40,12 +40,12 @@
     </panel>
     <panel-related field="maintenanceRequestList" colSpan="12">
       <field name="requestDate"/>
-      <field name="requestBy"/>
+      <field name="requestByUser"/>
       <field name="expectedDate"/>
       <field name="durationHours"/>
-      <field name="assignedTo"/>
+      <field name="assignedToUser"/>
       <field name="actionSelect"/>
-      <field name="doneOn"/>
+      <field name="doneOnDate"/>
       <field name="statusSelect"/>
     </panel-related>
   </form>

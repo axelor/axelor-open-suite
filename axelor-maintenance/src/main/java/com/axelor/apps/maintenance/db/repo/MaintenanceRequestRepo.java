@@ -25,7 +25,7 @@ public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
   @Override
   public MaintenanceRequest save(MaintenanceRequest entity) {
 
-    LocalDate doneOn = entity.getDoneOn();
+    LocalDate doneOn = entity.getDoneOnDate();
     LocalDate expectedDate = entity.getExpectedDate();
 
     if (entity.getActionSelect() == ACTION_CORRECTIVE) {

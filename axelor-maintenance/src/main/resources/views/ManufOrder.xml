@@ -193,7 +193,7 @@
     <attribute name="value" for="machine" expr="eval: _parent?.machine"
       if="_parent?._model == 'com.axelor.apps.maintenance.db.MaintenanceRequest'"/>
     <attribute name="value" for="plannedStartDateT"
-      expr="eval: _parent?.doneOn != null ? _parent?.doneOn : _parent?.expectedDate"
+      expr="eval: _parent?.doneOnDate != null ? _parent?.doneOnDate : _parent?.expectedDate"
       if="_parent?._model == 'com.axelor.apps.maintenance.db.MaintenanceRequest'"/>
   </action-attrs>
 
