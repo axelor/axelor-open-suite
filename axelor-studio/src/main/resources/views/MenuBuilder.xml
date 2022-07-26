@@ -41,13 +41,17 @@
           <field name="model" showIf="!isJson" widget="ref-text" x-target-name="fullName"
             x-target="com.axelor.meta.db.MetaModel" colSpan="5"
             onChange="action-action-builder-method-set-views"/>
-          <field name="actionBuilderViews" colSpan="12" grid-view="action-builder-view-grid"
-            form-view="action-builder-view-form"/>
-          <field name="viewParams" title="View params" colSpan="12"
+          <field name="actionBuilderViews" showTitle="false" colSpan="12"
+            grid-view="action-builder-view-grid" form-view="action-builder-view-form"/>
+          <field name="viewParams" showTitle="false" colSpan="12"
+            grid-view="action-builder-view-param-grid" form-view="action-builder-view-param-form"/>
+          <field name="lines" showTitle="false" title="Context" colSpan="12"
             grid-view="action-builder-line-simple-grid" form-view="action-builder-line-simple-form"/>
-          <field name="lines" title="Context" colSpan="12"
-            grid-view="action-builder-line-simple-grid" form-view="action-builder-line-simple-form"/>
-          <field name="domainCondition" colSpan="12"/>
+          <button name="openDomainBtn" link="" title="Open domain" icon="fa-filter"
+            onClick="save,action-action-builder-open-domain-builder" colSpan="3" showIf="model"/>
+          <spacer colSpan="9"/>
+          <field name="domainCondition" colSpan="12" height="3" showIf="model"
+            onChange="action-action-builder-validate-domain-metadata,action-action-builder-attrs-empty-domain-metadata"/>
           <field name="model" hidden="true"/>
           <field name="typeSelect" hidden="true"/>
         </editor>

@@ -45,6 +45,7 @@
       <field name="openRecord" showIf="typeSelect == 0" colSpan="4"/>
       <field name="displayMsg" showIf="typeSelect == 0" colSpan="8"/>
       <field name="title" colSpan="12" showIf="typeSelect == 3"/>
+      <field name="title" colSpan="12" showIf="typeSelect == 3"/>
       <field name="actionBuilderViews" showIf="typeSelect == 3" colSpan="12">
         <editor x-show-on-new="false">
           <field name="viewType" colSpan="3"/>
@@ -63,11 +64,23 @@
       </field>
       <field name="viewParams" title="View params" hideIf="typeSelect != 3" colSpan="12">
         <editor>
-          <field name="name" title="Name" colSpan="4"/>
-          <field name="value" title="Value" colSpan="8"/>
+          <field name="name" colSpan="4" onChange="action-view-param-attrs-value"/>
+          <panel colSpan="8">
+            <field name="value" colSpan="12"
+              hideIf="name == 'search-filters' || name == 'default-search-filters' || name == 'limit'"
+              selection="studio.action.builder.view.param.boolean.select"/>
+            <field name="value" colSpan="12"
+              hideIf="name != 'search-filters' &amp;&amp; name != 'default-search-filters' &amp;&amp; name != 'limit'"/>
+          </panel>
         </editor>
       </field>
-      <field name="domainCondition" showIf="typeSelect == 3" colSpan="12"/>
+      <button name="openDomainBtn" link="" title="Open domain" icon="fa-filter"
+        onClick="save,action-action-builder-open-domain-builder"
+        showIf="typeSelect == 3 &amp;&amp; model" colSpan="3"/>
+      <spacer colSpan="9"/>
+      <field name="domainCondition" showIf="typeSelect == 3 &amp;&amp; model" height="3"
+        colSpan="12"
+        onChange="action-action-builder-validate-domain-metadata,action-action-builder-attrs-empty-domain-metadata"/>
       <panel-related name="linesPanel" field="lines" colSpan="12"
         hideIf="typeSelect &gt; 1" grid-view="action-builder-line-grid"
         form-view="action-builder-line-form"/>
@@ -125,5 +138,21 @@
     <call class="com.axelor.studio.web.ActionBuilderController" method="createMapperScript"/>
   </action-method>
 
+  <action-view name="action-action-builder-open-domain-builder" title="Domain">
+    <view type="html"
+      name="qb/?type=query&amp;model=com.axelor.studio.db.ActionBuilder&amp;id={{_id}}&amp;queryModel={{_queryModel}}&amp;resultField=domainCondition&amp;resultMetaField=domainMetadata&amp;hideContext=true"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <context name="_queryModel" expr="eval: model"/>
+  </action-view>
+
+  <action-validate name="action-action-builder-validate-domain-metadata">
+    <alert message="Are you sure you want to remove domain from editor ?"/>
+  </action-validate>
+
+  <action-attrs name="action-action-builder-attrs-empty-domain-metadata">
+    <attribute name="value" for="domainMetadata" expr="eval: null"/>
+  </action-attrs>
 
 </object-views>

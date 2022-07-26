@@ -23,6 +23,7 @@ import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
+import com.axelor.studio.db.ActionBuilderViewParam;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -66,13 +67,12 @@ public class ActionViewBuilderService {
         builder.getName(), "action-view", xml.toString(), model, builder.getXmlId());
   }
 
-  private void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
-
+  private void appendParams(List<ActionBuilderViewParam> params, StringBuilder xml) {
     if (params == null) {
       return;
     }
 
-    for (ActionBuilderLine param : params) {
+    for (ActionBuilderViewParam param : params) {
       xml.append("\n" + INDENT + "<view-param name=\"" + param.getName() + "\" ");
       xml.append("value=\"" + StringEscapeUtils.escapeXml(param.getValue()) + "\" />");
     }

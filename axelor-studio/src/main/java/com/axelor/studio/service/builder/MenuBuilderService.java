@@ -31,6 +31,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
+import com.axelor.studio.db.ActionBuilderViewParam;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
@@ -97,7 +98,7 @@ public class MenuBuilderService {
         }
         if (action.getParams() != null) {
           for (ActionView.Param param : action.getParams()) {
-            ActionBuilderLine paramLine = new ActionBuilderLine();
+            ActionBuilderViewParam paramLine = new ActionBuilderViewParam();
             paramLine.setName(param.getName());
             paramLine.setValue(param.getValue());
             actionBuilder.addViewParam(paramLine);

@@ -55,6 +55,8 @@ public class ActionBuilderController {
       addActionBuilderView(views, model, "grid", isJson, 0);
       addActionBuilderView(views, model, "form", isJson, 1);
       response.setValue("actionBuilderViews", views);
+      response.setValue("domainCondition", null);
+      response.setValue("domainMetadata", null);
     }
   }
 
