@@ -189,8 +189,6 @@
         </panel>
       </panel>
       <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">
-        <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
-          form-view="user-form" grid-view="user-grid" hidden="true"/>
         <field name="signatoryEbicsUser" form-view="ebics-user-form"
           grid-view="ebics-user-grid" canView="false"
           onChange="action-bank-order-record-fill-signatory-user"
@@ -220,6 +218,8 @@
         </field>
         <field name="isMultiDate" hidden="true"/>
         <field name="isMultiCurrency" hidden="true"/>
+        <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
+          form-view="user-form" grid-view="user-grid" hidden="true"/>
       </panel>
     </panel>
 
