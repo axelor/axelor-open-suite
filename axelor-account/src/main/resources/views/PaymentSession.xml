@@ -265,7 +265,6 @@
 
   <action-record name="action-record-payment-session-on-change-bank-details"
     model="com.axelor.apps.account.db.PaymentSession">
-    <field name="company" expr="eval: bankDetails?.company"/>
     <field name="currency" expr="eval: bankDetails?.currency"
       if="bankDetails?.currency != null"/>
   </action-record>
