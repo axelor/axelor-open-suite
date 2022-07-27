@@ -463,7 +463,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) {
+  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
     String queryStr =
         "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
     boolean pfpCondition =
@@ -502,7 +502,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) {
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException {
 
     return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTerms(invoice));
   }

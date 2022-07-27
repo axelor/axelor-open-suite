@@ -1134,7 +1134,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public boolean checkInvoiceTerms(Invoice invoice) {
+  public boolean checkInvoiceTerms(Invoice invoice) throws AxelorException {
     return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTerms(invoice));
   }
 
