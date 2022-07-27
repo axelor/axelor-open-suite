@@ -600,10 +600,10 @@
             grid-view="management-object-grid"/>
           <panel name="irrecoverableDetailsPanel" colSpan="6" stacked="true">
             <button name="passInIrrecoverableBtn" title="Shift to irrecoverable"
-              onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"
+              onClick="save,com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"
               showIf="irrecoverableStatusSelect == 0"/>
             <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
-              onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"
+              onClick="save,com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"
               showIf="irrecoverableStatusSelect == 1"/>
           </panel>
         </panel>
