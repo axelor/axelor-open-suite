@@ -232,7 +232,7 @@ public class MoveValidateService {
 
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
-    moveAccountingControlService.controlAccounting(move);
+    moveAccountingControlService.deepControlAccounting(move);
 
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
@@ -313,7 +313,7 @@ public class MoveValidateService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateInDayBookMode(Move move) throws AxelorException {
 
-    moveAccountingControlService.controlAccounting(move);
+    moveAccountingControlService.deepControlAccounting(move);
 
     Set<Partner> partnerSet = new HashSet<>();
 
