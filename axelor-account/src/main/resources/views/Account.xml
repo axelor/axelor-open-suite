@@ -63,7 +63,7 @@
       <panel name="accountDetailsPanel" colSpan="8"
         readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount">
         <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
-          onChange="action-method-account-fill-account-code"/>
+          onChange="action-group-code-on-change"/>
         <field name="name" colSpan="9" css="bold"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
       </panel>
@@ -86,7 +86,7 @@
         <field name="accountType" required="true" form-view="account-type-form"
           grid-view="account-type-grid" colSpan="3"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
-          onChange="action-method-account-fill-account-code"/>
+          onChange="action-group-account-type-on-change"/>
         <field name="isRegulatoryAccount" colSpan="3"/>
         <field name="commonPosition"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
@@ -245,6 +245,16 @@
     <action name="action-on-change-distribution-template-account"/>
     <action name="action-account-method-verify-template-value"
       if="__this__.analyticDistributionTemplate != null"/>
+  </action-group>
+
+  <action-group name="action-group-code-on-change">
+    <action name="action-method-account-fill-account-code"
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
+  </action-group>
+
+  <action-group name="action-group-account-type-on-change">
+    <action name="action-method-account-fill-account-code"
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
   </action-group>
 
   <action-view name="action-mass-update-status-wizard" title="Mass update status"

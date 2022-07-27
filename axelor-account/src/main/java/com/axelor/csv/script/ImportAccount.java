@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -40,7 +41,12 @@ public class ImportAccount {
     Account account = (Account) bean;
 
     try {
-      account = Beans.get(AccountService.class).fillAccountCodeOnImport(account, line);
+      if (account.getCompany() != null
+          && Beans.get(AccountConfigService.class)
+              .getAccountConfig(account.getCompany())
+              .getHasAccountCodeFixedNbrChar()) {
+        account = Beans.get(AccountService.class).fillAccountCodeOnImport(account, line);
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
