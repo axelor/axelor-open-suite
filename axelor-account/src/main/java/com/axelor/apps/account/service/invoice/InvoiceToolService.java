@@ -243,5 +243,6 @@ public class InvoiceToolService {
     copy.setDecisionPfpTakenDate(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
+    copy.setManagementObject(null);
   }
 }
