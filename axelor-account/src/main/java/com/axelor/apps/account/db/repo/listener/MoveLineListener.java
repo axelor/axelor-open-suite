@@ -42,6 +42,10 @@ public class MoveLineListener {
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
 
         Beans.get(MoveLineCompletionService.class).freezeAccountAndPartnerFields(moveLine);
+      }
+
+      if (move.getStatusSelect() != MoveRepository.STATUS_NEW
+          && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
 
         // Control to do only in these cases because of conflict with opening/closure batch
         if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
@@ -49,10 +53,7 @@ public class MoveLineListener {
 
           Beans.get(MoveAccountingMoveLineControlService.class).controlAccounting(moveLine);
         }
-      }
 
-      if (move.getStatusSelect() != MoveRepository.STATUS_NEW
-          && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
         Beans.get(MoveAccountingBalanceControlService.class).checkWellBalanced(move);
       }
     }
