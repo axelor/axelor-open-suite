@@ -25,7 +25,7 @@
 		public static final String RELATED_TO_PAYMENT_SCHEDULE_LINE = "com.axelor.apps.account.db.PaymentScheduleLine";
 		public static final String RELATED_TO_REIMBURSEMENT = "com.axelor.apps.account.db.Reimbursement";
 		public static final String RELATED_TO_EXPENSE = "com.axelor.apps.hr.db.Expense";
-
+		public static final String RELATED_TO_INVOICE_TERM = "com.axelor.apps.account.db.InvoiceTerm";
   		]]>
     </extra-code>
 

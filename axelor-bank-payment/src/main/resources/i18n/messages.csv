@@ -478,6 +478,7 @@
 "Display payment mode",,,
 "Display receiver address",,,
 "Display receiver country",,,
+"Display the invoice",,,
 "Draft",,,
 "Due date",,,
 "Duration (days) of the semi-interval of convidence for the dates",,,

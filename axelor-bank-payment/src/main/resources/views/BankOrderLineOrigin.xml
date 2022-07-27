@@ -9,6 +9,9 @@
     <field name="relatedToSelectName"/>
     <field name="relatedToSelectDate"/>
     <field name="relatedToSelectDueDate"/>
+    <button name="displayInvoiceBtn"
+      onClick="action-bank-order-line-origin-method-show-dms-files" icon="fa-file-pdf-o"
+      showIf="relatedToSelect==&quot;com.axelor.apps.account.db.InvoiceTerm&quot;"/>
   </grid>
 
   <form name="bank-order-line-origin-form"
@@ -19,7 +22,15 @@
       <field name="relatedToSelectName" colSpan="4"/>
       <field name="relatedToSelectDate" colSpan="4"/>
       <field name="relatedToSelectDueDate" colSpan="4"/>
+      <button name="displayInvoiceBtn" title="Display the invoice"
+        onClick="action-bank-order-line-origin-method-show-dms-files" icon="fa-file-pdf-o"
+        showIf="relatedToSelect==&quot;com.axelor.apps.account.db.InvoiceTerm&quot;"/>
     </panel>
   </form>
+
+  <action-method name="action-bank-order-line-origin-method-show-dms-files">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderLineOriginController"
+      method="showDMSFiles"/>
+  </action-method>
 
 </object-views>

@@ -19,8 +19,10 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
@@ -28,10 +30,14 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginService {
 
   protected BankOrderLineOriginRepository bankOrderLineOriginRepository;
+
+  @Inject private InvoiceTermRepository invoiceTermRepo;
 
   @Inject
   public BankOrderLineOriginServiceImpl(
@@ -163,5 +169,30 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
       return true;
     }
     return false;
+  }
+
+  @Override
+  public Map<String, Object> getRelatedDataMap(BankOrderLineOrigin bankOrderLineOrigin) {
+    Map<String, Object> relatedDataMap = new HashMap<>();
+
+    if (!BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM.equals(
+        bankOrderLineOrigin.getRelatedToSelect())) {
+      return relatedDataMap;
+    }
+
+    InvoiceTerm invoiceTerm = invoiceTermRepo.find(bankOrderLineOrigin.getRelatedToSelectId());
+    if (invoiceTerm == null) {
+      return relatedDataMap;
+    }
+
+    if (invoiceTerm.getInvoice() != null) {
+      relatedDataMap.put("relatedModel", BankOrderLineOriginRepository.RELATED_TO_INVOICE);
+      relatedDataMap.put("relatedId", invoiceTerm.getInvoice().getId());
+    } else if (invoiceTerm.getMoveLine() != null) {
+      relatedDataMap.put("relatedModel", Move.class.getCanonicalName());
+      relatedDataMap.put("relatedId", invoiceTerm.getMoveLine().getMove().getId());
+    }
+
+    return relatedDataMap;
   }
 }
