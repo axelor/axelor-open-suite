@@ -1,9 +1,9 @@
-package com.axelor.apps.account.service.move.control.accounting.moveline.account;
+package com.axelor.apps.account.service.move.control.moveline.account;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
 
-public interface MoveAccountingMoveLineAccountControlService {
+public interface MoveLineAccountControlService {
 
   /**
    * Method that control if accountingAccount of line is a valid or not.

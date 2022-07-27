@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.move.control.moveline.MoveLinePreSaveControlService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -14,14 +13,12 @@ public class MovePreSaveControlServiceImpl implements MovePreSaveControlService 
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveLinePreSaveControlService moveLinePreSaveControlService;
   protected MoveChangeControlService moveChangeControlService;
 
   @Inject
   public MovePreSaveControlServiceImpl(
       MoveLinePreSaveControlService moveLinePreSaveControlService,
       MoveChangeControlService moveChangeControlService) {
-    this.moveLinePreSaveControlService = moveLinePreSaveControlService;
     this.moveChangeControlService = moveChangeControlService;
   }
 
@@ -30,12 +27,6 @@ public class MovePreSaveControlServiceImpl implements MovePreSaveControlService 
 
     log.debug("Checking validity of move {}", move);
     Objects.requireNonNull(move);
-
-    if (move.getMoveLineList() != null) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        moveLinePreSaveControlService.checkValidity(moveLine);
-      }
-    }
     moveChangeControlService.checkIllegalRemoval(move);
   }
 }

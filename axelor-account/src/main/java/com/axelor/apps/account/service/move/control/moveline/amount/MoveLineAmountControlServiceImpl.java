@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.move.control.accounting.moveline.amount;
+package com.axelor.apps.account.service.move.control.moveline.amount;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -7,8 +7,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 
-public class MoveAccountingMoveLineAmountControlServiceImpl
-    implements MoveAccountingMoveLineAmountControlService {
+public class MoveLineAmountControlServiceImpl implements MoveLineAmountControlService {
 
   @Override
   public void checkNotEmpty(MoveLine moveLine) throws AxelorException {

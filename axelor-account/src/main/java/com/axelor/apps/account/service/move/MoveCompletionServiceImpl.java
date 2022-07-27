@@ -2,7 +2,6 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.moveline.MoveLineCompletionService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -34,15 +33,6 @@ public class MoveCompletionServiceImpl implements MoveCompletionService {
     }
 
     moveSequenceService.setDraftSequence(move);
-
-    if (move.getMoveLineList() != null) {
-      moveLineCompletionService.completeAnalyticMoveLines(move.getMoveLineList());
-    }
-
-    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-        || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
-      freezeAccountAndPartnerFieldsOnMoveLines(move);
-    }
   }
 
   @Override

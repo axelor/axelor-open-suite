@@ -7,7 +7,7 @@ public interface MoveChangeControlService {
 
   /**
    * This method will check if the move has done illegal removal by comparing it with the persisted
-   * move (it is exist)
+   * move (if it exists)
    *
    * @param move
    * @throws AxelorException
