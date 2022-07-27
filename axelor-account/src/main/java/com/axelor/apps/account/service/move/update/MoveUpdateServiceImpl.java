@@ -41,7 +41,7 @@ public class MoveUpdateServiceImpl implements MoveUpdateService {
   @Override
   public void updateInDayBookMode(Move move) throws AxelorException {
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
         || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
 
       log.debug("Updating customer account of move {}", move);

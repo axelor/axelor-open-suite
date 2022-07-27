@@ -297,8 +297,7 @@
 
   <form name="move-simplified-form" title="Account move"
     model="com.axelor.apps.account.db.Move" width="large" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave" onNew="action-account-move-onnew-group"
-    canDelete="false" canArchive="false">
+    onNew="action-account-move-onnew-group" canDelete="false" canArchive="false">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>

@@ -3,10 +3,13 @@ package com.axelor.apps.account.service.move.control.accounting;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.move.control.accounting.account.MoveAccountingAccountControlService;
+import com.axelor.apps.account.service.move.control.accounting.analytic.MoveAccountingAnalyticControlService;
 import com.axelor.apps.account.service.move.control.accounting.balance.MoveAccountingBalanceControlService;
+import com.axelor.apps.account.service.move.control.accounting.journal.MoveAccountingJournalControlService;
 import com.axelor.apps.account.service.move.control.accounting.moveline.MoveAccountingMoveLineControlService;
-import com.axelor.apps.account.service.move.control.accounting.period.MoveAccountingPeriodControlService;
 import com.axelor.apps.account.service.move.control.moveline.MoveLinePreSaveControlService;
+import com.axelor.apps.account.service.move.control.period.MovePeriodControlService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -19,21 +22,32 @@ public class MoveAccountingControlServiceImpl implements MoveAccountingControlSe
   protected MoveAccountingNullControlService moveAccountingNullControlService;
   protected MoveAccountingMoveLineControlService moveAccountingMoveLineControlService;
   protected MoveAccountingBalanceControlService moveAccountingBalanceControlService;
-  protected MoveAccountingPeriodControlService moveAccountingPeriodControlService;
+  protected MovePeriodControlService movePeriodControlService;
   protected MoveLinePreSaveControlService moveLinePreSaveControlService;
+
+  protected MoveAccountingAccountControlService moveAccountingAccountControlService;
+  protected MoveAccountingAnalyticControlService moveAccountingAnalyticControlService;
+  protected MoveAccountingJournalControlService moveAccountingJournalControlService;
 
   @Inject
   public MoveAccountingControlServiceImpl(
       MoveAccountingMoveLineControlService moveAccountingMoveLineControlService,
       MoveAccountingNullControlService moveAccountingNullControlService,
       MoveAccountingBalanceControlService moveAccountingBalanceControlService,
-      MoveAccountingPeriodControlService moveAccountingPeriodControlService,
-      MoveLinePreSaveControlService moveLinePreSaveControlService) {
+      MovePeriodControlService movePeriodControlService,
+      MoveLinePreSaveControlService moveLinePreSaveControlService,
+      MoveAccountingAccountControlService moveAccountingAccountControlService,
+      MoveAccountingAnalyticControlService moveAccountingAnalyticControlService,
+      MoveAccountingJournalControlService moveAccountingJournalControlService) {
+
     this.moveAccountingMoveLineControlService = moveAccountingMoveLineControlService;
     this.moveAccountingNullControlService = moveAccountingNullControlService;
     this.moveAccountingBalanceControlService = moveAccountingBalanceControlService;
-    this.moveAccountingPeriodControlService = moveAccountingPeriodControlService;
+    this.movePeriodControlService = movePeriodControlService;
     this.moveLinePreSaveControlService = moveLinePreSaveControlService;
+    this.moveAccountingAccountControlService = moveAccountingAccountControlService;
+    this.moveAccountingAnalyticControlService = moveAccountingAnalyticControlService;
+    this.moveAccountingJournalControlService = moveAccountingJournalControlService;
   }
 
   @Override
@@ -43,7 +57,15 @@ public class MoveAccountingControlServiceImpl implements MoveAccountingControlSe
 
     moveAccountingNullControlService.checkNullFields(move);
 
-    moveAccountingPeriodControlService.checkClosedPeriod(move);
+    movePeriodControlService.checkAuthorizationOnClosedPeriod(move);
+    movePeriodControlService.checkClosedPeriod(move);
+
+    moveAccountingAccountControlService.checkInactiveAccount(move);
+    moveAccountingJournalControlService.checkInactiveJournal(move);
+    moveAccountingJournalControlService.checkAuthorizedFunctionalOrigin(move);
+
+    moveAccountingAnalyticControlService.checkInactiveAnalyticAccount(move);
+    moveAccountingAnalyticControlService.checkInactiveAnalyticJournal(move);
   }
 
   @Override

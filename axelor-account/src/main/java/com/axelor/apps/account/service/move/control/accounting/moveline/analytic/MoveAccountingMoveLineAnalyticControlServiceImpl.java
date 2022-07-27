@@ -20,8 +20,9 @@ public class MoveAccountingMoveLineAnalyticControlServiceImpl
         && account.getAnalyticDistributionRequiredOnMoveLines()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(IExceptionMessage.MOVE_10), account.getName(), moveLine.getName()));
+          I18n.get(IExceptionMessage.MOVE_10),
+          account.getName(),
+          moveLine.getName());
     }
   }
 
@@ -35,8 +36,10 @@ public class MoveAccountingMoveLineAnalyticControlServiceImpl
             || (moveLine.getAnalyticMoveLineList() != null
                 && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
       throw new AxelorException(
+          moveLine.getMove(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
+          I18n.get(IExceptionMessage.MOVE_11),
+          moveLine.getName());
     }
   }
 }

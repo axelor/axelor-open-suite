@@ -32,13 +32,13 @@ public class MoveLineListener {
     Beans.get(MoveLinePreSaveControlService.class).checkValidity(moveLine);
     Beans.get(MoveLineCompletionService.class).completeAnalyticMoveLine(moveLine);
 
-    // Control to do if the move line is related to a move
+    // Operations to do if the move line is related to a move
     Move move = moveLine.getMove();
     if (move != null) {
 
       Beans.get(MovePreSaveControlService.class).checkValidity(move);
 
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
 
         Beans.get(MoveLineCompletionService.class).freezeAccountAndPartnerFields(moveLine);

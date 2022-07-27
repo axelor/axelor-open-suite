@@ -25,31 +25,36 @@ public class MoveAccountingNullControlServiceImpl implements MoveAccountingNullC
     if (company == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_3), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_3),
+          move.getReference());
     }
 
     if (journal == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_2), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_2),
+          move.getReference());
     }
 
     if (move.getPeriod() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_4), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_4),
+          move.getReference());
     }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_8),
+          move.getReference());
     }
 
     if (move.getCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.MOVE_12), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_12),
+          move.getReference());
     }
 
     if (move.getMoveLineList().stream()
@@ -58,7 +63,16 @@ public class MoveAccountingNullControlServiceImpl implements MoveAccountingNullC
                 moveLine.getDebit().add(moveLine.getCredit()).compareTo(BigDecimal.ZERO) == 0)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
+          I18n.get(IExceptionMessage.MOVE_8),
+          move.getReference());
+    }
+
+    Integer functionalOriginSelect = move.getFunctionalOriginSelect();
+    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_13),
+          move.getReference());
     }
   }
 }

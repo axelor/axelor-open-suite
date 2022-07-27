@@ -17,6 +17,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -63,6 +64,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AppBaseService appBaseService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveAccountingControlService moveAccountingControlService;
+  protected MoveCompletionService moveCompletionService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -75,7 +78,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveAccountingControlService moveAccountingControlService,
+      MoveCompletionService moveCompletionService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
@@ -87,6 +92,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.appBaseService = appBaseService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveAccountingControlService = moveAccountingControlService;
+    this.moveCompletionService = moveCompletionService;
   }
 
   /**
@@ -287,14 +294,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     log.debug("Comptabilisation de l'écriture comptable {}", move.getReference());
 
-    this.checkPreconditions(move);
-
-    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        && !move.getAutoYearClosureMove()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
-    }
+    moveAccountingControlService.deepControlAccounting(move);
 
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
@@ -310,7 +310,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     this.completeMoveLines(move);
 
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    moveCompletionService.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
     this.updateValidateStatus(move, dayBookMode);
 
@@ -414,7 +414,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateInDayBookMode(Move move) throws AxelorException {
 
-    this.checkPreconditions(move);
+    moveAccountingControlService.deepControlAccounting(move);
 
     Set<Partner> partnerSet = new HashSet<>();
 
@@ -424,7 +424,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     List<Partner> partnerList = new ArrayList<>();
     partnerList.addAll(partnerSet);
 
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    moveCompletionService.freezeAccountAndPartnerFieldsOnMoveLines(move);
     moveRepository.save(move);
 
     moveCustAccountService.updateCustomerAccount(partnerList, move.getCompany());

@@ -225,16 +225,22 @@ import com.axelor.apps.account.service.move.control.accounting.MoveAccountingCon
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlServiceImpl;
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingNullControlService;
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingNullControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.account.MoveAccountingAccountControlService;
+import com.axelor.apps.account.service.move.control.accounting.account.MoveAccountingAccountControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.analytic.MoveAccountingAnalyticControlService;
+import com.axelor.apps.account.service.move.control.accounting.analytic.MoveAccountingAnalyticControlServiceImpl;
 import com.axelor.apps.account.service.move.control.accounting.balance.MoveAccountingBalanceControlService;
 import com.axelor.apps.account.service.move.control.accounting.balance.MoveAccountingBalanceControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.journal.MoveAccountingJournalControlService;
+import com.axelor.apps.account.service.move.control.accounting.journal.MoveAccountingJournalControlServiceImpl;
 import com.axelor.apps.account.service.move.control.accounting.moveline.MoveAccountingMoveLineControlService;
 import com.axelor.apps.account.service.move.control.accounting.moveline.MoveAccountingMoveLineControlServiceImpl;
 import com.axelor.apps.account.service.move.control.accounting.moveline.analytic.MoveAccountingMoveLineAnalyticControlService;
 import com.axelor.apps.account.service.move.control.accounting.moveline.analytic.MoveAccountingMoveLineAnalyticControlServiceImpl;
+import com.axelor.apps.account.service.move.control.accounting.moveline.analytic.analyticline.MoveAccountingMoveLineAnalyticLineControlService;
+import com.axelor.apps.account.service.move.control.accounting.moveline.analytic.analyticline.MoveAccountingMoveLineAnalyticLineControlServiceImpl;
 import com.axelor.apps.account.service.move.control.accounting.moveline.tax.MoveAccountingMoveLineTaxControlService;
 import com.axelor.apps.account.service.move.control.accounting.moveline.tax.MoveAccountingMoveLineTaxControlServiceImpl;
-import com.axelor.apps.account.service.move.control.accounting.period.MoveAccountingPeriodControlService;
-import com.axelor.apps.account.service.move.control.accounting.period.MoveAccountingPeriodControlServiceImpl;
 import com.axelor.apps.account.service.move.control.moveline.MoveLineChangeControlService;
 import com.axelor.apps.account.service.move.control.moveline.MoveLineChangeControlServiceImpl;
 import com.axelor.apps.account.service.move.control.moveline.MoveLinePreSaveControlService;
@@ -245,6 +251,8 @@ import com.axelor.apps.account.service.move.control.moveline.amount.MoveLineAmou
 import com.axelor.apps.account.service.move.control.moveline.amount.MoveLineAmountControlServiceImpl;
 import com.axelor.apps.account.service.move.control.moveline.date.MoveLineDateControlService;
 import com.axelor.apps.account.service.move.control.moveline.date.MoveLineDateControlServiceImpl;
+import com.axelor.apps.account.service.move.control.period.MovePeriodControlService;
+import com.axelor.apps.account.service.move.control.period.MovePeriodControlServiceImpl;
 import com.axelor.apps.account.service.move.update.MoveUpdateService;
 import com.axelor.apps.account.service.move.update.MoveUpdateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCompletionService;
@@ -552,7 +560,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveAccountingMoveLineTaxControlService.class)
         .to(MoveAccountingMoveLineTaxControlServiceImpl.class);
 
-    bind(MoveAccountingPeriodControlService.class).to(MoveAccountingPeriodControlServiceImpl.class);
+    bind(MovePeriodControlService.class).to(MovePeriodControlServiceImpl.class);
 
     bind(MoveCompletionService.class).to(MoveCompletionServiceImpl.class);
 
@@ -569,5 +577,17 @@ public class AccountModule extends AxelorModule {
     bind(MoveChangeControlService.class).to(MoveChangeControlServiceImpl.class);
 
     bind(MoveLineChangeControlService.class).to(MoveLineChangeControlServiceImpl.class);
+
+    bind(MoveAccountingAnalyticControlService.class)
+        .to(MoveAccountingAnalyticControlServiceImpl.class);
+
+    bind(MoveAccountingAccountControlService.class)
+        .to(MoveAccountingAccountControlServiceImpl.class);
+
+    bind(MoveAccountingJournalControlService.class)
+        .to(MoveAccountingJournalControlServiceImpl.class);
+
+    bind(MoveAccountingMoveLineAnalyticLineControlService.class)
+        .to(MoveAccountingMoveLineAnalyticLineControlServiceImpl.class);
   }
 }
