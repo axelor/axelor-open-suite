@@ -247,6 +247,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
     if (authorizedFunctionalOriginSelect != null
         && !(Splitter.on(",")
+            .trimResults()
             .splitToList(authorizedFunctionalOriginSelect)
             .contains(functionalOriginSelect.toString()))) {
 
