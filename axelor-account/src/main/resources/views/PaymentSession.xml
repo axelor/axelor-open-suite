@@ -54,12 +54,14 @@
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard" hidden="true"/>
+      <button name="showMoveLinesBtn" title="Show move line(s)"
+        onClick="action-payment-session-view-move-lines" showIf="statusSelect == 3"/>
     </toolbar>
     <panel name="statusSelectPanel" colSpan="7" stacked="true">
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
         colSpan="9"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
-        widget="info-button" onClick="" colSpan="3"
+        widget="info-button" onClick="action-payment-session-view-invoice-terms" colSpan="3"
         showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
         x-currency="company.currency.symbol"/>
     </panel>
@@ -99,8 +101,7 @@
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </panel>
     <panel name="searchPanel"
-      showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
-      readonlyIf="statusSelect > 1">
+      showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-group-payment-session-search-eligible-terms"
         readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
@@ -108,12 +109,12 @@
         showIf="id &amp;&amp; sessionTotalAmount > 0" readonlyIf="statusSelect > 1"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
-        showIf="id" colSpan="12" canSearch="true" height="600"/>
+        showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
-        colSpan="8" canSearch="true" height="380"/>
+        colSpan="8" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
-        widget="info-button" onClick="" colSpan="4"
+        widget="info-button" onClick="action-payment-session-view-invoice-terms" colSpan="4"
         showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
         x-currency="company.currency.symbol"/>
       <field name="sessionTotalAmount" hidden="true"/>
@@ -404,6 +405,22 @@
       :relatedToSelectId)</domain>
     <context name="relatedToSelectId" expr="eval: id"/>
     <context name="relatedToSelect" expr="eval: _model"/>
+  </action-view>
+
+  <action-view name="action-payment-session-view-invoice-terms" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-grid"/>
+    <view type="form" name="invoice-term-form"/>
+    <domain>self.paymentSession.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-payment-session-view-move-lines" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.move.paymentSession.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
 </object-views>
