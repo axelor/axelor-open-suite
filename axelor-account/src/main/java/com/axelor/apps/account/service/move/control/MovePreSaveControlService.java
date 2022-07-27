@@ -6,7 +6,7 @@ import com.axelor.exception.AxelorException;
 public interface MovePreSaveControlService {
 
   /**
-   * Control the validity of the move
+   * Control the validity of the move and only of the move, not move lines
    *
    * @param move
    * @throws AxelorException

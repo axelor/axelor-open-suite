@@ -2,7 +2,6 @@ package com.axelor.apps.account.db.repo.listener;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.move.MoveCompletionService;
 import com.axelor.apps.account.service.move.control.MovePreSaveControlService;
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
 import com.axelor.exception.AxelorException;
@@ -24,7 +23,6 @@ public class MoveListener {
     log.debug("Applying pre-save operations on move {}", move);
 
     Beans.get(MovePreSaveControlService.class).checkValidity(move);
-    Beans.get(MoveCompletionService.class).completeMove(move);
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
         || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED

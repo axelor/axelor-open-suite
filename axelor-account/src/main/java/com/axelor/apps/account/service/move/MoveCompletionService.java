@@ -6,7 +6,7 @@ import com.axelor.exception.AxelorException;
 public interface MoveCompletionService {
 
   /**
-   * Complete the move
+   * Complete the move, and only the move not move lines
    *
    * @param move
    * @throws AxelorException

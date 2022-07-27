@@ -178,6 +178,8 @@
       <message if="true" on="CREATE">Move line created</message>
     </track>
 
+    <entity-listener
+      class="com.axelor.apps.account.db.repo.listener.MoveLineListener"/>
   </entity>
 
 </domain-models>

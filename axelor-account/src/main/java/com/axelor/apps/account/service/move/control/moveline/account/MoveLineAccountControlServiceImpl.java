@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.move.control.accounting.moveline.account;
+package com.axelor.apps.account.service.move.control.moveline.account;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
@@ -13,8 +13,7 @@ import com.axelor.i18n.I18n;
 import java.util.Objects;
 import java.util.Set;
 
-public class MoveAccountingMoveLineAccountControlServiceImpl
-    implements MoveAccountingMoveLineAccountControlService {
+public class MoveLineAccountControlServiceImpl implements MoveLineAccountControlService {
 
   @Override
   public void checkValidAccount(MoveLine moveLine) throws AxelorException {
