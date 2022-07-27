@@ -83,8 +83,7 @@
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_template" expr="eval:false"/>
-    <context name="todayDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25" title="Sale orders"
@@ -103,8 +102,7 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_template" expr="eval:false"/>
     <context name="status" expr="3"/>
-    <context name="todayDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <search-filters name="sc.root.sale.templates.filter"

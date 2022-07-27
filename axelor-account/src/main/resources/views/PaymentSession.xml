@@ -259,7 +259,7 @@
   <action-record name="action-record-payment-session-set-default-values"
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="company" expr="eval: __user__.activeCompany"/>
-    <field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="paymentDate" expr="eval: __config__.date"/>
     <field name="assignedToUser" expr="eval: __user__"/>
   </action-record>
 
@@ -347,8 +347,7 @@
     <view type="form" name="payment-session-form"/>
     <domain>self.assignedToUser.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.paymentSession.paymentSessions" title="Payment sessions"

@@ -180,7 +180,7 @@
   <action-view name="manufacturing.root.charge.by.machine.dashboard"
     title="Charge by machine">
     <view type="dashboard" name="charge.by.machine.dashboard"/>
-    <context name="today" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="today" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
@@ -224,7 +224,7 @@
     model="com.axelor.apps.supplychain.db.MrpForecast">
     <view type="grid" name="mrp-forecast-grid"/>
     <view type="form" name="mrp-forecast-form"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration"
@@ -318,7 +318,7 @@
     model="com.axelor.apps.production.db.MachineTool">
     <view type="grid" name="machine-tool-grid"/>
     <view type="form" name="machine-tool-form"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"

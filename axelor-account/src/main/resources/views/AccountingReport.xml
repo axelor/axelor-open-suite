@@ -450,9 +450,7 @@
 
   <action-record name="action-accounting-report-record-default"
     model="com.axelor.apps.account.db.AccountingReport">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
+    <field name="createdOn" expr="eval:__config__.date"/>
     <field name="createdOn"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
@@ -461,9 +459,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="currency" expr="eval:__user__.activeCompany?.currency"/>
-    <field name="date" expr="eval:__config__.app.getTodayDate(null)"/>
-    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
+    <field name="date" expr="eval:__config__.date"/>
     <field name="date"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>

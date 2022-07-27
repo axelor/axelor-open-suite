@@ -121,8 +121,7 @@
       self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt;
       :todayDate
     </domain>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 
