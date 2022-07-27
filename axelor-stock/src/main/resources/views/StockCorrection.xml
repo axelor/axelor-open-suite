@@ -73,7 +73,8 @@
     <attribute name="domain" for="product"
       expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
       if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
-    <attribute name="domain" for="product" expr="self.productTypeSelect = 'storable'"
+    <attribute name="domain" for="product"
+      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
       if="stockLocation != null"/>
   </action-attrs>
 
