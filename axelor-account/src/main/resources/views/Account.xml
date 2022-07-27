@@ -66,7 +66,6 @@
           onChange="action-group-code-on-change"/>
         <field name="name" colSpan="9" css="bold"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
-        <field name="company.accountConfig.hasAccountCodeFixedNbrChar" hidden="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
@@ -250,12 +249,12 @@
 
   <action-group name="action-group-code-on-change">
     <action name="action-method-account-fill-account-code"
-      if="company.accountConfig.hasAccountCodeFixedNbrChar"/>
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
   </action-group>
 
   <action-group name="action-group-account-type-on-change">
     <action name="action-method-account-fill-account-code"
-      if="company.accountConfig.hasAccountCodeFixedNbrChar"/>
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
   </action-group>
 
   <action-view name="action-mass-update-status-wizard" title="Mass update status"
