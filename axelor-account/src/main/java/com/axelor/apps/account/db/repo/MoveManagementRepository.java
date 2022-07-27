@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveCompletionService;
 import com.axelor.apps.account.service.move.update.MoveUpdateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -104,6 +105,8 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
+
+      Beans.get(MoveCompletionService.class).completeMove(move);
       Beans.get(MoveUpdateService.class).updateInDayBookMode(move);
       return super.save(move);
     } catch (Exception e) {
