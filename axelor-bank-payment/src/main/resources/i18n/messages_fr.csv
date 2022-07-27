@@ -482,6 +482,7 @@
 "Display payment mode","Afficher le mode de paiement",,
 "Display receiver address","Afficher l'adresse du destinataire",,
 "Display receiver country","Afficher le pays du destinataire",,
+"Display the invoice","Afficher la facture",,
 "Draft","Brouillon",,
 "Due date","Date d’échéance",,
 "Duration (days) of the semi-interval of convidence for the dates","Durée (jrs) du demi-intervalle de confiance pour les dates",,
