@@ -125,7 +125,7 @@
     </panel>
 
     <panel-dashlet name="viewMoveLinesPanel"
-      action="action-accounting-situation-view-move-lines"/>
+      action="action-accounting-situation-view-move-lines" canSearch="true"/>
   </form>
 
 
