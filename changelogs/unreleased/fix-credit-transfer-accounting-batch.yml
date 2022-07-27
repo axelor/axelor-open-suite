@@ -1,0 +1,3 @@
+---
+title: "AccountingBatch: Fix infinite loop in credit transfer batch"
+type: fix

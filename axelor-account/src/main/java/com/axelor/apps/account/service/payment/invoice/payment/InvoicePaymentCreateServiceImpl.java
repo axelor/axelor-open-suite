@@ -329,6 +329,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    invoice.addInvoicePaymentListItem(invoicePayment);
+    invoicePaymentToolService.updateAmountPaid(invoice);
     return invoicePaymentRepository.save(invoicePayment);
   }
 
