@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -34,9 +35,9 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -85,7 +86,8 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
             + "AND self.pfpValidateStatusSelect != :pfpValidateStatusSelect");
 
     if (manageMultiBanks) {
-      filter.append(" AND self.companyBankDetails IN (:bankDetailsSet)");
+      filter.append(
+          " AND (:bankDetailsSet is null OR self.companyBankDetails IN (:bankDetailsSet))");
     }
 
     if (accountingBatch.getCurrency() != null) {
@@ -105,13 +107,17 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
             .bind("pfpValidateStatusSelect", InvoiceRepository.PFP_STATUS_LITIGATION);
 
     if (manageMultiBanks) {
-      Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
-
+      Set<BankDetails> bankDetailsSet = new HashSet<>();
+      if (ObjectUtils.notEmpty(accountingBatch.getBankDetails())) {
+        bankDetailsSet.add(accountingBatch.getBankDetails());
+      }
       if (accountingBatch.getIncludeOtherBankAccounts()) {
         bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
-      query.bind("bankDetailsSet", bankDetailsSet);
+      if (!bankDetailsSet.isEmpty()) {
+        query.bind("bankDetailsSet", bankDetailsSet);
+      }
     }
 
     if (accountingBatch.getCurrency() != null) {
