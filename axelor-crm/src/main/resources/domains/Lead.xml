@@ -10,6 +10,14 @@
     <string name="titleSelect" title="Title" selection="partner.title.type.select"/>
     <string name="name" required="true" title="Last name"/>
     <string name="firstName" title="First name"/>
+    <string name="simpleFullName" title="Full name">
+    	<![CDATA[
+    		if(firstName != null)
+    			return firstName+" "+name;
+    		else
+    			return name;
+    	]]>
+    </string>
     <string name="enterpriseName" title="Enterprise"/>
     <string name="officeName" title="Office name"/>
     <many-to-one name="jobTitleFunction" title="Job Title"

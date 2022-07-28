@@ -27,8 +27,7 @@
     <hilite color="success" if="statusSelect == 3"/>
     <field name="createdOn" hidden="true"/>
     <field name="updatedOn" hidden="true"/>
-    <field name="name"/>
-    <field name="firstName"/>
+    <field name="simpleFullName"/>
     <field name="enterpriseName"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address"/>
