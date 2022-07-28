@@ -406,18 +406,6 @@ public class MoveValidateService {
     return error;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException {
-    if (moveList == null) {
-      return;
-    }
-
-    for (Move move : moveList) {
-      move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
-      moveRepository.save(move);
-    }
-  }
-
   public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {
     Move move;
 

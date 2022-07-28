@@ -346,6 +346,9 @@
         <field name="bankReconciledAmount" if-module="axelor-bank-payment" readonly="true"/>
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
+      <panel-dashlet name="bankReconciliationLinePanel"
+        title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"
+        canAttach="false" colSpan="12"/>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
       <field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
@@ -382,9 +385,6 @@
       <field name="move.journal" colSpan="6"/>
       <field name="move.period" canView="false" colSpan="6"/>
     </panel>
-
-    <panel-dashlet name="bankReconciliationLinePanel"
-      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
   </form>
 
   <form name="move-line-move-form" title="Move line"
@@ -515,9 +515,10 @@
         <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
+      <panel-dashlet name="bankReconciliationLinePanel"
+        title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"
+        canAttach="false" colSpan="12"/>
     </panel-tabs>
-    <panel-dashlet name="bankReconciliationLinePanel"
-      action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -789,7 +790,7 @@
   </action-view>
 
   <action-view name="action-move-line-view-bank-reconciliation-lines"
-    title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    title="Bank reconciliation lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <view type="grid" name="bank-reconciliation-line-grid"/>
     <view type="form" name="bank-reconciliation-line-form"/>
     <domain>self.moveLine = :_id</domain>
