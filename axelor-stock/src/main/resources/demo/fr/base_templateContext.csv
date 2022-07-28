@@ -5,7 +5,7 @@ def user = stockRules.user
 def team = stockRules.team
 
 if (user) {
-	def userAddress = user.partner.emailAddress?.address
+	def userAddress = user.partner?.emailAddress?.address
 	if(userAddress) {
 		s << userAddress
 	}
@@ -14,7 +14,7 @@ if (user) {
 if (team) {
 	def members = stockRules.team.members
 	members.each {
-	def memberAddress = it.partner.emailAddress?.address
+	def memberAddress = it.partner?.emailAddress?.address
 		if(memberAddress) {
 			s << memberAddress
 		}
