@@ -714,8 +714,6 @@
         <field name="bankReconciledAmount" if-module="axelor-bank-payment"
           onChange="action-account-group-move-line-check-bank-reconcile-amount-on-change"
           readonly="true"/>
-        <field name="vatSystemSelect"
-          showIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="exportedDirectDebitOk" hidden="true" readonly="true"/>
         <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
