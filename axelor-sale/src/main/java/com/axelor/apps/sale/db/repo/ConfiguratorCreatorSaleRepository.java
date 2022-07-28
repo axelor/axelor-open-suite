@@ -69,7 +69,7 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
    *
    * @param entity
    */
-  private void addTemporalOnAttributesAndIndicatorsName(ConfiguratorCreator entity) {
+  protected void addTemporalOnAttributesAndIndicatorsName(ConfiguratorCreator entity) {
     List<MetaJsonField> metaJsonFields = new ArrayList<>();
     metaJsonFields.addAll(
         Optional.ofNullable(entity.getAttributes()).orElse(Collections.emptyList()));
