@@ -109,7 +109,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
-  public int validateInvoiceTerms(PaymentSession paymentSession) {
+  public int checkValidTerms(PaymentSession paymentSession) {
     LocalDate nextSessionDate;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
@@ -797,5 +797,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession = true AND self.bankDetails.active = false")
         .bind("paymentSession", paymentSession)
         .fetch();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class})
+  public StringBuilder processInvoiceTerms(PaymentSession paymentSession) throws AxelorException {
+    reconciledInvoiceTermMoves(paymentSession);
+    return generateFlashMessage(paymentSession, processPaymentSession(paymentSession));
   }
 }

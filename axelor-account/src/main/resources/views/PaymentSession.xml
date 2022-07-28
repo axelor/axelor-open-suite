@@ -130,7 +130,6 @@
       <button name="cancelBtn" title="Cancel" css="btn-danger"
         showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
       <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
-      <field name="hasReleasePopup" hidden="true"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
       <field name="validatedByUser" readonly="true"/>
@@ -172,7 +171,7 @@
         title="Warning : The following invoice terms have been paid or partially paid since the payment session was created and thus won't be considered during validation. Do you wish to continue ?"/>
       <panel name="validateOrErrorPanel" stacked="true">
         <button name="validateBtn" title="Continue" showIf="!$isAllInvoiceTerms"
-          onClick="action-payment-session-group-process-invoice-terms,close"/>
+          onClick="action-payment-session-method-process-invoice-terms,close"/>
         <label showIf="$isAllInvoiceTerms" css="label-danger"
           title="Every invoice term from the payment session cannot be considered so it is not possible to continue."/>
       </panel>
@@ -185,13 +184,7 @@
   <action-group name="action-payment-session-group-validate">
     <action name="save"/>
     <action name="action-payment-session-method-check-session"/>
-    <action name="action-payment-session-method-validate-invoice-terms"/>
-    <action name="action-payment-session-group-process-invoice-terms" if="!hasReleasePopup"/>
-  </action-group>
-
-  <action-group name="action-payment-session-group-process-invoice-terms">
-    <action name="action-payment-session-method-reconciled-invoice-term-moves"/>
-    <action name="action-payment-session-method-validate-payment-session"/>
+    <action name="action-payment-session-method-check-and-process-invoice-terms"/>
   </action-group>
 
   <action-group name="action-payment-session-group-cancel">
@@ -218,16 +211,6 @@
     <attribute name="value" expr="eval: null" for="paymentMode"/>
     <attribute name="value" expr="eval: company?.currency" for="currency"/>
   </action-attrs>
-
-  <action-method name="action-payment-session-method-validate-invoice-terms">
-    <call class="com.axelor.apps.account.web.PaymentSessionController"
-      method="validateInvoiceTerms"/>
-  </action-method>
-
-  <action-method name="action-payment-session-method-validate-payment-session">
-    <call class="com.axelor.apps.account.web.PaymentSessionController"
-      method="validatePaymentSession"/>
-  </action-method>
 
   <action-method name="action-payment-session-method-cancel">
     <call class="com.axelor.apps.account.web.PaymentSessionController"
@@ -304,11 +287,6 @@
       method="searchEligibleTerms"/>
   </action-method>
 
-  <action-method name="action-payment-session-method-reconciled-invoice-term-moves">
-    <call class="com.axelor.apps.account.web.PaymentSessionController"
-      method="reconciledInvoiceTermMoves"/>
-  </action-method>
-
   <action-method name="action-payment-session-method-check-session">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="checkSession"/>
   </action-method>
@@ -339,6 +317,16 @@
     <alert message="Selected records will be deleted, do you wish to continue ?"
       if="__repo__(PaymentSession).all().filter('self.id IN ?1 AND self.statusSelect != ?2', _ids, __repo__(PaymentSession).STATUS_CANCELLED).count() == 0"/>
   </action-validate>
+
+  <action-method name="action-payment-session-method-check-and-process-invoice-terms">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="checkAndProcessInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-process-invoice-terms">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="processInvoiceTerms"/>
+  </action-method>
 
   <action-group name="action-group-payment-session-search-eligible-terms">
     <action name="save"/>
@@ -393,7 +381,7 @@
   <action-view name="action-payment-session-view-released-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
-    <view type="form" name="invoice-form"/>
+    <view type="form" name="invoice-term-form"/>
     <domain>self.paymentSession.id = :_id AND self.isSelectedOnPaymentSession IS TRUE AND
       (self.isPaid IS TRUE OR self.paymentAmount > self.amountRemaining)</domain>
     <context name="_id" expr="eval: id"/>

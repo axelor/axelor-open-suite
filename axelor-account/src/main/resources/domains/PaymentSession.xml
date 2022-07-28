@@ -30,7 +30,6 @@
     <string name="description" title="Description"/>
     <boolean name="hasEmailsSent" title="Email sent"/>
     <boolean name="hasMovesGenerated" title="Moves generated"/>
-    <boolean name="hasReleasePopup" default="false"/>
     <integer name="accountingMethodSelect" title="Accounting method for payment move"
       required="true" selection="paymentMode.accounting.method.select" default="1"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"
