@@ -331,7 +331,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     if (!advancedExport.getIncludeArchivedRecords() && Strings.isNullOrEmpty(criteria)) {
       queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
     } else if (!advancedExport.getIncludeArchivedRecords() && !Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL");
+      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL)");
     }
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 
