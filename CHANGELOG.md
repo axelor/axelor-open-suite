@@ -1,3 +1,31 @@
+## [6.0.27] (2022-07-29)
+
+#### Fixed
+
+* MAIL TEMPLATE ASSOCIATION: fix template keys issues when using custom template for mail notifications on comments
+
+In the custom mail template used for mail notifications sent when commenting on a form, following changes were made:
+- Fix variable `$ccRecipients$` so it is filled with all followers.
+- Add variable `$toRecipient$` which is currently the same as `$ccRecipients$`.
+- Add variable `$commentCreator$` to only get the author of the comment.
+
+* Stock correction: it is now possible to apply a correction on any product even if the product is not available in the stock location.
+* MRP: status of the mrp is now set to draft on copy.
+* MRP demo data: in MRP configuration, changed the statuses to correctly take into account ongoing manufacturing orders for the MRP computation.
+* Manufacturing Order: pre-filling operations does not fill start and end date anymore, allowing them to be filled during the planification.
+* Invoice: fixed an issue preventing the user to fill the type of operation when creating a new invoice with customer/supplier info not set by default.
+* Message email: when sending an email, the 'To' field will now be filled with the fullname and email address instead of the name and the email address.
+* Production: fixed sequence data-init.
+* Contacts: checking duplicate and opening a contact form will not open a unusable form anymore.
+* Configurator creator: fixed a bug during import causing some fields to have an incorrect value.
+* Batches: Fixed "created on" value, before it was always set on midnight.
+* Stock location: fix field title for stock computation config
+
+Change 'Don't take in consideration for the stock calcul' 
+to 'Don't take in consideration for the stock computation'
+
+* Contract: fix typo in french translation in an error message (when closing contract).
+
 ## [6.0.26] (2022-07-07)
 
 #### Fixed
@@ -855,6 +883,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.27]: https://github.com/axelor/axelor-open-suite/compare/v6.0.26...v6.0.27
 [6.0.26]: https://github.com/axelor/axelor-open-suite/compare/v6.0.25...v6.0.26
 [6.0.25]: https://github.com/axelor/axelor-open-suite/compare/v6.0.24...v6.0.25
 [6.0.24]: https://github.com/axelor/axelor-open-suite/compare/v6.0.23...v6.0.24
