@@ -275,11 +275,13 @@
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
       <field name="origin" colSpan="12"/>
-      <field name="description" colSpan="12"/>
+      <field name="description" colSpan="12"
+        requiredIf="move.company.accountConfig.isDescriptionRequired"/>
       <field name="taxAmount" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
       <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
+      <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-analytic-distribution-move-line-form"/>
@@ -441,8 +443,10 @@
         colSpan="3"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
         colSpan="3"/>
-      <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"/>
+      <field name="description" colSpan="6"
+        requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
+      <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
       <field name="taxAmount" hidden="true"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
