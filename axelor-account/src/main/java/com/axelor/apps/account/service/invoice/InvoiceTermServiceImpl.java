@@ -326,7 +326,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
       MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
-      moveLine.addInvoiceTermListItem(invoiceTerm);
+      if (moveLine != null) {
+        moveLine.addInvoiceTermListItem(invoiceTerm);
+      }
     }
 
     return invoiceTerm;
