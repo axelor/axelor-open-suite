@@ -18,11 +18,8 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.inject.Beans;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 
 public class LeadManagementRepository extends LeadRepository {
 
@@ -32,24 +29,6 @@ public class LeadManagementRepository extends LeadRepository {
         Beans.get(LeadService.class)
             .processFullName(entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
     entity.setFullName(fullName);
-
-    List<Opportunity> opportunities = entity.getOpportunitiesList();
-
-    if (CollectionUtils.isNotEmpty(opportunities) && entity.getStatusSelect() == LEAD_STATUS_NEW) {
-      entity.setStatusSelect(LEAD_STATUS_IN_PROCESS);
-
-    } else if (CollectionUtils.isEmpty(opportunities)
-        && entity.getStatusSelect() == LEAD_STATUS_IN_PROCESS) {
-      entity.setStatusSelect(LEAD_STATUS_NEW);
-    }
-
-    if (entity.getStatusSelect() == LEAD_STATUS_CLOSED
-        && entity.getClosedReason() == CLOSED_REASON_CANCELED
-        && CollectionUtils.isNotEmpty(opportunities)) {
-      for (Opportunity opportunity : opportunities) {
-        opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_CLOSED_LOST);
-      }
-    }
 
     return super.save(entity);
   }

@@ -17,28 +17,20 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.LeadManagementRepository;
-import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
-import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
@@ -49,56 +41,6 @@ public class OpportunityServiceImpl implements OpportunityService {
   @Transactional
   public void saveOpportunity(Opportunity opportunity) {
     opportunityRepo.save(opportunity);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException {
-    Lead lead = opportunity.getLead();
-    if (lead == null) {
-      throw new AxelorException(
-          opportunity,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAD_PARTNER));
-    }
-
-    String name = lead.getFullName();
-
-    Address address = null;
-    if (lead.getPrimaryAddress() != null) {
-      // avoids printing 'null'
-      String addressL6 =
-          lead.getPrimaryPostalCode() == null ? "" : lead.getPrimaryPostalCode() + " ";
-      addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity().getName();
-
-      address =
-          addressService.createAddress(
-              null, null, lead.getPrimaryAddress(), null, addressL6, lead.getPrimaryCountry());
-      address.setFullName(addressService.computeFullName(address));
-    }
-
-    EmailAddress email = null;
-    if (lead.getEmailAddress() != null) {
-      email = new EmailAddress(lead.getEmailAddress().getAddress());
-    }
-
-    Partner partner =
-        Beans.get(PartnerService.class)
-            .createPartner(
-                name,
-                null,
-                lead.getFixedPhone(),
-                lead.getMobilePhone(),
-                email,
-                opportunity.getCurrency(),
-                address,
-                address,
-                true);
-
-    opportunity.setPartner(partner);
-    opportunityRepo.save(opportunity);
-
-    return partner;
   }
 
   @Override
@@ -117,54 +59,14 @@ public class OpportunityServiceImpl implements OpportunityService {
 
   @Override
   public String computeAndGetName(Opportunity opportunity) {
-    Lead lead = opportunity.getLead();
     Partner partner = opportunity.getPartner();
     Partner contact = opportunity.getContact();
     if (partner != null) {
       return partner.getFullName();
 
-    } else if (lead != null) {
-      if (!Strings.isNullOrEmpty(lead.getEnterpriseName())) {
-        return lead.getEnterpriseName();
-      }
-      return lead.getFullName();
-
     } else if (contact != null) {
       return contact.getFullName();
     }
     return null;
-  }
-
-  public void closeLead(Opportunity opportunity) {
-
-    if (opportunity.getLead() == null) {
-      return;
-    }
-
-    Lead lead = opportunity.getLead();
-    List<Opportunity> opportunities = lead.getOpportunitiesList();
-    if (opportunities.size() == 1) {
-      if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
-        setLeadStatus(lead, LeadRepository.LEAD_STATUS_CLOSED);
-      }
-    } else {
-      if (opportunities.stream()
-          .allMatch(
-              opp ->
-                  opp.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST
-                      || opp.getSalesStageSelect()
-                          == OpportunityRepository.SALES_STAGE_CLOSED_WON)) {
-        setLeadStatus(lead, LeadRepository.LEAD_STATUS_CLOSED);
-      } else {
-        setLeadStatus(lead, LeadRepository.LEAD_STATUS_IN_PROCESS);
-      }
-    }
-  }
-
-  @Transactional
-  public void setLeadStatus(Lead lead, Integer status) {
-
-    lead.setStatusSelect(status);
-    Beans.get(LeadManagementRepository.class).save(lead);
   }
 }

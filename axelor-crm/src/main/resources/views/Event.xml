@@ -438,7 +438,6 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="form" name="opportunity-form"/>
     <context name="_customer" expr="eval: partner"/>
-    <context name="_leadName" expr="eval: lead"/>
   </action-view>
 
   <action-view name="action-event-view-create-event" title="Create event"

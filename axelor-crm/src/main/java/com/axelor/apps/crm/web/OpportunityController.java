@@ -70,27 +70,4 @@ public class OpportunityController {
       TraceBackService.trace(e);
     }
   }
-
-  public void createClient(ActionRequest request, ActionResponse response) {
-    try {
-      Opportunity opportunity = request.getContext().asType(Opportunity.class);
-      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
-      Beans.get(OpportunityService.class).createClientFromLead(opportunity);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
-    }
-  }
-
-  public void closeOpportunity(ActionRequest request, ActionResponse response) {
-    try {
-      Opportunity opportunity = request.getContext().asType(Opportunity.class);
-      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
-      Beans.get(OpportunityService.class).closeLead(opportunity);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 }
