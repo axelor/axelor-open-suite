@@ -514,19 +514,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     return errors;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException {
-    if (moveList == null) {
-      return;
-    }
-
-    for (Move move : moveList) {
-      move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
-      moveRepository.save(move);
-    }
-  }
-
   public void accountingMultiple(Query<Move> moveListQuery) throws AxelorException {
     Move move;
 

@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fixed operationTypeSelect display condition when customer/supplier info is not set by default"
+type: fix
