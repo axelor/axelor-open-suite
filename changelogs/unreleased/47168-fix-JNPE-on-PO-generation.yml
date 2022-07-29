@@ -1,0 +1,3 @@
+---
+title: "Purchase Order: remove error message when generating a purchase order with a shipment mode missing a shipping cost."
+type: fix
