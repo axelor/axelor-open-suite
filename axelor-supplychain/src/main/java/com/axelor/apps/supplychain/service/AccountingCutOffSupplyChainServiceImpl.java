@@ -61,10 +61,13 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.config.AccountConfigSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -194,7 +197,9 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       boolean ati,
       boolean includeNotStockManagedProduct,
       boolean automaticReverse,
-      boolean automaticReconcile)
+      boolean automaticReconcile,
+      Account forecastedInvCustAccount,
+      Account forecastedInvSuppAccount)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -216,7 +221,9 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             recoveredTax,
             ati,
             includeNotStockManagedProduct,
-            false);
+            false,
+            forecastedInvCustAccount,
+            forecastedInvSuppAccount);
 
     if (move == null) {
       return null;
@@ -238,7 +245,9 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
               recoveredTax,
               ati,
               includeNotStockManagedProduct,
-              true);
+              true,
+              forecastedInvCustAccount,
+              forecastedInvSuppAccount);
 
       if (reverseMove == null) {
         return null;
@@ -273,7 +282,9 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       boolean recoveredTax,
       boolean ati,
       boolean includeNotStockManagedProduct,
-      boolean isReverse)
+      boolean isReverse,
+      Account forecastedInvCustAccount,
+      Account forecastedInvSuppAccount)
       throws AxelorException {
 
     if (moveDate == null
@@ -299,7 +310,12 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         partner = saleOrder.getClientPartner();
       }
       fiscalPosition = saleOrder.getFiscalPosition();
-      partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
+      partnerAccount = forecastedInvCustAccount;
+      if (partnerAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
+      }
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
         && stockMove.getOriginId() != null) {
@@ -309,7 +325,12 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         partner = purchaseOrder.getSupplierPartner();
       }
       fiscalPosition = purchaseOrder.getFiscalPosition();
-      partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
+      partnerAccount = forecastedInvSuppAccount;
+      if (partnerAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT));
+      }
     }
 
     String origin = stockMove.getStockMoveSeq();
