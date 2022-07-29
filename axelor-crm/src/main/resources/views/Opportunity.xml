@@ -26,7 +26,6 @@
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="lead" form-view="lead-form" grid-view="lead-grid"/>
     <field name="salesStageSelect"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
@@ -61,7 +60,6 @@
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="createdOn" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="lead" form-view="lead-form" grid-view="lead-grid"/>
     <field name="salesStageSelect"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
@@ -194,8 +192,7 @@
       <button name="next-stageBtn" title="Next step" hideIf="salesStageSelect &gt; 3"
         icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
       <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4"
-        icon="fa-check-circle"
-        onClick="save,action-opportunity-set-closed-won,save,action-opportunity-group-on-after-closed-won"/>
+        icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
       <button name="closed-lostBtn" title="Lose" css="btn-danger"
         hideIf="salesStageSelect &gt; 4" icon="fa-times"
         onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
@@ -223,23 +220,16 @@
         </panel>
       </panel>
       <panel name="referencePanel" title="Reference" canCollapse="true">
-        <field name="partner" canEdit="false"
-          requiredIf="contact == null &amp;&amp; lead == null"
+        <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"
           domain="self.isContact = false AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid"
-          onChange="action-opportunity-record-set-lead-onchange,action-opportunity-record-set-name"/>
-        <field name="contact" canEdit="false"
-          requiredIf="partner == null &amp;&amp; lead == null"
+          onChange="action-opportunity-record-set-name"/>
+        <field name="contact" canEdit="false" requiredIf="partner == null"
           readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"
           domain="self.isContact = true AND :company member of self.companySet"
           form-view="partner-contact-form" grid-view="partner-contact-grid"
-          onChange="action-opportunity-record-set-contact-onchange,action-opportunity-record-set-name"/>
-        <field name="lead" canEdit="false"
-          requiredIf="partner == null &amp;&amp; contact == null"
-          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form"
-          grid-view="lead-grid"
-          onChange="action-opportunity-record-set-partner-onchange,action-opportunity-record-set-name"/>
+          onChange="action-opportunity-record-set-name"/>
       </panel>
       <panel name="postitPanel" title="Memo" canCollapse="true">
         <field name="memo" showTitle="false" colSpan="12"/>
@@ -270,7 +260,6 @@
     <field name="amount"/>
     <field name="currency.symbol"/>
     <field name="opportunityRating"/>
-    <field name="lead.enterpriseName"/>
     <hilite color="danger" if="probability &lt;= 25"/>
     <hilite color="success" if="probability &gt;= 75"/>
     <hilite color="info" if="probability &gt;= 50"/>
@@ -283,7 +272,6 @@
                 <p ng-bind-html="record.description"></p>
                 <dl>
                     <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{record.partner.name}}</dd>
-                    <dt ng-show="record.lead.enterpriseName" x-translate>Customer</dt><dd ng-show="lead.enterpriseName">{{record.lead.enterpriseName}}</dd>
                     <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</dd>
                     <dt ng-show="record.probability" x-translate>Probability</dt><dd ng-show="record.probability">{{record.probability}}</dd>
                     <dt><i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span></dt>
@@ -375,11 +363,9 @@
   <action-group name="action-opportunity-group-new">
     <action name="action-opportunity-record-new"/>
     <action name="action-opportunity-record-currency"/>
-    <action name="action-opportunity-record-default"
-      if="_lead == null &amp;&amp; _partner == null"/>
+    <action name="action-opportunity-record-default" if="_partner == null"/>
     <action name="action-opportunity-record-from-partner" if="_partner != null"/>
-    <action name="action-opportunity-record-from-lead" if="_lead != null"/>
-    <action name="action-opportunity-record-set-name" if="_lead != null || _partner != null"/>
+    <action name="action-opportunity-record-set-name" if="_partner != null"/>
   </action-group>
 
   <action-group name="action-group-crm-opportunity-nextstage-click">
@@ -390,7 +376,6 @@
   <action-group name="action-group-crm-opportunity-closedwon-click">
     <action name="action-opportunity-set-closed-won"/>
     <action name="save"/>
-    <action name="action-opportunity-group-on-after-closed-won"/>
   </action-group>
 
   <action-group name="action-group-crm-opportunity-closedlost-click">
@@ -401,33 +386,8 @@
   <action-group name="action-crm-group-close-lost-opportunity">
     <action name="action-opportunity-set-closed-lost"/>
     <action name="save"/>
-    <action name="action-crm-method-close-opportunity"/>
     <action name="action-opportunity-method-cancel-saleorders"/>
   </action-group>
-
-  <action-group name="action-opportunity-group-on-after-closed-won">
-    <action name="action-crm-method-close-opportunity"/>
-    <action name="action-opportunity-validate-convert-lead"
-      if="__config__.app.getApp('crm').getIsAutomaticConvertLead()"/>
-    <action name="action-opportunity-view-convert-lead"
-      if="__config__.app.getApp('crm').getIsAutomaticConvertLead() &amp;&amp; lead?.opportunitiesList?.size() == 1 &amp;&amp; salesStageSelect == 5"/>
-  </action-group>
-
-  <action-validate name="action-opportunity-validate-convert-lead">
-    <alert
-      message="Do you want to convert the lead linked to the opportunity into a partner ?"
-      if="lead?.opportunitiesList?.size() == 1 &amp;&amp; salesStageSelect == 5"/>
-  </action-validate>
-
-  <action-view name="action-opportunity-view-convert-lead"
-    title="Convert lead (${ lead.fullName })" model="com.axelor.apps.base.db.Wizard">
-    <view type="form" name="convert-lead-wizard-form"/>
-    <view-param name="popup" value="true"/>
-    <view-param name="width" value="500"/>
-    <view-param name="popup-save" value="false"/>
-    <context name="_lead" expr="eval: lead"/>
-    <context name="_primaryAddress" expr="eval: lead?.primaryAddress"/>
-  </action-view>
 
   <action-view name="action-opportunity-view-schedule-event"
     model="com.axelor.apps.crm.db.Event" title="Create event">
@@ -439,11 +399,8 @@
   <action-record name="action-opportunity-record-set-name"
     model="com.axelor.apps.crm.db.Opportunity">
     <field name="name" expr="eval: partner.fullName" if="partner != null"/>
-    <field name="name"
-      expr="eval: lead.enterpriseName != null ? lead.enterpriseName : lead.fullName"
-      if="lead != null &amp;&amp; partner == null"/>
     <field name="name" expr="eval: contact.fullName"
-      if="contact != null &amp;&amp; lead == null &amp;&amp; partner == null"/>
+      if="contact != null &amp;&amp; partner == null"/>
   </action-record>
 
   <action-record name="action-opportunity-record-new"
@@ -468,7 +425,6 @@
   <action-record name="action-opportunity-record-default"
     model="com.axelor.apps.crm.db.Opportunity">
     <field name="partner" expr="eval: _customer"/>
-    <field name="lead" expr="eval: _leadName"/>
   </action-record>
 
   <action-record name="action-opportunity-record-from-partner"
@@ -535,33 +491,8 @@
     <field name="salesStageSelect" expr="eval:6"/>
   </action-record>
 
-  <action-record name="action-opportunity-record-set-partner-onchange"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="partner" expr="eval: null" if="lead"/>
-    <field name="contact" expr="eval: null" if="lead"/>
-  </action-record>
-
-  <action-record name="action-opportunity-record-set-lead-onchange"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="lead" expr="eval: null" if="partner"/>
-  </action-record>
-
-  <action-record name="action-opportunity-record-set-contact-onchange"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="lead" expr="eval: null" if="contact"/>
-  </action-record>
-
   <action-method name="action-show-opportunities-on-map-page">
     <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
-  </action-method>
-
-  <action-method name="action-opportunity-record-from-lead">
-    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
-      method="setConvertLeadIntoOpportunity"/>
-  </action-method>
-
-  <action-method name="action-crm-method-close-opportunity">
-    <call class="com.axelor.apps.crm.web.OpportunityController" method="closeOpportunity"/>
   </action-method>
 
   <action-view name="dashlet.opportunity" title="Opportunities"

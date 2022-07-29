@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -27,12 +26,7 @@ public interface OpportunityService {
   @Transactional
   public void saveOpportunity(Opportunity opportunity);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
-
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
   public String computeAndGetName(Opportunity opportunity);
-
-  public void closeLead(Opportunity opportunity);
 }
