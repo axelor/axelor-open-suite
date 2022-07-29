@@ -1,3 +1,24 @@
+## [5.4.20] (2022-07-29)
+
+#### Fixed
+
+* Stock correction: it is now possible to apply a correction on any product even if the product is not available in the stock location.
+* MRP: status of the mrp is now set to draft on copy.
+* Manufacturing Order: pre-filling operations does not fill start and end date anymore, allowing them to be filled during the planification.
+* Invoice: fixed an issue preventing the user to fill the type of operation when creating a new invoice with customer/supplier info not set by default.
+* Message email: when sending an email, the 'To' field will now be filled with the fullname and email address instead of the name and the email address.
+* Production: fixed sequence data-init.
+* Contacts: checking duplicate and opening a contact form will not open a unusable form anymore.
+* Batches: Fixed "created on" value, before it was always set on midnight.
+* Contract: fix typo in french translation in an error message (when closing contract).
+* Stock location: fix field title for stock computation config
+
+  <details>
+  Change 'Don't take in consideration for the stock calcul' 
+  to 'Don't take in consideration for the stock computation'
+  </details>
+
+
 ## [5.4.19] (2022-07-07)
 
 #### Fixed
@@ -627,6 +648,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.20]: https://github.com/axelor/axelor-open-suite/compare/v5.4.19...v5.4.20
 [5.4.19]: https://github.com/axelor/axelor-open-suite/compare/v5.4.18...v5.4.19
 [5.4.18]: https://github.com/axelor/axelor-open-suite/compare/v5.4.17...v5.4.18
 [5.4.17]: https://github.com/axelor/axelor-open-suite/compare/v5.4.16...v5.4.17
