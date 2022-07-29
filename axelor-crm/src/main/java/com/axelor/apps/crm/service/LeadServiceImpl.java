@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LostReason;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
@@ -55,8 +54,6 @@ public class LeadServiceImpl implements LeadService {
   @Inject protected UserService userService;
 
   @Inject protected PartnerRepository partnerRepo;
-
-  @Inject protected OpportunityRepository opportunityRepo;
 
   @Inject protected LeadRepository leadRepo;
 
@@ -124,11 +121,6 @@ public class LeadServiceImpl implements LeadService {
       event.setPartner(partner);
       event.setContactPartner(contactPartner);
       eventRepo.save(event);
-    }
-
-    for (Opportunity opportunity : lead.getOpportunitiesList()) {
-      opportunity.setPartner(partner);
-      opportunityRepo.save(opportunity);
     }
 
     lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);

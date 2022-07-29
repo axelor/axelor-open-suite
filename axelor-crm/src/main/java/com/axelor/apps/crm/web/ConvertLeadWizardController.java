@@ -19,7 +19,6 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -266,40 +265,6 @@ public class ConvertLeadWizardController {
       response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Lead lead = findLead(request);
-
-    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
-    response.setAttr("lead", "value", lead);
-    response.setAttr("customerDescription", "value", lead.getDescription());
-    response.setAttr("source", "value", lead.getSource());
-    response.setAttr("partner", "value", lead.getPartner());
-    response.setAttr("user", "value", lead.getUser());
-    response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("webSite", "value", lead.getWebSite());
-    response.setAttr("source", "value", lead.getSource());
-    response.setAttr("department", "value", lead.getDepartment());
-    response.setAttr("isCustomer", "value", true);
-    response.setAttr("partnerTypeSelect", "value", "1");
-    response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-
-    Company company = null;
-    CompanyRepository companyRepo = Beans.get(CompanyRepository.class);
-
-    if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
-      company = lead.getUser().getActiveCompany();
-    } else if (companyRepo.all().count() == 1) {
-      company = companyRepo.all().fetchOne();
-    }
-
-    if (company != null) {
-      response.setAttr("company", "value", company);
-      response.setAttr("currency", "value", company.getCurrency());
     }
   }
 
