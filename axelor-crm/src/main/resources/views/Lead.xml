@@ -208,12 +208,6 @@
         <panel-dashlet name="eventPanelDashlet" action="action-lead-view-events"
           title="Events" height="550" colSpan="12"/>
       </panel>
-      <panel name="opportunityPanel" colSpan="12" title="Opportunity">
-        <button name="createOpportunityBtn" title="Create opportunity" icon="fa-plus" link=""
-          onClick="save,action-lead-view-create-opportunity" colSpan="3"/>
-        <panel-dashlet name="opportunityPanelDashlet" title="Opportunity"
-          action="action-lead-view-opportunities" height="500" colSpan="12"/>
-      </panel>
       <panel name="emailPanel" title="Emails">
         <button name="emailBtn" title="Create an email" link="" icon="fa-envelope-o"
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
@@ -438,14 +432,6 @@
     <context name="_lead" expr="eval: __this__"/>
   </action-view>
 
-  <action-view name="action-lead-view-create-opportunity"
-    title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
-    <view type="form" name="opportunity-form"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __self__"/>
-  </action-view>
-
   <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})"
     model="com.axelor.apps.crm.db.Event">
     <view type="form" name="event-form"/>
@@ -516,14 +502,6 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.lead.id = :_id</domain>
-  </action-view>
-
-  <action-view name="action-lead-view-opportunities" title="Opportunities"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <view type="cards" name="opportunity-cards"/>
-    <view type="grid" name="opportunity-dashlet-grid"/>
-    <view type="form" name="opportunity-form"/>
     <domain>self.lead.id = :_id</domain>
   </action-view>
 

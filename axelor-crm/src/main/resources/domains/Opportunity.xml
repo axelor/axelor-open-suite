@@ -26,8 +26,6 @@
     <integer name="orderByState"/>
     <string name="memo" large="true"/>
 
-    <many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
-
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>

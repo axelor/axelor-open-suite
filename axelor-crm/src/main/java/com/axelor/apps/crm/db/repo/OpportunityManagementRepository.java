@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.db.repo;
 
-import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.exception.service.TraceBackService;
@@ -41,15 +40,6 @@ public class OpportunityManagementRepository extends OpportunityRepository {
         Beans.get(OpportunityService.class).setSequence(opportunity);
       }
 
-      Lead lead = opportunity.getLead();
-      if (lead != null) {
-        if (opportunity.getSalesStageSelect() == SALES_STAGE_CLOSED_WON
-            || opportunity.getSalesStageSelect() == SALES_STAGE_CLOSED_LOST) {
-          lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
-        } else {
-          lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
-        }
-      }
       opportunity.setName(Beans.get(OpportunityService.class).computeAndGetName(opportunity));
 
       return super.save(opportunity);
