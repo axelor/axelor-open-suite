@@ -1,0 +1,6 @@
+---
+title: "Stock location : fix field title for stock computation config"
+type: fix
+description: |
+  Change 'Don't take in consideration for the stock calcul' 
+  to 'Don't take in consideration for the stock computation'

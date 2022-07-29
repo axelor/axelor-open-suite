@@ -275,7 +275,7 @@ public class MoveController {
                       move.getReference()));
             }
           }
-          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+          Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
           response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
         } else {
