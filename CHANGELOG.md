@@ -1,3 +1,34 @@
+## [6.1.16] (2022-07-29)
+
+#### Fixed
+
+* MAIL TEMPLATE ASSOCIATION: fix template keys issues when using custom template for mail notifications on comments
+
+In the custom mail template used for mail notifications sent when commenting on a form, following changes were made:
+
+    - Fix variable `$ccRecipients$` so it is filled with all followers.
+    - Add variable `$toRecipient$` which is currently the same as `$ccRecipients$`.
+    - Add variable `$commentCreator$` to only get the author of the comment.
+
+* Stock correction: it is now possible to apply a correction on any product even if the product is not available in the stock location.
+* MRP: status of the mrp is now set to draft on copy.
+* MRP demo data: in MRP configuration, changed the statuses to correctly take into account ongoing manufacturing orders for the MRP computation.
+* Purchase Order: remove error message when generating a purchase order with a shipment mode missing a shipping cost.
+* Manufacturing Order: pre-filling operations does not fill start and end date anymore, allowing them to be filled during the planification.
+* Invoice: fixed an issue preventing the user to fill the type of operation when creating a new invoice with customer/supplier info not set by default.
+* Message email: when sending an email, the 'To' field will now be filled with the fullname and email address instead of the name and the email address.
+* Production: fixed sequence data-init.
+* Geonames: improve error messages when trying to run the import with missing configuration.
+* Contacts: checking duplicate and opening a contact form will not open a unusable form anymore.
+* Configurator creator: fixed a bug during import causing some fields to have an incorrect value.
+* Batches: Fixed "created on" value, before it was always set on midnight.
+* Stock location: fix field title for stock computation config
+
+Change 'Don't take in consideration for the stock calcul' 
+to 'Don't take in consideration for the stock computation'
+
+* Contract: fix typo in french translation in an error message (when closing contract).
+
 ## [6.1.15] (2022-07-07)
 
 #### Changes
@@ -674,6 +705,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.16]: https://github.com/axelor/axelor-open-suite/compare/v6.1.15...v6.1.16
 [6.1.15]: https://github.com/axelor/axelor-open-suite/compare/v6.1.14...v6.1.15
 [6.1.14]: https://github.com/axelor/axelor-open-suite/compare/v6.1.13...v6.1.14
 [6.1.13]: https://github.com/axelor/axelor-open-suite/compare/v6.1.12...v6.1.13
