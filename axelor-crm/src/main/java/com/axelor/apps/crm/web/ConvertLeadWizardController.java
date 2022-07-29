@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.db.repo.OpportunityTypeRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
@@ -274,10 +273,6 @@ public class ConvertLeadWizardController {
     Lead lead = findLead(request);
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
-    response.setAttr(
-        "opportunityType",
-        "value",
-        Beans.get(OpportunityTypeRepository.class).findByCode("EXLEAD"));
     response.setAttr("lead", "value", lead);
     response.setAttr("customerDescription", "value", lead.getDescription());
     response.setAttr("source", "value", lead.getSource());
