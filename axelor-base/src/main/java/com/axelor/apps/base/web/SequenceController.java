@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -41,5 +42,31 @@ public class SequenceController {
     Sequence sequence = request.getContext().asType(Sequence.class);
     String fullName = Beans.get(SequenceService.class).computeFullName(sequence);
     response.setValue("fullName", fullName);
+  }
+
+  public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
+    try {
+      Sequence sequence = request.getContext().asType(Sequence.class);
+      SequenceService sequenceService = Beans.get(SequenceService.class);
+      if (sequence.getMonthlyResetOk()) {
+        response.setValue(
+            "sequenceVersionList", sequenceService.updateSequenceVersions(sequence, true, false));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateSequenceVersionsYearly(ActionRequest request, ActionResponse response) {
+    try {
+      Sequence sequence = request.getContext().asType(Sequence.class);
+      SequenceService sequenceService = Beans.get(SequenceService.class);
+      if (sequence.getYearlyResetOk()) {
+        response.setValue(
+            "sequenceVersionList", sequenceService.updateSequenceVersions(sequence, false, true));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

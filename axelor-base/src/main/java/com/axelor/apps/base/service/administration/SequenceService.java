@@ -44,6 +44,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.List;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
@@ -382,5 +383,99 @@ public class SequenceService {
     fn.append(sequence.getName());
 
     return fn.toString();
+  }
+
+  public List<SequenceVersion> updateSequenceVersions(
+      Sequence sequence, boolean monthly, boolean yearly) {
+
+    LocalDate todayDate = appBaseService.getTodayDate(sequence.getCompany());
+    LocalDate endOfDate = null;
+    LocalDate nextPeriodDate = null;
+    LocalDate nextPeriodEndDate = null;
+    Sequence dbSequence = sequenceRepo.find(sequence.getId());
+    List<SequenceVersion> sequenceVersionList = sequence.getSequenceVersionList();
+
+    if (!sequenceVersionList.equals(dbSequence.getSequenceVersionList())) {
+      sequenceVersionList = dbSequence.getSequenceVersionList();
+    }
+
+    if (monthly) {
+      endOfDate = todayDate.withDayOfMonth(todayDate.lengthOfMonth());
+      nextPeriodDate = endOfDate.plusDays(1);
+      nextPeriodEndDate = nextPeriodDate.withDayOfMonth(nextPeriodDate.lengthOfMonth());
+    }
+    if (yearly) {
+      endOfDate = todayDate.withDayOfYear(todayDate.lengthOfYear());
+      nextPeriodDate = endOfDate.plusDays(1);
+      nextPeriodEndDate = nextPeriodDate.withDayOfYear(nextPeriodDate.lengthOfYear());
+    }
+
+    // TO BE REMOVED
+    // Check to prevent an anomaly only fixed in 6.3
+    if (sequence.getYearlyResetOk() && monthly) {
+      endOfDate = todayDate.withDayOfYear(todayDate.lengthOfYear());
+      nextPeriodDate = endOfDate.plusDays(1);
+      nextPeriodEndDate = nextPeriodDate.withDayOfMonth(nextPeriodDate.lengthOfMonth());
+    }
+
+    return updateAndAddNewVersions(
+        sequence,
+        sequenceVersionList,
+        todayDate,
+        endOfDate,
+        nextPeriodDate,
+        nextPeriodEndDate,
+        monthly);
+  }
+
+  protected List<SequenceVersion> addNewVersion(
+      Sequence sequence,
+      LocalDate fromDate,
+      LocalDate toDate,
+      List<SequenceVersion> sequenceVersionList) {
+    SequenceVersion newSeqVersion = new SequenceVersion(sequence, fromDate, toDate, 1L);
+
+    for (SequenceVersion sequenceVersion : sequenceVersionList) {
+      if (checkNewDuplicateVersion(sequenceVersion, newSeqVersion)) {
+        return sequenceVersionList;
+      }
+    }
+
+    sequenceVersionList.add(newSeqVersion);
+    return sequenceVersionList;
+  }
+
+  protected boolean checkNewDuplicateVersion(
+      SequenceVersion sequenceVersion, SequenceVersion newSequenceVersion) {
+    return newSequenceVersion.getStartDate().equals(sequenceVersion.getStartDate())
+        && newSequenceVersion.getEndDate().equals(sequenceVersion.getEndDate());
+  }
+
+  protected List<SequenceVersion> updateAndAddNewVersions(
+      Sequence sequence,
+      List<SequenceVersion> sequenceVersionList,
+      LocalDate todayDate,
+      LocalDate endOfDate,
+      LocalDate nextPeriodDate,
+      LocalDate nextPeriodEndDate,
+      boolean monthly) {
+
+    SequenceVersion lastSequenceVersion;
+    if (sequence.getYearlyResetOk() && monthly) {
+      // TO BE REMOVED
+      // Checking yearly to prevent an anomaly only fixed in 6.3
+      lastSequenceVersion = sequenceVersionRepository.findByYear(sequence, todayDate.getYear());
+    } else {
+      lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
+    }
+
+    if (lastSequenceVersion != null) {
+      sequenceVersionList.stream()
+          .filter(sequenceVersion -> sequenceVersion.equals(lastSequenceVersion))
+          .forEach(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
+    } else {
+      return addNewVersion(sequence, todayDate, endOfDate, sequenceVersionList);
+    }
+    return addNewVersion(sequence, nextPeriodDate, nextPeriodEndDate, sequenceVersionList);
   }
 }

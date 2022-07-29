@@ -1,0 +1,6 @@
+---
+title: "Sequence : update sequence version list when enabling yearly or monthly reset"
+type: fix
+description: |
+  When enabling yearly or monthly reset, a new line will be created in the versions list
+  corresponding to the next period of sequences.
