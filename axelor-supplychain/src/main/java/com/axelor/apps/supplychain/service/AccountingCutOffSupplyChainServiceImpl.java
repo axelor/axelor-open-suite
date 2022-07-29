@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -56,13 +55,11 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.config.AccountConfigSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -82,10 +79,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
   protected StockMoveRepository stockMoverepository;
   protected StockMoveLineRepository stockMoveLineRepository;
-  protected AccountConfigSupplychainService accountConfigSupplychainService;
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
-  protected SaleOrderService saleOrderService;
   protected StockMoveLineServiceSupplychain stockMoveLineService;
   protected int counter = 0;
 
@@ -94,7 +89,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       StockMoveRepository stockMoverepository,
       StockMoveLineRepository stockMoveLineRepository,
       MoveCreateService moveCreateService,
-      AccountConfigSupplychainService accountConfigSupplychainService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       MoveToolService moveToolService,
@@ -110,7 +104,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       AccountConfigService accountConfigService,
       MoveLineCreateService moveLineCreateService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      SaleOrderService saleOrderService,
       StockMoveLineServiceSupplychain stockMoveLineService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
@@ -136,10 +129,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         currencyService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
-    this.accountConfigSupplychainService = accountConfigSupplychainService;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
-    this.saleOrderService = saleOrderService;
     this.stockMoveLineService = stockMoveLineService;
   }
 
@@ -294,8 +285,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     }
 
     Company company = stockMove.getCompany();
-
-    AccountConfig accountConfig = accountConfigSupplychainService.getAccountConfig(company);
 
     Partner partner = stockMove.getPartner();
     FiscalPosition fiscalPosition = partner != null ? partner.getFiscalPosition() : null;
