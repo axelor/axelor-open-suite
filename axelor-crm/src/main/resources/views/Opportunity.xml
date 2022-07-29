@@ -148,8 +148,7 @@
 					]]>
         </viewer>
       </field>
-      <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false"
-        form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
+      <field name="opportunityType" colSpan="4"/>
       <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2"/>
       <field name="source" colSpan="4" canEdit="false" form-view="source-form"
         grid-view="source-grid"/>
@@ -326,7 +325,7 @@
     <field name="expectedCloseDate"/>
     <field name="opportunityRating"/>
     <field name="description"/>
-    <field name="opportunityType.code"/>
+    <field name="opportunityType"/>
     <template><![CDATA[
 			<div>
 			  <div class="span12">
