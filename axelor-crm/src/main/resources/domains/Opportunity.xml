@@ -37,7 +37,6 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <string name="opportunitySeq" title="Reference" readonly="true" unique="true"/>
 
-    <date name="payingDate" title="Paying date"/>
     <decimal name="recurrentAmount" title="Recurrent amount"/>
     <integer name="periodicitySelect" title="Periodicity"
       selection="crm.opportunity.periodicity.select"/>

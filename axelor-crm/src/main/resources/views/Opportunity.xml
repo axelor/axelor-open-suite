@@ -152,10 +152,7 @@
       <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2"/>
       <field name="source" colSpan="4" canEdit="false" form-view="source-form"
         grid-view="source-grid"/>
-      <field name="expectedCloseDate"
-        onChange="action-opportunity-group-onchange-expected-close-date" colSpan="4"
-        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
-      <field name="payingDate" onChange="action-opportunity-record-set-start-date" colSpan="4"
+      <field name="expectedCloseDate" colSpan="4"
         readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
       <field name="probability" colSpan="4"
         readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
@@ -485,22 +482,6 @@
       if="_partner.user != null || _partner.team != null"/>
     <field name="currency" expr="eval: _partner.currency"/>
     <field name="customerDescription" expr="eval: _partner.description"/>
-  </action-record>
-
-  <action-group name="action-opportunity-group-onchange-expected-close-date">
-    <action name="action-opportunity-record-set-paying-date"/>
-    <action name="action-opportunity-record-set-start-date"/>
-  </action-group>
-
-  <action-record name="action-opportunity-record-set-paying-date"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="payingDate" expr="eval: expectedCloseDate"/>
-  </action-record>
-
-  <action-record name="action-opportunity-record-set-start-date"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="startDate" expr="eval: payingDate"
-      if="__config__.app.getApp('crm').isManageRecurrent"/>
   </action-record>
 
   <search-filters name="opportunity-filters"
