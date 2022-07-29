@@ -275,10 +275,6 @@ public class ConvertLeadWizardController {
     Lead lead = findLead(request);
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
-    response.setAttr(
-        "opportunityType",
-        "value",
-        Beans.get(OpportunityTypeRepository.class).findByCode("EXLEAD"));
     response.setAttr("lead", "value", lead);
     response.setAttr("customerDescription", "value", lead.getDescription());
     response.setAttr("source", "value", lead.getSource());
