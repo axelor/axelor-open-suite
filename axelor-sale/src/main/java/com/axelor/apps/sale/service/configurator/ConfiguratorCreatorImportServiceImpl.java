@@ -40,6 +40,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
@@ -173,16 +175,31 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
         Mapper mapper = Mapper.of(attribute.getClass());
         Method getter = mapper.getGetter(field.getName());
         String fieldString = (String) getter.invoke(attribute);
+
         if (fieldString != null && fieldString.contains("_")) {
+          String updatedFieldString = updateFieldIds(fieldString, creator.getId());
           Method setter = mapper.getSetter(field.getName());
-          String updatedFieldString =
-              fieldString.substring(0, fieldString.lastIndexOf('_')) + '_' + creator.getId();
           setter.invoke(attribute, updatedFieldString);
         }
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
+  }
+
+  protected String updateFieldIds(String fieldString, Long id) {
+
+    Pattern attributePattern = Pattern.compile("\\w+_\\d+");
+    Matcher matcher = attributePattern.matcher(fieldString);
+    StringBuffer result = new StringBuffer();
+
+    while (matcher.find()) {
+      matcher.appendReplacement(result, matcher.group().replaceAll("_\\d+", "_" + id));
+    }
+
+    matcher.appendTail(result);
+
+    return result.toString();
   }
 
   /**
