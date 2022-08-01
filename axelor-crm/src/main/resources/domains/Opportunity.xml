@@ -16,8 +16,8 @@
     <string name="opportunityType" title="Type of need"/>
     <decimal name="bestCase" title="Best case"/>
     <decimal name="worstCase" title="Worst case"/>
-    <integer name="salesStageSelect" title="Sales stage"
-      selection="crm.opportunity.sales.stage.select"/>
+    <many-to-one name="opportunityStatus" title="Sales stage"
+      ref="com.axelor.apps.crm.db.OpportunityStatus"/>
     <decimal name="probability" title="Probability (%)"/>
     <string name="description" large="true" title="Description"/>
     <string name="customerDescription" large="true" title="Customer Description"/>
@@ -43,24 +43,14 @@
     <integer name="opportunityRating" title="Opportunity score"
       selection="orange.rating.icon.select"/>
 
-    <extra-code>
-		<![CDATA[
-		// Stage SELECT
-			public static final int SALES_STAGE_NEW = 1;
-			public static final int SALES_STAGE_QUALIFICATION = 2;
-			public static final int SALES_STAGE_PROPOSITION = 3;
-			public static final int SALES_STAGE_NEGOTIATION = 4;
-			public static final int SALES_STAGE_CLOSED_WON = 5;
-			public static final int SALES_STAGE_CLOSED_LOST = 6;
-		]]>
-    </extra-code>
-
-
     <track>
       <field name="name"/>
+      <field name="opportunityStatus"/>
       <message if="true" on="CREATE">Opportunity created</message>
-      <message if="salesStageSelect == 5" fields="salesStageSelect" tag="success">Opportunity won</message>
-      <message if="salesStageSelect == 6" fields="salesStageSelect" tag="warning">Opportunity lost</message>
+      <message if="opportunityStatus.typeSelect == 1" fields="opportunityStatus"
+        tag="success">Opportunity won</message>
+      <message if="opportunityStatus.typeSelect == 2" fields="opportunityStatus"
+        tag="warning">Opportunity lost</message>
     </track>
 
   </entity>

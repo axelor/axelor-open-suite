@@ -4,20 +4,15 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="opportunity-grid" title="Opportunities"
-    model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
+    model="com.axelor.apps.crm.db.Opportunity"
+    orderBy="opportunityStatus.sequence,expectedCloseDate">
     <toolbar>
       <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
         onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
       <!-- <button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     </toolbar>
-    <hilite color="danger"
-      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-    <hilite color="warning"
-      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15"/>
-    <hilite color="primary"
-      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-    <hilite background="success" if="salesStageSelect == 5"/>
-    <hilite background="danger" if="salesStageSelect == 6"/>
+    <hilite background="success" if="$get('opportunityStatus.typeSelect') == 1"/>
+    <hilite background="danger" if="$get('opportunityStatus.typeSelect') == 2"/>
     <field name="opportunitySeq"/>
     <field name="name" required="true"/>
     <field name="createdOn" hidden="true"/>
@@ -26,7 +21,8 @@
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="salesStageSelect"/>
+    <field name="opportunityStatus"/>
+    <field name="opportunityStatus.typeSelect" hidden="true"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
     <field name="expectedCloseDate"/>
@@ -34,24 +30,22 @@
     <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
       onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
       hideIf="user.id == _internalUserId"/>
-    <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage"
-      onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3"/>
-    <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
-      onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4"/>
+    <button name="next-stage-gridBtn" icon="fa-chevron-circle-right" help="Next stage"
+      onClick="action-group-crm-opportunity-nextstage-click"
+      hideIf="$get('opportunityStatus.typeSelect') != 0"/>
+    <button name=" closed-wonBtn " icon="fa-check-circle" help="Closed won"
+      onClick="action-group-crm-opportunity-closedwon-click"
+      hideIf="$get('opportunityStatus.typeSelect') == 1"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
-      onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4"/>
+      onClick="action-group-crm-opportunity-closedlost-click"
+      hideIf="$get('opportunityStatus.typeSelect') == 2"/>
   </grid>
 
   <grid name="my-opportunity-grid" title="My Opportunities"
-    model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
-    <hilite color="danger"
-      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-    <hilite color="warning"
-      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15"/>
-    <hilite color="primary"
-      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-    <hilite background="success" if="salesStageSelect == 5"/>
-    <hilite background="danger" if="salesStageSelect == 6"/>
+    model="com.axelor.apps.crm.db.Opportunity"
+    orderBy="opportunityStatus.sequence,expectedCloseDate">
+    <hilite background="success" if="$get('opportunityStatus.typeSelect') == 1"/>
+    <hilite background="danger" if="$get('opportunityStatus.typeSelect') == 2"/>
     <field name="opportunitySeq"/>
     <field name="name" width="300"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -60,17 +54,20 @@
       if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="createdOn" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="salesStageSelect"/>
+    <field name="opportunityStatus"/>
+    <field name="opportunityStatus.typeSelect" hidden="true"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
     <field name="expectedCloseDate"/>
-    <button name="next-stageBtn" readonlyIf="salesStageSelect &gt; 3"
-      icon="fa-chevron-circle-right" help="Next stage"
-      onClick="action-group-crm-opportunity-nextstage-click"/>
-    <button name="closed-wonBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle"
-      help="Closed won" onClick="action-group-crm-opportunity-closedwon-click"/>
-    <button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle"
-      help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
+    <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage"
+      onClick="action-group-crm-opportunity-nextstage-click"
+      hideIf="$get('opportunityStatus.typeSelect') != 0"/>
+    <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
+      onClick="action-group-crm-opportunity-closedwon-click"
+      hideIf="$get('opportunityStatus.typeSelect') == 1"/>
+    <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
+      onClick="action-group-crm-opportunity-closedlost-click"
+      hideIf="$get('opportunityStatus.typeSelect') == 2"/>
   </grid>
 
   <grid name="opportunity-grid-group" title="Opportunities"
@@ -86,7 +83,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="expectedCloseDate"/>
     <field name="amount"/>
-    <field name="salesStageSelect"/>
+    <field name="opportunityStatus"/>
   </grid>
 
   <grid name="opportunity-top-deal-grid" title="Opportunities"
@@ -109,7 +106,7 @@
     model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
     <field name="opportunitySeq"/>
     <field name="name"/>
-    <field name="salesStageSelect"/>
+    <field name="opportunityStatus"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
     <field name="expectedCloseDate"/>
@@ -117,7 +114,7 @@
   </grid>
 
   <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity"
-    onNew="action-opportunity-group-new">
+    onNew="action-opportunity-group-new" onLoad="action-opportunity-attrs-set-attrs-on-load">
     <menubar>
       <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
         <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')"
@@ -126,9 +123,9 @@
         <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
       </menu>
     </menubar>
-    <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
-      <field name="salesStageSelect" colSpan="12" widget="NavSelect" showTitle="false"
-        readonly="true"/>
+    <panel name="mainPanel" readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0">
+      <field name="opportunityStatus" colSpan="12" widget="NavSelect" x-order="sequence"
+        showTitle="false"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<h3>
@@ -151,13 +148,15 @@
       <field name="source" colSpan="4" canEdit="false" form-view="source-form"
         grid-view="source-grid"/>
       <field name="expectedCloseDate" colSpan="4"
-        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
+        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"/>
+      <field name="nextStep" colSpan="12"
+        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"/>
       <field name="probability" colSpan="4"
-        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
+        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" widget="Progress"/>
       <field name="currency" colSpan="4" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <panel name="caseDetailsPanel"
-        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12">
+      <panel name="caseDetailsPanel" readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"
+        colSpan="12">
         <field name="amount" colSpan="4"/>
         <field name="bestCase" colSpan="4"/>
         <field name="worstCase" colSpan="4"/>
@@ -167,7 +166,7 @@
     <panel-tabs name="mainPanelTab">
       <panel name="recurrentPanel" title="Recurrent"
         if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
-        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
+        readonlyIf="$get('opportunityStatus.typeSelect') != 0">
         <field name="recurrentAmount"/>
         <field name="periodicitySelect"/>
         <field name="startDate"/>
@@ -175,7 +174,7 @@
       </panel>
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false"
-          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
+          readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" colSpan="12" widget="html"/>
       </panel>
       <panel name="customerDescriptionPanel" title="Customer Description"
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
@@ -187,17 +186,19 @@
     </panel-tabs>
 
     <panel name="otherDetailsPanel" sidebar="true">
-      <button name="previous-stageBtn" title="Previous step" hideIf="salesStageSelect &lt; 2"
-        icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
-      <button name="next-stageBtn" title="Next step" hideIf="salesStageSelect &gt; 3"
-        icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
-      <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4"
-        icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
+      <button name="previous-stageBtn" title="Previous step" icon="fa-chevron-circle-left"
+        onClick="save,action-opportunity-set-previous-stage,save"/>
+      <button name="next-stageBtn" title="Next step" icon="fa-chevron-circle-right"
+        onClick="save,action-opportunity-set-next-stage,save"/>
+      <button name="closed-wonBtn" title="Win"
+        hideIf="$get('opportunityStatus.typeSelect') != 0" icon="fa-check-circle"
+        onClick="save,action-method-opportunity-set-stage-closed-won,save"/>
       <button name="closed-lostBtn" title="Lose" css="btn-danger"
-        hideIf="salesStageSelect &gt; 4" icon="fa-times"
+        hideIf="$get('opportunityStatus.typeSelect') != 0" icon="fa-times"
         onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
+      <field name="opportunityStatus.typeSelect" hidden="true"/>
       <panel name="followUpPanel" title="Follow-up"
-        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
+        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" canCollapse="true">
         <field name="user" canNew="false" canView="false" canEdit="false"
           form-view="user-form" grid-view="user-grid"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
@@ -221,12 +222,12 @@
       </panel>
       <panel name="referencePanel" title="Reference" canCollapse="true">
         <field name="partner" canEdit="false" requiredIf="contact == null"
-          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"
+          readonlyIf="$get('opportunityStatus.typeSelect') != 0"
           domain="self.isContact = false AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid"
           onChange="action-opportunity-record-set-name"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
-          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"
+          readonlyIf="$get('opportunityStatus.typeSelect') != 0"
           domain="self.isContact = true AND :company member of self.companySet"
           form-view="partner-contact-form" grid-view="partner-contact-grid"
           onChange="action-opportunity-record-set-name"/>
@@ -245,7 +246,7 @@
     </panel-mail>
   </form>
 
-  <kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10"
+  <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
     onMove="action-opportunity-method-cancel-saleorders">
     <field name="name"/>
@@ -253,7 +254,7 @@
     <field name="probability"/>
     <field name="expectedCloseDate"/>
     <field name="user"/>
-    <field name="salesStageSelect"/>
+    <field name="opportunityStatus"/>
     <field name="partner.name"/>
     <field name="partner.fixedPhone"/>
     <field name="partner.mobilePhone"/>
@@ -304,7 +305,7 @@
   <cards name="opportunity-cards" model="com.axelor.apps.crm.db.Opportunity"
     title="Opportunities" css="rect-image" width="50%" orderBy="-expectedCloseDate">
     <field name="name"/>
-    <field name="salesStageSelect"/>
+    <field name="opportunityStatus"/>
     <field name="amount"/>
     <field name="probability"/>
     <field name="expectedCloseDate"/>
@@ -315,12 +316,9 @@
 			<div>
 			  <div class="span12">
 			  	<div class="span4">
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 1" x-translate>New</span>
-					<span class="label label-default" style="background-color: #7CB9E8" ng-show="record.salesStageSelect == 2" x-translate>Qualification</span>
-					<span class="label label-warning" ng-show="record.salesStageSelect == 3" x-translate>Proposition</span>
-					<span class="label label-info" ng-show="record.salesStageSelect == 4" x-translate>Negotiation</span>
-					<span class="label label-success" ng-show="record.salesStageSelect == 5" x-translate>Closed won</span>
-					<span class="label label-important" ng-show="record.salesStageSelect == 6" x-translate>Closed lost</span>
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.opportunityStatus.typeSelect == 0">{{record.opportunityStatus.name}}</span>
+					<span class="label label-success" ng-show="record.opportunityStatus.typeSelect == 1">{{record.opportunityStatus.name}}</span>
+					<span class="label label-important" ng-show="record.opportunityStatus.typeSelect == 2">{{record.opportunityStatus.name}}</span>
 				</div>
 				<br/><br/>
 			  	<span>
@@ -366,6 +364,7 @@
     <action name="action-opportunity-record-default" if="_partner == null"/>
     <action name="action-opportunity-record-from-partner" if="_partner != null"/>
     <action name="action-opportunity-record-set-name" if="_partner != null"/>
+    <action name="action-opportunity-attrs-set-attrs-on-load"/>
   </action-group>
 
   <action-group name="action-group-crm-opportunity-nextstage-click">
@@ -374,17 +373,17 @@
   </action-group>
 
   <action-group name="action-group-crm-opportunity-closedwon-click">
-    <action name="action-opportunity-set-closed-won"/>
+    <action name="action-method-opportunity-set-stage-closed-won"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-crm-opportunity-closedlost-click">
-    <action name="action-opportunity-set-closed-lost"/>
+    <action name="action-method-opportunity-set-stage-closed-lost"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-crm-group-close-lost-opportunity">
-    <action name="action-opportunity-set-closed-lost"/>
+    <action name="action-method-opportunity-set-stage-closed-lost"/>
     <action name="save"/>
     <action name="action-opportunity-method-cancel-saleorders"/>
   </action-group>
@@ -409,7 +408,6 @@
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="salesStageSelect" expr="1"/>
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -470,29 +468,37 @@
     </filter>
   </search-filters>
 
+  <action-attrs name="action-opportunity-attrs-set-attrs-on-load">
+    <attribute name="hidden" for="previous-stageBtn"
+      expr="eval: __repo__(OpportunityStatus).findByPreviousSequence(__this__.opportunityStatus.sequence) == null"
+      if="opportunityStatus != null"/>
+    <attribute name="hidden" for="next-stageBtn"
+      expr="eval: __repo__(OpportunityStatus).findByNextSequence(__this__.opportunityStatus.sequence) == null"
+      if="opportunityStatus != null"/>
+  </action-attrs>
+
   <action-record name="action-opportunity-set-previous-stage"
     model="com.axelor.apps.crm.db.Opportunity">
-    <field name="salesStageSelect"
-      expr="eval: salesStageSelect &gt; 4 ? 4 : salesStageSelect-1 "/>
+    <field name="opportunityStatus"
+      expr="eval: __repo__(OpportunityStatus).findByPreviousSequence(__this__.opportunityStatus.sequence)"/>
   </action-record>
 
   <action-record name="action-opportunity-set-next-stage"
     model="com.axelor.apps.crm.db.Opportunity">
-    <field name="salesStageSelect" expr="eval: salesStageSelect+1"/>
-  </action-record>
-
-  <action-record name="action-opportunity-set-closed-won"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="salesStageSelect" expr="eval:5"/>
-  </action-record>
-
-  <action-record name="action-opportunity-set-closed-lost"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="salesStageSelect" expr="eval:6"/>
+    <field name="opportunityStatus"
+      expr="eval: __repo__(OpportunityStatus).findByNextSequence(__this__.opportunityStatus.sequence)"/>
   </action-record>
 
   <action-method name="action-show-opportunities-on-map-page">
     <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-method-opportunity-set-stage-closed-won">
+    <call method="setStageClosedWon" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-method-opportunity-set-stage-closed-lost">
+    <call method="setStageClosedLost" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
 
   <action-view name="dashlet.opportunity" title="Opportunities"
