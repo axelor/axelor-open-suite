@@ -1,3 +1,9 @@
+## [6.0.28] (2022-08-01)
+
+#### Fixed
+
+* Advanced export: fixed an error preventing partners export when trying to use the feature from partner grid view.
+
 ## [6.0.27] (2022-07-29)
 
 #### Fixed
@@ -883,6 +889,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.28]: https://github.com/axelor/axelor-open-suite/compare/v6.0.27...v6.0.28
 [6.0.27]: https://github.com/axelor/axelor-open-suite/compare/v6.0.26...v6.0.27
 [6.0.26]: https://github.com/axelor/axelor-open-suite/compare/v6.0.25...v6.0.26
 [6.0.25]: https://github.com/axelor/axelor-open-suite/compare/v6.0.24...v6.0.25
