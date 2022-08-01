@@ -326,9 +326,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
       MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
-      if (moveLine != null) {
-        moveLine.addInvoiceTermListItem(invoiceTerm);
+      if (moveLine == null && !CollectionUtils.isEmpty(invoice.getMove().getMoveLineList())) {
+        for (MoveLine ml : invoice.getMove().getMoveLineList()) {
+          if (ml.getAccount().getHasInvoiceTerm()) {
+            moveLine = ml;
+            ml.addInvoiceTermListItem(invoiceTerm);
+          }
+        }
       }
+      moveLine.addInvoiceTermListItem(invoiceTerm);
     }
 
     return invoiceTerm;
@@ -387,6 +393,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .all()
             .filter("self.invoice.id = ?1 AND self.isHoldBack is not true", invoice.getId())
             .fetchOne();
+
     if (invoiceTerm == null) {
       return null;
     } else {
