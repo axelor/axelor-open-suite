@@ -20,6 +20,8 @@
       title="Payment Mode"/>
     <many-to-one name="paymentCondition" title="Payment condition"
       ref="com.axelor.apps.account.db.PaymentCondition"/>
+    <many-to-one name="partnerBankDetails" title="Bank details"
+      ref="com.axelor.apps.base.db.BankDetails"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="iaccount.move.status.select"/>

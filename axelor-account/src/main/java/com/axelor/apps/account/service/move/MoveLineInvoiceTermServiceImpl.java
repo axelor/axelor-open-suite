@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -13,6 +14,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
@@ -135,6 +137,12 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
+    LocalDate dueDate =
+        move.getPaymentCondition() == null || move.getOriginDate() == null
+            ? move.getDate()
+            : InvoiceToolService.getDueDate(
+                move.getPaymentCondition().getPaymentConditionLineList().get(0),
+                move.getOriginDate());
 
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
@@ -143,7 +151,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             null, // RIB
             null,
             move.getPaymentMode(),
-            null,
+            dueDate,
             null,
             amount,
             paymentConditionLine.getPaymentPercentage(),
@@ -171,7 +179,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) {
     Partner partner = moveLine.getPartner() != null ? moveLine.getPartner() : move.getPartner();
-    //TODO
+    // TODO
     return new Account();
   }
 }

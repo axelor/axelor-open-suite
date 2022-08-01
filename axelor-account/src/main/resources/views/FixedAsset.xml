@@ -97,14 +97,14 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"
         hidden="true">
         <field name="fiscalComputationMethodSelect"
-          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
+          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation, action-fixed-asset-method-check-depreciation-plans"/>
         <field name="fiscalDegressiveCoef"
           showIf="fiscalComputationMethodSelect == 'degressive'"
           onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation" hidden="true"/>
         <field name="fiscalNumberOfDepreciation"
-          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration"/>
+          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration, action-fixed-asset-method-check-depreciation-plans"/>
         <field name="fiscalPeriodicityTypeSelect"
-          onChange="action-group-account-fixed-asset-onchange-fiscal-periodicity-type"/>
+          onChange="action-group-account-fixed-asset-onchange-fiscal-periodicity-type,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="fiscalPeriodicityInMonth" showIf="fiscalPeriodicityTypeSelect == 1"
           onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration, action-fixed-asset-category-record-compute-duration"
           min="1" hidden="true"/>
@@ -127,17 +127,17 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
         readonlyIf="statusSelect > 1" hidden="true">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="computationMethodSelect"
-          onChange="action-fixed-asset-attrs-set-degressive-coef"
+          onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-method-check-depreciation-plans"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
           hidden="true"/>
         <field name="numberOfDepreciation"
-          onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
+          onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="periodicityTypeSelect"
-          onChange="action-attrs-account-periodicity-type-select-on-change, action-fixed-asset-category-record-compute-duration"/>
+          onChange="action-attrs-account-periodicity-type-select-on-change, action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
           onChange="action-fixed-asset-category-record-compute-duration" min="1" hidden="true"/>
         <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"
@@ -626,6 +626,7 @@
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
     <action name="action-attrs-account-fixed-asset-reset-residual-value"/>
     <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
+    <action name="action-fixed-asset-method-check-depreciation-plans"/>
   </action-group>
 
   <action-attrs name="action-account-attrs-fill-depreciation-plan">
@@ -803,5 +804,10 @@
       expr="eval: __config__?.app?.getApp('account')?.getFixedAssetBarcodeTypeConfig()"
       if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"/>
   </action-record>
+
+  <action-method name="action-fixed-asset-method-check-depreciation-plans">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="checkDepreciationPlans"/>
+  </action-method>
 </object-views>
 

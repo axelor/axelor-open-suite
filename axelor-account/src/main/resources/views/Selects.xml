@@ -201,6 +201,7 @@
     <option value="23">Block customer with late payment issues</option>
     <option value="24">Exchanges</option>
     <option value="25">Moves consistency control</option>
+    <option value="26">Accounting cut-off</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -455,6 +456,7 @@
     <option value="pdf">PDF</option>
   </selection>
   <selection name="invoice.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>
@@ -784,6 +786,11 @@
     <option value="1">Original</option>
     <option value="2">line.Reverse</option>
     <option value="3">Revision</option>
+  </selection>
+
+  <selection name="accounting.batch.accounting.cut.off.type.select">
+    <option value="3">Prepaid expenses</option>
+    <option value="4">Deferred incomes</option>
   </selection>
 
 </object-views>

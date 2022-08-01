@@ -207,4 +207,16 @@ public class PaymentSessionController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void checkIsAllInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      response.setValue(
+          "$isAllInvoiceTerms",
+          Beans.get(PaymentSessionValidateService.class).isEmpty(paymentSession));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

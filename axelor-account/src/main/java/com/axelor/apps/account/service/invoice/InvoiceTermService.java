@@ -28,6 +28,8 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
@@ -82,7 +84,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice);
+  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException;
 
   /**
    * Method that filters invoiceTerm List and returns only invoice terms with holdback status same
@@ -100,7 +102,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice);
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException;
 
   /**
    * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
@@ -272,4 +274,8 @@ public interface InvoiceTermService {
   BigDecimal computeParentTotal(Context context);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
+
+  public User getPfpValidatorUser(Partner partner, Company company);
+
+  public String getPfpValidatorUserDomain(Partner partner, Company company);
 }

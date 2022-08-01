@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -33,8 +34,10 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 import java.util.List;
 
+@RequestScoped
 public class AccountConfigService {
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
@@ -670,5 +673,46 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleFinancialDiscountAccount();
+  }
+
+  public Account getPartnerAccount(AccountConfig accountConfig, int accountingCutOffTypeSelect)
+      throws AxelorException {
+    Account account = null;
+
+    if (accountingCutOffTypeSelect
+        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+      account = accountConfig.getPrepaidExpensesAccount();
+    } else if (accountingCutOffTypeSelect
+        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES) {
+      account = accountConfig.getDeferredIncomesAccount();
+    }
+
+    if (account == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return account;
+  }
+
+  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getPurchFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getPurchFinancialDiscountTax();
+  }
+
+  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getSaleFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSaleFinancialDiscountTax();
   }
 }

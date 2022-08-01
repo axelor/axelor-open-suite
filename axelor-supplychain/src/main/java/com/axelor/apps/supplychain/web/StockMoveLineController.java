@@ -223,7 +223,7 @@ public class StockMoveLineController {
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
       }
 
       List<Long> ids =
@@ -238,7 +238,7 @@ public class StockMoveLineController {
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(StockMoveLineServiceSupplychain.class).validateCutOffBatch(ids, id);
         response.setFlash(batch.getComments());

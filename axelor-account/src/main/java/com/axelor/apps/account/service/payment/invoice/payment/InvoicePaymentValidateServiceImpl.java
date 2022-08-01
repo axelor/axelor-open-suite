@@ -38,7 +38,6 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -54,6 +53,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -63,6 +63,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
 
   protected PaymentModeService paymentModeService;
@@ -73,9 +74,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected ReconcileService reconcileService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
   protected AppAccountService appAccountService;
-  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -87,8 +86,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
-      InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService,
       AppAccountService appAccountService) {
 
     this.paymentModeService = paymentModeService;
@@ -99,8 +96,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.reconcileService = reconcileService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
   }
 
@@ -237,6 +232,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             paymentMode,
             invoice.getFiscalPosition(),
+            invoice.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             getOriginFromInvoicePayment(invoicePayment),
@@ -401,9 +397,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
 
       Account purchAccount = new Account();
+      Tax purchFinancialDiscountTax =
+          accountConfigService.getPurchFinancialDiscountTax(accountConfig);
 
       for (AccountManagement accountManagement :
-          accountConfig.getPurchFinancialDiscountTax().getAccountManagementList()) {
+          purchFinancialDiscountTax.getAccountManagementList()) {
         if (accountManagement.getCompany().equals(company)) {
           purchAccount = accountManagement.getFinancialDiscountAccount();
         }
@@ -416,13 +414,16 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               customerAccount,
               purchAccount,
               accountConfigService.getPurchFinancialDiscountAccount(accountConfig),
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountTax());
+              purchFinancialDiscountTax);
 
     } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
 
       Account saleAccount = new Account();
+      Tax saleFinancialDiscountTax =
+          accountConfigService.getSaleFinancialDiscountTax(accountConfig);
+
       for (AccountManagement accountManagement :
-          accountConfig.getSaleFinancialDiscountTax().getAccountManagementList()) {
+          saleFinancialDiscountTax.getAccountManagementList()) {
         if (accountManagement.getCompany().equals(company)) {
           saleAccount = accountManagement.getFinancialDiscountAccount();
         }
@@ -435,7 +436,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               customerAccount,
               saleAccount,
               accountConfigService.getSaleFinancialDiscountAccount(accountConfig),
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountTax());
+              saleFinancialDiscountTax);
     }
 
     return move;
@@ -556,8 +557,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Tax tax =
         InvoiceToolService.isPurchase(invoice)
-            ? accountConfig.getPurchFinancialDiscountTax()
-            : accountConfig.getSaleFinancialDiscountTax();
+            ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+            : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
 
     return tax.getAccountManagementList().stream()
         .filter(it -> it.getCompany().equals(company))

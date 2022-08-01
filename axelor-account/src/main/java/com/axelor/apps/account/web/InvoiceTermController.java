@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.tool.ContextTool;
@@ -157,9 +156,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       if (ObjectUtils.notEmpty(invoiceTermId) && ObjectUtils.isEmpty(invoiceTermIds)) {
 
-        if (invoiceTerm.getInvoice() != null
-            && invoiceTerm.getInvoice().getCompany() != null
-            && invoiceTerm.getReasonOfRefusalToPay() != null) {
+        if (invoiceTerm.getCompany() != null && invoiceTerm.getReasonOfRefusalToPay() != null) {
           Beans.get(InvoiceTermPfpService.class)
               .refusalToPay(
                   Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
@@ -199,7 +196,8 @@ public class InvoiceTermController {
       response.setAttr(
           "pfpValidatorUser",
           "domain",
-          Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(invoiceTerm.getPartner(), invoiceTerm.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -216,7 +214,8 @@ public class InvoiceTermController {
             invoiceTerm
                 .getPfpValidatorUser()
                 .equals(
-                    Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+                    Beans.get(InvoiceTermService.class)
+                        .getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany())));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

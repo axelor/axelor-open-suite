@@ -21,7 +21,9 @@
       <spacer/>
       <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
         grid-view="account-chart-grid" canNew="true" colSpan="3"/>
-      <field name="accountCodeNbrCharSelect" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
+        readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
         readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
@@ -430,10 +432,12 @@
         <field name="analyticJournal"
           domain="self.company = :company AND self.statusSelect = 1"
           showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
-        <field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew"
-          showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"
+        <panel-related field="analyticAxisByCompanyList" colSpan="12"
+          canNew="$isCanNew" canMove="true" showIf="manageAnalyticAccounting"
+          requiredIf="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"
-          form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+          form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"
+          orderBy="sequence"/>
         <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
 
@@ -474,7 +478,7 @@
   <action-validate name="action-validate-account-config-on-save-analytic">
     <error
       if="manageAnalyticAccounting &amp;&amp; nbrOfAnalyticAxisSelect != analyticAxisByCompanyList.size"
-      message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
+      message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.size in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
   </action-validate>
 
   <action-group name="action-account-config-group-on-save">

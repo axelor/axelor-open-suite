@@ -878,7 +878,9 @@ public class InvoiceController {
   public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     response.setValue(
-        "pfpValidatorUser", Beans.get(InvoiceService.class).getPfpValidatorUser(invoice));
+        "pfpValidatorUser",
+        Beans.get(InvoiceTermService.class)
+            .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
   }
 
   public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
@@ -886,7 +888,8 @@ public class InvoiceController {
     response.setAttr(
         "pfpValidatorUser",
         "domain",
-        Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoice));
+        Beans.get(InvoiceTermService.class)
+            .getPfpValidatorUserDomain(invoice.getPartner(), invoice.getCompany()));
   }
 
   public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {

@@ -249,13 +249,8 @@ public interface IExceptionMessage {
       "You must configure a forecasted invoiced supplier account for the company %s" /*)*/;
 
   /** Accounting cut off service */
-  static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
-      "Accounting cut off generation report :" /*)*/;
-
   static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
-
-  static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
 
   public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
       "Stock move %s has been created for this sale order" /*)*/;

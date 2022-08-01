@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -31,6 +32,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -74,6 +76,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
       AccountConfigService accountConfigService,
+      PartnerService partnerService,
+      PaymentModeService paymentModeService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -97,7 +101,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         moveRepo,
         partnerRepo,
         invoicePaymentRepo,
-        accountConfigService);
+        accountConfigService,
+        partnerService,
+        paymentModeService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -215,7 +221,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     InvoicePayment invoicePayment =
         super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
-
+    if (invoicePayment == null) {
+      return null;
+    }
     invoicePayment.setBankOrder(paymentSession.getBankOrder());
 
     return invoicePaymentRepo.save(invoicePayment);

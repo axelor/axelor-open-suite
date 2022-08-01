@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
@@ -319,10 +318,6 @@ public interface InvoiceService {
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public User getPfpValidatorUser(Invoice invoice);
-
-  public String getPfpValidatorUserDomain(Invoice invoice);
-
   @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
 
@@ -344,7 +339,7 @@ public interface InvoiceService {
    * @param invoice
    * @return true if there would be at least one invoice term in the invoice payment
    */
-  boolean checkInvoiceTerms(Invoice invoice);
+  boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
 
   void updateInvoiceTermsParentFields(Invoice invoice);
 }

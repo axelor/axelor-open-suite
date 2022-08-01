@@ -21,18 +21,15 @@ import java.util.List;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
-  protected InvoiceService invoiceService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo) {
     this.invoiceTermService = invoiceTermService;
-    this.invoiceService = invoiceService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
   }
@@ -40,10 +37,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
-    Company company =
-        invoiceTerm.getInvoice() != null
-            ? invoiceTerm.getInvoice().getCompany()
-            : invoiceTerm.getMoveLine().getMove().getCompany();
+    Company company = invoiceTerm.getCompany();
 
     invoiceTerm.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate(company));
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
@@ -88,7 +82,9 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
         && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
             && invoiceTerm
                 .getPfpValidatorUser()
-                .equals(invoiceService.getPfpValidatorUser(invoiceTerm.getInvoice())))
+                .equals(
+                    invoiceTermService.getPfpValidatorUser(
+                        invoiceTerm.getPartner(), invoiceTerm.getCompany())))
         && !invoiceTerm.getIsPaid();
   }
 
@@ -138,8 +134,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     int updatedRecords = 0;
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       boolean invoiceTermCheck =
-          ObjectUtils.notEmpty(invoiceTerm.getInvoice())
-              && ObjectUtils.notEmpty(invoiceTerm.getInvoice().getCompany())
+          ObjectUtils.notEmpty(invoiceTerm.getCompany())
               && ObjectUtils.notEmpty(reasonOfRefusalToPay);
       if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
         refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
@@ -155,7 +150,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
     invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
+        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany()));
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
@@ -177,10 +172,11 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       PfpPartialReason partialReason) {
     BigDecimal amount = invoiceAmount.subtract(grantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
+    originalInvoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
     this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
     this.updateOriginalTerm(originalInvoiceTerm, grantedAmount, partialReason, amount, invoice);
 
-    invoiceTermService.initInvoiceTermsSequence(originalInvoiceTerm.getInvoice());
+    invoiceTermService.initInvoiceTermsSequence(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -196,7 +192,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getDueDate(),
             originalInvoiceTerm.getEstimatedPaymentDate(),
             amount,
-            invoiceTermService.computeCustomizedPercentage(amount, invoice.getInTaxTotal()),
+            invoiceTermService.computeCustomizedPercentage(amount, originalInvoiceTerm.getAmount()),
             originalInvoiceTerm.getIsHoldBack());
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -214,9 +210,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setIsCustomized(true);
     originalInvoiceTerm.setIsPaid(false);
     originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmount());
-    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setPercentage(
-        invoiceTermService.computeCustomizedPercentage(grantedAmount, invoice.getInTaxTotal()));
+        invoiceTermService.computeCustomizedPercentage(
+            grantedAmount, originalInvoiceTerm.getAmount()));
+    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setAmountRemaining(grantedAmount);
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
@@ -228,11 +225,9 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Transactional(rollbackOn = {Exception.class})
   protected void checkOtherInvoiceTerms(InvoiceTerm invoiceTerm) {
     Invoice invoice = invoiceTerm.getInvoice();
-
     if (invoice == null) {
       return;
     }
-
     int pfpStatus = this.getPfpValidateStatusSelect(invoiceTerm);
     int otherPfpStatus;
     for (InvoiceTerm otherInvoiceTerm : invoice.getInvoiceTermList()) {

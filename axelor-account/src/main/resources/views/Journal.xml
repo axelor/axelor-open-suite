@@ -79,6 +79,10 @@
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <panel name="originControlSettings" showTitle="false" colSpan="12">
+            <field name="hasDuplicateDetectionOnOrigin"/>
+            <field name="hasRequiredOrigin"/>
+          </panel>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>

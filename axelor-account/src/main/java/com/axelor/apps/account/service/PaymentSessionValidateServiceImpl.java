@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -21,11 +20,13 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -65,6 +66,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected PartnerRepository partnerRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigService accountConfigService;
+  protected PartnerService partnerService;
+  protected PaymentModeService paymentModeService;
   protected int counter = 0;
 
   @Inject
@@ -83,7 +86,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       MoveRepository moveRepo,
       PartnerRepository partnerRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PartnerService partnerService,
+      PaymentModeService paymentModeService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -99,6 +104,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.partnerRepo = partnerRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.accountConfigService = accountConfigService;
+    this.partnerService = partnerService;
+    this.paymentModeService = paymentModeService;
   }
 
   @Override
@@ -359,6 +366,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
+            partner != null ? partnerService.getDefaultBankDetails(partner) : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
@@ -560,13 +568,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Account getCashAccount(PaymentSession paymentSession, boolean isGlobal)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    AccountManagement accountManagement =
-        paymentSession.getPaymentMode().getAccountManagementList().get(0);
 
     Account cashAccount =
-        isGlobal
-            ? accountManagement.getGlobalAccountingCashAccount()
-            : accountManagement.getCashAccount();
+        paymentModeService.getPaymentModeAccount(
+            paymentSession.getPaymentMode(),
+            paymentSession.getCompany(),
+            paymentSession.getBankDetails(),
+            isGlobal);
 
     if (cashAccount == null && isGlobal) {
       throw new AxelorException(
@@ -686,10 +694,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             accountConfigService.getAccountConfig(company));
   }
 
-  protected Tax getFinancialDiscountTax(Company company, boolean out) {
+  protected Tax getFinancialDiscountTax(Company company, boolean out) throws AxelorException {
     return out
-        ? company.getAccountConfig().getPurchFinancialDiscountTax()
-        : company.getAccountConfig().getSaleFinancialDiscountTax();
+        ? accountConfigService.getPurchFinancialDiscountTax(
+            accountConfigService.getAccountConfig(company))
+        : accountConfigService.getSaleFinancialDiscountTax(
+            accountConfigService.getAccountConfig(company));
   }
 
   @Override
@@ -777,5 +787,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return isHoldBackWithRefund;
+  }
+
+  @Override
+  public boolean isEmpty(PaymentSession paymentSession) {
+    return invoiceTermRepo.all().filter("self.paymentSession = :paymentSession")
+        .bind("paymentSession", paymentSession).fetch().stream()
+        .noneMatch(this::shouldBeProcessed);
   }
 }

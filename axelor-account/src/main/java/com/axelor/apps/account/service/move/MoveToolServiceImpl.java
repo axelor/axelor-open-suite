@@ -70,6 +70,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveRepository moveRepository;
 
   @Inject
   public MoveToolServiceImpl(
@@ -77,12 +78,14 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveRepository moveRepository) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveRepository = moveRepository;
   }
 
   @Override
@@ -619,5 +622,23 @@ public class MoveToolServiceImpl implements MoveToolService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
     }
+  }
+
+  @Override
+  public boolean checkMoveOriginIsDuplicated(Move move) throws AxelorException {
+    List<Move> moveList = null;
+    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
+      moveList =
+          moveRepository
+              .all()
+              .filter(
+                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
+                  move.getId(),
+                  move.getOrigin(),
+                  move.getPeriod().getYear(),
+                  move.getPartner())
+              .fetch();
+    }
+    return !ObjectUtils.isEmpty(moveList);
   }
 }

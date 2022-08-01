@@ -370,7 +370,7 @@
 369;397200;397000;"Goods (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 370;40;"CL4";"Trade accounts payable";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 371;400000;40;"Trade accounts payable";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-372;401;40;"Suppliers";"payable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";"false";0
+372;401;40;"Suppliers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 373;401100;401;"Suppliers - Purchases of goods and services";"payable";"true";1;"411100|411700|416000";"true";;;1;"DAS2";;1;"false";"false";"true";"true";0
 374;401700;401;"Suppliers - Holdbacks";"payable";"true";1;"411100|411700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";"true";0
 375;403000;40;"Payable - Notes Payable";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
@@ -382,7 +382,7 @@
 381;408100;408000;"Suppliers";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 382;408400;408000;"Fixed asset suppliers";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 383;408800;408000;"Suppliers - Accrued interest";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-384;409;40;"Receivables from suppliers";"payable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
+384;409;40;"Receivables from suppliers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 385;409100;409;"Suppliers - Advances and prepayments";"payable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";"false";0
 386;409600;409;"Suppliers - Claims for packaging and equipment to make";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 387;409700;409;"Suppliers - Other assets";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
@@ -391,7 +391,7 @@
 390;409800;409;"Discounts, rebates, discounts available and other assets not yet received";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 391;41;"CL4";"Accounts receivable";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 392;410000;41;"Accounts receivable";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-393;411;41;"Customer";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";"false";0
+393;411;41;"Customer";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 394;411100;411;"Customers - Sales of goods or services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";"true";0
 395;411700;411;"Customer - Holdbacks";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";"true";0
 396;413000;41;"Customers - Accounts Receivable";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";"false";0
@@ -502,7 +502,7 @@
 501;462000;46;"Receivables from sale of property";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";"false";0
 502;464000;46;"Debt related to acquisition of investment securities";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";"false";0
 503;465000;46;"Receivables from sale of marketable securities";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-504;467000;46;"Other accounts receivable or payable";"view";"true";1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
+504;467;46;"Other accounts receivable or payable";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 505;468000;46;"Miscellaneous - Accrued expenses and accrued income";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 506;468600;468000;"Accruals";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 507;468700;468000;"Accrued income";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
@@ -520,15 +520,15 @@
 519;477100;477000;"Increase in receivables";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";"false";0
 520;477200;477000;"Decrease in debt";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";"false";0
 521;477800;477000;"Differences offset by hedging";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-522;478000;47;"Other transitory accounts";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
+522;478;47;"Other transitory accounts";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 523;48;"CL4";"Accruals";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 524;481000;48;"Accrued Deferred";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 525;481600;481000;"Issue costs of borrowings";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 526;486000;48;"Prepaid expenses";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 527;487000;48;"Deferred income";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-528;488000;48;"Accounts of periodic distribution of income and expense";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
-529;488600;488000;"Charges";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-530;488700;488000;"Products";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
+528;488;48;"Accounts of periodic distribution of income and expense";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
+529;488600;488;"Charges";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
+530;488700;488;"Products";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 531;489000;48;"Emission allowances allocated by the State";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 532;49;"CL4";"Impairment of accounts of others";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 533;491000;49;"Impairment of client accounts";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";"false";0
@@ -564,7 +564,7 @@
 563;511300;511000;"Collection items";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";"false";0
 564;511400;511000;"Bills discounting";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";"false";0
 565;511500;511000;"Credit card cashed";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
-566;512;51;"Banks";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
+566;512;51;"Banks";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";"false";0
 567;512100;512;"Accounts in national currency";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 568;512400;512;"Currency Accounts";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
 569;514000;51;"Giro";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";"false";0
@@ -749,13 +749,13 @@
 748;641400;641000;"Fringe benefits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 749;641500;641000;"FS";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 750;644000;64;"Remuneration for work of the operator";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
-751;645;64;"Burdens of Social Security and Welfare";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
+751;645;64;"Burdens of Social Security and Welfare";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";"false";0
 752;645100;645;"Contributions to URSSAF";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";"false";0
 753;645200;645;"Contributions to mutual";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 754;645300;645;"Contributions to pension funds";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 755;645400;645;"Contributions to ASSEDIC";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 756;645800;645;"Contributions to other social agencies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
-757;646;64;"Personal social security contributions of the operator";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
+757;646;64;"Personal social security contributions of the operator";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 758;647000;64;"Other social charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 759;647100;647000;"Direct benefits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0
 760;647200;647000;"Payments to councils and school";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";"false";0

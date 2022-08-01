@@ -25,18 +25,21 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
+@RequestScoped
 public class InvoiceToolService {
 
   @CallMethod
@@ -217,6 +220,7 @@ public class InvoiceToolService {
 
   public static PaymentMode getPaymentMode(Invoice invoice) throws AxelorException {
     Partner partner = invoice.getPartner();
+    Company company = invoice.getCompany();
 
     if (InvoiceToolService.isOutPayment(invoice)) {
       if (partner != null) {
@@ -225,9 +229,9 @@ public class InvoiceToolService {
           return paymentMode;
         }
       }
-      return Beans.get(AccountConfigService.class)
-          .getAccountConfig(invoice.getCompany())
-          .getOutPaymentMode();
+      if (company != null) {
+        return Beans.get(AccountConfigService.class).getAccountConfig(company).getOutPaymentMode();
+      }
     } else {
       if (partner != null) {
         PaymentMode paymentMode = partner.getInPaymentMode();
@@ -235,10 +239,11 @@ public class InvoiceToolService {
           return paymentMode;
         }
       }
-      return Beans.get(AccountConfigService.class)
-          .getAccountConfig(invoice.getCompany())
-          .getInPaymentMode();
+      if (company != null) {
+        return Beans.get(AccountConfigService.class).getAccountConfig(company).getInPaymentMode();
+      }
     }
+    return null;
   }
 
   public static PaymentCondition getPaymentCondition(Invoice invoice) throws AxelorException {
@@ -249,6 +254,9 @@ public class InvoiceToolService {
       if (paymentCondition != null) {
         return paymentCondition;
       }
+    }
+    if (invoice.getCompany() == null) {
+      return null;
     }
     return Beans.get(AccountConfigService.class)
         .getAccountConfig(invoice.getCompany())

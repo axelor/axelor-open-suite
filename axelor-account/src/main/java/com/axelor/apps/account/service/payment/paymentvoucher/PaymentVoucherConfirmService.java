@@ -628,8 +628,8 @@ public class PaymentVoucherConfirmService {
     if (financialDiscountVat) {
       financialDiscountTax =
           isPurchase
-              ? accountConfig.getPurchFinancialDiscountTax()
-              : accountConfig.getSaleFinancialDiscountTax();
+              ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+              : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
 
       if (financialDiscountTax.getActiveTaxLine() != null) {
         financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());

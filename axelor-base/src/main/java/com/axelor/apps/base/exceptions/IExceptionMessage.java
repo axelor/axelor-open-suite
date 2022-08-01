@@ -148,8 +148,8 @@ public interface IExceptionMessage {
   public static final String CATEGORY_NO_SEQUENCE = /*$$(*/
       "There is no configured sequence for the category" /*)*/;
 
-  public static final String APP_BASE_NO_SEQUENCE =
-      "There is no configured product sequence in the app base config";
+  public static final String APP_BASE_NO_SEQUENCE = /*$$(*/
+      "There is no configured product sequence in the app base config" /*)*/;
 
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
@@ -454,8 +454,10 @@ public interface IExceptionMessage {
 
   /* Geonames import */
   public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
-  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
-      "Please fill in GeoNames URL in Base application configuration." /*)*/;
+  public static final String GEONAMES_DUMP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
+  public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
