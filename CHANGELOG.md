@@ -1,3 +1,9 @@
+## [6.1.17] (2022-08-01)
+
+#### Fixed
+
+* Advanced export: fixed an error preventing partners export when trying to use the feature from partner grid view.
+
 ## [6.1.16] (2022-07-29)
 
 #### Fixed
@@ -705,6 +711,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.17]: https://github.com/axelor/axelor-open-suite/compare/v6.1.16...v6.1.17
 [6.1.16]: https://github.com/axelor/axelor-open-suite/compare/v6.1.15...v6.1.16
 [6.1.15]: https://github.com/axelor/axelor-open-suite/compare/v6.1.14...v6.1.15
 [6.1.14]: https://github.com/axelor/axelor-open-suite/compare/v6.1.13...v6.1.14
