@@ -1,3 +1,9 @@
+## [5.4.21] (2022-08-01)
+
+#### Fixed
+
+* Advanced export: fixed an error preventing partners export when trying to use the feature from partner grid view.
+
 ## [5.4.20] (2022-07-29)
 
 #### Fixed
@@ -648,6 +654,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.21]: https://github.com/axelor/axelor-open-suite/compare/v5.4.20...v5.4.21
 [5.4.20]: https://github.com/axelor/axelor-open-suite/compare/v5.4.19...v5.4.20
 [5.4.19]: https://github.com/axelor/axelor-open-suite/compare/v5.4.18...v5.4.19
 [5.4.18]: https://github.com/axelor/axelor-open-suite/compare/v5.4.17...v5.4.18
