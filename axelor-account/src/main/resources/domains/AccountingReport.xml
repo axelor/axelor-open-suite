@@ -90,8 +90,6 @@
     <one-to-many name="accountingReportMoveLineList" mappedBy="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReportMoveLine" title="Tax payment move lines"/>
 
-    <many-to-one name="journalType" ref="JournalType" title="Journal type"/>
-
     <!-- Report 1011 -->
     <boolean name="exported" title="Exported" default="false"/>
     <boolean name="complementaryExport" title="Complementary export" default="false"/>

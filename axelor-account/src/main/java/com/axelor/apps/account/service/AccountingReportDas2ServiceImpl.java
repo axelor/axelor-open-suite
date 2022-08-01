@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.JournalType;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -26,6 +29,7 @@ import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -113,6 +117,10 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
   @Override
   public List<Long> getAccountingReportDas2Pieces(AccountingReport accountingReport) {
 
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigRepository.class).findByCompany(accountingReport.getCompany());
+    JournalType journalType = accountConfig.getDasReportJournalType();
+
     List<Long> partnerIds = new ArrayList<Long>();
     String sameQuery =
         "FROM PaymentMoveLineDistribution pmvld "
@@ -134,6 +142,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND pmvld.operationDate <= ?5 " // accountingReport.getDateTo()
             + "AND account.serviceType IS NOT NULL  "
             + "AND partner.das2Activity IS NOT NULL  "
+            + "AND account.serviceType.isDas2Declarable IS TRUE "
             + "AND journalType = ?6 " // ACH
             + "AND company = ?7 " // accountingReport.getCompany()
             + "AND currency = ?8 " // accountingReport.getCurrency()
@@ -161,7 +170,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter(3, MoveRepository.STATUS_VALIDATED)
             .setParameter(4, accountingReport.getDateFrom())
             .setParameter(5, accountingReport.getDateTo())
-            .setParameter(6, accountingReport.getJournalType()) // TODO
+            .setParameter(6, journalType)
             .setParameter(7, accountingReport.getCompany())
             .setParameter(8, accountingReport.getCurrency())
             .setParameter(9, accountingReport)
@@ -218,7 +227,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter(3, MoveRepository.STATUS_VALIDATED)
             .setParameter(4, accountingReport.getDateFrom())
             .setParameter(5, accountingReport.getDateTo())
-            .setParameter(6, accountingReport.getJournalType()) // TODO
+            .setParameter(6, journalType)
             .setParameter(7, accountingReport.getCompany())
             .setParameter(8, accountingReport.getCurrency())
             .setParameter(9, accountingReport)

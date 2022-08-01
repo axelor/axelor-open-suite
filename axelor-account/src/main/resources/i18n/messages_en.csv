@@ -958,6 +958,7 @@
 "DAS2 declared partner %s %s : first name is missing",,,
 "DAS2 declared partner %s %s : title is missing",,,
 "DAS2 declared partner %s %s : title must be of type M. or MS.",,,
+"DAS2 report journal type",,,
 "Data file",,,
 "Date",,,
 "Date of acquisition",,,
