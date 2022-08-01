@@ -148,6 +148,8 @@
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
 
+    <integer name="batchFetchLimit" title="Batch fetch limit" min="0"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

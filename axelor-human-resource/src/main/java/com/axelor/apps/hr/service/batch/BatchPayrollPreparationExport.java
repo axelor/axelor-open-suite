@@ -28,6 +28,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -84,19 +85,24 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       exportAll = " AND self.exported = false ";
     }
 
-    List<PayrollPreparation> payrollPreparationList =
+    List<PayrollPreparation> payrollPreparationList = null;
+    Query<PayrollPreparation> query =
         payrollPreparationRepository
             .all()
             .filter(
                 "self.company = ?1 AND self.period = ?2 " + exportAll,
                 hrBatch.getCompany(),
-                hrBatch.getPeriod())
-            .fetch();
+                hrBatch.getPeriod());
+    int fetchLimit = getFetchLimit();
 
     switch (hrBatch.getPayrollPreparationExportTypeSelect()) {
       case HrBatchRepository.EXPORT_TYPE_STANDARD:
         try {
-          batch.setMetaFile(standardExport(payrollPreparationList));
+          int offset = 0;
+          while (!(payrollPreparationList = query.fetch(fetchLimit, offset)).isEmpty()) {
+            batch.setMetaFile(standardExport(payrollPreparationList));
+            offset += payrollPreparationList.size();
+          }
         } catch (IOException e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -104,7 +110,11 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
         break;
       case HrBatchRepository.EXPORT_TYPE_NIBELIS:
         try {
-          batch.setMetaFile(nibelisExport(payrollPreparationList));
+          int offset = 0;
+          while (!(payrollPreparationList = query.fetch(fetchLimit, offset)).isEmpty()) {
+            batch.setMetaFile(nibelisExport(payrollPreparationList));
+            offset += payrollPreparationList.size();
+          }
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -112,7 +122,11 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
         break;
       case HrBatchRepository.EXPORT_TYPE_SILAE:
         try {
-          batch.setMetaFile(silaeExport(payrollPreparationList));
+          int offset = 0;
+          while (!(payrollPreparationList = query.fetch(fetchLimit, offset)).isEmpty()) {
+            batch.setMetaFile(silaeExport(payrollPreparationList));
+            offset += payrollPreparationList.size();
+          }
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());

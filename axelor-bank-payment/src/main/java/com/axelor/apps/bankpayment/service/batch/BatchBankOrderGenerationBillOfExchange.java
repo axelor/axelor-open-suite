@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
@@ -14,7 +15,6 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
+public class BatchBankOrderGenerationBillOfExchange extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -133,11 +133,14 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
     List<Long> invoicePaymentIdList = new ArrayList<>();
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     BankDetails companyBankDetails = getAccountingBankDetails(accountingBatch);
-    while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
+    while (!(invoicesList = query.fetch(fetchLimit, offset)).isEmpty()) {
       if (!JPA.em().contains(companyBankDetails)) {
         companyBankDetails = bankDetailsRepository.find(companyBankDetails.getId());
       }
       for (Invoice invoice : invoicesList) {
+        ++offset;
         try {
           createInvoicePayment(
               invoicePaymentIdList, companyBankDetails, invoice, accountingBatch.getDueDate());

@@ -166,27 +166,40 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountingBatch accountingBatch = batch.getAccountingBatch();
       Year year = accountingBatch.getYear();
       boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
+      int fetchLimit = getFetchLimit();
+      int offset = 0;
 
-      List<Long> closureAccountIdList =
-          accountingCloseAnnualService.getAllAccountOfYear(
-              accountingBatch.getClosureAccountSet(), year);
-
-      List<Long> openingAccountIdList =
-          accountingCloseAnnualService.getAllAccountOfYear(
-              accountingBatch.getOpeningAccountSet(), year);
-
-      List<Pair<Long, Long>> closureAccountAndPartnerPairList =
-          accountingCloseAnnualService.assignPartner(
-              closureAccountIdList, year, allocatePerPartner);
-
-      List<Pair<Long, Long>> openingAccountAndPartnerPairList =
-          accountingCloseAnnualService.assignPartner(
-              openingAccountIdList, year, allocatePerPartner);
+      List<Long> closureAccountIdList = null;
       Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
-      openAndCloseProcess(
-          closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
-      openAndCloseProcess(
-          openingAccountAndPartnerPairList, false, accountingBatch.getOpenYear(), map);
+
+      while (!(closureAccountIdList =
+              accountingCloseAnnualService.getAllAccountOfYear(
+                  accountingBatch.getClosureAccountSet(), year, fetchLimit, offset))
+          .isEmpty()) {
+        offset += closureAccountIdList.size();
+
+        List<Pair<Long, Long>> closureAccountAndPartnerPairList =
+            accountingCloseAnnualService.assignPartner(
+                closureAccountIdList, year, allocatePerPartner);
+        openAndCloseProcess(
+            closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
+      }
+
+      List<Long> openingAccountIdList = null;
+
+      while (!(openingAccountIdList =
+              accountingCloseAnnualService.getAllAccountOfYear(
+                  accountingBatch.getOpeningAccountSet(), year, fetchLimit, offset))
+          .isEmpty()) {
+        offset += openingAccountIdList.size();
+
+        List<Pair<Long, Long>> openingAccountAndPartnerPairList =
+            accountingCloseAnnualService.assignPartner(
+                openingAccountIdList, year, allocatePerPartner);
+
+        openAndCloseProcess(
+            openingAccountAndPartnerPairList, false, accountingBatch.getOpenYear(), map);
+      }
     }
   }
 

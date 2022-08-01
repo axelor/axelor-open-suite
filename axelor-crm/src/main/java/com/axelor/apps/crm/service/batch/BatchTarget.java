@@ -22,12 +22,12 @@ import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,41 +49,52 @@ public class BatchTarget extends BatchStrategy {
 
     int i = 0;
 
-    List<TargetConfiguration> targetConfigurationList = new ArrayList<>();
-    if (batch.getCrmBatch().getTargetConfigurationSet() != null
-        && !batch.getCrmBatch().getTargetConfigurationSet().isEmpty()) {
-      targetConfigurationList.addAll(batch.getCrmBatch().getTargetConfigurationSet());
-    }
+    List<TargetConfiguration> targetConfigurationList = null;
+    Query<TargetConfiguration> targetConfigurationQuery =
+        targetConfigurationRepo.all().filter("self In :targetConfigurationSet");
 
-    for (TargetConfiguration targetConfiguration : targetConfigurationList) {
+    targetConfigurationQuery.bind(
+        "targetConfigurationSet",
+        (batch.getCrmBatch().getTargetConfigurationSet() != null
+                && !batch.getCrmBatch().getTargetConfigurationSet().isEmpty())
+            ? batch.getCrmBatch().getTargetConfigurationSet()
+            : null);
 
-      try {
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
+    while (!(targetConfigurationList = targetConfigurationQuery.fetch(fetchLimit, offset))
+        .isEmpty()) {
+      offset += targetConfigurationList.size();
+      for (TargetConfiguration targetConfiguration : targetConfigurationList) {
 
-        targetService.createsTargets(targetConfiguration);
-        updateTargetConfiguration(targetConfiguration);
-        i++;
+        try {
 
-      } catch (Exception e) {
+          targetService.createsTargets(targetConfiguration);
+          updateTargetConfiguration(targetConfiguration);
+          i++;
 
-        TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get(IExceptionMessage.BATCH_TARGET_1),
-                    targetConfigurationRepo.find(targetConfiguration.getId()).getCode()),
-                e),
-            ExceptionOriginRepository.CRM,
-            batch.getId()); // TODO
+        } catch (Exception e) {
 
-        incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get(IExceptionMessage.BATCH_TARGET_1),
+                      targetConfigurationRepo.find(targetConfiguration.getId()).getCode()),
+                  e),
+              ExceptionOriginRepository.CRM,
+              batch.getId()); // TODO
 
-        LOG.error(
-            "Bug(Anomalie) généré(e) pour le rappel de l'évènement {}",
-            targetConfigurationRepo.find(targetConfiguration.getId()).getCode());
+          incrementAnomaly();
 
-      } finally {
+          LOG.error(
+              "Bug(Anomalie) généré(e) pour le rappel de l'évènement {}",
+              targetConfigurationRepo.find(targetConfiguration.getId()).getCode());
 
-        if (i % 1 == 0) {
-          JPA.clear();
+        } finally {
+
+          if (i % 1 == 0) {
+            JPA.clear();
+          }
         }
       }
     }

@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -133,15 +134,16 @@ public class BatchReimbursementExport extends BatchStrategy {
   protected void process() {
     if (!end) {
       Company company = batch.getAccountingBatch().getCompany();
+      int fetchLimit = getFetchLimit();
 
       switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
         case AccountingBatchRepository.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
-          this.runCreateReimbursementExport(company);
+          this.runCreateReimbursementExport(company, fetchLimit);
 
           break;
 
         case AccountingBatchRepository.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
-          this.runReimbursementExportProcess(company);
+          this.runReimbursementExportProcess(company, fetchLimit);
 
           updateCustomerAccountLog +=
               batchAccountCustomer.updateAccountingSituationMarked(
@@ -155,9 +157,10 @@ public class BatchReimbursementExport extends BatchStrategy {
     }
   }
 
-  public void runCreateReimbursementExport(Company company) {
+  public void runCreateReimbursementExport(Company company, int fetchLimit) {
 
-    List<Reimbursement> reimbursementList =
+    List<Reimbursement> reimbursementList = null;
+    Query<Reimbursement> query =
         reimbursementRepo
             .all()
             .filter(
@@ -168,97 +171,104 @@ public class BatchReimbursementExport extends BatchStrategy {
                     + " )",
                 ReimbursementRepository.STATUS_REIMBURSED,
                 ReimbursementRepository.STATUS_CANCELED,
-                company)
-            .fetch();
+                company);
 
     int i = 0;
+    int offset = 0;
+    while (!(reimbursementList = query.fetch(fetchLimit, offset)).isEmpty()) {
+      offset += reimbursementList.size();
+      for (Reimbursement reimbursement : reimbursementList) {
 
-    for (Reimbursement reimbursement : reimbursementList) {
+        log.debug("Remboursement n° {}", reimbursement.getRef());
 
-      log.debug("Remboursement n° {}", reimbursement.getRef());
+        updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
+      }
 
-      updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
-    }
+      List<Partner> partnerList = Lists.transform(reimbursementList, Reimbursement::getPartner);
 
-    List<Partner> partnerList = Lists.transform(reimbursementList, Reimbursement::getPartner);
+      for (Partner partner : partnerList) {
 
-    for (Partner partner : partnerList) {
+        try {
+          partner = partnerRepository.find(partner.getId());
 
-      try {
-        partner = partnerRepository.find(partner.getId());
+          log.debug("Tiers n° {}", partner.getName());
 
-        log.debug("Tiers n° {}", partner.getName());
+          List<MoveLine> moveLineList = null;
+          Query<MoveLine> moveLineQuery =
+              moveLineRepo
+                  .all()
+                  .filter(
+                      "self.account.useForPartnerBalance = 'true' "
+                          + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.move.company = ?4 AND "
+                          + "self.reimbursementStatusSelect = ?5 ",
+                      MoveRepository.STATUS_ACCOUNTED,
+                      MoveRepository.STATUS_DAYBOOK,
+                      partnerRepository.find(partner.getId()),
+                      companyRepo.find(company.getId()),
+                      MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
 
-        List<MoveLine> moveLineList =
-            moveLineRepo
-                .all()
-                .filter(
-                    "self.account.useForPartnerBalance = 'true' "
-                        + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
-                        + "self.reimbursementStatusSelect = ?5 ",
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_DAYBOOK,
-                    partnerRepository.find(partner.getId()),
-                    companyRepo.find(company.getId()),
-                    MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
-                .fetch();
+          log.debug("Liste des trop perçus : {}", moveLineList);
 
-        log.debug("Liste des trop perçus : {}", moveLineList);
+          int moveLineOffset = 0;
+          while (!(moveLineList = moveLineQuery.fetch(fetchLimit, moveLineOffset)).isEmpty()) {
+            moveLineOffset += moveLineList.size();
+            if (moveLineList != null && !moveLineList.isEmpty()) {
 
-        if (moveLineList != null && !moveLineList.isEmpty()) {
-
-          Reimbursement reimbursement =
-              reimbursementExportService.runCreateReimbursement(
-                  moveLineList,
-                  companyRepo.find(company.getId()),
-                  partnerRepository.find(partner.getId()));
-          if (reimbursement != null) {
-            updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
-            this.totalAmount =
-                this.totalAmount.add(
-                    reimbursementRepo.find(reimbursement.getId()).getAmountToReimburse());
-            i++;
+              Reimbursement reimbursement =
+                  reimbursementExportService.runCreateReimbursement(
+                      moveLineList,
+                      companyRepo.find(company.getId()),
+                      partnerRepository.find(partner.getId()));
+              if (reimbursement != null) {
+                updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
+                this.totalAmount =
+                    this.totalAmount.add(
+                        reimbursementRepo.find(reimbursement.getId()).getAmountToReimburse());
+                i++;
+              }
+            }
           }
-        }
-      } catch (AxelorException e) {
+        } catch (AxelorException e) {
 
-        TraceBackService.trace(
-            new AxelorException(
-                e,
-                e.getCategory(),
-                I18n.get("Partner") + "%s",
-                partnerRepository.find(partner.getId()).getName()),
-            ExceptionOriginRepository.REIMBURSEMENT,
-            batch.getId());
+          TraceBackService.trace(
+              new AxelorException(
+                  e,
+                  e.getCategory(),
+                  I18n.get("Partner") + "%s",
+                  partnerRepository.find(partner.getId()).getName()),
+              ExceptionOriginRepository.REIMBURSEMENT,
+              batch.getId());
 
-        incrementAnomaly();
+          incrementAnomaly();
 
-      } catch (Exception e) {
+        } catch (Exception e) {
 
-        TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get("Partner") + "%s", partnerRepository.find(partner.getId()).getName()),
-                e),
-            ExceptionOriginRepository.REIMBURSEMENT,
-            batch.getId());
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get("Partner") + "%s",
+                      partnerRepository.find(partner.getId()).getName()),
+                  e),
+              ExceptionOriginRepository.REIMBURSEMENT,
+              batch.getId());
 
-        incrementAnomaly();
+          incrementAnomaly();
 
-        log.error(
-            "Bug(Anomalie) généré(e) pour le tiers {}",
-            partnerRepository.find(partner.getId()).getName());
+          log.error(
+              "Bug(Anomalie) généré(e) pour le tiers {}",
+              partnerRepository.find(partner.getId()).getName());
 
-      } finally {
+        } finally {
 
-        if (i % 10 == 0) {
-          JPA.clear();
+          if (i % 10 == 0) {
+            JPA.clear();
+          }
         }
       }
     }
   }
 
-  public void runReimbursementExportProcess(Company company) {
+  public void runReimbursementExportProcess(Company company, int fetchLimit) {
 
     int i = 0;
 
@@ -268,8 +278,8 @@ public class BatchReimbursementExport extends BatchStrategy {
             .all()
             .filter(
                 "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse = 0",
-                ReimbursementRepository.STATUS_VALIDATED,
-                company)
+                company,
+                ReimbursementRepository.STATUS_VALIDATED)
             .fetch();
 
     // On annule les remboursements
@@ -278,67 +288,71 @@ public class BatchReimbursementExport extends BatchStrategy {
     }
 
     // On récupère les remboursement à rembourser
-    List<Reimbursement> reimbursementList =
+    List<Reimbursement> reimbursementList = null;
+    Query<Reimbursement> query =
         reimbursementRepo
             .all()
             .filter(
-                "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0 AND self.partner",
+                "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0",
                 company,
-                ReimbursementRepository.STATUS_VALIDATED)
-            .fetch();
+                ReimbursementRepository.STATUS_VALIDATED);
 
     List<Reimbursement> reimbursementToExport = new ArrayList<>();
 
-    for (Reimbursement reimbursement : reimbursementList) {
-      try {
-        reimbursement = reimbursementRepo.find(reimbursement.getId());
+    int offset = 0;
+    while (!(reimbursementList = query.fetch(fetchLimit, offset)).isEmpty()) {
+      for (Reimbursement reimbursement : reimbursementList) {
+        ++offset;
+        try {
+          reimbursement = reimbursementRepo.find(reimbursement.getId());
 
-        if (reimbursementExportService.canBeReimbursed(
-            reimbursement.getPartner(), reimbursement.getCompany())) {
+          if (reimbursementExportService.canBeReimbursed(
+              reimbursement.getPartner(), reimbursement.getCompany())) {
 
-          reimbursementExportService.reimburse(reimbursement, company);
-          updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
-          reimbursementToExport.add(reimbursement);
-          this.totalAmount =
-              this.totalAmount.add(
-                  reimbursementRepo.find(reimbursement.getId()).getAmountReimbursed());
-          i++;
-        }
+            reimbursementExportService.reimburse(reimbursement, company);
+            updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
+            reimbursementToExport.add(reimbursement);
+            this.totalAmount =
+                this.totalAmount.add(
+                    reimbursementRepo.find(reimbursement.getId()).getAmountReimbursed());
+            i++;
+          }
 
-      } catch (AxelorException e) {
+        } catch (AxelorException e) {
 
-        TraceBackService.trace(
-            new AxelorException(
-                e,
-                e.getCategory(),
-                I18n.get("Reimbursement") + " %s",
-                reimbursementRepo.find(reimbursement.getId()).getRef()),
-            ExceptionOriginRepository.REIMBURSEMENT,
-            batch.getId());
+          TraceBackService.trace(
+              new AxelorException(
+                  e,
+                  e.getCategory(),
+                  I18n.get("Reimbursement") + " %s",
+                  reimbursementRepo.find(reimbursement.getId()).getRef()),
+              ExceptionOriginRepository.REIMBURSEMENT,
+              batch.getId());
 
-        incrementAnomaly();
+          incrementAnomaly();
 
-      } catch (Exception e) {
+        } catch (Exception e) {
 
-        TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get("Reimbursement") + " %s",
-                    reimbursementRepo.find(reimbursement.getId()).getRef()),
-                e),
-            ExceptionOriginRepository.REIMBURSEMENT,
-            batch.getId());
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get("Reimbursement") + " %s",
+                      reimbursementRepo.find(reimbursement.getId()).getRef()),
+                  e),
+              ExceptionOriginRepository.REIMBURSEMENT,
+              batch.getId());
 
-        incrementAnomaly();
+          incrementAnomaly();
 
-        log.error(
-            "Bug(Anomalie) généré(e) pour l'export du remboursement {}",
-            reimbursementRepo.find(reimbursement.getId()).getRef());
+          log.error(
+              "Bug(Anomalie) généré(e) pour l'export du remboursement {}",
+              reimbursementRepo.find(reimbursement.getId()).getRef());
 
-      } finally {
+        } finally {
 
-        if (i % 10 == 0) {
-          JPA.clear();
+          if (i % 10 == 0) {
+            JPA.clear();
+          }
         }
       }
     }

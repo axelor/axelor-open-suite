@@ -20,6 +20,7 @@
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
+      <field name="batchFetchLimit"/>
       <field name="synchronizationDuration" widget="Integer" readonlyIf="allEvents"
         showIf="actionSelect == 2"/>
       <field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>
@@ -73,7 +74,8 @@
   </action-method>
 
   <action-method name="action-base-batch-method-run-batch">
-    <call class="com.axelor.apps.base.web.BaseBatchController" method="runBatch"/>
+    <call class="com.axelor.apps.base.web.BaseBatchController"
+      method="actionSynchronizeCalendars"/>
   </action-method>
 
   <!-- ACTION ATTRS -->

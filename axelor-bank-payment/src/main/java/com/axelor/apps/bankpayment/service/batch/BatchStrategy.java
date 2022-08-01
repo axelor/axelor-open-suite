@@ -15,19 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.invoice;
+package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import java.util.List;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 
-public interface SubscriptionInvoiceService {
+public abstract class BatchStrategy extends AbstractBatch {
 
-  public List<Invoice> generateSubscriptionInvoices() throws AxelorException;
-
-  public Query<SaleOrder> getSubscriptionOrders();
-
-  public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException;
+  @Override
+  public int getFetchLimit() {
+    return batch.getBankPaymentBatch().getBatchFetchLimit() > 0
+        ? batch.getBankPaymentBatch().getBatchFetchLimit()
+        : super.getFetchLimit();
+  }
 }

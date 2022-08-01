@@ -68,10 +68,13 @@ public class BatchContract extends BatchStrategy {
       Query<Contract> query = factory.prepare(batch);
       List<Contract> contracts;
 
-      while (!(contracts = query.fetch(FETCH_LIMIT)).isEmpty()) {
+      int fetchLimit = getFetchLimit();
+      int offset = 0;
+      while (!(contracts = query.fetch(fetchLimit, offset)).isEmpty()) {
         findBatch();
         for (Contract contract : contracts) {
           try {
+            ++offset;
             factory.process(contract);
             incrementDone(contract);
           } catch (Exception e) {
@@ -110,5 +113,12 @@ public class BatchContract extends BatchStrategy {
 
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CONTRACT_BATCH);
+  }
+
+  @Override
+  public int getFetchLimit() {
+    return batch.getContractBatch().getBatchFetchLimit() > 0
+        ? batch.getContractBatch().getBatchFetchLimit()
+        : super.getFetchLimit();
   }
 }

@@ -73,10 +73,11 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     List<DebtRecovery> debtRecoveries;
     List<Long> customersToBlock = new ArrayList<Long>();
     List<Long> customerToUnblock = new ArrayList<Long>();
+    int fetchLimit = getFetchLimit();
     int offset = 0;
     Query<DebtRecovery> query =
         debtRecoveryRepository.all().filter("self.archived = false or self.archived is null");
-    while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(debtRecoveries = query.fetch(fetchLimit, offset)).isEmpty()) {
       for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
         if (debtRecovery.getRespiteDateBeforeAccountBlocking() != null

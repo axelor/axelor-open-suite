@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.NoteBills;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.NoteBillsRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
@@ -16,7 +17,6 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageService;
@@ -41,7 +41,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-public class BatchBillOfExchangeSendBilling extends AbstractBatch {
+public class BatchBillOfExchangeSendBilling extends BatchStrategy {
 
   protected AppAccountService appAccountService;
   protected InvoiceRepository invoiceRepository;
@@ -107,10 +107,11 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
     Query<Invoice> query = buildOrderedQueryFetchLcrAccountedInvoices(accountingBatch, anomalyList);
 
+    int fetchLimit = getFetchLimit();
     int offSet = 0;
-    while (!(invoicesList = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
+    while (!(invoicesList = query.fetch(fetchLimit, offSet)).isEmpty()) {
       sortInvoicesPerPartner(invoicesList, mapPartnerInvoices);
-      offSet += FETCH_LIMIT;
+      offSet += fetchLimit;
       JPA.clear();
     }
 
@@ -119,7 +120,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
           .entrySet()
           .forEach(
               partner -> {
-                generateNoteBillsAndSend(partner);
+                generateNoteBillsAndSend(partner, fetchLimit);
                 JPA.clear();
               });
     } catch (Exception e) {
@@ -129,7 +130,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void generateNoteBillsAndSend(Entry<Partner, List<Invoice>> entry) {
+  protected void generateNoteBillsAndSend(Entry<Partner, List<Invoice>> entry, int fetchLimit) {
     Objects.requireNonNull(entry);
     Company company = null;
     Partner partner = partnerRepository.find(entry.getKey().getId());
@@ -142,7 +143,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       }
       addBatchSet(batch, invoice);
       counter++;
-      if (counter % FETCH_LIMIT == 0) {
+      if (counter % fetchLimit == 0) {
         JPA.clear();
       }
     }

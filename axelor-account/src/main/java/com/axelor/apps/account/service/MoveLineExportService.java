@@ -26,10 +26,10 @@ import java.time.LocalDate;
 
 public interface MoveLineExportService {
 
-  public MetaFile exportMoveLine(AccountingReport accountingReport)
+  public MetaFile exportMoveLine(AccountingReport accountingReport, int fetchLimit)
       throws AxelorException, IOException;
 
-  public void replayExportMoveLine(AccountingReport accountingReport)
+  public void replayExportMoveLine(AccountingReport accountingReport, int fetchLimit)
       throws AxelorException, IOException;
 
   public AccountingReport createAccountingReport(
@@ -44,6 +44,6 @@ public interface MoveLineExportService {
    * @throws AxelorException
    * @throws IOException
    */
-  void exportMoveLineTypeSelect1010(AccountingReport accountingReport)
+  void exportMoveLineTypeSelect1010(AccountingReport accountingReport, int fetchLimit)
       throws AxelorException, IOException;
 }

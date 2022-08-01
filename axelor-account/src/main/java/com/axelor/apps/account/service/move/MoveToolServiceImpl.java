@@ -572,7 +572,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> findDaybookByYear(Set<Year> yearList) {
+  public List<Move> findDaybookByYear(Set<Year> yearList, int fetchLimit, int offset) {
     List<Long> idList = new ArrayList<>();
     yearList.forEach(y -> idList.add(y.getId()));
     if (!CollectionUtils.isEmpty(idList)) {
@@ -580,7 +580,7 @@ public class MoveToolServiceImpl implements MoveToolService {
           .filter("self.period.year.id in :years AND self.statusSelect = :statusSelect")
           .bind("years", idList)
           .bind("statusSelect", MoveRepository.STATUS_DAYBOOK)
-          .fetch();
+          .fetch(fetchLimit, offset);
     }
     return new ArrayList<Move>();
   }

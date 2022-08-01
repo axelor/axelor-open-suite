@@ -60,6 +60,8 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
   @Override
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
 
     // Fetch all partners that have a credit balance for the specified company.
     TypedQuery<Partner> partnerQuery =
@@ -69,25 +71,30 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                     + "WHERE accountingSituation.company = :company AND accountingSituation.balanceCustAccount < 0",
                 Partner.class);
     partnerQuery.setParameter("company", accountingBatch.getCompany());
-    List<Partner> partnerList = partnerQuery.getResultList();
+    partnerQuery.setMaxResults(fetchLimit);
+    List<Partner> partnerList = null;
 
-    for (Partner partner : partnerList) {
-      try {
-        partner = partnerRepo.find(partner.getId());
-        Reimbursement reimbursement = createReimbursement(partner, accountingBatch.getCompany());
-        if (reimbursement != null) {
-          incrementDone();
+    while (!(partnerList = partnerQuery.getResultList()).isEmpty()) {
+      offset += partnerList.size();
+      partnerQuery.setFirstResult(offset);
+      for (Partner partner : partnerList) {
+        try {
+          partner = partnerRepo.find(partner.getId());
+          Reimbursement reimbursement = createReimbursement(partner, accountingBatch.getCompany());
+          if (reimbursement != null) {
+            incrementDone();
+          }
+        } catch (Exception ex) {
+          incrementAnomaly();
+          TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
+          ex.printStackTrace();
+          log.error(
+              String.format(
+                  "Credit transfer batch for partner credit balance reimbursement: anomaly for partner %s",
+                  partner.getName()));
         }
-      } catch (Exception ex) {
-        incrementAnomaly();
-        TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
-        ex.printStackTrace();
-        log.error(
-            String.format(
-                "Credit transfer batch for partner credit balance reimbursement: anomaly for partner %s",
-                partner.getName()));
+        JPA.clear();
       }
-      JPA.clear();
     }
   }
 

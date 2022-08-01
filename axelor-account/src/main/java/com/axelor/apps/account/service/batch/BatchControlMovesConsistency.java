@@ -34,12 +34,18 @@ public class BatchControlMovesConsistency extends BatchStrategy {
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     if (!CollectionUtils.isEmpty(accountingBatch.getYearSet())) {
-      List<Move> moveList = moveToolService.findDaybookByYear(accountingBatch.getYearSet());
-      if (!CollectionUtils.isEmpty(moveList)) {
+      List<Move> moveList = null;
+      int fetchLimit = getFetchLimit();
+      int offset = 0;
+      while (!(moveList =
+              moveToolService.findDaybookByYear(accountingBatch.getYearSet(), fetchLimit, offset))
+          .isEmpty()) {
         for (Move move : moveList) {
+          ++offset;
           try {
             move = moveRepo.find(move.getId());
             moveValidateService.checkPreconditions(move);
+            incrementDone();
           } catch (AxelorException e) {
             TraceBackService.trace(
                 new AxelorException(move, e.getCategory(), I18n.get(e.getMessage())),

@@ -88,9 +88,10 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     Query<ManufOrder> manufOrderQuery = manufOrderRepository.all().filter(domain).bind(bindValues);
 
+    int fetchLimit = getFetchLimit();
     int offset = 0;
 
-    while (!(manufOrderList = manufOrderQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(manufOrderList = manufOrderQuery.order("id").fetch(fetchLimit, offset)).isEmpty()) {
 
       for (ManufOrder manufOrder : manufOrderList) {
         ++offset;
@@ -124,5 +125,12 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PRODUCTION_BATCH);
+  }
+
+  @Override
+  public int getFetchLimit() {
+    return batch.getProductionBatch().getBatchFetchLimit() > 0
+        ? batch.getProductionBatch().getBatchFetchLimit()
+        : super.getFetchLimit();
   }
 }

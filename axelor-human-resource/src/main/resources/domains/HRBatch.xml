@@ -17,7 +17,7 @@
     <string name="description" title="Description" large="true"/>
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="hrBatch"
       title="Batchs"/>
-
+    <integer name="batchFetchLimit" title="Batch fetch limit" min="0"/>
 
     <!-- Leave Management -->
     <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason"

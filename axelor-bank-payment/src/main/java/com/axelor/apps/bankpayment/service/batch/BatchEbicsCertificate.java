@@ -25,11 +25,12 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -39,7 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BatchEbicsCertificate extends AbstractBatch {
+public class BatchEbicsCertificate extends BatchStrategy {
 
   protected BankPaymentBatch bankPaymentBatch;
 
@@ -61,53 +62,60 @@ public class BatchEbicsCertificate extends AbstractBatch {
 
     Template template = templateRepo.find(bankPaymentBatch.getTemplate().getId());
 
-    List<EbicsUser> users =
+    List<EbicsUser> users = null;
+    Query<EbicsUser> usersQuery =
         Beans.get(EbicsUserRepository.class)
             .all()
             .filter(
-                "self.a005Certificate != null OR self.e002Certificate != null OR self.x002Certificate != null")
-            .fetch();
+                "self.a005Certificate != null OR self.e002Certificate != null OR self.x002Certificate != null");
 
     Set<EbicsCertificate> certificatesSet = new HashSet<>();
 
     LocalDate today = Beans.get(AppBaseService.class).getTodayDate(bankPaymentBatch.getCompany());
     LocalDate commingDay = today.plusDays(bankPaymentBatch.getDaysNbr());
 
-    for (EbicsUser user : users) {
-      if (user.getA005Certificate() != null
-          && user.getA005Certificate().getValidTo().isBefore(commingDay)) {
-        certificatesSet.add(user.getA005Certificate());
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
+    while (!(users = usersQuery.fetch(fetchLimit, offset)).isEmpty()) {
+      ++offset;
+      for (EbicsUser user : users) {
+        if (user.getA005Certificate() != null
+            && user.getA005Certificate().getValidTo().isBefore(commingDay)) {
+          certificatesSet.add(user.getA005Certificate());
+        }
+
+        if (user.getE002Certificate() != null
+            && user.getE002Certificate().getValidTo().isBefore(commingDay)) {
+          certificatesSet.add(user.getE002Certificate());
+        }
+
+        if (user.getX002Certificate() != null
+            && user.getX002Certificate().getValidTo().isBefore(commingDay)) {
+          certificatesSet.add(user.getX002Certificate());
+        }
       }
 
-      if (user.getE002Certificate() != null
-          && user.getE002Certificate().getValidTo().isBefore(commingDay)) {
-        certificatesSet.add(user.getE002Certificate());
-      }
+      certificatesSet.addAll(
+          Beans.get(EbicsCertificateRepository.class)
+              .all()
+              .filter("self.ebicsBank != null AND self.validTo <= ?1", commingDay)
+              .fetch());
 
-      if (user.getX002Certificate() != null
-          && user.getX002Certificate().getValidTo().isBefore(commingDay)) {
-        certificatesSet.add(user.getX002Certificate());
-      }
-    }
+      for (EbicsCertificate certificate : certificatesSet) {
 
-    certificatesSet.addAll(
-        Beans.get(EbicsCertificateRepository.class)
-            .all()
-            .filter("self.ebicsBank != null AND self.validTo <= ?1", commingDay)
-            .fetch());
+        certificate.addBatchSetItem(batchRepo.find(batch.getId()));
 
-    for (EbicsCertificate certificate : certificatesSet) {
-
-      certificate.addBatchSetItem(batchRepo.find(batch.getId()));
-
-      try {
-        templateMessageService.generateMessage(certificate, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | AxelorException
-          | IOException e) {
-        e.printStackTrace();
+        try {
+          templateMessageService.generateMessage(certificate, template);
+        } catch (ClassNotFoundException
+            | InstantiationException
+            | IllegalAccessException
+            | AxelorException
+            | IOException e) {
+          e.printStackTrace();
+        } finally {
+          JPA.clear();
+        }
       }
     }
   }

@@ -18,6 +18,7 @@
       <field name="code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
+      <field name="batchFetchLimit"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="informationPanel" title="Information">

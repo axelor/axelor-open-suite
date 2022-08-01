@@ -15,6 +15,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -22,7 +23,6 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -43,7 +43,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchBillOfExchange extends AbstractBatch {
+public class BatchBillOfExchange extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -107,8 +107,11 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected void createLCRAccountingMovesForInvoices(
       Query<Invoice> query, List<Long> anomalyList, AccountingBatch accountingBatch) {
     List<Invoice> invoicesList = null;
-    while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
+    while (!(invoicesList = query.fetch(fetchLimit, offset)).isEmpty()) {
       for (Invoice invoice : invoicesList) {
+        ++offset;
         try {
           createMoveAndUpdateInvoice(accountingBatch, invoice);
           incrementDone();

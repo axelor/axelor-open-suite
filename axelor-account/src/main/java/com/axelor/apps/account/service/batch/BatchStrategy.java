@@ -205,4 +205,11 @@ public abstract class BatchStrategy extends AbstractBatch {
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ACCOUNTING_BATCH);
   }
+
+  @Override
+  public int getFetchLimit() {
+    return batch.getAccountingBatch().getBatchFetchLimit() > 0
+        ? batch.getAccountingBatch().getBatchFetchLimit()
+        : super.getFetchLimit();
+  }
 }

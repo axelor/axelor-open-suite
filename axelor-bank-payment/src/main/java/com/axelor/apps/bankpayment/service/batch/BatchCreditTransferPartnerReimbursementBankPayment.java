@@ -96,19 +96,24 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
             .filter("self.statusSelect = :statusSelect AND self.company = :company");
     query.bind("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
     query.bind("company", accountingBatch.getCompany());
-    List<Reimbursement> reimbursementList = query.fetch();
+    List<Reimbursement> reimbursementList = null;
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
 
-    if (reimbursementList.isEmpty()) {
-      return;
-    }
+    while (!(reimbursementList = query.fetch(fetchLimit, offset)).isEmpty()) {
+      if (reimbursementList.isEmpty()) {
+        return;
+      }
 
-    accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
+      accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
 
-    try {
-      createBankOrder(accountingBatch, reimbursementList);
-    } catch (Exception ex) {
-      TraceBackService.trace(ex);
-      logger.error(ex.getLocalizedMessage());
+      try {
+        createBankOrder(accountingBatch, reimbursementList);
+      } catch (Exception ex) {
+        TraceBackService.trace(ex);
+        logger.error(ex.getLocalizedMessage());
+      }
+      offset += reimbursementList.size();
     }
   }
 

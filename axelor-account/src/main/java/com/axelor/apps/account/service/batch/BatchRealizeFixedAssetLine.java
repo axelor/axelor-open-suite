@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -98,55 +99,69 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
                 : Optional.ofNullable(AuthUtils.getUser())
                     .map(User::getActiveCompany)
                     .orElse(null)));
-    List<FixedAssetLine> fixedAssetLineList =
-        fixedAssetLineRepo.all().filter(query).bind(queryParameters).fetch();
-    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
-        fixedAssetDerogatoryLineRepo.all().filter(query).bind(queryParameters).fetch();
+
+    int fetchLimit = getFetchLimit();
+    Query<FixedAssetLine> fixedAssetLineQuery =
+        fixedAssetLineRepo.all().filter(query).bind(queryParameters);
+    Query<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineQuery =
+        fixedAssetDerogatoryLineRepo.all().filter(query).bind(queryParameters);
 
     fixedAssetLineMoveService.setBatch(batch);
-    realizeFixedAssetLineList(fixedAssetLineList);
-    realizeFixedAssetDerogatoryLineList(fixedAssetDerogatoryLineList);
+    realizeFixedAssetLineList(fixedAssetLineQuery, fetchLimit);
+    realizeFixedAssetDerogatoryLineList(fixedAssetDerogatoryLineQuery, fetchLimit);
   }
 
-  protected void realizeFixedAssetLineList(List<FixedAssetLine> fixedAssetLineList) {
-    for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
-      try {
-        fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
-        FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
-        if (fixedAsset != null
-            && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          fixedAssetSet.add(fixedAsset);
-          fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
-          incrementDone();
-          countFixedAssetLineType(fixedAssetLine);
+  protected void realizeFixedAssetLineList(
+      Query<FixedAssetLine> fixedAssetLineQuery, int fetchLimit) {
+    int offset = 0;
+    List<FixedAssetLine> fixedAssetLineList = null;
+    while (!(fixedAssetLineList = fixedAssetLineQuery.fetch(fetchLimit, offset)).isEmpty()) {
+      for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
+        ++offset;
+        try {
+          fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
+          FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+          if (fixedAsset != null
+              && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
+            fixedAssetSet.add(fixedAsset);
+            fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
+            incrementDone();
+            countFixedAssetLineType(fixedAssetLine);
+          }
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e, null, this.batch.getId());
         }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(e, null, this.batch.getId());
+        JPA.clear();
       }
-      JPA.clear();
     }
   }
 
   protected void realizeFixedAssetDerogatoryLineList(
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList) {
-    for (FixedAssetDerogatoryLine fixedAssetDerogatoryLine : fixedAssetDerogatoryLineList) {
-      try {
-        fixedAssetDerogatoryLine =
-            fixedAssetDerogatoryLineRepo.find(fixedAssetDerogatoryLine.getId());
-        FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
-        if (fixedAsset != null
-            && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          fixedAssetSet.add(fixedAsset);
-          fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine, true, true);
-          incrementDone();
-          countFixedAssetDerogatoryLineType(fixedAssetDerogatoryLine);
+      Query<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineQuery, int fetchLimit) {
+    int offset = 0;
+    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList = null;
+    while (!(fixedAssetDerogatoryLineList = fixedAssetDerogatoryLineQuery.fetch(fetchLimit, offset))
+        .isEmpty()) {
+      for (FixedAssetDerogatoryLine fixedAssetDerogatoryLine : fixedAssetDerogatoryLineList) {
+        ++offset;
+        try {
+          fixedAssetDerogatoryLine =
+              fixedAssetDerogatoryLineRepo.find(fixedAssetDerogatoryLine.getId());
+          FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+          if (fixedAsset != null
+              && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
+            fixedAssetSet.add(fixedAsset);
+            fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine, true, true);
+            incrementDone();
+            countFixedAssetDerogatoryLineType(fixedAssetDerogatoryLine);
+          }
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e);
         }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(e);
+        JPA.clear();
       }
-      JPA.clear();
     }
   }
 

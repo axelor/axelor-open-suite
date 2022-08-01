@@ -183,12 +183,15 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
-    while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
+    while (!(paymentScheduleLineList = query.fetch(fetchLimit, offset)).isEmpty()) {
       findBatch();
       companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
       PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
 
       for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
+        ++offset;
         try {
           if (generateBankOrderFlag) {
             PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();

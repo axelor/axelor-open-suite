@@ -112,10 +112,13 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
         Beans.get(PurchaseOrderInvoiceService.class);
     Set<Long> treatedSet = new HashSet<>();
 
+    int fetchLimit = getFetchLimit();
+    int offset = 0;
     for (List<PurchaseOrder> purchaseOrderList;
-        !(purchaseOrderList = query.fetch(FETCH_LIMIT)).isEmpty();
+        !(purchaseOrderList = query.fetch(fetchLimit, offset)).isEmpty();
         JPA.clear()) {
       for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+        offset++;
         if (treatedSet.contains(purchaseOrder.getId())) {
           throw new IllegalArgumentException("Invoice generation error");
         }

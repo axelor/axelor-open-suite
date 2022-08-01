@@ -193,7 +193,7 @@ public interface MoveToolService {
 
   boolean checkMoveOriginIsDuplicated(Move move) throws AxelorException;
 
-  List<Move> findDaybookByYear(Set<Year> yearList);
+  List<Move> findDaybookByYear(Set<Year> yearList, int fetchLimit, int offset);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);

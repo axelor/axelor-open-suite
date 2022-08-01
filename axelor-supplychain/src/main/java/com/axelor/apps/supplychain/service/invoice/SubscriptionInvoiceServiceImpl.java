@@ -49,7 +49,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
 
     List<Invoice> invoices = new ArrayList<>();
 
-    for (SaleOrder saleOrder : getSubscriptionOrders(null)) {
+    for (SaleOrder saleOrder : getSubscriptionOrders().fetch()) {
       Invoice invoice = generateSubscriptionInvoice(saleOrder);
       invoices.add(invoice);
     }
@@ -58,30 +58,21 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
   }
 
   @Override
-  public List<SaleOrder> getSubscriptionOrders(Integer limit) {
+  public Query<SaleOrder> getSubscriptionOrders() {
 
-    Query<SaleOrder> query =
-        saleOrderRepo
-            .all()
-            .filter(
-                "self.saleOrderTypeSelect = :saleOrderType "
-                    + "AND self.statusSelect = :saleOrderStatus "
-                    + "AND :subScriptionDate >= self.nextInvoicingDate "
-                    + "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
-            .bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
-            .bind("saleOrderStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
-            .bind(
-                "subScriptionDate",
-                appBaseService.getTodayDate(
-                    Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
-
-    if (limit != null) {
-      return query.fetch(limit);
-    }
-
-    return query.fetch();
+    return saleOrderRepo
+        .all()
+        .filter(
+            "self.saleOrderTypeSelect = :saleOrderType "
+                + "AND self.statusSelect = :saleOrderStatus "
+                + "AND :subScriptionDate >= self.nextInvoicingDate "
+                + "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
+        .bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
+        .bind("saleOrderStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+        .bind(
+            "subScriptionDate",
+            appBaseService.getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
   }
 
   @Override

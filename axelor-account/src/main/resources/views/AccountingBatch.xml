@@ -38,6 +38,7 @@
         form-view="trading-name-form" domain=":company member of self.companySet" canNew="false"
         if="__config__.app.getApp('base').getEnableTradingNamesManagement()" hidden="true"
         canEdit="false"/>
+      <field name="batchFetchLimit"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">

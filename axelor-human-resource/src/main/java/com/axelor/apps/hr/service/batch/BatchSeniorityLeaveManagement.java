@@ -49,6 +49,7 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -125,23 +126,28 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   @Override
   protected void process() {
 
-    List<Employee> employeeList = this.getEmployees(batch.getHrBatch());
-    generateLeaveManagementLines(employeeList);
+    List<Employee> employeeList = null;
+    int fetchLimit = getFetchLimit();
+    Query<Employee> query = this.getEmployees(batch.getHrBatch());
+    int offset = 0;
+    while (!(employeeList = query.fetch(fetchLimit, offset)).isEmpty()) {
+      generateLeaveManagementLines(employeeList);
+      offset += employeeList.size();
+    }
   }
 
-  public List<Employee> getEmployees(HrBatch hrBatch) {
+  public Query<Employee> getEmployees(HrBatch hrBatch) {
 
-    List<Employee> employeeList;
+    Query<Employee> employeeQuery;
     if (hrBatch.getCompany() != null) {
-      employeeList =
+      employeeQuery =
           JPA.all(Employee.class)
               .filter("self.mainEmploymentContract.payCompany = :company")
-              .bind("company", hrBatch.getCompany())
-              .fetch();
+              .bind("company", hrBatch.getCompany());
     } else {
-      employeeList = JPA.all(Employee.class).fetch();
+      employeeQuery = JPA.all(Employee.class);
     }
-    return employeeList;
+    return employeeQuery;
   }
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {

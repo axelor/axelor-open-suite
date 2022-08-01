@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -169,8 +170,11 @@ public class AccountingReportController {
     accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
     MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
+    Integer fetchLimit = Beans.get(AppBaseService.class).getAppBase().getBatchFetchLimit();
+
     try {
-      moveLineExportService.replayExportMoveLine(accountingReport);
+      moveLineExportService.replayExportMoveLine(
+          accountingReport, fetchLimit != 0 ? fetchLimit : 10);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

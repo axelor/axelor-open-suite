@@ -78,9 +78,10 @@ public class BatchUpdateStockHistory extends BatchStrategy {
                 .filter("self.productTypeSelect = ?1", ProductRepository.PRODUCT_TYPE_STORABLE);
       }
 
+      int fetchLimit = getFetchLimit();
       int offset = 0;
 
-      while (!(productList = productQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      while (!(productList = productQuery.order("id").fetch(fetchLimit, offset)).isEmpty()) {
 
         for (Product product : productList) {
           ++offset;

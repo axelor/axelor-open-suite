@@ -19,7 +19,6 @@ package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
@@ -41,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BatchUpdateTaskService extends AbstractBatch {
+public class BatchUpdateTaskService extends BatchStrategy {
 
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
@@ -66,7 +65,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
   @Override
   protected void process() {
 
-    this.updateTasks();
+    int fetchLimit = getFetchLimit();
+    this.updateTasks(fetchLimit);
 
     Map<String, Object> contextValues = null;
     try {
@@ -77,12 +77,12 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     if (!appBusinessProject.getAutomaticInvoicing()) {
-      this.updateTaskToInvoice(contextValues, appBusinessProject);
-      this.updateTimesheetLines(contextValues);
+      this.updateTaskToInvoice(contextValues, appBusinessProject, fetchLimit);
+      this.updateTimesheetLines(contextValues, fetchLimit);
     }
   }
 
-  private void updateTasks() {
+  private void updateTasks(int fetchLimit) {
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
@@ -91,7 +91,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     int offset = 0;
     List<ProjectTask> taskList;
 
-    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(taskList = taskQuery.fetch(fetchLimit, offset)).isEmpty()) {
       findBatch();
       for (ProjectTask projectTask : taskList) {
         try {
@@ -113,7 +113,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
   }
 
   private void updateTaskToInvoice(
-      Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
+      Map<String, Object> contextValues, AppBusinessProject appBusinessProject, int fetchLimit) {
 
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
@@ -128,7 +128,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     List<ProjectTask> taskList;
     List<Object> updatedTaskList = new ArrayList<Object>();
 
-    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(taskList = taskQuery.fetch(fetchLimit, offset)).isEmpty()) {
       findBatch();
       offset += taskList.size();
       for (ProjectTask projectTask : taskList) {
@@ -160,7 +160,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
-  private void updateTimesheetLines(Map<String, Object> contextValues) {
+  private void updateTimesheetLines(Map<String, Object> contextValues, int fetchLimit) {
 
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 
@@ -171,7 +171,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     int offset = 0;
     List<TimesheetLine> timesheetLineList;
 
-    while (!(timesheetLineList = timesheetLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(timesheetLineList = timesheetLineQuery.fetch(fetchLimit, offset)).isEmpty()) {
       findBatch();
       offset += timesheetLineList.size();
       for (TimesheetLine timesheetLine : timesheetLineList) {

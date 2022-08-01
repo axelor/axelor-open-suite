@@ -298,4 +298,9 @@ public abstract class AbstractBatch {
 
     return batch;
   }
+
+  public int getFetchLimit() {
+    int limit = appBaseService.getAppBase().getBatchFetchLimit();
+    return limit > 0 ? limit : 1;
+  }
 }

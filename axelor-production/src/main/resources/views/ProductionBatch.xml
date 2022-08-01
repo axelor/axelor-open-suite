@@ -24,6 +24,7 @@
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
+      <field name="batchFetchLimit"/>
       <field name="workshopStockLocation"
         onSelect="action-production-batch-attrs-domain-stock-location"
         onChange="action-production-batch-record-set-company" form-view="stock-location-form"

@@ -136,7 +136,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
       return accountingReportDas2Service.exportN4DSFile(accountingReport);
     } else {
-      return moveLineExportService.exportMoveLine(accountingReport);
+      Integer batchFetchLimit = appBaseService.getAppBase().getBatchFetchLimit();
+      return moveLineExportService.exportMoveLine(
+          accountingReport, batchFetchLimit != 0 ? batchFetchLimit : 10);
     }
   }
 
