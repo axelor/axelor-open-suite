@@ -30,7 +30,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         if (moveLine.getAccount() != null
             && moveLine.getAccount().getUseForPartnerBalance()
             && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-          moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine);
+          moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
         }
       }
     }

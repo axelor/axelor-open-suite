@@ -5,16 +5,20 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
@@ -29,7 +33,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   @Override
-  public void generateDefaultInvoiceTerm(MoveLine moveLine) throws AxelorException {
+  public void generateDefaultInvoiceTerm(MoveLine moveLine, boolean canToCreateHolbackMoveLine)
+      throws AxelorException {
     Move move = moveLine.getMove();
 
     if (move == null) {
@@ -39,17 +44,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       BigDecimal amount =
           moveLine.getCredit().signum() == 0 ? moveLine.getDebit() : moveLine.getCredit();
 
-      invoiceTermService.createInvoiceTerm(
-          null,
-          moveLine,
-          null,
-          null,
-          moveLine.getMove().getPaymentMode(),
-          moveLine.getDate(),
-          null,
-          amount,
-          BigDecimal.valueOf(100),
-          false);
+      this.computeInvoiceTerm(
+          moveLine, move, move.getDate(), BigDecimal.valueOf(100), amount, false);
 
       return;
     }
@@ -62,11 +58,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         move.getPaymentCondition().getPaymentConditionLineList()) {
       if (paymentConditionLine.getIsHoldback()) {
         holdbackMoveLine =
-            this.computeInvoiceTermWithHoldback(move, moveLine, paymentConditionLine, total);
+            this.computeInvoiceTermWithHoldback(
+                move, moveLine, paymentConditionLine, total, canToCreateHolbackMoveLine);
       } else {
-        InvoiceTerm invoiceTerm =
-            this.computeInvoiceTerm(moveLine, move, paymentConditionLine, total);
-        moveLine.addInvoiceTermListItem(invoiceTerm);
+        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, total);
       }
     }
 
@@ -86,7 +81,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected MoveLine computeInvoiceTermWithHoldback(
-      Move move, MoveLine moveLine, PaymentConditionLine paymentConditionLine, BigDecimal total)
+      Move move,
+      MoveLine moveLine,
+      PaymentConditionLine paymentConditionLine,
+      BigDecimal total,
+      boolean canToCreateHolbackMoveLine)
       throws AxelorException {
     Account holdbackAccount = this.getHoldbackAccount(moveLine, move);
     MoveLine holdbackMoveLine =
@@ -101,6 +100,12 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     BigDecimal holdbackAmount = total.multiply(paymentConditionLine.getPaymentPercentage());
 
     if (holdbackMoveLine == null) {
+      if (!canToCreateHolbackMoveLine) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
+      }
+
       holdbackMoveLine =
           moveLineCreateService.createMoveLine(
               move,
@@ -130,36 +135,51 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
   protected InvoiceTerm computeInvoiceTerm(
       MoveLine moveLine, Move move, PaymentConditionLine paymentConditionLine, BigDecimal total) {
-    BigDecimal amount =
-        total
-            .multiply(paymentConditionLine.getPaymentPercentage())
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
     LocalDate dueDate =
-        move.getPaymentCondition() == null || move.getOriginDate() == null
-            ? move.getDate()
-            : InvoiceToolService.getDueDate(
-                move.getPaymentCondition().getPaymentConditionLineList().get(0),
-                move.getOriginDate());
+        InvoiceToolService.getDueDate(
+            paymentConditionLine,
+            Optional.of(move).map(Move::getOriginDate).orElse(move.getDate()));
 
     InvoiceTerm invoiceTerm =
-        invoiceTermService.createInvoiceTerm(
-            null,
+        this.computeInvoiceTerm(
             moveLine,
-            null, // RIB
-            null,
-            move.getPaymentMode(),
+            move,
             dueDate,
-            null,
-            amount,
             paymentConditionLine.getPaymentPercentage(),
+            total,
             paymentConditionLine.getIsHoldback());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
 
     return invoiceTerm;
+  }
+
+  protected InvoiceTerm computeInvoiceTerm(
+      MoveLine moveLine,
+      Move move,
+      LocalDate dueDate,
+      BigDecimal percentage,
+      BigDecimal total,
+      boolean isHoldback) {
+    BigDecimal amount =
+        total
+            .multiply(percentage)
+            .divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
+
+    return invoiceTermService.createInvoiceTerm(
+        null,
+        moveLine,
+        move.getPartnerBankDetails(),
+        null,
+        move.getPaymentMode(),
+        dueDate,
+        null,
+        amount,
+        percentage,
+        isHoldback);
   }
 
   protected void recomputePercentages(InvoiceTerm invoiceTerm, BigDecimal total) {

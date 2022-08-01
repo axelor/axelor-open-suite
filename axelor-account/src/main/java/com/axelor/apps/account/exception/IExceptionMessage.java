@@ -290,6 +290,9 @@ public interface IExceptionMessage {
 
   static final String MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE = /*$$(*/
       "The sum of all invoice terms percentages is not equal to 100." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
+      "The move payment condition is defining at least one holdback and there is no corresponding move lines." /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
   static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
       "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
