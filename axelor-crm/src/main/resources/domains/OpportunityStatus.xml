@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="OpportunityStatus" lang="java">
+
+    <string name="name" title="Name" required="true"/>
+    <integer name="sequence" title="Sequence"/>
+    <integer name="typeSelect" title="Type of status"
+      selection="crm.opportunity.status.type.select"/>
+
+    <finder-method name="findByNextSequence" filter="self.sequence &gt; :sequence"
+      using="sequence" orderBy="sequence"/>
+    <finder-method name="findByPreviousSequence" filter="self.sequence &lt; :sequence"
+      using="sequence" orderBy="-sequence"/>
+    <finder-method name="findByTypeSelect" using="typeSelect"
+      filter="self.typeSelect = :typeSelect"/>
+
+    <extra-code>
+		<![CDATA[
+			//Status type select
+			public static final int STATUS_TYPE_EMPTY = 0;
+			public static final int STATUS_TYPE_CLOSED_WON = 1;
+			public static final int STATUS_TYPE_CLOSED_LOST = 2;
+		]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

@@ -5,7 +5,7 @@
 
   <action-group name="action-sale-group-generate-sale-order">
     <action name="action-sale-validate-create-client"/>
-    <action name="action-sale-method-generate-sale-order"/>
+    <action name="action-sale-method-generate-sale-order" if="partner != null"/>
   </action-group>
 
   <action-validate name="action-sale-validate-create-client">
