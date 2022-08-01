@@ -74,7 +74,8 @@ public interface IExceptionMessage {
       "Can not mark as lost an already lost lead." /*)*/;
 
   /** Opportunity */
-  static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;
+  static final String OPPORTUNITY_STATUS_NOT_FOUND = /*$$(*/
+      "No Opportunity status found with stage %s" /*)*/;
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/

@@ -19,6 +19,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -58,7 +59,8 @@ public class OpportunitySaleOrderController {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
-      if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
+      if (opportunity.getOpportunityStatus().getTypeSelect()
+          == OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST) {
         List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
         if (saleOrderList != null && !saleOrderList.isEmpty()) {
           for (SaleOrder saleOrder : saleOrderList) {
