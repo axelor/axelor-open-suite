@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -27,7 +28,10 @@ public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
-    copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
+    OpportunityStatus status =
+        Beans.get(OpportunityStatusRepository.class)
+            .findByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_EMPTY);
+    copy.setOpportunityStatus(status);
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);
     return copy;
@@ -40,7 +44,8 @@ public class OpportunityManagementRepository extends OpportunityRepository {
         Beans.get(OpportunityService.class).setSequence(opportunity);
       }
 
-      opportunity.setName(Beans.get(OpportunityService.class).computeAndGetName(opportunity));
+      // will be added later
+      // opportunity.setName(Beans.get(OpportunityService.class).computeAndGetName(opportunity));
 
       return super.save(opportunity);
     } catch (Exception e) {
