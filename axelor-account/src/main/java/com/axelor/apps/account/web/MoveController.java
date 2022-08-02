@@ -753,7 +753,7 @@ public class MoveController {
 
         boolean isAllUpdated = Beans.get(MoveInvoiceTermService.class).updateInvoiceTerms(move);
 
-        response.setValue("$headerChange", "false");
+        response.setValue("$headerChange", false);
 
         if (!isAllUpdated) {
           response.setFlash(I18n.get(IExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
