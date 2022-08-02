@@ -163,7 +163,7 @@
         <field name="moveDescription" requiredIf="actionSelect == 26"/>
         <panel colSpan="6" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 26"
-            validIf="(moveDate == null &amp;&amp; actionSelect != 26)||(actionSelect == 26  &amp;&amp; $moment(moveDate).date() == $moment(moveDate).endOf('month').date())"
+            validIf="actionSelect != 26 || (actionSelect == 26  &amp;&amp; $moment(moveDate).date() == $moment(moveDate).endOf('month').date())"
             help="Please, enter only dates with the last day of month"
             onChange="action-accounting-batch-group-move-date-onchange"/>
           <label name="adviseUser"
