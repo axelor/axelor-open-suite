@@ -86,6 +86,7 @@
   <action-view name="action-partner-view-create-order"
     title="Create order (${ fullName })" model="com.axelor.apps.sale.db.SaleOrder">
     <view type="form" name="sale-order-form-partner"/>
+    <view-param name="forceTitle" value="true"/>
     <context name="_partner" expr="eval: __this__"/>
   </action-view>
 
