@@ -10,6 +10,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -25,15 +26,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
       InvoiceTermService invoiceTermService,
       MoveLineCreateService moveLineCreateService,
+      MoveLineToolService moveLineToolService,
       AccountingSituationService accountingSituationService) {
     this.invoiceTermService = invoiceTermService;
     this.moveLineCreateService = moveLineCreateService;
+    this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
   }
 
@@ -135,6 +139,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
               moveLine.getOrigin(),
               moveLine.getDescription());
       this.updateMoveLine(moveLine, holdbackAmount, true);
+
+      moveLineToolService.setCurrencyAmount(moveLine);
+      moveLineToolService.setCurrencyAmount(holdbackMoveLine);
+
       move.addMoveLineListItem(holdbackMoveLine);
     }
 
