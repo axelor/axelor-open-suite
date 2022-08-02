@@ -105,7 +105,8 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
 
     try {
-      createBankOrder(accountingBatch, reimbursementList);
+      BankOrder bankOrder = createBankOrder(accountingBatch, reimbursementList);
+      batch.setBankOrder(bankOrder);
     } catch (Exception ex) {
       TraceBackService.trace(ex);
       logger.error(ex.getLocalizedMessage());

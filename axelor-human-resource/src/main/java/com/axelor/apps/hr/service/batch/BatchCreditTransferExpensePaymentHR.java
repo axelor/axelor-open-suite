@@ -71,7 +71,9 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     List<Expense> doneList = processExpenses();
 
     try {
-      mergeBankOrders(doneList);
+      BankOrder bankOrder = mergeBankOrders(doneList);
+      findBatch();
+      batch.setBankOrder(bankOrder);
     } catch (Exception ex) {
       TraceBackService.trace(ex);
       ex.printStackTrace();
@@ -191,9 +193,10 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  protected void mergeBankOrders(List<Expense> doneList) throws AxelorException {
+  protected BankOrder mergeBankOrders(List<Expense> doneList) throws AxelorException {
     List<Expense> expenseList = new ArrayList<>();
     List<BankOrder> bankOrderList = new ArrayList<>();
+    BankOrder mergedBankOrder = null;
 
     for (Expense expense : doneList) {
       BankOrder bankOrder = expense.getBankOrder();
@@ -203,11 +206,17 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
       }
     }
 
+    if (bankOrderList.size() == 1) {
+      mergedBankOrder = bankOrderList.get(0);
+    }
+
     if (bankOrderList.size() > 1) {
-      BankOrder mergedBankOrder = bankOrderMergeService.mergeBankOrders(bankOrderList);
+      mergedBankOrder = bankOrderMergeService.mergeBankOrders(bankOrderList);
       for (Expense expense : expenseList) {
         expense.setBankOrder(mergedBankOrder);
       }
     }
+
+    return mergedBankOrder;
   }
 }
