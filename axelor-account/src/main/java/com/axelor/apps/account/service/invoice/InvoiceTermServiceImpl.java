@@ -403,6 +403,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
+  @Override
   public LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine) {
     return InvoiceToolService.getDueDate(
         paymentConditionLine, Optional.of(move).map(Move::getOriginDate).orElse(move.getDate()));
@@ -1342,5 +1343,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return total;
+  }
+
+  @Override
+  public void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentMode(move.getPaymentMode());
+    invoiceTerm.setBankDetails(move.getPartnerBankDetails());
   }
 }

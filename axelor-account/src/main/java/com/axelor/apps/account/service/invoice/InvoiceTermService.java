@@ -282,4 +282,6 @@ public interface InvoiceTermService {
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);
+
+  void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
 }

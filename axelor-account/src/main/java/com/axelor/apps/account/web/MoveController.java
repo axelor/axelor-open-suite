@@ -743,4 +743,24 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().containsKey("headerChange")
+          && (boolean) request.getContext().get("headerChange")) {
+        Move move = request.getContext().asType(Move.class);
+        move = Beans.get(MoveRepository.class).find(move.getId());
+
+        boolean isAllUpdated = Beans.get(MoveInvoiceTermService.class).updateInvoiceTerms(move);
+
+        response.setValue("$headerChange", "false");
+
+        if (!isAllUpdated) {
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

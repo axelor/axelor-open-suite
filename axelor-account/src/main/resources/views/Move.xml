@@ -99,7 +99,7 @@
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod" form-view="payment-mode-form"
-            grid-view="payment-mode-grid"/>
+            grid-view="payment-mode-grid" onChange="action-move-attrs-header-change"/>
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
@@ -107,10 +107,12 @@
           <field name="partnerBankDetails" colSpan="3"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
             onSelect="action-move-attrs-bank-details-from-partner-domain"
-            form-view="bank-details-form" grid-view="bank-details-grid"/>
+            form-view="bank-details-form" grid-view="bank-details-grid"
+            onChange="action-move-attrs-header-change"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="paymentMode.typeSelect" hidden="true"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
+          <field name="$headerChange" type="boolean" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
@@ -586,6 +588,7 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
     <action name="save"/>
+    <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
     <action name="action-move-method-update-in-day-book-mode"/>
   </action-group>
@@ -987,6 +990,10 @@
       expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
   </action-attrs>
 
+  <action-attrs name="action-move-attrs-header-change">
+    <attribute name="value" for="$headerChange" expr="eval: true"/>
+  </action-attrs>
+
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
     <field name="company" hidden="true"
@@ -1044,5 +1051,9 @@
 
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveController" method="updateInvoiceTerms"/>
   </action-method>
 </object-views>

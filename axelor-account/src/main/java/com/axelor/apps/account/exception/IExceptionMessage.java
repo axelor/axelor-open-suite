@@ -1339,4 +1339,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE = /*$$(*/
       "Watch out, a record with same origin/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific origin/reference." /*)*/;
+
+  static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
+      "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
 }
