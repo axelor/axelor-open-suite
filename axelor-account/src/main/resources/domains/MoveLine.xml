@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine" lang="java"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -123,6 +124,17 @@
 		    else return BigDecimal.ZERO;
 	    }
 		else return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
 	    ]]>
     </decimal>
 

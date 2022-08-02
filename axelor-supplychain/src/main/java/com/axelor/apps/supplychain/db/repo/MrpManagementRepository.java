@@ -76,6 +76,7 @@ public class MrpManagementRepository extends MrpRepository {
     copy.setMrpSeq(null);
     copy.setStartDateTime(null);
     copy.setEndDateTime(null);
+    copy.setStatusSelect(MrpRepository.STATUS_DRAFT);
     return copy;
   }
 }

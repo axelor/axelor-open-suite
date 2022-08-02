@@ -34,7 +34,7 @@
     onNew="action-accounting-situation-group-form-onnew" width="large">
     <panel name="mainPanel">
       <field name="company" widget="SuggestBox" canEdit="false"
-        onChange="action-supplychain-method-compute-used-credit" form-view="company-form"
+        onChange="action-accounting-situation-group-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
       <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
@@ -189,6 +189,11 @@
     <action name="action-accounting-situation-attrs-hide-employee-account"/>
     <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+  </action-group>
+
+  <action-group name="action-accounting-situation-group-company-onchange">
+    <action name="action-supplychain-method-compute-used-credit"/>
+    <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
   </action-group>
 
   <action-attrs name="action-accounting-situation-attrs-hide-supplier-account">

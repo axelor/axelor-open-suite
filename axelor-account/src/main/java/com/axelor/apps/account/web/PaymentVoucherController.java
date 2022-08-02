@@ -18,7 +18,11 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;

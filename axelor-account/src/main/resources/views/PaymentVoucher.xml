@@ -81,7 +81,7 @@
 
     <panel name="loadMoveLinesInfoPanel" colSpan="12" showIf="statusSelect == 1">
       <button name="loadMoveLinesBtn" title="Search elements to pay"
-        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines" colSpan="6"/>
+        onClick="action-payment-voucher-group-search-elements-to-pay" colSpan="6"/>
     </panel>
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
@@ -334,7 +334,16 @@
     <call class="com.axelor.apps.account.web.PaymentVoucherController"
       method="setReceiptDisplay"/>
   </action-method>
-
+  <action-method name="action-payment-voucher-method-reset-imputation">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
+  </action-method>
+  <action-method name="action-payment-voucher-method-load-move-lines">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="loadMoveLines"/>
+  </action-method>
+  <action-group name="action-payment-voucher-group-search-elements-to-pay">
+    <action name="action-payment-voucher-method-load-move-lines"/>
+    <action name="action-payment-voucher-method-reset-imputation"/>
+  </action-group>
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <attribute name="hidden" for="tradingName"

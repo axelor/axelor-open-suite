@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public final class StringTool {
   private static final String[] FILENAME_SEARCH_LIST =
@@ -315,5 +316,15 @@ public final class StringTool {
     } else {
       return str;
     }
+  }
+
+  /**
+   * Escapes the characters in a string using HTML entities.
+   *
+   * @param string
+   * @return
+   */
+  public static String escapeHtml(String string) {
+    return StringEscapeUtils.escapeHtml4(string);
   }
 }
