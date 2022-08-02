@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -222,10 +223,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {
     Partner partner = moveLine.getPartner() != null ? moveLine.getPartner() : move.getPartner();
 
-    if (moveLine.getDebit().signum() > 0) {
+    if (moveLine.getMove().getFunctionalOriginSelect()
+        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
       return accountingSituationService.getHoldBackSupplierAccount(partner, move.getCompany());
-    } else {
+    } else if (moveLine.getMove().getFunctionalOriginSelect()
+        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       return accountingSituationService.getHoldBackCustomerAccount(partner, move.getCompany());
+    } else {
+      return moveLine.getAccount();
     }
   }
 
