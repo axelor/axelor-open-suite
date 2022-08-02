@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -24,16 +25,20 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineCreateService moveLineCreateService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
-      InvoiceTermService invoiceTermService, MoveLineCreateService moveLineCreateService) {
+      InvoiceTermService invoiceTermService,
+      MoveLineCreateService moveLineCreateService,
+      AccountingSituationService accountingSituationService) {
     this.invoiceTermService = invoiceTermService;
     this.moveLineCreateService = moveLineCreateService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   @Override
-  public void generateDefaultInvoiceTerm(MoveLine moveLine, boolean canToCreateHolbackMoveLine)
+  public void generateDefaultInvoiceTerm(MoveLine moveLine, boolean canCreateHolbackMoveLine)
       throws AxelorException {
     Move move = moveLine.getMove();
 
@@ -52,16 +57,18 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     moveLine.clearInvoiceTermList();
 
-    BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
+    Account holdbackAccount = this.getHoldbackAccount(moveLine, move);
+    boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
+    BigDecimal total = invoiceTermService.getTotalInvoiceTermsAmount(moveLine);
     MoveLine holdbackMoveLine = null;
     for (PaymentConditionLine paymentConditionLine :
         move.getPaymentCondition().getPaymentConditionLineList()) {
-      if (paymentConditionLine.getIsHoldback()) {
+      if (paymentConditionLine.getIsHoldback() == isHoldback) {
+        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, total);
+      } else if (!this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
         holdbackMoveLine =
             this.computeInvoiceTermWithHoldback(
-                move, moveLine, paymentConditionLine, total, canToCreateHolbackMoveLine);
-      } else {
-        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, total);
+                move, moveLine, paymentConditionLine, total, canCreateHolbackMoveLine);
       }
     }
 
@@ -85,7 +92,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLine moveLine,
       PaymentConditionLine paymentConditionLine,
       BigDecimal total,
-      boolean canToCreateHolbackMoveLine)
+      boolean canCreateHolbackMoveLine)
       throws AxelorException {
     Account holdbackAccount = this.getHoldbackAccount(moveLine, move);
     MoveLine holdbackMoveLine =
@@ -97,10 +104,16 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             .findFirst()
             .orElse(null);
 
-    BigDecimal holdbackAmount = total.multiply(paymentConditionLine.getPaymentPercentage());
+    BigDecimal holdbackAmount =
+        total
+            .multiply(paymentConditionLine.getPaymentPercentage())
+            .divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
-      if (!canToCreateHolbackMoveLine) {
+      if (!canCreateHolbackMoveLine) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
@@ -121,14 +134,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
               move.getMoveLineList().size() + 1,
               moveLine.getOrigin(),
               moveLine.getDescription());
-    } else {
-      this.updateMoveLine(holdbackMoveLine, holdbackAmount, false);
       this.updateMoveLine(moveLine, holdbackAmount, true);
+      move.addMoveLineListItem(holdbackMoveLine);
     }
 
-    InvoiceTerm invoiceTerm =
-        this.computeInvoiceTerm(holdbackMoveLine, move, paymentConditionLine, total);
-    holdbackMoveLine.addInvoiceTermListItem(invoiceTerm);
+    this.computeInvoiceTerm(holdbackMoveLine, move, paymentConditionLine, total);
 
     return holdbackMoveLine;
   }
@@ -192,14 +202,30 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       amount = amount.negate();
     }
 
-    moveLine.setCredit(moveLine.getCredit().add(amount));
-    moveLine.setDebit(moveLine.getDebit().add(amount));
+    if (moveLine.getCredit().signum() > 0) {
+      moveLine.setCredit(moveLine.getCredit().add(amount));
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(amount));
+    }
+
     moveLine.setAmountRemaining(moveLine.getAmountRemaining().add(amount));
   }
 
-  protected Account getHoldbackAccount(MoveLine moveLine, Move move) {
+  protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {
     Partner partner = moveLine.getPartner() != null ? moveLine.getPartner() : move.getPartner();
-    // TODO
-    return new Account();
+
+    if (moveLine.getDebit().signum() > 0) {
+      return accountingSituationService.getHoldBackSupplierAccount(partner, move.getCompany());
+    } else {
+      return accountingSituationService.getHoldBackCustomerAccount(partner, move.getCompany());
+    }
+  }
+
+  protected boolean isHoldbackAlreadyGenerated(Move move, Account holdbackAccount) {
+    return move.getMoveLineList().stream()
+        .anyMatch(
+            it ->
+                it.getAccount().equals(holdbackAccount)
+                    && CollectionUtils.isNotEmpty(it.getInvoiceTermList()));
   }
 }
