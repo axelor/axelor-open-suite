@@ -358,7 +358,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setIsCustomized(true);
     invoiceTerm.setIsPaid(false);
-    invoiceTerm.setIsHoldBack(false);
     BigDecimal invoiceTermPercentage = new BigDecimal(100);
     BigDecimal percentageSum = computePercentageSum(moveLine);
 
@@ -382,7 +381,31 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
 
+    if (move != null
+        && move.getPaymentCondition() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
+      PaymentConditionLine nextPaymentConditionLine =
+          move.getPaymentCondition().getPaymentConditionLineList().stream()
+              .filter(it -> it.getPaymentPercentage().compareTo(invoiceTerm.getPercentage()) == 0)
+              .findFirst()
+              .orElse(
+                  move.getPaymentCondition()
+                      .getPaymentConditionLineList()
+                      .get(moveLine.getInvoiceTermList().size()));
+
+      invoiceTerm.setDueDate(this.computeDueDate(move, nextPaymentConditionLine));
+
+      if (nextPaymentConditionLine.getIsHoldback()) {
+        invoiceTerm.setIsHoldBack(true);
+      }
+    }
+
     return invoiceTerm;
+  }
+
+  public LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine) {
+    return InvoiceToolService.getDueDate(
+        paymentConditionLine, Optional.of(move).map(Move::getOriginDate).orElse(move.getDate()));
   }
 
   @Override

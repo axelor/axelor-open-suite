@@ -213,6 +213,8 @@ public interface InvoiceTermService {
 
   InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm, Move move);
 
+  LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine);
+
   /**
    * return existing moveLine related to invoiceTerm with isHoldBack = false
    *

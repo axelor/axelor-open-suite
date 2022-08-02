@@ -9,7 +9,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Partner;
@@ -21,7 +20,6 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
@@ -159,16 +157,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
   protected void computeInvoiceTerm(
       MoveLine moveLine, Move move, PaymentConditionLine paymentConditionLine, BigDecimal total) {
-    LocalDate dueDate =
-        InvoiceToolService.getDueDate(
-            paymentConditionLine,
-            Optional.of(move).map(Move::getOriginDate).orElse(move.getDate()));
-
     InvoiceTerm invoiceTerm =
         this.computeInvoiceTerm(
             moveLine,
             move,
-            dueDate,
+            invoiceTermService.computeDueDate(move, paymentConditionLine),
             paymentConditionLine.getPaymentPercentage(),
             total,
             paymentConditionLine.getIsHoldback());
