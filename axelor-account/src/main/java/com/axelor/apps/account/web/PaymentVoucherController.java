@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
@@ -27,7 +26,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
@@ -124,16 +122,7 @@ public class PaymentVoucherController {
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
     if (paymentVoucher.getHasAutoInput()) {
-      PaymentMode paymentMode = paymentVoucher.getPaymentMode();
-      Company company = paymentVoucher.getCompany();
-      BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
       try {
-        Journal journal =
-            Beans.get(PaymentModeService.class)
-                .getPaymentModeJournal(paymentMode, company, companyBankDetails);
-        if (journal.getExcessPaymentOk()) {
-          response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
-        }
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
           response.setError(
               I18n.get(

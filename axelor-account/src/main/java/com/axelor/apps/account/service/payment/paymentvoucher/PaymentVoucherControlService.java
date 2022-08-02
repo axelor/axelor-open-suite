@@ -86,9 +86,7 @@ public class PaymentVoucherControlService {
     }
 
     // Si on a des lignes à payer (dans le deuxième tableau)
-    if (!paymentVoucher.getHasAutoInput()
-        && (paymentVoucher.getPayVoucherElementToPayList() == null
-            || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
+    if (!paymentVoucher.getHasAutoInput()) {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

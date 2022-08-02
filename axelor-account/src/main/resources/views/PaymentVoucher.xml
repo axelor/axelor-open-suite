@@ -42,8 +42,7 @@
     <panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
       <button name="confirmPaymentVoucherBtn" title="Confirm payment" hidden="true"
         onClick="action-group-account-payment-voucher-confirm-click"
-        showIf="statusSelect == 1 || !id"
-        readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
+        showIf="statusSelect == 1 || !id" readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="fa-print"
         onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
