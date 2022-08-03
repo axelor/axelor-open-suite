@@ -156,8 +156,6 @@
       colSpan="12"/>
     <dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"
       colSpan="12"/>
-    <dashlet action="dashlet.opportunities.by.type" title="Opportunities by type of needs"
-      height="350" colSpan="12"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.opportunities.dashboard.2">
@@ -172,7 +170,6 @@
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.opportunities.manager">
-    <dashlet action="dashlet.opportunities.by.type" height="350"/>
     <dashlet action="dashlet.opportunities.byStage.byType" height="350"/>
     <dashlet action="dashlet.opportunities.won.by.partner" height="350" canSearch="true"/>
     <dashlet action="dashlet.opportunities.won.by.leadsource" height="350"/>
@@ -210,11 +207,6 @@
   <action-view name="dashlet.opportunities.by.saletage.funnel"
     title="Opportunities By Sale Stage">
     <view type="chart" name="chart.dashboard.opportunities.sale.stage.amount.funnel"/>
-  </action-view>
-
-
-  <action-view name="dashlet.opportunities.by.type" title="Opportunities By Type">
-    <view type="chart" name="chart.dashboard.opportunities.type.amount.bar"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.byStage.byType"
