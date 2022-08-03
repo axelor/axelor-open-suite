@@ -19,7 +19,6 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -36,6 +35,7 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -90,10 +90,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.mail.MessagingException;
 
 @Singleton
@@ -107,6 +105,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected AccountConfigHRService accountConfigService;
   protected AccountingSituationService accountingSituationService;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected PaymentModeService paymentModeService;
@@ -122,6 +121,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       AccountConfigHRService accountConfigService,
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
@@ -135,6 +135,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
@@ -385,7 +386,6 @@ public class ExpenseServiceImpl implements ExpenseService {
     Company company = expense.getCompany();
     Partner partner = expense.getUser().getPartner();
 
-    Account account = null;
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     if (partner == null) {
@@ -410,11 +410,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     List<MoveLine> moveLines = new ArrayList<>();
 
-    Set<AnalyticAccount> analyticAccounts = new HashSet<>();
-    BigDecimal exTaxTotal = null;
+    int moveLineCounter = 1;
 
-    int moveLineId = 1;
-    int expenseLineId = 1;
     Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
     moveLines.add(
         moveLineService.createMoveLine(
@@ -425,72 +422,37 @@ public class ExpenseServiceImpl implements ExpenseService {
             false,
             moveDate,
             moveDate,
-            moveLineId++,
+            moveLineCounter++,
             expense.getExpenseSeq(),
             expense.getFullName()));
 
-    for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
-      analyticAccounts.clear();
-      Product product = expenseLine.getExpenseProduct();
-
-      account =
-          accountManagementService.getProductAccount(
-              product, company, partner.getFiscalPosition(), true, false);
-
-      if (account == null) {
-        throw new AxelorException(
-            expense,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4),
-            expenseLineId,
-            company.getName());
-      }
-
-      exTaxTotal = expenseLine.getUntaxedAmount();
-      MoveLine moveLine =
-          moveLineService.createMoveLine(
-              move,
-              partner,
-              account,
-              exTaxTotal,
-              true,
-              moveDate,
-              moveDate,
-              moveLineId++,
-              expense.getExpenseSeq(),
-              expenseLine.getComments() != null
-                  ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
-                  : "");
-      moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
-      for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
-        AnalyticMoveLine analyticDistributionLine =
-            Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
-        analyticDistributionLine.setExpenseLine(null);
-        moveLine.addAnalyticMoveLineListItem(analyticDistributionLine);
-      }
-      moveLines.add(moveLine);
-      expenseLineId++;
+    List<ExpenseLine> expenseLineList = getExpenseLineList(expense);
+    for (ExpenseLine expenseLine : expenseLineList) {
+      moveLines.add(
+          generateMoveLine(expense, company, partner, expenseLine, move, moveLineCounter));
+      moveLineCounter++;
     }
 
     moveLineService.consolidateMoveLines(moveLines);
-    account = accountConfigService.getExpenseTaxAccount(accountConfig);
-    BigDecimal taxTotal = BigDecimal.ZERO;
-    for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
-      exTaxTotal = expenseLine.getTotalTax();
-      taxTotal = taxTotal.add(exTaxTotal);
-    }
+    Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
+
+    BigDecimal taxTotal =
+        expenseLineList.stream()
+            .map(ExpenseLine::getTotalTax)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
 
     if (taxTotal.signum() != 0) {
       MoveLine moveLine =
           moveLineService.createMoveLine(
               move,
               partner,
-              account,
+              productAccount,
               taxTotal,
               true,
               moveDate,
               moveDate,
-              moveLineId++,
+              moveLineCounter,
               expense.getExpenseSeq(),
               expense.getFullName());
       moveLines.add(moveLine);
@@ -502,6 +464,67 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     expense.setMove(move);
     return move;
+  }
+
+  /**
+   * Generates move line (and analytic move lines) related to an expense line.
+   *
+   * @param expense the parent expense line.
+   * @param company the parent expense company.
+   * @param partner the employee's partner.
+   * @param expenseLine the expense line.
+   * @param move the parent move line.
+   * @param count the move line sequence count.
+   * @return the generated move line.
+   * @throws AxelorException if the product accounting configuration cannot be found.
+   */
+  protected MoveLine generateMoveLine(
+      Expense expense,
+      Company company,
+      Partner partner,
+      ExpenseLine expenseLine,
+      Move move,
+      int count)
+      throws AxelorException {
+    Product product = expenseLine.getExpenseProduct();
+    LocalDate moveDate = expense.getMoveDate();
+
+    Account productAccount =
+        accountManagementService.getProductAccount(
+            product, company, partner.getFiscalPosition(), true, false);
+
+    if (productAccount == null) {
+      throw new AxelorException(
+          expense,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4),
+          count - 1, // we are using the move line sequence count to get the expense line count
+          company.getName());
+    }
+
+    MoveLine moveLine =
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            productAccount,
+            expenseLine.getUntaxedAmount(),
+            true,
+            moveDate,
+            moveDate,
+            count,
+            expense.getExpenseSeq(),
+            expenseLine.getComments() != null
+                ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
+                : "");
+    moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
+    expenseLine
+        .getAnalyticMoveLineList()
+        .forEach(
+            analyticMoveLine ->
+                moveLine.addAnalyticMoveLineListItem(
+                    analyticMoveLineGenerateRealService.createFromForecast(
+                        analyticMoveLine, moveLine)));
+    return moveLine;
   }
 
   @Override
