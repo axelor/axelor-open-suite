@@ -671,6 +671,7 @@ LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
 LEFT JOIN account_journal_type JournalType ON (Journal.journal_type = JournalType.id)
 LEFT JOIN account_accounting_report AccountingReport on (AccountingReport.id = ?)
 LEFT JOIN base_partner Partner ON (Partner.id = MoveLine.partner)
+LEFT JOIN account_account_config config ON (config.company = AccountingReport.company)
 WHERE (AccountingReport.currency = Move.company_currency)
 AND (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from)
 AND (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to)
@@ -681,7 +682,7 @@ AND (
   OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
 )
 AND Move.status_select = 3
-AND JournalType.id = AccountingReport.journal_type
+AND JournalType.id = config.das_report_journal_type
 order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name;
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

@@ -183,38 +183,38 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
     // Check if one error persist
     String exclusionQuery =
-        "AND NOT EXISTS (SELECT pmvld.id "
-            + "FROM PaymentMoveLineDistribution pmvld "
-            + "LEFT OUTER JOIN pmvld.reconcile reconcile "
-            + "LEFT OUTER JOIN pmvld.moveLine moveLine "
-            + "LEFT OUTER JOIN pmvld.move move1 "
-            + "LEFT OUTER JOIN move1.journal journal "
-            + "LEFT OUTER JOIN journal.journalType journalType "
-            + "LEFT OUTER JOIN move1.partner partner "
-            + "LEFT OUTER JOIN move1.company company "
-            + "LEFT OUTER JOIN move1.companyCurrency currency "
-            + "LEFT OUTER JOIN reconcile.debitMoveLine dMoveLine "
-            + "LEFT OUTER JOIN dMoveLine.move dMove "
-            + "LEFT OUTER JOIN moveLine.account account "
-            + "WHERE reconcile.statusSelect IN (?1, ?2)  " // (STATUS_CONFIRMED, STATUS_CANCELED)
-            + "AND dMove.statusSelect = ?3 " // STATUS_VALIDATED
+        "AND NOT EXISTS (SELECT pmvld1.id "
+            + "FROM PaymentMoveLineDistribution pmvld1 "
+            + "LEFT OUTER JOIN pmvld1.reconcile reconcile1 "
+            + "LEFT OUTER JOIN pmvld1.moveLine moveLine1 "
+            + "LEFT OUTER JOIN pmvld1.move move1 "
+            + "LEFT OUTER JOIN move1.journal journal1 "
+            + "LEFT OUTER JOIN journal1.journalType journalType1 "
+            + "LEFT OUTER JOIN move1.partner partner1 "
+            + "LEFT OUTER JOIN move1.company company1 "
+            + "LEFT OUTER JOIN move1.companyCurrency currency1 "
+            + "LEFT OUTER JOIN reconcile1.debitMoveLine dMoveLine1 "
+            + "LEFT OUTER JOIN dMoveLine1.move dMove1 "
+            + "LEFT OUTER JOIN moveLine1.account account1 "
+            + "WHERE reconcile1.statusSelect IN (?1, ?2)  " // (STATUS_CONFIRMED, STATUS_CANCELED)
+            + "AND dMove1.statusSelect = ?3 " // STATUS_VALIDATED
             + "AND move1.statusSelect = ?3 " // STATUS_VALIDATED
-            + "AND pmvld.operationDate >= ?4 " //  accountingReport.getDateFrom()
-            + "AND pmvld.operationDate <= ?5 " // accountingReport.getDateTo()
-            + "AND (account.serviceType IS NULL OR partner.das2Activity IS NULL) "
-            + "AND journalType = ?6 " // ACH
-            + "AND company = ?7 " // accountingReport.getCompany()
-            + "AND currency = ?8 " // accountingReport.getCurrency()
+            + "AND pmvld1.operationDate >= ?4 " //  accountingReport.getDateFrom()
+            + "AND pmvld1.operationDate <= ?5 " // accountingReport.getDateTo()
+            + "AND (account1.serviceType IS NULL OR partner1.das2Activity IS NULL) "
+            + "AND journalType1 = ?6 " // ACH
+            + "AND company1 = ?7 " // accountingReport.getCompany()
+            + "AND currency1 = ?8 " // accountingReport.getCurrency()
             + "AND move1.ignoreInAccountingOk != true "
             + "AND move = move1 " // Check on the same move
-            + "AND pmvld NOT IN (SELECT pmvld "
-            + "FROM AccountingReportMoveLine history "
-            + "LEFT OUTER JOIN history.paymentMoveLineDistribution pmvld "
-            + "LEFT OUTER JOIN history.accountingReport report "
-            + "LEFT OUTER JOIN report.reportType reportType "
-            + "WHERE report != ?9 " // accountingReport
-            + "AND reportType.typeSelect = ?10 " // accountingReport.getReportType().getTypeSelect()
-            + "AND (history.excludeFromDas2Report != true OR history.exported != true) ) ) ";
+            + "AND pmvld1 NOT IN (SELECT pmvld2 "
+            + "FROM AccountingReportMoveLine history1 "
+            + "LEFT OUTER JOIN history1.paymentMoveLineDistribution pmvld2 "
+            + "LEFT OUTER JOIN history1.accountingReport report1 "
+            + "LEFT OUTER JOIN report1.reportType reportType1 "
+            + "WHERE report1 != ?9 " // accountingReport
+            + "AND reportType1.typeSelect = ?10 " // accountingReport.getReportType().getTypeSelect()
+            + "AND (history1.excludeFromDas2Report != true OR history1.exported != true) ) ) ";
 
     String pmvldQueryStr =
         "SELECT pmvld.id AS paymentMvld " + sameQuery + "AND partner.id IN ?11 " + exclusionQuery;
