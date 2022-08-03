@@ -19,6 +19,7 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.db.User;
@@ -72,4 +73,6 @@ public interface EventService {
   void generateRecurrentEvents(Event event, RecurrenceConfiguration conf) throws AxelorException;
 
   public EmailAddress getEmailAddress(Event event);
+
+  void leadLastEventDate(Lead lead, LocalDateTime date);
 }

@@ -13,14 +13,12 @@
     <view type="grid" name="lead-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
-    <view-param name="default-search-filters" value="active-team-leads-filter"/>
+    <domain>self.leadStatus.isOpen = true</domain>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
-    <context name="_statusNewLead" expr="eval: __repo__(Lead).LEAD_STATUS_NEW"/>
-    <context name="_statusInProgressLead" expr="eval: __repo__(Lead).LEAD_STATUS_IN_PROCESS"/>
   </action-view>
 
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"
@@ -97,6 +95,21 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+  <menuitem title="Leads historical" name="crm-root-leadHistorical" parent="crm-root"
+    action="crm.root.leadHistorical" order="26"/>
+  <action-view name="crm.root.leadHistorical" title="Leads historical"
+    model="com.axelor.apps.crm.db.Lead">
+    <view type="grid" name="lead-grid"/>
+    <view type="form" name="lead-form"/>
+    <view-param name="search-filters" value="lead-filters"/>
+    <domain>self.leadStatus.isClosed = true</domain>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
   </action-view>
 
   <menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"
@@ -410,6 +423,21 @@
     model="com.axelor.apps.base.db.PartnerRole">
     <view type="grid" name="partner-role-grid"/>
     <view type="form" name="partner-role-form"/>
+  </action-view>
+
+  <menuitem title="Department" name="crm-conf-department" parent="crm-conf"
+    action="crm.conf.department"/>
+  <action-view name="crm.conf.department" title="Department"
+    model="com.axelor.apps.base.db.CompanyDepartment">
+    <view type="grid" name="company-department-grid"/>
+    <view type="form" name="company-department-form"/>
+  </action-view>
+
+  <menuitem title="Type" name="crm-conf-type" parent="crm-conf" action="crm.conf.type"/>
+  <action-view name="crm.conf.type" title="Type"
+    model="com.axelor.apps.base.db.PartnerCategory">
+    <view type="grid" name="partner-category-grid"/>
+    <view type="form" name="partner-category-form"/>
   </action-view>
 
   <menuitem title="Lead status" name="crm-conf-lead-status" parent="crm-conf"

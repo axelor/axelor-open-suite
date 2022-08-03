@@ -53,6 +53,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -560,6 +561,19 @@ public class EventController {
               : EventRepository.STATUS_REPORTED);
       Beans.get(EventService.class).saveEvent(event);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void leadLastEventDate(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      Lead lead = event.getLead();
+      LocalDateTime endEventDate = event.getEndDateTime();
+      if (lead != null && endEventDate != null) {
+        Beans.get(EventService.class).leadLastEventDate(lead, endEventDate);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
