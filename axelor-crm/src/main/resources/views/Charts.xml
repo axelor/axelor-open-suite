@@ -102,26 +102,6 @@
     <series key="amount" type="bar" title="Amount"/>
   </chart>
 
-  <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Type">
-    <dataset type="sql">
-		    <![CDATA[
-			SELECT
-          		SUM(self.amount) AS amount,
-	      		opportunity_type.name as _opportunity_type
-	    	FROM
-	        	crm_opportunity self
-	    	LEFT JOIN
-	        	crm_opportunity_type as opportunity_type ON self.opportunity_type = opportunity_type.id
-	    	GROUP BY
-		    	opportunity_type.name
-			ORDER BY
-		   		opportunity_type.name
-		 ]]>
-    </dataset>
-    <category key="_opportunity_type" type="text" title="Opportunity Type"/>
-    <series key="amount" type="bar" title="Amount"/>
-  </chart>
-
   <chart name="chart.dashboard.opportunities.won.by.leadsource.bar"
     title="Opportunities Won By Lead Source">
     <dataset type="sql">
