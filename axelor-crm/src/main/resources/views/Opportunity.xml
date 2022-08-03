@@ -149,8 +149,6 @@
         grid-view="source-grid"/>
       <field name="expectedCloseDate" colSpan="4"
         readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"/>
-      <field name="nextStep" colSpan="12"
-        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"/>
       <field name="probability" colSpan="4"
         readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" widget="Progress"/>
       <field name="currency" colSpan="4" canEdit="false" form-view="currency-form"
