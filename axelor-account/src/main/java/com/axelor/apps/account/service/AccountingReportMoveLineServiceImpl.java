@@ -280,9 +280,6 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             "S10.G01.01.006",
             ObjectUtils.firstNonNull(
                 dasContactPartner.getFixedPhone(), dasContactPartner.getMobilePhone())));
-    if (!Strings.isNullOrEmpty(dasContactPartner.getFax())) {
-      lines.add(setN4DSLine("S10.G01.01.007", dasContactPartner.getFax()));
-    }
 
     // S10.G01.05
     lines.add(setN4DSLine("S10.G01.05.013.001", siren));

@@ -92,7 +92,6 @@
               <field name="fullName" readonly="true"/>
               <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
               <field name="mobilePhone" widget="phone"/>
-              <field name="fax" widget="phone"/>
               <field name="emailAddress" form-view="email-address-simple-form"
                 canNew="!emailAddress" canSelect="false" canRemove="false"
                 placeholder="Email address"/>
@@ -237,7 +236,6 @@
             <field name="fullName" readonly="true"/>
             <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone"/>
-            <field name="fax" widget="phone"/>
             <field name="emailAddress" form-view="email-address-simple-form"
               canNew="!emailAddress" canSelect="false" canRemove="false" placeholder="Email address"/>
           </editor>
