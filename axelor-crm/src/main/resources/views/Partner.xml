@@ -34,6 +34,149 @@
     </menubar>
   </form>
 
+  <form id="crm-partner-form" name="partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
+    </extend>
+    <extend target="//label[@name='facebookLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='twitterLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='youtubeLabel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='simpleFullName']">
+      <replace>
+        <field name="simpleFullName" showTitle="false" colSpan="7" css="label-bold bold large">
+          <hilite color="primary" strong="true" if="true"/>
+          <editor x-show-titles="false">
+            <field name="partnerTypeSelect" showTitle="false" colSpan="12"
+              placeholder="Partner Type" onChange="action-partner-group-type-select-onchange"/>
+            <panel name="companyPartnerNamePanel" showIf="partnerTypeSelect == 1" colSpan="12">
+              <field name="name" showTitle="false" colSpan="12" css="highlight"
+                placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
+            </panel>
+            <panel name="individualPartnerNamePanel" showIf="partnerTypeSelect == 2"
+              colSpan="12">
+              <field name="titleSelect" showTitle="false" colSpan="2" placeholder="Civility"/>
+              <field name="firstName" showTitle="false" colSpan="5" css="highlight"
+                placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"/>
+              <field name="name" showTitle="false" colSpan="5" css="highlight"
+                placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
+            </panel>
+          </editor>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='isCustomer']">
+      <insert position="after">
+        <field name="isIntegrator" colSpan="2" widget="InlineCheckbox"
+          hideIf="isContact || $readonly() || isEmployee"
+          onChange="action-partner-attrs-unset-partner"/>
+        <field name="isPartner" colSpan="2" widget="InlineCheckbox"
+          hideIf="isContact || $readonly() || isEmployee"
+          onChange="action-partner-attrs-unset-integrator"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='isSupplier']">
+      <attribute name="showIf" value="_isCustomer"/>
+    </extend>
+    <extend target="//field[@name='isInternal']">
+      <attribute name="showIf" value="_isCustomer"/>
+    </extend>
+    <extend target="//field[@name='isSubcontractor']">
+      <attribute name="showIf" value="_isCustomer"/>
+    </extend>
+    <extend target="//field[@name='isCarrier']">
+      <attribute name="showIf" value="_isCustomer"/>
+    </extend>
+    <extend target="//field[@name='isFactor']">
+      <attribute name="showIf" value="_isCustomer"/>
+    </extend>
+    <extend target="//button[@name='$positiveBalanceBtn']">
+      <attribute name="showIf" value="id &amp;&amp; !isProspect"/>
+    </extend>
+    <extend target="//field[@name='isFactor']">
+      <insert position="after">
+        <field name="isLeadScoring" showIf="isProspect" widget="ImageSelect" x-labels="false"
+          colSpan="2"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='functionBusinessCard']">
+      <insert position="after">
+        <field name="isKeyAccount"/>
+        <field name="partnerSize"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='source']">
+      <attribute name="canNew" value="true"/>
+    </extend>
+    <extend target="//field[@name='taxNbr']">
+      <attribute name="showIf" value="isCustomer"/>
+    </extend>
+    <extend target="//field[@name='paymentDelay']">
+      <attribute name="showIf" value="isCustomer"/>
+    </extend>
+    <extend target="//panel-dashlet[@name='subsidiaryPartners']">
+      <attribute name="showIf"
+        value="partnerTypeSelect == 1 &amp;&amp; $subsidiaryCount != 0"/>
+    </extend>
+    <extend target="//field[@name='webSite']">
+      <insert position="after">
+        <panel colSpan="12">
+          <field name="language" colSpan="6" canEdit="false"/>
+          <field if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"
+            name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)" colSpan="12"
+            widget="boolean-switch"/>
+          <panel name="assignedToPanel" title="Assigned to" colSpan="12">
+            <field name="user" hideIf="isEmployee" colSpan="6" canNew="false" canView="false"
+              canEdit="false" onSelect="action-partner-attrs-user-group" form-view="user-form"
+              grid-view="user-grid"/>
+            <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
+              hideIf="isEmployee" colSpan="6" canEdit="false" form-view="team-form"
+              grid-view="team-grid"/>
+            <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+              form-view="company-form" grid-view="company-grid"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='settingsPanel']">
+      <replace/>
+    </extend>
+    <extend target="//panel[@name='paymentPanel']">
+      <attribute name="hideIf" value="isProspect"/>
+    </extend>
+    <extend target="//panel-related[@name='accountingSituationListPanel']">
+      <attribute name="hideIf" value="isProspect"/>
+    </extend>
+  </form>
+
+  <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad"
+        value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
+    </extend>
+  </form>
+
+  <form id="crm-partner-supplier-form" name="partner-supplier-form" title="Supplier"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
+    </extend>
+  </form>
+
+  <form id="crm-partner-light-form" name="partner-light-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
+    </extend>
+  </form>
+
   <grid id="crm-partner-customer-grid" name="partner-customer-grid" title="Customers"
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//field[@name='fiscalPosition.code']">
@@ -186,5 +329,24 @@
     <view type="form" name="event-form"/>
     <domain>self.contactPartner.id = :_id</domain>
   </action-view>
+
+  <action-attrs name="action-partner-attrs-unset-integrator">
+    <attribute name="value" for="isIntegrator" expr="eval:false" if="isPartner"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-attrs-unset-partner">
+    <attribute name="value" for="isPartner" expr="eval:false" if="isIntegrator"/>
+  </action-attrs>
+
+  <action-method name="action-partner-method-get-subsidiary-partners-count">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController"
+      method="getSubsidiaryPartnersCount"/>
+  </action-method>
+
+  <action-group name="crm-action-group-partner-onload">
+    <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
+    <action name="action-partner-method-get-subsidiary-partners-count"/>
+  </action-group>
+
 
 </object-views>
