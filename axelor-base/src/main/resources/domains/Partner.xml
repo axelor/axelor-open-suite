@@ -111,7 +111,6 @@
     <many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address"
       title="Address"/>
 
-    <string name="timeSlot" title="Time slot" large="true"/>
     <string name="companyStr" title="Companies"/>
 
     <string name="headOfficeAddress" title="Head office address"/>

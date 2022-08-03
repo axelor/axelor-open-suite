@@ -721,7 +721,6 @@
         </field>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid" colSpan="12"/>
-        <field name="timeSlot" colSpan="12"/>
       </panel>
       <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
         if="__config__.app.isApp('crm')">
