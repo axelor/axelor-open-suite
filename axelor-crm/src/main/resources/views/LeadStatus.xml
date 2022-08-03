@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-grid">
+    <field name="name"/>
+    <field name="sequence"/>
+    <field name="isOpen"/>
+    <field name="isClosed"/>
+    <field name="isLost"/>
+  </grid>
+
+  <form model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-form">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="sequence"/>
+      <field name="isOpen" readonlyIf="isClosed"/>
+      <field name="isClosed" readonlyIf="isOpen"/>
+      <field name="isLost"/>
+    </panel>
+  </form>
+
+</object-views>
