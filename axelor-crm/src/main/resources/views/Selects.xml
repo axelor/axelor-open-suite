@@ -6,18 +6,6 @@
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-  <selection name="crm.lead.status.select">
-    <option value="1">New</option>
-    <option value="2">In process</option>
-    <option value="3">Closed</option>
-  </selection>
-
-  <selection name="crm.lead.closed.reason.select">
-    <option value="1">Canceled</option>
-    <option value="2">Lost</option>
-    <option value="3">Converted</option>
-  </selection>
-
   <selection name="crm.event.related.to.select">
     <option value="com.axelor.apps.crm.db.Lead">Lead</option>
     <option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid"
@@ -190,6 +178,21 @@
     <option value="3" icon="img/rating/orange-rating-3.png">3</option>
     <option value="4" icon="img/rating/orange-rating-4.png">4</option>
     <option value="5" icon="img/rating/orange-rating-5.png">5</option>
+  </selection>
+
+  <selection name="gold.rating.icon.select">
+    <option value="1" icon="img/rating/gold-rating-1.png">1</option>
+    <option value="2" icon="img/rating/gold-rating-2.png">2</option>
+    <option value="3" icon="img/rating/gold-rating-3.png">3</option>
+    <option value="4" icon="img/rating/gold-rating-4.png">4</option>
+    <option value="5" icon="img/rating/gold-rating-5.png">5</option>
+  </selection>
+
+  <selection name="crm.lead.size.select">
+    <option value="1">1 to 20</option>
+    <option value="2">20 to 100</option>
+    <option value="3">100 to 500</option>
+    <option value="4">Over 500</option>
   </selection>
 
 </object-views>

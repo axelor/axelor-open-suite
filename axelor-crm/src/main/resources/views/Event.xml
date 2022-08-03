@@ -420,6 +420,7 @@
     <action name="action-event-view-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
+    <action name="action-method-event-fill-lead-event-date" if="statusSelect == 2"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
@@ -685,6 +686,11 @@
     model="com.axelor.apps.crm.db.Event">
     <field name="eventCategory" expr="eval: null"/>
   </action-record>
+
+  <action-method name="action-method-event-fill-lead-event-date"
+    model="com.axelor.apps.crm.db.Event">
+    <call class="com.axelor.apps.crm.web.EventController" method="leadLastEventDate"/>
+  </action-method>
 
   <!-- ACTION METHOD -->
 
