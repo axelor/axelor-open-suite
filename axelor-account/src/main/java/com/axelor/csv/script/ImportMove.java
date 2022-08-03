@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FECImport;
+import com.axelor.apps.account.db.ImportFECType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -148,8 +149,9 @@ public class ImportMove {
           move.setCurrencyCode(values.get("Idevise").toString());
         }
 
+        Journal journal = null;
         if (values.get("JournalCode") != null) {
-          Journal journal =
+          journal =
               Beans.get(JournalRepository.class)
                   .all()
                   .filter(
@@ -179,6 +181,22 @@ public class ImportMove {
           move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }
         move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_IMPORT);
+
+        if (fecImport != null) {
+          ImportFECType importFECType = fecImport.getImportFECType();
+
+          if (importFECType != null && importFECType.getFunctionalOriginSelect() > 0) {
+            move.setFunctionalOriginSelect(importFECType.getFunctionalOriginSelect());
+          }
+        } else if (journal != null) {
+          String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+
+          if (StringUtils.notEmpty(authorizedFunctionalOriginSelect)
+              && authorizedFunctionalOriginSelect.split(",").length == 1) {
+            move.setFunctionalOriginSelect(Integer.parseInt(authorizedFunctionalOriginSelect));
+          }
+        }
+
         moveRepository.save(move);
       }
       if (values.get("CompteNum") != null) {
