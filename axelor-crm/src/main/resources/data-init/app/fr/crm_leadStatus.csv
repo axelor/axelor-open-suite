@@ -1,0 +1,8 @@
+"importId";"name";"sequence";"isOpen";"isClosed";"isLost"
+1;"À traiter";10;"true";"false";"false"
+2;"Qualification marketing";20;"true";"false";"false"
+3;"Qualification commerciale";30;"true";"false";"false"
+4;"Nurturing";40;"true";"false";"false"
+5;"Suspendu";50;"false";"true";"false"
+6;"Gagné";60;"false";"true";"false"
+7;"Perdu";70;"false";"true";"true"

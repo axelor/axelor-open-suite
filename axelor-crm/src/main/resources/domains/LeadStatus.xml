@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="LeadStatus" lang="java">
+    <string name="name" title="Name"/>
+    <integer name="sequence" title="Sequence"/>
+    <boolean name="isOpen" title="Open"/>
+    <boolean name="isClosed" title="Closed"/>
+    <boolean name="isLost" title="Lost"/>
+  </entity>
+
+</domain-models>
