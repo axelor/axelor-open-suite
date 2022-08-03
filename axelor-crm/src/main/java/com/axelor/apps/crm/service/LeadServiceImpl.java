@@ -26,11 +26,12 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.message.db.MultiRelated;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
@@ -38,10 +39,10 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,10 +73,8 @@ public class LeadServiceImpl implements LeadService {
   public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
       throws AxelorException {
 
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
@@ -122,10 +121,9 @@ public class LeadServiceImpl implements LeadService {
       event.setContactPartner(contactPartner);
       eventRepo.save(event);
     }
-
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
-    lead.setClosedReason(LeadRepository.CLOSED_REASON_CONVERTED);
-
+    lead.setIsConverted(true);
+    lead.setLeadStatus(
+        Beans.get(LeadStatusRepository.class).all().filter("self.isLost = ?", true).fetchOne());
     return leadRepo.save(lead);
   }
 
@@ -261,24 +259,9 @@ public class LeadServiceImpl implements LeadService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void startLead(Lead lead) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_START_WRONG_STATUS));
-    }
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
   public void assignToMeLead(Lead lead) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
@@ -295,30 +278,16 @@ public class LeadServiceImpl implements LeadService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void recycleLead(Lead lead) throws AxelorException {
-    if (lead.getStatusSelect() == null
-        || lead.getStatusSelect() != LeadRepository.LEAD_STATUS_CLOSED) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_RECYCLE_WRONG_STATUS));
-    }
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    lead.setIsRecycled(true);
-  }
-
   @Transactional
   public void loseLead(Lead lead, LostReason lostReason) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_WRONG_STATUS));
     }
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
+    lead.setLeadStatus(
+        Beans.get(LeadStatusRepository.class).all().filter("self.isLost = ?", true).fetchOne());
     lead.setLostReason(lostReason);
   }
 

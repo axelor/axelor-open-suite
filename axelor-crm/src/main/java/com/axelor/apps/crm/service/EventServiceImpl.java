@@ -627,4 +627,10 @@ public class EventServiceImpl implements EventService {
     }
     return emailAddress;
   }
+
+  @Override
+  @Transactional
+  public void leadLastEventDate(Lead lead, LocalDateTime date) {
+    lead.setLastEventDate(date.toLocalDate());
+  }
 }

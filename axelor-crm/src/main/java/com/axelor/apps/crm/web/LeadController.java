@@ -191,26 +191,6 @@ public class LeadController {
     }
   }
 
-  public void startLead(ActionRequest request, ActionResponse response) {
-    try {
-      Lead lead = request.getContext().asType(Lead.class);
-      Beans.get(LeadService.class).startLead(Beans.get(LeadRepository.class).find(lead.getId()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void recycleLead(ActionRequest request, ActionResponse response) {
-    try {
-      Lead lead = request.getContext().asType(Lead.class);
-      Beans.get(LeadService.class).recycleLead(Beans.get(LeadRepository.class).find(lead.getId()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void assignToMeLead(ActionRequest request, ActionResponse response) {
     try {
       Lead lead = request.getContext().asType(Lead.class);
