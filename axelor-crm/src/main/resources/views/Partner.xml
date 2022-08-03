@@ -177,6 +177,61 @@
     </extend>
   </form>
 
+  <form id="crm-partner-contact-form" name="partner-contact-form" title="Contact"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//field[@name='picture']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='facebookLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='twitterLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='youtubeLabel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='simpleFullName']">
+      <replace>
+        <field name="simpleFullName" showTitle="false" colSpan="12" css="bold">
+          <editor x-show-titles="false">
+            <field name="titleSelect" colSpan="2" placeholder="Civility" selection-in="[1,2]"/>
+            <field name="firstName" colSpan="5" css="highlight" placeholder="First name"
+              onChange="action-group-base-partner-contact-name-onchange"/>
+            <field name="name" colSpan="5" css="highlight" placeholder="Name"
+              onChange="action-group-base-partner-contact-name-onchange"/>
+          </editor>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='jobTitleFunction']">
+      <attribute name="x-create" value="function"/>
+      <insert position="before">
+        <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
+        <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
+        <field name="isNoContact" colSpan="4"/>
+        <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
+          <viewer><![CDATA[
+			<h4>
+				<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotCall" x-translate>Rejection of calls</span>
+				<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotEmail" x-translate>Rejection of e-mails</span>
+			</h4>
+          ]]></viewer>
+        </field>
+      </insert>
+    </extend>
+    <extend target="//field[@name='mainPartner']">
+      <insert position="after">
+        <field name="companyDepartment"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='language']">
+      <insert position="after">
+        <field name="createdOn" readonly="true"/>
+      </insert>
+    </extend>
+  </form>
+
   <grid id="crm-partner-customer-grid" name="partner-customer-grid" title="Customers"
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//field[@name='fiscalPosition.code']">
@@ -347,6 +402,5 @@
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
   </action-group>
-
 
 </object-views>
