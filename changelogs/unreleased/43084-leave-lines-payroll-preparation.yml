@@ -1,0 +1,3 @@
+---
+title: "PAYROLL PREPARATION: Leave lines are now properly persisted upon saving the payroll preparation without a need to hit the refresh button each time."
+type: fix
