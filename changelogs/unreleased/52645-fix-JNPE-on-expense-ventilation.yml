@@ -1,0 +1,3 @@
+---
+title: "Expense: fixed an issue where expense ventilation did not work after setting accounting analytic template to expense lines."
+type: fix

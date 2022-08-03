@@ -61,6 +61,8 @@ import com.axelor.apps.account.service.AccountingReportServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticMoveLineGenerateRealService;
+import com.axelor.apps.account.service.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -264,6 +266,9 @@ public class AccountModule extends AxelorModule {
     bind(PaymentService.class).to(PaymentServiceImpl.class);
 
     bind(MoveLineService.class).to(MoveLineServiceImpl.class);
+
+    bind(AnalyticMoveLineGenerateRealService.class)
+        .to(AnalyticMoveLineGenerateRealServiceImpl.class);
 
     bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
   }

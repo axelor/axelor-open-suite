@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -84,6 +85,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected TaxAccountService taxAccountService;
   protected FiscalPositionAccountService fiscalPositionAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
@@ -97,6 +99,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       FiscalPositionAccountService fiscalPositionAccountService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       CurrencyService currencyService,
       CompanyConfigService companyConfigService,
       MoveLineRepository moveLineRepository,
@@ -105,6 +108,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.appAccountService = appAccountService;
     this.currencyService = currencyService;
     this.companyConfigService = companyConfigService;
@@ -518,15 +522,8 @@ public class MoveLineServiceImpl implements MoveLineService {
             && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
-                analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
-            analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-            analyticMoveLine.setInvoiceLine(null);
-            analyticMoveLine.setAccount(moveLine.getAccount());
-            analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-            analyticMoveLineService.updateAnalyticMoveLine(
-                analyticMoveLine,
-                moveLine.getDebit().add(moveLine.getCredit()),
-                moveLine.getDate());
+                analyticMoveLineGenerateRealService.createFromForecast(
+                    invoiceAnalyticMoveLine, moveLine);
             moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
           }
         } else {

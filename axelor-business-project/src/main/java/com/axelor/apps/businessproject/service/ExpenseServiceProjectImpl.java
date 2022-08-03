@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -46,25 +47,26 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       MoveService moveService,
       ExpenseRepository expenseRepository,
       MoveLineService moveLineService,
-      AccountManagementAccountService accountManagementAccountService,
+      AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository) {
-
     super(
         moveService,
         expenseRepository,
         moveLineService,
-        accountManagementAccountService,
+        accountManagementService,
         appAccountService,
         accountConfigService,
         accountingSituationService,
         analyticMoveLineService,
+        analyticMoveLineGenerateRealService,
         hrConfigService,
         templateMessageService,
         paymentModeService,
