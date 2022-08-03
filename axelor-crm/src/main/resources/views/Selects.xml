@@ -195,4 +195,11 @@
     <option value="4">Over 500</option>
   </selection>
 
+  <selection name="partner.size.select">
+    <option value="1 to 20">1 to 20</option>
+    <option value="20 to 100">20 to 100</option>
+    <option value="100 to 500">100 to 500</option>
+    <option value="more than 500">More than 500</option>
+  </selection>
+
 </object-views>
