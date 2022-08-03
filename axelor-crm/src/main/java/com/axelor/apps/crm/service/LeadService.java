@@ -68,14 +68,6 @@ public interface LeadService {
   public boolean isThereDuplicateLead(Lead lead);
 
   /**
-   * Set the lead status to In Process.
-   *
-   * @param lead
-   * @throws AxelorException if the lead wasn't new nor assigned.
-   */
-  void startLead(Lead lead) throws AxelorException;
-
-  /**
    * Set the lead to the current user and change status to Assigned.
    *
    * @param lead
@@ -90,14 +82,6 @@ public interface LeadService {
    * @throws AxelorException if the lead wasn't new nor assigned.
    */
   void assignToMeMultipleLead(List<Lead> leadList) throws AxelorException;
-
-  /**
-   * Recycle the lead if it was lost, change the status to In Process.
-   *
-   * @param lead
-   * @throws AxelorException if the lead wasn't lost.
-   */
-  void recycleLead(Lead lead) throws AxelorException;
 
   /**
    * Set the lead status to lost and set the lost reason with the given lost reason.

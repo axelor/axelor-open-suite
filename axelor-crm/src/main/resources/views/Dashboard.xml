@@ -256,9 +256,6 @@
     <dashlet action="dashlet.team.leads" height="350" colSpan="12"/>
     <dashlet action="dashlet.created.leads.per.month" height="350" colSpan="12"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350" colSpan="12"/>
-    <dashlet action="dashlet.created.leads.average.duration.first.opportunity" colSpan="12"
-      title="Average duration between lead creation and first opportunity creation (days)"
-      height="350"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.lead.manager">
@@ -271,9 +268,7 @@
     <dashlet action="dashlet.team.leads" height="350"/>
     <dashlet action="dashlet.created.leads.per.month" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.with.opportunity" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.lead.salesman">
@@ -284,16 +279,14 @@
     <dashlet action="dashlet.unassigned.leads" height="350"/>
     <dashlet action="dashlet.created.leads.per.month" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.with.opportunity" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350"/>
   </dashboard>
 
   <action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads"
     model="com.axelor.apps.crm.db.Lead">
     <view type="grid" name="my-lead-grid"/>
     <view type="form" name="lead-form"/>
-    <domain>self.user= :__user__ AND (self.statusSelect = 2 OR self.statusSelect = 3)</domain>
+    <domain>self.user= :__user__</domain>
   </action-view>
 
   <action-view name="dashlet.leads.by.source" title="Leads by Source">
@@ -358,21 +351,6 @@
   <action-view name="dashlet.created.leads.by.industry.sector"
     title="Created leads by industry sector" model="com.axelor.apps.crm.db.Lead">
     <view type="chart" name="chart.created.leads.by.industry.sector"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-  </action-view>
-
-  <action-view name="dashlet.created.leads.with.opportunity"
-    title="Created leads with at least one opportunity" model="com.axelor.apps.crm.db.Lead">
-    <view type="chart" name="chart.created.leads.with.opportunity"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-  </action-view>
-
-  <action-view name="dashlet.created.leads.average.duration.first.opportunity"
-    title="Average duration between lead and first opportunity (days)"
-    model="com.axelor.apps.crm.db.Lead">
-    <view type="chart" name="chart.created.leads.average.duration.first.opportunity"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
