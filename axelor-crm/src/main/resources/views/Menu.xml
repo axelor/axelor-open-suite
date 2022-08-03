@@ -412,5 +412,12 @@
     <view type="form" name="partner-role-form"/>
   </action-view>
 
+  <menuitem title="Lead status" name="crm-conf-lead-status" parent="crm-conf"
+    action="crm.conf.lead.status"/>
+  <action-view name="crm.conf.lead.status" title="Lead status"
+    model="com.axelor.apps.crm.db.LeadStatus">
+    <view type="grid" name="lead-status-grid"/>
+    <view type="form" name="lead-status-form"/>
+  </action-view>
 
 </object-views>
