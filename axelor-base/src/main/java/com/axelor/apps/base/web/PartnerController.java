@@ -233,10 +233,7 @@ public class PartnerController {
             .getSocialNetworkUrl(
                 partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
   public void findPartnerSentMails(ActionRequest request, ActionResponse response) {
