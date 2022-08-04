@@ -40,10 +40,14 @@ public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity save(Opportunity opportunity) {
     try {
+      OpportunityService opportunityService = Beans.get(OpportunityService.class);
       if (opportunity.getOpportunitySeq() == null) {
-        Beans.get(OpportunityService.class).setSequence(opportunity);
+        opportunityService.setSequence(opportunity);
       }
 
+      if (opportunity.getOpportunityStatus() == null) {
+        opportunity.setOpportunityStatus(opportunityService.getDefaultOpportunityStatus());
+      }
       // will be added later
       // opportunity.setName(Beans.get(OpportunityService.class).computeAndGetName(opportunity));
 

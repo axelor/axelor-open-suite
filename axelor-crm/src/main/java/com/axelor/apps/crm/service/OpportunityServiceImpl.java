@@ -23,8 +23,10 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -34,9 +36,19 @@ import com.google.inject.persist.Transactional;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
-  @Inject protected OpportunityRepository opportunityRepo;
+  protected OpportunityRepository opportunityRepo;
+  protected AddressService addressService;
+  protected OpportunityStatusRepository opportunityStatusRepo;
 
-  @Inject protected AddressService addressService;
+  @Inject
+  public OpportunityServiceImpl(
+      OpportunityRepository opportunityRepo,
+      AddressService addressService,
+      OpportunityStatusRepository opportunityStatusRepo) {
+    this.opportunityRepo = opportunityRepo;
+    this.addressService = addressService;
+    this.opportunityStatusRepo = opportunityStatusRepo;
+  }
 
   @Transactional
   public void saveOpportunity(Opportunity opportunity) {
@@ -69,5 +81,10 @@ public class OpportunityServiceImpl implements OpportunityService {
       return contact.getFullName();
     }
     return null;
+  }
+
+  @Override
+  public OpportunityStatus getDefaultOpportunityStatus() {
+    return opportunityStatusRepo.getDefaultStatus();
   }
 }

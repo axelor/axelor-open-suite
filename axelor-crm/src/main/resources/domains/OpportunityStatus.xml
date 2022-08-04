@@ -18,6 +18,7 @@
       using="sequence" orderBy="-sequence"/>
     <finder-method name="findByTypeSelect" using="typeSelect"
       filter="self.typeSelect = :typeSelect"/>
+    <finder-method name="getDefaultStatus" using="" orderBy="sequence" filter="1 = 1"/>
 
     <extra-code>
 		<![CDATA[

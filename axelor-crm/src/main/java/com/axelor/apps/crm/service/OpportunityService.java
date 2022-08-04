@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -29,4 +30,6 @@ public interface OpportunityService {
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
   public String computeAndGetName(Opportunity opportunity);
+
+  public OpportunityStatus getDefaultOpportunityStatus();
 }
