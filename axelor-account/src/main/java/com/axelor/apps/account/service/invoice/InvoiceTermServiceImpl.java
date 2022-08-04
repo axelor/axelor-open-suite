@@ -338,8 +338,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-      MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
-      moveLine.addInvoiceTermListItem(invoiceTerm);
+      findInvoiceTermsInInvoice(invoice.getMove().getMoveLineList(), invoiceTerm, invoice);
     }
 
     return invoiceTerm;
@@ -393,6 +392,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .all()
             .filter("self.invoice.id = ?1 AND self.isHoldBack is not true", invoice.getId())
             .fetchOne();
+
     if (invoiceTerm == null) {
       return null;
     } else {
@@ -1304,6 +1304,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 .collect(Collectors.joining(",")))
         .append(")");
     return pfpValidatorUserDomain.toString();
+  }
+
+  protected void findInvoiceTermsInInvoice(
+      List<MoveLine> moveLineList, InvoiceTerm invoiceTerm, Invoice invoice) {
+    MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
+    if (moveLine == null && !CollectionUtils.isEmpty(moveLineList)) {
+      for (MoveLine ml : moveLineList) {
+        if (ml.getAccount().getHasInvoiceTerm()) {
+          ml.addInvoiceTermListItem(invoiceTerm);
+          return;
+        }
+      }
+    } else {
+      moveLine.addInvoiceTermListItem(invoiceTerm);
+    }
   }
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine) {
