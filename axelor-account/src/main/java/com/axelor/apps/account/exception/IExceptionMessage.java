@@ -1332,8 +1332,8 @@ public interface IExceptionMessage {
       "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan." /*)*/;
 
   static final String MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE = /*$$(*/
-      "Watch out, a record with same reference/origin (%s) already exists for the partner %s and the fiscal year %s." /*)*/;
+      "Watch out, a record with same reference/accounting voucher (%s) already exists for the partner %s and the fiscal year %s." /*)*/;
 
   static final String MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE = /*$$(*/
-      "Watch out, a record with same origin/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific origin/reference." /*)*/;
+      "Watch out, a record with same accounting voucher/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific accounting voucher/reference." /*)*/;
 }
