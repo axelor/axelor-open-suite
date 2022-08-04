@@ -73,7 +73,8 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="3"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            showIf="journal.authorizedFunctionalOriginSelect.split(',').length &gt;1"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false" readonly="true"/>
           <field name="date"
@@ -107,6 +108,7 @@
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
         </panel>
+        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3"
@@ -320,7 +322,8 @@
             onChange="action-move-group-journal-on-change"
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            showIf="journal.authorizedFunctionalOriginSelect.split(',').length &gt;1"/>
           <field name="date" hideIf="statusSelect == 3" colSpan="3"
             onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
@@ -336,6 +339,7 @@
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
         <field name="origin" colSpan="3"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
       </panel>
       <panel name="otherDetailsPanel" readonlyIf="statusSelect == 3" colSpan="3">
         <field name="$viewerTags" showTitle="false">
