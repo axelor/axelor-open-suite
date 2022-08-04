@@ -28,6 +28,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
 
+  protected int counter = 1;
+  protected int holdbackCounter = 1;
+
   @Inject
   public MoveLineInvoiceTermServiceImpl(
       InvoiceTermService invoiceTermService,
@@ -194,6 +197,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         null,
         amount,
         percentage,
+        isHoldback ? this.holdbackCounter++ : this.counter++,
         isHoldback);
   }
 

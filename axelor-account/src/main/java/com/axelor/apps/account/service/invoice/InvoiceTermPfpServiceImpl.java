@@ -193,6 +193,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getEstimatedPaymentDate(),
             amount,
             invoiceTermService.computeCustomizedPercentage(amount, originalInvoiceTerm.getAmount()),
+            invoice.getInvoiceTermList().size() + 1,
             originalInvoiceTerm.getIsHoldBack());
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);

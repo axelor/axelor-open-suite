@@ -117,6 +117,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
 
     if (creditMoveLines != null) {
       // Create invoice term on new credit move line
+      int counter = 1;
       for (MoveLine creditMoveLine : creditMoveLines) {
         invoiceTermService.createInvoiceTerm(
             creditMoveLine,
@@ -124,7 +125,8 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
             pfpUser,
             paymentMode,
             todayDate,
-            creditMoveLine.getAmountRemaining());
+            creditMoveLine.getAmountRemaining(),
+            counter++);
 
         newMove.getMoveLineList().add(creditMoveLine);
       }

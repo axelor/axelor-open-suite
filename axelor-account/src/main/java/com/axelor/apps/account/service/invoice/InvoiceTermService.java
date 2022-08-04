@@ -229,7 +229,8 @@ public interface InvoiceTermService {
       User pfpUser,
       PaymentMode paymentMode,
       LocalDate date,
-      BigDecimal amount);
+      BigDecimal amount,
+      int sequence);
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
@@ -241,6 +242,7 @@ public interface InvoiceTermService {
       LocalDate estimatedPaymentDate,
       BigDecimal amount,
       BigDecimal percentage,
+      int sequence,
       boolean isHoldBack);
 
   void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);

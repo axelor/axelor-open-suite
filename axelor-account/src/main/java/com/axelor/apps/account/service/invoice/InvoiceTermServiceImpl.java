@@ -238,6 +238,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             null,
             amount,
             paymentConditionLine.getPaymentPercentage(),
+            paymentConditionLine
+                    .getPaymentCondition()
+                    .getPaymentConditionLineList()
+                    .indexOf(paymentConditionLine)
+                + 1,
             paymentConditionLine.getIsHoldback());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
@@ -921,7 +926,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       User pfpUser,
       PaymentMode paymentMode,
       LocalDate date,
-      BigDecimal amount) {
+      BigDecimal amount,
+      int sequence) {
     return this.createInvoiceTerm(
         null,
         moveLine,
@@ -932,6 +938,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         null,
         amount,
         BigDecimal.valueOf(100),
+        sequence,
         false);
   }
 
@@ -946,9 +953,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       LocalDate estimatedPaymentDate,
       BigDecimal amount,
       BigDecimal percentage,
+      int sequence,
       boolean isHoldBack) {
     InvoiceTerm newInvoiceTerm = new InvoiceTerm();
 
+    newInvoiceTerm.setSequence(sequence);
     newInvoiceTerm.setInvoice(invoice);
     newInvoiceTerm.setIsCustomized(false);
     newInvoiceTerm.setIsPaid(false);
