@@ -39,6 +39,5 @@ public interface MoveLineService {
 
   public boolean checkManageAnalytic(Move move) throws AxelorException;
 
-  void updatePartner(
-          List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
+  void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 }

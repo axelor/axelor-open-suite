@@ -654,8 +654,7 @@ public class MoveController {
 
       if (previousMove != null && !Objects.equals(move.getPartner(), previousMove.getPartner())) {
         Beans.get(MoveLineService.class)
-            .updatePartner(
-                move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
+            .updatePartner(move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
 
         response.setValue("moveLineList", move.getMoveLineList());
       }

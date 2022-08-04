@@ -275,8 +275,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public void updatePartner(
-      List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
+  public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
     moveLineList.stream()
         .filter(it -> Objects.equals(it.getPartner(), previousPartner))
         .forEach(it -> it.setPartner(partner));
