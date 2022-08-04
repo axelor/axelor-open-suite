@@ -7,25 +7,34 @@
     title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch" extension="true">
     <extend target="//field[@name='company']">
       <attribute name="onChange"
-        value="action-accounting-batch-attrs-set-empty-year-and-accountset-value,action-method-accounting-batch-set-default-accounts"/>
+        value="action-supplychain-accounting-batch-group-onchange-company"/>
+    </extend>
+    <extend target="//field[@name='accountingCutOffTypeSelect']">
+      <attribute name="onChange"
+        value="supplychain-action-group-accounting-batch-onchange-accounting-type"/>
     </extend>
     <extend target="//field[@name='miscOpeJournal']">
       <insert position="before">
-        <field name="forecastedInvCustAccount" requiredIf="accountingCutOffTypeSelect &lt;= 2"
+        <field name="forecastedInvCustAccount"
+          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"
           domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
           form-view="account-form" colSpan="6" showIf="accountingCutOffTypeSelect &lt;= 2"/>
-        <field name="forecastedInvSuppAccount" requiredIf="accountingCutOffTypeSelect &lt;= 2"
+        <field name="forecastedInvSuppAccount"
+          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"
           domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
           form-view="account-form" colSpan="6" showIf="accountingCutOffTypeSelect &lt;= 2"/>
       </insert>
     </extend>
   </form>
 
-  <action-group name="action-group-accounting-batch-onchange-accounting-type"
-    id="supplychain-action-group-accounting-batch-onchange-accounting-type">
-    <action name="action-accounting-batch-attrs-show-label"/>
-    <action name="action-record-accounting-batch-set-expenses-incomes"/>
-    <action name="action-attrs-accounting-batch-cutoff-move-status-domain"/>
+  <action-group
+    name="supplychain-action-group-accounting-batch-onchange-accounting-type">
+    <action name="action-group-accounting-batch-onchange-accounting-type"/>
+    <action name="action-method-accounting-batch-set-default-accounts"/>
+  </action-group>
+
+  <action-group name="action-supplychain-accounting-batch-group-onchange-company">
+    <action name="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
     <action name="action-method-accounting-batch-set-default-accounts"/>
   </action-group>
 
