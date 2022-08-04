@@ -38,8 +38,8 @@ import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
-import com.axelor.apps.production.rest.ConsumedProductRestService;
-import com.axelor.apps.production.rest.ConsumedProductRestServiceImpl;
+import com.axelor.apps.production.rest.ManufOrderProductRestService;
+import com.axelor.apps.production.rest.ManufOrderProductRestServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
@@ -167,6 +167,6 @@ public class ProductionModule extends AxelorModule {
     bind(WorkCenterService.class).to(WorkCenterServiceImpl.class);
     bind(ConfiguratorProdProductService.class).to(ConfiguratorProdProductServiceImpl.class);
     bind(ProductVariantServiceSupplyChainImpl.class).to(ProductVariantServiceProductionImpl.class);
-    bind(ConsumedProductRestService.class).to(ConsumedProductRestServiceImpl.class);
+    bind(ManufOrderProductRestService.class).to(ManufOrderProductRestServiceImpl.class);
   }
 }

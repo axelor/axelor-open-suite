@@ -6,7 +6,7 @@ import com.axelor.apps.tool.api.RequestPostStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class ConsumedProductGetRequest extends RequestPostStructure {
+public class ManufOrderProductGetRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
@@ -16,7 +16,7 @@ public class ConsumedProductGetRequest extends RequestPostStructure {
   @Min(0)
   private Integer manufOrderVersion;
 
-  public ConsumedProductGetRequest() {}
+  public ManufOrderProductGetRequest() {}
 
   public Long getManufOrderId() {
     return manufOrderId;

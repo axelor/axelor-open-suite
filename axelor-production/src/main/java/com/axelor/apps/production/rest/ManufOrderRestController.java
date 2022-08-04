@@ -2,9 +2,9 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.rest.dto.ConsumedProductGetRequest;
 import com.axelor.apps.production.rest.dto.ConsumedProductListResponse;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
+import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.RequestValidator;
@@ -29,7 +29,7 @@ public class ManufOrderRestController {
   @Path("/consumed-products/fetch")
   @POST
   @HttpExceptionHandler
-  public Response fetchConsumedProducts(ConsumedProductGetRequest requestBody)
+  public Response fetchConsumedProducts(ManufOrderProductGetRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck()
@@ -37,7 +37,7 @@ public class ManufOrderRestController {
         .check();
 
     List<ConsumedProductResponse> consumedProductList =
-        Beans.get(ConsumedProductRestService.class)
+        Beans.get(ManufOrderProductRestService.class)
             .getConsumedProductList(requestBody.fetchManufOrder());
 
     return ResponseConstructor.build(
