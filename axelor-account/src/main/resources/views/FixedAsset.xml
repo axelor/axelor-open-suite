@@ -274,7 +274,7 @@
       <field name="saleAccountMove"
         domain="self.company = :company AND self.journal.journalType.technicalTypeSelect = 2 AND (self.functionalOriginSelect = 3 OR self.functionalOriginSelect = 7)"
         showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
-        form-view="move-form" grid-view="move-grid" hidden="true" readonly="true"/>
+        form-view="move-form" grid-view="move-grid" hidden="true"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
