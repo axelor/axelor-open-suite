@@ -624,10 +624,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+
+    if (newOrUpdatedMoveLine.getPartner() == null) {
+      newOrUpdatedMoveLine.setPartner(move.getPartner());
+    }
+
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
+
     return newOrUpdatedMoveLine;
   }
 
