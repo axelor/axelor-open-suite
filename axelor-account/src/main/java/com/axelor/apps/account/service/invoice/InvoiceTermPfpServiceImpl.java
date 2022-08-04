@@ -192,7 +192,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getDueDate(),
             originalInvoiceTerm.getEstimatedPaymentDate(),
             amount,
-            invoiceTermService.computeCustomizedPercentage(amount, invoice.getInTaxTotal()),
+            invoiceTermService.computeCustomizedPercentage(
+                amount,
+                invoice != null
+                    ? invoice.getInTaxTotal()
+                    : originalInvoiceTerm
+                        .getMoveLine()
+                        .getCredit()
+                        .max(originalInvoiceTerm.getMoveLine().getDebit())),
             originalInvoiceTerm.getIsHoldBack());
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -211,7 +218,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setIsPaid(false);
     originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmount());
     originalInvoiceTerm.setPercentage(
-        invoiceTermService.computeCustomizedPercentage(grantedAmount, invoice.getInTaxTotal()));
+        invoiceTermService.computeCustomizedPercentage(
+            grantedAmount,
+            invoice != null
+                ? invoice.getInTaxTotal()
+                : originalInvoiceTerm
+                    .getMoveLine()
+                    .getCredit()
+                    .max(originalInvoiceTerm.getMoveLine().getDebit())));
     originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setAmountRemaining(grantedAmount);
     originalInvoiceTerm.setPfpValidateStatusSelect(
