@@ -25,10 +25,16 @@ public class LeadManagementRepository extends LeadRepository {
 
   @Override
   public Lead save(Lead entity) {
+    LeadService leadService = Beans.get(LeadService.class);
+
     String fullName =
-        Beans.get(LeadService.class)
-            .processFullName(entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
+        leadService.processFullName(
+            entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
     entity.setFullName(fullName);
+
+    if (entity.getLeadStatus() == null) {
+      entity.setLeadStatus(leadService.getDefaultLeadStatus());
+    }
 
     return super.save(entity);
   }

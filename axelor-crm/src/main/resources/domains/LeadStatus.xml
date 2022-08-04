@@ -11,6 +11,8 @@
     <boolean name="isOpen" title="Open"/>
     <boolean name="isClosed" title="Closed"/>
     <boolean name="isLost" title="Lost"/>
+
+    <finder-method name="getDefaultStatus" using="" orderBy="sequence" filter="1 = 1"/>
   </entity>
 
 </domain-models>

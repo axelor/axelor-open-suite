@@ -5,7 +5,6 @@
 "axelor-crm";"EventReminder";"event-reminder-form";"assignToSelect";"Enables to choose whether the reminder will be sent only to the active user, the active user and guests of the event, or to everyone. "
 "axelor-crm";"EventReminder";"event-reminder-form";"duration";"The duration will depend on the type of duration chosen and is determined from the start date. For example, if you have selected ""Minutes"" as the duration type, and you want to receive a reminder 15 minutes before the start of the event, you must specify ""15"" in duration."
 "axelor-crm";"EventReminder";"event-reminder-form";"durationTypeSelect";"Enables you to choose the type of duration wished for the reminder (minutes, hours, days, weeks). If you want a reminder 2 hours before the start of the event, you must select ""hours"" and enter ""2"" in the ""Duration"" field."
-"axelor-crm";"Lead";"lead-form";"statusSelect";"Enables to specify the lead's status within the realization process (New/Assigned/In Progress/Converted/Recycled/Lost)"
 "axelor-crm";"Lead";"lead-form";"isDoNotCall";"Check box to specify that the contact does not wish to be contacted by phone."
 "axelor-crm";"Lead";"lead-form";"isDoNotSendEmail";"Check box to specify that the contact does not wish to receive emails."
 "axelor-crm";"Lead";"lead-form";"source";"Enables to select the prospect's source for statistical purposes. The source list can be customized in the CRM configuration. "
