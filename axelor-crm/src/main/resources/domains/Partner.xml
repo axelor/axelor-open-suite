@@ -8,7 +8,7 @@
   <entity name="Partner" lang="java">
 
     <string name="partnerSize" title="Size" selection="partner.size.select"/>
-    <integer name="isLeadScoring" title="Lead scoring" selection="orange.rating.icon.select"/>
+    <integer name="leadScoring" title="Lead scoring" selection="gold.rating.icon.select"/>
     <boolean name="isIntegrator" title="Integrator"/>
     <boolean name="isPartner" title="crm.Partner"/>
     <boolean name="isKeyAccount" title="Key account" default="false"/>
