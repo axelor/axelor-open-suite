@@ -21,18 +21,15 @@ import java.util.List;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
-  protected InvoiceService invoiceService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo) {
     this.invoiceTermService = invoiceTermService;
-    this.invoiceService = invoiceService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
   }
@@ -213,10 +210,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setIsCustomized(true);
     originalInvoiceTerm.setIsPaid(false);
     originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmount());
-    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setPercentage(
         invoiceTermService.computeCustomizedPercentage(
             grantedAmount, originalInvoiceTerm.getAmount()));
+    originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setAmountRemaining(grantedAmount);
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);

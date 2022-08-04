@@ -493,7 +493,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
+  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
+      throws AxelorException {
     if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       if (move != null
           && move.getPaymentVoucher() != null

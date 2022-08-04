@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService {
 
   protected CurrencyService currencyService;

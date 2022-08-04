@@ -32,12 +32,14 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
+@RequestScoped
 public class InvoiceToolService {
 
   @CallMethod

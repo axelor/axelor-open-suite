@@ -21,7 +21,9 @@
       <spacer/>
       <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
         grid-view="account-chart-grid" canNew="true" colSpan="3"/>
-      <field name="accountCodeNbrCharSelect" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
+        readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
         readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>

@@ -306,6 +306,18 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkTaxMoveLines(move);
 
       this.validateWellBalancedMove(move);
+
+      if (move.getJournal() != null
+          && move.getJournal().getHasDuplicateDetectionOnOrigin()
+          && moveToolService.checkMoveOriginIsDuplicated(move)) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
+            move.getReference(),
+            move.getPartner() != null ? move.getPartner().getFullName() : "",
+            move.getPeriod().getYear().getName());
+      }
     }
   }
 
@@ -576,19 +588,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     return errors;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException {
-    if (moveList == null) {
-      return;
-    }
-
-    for (Move move : moveList) {
-      move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
-      moveRepository.save(move);
-    }
   }
 
   public void accountingMultiple(Query<Move> moveListQuery) throws AxelorException {

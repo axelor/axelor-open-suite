@@ -1307,12 +1307,33 @@ public interface IExceptionMessage {
   static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
+  static final String MOVE_FUNCTIONAL_ORIGIN_MISSING = /*$$(*/
+      "The functional origin cannot be empty for the move %s" /*)*/;
+
   static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 
   static final String MOVE_15 = /*$$(*/
       "The functional origin cannot be empty for the move %s. Please fill it in." /*)*/;
 
+  static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+      "No partner account was found for company %s." /*)*/;
+
+  /** Accounting cut off service */
+  static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
+      "Accounting cut off generation report :" /*)*/;
+
+  static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
+
+  static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+      "You must select at least one line to validate" /*)*/;
+
   static final String FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE = /*$$(*/
       "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan." /*)*/;
+
+  static final String MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE = /*$$(*/
+      "Watch out, a record with same reference/origin (%s) already exists for the partner %s and the fiscal year %s." /*)*/;
+
+  static final String MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE = /*$$(*/
+      "Watch out, a record with same origin/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific origin/reference." /*)*/;
 }

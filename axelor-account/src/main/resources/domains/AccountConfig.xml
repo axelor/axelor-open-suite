@@ -309,6 +309,9 @@
     <many-to-one ref="com.axelor.apps.account.db.Account" name="resultLossAccount"
       title="Result account (loss)"/>
 
+    <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
+      help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[

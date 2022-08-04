@@ -292,7 +292,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
       partnerName =
-          new String(emailAddress.getPartner().getName().getBytes(), StandardCharsets.ISO_8859_1);
+          new String(
+              emailAddress.getPartner().getSimpleFullName().getBytes(),
+              StandardCharsets.ISO_8859_1);
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";

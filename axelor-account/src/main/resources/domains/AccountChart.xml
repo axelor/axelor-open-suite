@@ -11,8 +11,6 @@
     <string name="countryCode" title="Country code"/>
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"/>
-    <integer name="accountCodeMinNbrCharSelect" title="Account code min. nbr. char"
-      selection="account.account.chart.code.nbr.char.select" required="true"/>
   </entity>
 
 </domain-models>

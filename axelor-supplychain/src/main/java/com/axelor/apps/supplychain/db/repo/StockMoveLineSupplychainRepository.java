@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
@@ -43,7 +44,7 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
       if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
         boolean isPurchase =
             (int) context.get("_accountingCutOffTypeSelect")
-                == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES;
+                == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES;
         boolean ati = (boolean) context.get("_ati");
         boolean recoveredTax = (boolean) context.get("_recoveredTax");
 

@@ -1,0 +1,7 @@
+---
+title: "BANK RECONCILIATION : hilite on bankReconcilationLines "
+type: fix
+description: |
+  Green and red hilite color are reversed on the bank reconciliation lines. 
+  Now : credit (ex: payment received from a customer) appears in green
+        debit (ex: payment to a supplier) appears in red
