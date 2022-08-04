@@ -51,26 +51,23 @@
       <panel name="statusPanel" colSpan="12">
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
           x-order="sequence"/>
-        <panel name="industrySectorPanel" colSpan="10">
-          <field name="industrySector" showTitle="false"
-            showIf="industrySector &amp;&amp; $readonly()">
-            <viewer>
-							<![CDATA[
-								<h4>
-									<span class="label label-default" style="background-color: #0285D8;"> {{ record.name }} </span>
-     							</h4>
-							]]>
+        <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
+          <field name="$viewerTagsLeft" showTitle="false">
+            <viewer depends="industrySector">
+				<![CDATA[
+					<h4>
+						<span class="label label-default" style="background-color: #0285D8;" ng-show="record.industrySector"> {{ record.industrySector.name }} </span>
+					<h4>
+				]]>
             </viewer>
           </field>
-        </panel>
-        <panel name="isConvertedPanel" colSpan="2">
-          <field name="isConverted" showTitle="false" widget="boolean-switch" readonly="true">
-            <viewer>
-							<![CDATA[
-								<h4 class="text-right">
-									<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isConverted" x-translate>Converted</span>
-								<h4>
-							]]>
+          <field name="$viewerTagsRight" showTitle="false">
+            <viewer depends="isConverted">
+				<![CDATA[
+					<h4 class="text-right">
+						<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isConverted" x-translate>Converted</span>
+					<h4>
+				]]>
             </viewer>
           </field>
         </panel>
@@ -149,8 +146,8 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="webSite" colSpan="6" placeholder="http://www.url.com" widget="url"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+          <field name="webSite" colSpan="6" placehosetLeadStatuslder="http://www.url.com"
+            widget="url" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
           <field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
           <field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
         </panel>
@@ -211,8 +208,10 @@
     <panel name="actionsPanel" sidebar="true">
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
-      <button name="convertBtn" title="Convert" hideIf="!id" icon="fa-exchange"
-        onClick="save,action-lead-view-convert-lead"/>
+      <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
+        icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
+      <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
+        onClick="action-lead-view-show-partner"/>
     </panel>
 
     <panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
@@ -229,7 +228,7 @@
     <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
       <field name="leadScoring" widget="ImageSelect" x-labels="false"/>
       <field name="leadSize"/>
-      <field name="keyAccount"/>
+      <field name="isKeyAccount"/>
       <field name="source" canEdit="false" colSpan="6" form-view="source-form"
         grid-view="source-grid" canNew="true"/>
       <field name="isNurturing"/>
@@ -334,6 +333,7 @@
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <field name="leadStatus" expr="eval: __repo__(LeadStatus).getDefaultStatus()"/>
   </action-record>
 
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
@@ -353,6 +353,12 @@
     <view type="form" name="convert-lead-wizard-form"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
+  </action-view>
+
+  <action-view name="action-lead-view-show-partner" title="Partner"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="form" name="partner-form"/>
+    <context name="_showRecord" expr="eval: partner.id"/>
   </action-view>
 
   <!-- CREATE CRM OBJECT FROM LEAD -->

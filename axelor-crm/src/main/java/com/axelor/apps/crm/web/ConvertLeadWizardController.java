@@ -29,9 +29,11 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.db.repo.OpportunityTypeRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
+import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -75,6 +77,11 @@ public class ConvertLeadWizardController {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
+      }
+
+      if (context.containsKey("isCreateOpportunity")
+          && (Boolean) context.get("isCreateOpportunity")) {
+        this.createOpportunity(context, lead.getPartner());
       }
 
       openPartner(response, lead);
@@ -212,6 +219,9 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
+    response.setAttr("isKeyAccount", "value", lead.getIsKeyAccount());
+    response.setAttr("leadScoring", "value", lead.getLeadScoring());
+    response.setAttr("partnerCategory", "value", lead.getType());
     if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
       if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
           == CompanyRepository.CATEGORY_CUSTOMER) {
@@ -266,6 +276,22 @@ public class ConvertLeadWizardController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setOpportunityDeafults(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = findLead(request);
+      response.setAttr("source", "value", lead.getSource());
+      response.setAttr("user", "value", lead.getUser());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void createOpportunity(Context context, Partner partner) throws AxelorException {
+    Beans.get(ConvertWizardOpportunityService.class)
+        .createOpportunity((Map<String, Object>) context.get("opportunity"), partner);
   }
 
   protected Lead findLead(ActionRequest request) throws AxelorException {

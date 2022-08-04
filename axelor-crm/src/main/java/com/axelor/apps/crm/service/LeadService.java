@@ -19,6 +19,7 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -92,4 +93,6 @@ public interface LeadService {
   public void loseLead(Lead lead, LostReason lostReason) throws AxelorException;
 
   public String processFullName(String enterpriseName, String name, String firstName);
+
+  public LeadStatus getDefaultLeadStatus();
 }

@@ -77,7 +77,7 @@
     <date name="nextScheduledEventDate" title="Next scheduled event date"/>
     <integer name="leadScoring" title="Lead scoring" selection="gold.rating.icon.select"/>
     <integer name="leadSize" title="Size" selection="crm.lead.size.select"/>
-    <boolean name="keyAccount" title="Key account"/>
+    <boolean name="isKeyAccount" title="Key account"/>
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type" title="Type"/>
     <many-to-many ref="com.axelor.apps.crm.db.LeadTag" name="leadTagSet" title="Tags"/>
 

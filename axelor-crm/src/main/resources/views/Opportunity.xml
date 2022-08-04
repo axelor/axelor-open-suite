@@ -411,6 +411,8 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <field name="periodicitySelect" expr="eval: 1"
       if="__config__.app.getApp('crm').isManageRecurrent"/>
+    <field name="opportunityStatus"
+      expr="eval: __repo__(OpportunityStatus).getDefaultStatus()"/>
   </action-record>
 
   <action-record name="action-opportunity-record-currency"

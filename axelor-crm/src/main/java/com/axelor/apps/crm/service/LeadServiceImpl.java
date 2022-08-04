@@ -50,17 +50,31 @@ import java.util.Map;
 
 public class LeadServiceImpl implements LeadService {
 
-  @Inject protected SequenceService sequenceService;
+  protected SequenceService sequenceService;
+  protected UserService userService;
+  protected PartnerRepository partnerRepo;
+  protected LeadRepository leadRepo;
+  protected EventRepository eventRepo;
+  protected MultiRelatedRepository multiRelatedRepository;
+  protected LeadStatusRepository leadStatusRepo;
 
-  @Inject protected UserService userService;
-
-  @Inject protected PartnerRepository partnerRepo;
-
-  @Inject protected LeadRepository leadRepo;
-
-  @Inject protected EventRepository eventRepo;
-
-  @Inject private MultiRelatedRepository multiRelatedRepository;
+  @Inject
+  public LeadServiceImpl(
+      SequenceService sequenceService,
+      UserService userService,
+      PartnerRepository partnerRepo,
+      LeadRepository leadRepo,
+      EventRepository eventRepo,
+      MultiRelatedRepository multiRelatedRepository,
+      LeadStatusRepository leadStatusRepo) {
+    this.sequenceService = sequenceService;
+    this.userService = userService;
+    this.partnerRepo = partnerRepo;
+    this.leadRepo = leadRepo;
+    this.eventRepo = eventRepo;
+    this.multiRelatedRepository = multiRelatedRepository;
+    this.leadStatusRepo = leadStatusRepo;
+  }
 
   /**
    * Convert lead into a partner
@@ -123,7 +137,7 @@ public class LeadServiceImpl implements LeadService {
     }
     lead.setIsConverted(true);
     lead.setLeadStatus(
-        Beans.get(LeadStatusRepository.class).all().filter("self.isLost = ?", true).fetchOne());
+        Beans.get(LeadStatusRepository.class).all().filter("self.isClosed = ?", true).fetchOne());
     return leadRepo.save(lead);
   }
 
@@ -306,5 +320,10 @@ public class LeadServiceImpl implements LeadService {
     else if (!Strings.isNullOrEmpty(name)) fullName.append(name);
 
     return fullName.toString();
+  }
+
+  @Override
+  public LeadStatus getDefaultLeadStatus() {
+    return leadStatusRepo.getDefaultStatus();
   }
 }

@@ -5,7 +5,6 @@
 "axelor-crm";"EventReminder";"event-reminder-form";"assignToSelect";"Permet de choisir si le rappel sera envoyé seulement à l'utilisateur actif,  à l'utilisateur actif et les invités de l'évènement, ou à tout le monde. "
 "axelor-crm";"EventReminder";"event-reminder-form";"duration";"La durée va dépendre du type de durée choisie et se détermine à partir de la date de début. Par exemple, si vous avez choisi comme type de durée ""Minutes"", et que vous voulez recevoir un rappel 15 minutes avant le début de l'évènement, vous devez indiquer 15 dans durée."
 "axelor-crm";"EventReminder";"event-reminder-form";"durationTypeSelect";"Permet de choisir le type de durée souhaité pour le rappel (minutes, heures, jours, semaines). Si vous souhaitez un rappel 2 heures avant le début de l'évènement, vous devez choisir ""heures"", et indiquer ""2"" dans le champs ""Durée""."
-"axelor-crm";"Lead";"lead-form";"statusSelect";"Permet de renseigner l'avancement de la piste dans le processus de réalisation (Nouveau / Assigné / En cours / Converti / Recyclé / Perdu )"
 "axelor-crm";"Lead";"lead-form";"isDoNotCall";"Case à cocher permettant de préciser que le contact ne souhaite pas être contacté par téléphone."
 "axelor-crm";"Lead";"lead-form";"isDoNotSendEmail";"Case à cocher permettant de préciser que le contact ne souhaite pas recevoir d'emails."
 "axelor-crm";"Lead";"lead-form";"source";"Permet de sélectionner la provenance du prospect à des fins statistiques. La liste de provenance est paramétrable dans les configurations du CRM."
