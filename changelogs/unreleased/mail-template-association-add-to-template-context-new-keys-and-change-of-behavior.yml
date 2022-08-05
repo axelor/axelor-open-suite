@@ -1,8 +1,0 @@
----
-title: "MAIL TEMPLATE ASSOCIATION: fix template keys issues when using custom template for mail notifications on comments"
-type: fix
-description: |
-  In the custom mail template used for mail notifications sent when commenting on a form, following changes were made:
-  - Fix variable $ccRecipients$ so it is filled with all followers.
-  - Add variable $toRecipient$ which is currently the same as $ccRecipients$
-  - Add variable $commentCreator$ to only get the author of the comment.
