@@ -116,9 +116,6 @@ var temp = {};]]></method>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">2</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -343,35 +340,19 @@ if (row["rule_type"] == 2) {
 	
 }
 
-if (rulesn1[row["rule_code"]] > rules[row["rule_code"]]) {
-	deltan1[row["rule_code"]] = rulesn1[row["rule_code"]] - rules[row["rule_code"]];
-} else {
-	deltan1[row["rule_code"]] = rules[row["rule_code"]] - rulesn1[row["rule_code"]]
-}
+deltan1[row["rule_code"]] = rules[row["rule_code"]] - rulesn1[row["rule_code"]];
+deltan2[row["rule_code"]] = rules[row["rule_code"]] - rulesn2[row["rule_code"]];
 
-if (rulesn2[row["rule_code"]] > rules[row["rule_code"]]) {
-	deltan2[row["rule_code"]] = rulesn2[row["rule_code"]] - rules[row["rule_code"]];
-} else {
-	deltan2[row["rule_code"]] = rules[row["rule_code"]] - rulesn2[row["rule_code"]]
-}
-
-if (rulesn1[row["rule_code"]] == 0) {
+if (rules[row["rule_code"]] == 0) {
 	
-	if (rules[row["rule_code"]] == 0) {
+	if (rulesn1[row["rule_code"]] == 0) {
 		deltaPercentagen1[row["rule_code"]] = 0;
 	}
 	else {
 		deltaPercentagen1[row["rule_code"]] = 100;
 	}
-}
-else {
-	deltaPercentagen1[row["rule_code"]] = (rulesn1[row["rule_code"]] - rules[row["rule_code"]])/rulesn1[row["rule_code"]] * 100;
-	
-}
-
-if (rulesn2[row["rule_code"]] == 0) {
-	
-	if (rules[row["rule_code"]] == 0) {
+		
+	if (rulesn2[row["rule_code"]] == 0) {
 		deltaPercentagen2[row["rule_code"]] = 0;
 	}
 	else {
@@ -379,8 +360,8 @@ if (rulesn2[row["rule_code"]] == 0) {
 	}
 }
 else {
-	deltaPercentagen2[row["rule_code"]] = (rulesn2[row["rule_code"]] - rules[row["rule_code"]])/rulesn2[row["rule_code"]] * 100;
-	
+	deltaPercentagen1[row["rule_code"]] = (rules[row["rule_code"]] - rulesn1[row["rule_code"]])/rules[row["rule_code"]] * 100;
+	deltaPercentagen2[row["rule_code"]] = (rules[row["rule_code"]] - rulesn2[row["rule_code"]])/rules[row["rule_code"]] * 100;
 }
 ]]></method>
             <property name="dataSource">Data Source</property>
