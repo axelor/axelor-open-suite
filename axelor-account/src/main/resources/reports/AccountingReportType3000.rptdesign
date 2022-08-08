@@ -2156,7 +2156,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <text id="5571">
                                         <property name="fontSize">9pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_to"], -1)</VALUE-OF>  - <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>   - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5574">
@@ -2167,7 +2167,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <text id="5585">
                                         <property name="fontSize">9pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_to"], -1)</VALUE-OF>  - <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF> (%)]]></text-property>
+                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>   - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF> (%)]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5546">
@@ -2189,7 +2189,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <text id="5572">
                                         <property name="fontSize">9pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_to"], -2)</VALUE-OF>  - <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[DELTA  <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>  - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5579">
@@ -2200,7 +2200,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <text id="5586">
                                         <property name="fontSize">9pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_to"], -2)</VALUE-OF>  - <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF> (%)]]></text-property>
+                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>  - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF> (%)]]></text-property>
                                     </text>
                                 </cell>
                             </row>
