@@ -625,6 +625,7 @@
     model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency"/>
     <field name="currencyCode" expr="eval: partner?.currency?.code"/>
+    <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
   </action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
