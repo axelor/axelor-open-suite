@@ -4,114 +4,157 @@ import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.ws.rs.ForbiddenException;
 
 public class SecurityCheck {
 
   protected List<Class<? extends Model>> listCreate;
-  protected List<Class<? extends Model>> listRead;
-  protected List<Class<? extends Model>> listWrite;
-  protected List<Class<? extends Model>> listRemove;
-  protected List<Class<? extends Model>> listExport;
+  protected Map<Class<? extends Model>, List<Long>> mapRead;
+  protected Map<Class<? extends Model>, List<Long>> mapWrite;
+  protected Map<Class<? extends Model>, List<Long>> mapRemove;
+  protected Map<Class<? extends Model>, List<Long>> mapExport;
 
   protected JpaSecurity jpaSecurity;
 
   public SecurityCheck() {
     this.listCreate = new ArrayList<>();
-    this.listRead = new ArrayList<>();
-    this.listWrite = new ArrayList<>();
-    this.listRemove = new ArrayList<>();
-    this.listExport = new ArrayList<>();
+    this.mapRead = new HashMap<>();
+    this.mapWrite = new HashMap<>();
+    this.mapRemove = new HashMap<>();
+    this.mapExport = new HashMap<>();
     this.jpaSecurity = Beans.get(JpaSecurity.class);
   }
 
   public void check() {
-    Consumer<Class<? extends Model>> handlerUnauthorized =
-        object -> {
-          throw new ForbiddenException("You can't access " + object + " for this action.");
+    Consumer<? super Map.Entry<Class<? extends Model>, List<Long>>> handlerUnauthorized =
+        entry -> {
+          throw new ForbiddenException("You can't access " + entry.getKey() + " for this action.");
+        };
+
+    Consumer<Class<? extends Model>> handlerUnauthorizedForCreateAccess =
+        klass -> {
+          throw new ForbiddenException("You can't access " + klass + " for this action.");
         };
 
     listCreate.stream()
-        .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_CREATE, object))
+        .filter(klass -> !jpaSecurity.isPermitted(JpaSecurity.CAN_CREATE, klass))
+        .forEach(handlerUnauthorizedForCreateAccess);
+    mapRead.entrySet().stream()
+        .filter(
+            entry ->
+                !jpaSecurity.isPermitted(
+                    JpaSecurity.CAN_READ, entry.getKey(), entry.getValue().toArray(new Long[0])))
         .forEach(handlerUnauthorized);
-    listRead.stream()
-        .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_READ, object))
+    mapWrite.entrySet().stream()
+        .filter(
+            entry ->
+                !jpaSecurity.isPermitted(
+                    JpaSecurity.CAN_WRITE, entry.getKey(), entry.getValue().toArray(new Long[0])))
         .forEach(handlerUnauthorized);
-    listWrite.stream()
-        .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_WRITE, object))
+    mapRemove.entrySet().stream()
+        .filter(
+            entry ->
+                !jpaSecurity.isPermitted(
+                    JpaSecurity.CAN_REMOVE, entry.getKey(), entry.getValue().toArray(new Long[0])))
         .forEach(handlerUnauthorized);
-    listRemove.stream()
-        .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_REMOVE, object))
-        .forEach(handlerUnauthorized);
-    listExport.stream()
-        .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_EXPORT, object))
+    mapExport.entrySet().stream()
+        .filter(
+            entry ->
+                !jpaSecurity.isPermitted(
+                    JpaSecurity.CAN_EXPORT, entry.getKey(), entry.getValue().toArray(new Long[0])))
         .forEach(handlerUnauthorized);
   }
 
-  public SecurityCheck createAccess(Class<? extends Model> object) {
+  public SecurityCheck createAccess(Class<? extends Model> klass) {
     if (this.listCreate == null) {
       this.listCreate = new ArrayList<>();
     }
-    this.listCreate.add(object);
+    this.listCreate.add(klass);
     return this;
   }
 
-  public SecurityCheck createAccess(List<Class<? extends Model>> objects) {
-    this.listCreate = objects;
-    return this;
-  }
-
-  public SecurityCheck readAccess(Class<? extends Model> object) {
-    if (this.listRead == null) {
-      this.listRead = new ArrayList<>();
+  public SecurityCheck createAccess(List<Class<? extends Model>> klassList) {
+    if (this.listCreate == null) {
+      this.listCreate = new ArrayList<>();
     }
-    this.listRead.add(object);
+    this.listCreate.addAll(klassList);
     return this;
   }
 
-  public SecurityCheck readAccess(List<Class<? extends Model>> objects) {
-    this.listRead = objects;
-    return this;
-  }
-
-  public SecurityCheck writeAccess(Class<? extends Model> object) {
-    if (this.listWrite == null) {
-      this.listWrite = new ArrayList<>();
+  public SecurityCheck readAccess(Class<? extends Model> klass, Long... ids) {
+    if (this.mapRead == null) {
+      this.mapRead = new HashMap<>();
     }
-    this.listWrite.add(object);
+    this.mapRead.put(klass, Arrays.asList(ids));
     return this;
   }
 
-  public SecurityCheck writeAccess(List<Class<? extends Model>> objects) {
-    this.listWrite = objects;
-    return this;
-  }
-
-  public SecurityCheck removeAccess(Class<? extends Model> object) {
-    if (this.listRemove == null) {
-      this.listRemove = new ArrayList<>();
+  public SecurityCheck readAccess(List<Class<? extends Model>> klassList) {
+    if (this.mapRead == null) {
+      this.mapRead = new HashMap<>();
     }
-    this.listRemove.add(object);
-    return this;
-  }
-
-  public SecurityCheck removeAccess(List<Class<? extends Model>> objects) {
-    this.listRemove = objects;
-    return this;
-  }
-
-  public SecurityCheck exportAccess(Class<? extends Model> object) {
-    if (this.listExport == null) {
-      this.listExport = new ArrayList<>();
+    for (Class<? extends Model> klass : klassList) {
+      this.mapRead.put(klass, new ArrayList<>());
     }
-    this.listExport.add(object);
     return this;
   }
 
-  public SecurityCheck exportAccess(List<Class<? extends Model>> objects) {
-    this.listExport = objects;
+  public SecurityCheck writeAccess(Class<? extends Model> klass, Long... ids) {
+    if (this.mapWrite == null) {
+      this.mapWrite = new HashMap<>();
+    }
+    this.mapWrite.put(klass, Arrays.asList(ids));
+    return this;
+  }
+
+  public SecurityCheck writeAccess(List<Class<? extends Model>> klassList) {
+    if (this.mapWrite == null) {
+      this.mapWrite = new HashMap<>();
+    }
+    for (Class<? extends Model> klass : klassList) {
+      this.mapWrite.put(klass, new ArrayList<>());
+    }
+    return this;
+  }
+
+  public SecurityCheck removeAccess(Class<? extends Model> klass, Long... ids) {
+    if (this.mapRemove == null) {
+      this.mapRemove = new HashMap<>();
+    }
+    this.mapRemove.put(klass, Arrays.asList(ids));
+    return this;
+  }
+
+  public SecurityCheck removeAccess(List<Class<? extends Model>> klassList) {
+    if (this.mapRemove == null) {
+      this.mapRemove = new HashMap<>();
+    }
+    for (Class<? extends Model> klass : klassList) {
+      this.mapRemove.put(klass, new ArrayList<>());
+    }
+    return this;
+  }
+
+  public SecurityCheck exportAccess(Class<? extends Model> klass, Long... ids) {
+    if (this.mapExport == null) {
+      this.mapExport = new HashMap<>();
+    }
+    this.mapExport.put(klass, Arrays.asList(ids));
+    return this;
+  }
+
+  public SecurityCheck exportAccess(List<Class<? extends Model>> klassList) {
+    if (this.mapExport == null) {
+      this.mapExport = new HashMap<>();
+    }
+    for (Class<? extends Model> klass : klassList) {
+      this.mapExport.put(klass, new ArrayList<>());
+    }
     return this;
   }
 }
