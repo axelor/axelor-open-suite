@@ -5,7 +5,6 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,9 +12,12 @@ import java.util.List;
 public abstract class EmployeeComputeDaysLeaveService {
 
   protected EmployeeService employeeService;
+  protected LeaveRequestRepository leaveRequestRepository;
 
-  public EmployeeComputeDaysLeaveService(EmployeeService employeeService) {
+  protected EmployeeComputeDaysLeaveService(
+      EmployeeService employeeService, LeaveRequestRepository leaveRequestRepository) {
     this.employeeService = employeeService;
+    this.leaveRequestRepository = leaveRequestRepository;
   }
 
   public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
@@ -38,7 +40,7 @@ public abstract class EmployeeComputeDaysLeaveService {
 
   protected List<LeaveRequest> getEmployeeDaysLeave(
       Employee employee, LocalDate fromDate, LocalDate toDate) {
-    return Beans.get(LeaveRequestRepository.class)
+    return leaveRequestRepository
         .all()
         .filter(
             "self.user = ?1 AND self.duration > 0"

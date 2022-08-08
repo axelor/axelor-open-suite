@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.exception.AxelorException;
@@ -13,8 +14,10 @@ public class EmployeeComputeDaysLeaveBonusService extends EmployeeComputeDaysLea
 
   @Inject
   public EmployeeComputeDaysLeaveBonusService(
-      EmployeeService employeeService, LeaveService leaveService) {
-    super(employeeService);
+      EmployeeService employeeService,
+      LeaveRequestRepository leaveRequestRepository,
+      LeaveService leaveService) {
+    super(employeeService, leaveRequestRepository);
     this.leaveService = leaveService;
   }
 

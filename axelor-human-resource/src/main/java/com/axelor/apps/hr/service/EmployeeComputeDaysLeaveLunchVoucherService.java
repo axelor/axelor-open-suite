@@ -14,11 +14,18 @@ public class EmployeeComputeDaysLeaveLunchVoucherService extends EmployeeCompute
 
   @Inject
   public EmployeeComputeDaysLeaveLunchVoucherService(
-      EmployeeService employeeService, LeaveService leaveService) {
-    super(employeeService);
+      EmployeeService employeeService,
+      LeaveRequestRepository leaveRequestRepository,
+      LeaveService leaveService) {
+    super(employeeService, leaveRequestRepository);
     this.leaveService = leaveService;
   }
 
+  /**
+   * To compute duration for lunch vouchers, we need to count half-day leave as full days. Taking a
+   * leave for a half-day will result in the employee not having the right to a lunch voucher for
+   * this day.
+   */
   @Override
   protected BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
