@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -87,6 +88,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
@@ -108,7 +110,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
-  protected AppBaseService appBaseService;
   protected TaxService taxService;
 
   private final int RETURN_SCALE = 2;
@@ -126,7 +127,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      AppBaseService appBaseService,
       TaxService taxService) {
 
     this.validateFactory = validateFactory;
@@ -139,7 +139,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
-    this.appBaseService = appBaseService;
     this.taxService = taxService;
   }
 
@@ -1110,17 +1109,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .size();
   }
 
-  @Override
-  public List<Long> getInvoiceLineIds(Invoice invoice) {
-    List<Long> invoiceLineListIds = new ArrayList<Long>();
-    if (invoice != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLineListIds.add(invoiceLine.getId());
-      }
-    }
-    return invoiceLineListIds;
-  }
-
   public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
       throws AxelorException {
     return calculateFinancialDiscountAmountUnscaled(invoice, amount)
@@ -1137,25 +1125,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Company company = invoice.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    BigDecimal baseAmountByRate =
-        baseAmount.multiply(
-            invoice
-                .getFinancialDiscountRate()
-                .divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
     if (invoice.getFinancialDiscount().getDiscountBaseSelect()
         == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
-      return baseAmountByRate.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+      return baseAmount.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_VAT
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
         && accountConfig.getPurchFinancialDiscountTax() != null) {
 
-      return baseAmountByRate.divide(
+      return baseAmount.divide(
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
-                  appBaseService.getTodayDate(company))
+                  appAccountService.getTodayDate(company))
               .getValue()
               .add(new BigDecimal(1)),
           CALCULATION_SCALE,
@@ -1165,10 +1148,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
         && accountConfig.getSaleFinancialDiscountTax() != null) {
-      return baseAmountByRate.divide(
+      return baseAmount.divide(
           taxService
               .getTaxLine(
-                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+                  accountConfig.getSaleFinancialDiscountTax(),
+                  appAccountService.getTodayDate(company))
               .getValue()
               .add(new BigDecimal(1)),
           CALCULATION_SCALE,
@@ -1205,7 +1189,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
-                  appBaseService.getTodayDate(company))
+                  appAccountService.getTodayDate(company))
               .getValue());
     } else if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
@@ -1213,18 +1197,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return financialDiscountAmount.multiply(
           taxService
               .getTaxLine(
-                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+                  accountConfig.getSaleFinancialDiscountTax(),
+                  appAccountService.getTodayDate(company))
               .getValue());
     }
     return BigDecimal.ZERO;
   }
 
   protected BigDecimal computeBaseAmount(Invoice invoice, BigDecimal amount) {
+    BigDecimal ratioPaidRemaining =
+        invoice
+            .getAmountRemaining()
+            .divide(invoice.getInTaxTotal(), CALCULATION_SCALE, RoundingMode.HALF_UP);
+    BigDecimal baseAmount = invoice.getFinancialDiscountTotalAmount().multiply(ratioPaidRemaining);
+
     if (amount.signum() > 0) {
-      return amount;
-    } else {
-      return invoice.getAmountRemaining();
+      BigDecimal remainingAmount =
+          invoice.getRemainingAmountAfterFinDiscount().multiply(ratioPaidRemaining);
+      baseAmount =
+          baseAmount
+              .multiply(amount)
+              .divide(remainingAmount, CALCULATION_SCALE, RoundingMode.HALF_UP);
     }
+
+    return baseAmount;
   }
 
   @Override
@@ -1250,11 +1246,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   public boolean applyFinancialDiscount(Invoice invoice) {
     return (invoice != null
+        && invoice.getFinancialDiscount() != null
         && invoice.getFinancialDiscountDeadlineDate() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && invoice
                 .getFinancialDiscountDeadlineDate()
-                .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
+                .compareTo(appAccountService.getTodayDate(invoice.getCompany()))
             >= 0);
   }
 
@@ -1292,16 +1289,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoicePayment
             .getAmount()
             .add(calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()))
-            .longValue()
-        > invoice.getAmountRemaining().longValue()) {
+            .compareTo(invoice.getAmountRemaining())
+        > 0) {
       invoicePayment.setAmount(
           calculateAmountRemainingInPayment(
-              invoice, invoicePayment.getApplyFinancialDiscount(), new BigDecimal(0)));
-    } else {
-      invoicePayment =
-          changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
+              invoice, invoicePayment.getApplyFinancialDiscount(), BigDecimal.ZERO));
     }
-    return invoicePayment;
+
+    return changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
   }
 
   public InvoicePayment changeFinancialDiscountAmounts(
@@ -1336,5 +1331,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
             .fetchOne()
         != null;
+  }
+
+  public LocalDate getFinancialDiscountDeadlineDate(Invoice invoice) {
+    int discountDelay =
+        Optional.of(invoice)
+            .map(Invoice::getFinancialDiscount)
+            .map(FinancialDiscount::getDiscountDelay)
+            .orElse(0);
+
+    LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
+
+    return deadlineDate.isBefore(invoice.getDueDate()) ? invoice.getDueDate() : deadlineDate;
   }
 }

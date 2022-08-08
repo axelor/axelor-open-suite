@@ -296,7 +296,7 @@
 
     <panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
       <button name="draftBtn" title="Draft" showIf="statusSelect == 5"
-        onClick="action-purchase-order-record-draft,save"/>
+        onClick="save,action-purchase-order-method-draft,save"/>
       <button name="requestedBtn" title="Requested" showIf="statusSelect == 1"
         onClick="save,action-purchase-order-method-requested"/>
       <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
@@ -557,7 +557,7 @@
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-in-ati"/>
     <action name="action-purchase-order-attrs-in-ati"/>
-    <action name="action-purchase-order-dispaly-price"/>
+    <action name="action-purchase-order-record-display-price"/>
     <action name="action-contract-purchase-order-record-new"
       if="__config__.app.isApp('contract')"/>
     <action name="action-purchase-order-record-payment-mode"/>
@@ -587,6 +587,7 @@
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-update-info-company"/>
+    <action name="action-purchase-order-record-display-price"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
@@ -666,7 +667,7 @@
       if="company"/>
   </action-record>
 
-  <action-record name="action-purchase-order-dispaly-price"
+  <action-record name="action-purchase-order-record-display-price"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="displayPriceOnQuotationRequest"
       expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"
@@ -751,11 +752,6 @@
     <field name="validatedByUser" expr="eval:__user__"/>
   </action-record>
 
-  <action-record name="action-purchase-order-record-draft"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="statusSelect" expr="1"/>
-  </action-record>
-
   <action-record name="action-purchase-order-record-empty-freight-carrier-mode"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="freightCarrierMode" expr="eval:null"/>
@@ -766,11 +762,6 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="requestPurchaseOrder"/>
   </action-method>
-
-  <action-record name="action-purchase-order-record-cancel"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="statusSelect" expr="5"/>
-  </action-record>
 
   <action-record name="action-record-po-contact-partner-change"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -808,6 +799,11 @@
 
   <action-method name="action-purchase-order-method-cancel">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-draft">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="draftPurchaseOrder"/>
   </action-method>
 
   <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
@@ -857,7 +853,7 @@
     <view name="stock-move-form" type="form"/>
     <domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId
       = :purchaseOrder</domain>
-    <context name="purchaseOrder" expr="eval: __self__.id"/>
+    <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
   <action-validate name="action-purchase-order-validate-stock-location">

@@ -1,6 +1,0 @@
----
-title: "DeclarationOfExchanges : Add new column 'Pays origine' in csv export."
-type: feature
-description: |
-  add a new column "Pays origine" filled with the country alpha2Code from the adress linked to the
-  "stockMove.fromStockLocation" in the stock move lines.

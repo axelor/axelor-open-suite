@@ -122,7 +122,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
-    this.currencyService = new CurrencyService(this.today);
+    this.currencyService = new CurrencyService(this.appBaseService, this.today);
   }
 
   protected InvoiceLineGenerator(

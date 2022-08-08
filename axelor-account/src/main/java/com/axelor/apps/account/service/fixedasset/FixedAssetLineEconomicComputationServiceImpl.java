@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -33,15 +32,15 @@ import java.util.List;
 public class FixedAssetLineEconomicComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
 
-  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDateService fixedAssetDateService;
 
   @Inject
   public FixedAssetLineEconomicComputationServiceImpl(
-      AnalyticFixedAssetService analyticFixedAssetService,
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService) {
     super(fixedAssetFailOverControlService, appBaseService);
-    this.analyticFixedAssetService = analyticFixedAssetService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
@@ -50,7 +49,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
       return fixedAsset.getFailoverDate();
     }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return analyticFixedAssetService.computeFirstDepreciationDate(
+      return fixedAssetDateService.computeLastDayOfPeriodicity(
           fixedAsset, fixedAsset.getFirstServiceDate());
     }
     return fixedAsset.getFirstDepreciationDate();
@@ -75,7 +74,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return analyticFixedAssetService.computeFirstDepreciationDate(
+      return fixedAssetDateService.computeLastDayOfPeriodicity(
           fixedAsset, fixedAsset.getFirstServiceDate());
     }
     return fixedAsset.getFirstDepreciationDate();

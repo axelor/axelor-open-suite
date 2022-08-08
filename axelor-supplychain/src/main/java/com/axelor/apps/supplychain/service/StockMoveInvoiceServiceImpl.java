@@ -65,16 +65,16 @@ import java.util.stream.Collectors;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-  private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
-  private InvoiceRepository invoiceRepository;
-  private SaleOrderRepository saleOrderRepo;
-  private PurchaseOrderRepository purchaseOrderRepo;
-  private StockMoveLineRepository stockMoveLineRepository;
-  private InvoiceLineRepository invoiceLineRepository;
-  private SupplyChainConfigService supplyChainConfigService;
-  private AppSupplychainService appSupplychainService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected InvoiceRepository invoiceRepository;
+  protected SaleOrderRepository saleOrderRepo;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -181,6 +181,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+      invoice.setIncoterm(saleOrder.getIncoterm());
 
       // fill default advance payment invoice
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -531,7 +532,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
    * @return
    * @throws AxelorException
    */
-  private List<StockMoveLine> getConsolidatedStockMoveLineList(
+  protected List<StockMoveLine> getConsolidatedStockMoveLineList(
       List<StockMoveLine> stockMoveLineList) throws AxelorException {
 
     Map<SaleOrderLine, List<StockMoveLine>> stockMoveLineSaleMap = new LinkedHashMap<>();

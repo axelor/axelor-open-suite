@@ -50,6 +50,8 @@ public interface IExceptionMessage {
       "The fiscal position must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_TAX_NUMBER = /*$$(*/
       "The tax number must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
+      "List of sale orders to merge is empty" /*)*/;
 
   static final String SALE_ORDER_PRINT = /*$$(*/ "Please select the sale order(s) to print." /*)*/;
   static final String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
@@ -88,4 +90,15 @@ public interface IExceptionMessage {
 
   public static final String SALE_ORDER_LINE_PRICING_NOT_APPLIED = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
+
+  /** Sale Order Workflow Service * */
+  static final String SALE_ORDER_FINALIZE_QUOTATION_WRONG_STATUS = /*$$(*/
+      "Can only finalize a drafted quotation." /*)*/;
+
+  static final String SALE_ORDER_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm a finalized quotation." /*)*/;
+  static final String SALE_ORDER_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only complete a confirmed sale order." /*)*/;
+  static final String SALE_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a drafted or finalized sale order." /*)*/;
 }

@@ -1,3 +1,0 @@
----
-title: "Purchase order : Reports generated from a purchase order now display specific notes based on the purchase's lines' tax equivalences. The tax equivalences are determined from the fiscal position of the order. THis behaviour was already present on sale orders and invoices and is now also available for purchase orders."
-type: feature

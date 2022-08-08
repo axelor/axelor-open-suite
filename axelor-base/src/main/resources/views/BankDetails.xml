@@ -160,6 +160,8 @@
 
   <action-group name="action-group-account-bank-details-form-onnew">
     <action name="action-method_bank-details-validate-iban"/>
+    <action name="action-bank-details-record-set-company"
+      if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
     <action name="action-set-default-partner"/>
     <action name="action-set-default-bank"/>
     <action name="action-bank-details-attrs-code"/>
@@ -195,6 +197,11 @@
     <field name="ownerName"
       if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
       expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''"/>
+  </action-record>
+
+  <action-record name="action-bank-details-record-set-company"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="company" expr="eval: __parent__"/>
   </action-record>
 
   <action-record name="action-set-default-bank"

@@ -20,7 +20,7 @@
 
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
-      selection="base.app.base.map.api.select" default="1"/>
+      selection="base.app.base.map.api.select" default="2"/>
 
     <!-- Routing service API for Open Street Map> -->
     <integer name="osmRoutingServiceApiSelect"

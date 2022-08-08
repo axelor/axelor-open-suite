@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -41,6 +42,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -53,6 +55,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigRepository accountConfigRepository;
   protected CurrencyService currencyService;
+  protected AppAccountService appAccountService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -61,12 +64,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
       InvoicePaymentRepository invoicePaymentRepo,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      AppAccountService appAccountService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.currencyService = currencyService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -222,5 +227,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
           invoicePayment.getInvoice().getInvoiceId());
     }
+  }
+
+  @Override
+  public boolean applyFinancialDiscount(InvoicePayment invoicePayment) {
+    LocalDate deadLineDate = invoicePayment.getFinancialDiscountDeadlineDate();
+    return (invoicePayment != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()
+        && deadLineDate != null
+        && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
   }
 }

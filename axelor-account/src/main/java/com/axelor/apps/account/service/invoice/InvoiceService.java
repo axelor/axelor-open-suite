@@ -327,9 +327,6 @@ public interface InvoiceService {
 
   public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
 
-  @CallMethod
-  public List<Long> getInvoiceLineIds(Invoice invoice);
-
   public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
       throws AxelorException;
 
@@ -353,4 +350,7 @@ public interface InvoiceService {
 
   public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
 }

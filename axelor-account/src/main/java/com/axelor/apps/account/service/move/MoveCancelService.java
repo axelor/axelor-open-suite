@@ -78,10 +78,7 @@ public class MoveCancelService {
 
     try {
 
-      if (move.getStatusSelect() == MoveRepository.STATUS_NEW
-          || accountConfigService
-              .getAccountConfig(move.getCompany())
-              .getAllowRemovalValidatedMove()) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
         moveRepository.remove(move);
       } else {
         move.setStatusSelect(MoveRepository.STATUS_CANCELED);

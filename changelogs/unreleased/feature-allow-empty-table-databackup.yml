@@ -1,5 +1,0 @@
----
-title: "DataBackup : allow to create backup file even if no record exist"
-type: feature
-description: |
-  Add boolean field "Generate csv file for empty tables" to manage whether to allow empty table backup.

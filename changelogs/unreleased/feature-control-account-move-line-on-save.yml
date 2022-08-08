@@ -1,4 +1,0 @@
-title: "MoveLine: Avoiding saving or validating a moveLine if account not allowed"
-type: Fix
-description: |
-  "When saving a moveLine, added a control on accounting account that checks if the account is allowed in the move's journal."

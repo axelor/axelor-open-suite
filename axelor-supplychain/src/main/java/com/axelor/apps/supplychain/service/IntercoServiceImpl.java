@@ -49,6 +49,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -66,6 +67,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +78,14 @@ import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
 
+  protected PurchaseConfigService purchaseConfigService;
+
   protected static int DEFAULT_INVOICE_COPY = 1;
+
+  @Inject
+  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+    this.purchaseConfigService = purchaseConfigService;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -170,6 +179,10 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+    purchaseOrder.setDisplayPriceOnQuotationRequest(
+        purchaseConfigService
+            .getPurchaseConfig(intercoCompany)
+            .getDisplayPriceOnQuotationRequest());
 
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));

@@ -335,10 +335,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
     ProdProcess prodProcess = manufOrder.getProdProcess();
 
-    if (manufOrder.getPlannedStartDateT() == null) {
-      manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
-    }
-
     if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
 
       for (ProdProcessLine prodProcessLine :
@@ -347,10 +343,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
       }
     }
-
-    manufOrderRepo.save(manufOrder);
-
-    manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
     manufOrderRepo.save(manufOrder);
   }
@@ -733,6 +725,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     // update stock location by cancelling then planning stock move.
     stockMoveService.cancel(stockMove);
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 

@@ -26,7 +26,9 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -145,6 +147,74 @@ public class AccountController {
       Beans.get(AccountService.class).toggleStatusSelect(account);
 
       response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void massUpdateSelected(ActionRequest request, ActionResponse response) {
+    try {
+
+      final String fieldName = "statusSelect";
+      Object statusObj = request.getContext().get(fieldName);
+
+      if (ObjectUtils.isEmpty(statusObj)) {
+        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_STATUS));
+        return;
+      }
+
+      Object selectedIdObj = request.getContext().get("_selectedIds");
+      if (ObjectUtils.isEmpty(selectedIdObj)) {
+        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_RECORD_SELECTED));
+        return;
+      }
+
+      String metaModel = (String) request.getContext().get("_metaModel");
+      Integer statusSelect = (Integer) statusObj;
+      List<Integer> selectedIds = (List<Integer>) selectedIdObj;
+      final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
+      Integer recordsUpdated =
+          MassUpdateTool.update(modelClass, fieldName, statusSelect, selectedIds);
+      String message = null;
+      if (recordsUpdated > 0) {
+        message = String.format(I18n.get(IExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
+      } else {
+        message = I18n.get(IExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
+      }
+      response.setFlash(message);
+      response.setCanClose(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void massUpdateAll(ActionRequest request, ActionResponse response) {
+    try {
+      final String fieldName = "statusSelect";
+      Object statusObj = request.getContext().get(fieldName);
+
+      if (ObjectUtils.isEmpty(statusObj)) {
+        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_STATUS));
+        return;
+      }
+
+      String metaModel = (String) request.getContext().get("_metaModel");
+      Integer statusSelect = (Integer) statusObj;
+      final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
+      Integer recordsUpdated = MassUpdateTool.update(modelClass, fieldName, statusSelect, null);
+      String message = null;
+      if (recordsUpdated > 0) {
+        message = String.format(I18n.get(IExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
+      } else {
+        message = I18n.get(IExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
+      }
+
+      response.setFlash(message);
+      response.setCanClose(true);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

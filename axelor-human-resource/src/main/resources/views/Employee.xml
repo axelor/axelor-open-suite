@@ -32,8 +32,9 @@
   </grid>
 
   <form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
-    width="large" onLoad="action-employee-method-set-social-network-url"
-    onNew="action-employee-record-default">
+    width="large"
+    onLoad="action-employee-method-set-social-network-url,action-attrs-employee-step-by-step-select-selection-in"
+    onNew="action-employee-record-default,action-attrs-employee-step-by-step-select-selection-in">
 
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
@@ -50,10 +51,11 @@
       <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true"
         showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
       <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right"
-        readonlyIf="stepByStepSelect &gt; 3"
+        readonlyIf="(user &amp;&amp; stepByStepSelect &gt;= 3) || (user == null &amp;&amp; stepByStepSelect &gt; 3) "
         onClick="validate,action-employee-record-next-step,save"/>
       <button name="finishBtn" colSpan="1" title="Finish"
-        onClick="validate,action-employee-record-finish-sbs,save" showIf="stepByStepSelect == 4"/>
+        onClick="validate,action-employee-record-finish-sbs,save"
+        showIf="stepByStepSelect == 4 || (user &amp;&amp; stepByStepSelect == 3)"/>
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
@@ -73,7 +75,8 @@
 
             <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
               canSelect="false"/>
-            <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
             <field name="fixedPhone" widget="phone" colSpan="4"
               x-placeholder-number-type="FIXED_LINE"/>
@@ -259,7 +262,8 @@
 
               <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
                 canSelect="false"/>
-              <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+              <field name="webSite" placeholder="http://www.url.com" widget="url"
+                pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
               <field name="fixedPhone" widget="phone" colSpan="4"
                 x-placeholder-number-type="FIXED_LINE"/>
@@ -601,6 +605,12 @@
     model="com.axelor.apps.hr.db.Employee">
     <field name="companyCbDetails" expr="eval: ''"/>
   </action-record>
+
+  <action-attrs name="action-attrs-employee-step-by-step-select-selection-in">
+    <attribute name="selection-in" for="stepByStepSelect" expr="eval: [1, 2, 3, 4]"
+      if="user == null"/>
+    <attribute name="selection-in" for="stepByStepSelect" expr="eval: [1, 2, 3]" if="user"/>
+  </action-attrs>
 
   <action-view name="action-employee-user-show-employee" title="Employee"
     model="com.axelor.apps.hr.db.Employee">

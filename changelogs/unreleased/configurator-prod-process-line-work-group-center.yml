@@ -1,7 +1,0 @@
----
-title: Configurator Prod Process Line - Add work center group
-type: feature
-description: |
-  Add work center group to Configurator Prod Process Line
-  Reproduce the behaviours and process made on Prod Process Line
-  Take into account these new elements when generatinf Prod Process Line from Configurator

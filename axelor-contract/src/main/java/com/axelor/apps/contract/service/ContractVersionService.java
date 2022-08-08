@@ -66,7 +66,7 @@ public interface ContractVersionService {
    * @param version of the contract will be terminate.
    */
   @Transactional
-  void terminate(ContractVersion version);
+  void terminate(ContractVersion version) throws AxelorException;
 
   /**
    * Terminate version at the specific date.
@@ -75,7 +75,7 @@ public interface ContractVersionService {
    * @param date of terminate.
    */
   @Transactional
-  void terminate(ContractVersion version, LocalDate date);
+  void terminate(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
    * Create new version from contract but don't save it. There will be use for set values from form

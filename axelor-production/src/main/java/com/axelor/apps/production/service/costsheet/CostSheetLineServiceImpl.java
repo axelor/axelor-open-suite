@@ -583,7 +583,6 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               null,
               null,
               parentCostSheetLine);
-      parentCostSheetLine.addCostSheetLineListItem(indirectCostSheetLine);
     }
 
     indirectCostSheetLine.setCostPrice(

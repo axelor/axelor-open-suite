@@ -23,12 +23,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.service.pricing.PricingService;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
@@ -103,17 +104,25 @@ public class SaleOrderLineController {
       try {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
-        Optional<Pricing> defaultPricing =
-            pricingService.getDefaultPricing(saleOrder, saleOrderLine);
-        if (defaultPricing.isPresent()
-            && !pricingService
-                .getPricingLine(saleOrder, saleOrderLine, defaultPricing.get())
-                .isPresent()) {
-          response.setFlash(
-              String.format(
-                  I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
-                  defaultPricing.get().getName()));
+
+        if (Beans.get(AppSaleService.class).getAppSale().getEnablePricingScale()) {
+          Optional<Pricing> defaultPricing =
+              pricingService.getRandomPricing(
+                  saleOrder.getCompany(),
+                  saleOrderLine.getProduct(),
+                  saleOrderLine.getProduct().getProductCategory(),
+                  SaleOrderLine.class.getSimpleName(),
+                  null);
+
+          if (defaultPricing.isPresent()
+              && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
+            response.setFlash(
+                String.format(
+                    I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
+                    defaultPricing.get().getName()));
+          }
         }
+
         response.setValue("saleSupplySelect", product.getSaleSupplySelect());
         response.setValues(saleOrderLine);
       } catch (Exception e) {
@@ -384,7 +393,7 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
-      Beans.get(PricingService.class).computePricingScale(saleOrder, saleOrderLine);
+      Beans.get(SaleOrderLineService.class).computePricingScale(saleOrderLine, saleOrder);
 
       response.setValues(saleOrderLine);
 

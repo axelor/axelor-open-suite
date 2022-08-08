@@ -32,6 +32,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
 import javax.persistence.Query;
@@ -217,6 +218,21 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   @Override
+  public void checkClosedPeriod(Period period, boolean isAuthorizedToAccountOnPeriod)
+      throws AxelorException {
+    List<Integer> unauthorizedStatus = new ArrayList<>();
+    unauthorizedStatus.add(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
+    unauthorizedStatus.add(PeriodRepository.STATUS_CLOSED);
+    if (period != null
+        && !isAuthorizedToAccountOnPeriod
+        && unauthorizedStatus.contains(period.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
+    }
+  }
+
+  @Override
   public void validateTempClosure(Period period) throws AxelorException {
     if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
       Query resultQuery =
@@ -241,13 +257,17 @@ public class PeriodServiceImpl implements PeriodService {
 
   @Override
   public void validateClosure(Period period) throws AxelorException {
-    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+    if (period != null
+        && period.getYear() != null
+        && period.getYear().getCompany() != null
+        && period.getYear().getTypeSelect() != null) {
       Query resultQuery =
           JPA.em()
               .createQuery(
-                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company AND self.year.typeSelect = :type");
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
+      resultQuery.setParameter("type", period.getYear().getTypeSelect());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
         Period previousPeriod =
             periodRepo.find(

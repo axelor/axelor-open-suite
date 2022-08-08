@@ -4,6 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="journalType"/>
@@ -28,8 +32,9 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="company" canEdit="false"
         readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-journal-record-reset-valid-account-set"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+      <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
     </panel>
     <panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
@@ -140,9 +145,14 @@
     <field name="exportCode" expr="eval:null" if="notExportOk"/>
   </action-record>
 
+  <action-record name="action-journal-record-reset-valid-account-set"
+    model="com.axelor.apps.account.db.Journal">
+    <field name="validAccountSet" expr="eval: null"/>
+  </action-record>
+
   <action-group name="action-journal-group-on-load-actions">
     <action name="action-journal-method-set-totals"
-      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+      if="journalType != null &amp;&amp; journalType?.isDisplayBalances"/>
     <action name="action-method-account-journal-readonly-if-journal-in-move"/>
     <action name="action-attrs-account-journal-status-show-title"/>
   </action-group>

@@ -847,7 +847,7 @@ public class IrrecoverableService {
             null,
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+            MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             irrecoverableName,
             invoice.getInvoiceId());
 
@@ -968,7 +968,7 @@ public class IrrecoverableService {
             null,
             payerPartner != null ? payerPartner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            moveLine.getMove().getFunctionalOriginSelect(),
+            MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             irrecoverableName,
             moveLine.getDescription());
 

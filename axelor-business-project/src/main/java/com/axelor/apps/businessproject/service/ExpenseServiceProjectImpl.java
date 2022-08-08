@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -28,8 +29,10 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
@@ -47,29 +50,35 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
       MoveLineCreateService moveLineCreateService,
-      AccountManagementAccountService accountManagementAccountService,
+      AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
-      MoveLineConsolidateService moveLineConsolidateService) {
+      PeriodRepository periodRepository,
+      MoveLineConsolidateService moveLineConsolidateService,
+      KilometricService kilometricService) {
     super(
         moveCreateService,
         moveValidateService,
         expenseRepository,
         moveLineCreateService,
-        accountManagementAccountService,
+        accountManagementService,
         appAccountService,
         accountConfigService,
         accountingSituationService,
         analyticMoveLineService,
+        analyticMoveLineGenerateRealService,
         hrConfigService,
         templateMessageService,
         paymentModeService,
-        moveLineConsolidateService);
+        periodRepository,
+        moveLineConsolidateService,
+        kilometricService);
   }
 
   @Override

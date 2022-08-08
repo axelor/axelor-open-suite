@@ -22,7 +22,7 @@
     <boolean name="defCodeAsFormula" title="Define with a script" default="false"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
-      title="Production stock location" required="true"/>
+      title="Production stock location"/>
     <string name="stockLocationFormula" title="Production stock location" large="true"/>
     <boolean name="defStockLocationAsFormula" title="Define with a script" default="false"/>
 

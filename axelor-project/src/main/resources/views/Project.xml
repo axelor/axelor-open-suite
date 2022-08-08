@@ -500,7 +500,8 @@
           <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
             showIf="isShowSection"/>
           <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
-          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
+            showIf="isShowSection"/>
           <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
         </panel>
       </panel>
@@ -936,7 +937,8 @@
     title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
     <view type="form" name="contract-form"/>
     <context name="_xTargetType" expr="eval:1"/>
-    <context name="_project" expr="eval:__self__"/>
+    <context name="_project" expr="eval: __self__"/>
+    <context name="_clientPartner" expr="eval: __self__.clientPartner"/>
   </action-view>
 
   <action-view name="action-project-view-create-new-supplier-contract"
@@ -1050,6 +1052,7 @@
   <action-record name="action-project-record-section-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowKanbanPerSection" expr="eval: false" if="!isShowSection"/>
+    <field name="isShowCalendarPerSection" expr="eval: false" if="!isShowSection"/>
   </action-record>
 
   <action-record name="action-project-record-is-show-timespent-reset-values"

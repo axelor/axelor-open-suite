@@ -160,7 +160,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
+                "self.employee = ?1 AND self.duration > 0"
+                    + " AND self.statusSelect = ?2"
+                    + " AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT"
+                    + " AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
                 employee,
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,

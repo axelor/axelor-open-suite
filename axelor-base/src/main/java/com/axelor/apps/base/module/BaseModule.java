@@ -89,6 +89,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PricedOrderDomainService;
+import com.axelor.apps.base.service.PricedOrderDomainServiceImpl;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.apps.base.service.PrintServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateLineService;
@@ -142,6 +144,8 @@ import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.apps.base.service.pricing.PricingServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -248,5 +252,7 @@ public class BaseModule extends AxelorModule {
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
+    bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
   }
 }

@@ -36,7 +36,10 @@
 
   <input file="stock_inventoryLine.csv" separator=";"
     type="com.axelor.apps.stock.db.InventoryLine"
-    call="com.axelor.csv.script.ImportInventoryLine:importInventoryLine"/>
+    call="com.axelor.csv.script.ImportInventoryLine:importInventoryLine">
+    <bind to="stockLocation" column="stockLocation_importId"
+      search="self.importId = :stockLocation_importId"/>
+  </input>
 
   <input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"
     search="self.importId = :importId"

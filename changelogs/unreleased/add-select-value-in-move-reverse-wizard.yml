@@ -1,5 +1,0 @@
----
-title: "Move: Add new Date select on reverse move wizard"
-type: feature
-description: |
-   Add a new value (Today + 1) on date of reversion selection when generating a reverse move 

@@ -119,4 +119,19 @@ public interface LeaveService {
    * @return
    */
   public List<LeaveRequest> getLeaves(Employee employee, LocalDate date);
+
+  /**
+   * Get the LeaveLine associated with the leaveRequest
+   *
+   * @param leaveRequest
+   * @return
+   */
+  LeaveLine getLeaveLine(LeaveRequest leaveRequest);
+
+  /**
+   * Update daysToValidate field of leaveLine
+   *
+   * @param leaveLine
+   */
+  void updateDaysToValidate(LeaveLine leaveLine);
 }

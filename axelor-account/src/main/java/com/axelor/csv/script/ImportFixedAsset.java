@@ -14,7 +14,8 @@ public class ImportFixedAsset {
   public Object importFixedAsset(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof FixedAsset;
     FixedAsset fixedAsset = (FixedAsset) bean;
-    if (fixedAsset != null && fixedAsset.getOriginSelect() == null) {
+    if (fixedAsset != null
+        && (fixedAsset.getOriginSelect() == null || fixedAsset.getOriginSelect() == 0)) {
       fixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_IMPORT);
     }
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);

@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
@@ -49,11 +66,15 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   public List<AnalyticAxis> getAllAxis(AnalyticDistributionTemplate analyticDistributionTemplate) {
-    List<AnalyticAxis> axisList = new ArrayList<AnalyticAxis>();
-    for (AnalyticDistributionLine analyticDistributionLine :
-        analyticDistributionTemplate.getAnalyticDistributionLineList()) {
-      if (!axisList.contains(analyticDistributionLine.getAnalyticAxis())) {
-        axisList.add(analyticDistributionLine.getAnalyticAxis());
+    List<AnalyticAxis> axisList = new ArrayList<>();
+    if (analyticDistributionTemplate != null
+        && !CollectionUtils.isEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine analyticDistributionLine :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (!axisList.contains(analyticDistributionLine.getAnalyticAxis())) {
+          axisList.add(analyticDistributionLine.getAnalyticAxis());
+        }
       }
     }
     return axisList;
@@ -111,22 +132,25 @@ public class AnalyticDistributionTemplateServiceImpl
     if (analyticDistributionTemplate.getCompany() != null) {
       List<AnalyticDistributionLine> analyticDistributionLineList =
           analyticDistributionTemplate.getAnalyticDistributionLineList();
-      boolean checkAxis = false;
-      boolean checkJournal = false;
-      for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-        if (analyticDistributionLine.getAnalyticAxis() != null
-            && (analyticDistributionTemplate.getCompany()
-                    != analyticDistributionLine.getAnalyticAxis().getCompany()
-                || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
-          checkAxis = true;
+      if (analyticDistributionTemplate.getCompany() != null
+          && !CollectionUtils.isEmpty(analyticDistributionLineList)) {
+        boolean checkAxis = false;
+        boolean checkJournal = false;
+        for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+          if (analyticDistributionLine.getAnalyticAxis() != null
+              && (analyticDistributionTemplate.getCompany()
+                      != analyticDistributionLine.getAnalyticAxis().getCompany()
+                  || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
+            checkAxis = true;
+          }
+          if (analyticDistributionTemplate.getCompany()
+                  != analyticDistributionLine.getAnalyticJournal().getCompany()
+              || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
+            checkJournal = true;
+          }
         }
-        if (analyticDistributionTemplate.getCompany()
-                != analyticDistributionLine.getAnalyticJournal().getCompany()
-            || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
-          checkJournal = true;
-        }
+        printCheckAnalyticDistributionTemplateCompany(checkAxis, checkJournal);
       }
-      printCheckAnalyticDistributionTemplateCompany(checkAxis, checkJournal);
     }
   }
 

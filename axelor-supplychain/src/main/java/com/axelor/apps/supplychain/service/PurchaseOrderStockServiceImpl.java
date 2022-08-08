@@ -82,6 +82,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
   protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -92,7 +93,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       ShippingCoefService shippingCoefService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService,
-      PartnerStockSettingsService partnerStockSettingsService) {
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -102,6 +104,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
     this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   /**
@@ -177,6 +180,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     StockLocation startLocation = getStartStockLocation(purchaseOrder);
 
+    StockLocation endLocation = null;
+
     StockMove stockMove =
         stockMoveService.createStockMove(
             address,
@@ -195,6 +200,22 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && company.getTradingNameSet() != null
+        && !company.getTradingNameSet().isEmpty()) {
+      if (purchaseOrder.getTradingName() != null) {
+        endLocation = purchaseOrder.getTradingName().getQualityControlDefaultStockLocation();
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.PURCHASE_ORDER_TRADING_NAME_MISSING));
+      }
+
+    } else {
+      endLocation =
+          stockConfigService.getStockConfig(company).getQualityControlDefaultStockLocation();
+    }
+
     StockMove qualityStockMove =
         stockMoveService.createStockMove(
             address,
@@ -202,9 +223,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             company,
             supplierPartner,
             startLocation,
-            appBaseService.getAppBase().getEnableTradingNamesManagement()
-                ? purchaseOrder.getTradingName().getQualityControlDefaultStockLocation()
-                : company.getStockConfig().getQualityControlDefaultStockLocation(),
+            endLocation,
             null,
             estimatedDeliveryDate,
             purchaseOrder.getNotes(),
@@ -277,7 +296,6 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
 
     if (startLocation == null) {
-      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
       StockConfig stockConfig = stockConfigService.getStockConfig(company);
       startLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
     }

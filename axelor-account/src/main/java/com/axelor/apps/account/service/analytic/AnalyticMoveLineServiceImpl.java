@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -49,18 +50,23 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
+  protected AppBaseService appBaseService;
+  private final int RETURN_SCALE = 2;
+  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      AppBaseService appBaseService) {
 
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override

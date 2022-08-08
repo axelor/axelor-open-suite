@@ -33,7 +33,11 @@
     <view type="grid" name="bill-of-material-grid"/>
     <view type="form" name="bill-of-material-form"/>
     <view-param name="search-filters" value="bill-of-material-filters"/>
-    <domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
+    <domain><![CDATA[
+      self.defineSubBillOfMaterial = true
+      AND self.personalized = false
+      AND self.typeSelect != 3
+    ]]></domain>
   </action-view>
 
   <menuitem name="manufacturing-root-personalized-bill-of-material"
@@ -207,7 +211,7 @@
 
   <action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
     model="com.axelor.apps.supplychain.db.Mrp">
-    <view type="grid" name="mrp-grid"/>
+    <view type="grid" name="mrp-manuf-order-grid"/>
     <view type="form" name="mrp-manuf-order-form"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self.mrpTypeSelect = 2</domain>

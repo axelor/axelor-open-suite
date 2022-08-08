@@ -147,8 +147,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    if (datas.get("task") != null) {
-      objMap = (Map) datas.get("task");
+    if (datas.get("projectTask") != null) {
+      objMap = (Map) datas.get("projectTask");
       projectTask = projectTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 

@@ -95,10 +95,22 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       code = confProdProcess.getCode();
     }
     if (confProdProcess.getDefStockLocationAsFormula()) {
+
       stockLocation =
-          (StockLocation)
+          this.convertObjectTo(
               configuratorService.computeFormula(
-                  confProdProcess.getStockLocationFormula(), attributes);
+                  confProdProcess.getStockLocationFormula(), attributes),
+              StockLocation.class);
+      if (stockLocation == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION),
+                "stockLocationFormula",
+                confProdProcess.getName()));
+      }
+
     } else {
       stockLocation = confProdProcess.getStockLocation();
     }
@@ -167,6 +179,14 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     configuratorService.fixRelationalFields(prodProcess);
 
     return prodProcess;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T> T convertObjectTo(Object computeFormula, Class<T> targetClass) {
+    if (computeFormula == null || !targetClass.isInstance(computeFormula)) {
+      return null;
+    }
+    return (T) computeFormula;
   }
 
   /** Instantiate a new prod process and set the right attributes. */

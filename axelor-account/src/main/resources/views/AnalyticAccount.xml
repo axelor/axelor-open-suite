@@ -5,6 +5,10 @@
 
   <grid name="analytic-account-grid" title="Analytic Accounts"
     model="com.axelor.apps.account.db.AnalyticAccount">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>

@@ -29,9 +29,8 @@
         if="__config__.app.isApp('account')"/>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')" hidden="true"
-        hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
-        <field name="generateBankOrder"
-          showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"/>
+        showIf="(typeSelect == 2 &amp;&amp; inOutSelect == 1) || (typeSelect == 9 &amp;&amp; inOutSelect == 2) || (typeSelect == 10 &amp;&amp; inOutSelect == 1)">
+        <field name="generateBankOrder"/>
         <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
         <field name="automaticTransmission" showIf="generateBankOrder"/>
         <field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>

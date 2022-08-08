@@ -1,13 +1,38 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -38,10 +63,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected CompanyConfigService companyConfigService;
   protected CurrencyService currencyService;
   protected FiscalPositionAccountService fiscalPositionAccountService;
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
-  protected AnalyticMoveLineService analyticMoveLineService;
+  protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected TaxAccountService taxAccountService;
-  protected InvoiceService invoiceService;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
@@ -51,20 +74,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       CompanyConfigService companyConfigService,
       CurrencyService currencyService,
       FiscalPositionAccountService fiscalPositionAccountService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      AnalyticMoveLineService analyticMoveLineService,
       TaxAccountService taxAccountService,
-      InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineConsolidateService moveLineConsolidateService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
-    this.analyticMoveLineService = analyticMoveLineService;
     this.taxAccountService = taxAccountService;
-    this.invoiceService = invoiceService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
@@ -398,15 +415,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
-                analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
-            analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-            analyticMoveLine.setInvoiceLine(null);
-            analyticMoveLine.setAccount(moveLine.getAccount());
-            analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-            analyticMoveLineService.updateAnalyticMoveLine(
-                analyticMoveLine,
-                moveLine.getDebit().add(moveLine.getCredit()),
-                moveLine.getDate());
+                analyticMoveLineGenerateRealService.createFromForecast(
+                    invoiceAnalyticMoveLine, moveLine);
             moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
           }
         } else {
@@ -587,11 +597,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
     }
 
+    newOrUpdatedMoveLine.setMove(move);
+    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
+    newOrUpdatedMoveLine.setDescription(move.getDescription());
+
     newOrUpdatedMoveLine.setDebit(
         newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setCredit(
         newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
+    newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);

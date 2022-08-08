@@ -158,7 +158,8 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       List<Long> invoicePaymentIdList,
       BankDetails companyBankDetails,
       Invoice invoice,
-      LocalDate paymentDate) {
+      LocalDate paymentDate)
+      throws AxelorException {
     log.debug("Creating Invoice payments from {}", invoice);
     invoiceRepository.find(invoice.getId());
     invoicePaymentIdList.add(

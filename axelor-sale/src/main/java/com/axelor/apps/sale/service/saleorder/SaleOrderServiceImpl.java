@@ -196,7 +196,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     BigDecimal conversionRate = new BigDecimal(1.00);
     if (pack.getCurrency() != null
-        && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
+        && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
       try {
         conversionRate =
             Beans.get(CurrencyConversionFactory.class)

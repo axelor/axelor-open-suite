@@ -6,6 +6,8 @@
   <grid name="reconcile-group-grid" title="Reconcile group"
     model="com.axelor.apps.account.db.ReconcileGroup" canNew="false" canDelete="false">
     <field name="code" width="120"/>
+    <field name="dateOfLettering"/>
+    <field name="statusSelect"/>
     <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
   </grid>
 

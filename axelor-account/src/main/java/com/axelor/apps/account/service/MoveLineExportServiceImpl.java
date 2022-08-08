@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
@@ -47,6 +48,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -61,6 +63,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1244,7 +1247,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         }
 
         if (move.getCurrency() != null) {
-          items[17] = move.getCurrency().getCode();
+          items[17] = move.getCurrency().getCodeISO();
         }
         allMoveLineData.add(items);
       }
@@ -1705,9 +1708,18 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
       throws AxelorException {
 
+    Optional<AccountingReportType> optionalAccountingReportType =
+        getAccountingReportType(company, exportTypeSelect);
+    if (!optionalAccountingReportType.isPresent()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          IExceptionMessage.ACCOUNTING_REPORT_9,
+          exportTypeSelect);
+    }
+
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(company);
-    accountingReport.getReportType().setTypeSelect(exportTypeSelect);
+    accountingReport.setReportType(optionalAccountingReportType.get());
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
@@ -1726,6 +1738,20 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReportRepo.save(accountingReport);
 
     return accountingReport;
+  }
+
+  protected Optional<AccountingReportType> getAccountingReportType(
+      Company company, int exportTypeSelect) {
+
+    ImmutableMap<String, Object> params =
+        ImmutableMap.of(
+            "company", company, "reportExportTypeSelect", 2, "typeSelect", exportTypeSelect);
+    return Optional.ofNullable(
+        com.axelor.db.Query.of(AccountingReportType.class)
+            .filter(
+                "self.company = :company and self.reportExportTypeSelect = :reportExportTypeSelect and self.typeSelect = :typeSelect")
+            .bind(params)
+            .fetchOne());
   }
 
   @Transactional(rollbackOn = {Exception.class})

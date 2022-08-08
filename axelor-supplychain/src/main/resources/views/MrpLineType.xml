@@ -5,7 +5,7 @@
 
   <grid name="mrp-line-type-grid" model="com.axelor.apps.supplychain.db.MrpLineType"
     title="MRP Types" orderBy="sequence">
-    <hilite if="[5,8,9].indexOf(elementSelect) != -1" strong="true" color="info"/>
+    <hilite if="[5,8,9,11].indexOf(elementSelect) != -1" strong="true" color="info"/>
     <field name="name"/>
     <field name="elementSelect"/>
     <field name="typeSelect"/>

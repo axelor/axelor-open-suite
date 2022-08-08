@@ -100,7 +100,8 @@
           <field name="fixedPhone" widget="phone" colSpan="3"
             x-placeholder-number-type="FIXED_LINE"/>
           <field name="fax" widget="phone" colSpan="3"/>
-          <field name="linkedInProfile" colSpan="3" widget="url"/>
+          <field name="linkedInProfile" colSpan="3" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
           <label name="linkedinLabel"
             title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
             colSpan="2"/>

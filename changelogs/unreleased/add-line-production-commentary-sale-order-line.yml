@@ -1,5 +1,0 @@
----
-title: "Sale Order Line: add Line production commentary"
-type: feature
-description: |
-  Add a text field "production comments to the line" in SALE ORDER LINE (model and view)

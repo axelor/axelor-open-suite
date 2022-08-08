@@ -47,6 +47,7 @@ public class AppBuilderService {
     }
 
     app.setIsCustom(true);
+    app.setIsInAppView(appBuilder.getIsInAppView());
     app.setImage(appBuilder.getImage());
     app.setDescription(appBuilder.getDescription());
     Set<App> depends = new HashSet<App>();

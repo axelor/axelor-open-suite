@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
+import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -38,12 +39,14 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -236,7 +239,7 @@ public class InvoiceController {
   public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationTypeSelect() == null) {
+      if (invoice.getOperationTypeSelect() == null || invoice.getOperationTypeSelect() == 0) {
         return;
       }
       PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
@@ -366,7 +369,9 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null) {
+      } else if (context.get("id") != null
+          && (Wizard.class.equals(context.getContextClass())
+              || Invoice.class.equals(context.getContextClass()))) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
         Integer reportType =
             context.get("reportType") != null
@@ -459,7 +464,8 @@ public class InvoiceController {
       List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
       if (ObjectUtils.isEmpty(ids)) {
-        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+        response.setError(
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 
@@ -658,6 +664,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       Partner partner = invoice.getPartner();
       if (partner == null) {
+        response.setValue("priceList", null);
         return;
       }
       int priceListTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
@@ -773,35 +780,25 @@ public class InvoiceController {
   }
 
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    Company company = invoice.getCompany();
-
-    long companyId = company.getPartner() == null ? 0 : company.getPartner().getId();
-
-    String domain = String.format("self.id != %d AND self.isContact = false ", companyId);
-    domain += " AND :company member of self.companySet";
-
-    int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
-
-    if (invoiceTypeSelect == 1) {
-      domain += " AND self.isCustomer = true ";
-    } else {
-      domain += " AND self.isSupplier = true ";
-    }
-
     try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Company company = invoice.getCompany();
+      List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+      int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
 
-      if ((!(invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()))
-          && (invoiceTypeSelect == 1)) {
+      String domain =
+          Beans.get(InvoiceDomainService.class)
+              .getPartnerBaseDomain(company, invoice, invoiceTypeSelect);
 
-        domain += Beans.get(PartnerService.class).getPartnerDomain(invoice.getPartner());
+      if ((!(invoiceLineList == null || invoiceLineList.isEmpty()))
+          && (invoiceTypeSelect == PriceListRepository.TYPE_SALE)) {
+        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(invoice, domain);
       }
 
+      response.setAttr("partner", "domain", domain);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("partner", "domain", domain);
   }
 
   public void checkDuplicateInvoice(ActionRequest request, ActionResponse response) {
@@ -812,6 +809,10 @@ public class InvoiceController {
         Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
         response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
         response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+
+        if (isDuplicate) {
+          response.setAttr("$supplierInvoiceNbStatic", "value", invoice.getSupplierInvoiceNb());
+        }
       }
 
     } catch (Exception e) {
@@ -850,6 +851,46 @@ public class InvoiceController {
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Customer Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (3,4) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
+    try {
+      String idList =
+          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      response.setView(
+          ActionView.define(I18n.get("Supplier Invoice Line"))
+              .model(InvoiceLine.class.getName())
+              .add("grid", "invoice-line-menu-grid")
+              .add("form", "invoice-line-menu-form")
+              .param("search-filters", "invoice-line-filters")
+              .domain(
+                  "self.invoice.operationTypeSelect in (1,2) AND self.invoice.id in ("
+                      + idList
+                      + ")")
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

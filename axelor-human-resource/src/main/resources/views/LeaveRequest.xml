@@ -85,7 +85,7 @@
         form-view="leave-reason-form" grid-view="leave-reason-grid"/>
       <panel name="quantityPanel" showIf="leaveReason.manageAccumulation == true">
         <field name="$leavequantity" title="Available quantity (acquired)"
-          showIf="statusSelect != 3" colSpan="12" readonly="true"/>
+          showIf="statusSelect != 3" colSpan="12" readonly="true" type="decimal"/>
         <field name="quantityBeforeValidation" showIf="statusSelect == 3" colSpan="12"/>
         <field name="leaveReason.manageAccumulation" hidden="true"/>
       </panel>
@@ -255,8 +255,8 @@
       expr="eval: 1"/>
     <attribute name="value" for="$leavequantity" expr="eval: 0.00"/>
     <attribute name="value" for="$leavequantity"
-      if="leaveReason != null &amp;&amp; leaveReason?.manageAccumulation == true &amp;&amp; employee?.leaveLineList != null "
-      expr="#{employee.leaveLineList.stream().filter(ll -> ll.leaveReason.id.equals(leaveReason.id)).findFirst().get().quantity}"/>
+      if="leaveReason != null &amp;&amp; leaveReason?.manageAccumulation &amp;&amp; employee?.leaveLineList != null "
+      expr="#{employee.leaveLineList.stream().filter(ll -> ll.leaveReason.id.equals(leaveReason.id)).map(ll -> ll.getQuantity()).findFirst().orElse(0.00)}"/>
   </action-attrs>
 
   <action-attrs name="action-leave-request-attrs-send">

@@ -12,7 +12,7 @@
       </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
-          action="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+          action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="importLeadsItem" title="Import leads"
@@ -36,7 +36,7 @@
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="statusSelect"/>
     <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
-      help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+      help="Take charge" onClick="action-lead-method-assign-to-me"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-lead-view-schedule-event"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -172,7 +172,8 @@
           </field>
           <field name="fixedPhone" widget="phone" colSpan="4"
             x-placeholder-number-type="FIXED_LINE"/>
-          <field name="webSite" colSpan="6" placeholder="http://www.url.com" widget="url"/>
+          <field name="webSite" colSpan="6" placeholder="http://www.url.com" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
         </panel>
 
         <panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">
@@ -224,13 +225,13 @@
     <panel name="actionsPanel" sidebar="true">
       <button name="grabLeadBtn" title="Assign to me"
         hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5"
-        icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+        icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play"
-        onClick="save,action-lead-record-status-start,save"/>
+        onClick="save,action-lead-method-start,save"/>
       <button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id"
         icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
       <button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle"
-        onClick="save,action-lead-record-status-recycle,save"/>
+        onClick="save,action-lead-method-recycle,save"/>
       <button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times"
         onClick="save,action-lead-view-lose,save" css="btn-danger"/>
       <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
@@ -344,6 +345,22 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="checkLeadName"/>
   </action-method>
 
+  <action-method name="action-lead-method-start">
+    <call class="com.axelor.apps.crm.web.LeadController" method="startLead"/>
+  </action-method>
+
+  <action-method name="action-lead-method-recycle">
+    <call class="com.axelor.apps.crm.web.LeadController" method="recycleLead"/>
+  </action-method>
+
+  <action-method name="action-lead-method-assign-to-me">
+    <call class="com.axelor.apps.crm.web.LeadController" method="assignToMeLead"/>
+  </action-method>
+
+  <action-method name="action-lead-method-assign-to-me-multiple">
+    <call class="com.axelor.apps.crm.web.LeadController" method="assignToMeMultipleLead"/>
+  </action-method>
+
   <action-record name="action-lead-default-record-new"
     model="com.axelor.apps.crm.db.Lead">
     <field name="statusSelect" expr="1"/>
@@ -352,17 +369,6 @@
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-  </action-record>
-
-  <action-record name="action-lead-record-status-start"
-    model="com.axelor.apps.crm.db.Lead">
-    <field name="statusSelect" expr="3"/>
-  </action-record>
-
-  <action-record name="action-lead-record-status-recycle"
-    model="com.axelor.apps.crm.db.Lead">
-    <field name="statusSelect" expr="3"/>
-    <field name="isRecycled" expr="true"/>
   </action-record>
 
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
