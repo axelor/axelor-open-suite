@@ -213,6 +213,7 @@ public class PricingComputer extends AbstractObservablePricing {
                 notifyResultPricingRule(resultPricingRule, result);
                 notifyFieldToPopulate(fieldToPopulate);
                 Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+                putInContext(fieldToPopulate.getName(), result);
               }
             });
   }

@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -753,8 +754,7 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-      Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-      response.setValues(saleOrder);
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -786,24 +786,20 @@ public class SaleOrderController {
   }
 
   public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Company company = saleOrder.getCompany();
-    Long companyPartnerId = company.getPartner() == null ? 0 : company.getPartner().getId();
-    String domain =
-        String.format(
-            "self.id != %d AND self.isContact = false AND (self.isCustomer = true or self.isProspect = true)",
-            companyPartnerId);
-    domain += " AND :company member of self.companySet";
     try {
-      if (!(saleOrder.getSaleOrderLineList() == null
-          || saleOrder.getSaleOrderLineList().isEmpty())) {
-        domain += Beans.get(PartnerService.class).getPartnerDomain(saleOrder.getClientPartner());
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+      String domain =
+          Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(saleOrder.getCompany());
+
+      if (!(saleOrderLineList == null || saleOrderLineList.isEmpty())) {
+        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(saleOrder, domain);
       }
+
+      response.setAttr("clientPartner", "domain", domain);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("clientPartner", "domain", domain);
   }
 
   public void handleComplementaryProducts(ActionRequest request, ActionResponse response) {
