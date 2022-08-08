@@ -112,7 +112,7 @@ public class MoveManagementRepository extends MoveRepository {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
-        move.setCurrencyCode(move.getCurrency().getCode());
+        move.setCurrencyCode(move.getCurrency().getCodeISO());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
