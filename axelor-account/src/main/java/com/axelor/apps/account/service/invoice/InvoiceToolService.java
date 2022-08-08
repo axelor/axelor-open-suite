@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;

@@ -313,7 +313,7 @@
       method="actionBillOfExchange"/>
   </action-method>
 
-  <action-method name="action-accounting-batch-method-create-moves-schedule">
+  <action-method name="action-accounting-batch-method-generate-moves">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionGenerateMoves"/>
   </action-method>

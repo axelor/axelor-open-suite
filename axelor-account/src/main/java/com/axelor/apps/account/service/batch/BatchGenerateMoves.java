@@ -142,8 +142,8 @@ public class BatchGenerateMoves extends BatchStrategy {
               .all()
               .filter(
                   "self.statusSelect = ? AND self.operationTypeSelect = ? AND (self.validatedDate BETWEEN ? AND ?) AND self.company = ?",
-                      InvoiceRepository.STATUS_VALIDATED,
-                      InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                  InvoiceRepository.STATUS_VALIDATED,
+                  InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
                   period.getFromDate(),
                   period.getToDate(),
                   company)
@@ -159,17 +159,17 @@ public class BatchGenerateMoves extends BatchStrategy {
     Account account = accountConfig.getCustomerAccount();
     LocalDate date = LocalDate.now();
 
-    if(tradingName != null){
+    if (tradingName != null) {
       LOG.debug(
-              "Création d'une écriture comptable spécifique à la période {} (Magasin : {}, Journal : {})",
-              period.getCode(),
-              tradingName.getName(),
-              journal.getCode());
-    }else{
+          "Création d'une écriture comptable spécifique à la période {} (Magasin : {}, Journal : {})",
+          period.getCode(),
+          tradingName.getName(),
+          journal.getCode());
+    } else {
       LOG.debug(
-              "Création d'une écriture comptable spécifique à la période {} (Journal : {})",
-              period.getCode(),
-              journal.getCode());
+          "Création d'une écriture comptable spécifique à la période {} (Journal : {})",
+          period.getCode(),
+          journal.getCode());
     }
 
     Move move = moveCreateService.createMove(journal, company, period, date, tradingName, null);

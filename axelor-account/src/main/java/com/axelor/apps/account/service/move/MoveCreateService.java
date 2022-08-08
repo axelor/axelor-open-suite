@@ -26,8 +26,8 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 
