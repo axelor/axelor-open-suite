@@ -19,7 +19,6 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FECImport;
-import com.axelor.apps.account.db.ImportFECType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -182,12 +181,8 @@ public class ImportMove {
         }
         move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_IMPORT);
 
-        if (fecImport != null) {
-          ImportFECType importFECType = fecImport.getImportFECType();
-
-          if (importFECType != null && importFECType.getFunctionalOriginSelect() > 0) {
-            move.setFunctionalOriginSelect(importFECType.getFunctionalOriginSelect());
-          }
+        if (fecImport != null && fecImport.getImportFECType().getFunctionalOriginSelect() > 0) {
+          move.setFunctionalOriginSelect(fecImport.getImportFECType().getFunctionalOriginSelect());
         } else if (journal != null) {
           String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
 
