@@ -21,7 +21,6 @@
   </selection>
 
   <selection name="crm.opportunity.status.type.select">
-    <option value="0">Empty</option>
     <option value="1">Closed won</option>
     <option value="2">Closed lost</option>
   </selection>
