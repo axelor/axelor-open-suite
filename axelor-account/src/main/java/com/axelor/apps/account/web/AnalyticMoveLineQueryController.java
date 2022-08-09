@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -29,6 +32,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -125,5 +129,40 @@ public class AnalyticMoveLineQueryController {
         "__analyticMoveLineList",
         filteredAnalyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
     response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
+  }
+
+  public void searchQueryAxisDomain(ActionRequest request, ActionResponse response) {
+    this.queryAxisDomain(request, response, false);
+  }
+
+  public void reverseQueryAxisDomain(ActionRequest request, ActionResponse response) {
+    this.queryAxisDomain(request, response, true);
+  }
+
+  protected void queryAxisDomain(ActionRequest request, ActionResponse response, boolean reverse) {
+    try {
+      AnalyticMoveLineQuery analyticMoveLineQuery =
+          ContextTool.getContextParent(request.getContext(), AnalyticMoveLineQuery.class, 1);
+
+      if (analyticMoveLineQuery != null) {
+        List<AnalyticAxis> analyticAxisList =
+            Beans.get(AnalyticMoveLineQueryService.class)
+                .getAvailableAnalyticAxes(analyticMoveLineQuery, reverse);
+
+        response.setAttr(
+            "analyticAxis",
+            "domain",
+            String.format(
+                "self.id IN (%s)",
+                analyticAxisList.isEmpty()
+                    ? "0"
+                    : analyticAxisList.stream()
+                        .map(AnalyticAxis::getId)
+                        .map(Objects::toString)
+                        .collect(Collectors.joining(","))));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

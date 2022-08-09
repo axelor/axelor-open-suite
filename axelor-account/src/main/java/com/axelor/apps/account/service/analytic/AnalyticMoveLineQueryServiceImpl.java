@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -42,18 +43,21 @@ import java.util.stream.Collectors;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
 
-  AnalyticMoveLineService analyticMoveLineService;
-  AppBaseService appBaseService;
-  AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected AppBaseService appBaseService;
+  protected AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository;
+  protected AnalyticAxisRepository analyticAxisRepo;
 
   @Inject
   public AnalyticMoveLineQueryServiceImpl(
       AnalyticMoveLineService analyticMoveLineService,
       AppBaseService appBaseService,
-      AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository) {
+      AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository,
+      AnalyticAxisRepository analyticAxisRepo) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.appBaseService = appBaseService;
     this.analyticMoveLineQueryRepository = analyticMoveLineQueryRepository;
+    this.analyticAxisRepo = analyticAxisRepo;
   }
 
   @Override
@@ -294,5 +298,42 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
             Collectors.toMap(
                 AnalyticMoveLineQueryParameter::getAnalyticAxis,
                 AnalyticMoveLineQueryParameter::getAnalyticAccount));
+  }
+
+  @Override
+  public List<AnalyticAxis> getAvailableAnalyticAxes(
+      AnalyticMoveLineQuery analyticMoveLineQuery, boolean reverse) {
+    String alreadyPresentSearchAnalyticAxesIds =
+        this.getAlreadyPresentAnalyticAxesIds(
+            analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList());
+    String alreadyPresentReverseAnalyticAxesIds =
+        reverse
+            ? this.getAlreadyPresentAnalyticAxesIds(
+                analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())
+            : "0";
+
+    return analyticAxisRepo
+        .all()
+        .filter(
+            String.format(
+                "self.company = :company AND self.id %s IN (:alreadyPresentSearchAnalyticAxes) AND self.id NOT IN (:alreadyPresentReverseAnalyticAxes)",
+                reverse ? "" : "NOT"))
+        .bind("company", analyticMoveLineQuery.getCompany())
+        .bind("alreadyPresentSearchAnalyticAxes", alreadyPresentSearchAnalyticAxesIds)
+        .bind("alreadyPresentReverseAnalyticAxes", alreadyPresentReverseAnalyticAxesIds)
+        .fetch();
+  }
+
+  protected String getAlreadyPresentAnalyticAxesIds(
+      List<AnalyticMoveLineQueryParameter> analyticMoveLineQueryParameterList) {
+    String alreadyPresentAnalyticAxesIds =
+        analyticMoveLineQueryParameterList.stream()
+            .map(AnalyticMoveLineQueryParameter::getAnalyticAxis)
+            .filter(Objects::nonNull)
+            .map(AnalyticAxis::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
+
+    return alreadyPresentAnalyticAxesIds.isEmpty() ? "0" : alreadyPresentAnalyticAxesIds;
   }
 }
