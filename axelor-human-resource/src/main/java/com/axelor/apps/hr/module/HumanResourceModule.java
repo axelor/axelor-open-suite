@@ -19,6 +19,7 @@ package com.axelor.apps.hr.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
@@ -45,6 +46,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
 import com.axelor.apps.hr.service.app.AppTimesheetService;
@@ -132,5 +134,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(EmploymentAmendmentTypeService.class).to(EmploymentAmendmentTypeServiceImpl.class);
     bind(ProjectDashboardServiceImpl.class).to(ProjectDashboardHRServiceImpl.class);
     bind(ProjectActivityDashboardServiceImpl.class).to(ProjectActivityDashboardServiceHRImpl.class);
+    bind(AnalyticMoveLineGenerateRealServiceImpl.class)
+        .to(AnalyticMoveLineGenerateRealServiceHrImpl.class);
   }
 }

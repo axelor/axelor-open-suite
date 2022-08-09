@@ -1100,8 +1100,6 @@ public interface IExceptionMessage {
   static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
-  static final String MOVE_13 = /*$$(*/
-      "The functional origin cannot be empty for the move %s. Please fill it in." /*)*/;
   static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }
