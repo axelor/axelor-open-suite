@@ -41,7 +41,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineCreateService moveLineCreateService;
-  protected MoveLineTaxService moveLineTaxService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
   protected PaymentModeService paymentModeService;
@@ -52,7 +51,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
       MoveLineCreateService moveLineCreateService,
-      MoveLineTaxService moveLineTaxService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
       AccountManagementAccountService accountManagementAccountService,
@@ -60,7 +58,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.moveLineCreateService = moveLineCreateService;
-    this.moveLineTaxService = moveLineTaxService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
     this.accountManagementAccountService = accountManagementAccountService;
@@ -105,7 +102,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
     moveLine.setDescription(move.getDescription());
-    moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
     return moveLine;
   }
 

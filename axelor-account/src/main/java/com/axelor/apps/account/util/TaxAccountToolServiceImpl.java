@@ -40,7 +40,7 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
       if (account != null
           && accountingSituation.getVatSystemSelect()
               == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-        return account.getVatSystemSelect().intValue();
+        return account.getVatSystemSelect();
       } else if (accountingSituation.getVatSystemSelect()
           == AccountingSituationRepository.VAT_DELIVERY) {
         return MoveLineRepository.VAT_COMMON_SYSTEM;
