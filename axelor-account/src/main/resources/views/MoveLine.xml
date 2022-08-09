@@ -827,6 +827,7 @@
     <action name="action-move-line-method-change-account-set-default-distribution-template"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
     <action name="action-move-line-record-set-partner"/>
+    <action name="action-move-line-method-generate-invoice-terms"/>
   </action-group>
 
   <action-group name="action-account-move-line-move-form-account-group-on-change">
@@ -835,6 +836,7 @@
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
+    <action name="action-move-line-method-generate-invoice-terms"/>
   </action-group>
 
   <action-group name="action-move-line-group-analytic-axis-onchange">
@@ -1181,6 +1183,10 @@
 
   <action-method name="action-move-line-method-update-invoice-terms">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-generate-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="generateInvoiceTerms"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

@@ -61,11 +61,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)
             .flatMap(Collection::stream)
-            .filter(
-                it ->
-                    !it.getIsPaid()
-                        && it.getAmountRemaining().compareTo(it.getAmount()) == 0
-                        && invoiceTermService.isNotAwaitingPayment(it))
+            .filter(invoiceTermService::isNotReadonly)
             .collect(Collectors.toList());
 
     invoiceTermToUpdateList.forEach(it -> invoiceTermService.updateFromMoveHeader(move, it));
@@ -75,5 +71,16 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
             .map(MoveLine::getInvoiceTermList)
             .mapToLong(Collection::size)
             .sum();
+  }
+
+  @Override
+  public void recreateInvoiceTerms(Move move) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount().getHasInvoiceTerm()) {
+          moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
+        }
+      }
+    }
   }
 }

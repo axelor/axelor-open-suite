@@ -71,7 +71,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         move.getPaymentCondition().getPaymentConditionLineList()) {
       if (paymentConditionLine.getIsHoldback() == isHoldback) {
         this.computeInvoiceTerm(moveLine, move, paymentConditionLine, total);
-      } else if (!this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
+      } else if (paymentConditionLine.getIsHoldback()
+          && !this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
         holdbackMoveLine =
             this.computeInvoiceTermWithHoldback(
                 move,
@@ -83,9 +84,12 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       }
     }
 
-    moveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
+    }
 
-    if (holdbackMoveLine != null) {
+    if (holdbackMoveLine != null
+        && CollectionUtils.isNotEmpty(holdbackMoveLine.getInvoiceTermList())) {
       holdbackMoveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
     }
   }
@@ -106,14 +110,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       BigDecimal total,
       boolean canCreateHolbackMoveLine)
       throws AxelorException {
-    MoveLine holdbackMoveLine =
-        move.getMoveLineList().stream()
-            .filter(
-                it ->
-                    it.getAccount().equals(holdbackAccount)
-                        && it.getCredit().signum() == moveLine.getCredit().signum())
-            .findFirst()
-            .orElse(null);
+    MoveLine holdbackMoveLine = this.getHoldbackMoveLine(moveLine, move, holdbackAccount);
 
     BigDecimal holdbackAmount =
         total
@@ -125,6 +122,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     if (holdbackMoveLine == null) {
       if (!canCreateHolbackMoveLine) {
+        moveLine.clearInvoiceTermList();
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
@@ -158,6 +156,16 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     return holdbackMoveLine;
   }
 
+  protected MoveLine getHoldbackMoveLine(MoveLine moveLine, Move move, Account holdbackAccount) {
+    return move.getMoveLineList().stream()
+        .filter(
+            it ->
+                it.getAccount().equals(holdbackAccount)
+                    && it.getCredit().signum() == moveLine.getCredit().signum())
+        .findFirst()
+        .orElse(null);
+  }
+
   protected void computeInvoiceTerm(
       MoveLine moveLine, Move move, PaymentConditionLine paymentConditionLine, BigDecimal total) {
     InvoiceTerm invoiceTerm =
@@ -180,12 +188,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       BigDecimal total,
       boolean isHoldback) {
     BigDecimal amount =
-        total
-            .multiply(percentage)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+        isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
+            ? total
+            : total
+                .multiply(percentage)
+                .divide(
+                    BigDecimal.valueOf(100),
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    RoundingMode.HALF_UP);
 
     return invoiceTermService.createInvoiceTerm(
         null,
@@ -240,5 +250,23 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             it ->
                 it.getAccount().equals(holdbackAccount)
                     && CollectionUtils.isNotEmpty(it.getInvoiceTermList()));
+  }
+
+  @Override
+  public void recreateInvoiceTerms(MoveLine moveLine) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      if (!moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));
+      }
+
+      moveLine.clearInvoiceTermList();
+    }
+
+    Move move = moveLine.getMove();
+    if (move.getPaymentCondition() != null) {
+      this.generateDefaultInvoiceTerm(moveLine, false);
+    }
   }
 }

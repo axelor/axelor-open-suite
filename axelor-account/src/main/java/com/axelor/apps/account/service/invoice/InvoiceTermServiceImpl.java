@@ -1229,8 +1229,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean isEnoughAmountToPay(
       List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date) {
     BigDecimal amountToPay =
-        filterNotAwaitingPayment(invoiceTermList).stream()
-            .filter(it -> !it.getIsPaid() && it.getAmountPaid().signum() > 0)
+        invoiceTermList.stream()
+            .filter(this::isNotReadonly)
             .map(it -> this.getAmountRemaining(it, date))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -1358,5 +1358,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentMode(move.getPaymentMode());
     invoiceTerm.setBankDetails(move.getPartnerBankDetails());
+  }
+
+  @Override
+  public boolean isNotReadonly(InvoiceTerm invoiceTerm) {
+    return !invoiceTerm.getIsPaid()
+        && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0
+        && this.isNotAwaitingPayment(invoiceTerm)
+        && invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING;
   }
 }

@@ -286,4 +286,6 @@ public interface InvoiceTermService {
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);
 
   void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
+
+  boolean isNotReadonly(InvoiceTerm invoiceTerm);
 }

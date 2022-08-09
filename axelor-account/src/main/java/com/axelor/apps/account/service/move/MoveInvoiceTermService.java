@@ -9,4 +9,6 @@ public interface MoveInvoiceTermService {
   void roundInvoiceTermPercentages(Move move);
 
   boolean updateInvoiceTerms(Move move);
+
+  void recreateInvoiceTerms(Move move) throws AxelorException;
 }

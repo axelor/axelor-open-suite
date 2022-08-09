@@ -48,6 +48,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -703,6 +704,27 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
+      response.setValues(moveLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      if (moveLine.getAccount() != null) {
+        if (moveLine.getAccount().getHasInvoiceTerm()
+            && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+          if (moveLine.getMove() == null) {
+            moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
+          }
+
+          Beans.get(MoveLineInvoiceTermService.class).generateDefaultInvoiceTerm(moveLine, false);
+        }
+      }
+
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

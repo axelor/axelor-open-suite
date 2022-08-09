@@ -8,4 +8,6 @@ public interface MoveLineInvoiceTermService {
       throws AxelorException;
 
   void updateInvoiceTermsParentFields(MoveLine moveLine);
+
+  void recreateInvoiceTerms(MoveLine moveLine) throws AxelorException;
 }

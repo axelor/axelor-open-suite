@@ -103,7 +103,8 @@
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
-            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"/>
+            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"
+            onChange="action-move-attrs-payment-condition-change"/>
           <field name="partnerBankDetails" colSpan="3"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
             onSelect="action-move-attrs-bank-details-from-partner-domain"
@@ -113,6 +114,7 @@
           <field name="paymentMode.typeSelect" hidden="true"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
+          <field name="$paymentConditionChange" type="boolean" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
@@ -992,6 +994,10 @@
 
   <action-attrs name="action-move-attrs-header-change">
     <attribute name="value" for="$headerChange" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-payment-condition-change">
+    <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
   </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
