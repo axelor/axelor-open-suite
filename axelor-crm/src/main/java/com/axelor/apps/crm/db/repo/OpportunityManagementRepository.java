@@ -25,12 +25,11 @@ import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
+
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
-    OpportunityStatus status =
-        Beans.get(OpportunityStatusRepository.class)
-            .findByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_EMPTY);
+    OpportunityStatus status = Beans.get(OpportunityStatusRepository.class).getDefaultStatus();
     copy.setOpportunityStatus(status);
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);

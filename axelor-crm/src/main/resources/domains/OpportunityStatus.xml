@@ -9,7 +9,7 @@
 
     <string name="name" title="Name" required="true"/>
     <integer name="sequence" title="Sequence"/>
-    <integer name="typeSelect" title="Type of status"
+    <integer name="typeSelect" title="Type of status" default="0"
       selection="crm.opportunity.status.type.select"/>
 
     <finder-method name="findByNextSequence" filter="self.sequence &gt; :sequence"
@@ -23,7 +23,6 @@
     <extra-code>
 		<![CDATA[
 			//Status type select
-			public static final int STATUS_TYPE_EMPTY = 0;
 			public static final int STATUS_TYPE_CLOSED_WON = 1;
 			public static final int STATUS_TYPE_CLOSED_LOST = 2;
 		]]>

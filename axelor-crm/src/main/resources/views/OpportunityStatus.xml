@@ -6,7 +6,6 @@
   <grid name="opportunity-status-grid" canMove="true" title="Opportunity statuses"
     orderBy="sequence" model="com.axelor.apps.crm.db.OpportunityStatus">
     <field name="name"/>
-    <field name="typeSelect"/>
   </grid>
 
   <form name="opportunity-status-form" title="Opportunity status"
