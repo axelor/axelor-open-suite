@@ -148,18 +148,16 @@ public class AnalyticMoveLineQueryController {
         List<AnalyticAxis> analyticAxisList =
             Beans.get(AnalyticMoveLineQueryService.class)
                 .getAvailableAnalyticAxes(analyticMoveLineQuery, reverse);
+        String analyticAxisIds =
+            analyticAxisList.isEmpty()
+                ? "0"
+                : analyticAxisList.stream()
+                    .map(AnalyticAxis::getId)
+                    .map(Objects::toString)
+                    .collect(Collectors.joining(","));
 
         response.setAttr(
-            "analyticAxis",
-            "domain",
-            String.format(
-                "self.id IN (%s)",
-                analyticAxisList.isEmpty()
-                    ? "0"
-                    : analyticAxisList.stream()
-                        .map(AnalyticAxis::getId)
-                        .map(Objects::toString)
-                        .collect(Collectors.joining(","))));
+            "analyticAxis", "domain", String.format("self.id IN (%s)", analyticAxisIds));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
