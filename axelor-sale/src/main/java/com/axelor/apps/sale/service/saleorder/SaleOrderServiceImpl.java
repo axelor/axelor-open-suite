@@ -366,13 +366,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Transactional
-  public SaleOrder seperateInNewQuotation(
+  public SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {
 
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
-    List<SaleOrderLine> seperatedSOLines;
+    List<SaleOrderLine> separatedSOLines;
 
     SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
@@ -386,16 +386,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLine saleOrderLine =
           Beans.get(SaleOrderLineRepository.class)
               .find(Long.parseLong(soLine.get("id").toString()));
-      seperatedSOLines = new ArrayList<>();
-      seperatedSOLines.add(saleOrderLine);
-      seperatedSOLines.addAll(
+      separatedSOLines = new ArrayList<>();
+      separatedSOLines.add(saleOrderLine);
+      separatedSOLines.addAll(
           originalSOLines.stream()
               .filter(
                   soline ->
                       StringUtils.notBlank(saleOrderLine.getManualId())
                           && saleOrderLine.getManualId().equals(soline.getParentId()))
               .collect(Collectors.toList()));
-      manageSeperatedSOLines(seperatedSOLines, originalSOLines, copySaleOrder);
+      manageSeparatedSOLines(separatedSOLines, originalSOLines, copySaleOrder);
     }
 
     copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
@@ -406,12 +406,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return copySaleOrder;
   }
 
-  private void manageSeperatedSOLines(
-      List<SaleOrderLine> seperatedSOLines,
+  private void manageSeparatedSOLines(
+      List<SaleOrderLine> separatedSOLines,
       List<SaleOrderLine> originalSOLines,
       SaleOrder copySaleOrder) {
 
-    for (SaleOrderLine SSOLine : seperatedSOLines) {
+    for (SaleOrderLine SSOLine : separatedSOLines) {
       copySaleOrder.addSaleOrderLineListItem(SSOLine);
 
       List<SaleOrderLine> partnerComplementarySOLines =
