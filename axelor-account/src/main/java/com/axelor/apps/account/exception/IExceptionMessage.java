@@ -295,7 +295,7 @@ public interface IExceptionMessage {
       "The move payment condition is defining at least one holdback and there is no corresponding move line." /*)*/;
 
   static final String MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE = /*$$(*/
-      "The payment condition can't be updated due to the fact that at least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually." /*)*/;
+      "At least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually." /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
   static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
       "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
