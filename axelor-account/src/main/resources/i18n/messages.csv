@@ -2904,6 +2904,7 @@
 "The partner is blocked for invoicing.",,,
 "The partner is required and must be the same for all invoices",,,
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.",,,
+"The payment condition can't be updated due to the fact that at least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually.",,,
 "The payment mode is not in adequacy with the invoice type",,,
 "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves",,,
 "The period of the move is closed or temporary closed and can not be accounted",,,
