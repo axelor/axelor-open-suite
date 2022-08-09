@@ -530,7 +530,7 @@
     <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
-    <action name="action-move-method-update-partner"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
     <action name="save"/>
     <action name="action-move-method-update-in-day-book-mode"/>
   </action-group>
