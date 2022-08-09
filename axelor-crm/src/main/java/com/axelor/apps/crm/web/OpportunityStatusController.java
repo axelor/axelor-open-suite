@@ -42,25 +42,13 @@ public class OpportunityStatusController {
     }
 
     if (isWonPresent && isLostPresent) {
-      response.setAttr("typeSelect", "readonly", true);
+      response.setAttr("typeSelect", "hidden", true);
     } else if (isWonPresent) {
       response.setAttr(
-          "typeSelect",
-          "selection-in",
-          "["
-              + OpportunityStatusRepository.STATUS_TYPE_EMPTY
-              + ","
-              + OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST
-              + "]");
+          "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST);
     } else if (isLostPresent) {
       response.setAttr(
-          "typeSelect",
-          "selection-in",
-          "["
-              + OpportunityStatusRepository.STATUS_TYPE_EMPTY
-              + ","
-              + OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON
-              + "]");
+          "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON);
     }
   }
 }
