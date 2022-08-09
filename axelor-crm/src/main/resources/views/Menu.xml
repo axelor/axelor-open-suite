@@ -101,7 +101,7 @@
     action="crm.root.leadHistorical" order="26"/>
   <action-view name="crm.root.leadHistorical" title="Leads historical"
     model="com.axelor.apps.crm.db.Lead">
-    <view type="grid" name="lead-grid"/>
+    <view type="grid" name="lead-historical-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
     <domain>self.leadStatus.isClosed = true</domain>
