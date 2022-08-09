@@ -239,10 +239,16 @@
   </selection>
 
   <selection name="bank.payment.bank.order.line.origin.related.to.select">
-    <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
-    <option value="com.axelor.apps.account.db.PaymentScheduleLine">Payment schedule line</option>
-    <option value="com.axelor.apps.account.db.Reimbursement">Reimbursement</option>
-    <option value="com.axelor.apps.hr.db.Expense">Expense</option>
+    <option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid"
+      data-form="invoice-form">Invoice</option>
+    <option value="com.axelor.apps.account.db.PaymentScheduleLine"
+      data-grid="payment-schedule-line-grid" data-form="payment-schedule-line-form">Payment schedule line</option>
+    <option value="com.axelor.apps.account.db.Reimbursement" data-grid="reimbursement-grid"
+      data-form="reimbursement-form">Reimbursement</option>
+    <option value="com.axelor.apps.account.db.InvoiceTerm"
+      data-grid="invoice-term-move-line-grid" data-form="invoice-term-move-line-form">Invoice term</option>
+    <option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid"
+      data-form="expense-form">Expense</option>
   </selection>
 
   <selection name="sequence.generic.code.select"
@@ -309,6 +315,32 @@
     <option value="0">None</option>
     <option value="1">Select</option>
     <option value="2">With formula</option>
+  </selection>
+
+  <selection name="payment.mode.accounting.trigger.select"
+    id="bank.payment.payment.mode.accounting.trigger.select">
+    <option value="2" order="2">Bank order confirmation</option>
+    <option value="3" order="3">Bank order validation</option>
+    <option value="4" order="4">Bank order realization</option>
+  </selection>
+
+  <selection name="bank.order.accounting.trigger.select">
+    <option value="0">None</option>
+    <option value="1">Already accounted</option>
+    <option value="2">Bank order confirmation</option>
+    <option value="3">Bank order validation</option>
+    <option value="4">Bank order realization</option>
+  </selection>
+
+  <selection name="bank.order.functional.origin.select">
+    <option value="1">Manual</option>
+    <option value="10">bankorder.invoicePayment</option>
+    <option value="20">Expense</option>
+    <option value="30">Payment session</option>
+    <option value="40">LCR</option>
+    <option value="50">Batch</option>
+    <option value="51">MonthlyPaymentScheduleLines (batch)</option>
+    <option value="52">CreditTransferPartnerReimbursement (batch)</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="bank.payment.batch.batch.type.select">

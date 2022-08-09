@@ -35,6 +35,7 @@
         grid-view="company-grid"
         onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+      <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
     </panel>
     <panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
@@ -78,6 +79,10 @@
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <panel name="originControlSettings" showTitle="false" colSpan="12">
+            <field name="hasDuplicateDetectionOnOrigin"/>
+            <field name="hasRequiredOrigin"/>
+          </panel>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
@@ -153,7 +158,7 @@
 
   <action-group name="action-journal-group-on-load-actions">
     <action name="action-journal-method-set-totals"
-      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+      if="journalType != null &amp;&amp; journalType?.isDisplayBalances"/>
     <action name="action-method-account-journal-readonly-if-journal-in-move"/>
     <action name="action-attrs-account-journal-status-show-title"/>
   </action-group>

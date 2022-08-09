@@ -39,7 +39,7 @@
 
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"
       selection="move.line.reimbursement.status.select"/>
-    <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
+    <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
@@ -102,6 +102,9 @@
 
     <date name="originDate" title="Origin date" initParam="true"/>
 
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="moveLine" title="Invoice terms"/>
+
     <!-- DAS2 -->
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       readonly="true"/>
@@ -129,6 +132,17 @@
         return BigDecimal.ZERO;
 	   ]]>
     </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
 
     <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
@@ -143,6 +157,14 @@
 
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.moveline.select" default="0"/>
+
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

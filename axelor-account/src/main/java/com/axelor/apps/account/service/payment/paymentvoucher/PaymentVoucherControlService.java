@@ -18,27 +18,39 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.AccountManagementRepository;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentVoucherControlService {
 
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;
+  protected AppBaseService appBaseService;
+  protected AccountManagementRepository accountManagementRepo;
 
   @Inject
-  public PaymentVoucherControlService(PaymentVoucherSequenceService paymentVoucherSequenceService) {
-
+  public PaymentVoucherControlService(
+      PaymentVoucherSequenceService paymentVoucherSequenceService,
+      AppBaseService appBaseService,
+      AccountManagementRepository accountManagementRepo) {
     this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+    this.appBaseService = appBaseService;
+    this.accountManagementRepo = accountManagementRepo;
   }
 
   /**
@@ -116,5 +128,51 @@ public class PaymentVoucherControlService {
       return true;
     }
     return false;
+  }
+
+  public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
+    if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
+      for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
+        if (!elementToPay
+            .getRemainingAmount()
+            .equals(elementToPay.getMoveLine().getAmountRemaining())) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public boolean isReceiptDisplayed(PaymentVoucher paymentVoucher) {
+    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED) {
+      return false;
+    }
+
+    boolean isMultiBanks =
+        appBaseService.getAppBase().getManageMultiBanks()
+            && paymentVoucher.getCompanyBankDetails() != null;
+    String query = "self.company = :company AND self.paymentMode = :paymentMode";
+
+    if (isMultiBanks) {
+      query += " AND self.bankDetails = :bankDetails";
+    }
+
+    Query<AccountManagement> accountManagementQuery =
+        accountManagementRepo
+            .all()
+            .filter(query)
+            .bind("company", paymentVoucher.getCompany())
+            .bind("paymentMode", paymentVoucher.getPaymentMode());
+
+    if (isMultiBanks) {
+      accountManagementQuery =
+          accountManagementQuery.bind("bankDetails", paymentVoucher.getCompanyBankDetails());
+    }
+
+    AccountManagement accountManagement = accountManagementQuery.fetchOne();
+
+    return accountManagement != null
+        && accountManagement.getJournal() != null
+        && accountManagement.getJournal().getEditReceiptOk();
   }
 }

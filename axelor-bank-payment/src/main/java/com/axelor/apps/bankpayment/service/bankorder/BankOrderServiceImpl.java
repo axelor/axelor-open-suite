@@ -19,7 +19,11 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -87,6 +91,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderMoveService bankOrderMoveService;
   protected AppBaseService appBaseService;
+  protected PaymentSessionRepository paymentSessionRepo;
 
   @Inject
   public BankOrderServiceImpl(
@@ -99,7 +104,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderMoveService bankOrderMoveService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      PaymentSessionRepository paymentSessionRepo) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -111,6 +117,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderMoveService = bankOrderMoveService;
     this.appBaseService = appBaseService;
+    this.paymentSessionRepo = paymentSessionRepo;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -296,6 +303,25 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
+  protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
+    switch (bankOrder.getFunctionalOriginSelect()) {
+      case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
+        PaymentSession paymentSession =
+            paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
+
+        if (paymentSession != null) {
+          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+          break;
+        }
+        // TODO other cases
+      default:
+        bankOrderMoveService.generateMoves(bankOrder);
+        validatePayment(bankOrder);
+    }
+
+    return bankOrderRepo.find(bankOrder.getId());
+  }
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(BankOrder bankOrder)
@@ -326,6 +352,11 @@ public class BankOrderServiceImpl implements BankOrderService {
     } else {
       validate(bankOrder);
     }
+
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
+      this.generateMoves(bankOrder);
+    }
   }
 
   @Override
@@ -344,11 +375,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankPaymentConfigService
-        .getBankPaymentConfig(bankOrder.getSenderCompany())
-        .getGenerateMoveOnBankOrderValidation()) {
-      bankOrderMoveService.generateMoves(bankOrder);
-      validatePayment(bankOrder);
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrderRepo.save(bankOrder);
@@ -399,11 +428,9 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (!bankPaymentConfigService
-        .getBankPaymentConfig(bankOrder.getSenderCompany())
-        .getGenerateMoveOnBankOrderValidation()) {
-      bankOrderMoveService.generateMoves(bankOrder);
-      validatePayment(bankOrder);
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());

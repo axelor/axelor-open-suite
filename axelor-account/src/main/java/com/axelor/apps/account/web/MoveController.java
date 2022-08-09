@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -44,7 +45,6 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -67,6 +67,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -108,7 +110,7 @@ public class MoveController {
       if (move.getDate() != null && move.getCompany() != null) {
         Period period =
             Beans.get(PeriodService.class)
-                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+                .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
         if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
 
           response.setValue("period", period);
@@ -150,6 +152,52 @@ public class MoveController {
   }
 
   @SuppressWarnings("unchecked")
+  public void massReverseMove(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+
+      if (CollectionUtils.isNotEmpty(moveIds)) {
+        List<Move> moveList =
+            Beans.get(MoveRepository.class)
+                .all()
+                .filter("self.id IN :moveList AND self.statusSelect <> :simulatedStatus")
+                .bind("moveList", moveIds)
+                .bind("simulatedStatus", MoveRepository.STATUS_SIMULATED)
+                .fetch();
+
+        if (CollectionUtils.isNotEmpty(moveList)) {
+          Map<String, Object> assistantMap =
+              Beans.get(ExtractContextMoveService.class)
+                  .getMapFromMoveWizardMassReverseForm(request.getContext());
+
+          String reverseMoveIds =
+              Beans.get(MoveReverseService.class).massReverse(moveList, assistantMap).stream()
+                  .map(Move::getId)
+                  .map(Objects::toString)
+                  .collect(Collectors.joining(","));
+
+          response.setView(
+              ActionView.define(I18n.get("Account move"))
+                  .model("com.axelor.apps.account.db.Move")
+                  .add("grid", "move-grid")
+                  .add("form", "move-form")
+                  .param("forceEdit", "true")
+                  .domain(
+                      String.format(
+                          "self.id IN (%s)", reverseMoveIds.isEmpty() ? "0" : reverseMoveIds))
+                  .map());
+
+          return;
+        }
+      }
+
+      response.setError(I18n.get(IExceptionMessage.NO_MOVES_SELECTED_MASS_REVERSE));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
   public void accountingMultipleMoves(ActionRequest request, ActionResponse response) {
     List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
     try {
@@ -170,8 +218,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -220,8 +267,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -229,7 +275,7 @@ public class MoveController {
                       move.getReference()));
             }
           }
-          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+          Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
           response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
         } else {
@@ -286,6 +332,8 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      String flashMessage = I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE);
+
       if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
@@ -298,18 +346,19 @@ public class MoveController {
                     MoveRepository.STATUS_CANCELED,
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
+        int moveNb = moveList.size();
+
         if (!moveList.isEmpty()) {
           int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
-          if (errorNB > 0) {
-            response.setFlash(
-                String.format(
-                    I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
-          } else {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
-            response.setReload(true);
-          }
-        } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+          flashMessage =
+              errorNB > 0
+                  ? String.format(
+                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB)
+                  : String.format(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK), moveNb);
+        }
+      }
+
+      response.setFlash(flashMessage);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -561,19 +610,11 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
       User user = AuthUtils.getUser();
-      if (move.getPeriod() != null
-          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
-        response.setError(
-            I18n.get(
-                "This period is temporarily closed and you do not have the necessary permissions to create entries"));
-      } else if (move.getPeriod() != null
-          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
-        response.setError(
-            I18n.get(
-                "This period is closed and you do not have the necessary permissions to create entries"));
-      }
+      Period period = move.getPeriod();
+      boolean isAuthorizedToAccountOnPeriod =
+          periodServiceAccount.isAuthorizedToAccountOnPeriod(period, user);
+
+      Beans.get(PeriodService.class).checkClosedPeriod(period, isAuthorizedToAccountOnPeriod);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -657,6 +698,47 @@ public class MoveController {
           response.setValue("partner", null);
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void roundInvoiceTermPercentages(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRepository.class).find(move.getId());
+      Beans.get(MoveInvoiceTermService.class).roundInvoiceTermPercentages(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void isAuthorizedOnPeriod(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      User user = AuthUtils.getUser();
+      response.setValue(
+          "$validatePeriod",
+          !Beans.get(PeriodServiceAccount.class)
+              .isAuthorizedToAccountOnPeriod(move.getPeriod(), user));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkDuplicatedMoveOrigin(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      if (Beans.get(MoveToolService.class).checkMoveOriginIsDuplicated(move)) {
+        response.setAlert(
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
+                move.getReference(),
+                move.getPartner() != null ? move.getPartner().getFullName() : "",
+                move.getPeriod().getYear().getName()));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

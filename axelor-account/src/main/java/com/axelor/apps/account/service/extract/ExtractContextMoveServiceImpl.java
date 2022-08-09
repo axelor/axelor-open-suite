@@ -39,25 +39,42 @@ public class ExtractContextMoveServiceImpl implements ExtractContextMoveService 
 
     Map<String, Object> assistantMap = new HashMap<String, Object>();
     int dateOfReversionSelect = (int) context.get("dateOfReversionSelect");
-    LocalDate dateOfReversion;
+    assistantMap.put(
+        "dateOfReversion", this.getDateOfReversion(context, move, dateOfReversionSelect));
+
+    this.getBooleans(context, assistantMap);
+
+    return assistantMap;
+  }
+
+  @Override
+  public Map<String, Object> getMapFromMoveWizardMassReverseForm(Context context) {
+    Map<String, Object> assistantMap = new HashMap<>();
+    int dateOfReversionSelect = (int) context.get("dateOfReversionSelect");
+    assistantMap.put("dateOfReversionSelect", dateOfReversionSelect);
+
+    if (dateOfReversionSelect == MoveRepository.DATE_OF_REVERSION_CHOOSE_DATE) {
+      assistantMap.put(
+          "dateOfReversion", LocalDate.parse(context.get("dateOfReversion").toString()));
+    }
+
+    this.getBooleans(context, assistantMap);
+
+    return assistantMap;
+  }
+
+  @Override
+  public LocalDate getDateOfReversion(Context context, Move move, int dateOfReversionSelect)
+      throws AxelorException {
     switch (dateOfReversionSelect) {
       case MoveRepository.DATE_OF_REVERSION_TODAY:
-        dateOfReversion = Beans.get(AppBaseService.class).getTodayDate(move.getCompany());
-        break;
-
+        return Beans.get(AppBaseService.class).getTodayDate(move.getCompany());
       case MoveRepository.DATE_OF_REVERSION_ORIGINAL_MOVE_DATE:
-        dateOfReversion = move.getDate();
-        break;
-
+        return move.getDate();
       case MoveRepository.DATE_OF_REVERSION_TOMORROW:
-        dateOfReversion =
-            Beans.get(AppBaseService.class).getTodayDate(move.getCompany()).plusDays(1);
-        break;
-
+        return Beans.get(AppBaseService.class).getTodayDate(move.getCompany()).plusDays(1);
       case MoveRepository.DATE_OF_REVERSION_CHOOSE_DATE:
-        dateOfReversion = LocalDate.parse(context.get("dateOfReversion").toString());
-        break;
-
+        return LocalDate.parse(context.get("dateOfReversion").toString());
       default:
         throw new AxelorException(
             move,
@@ -65,12 +82,11 @@ public class ExtractContextMoveServiceImpl implements ExtractContextMoveService 
             I18n.get(IExceptionMessage.REVERSE_DATE_SELECT_UNKNOW_TYPE),
             dateOfReversionSelect);
     }
-    assistantMap.put("dateOfReversion", dateOfReversion);
+  }
 
-    assistantMap.put("isAutomaticReconcile", (boolean) context.get("isAutomaticReconcile"));
-    assistantMap.put("isAutomaticAccounting", (boolean) context.get("isAutomaticAccounting"));
-    assistantMap.put(
-        "isUnreconcileOriginalMove", (boolean) context.get("isUnreconcileOriginalMove"));
-    return assistantMap;
+  protected void getBooleans(Context context, Map<String, Object> assistantMap) {
+    assistantMap.put("isAutomaticReconcile", context.get("isAutomaticReconcile"));
+    assistantMap.put("isAutomaticAccounting", context.get("isAutomaticAccounting"));
+    assistantMap.put("isUnreconcileOriginalMove", context.get("isUnreconcileOriginalMove"));
   }
 }

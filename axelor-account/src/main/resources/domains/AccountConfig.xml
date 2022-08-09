@@ -175,7 +175,6 @@
     <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice"
       title="Allow cancelation of ventilated invoice"/>
-    <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
@@ -272,7 +271,7 @@
       title="Main partner DAS"
       help="Field to store the main contact used in DAS declaration export. Also make sure this contact has a valid email address, otherwise it will be impossible to generate the declaration file. If this field is empty, it will be impossible to generate the file, an alert will be generated."/>
 
-
+    <!-- Discount accounts -->
     <many-to-one name="purchFinancialDiscountAccount"
       ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account"/>
     <many-to-one name="saleFinancialDiscountAccount"
@@ -282,17 +281,22 @@
     <many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
       title="Sale financial discount tax"/>
 
+    <!-- Holdback accounts -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+
+      title="Holdback Supplier account"/>
+
     <many-to-many ref="com.axelor.auth.db.Role"
       name="temporaryClosureAuthorizedRoleList" title="Temporary Closure Authorized Role"
       help="Authorized roles for temporary closure"/>
     <many-to-many ref="com.axelor.auth.db.Role" name="closureAuthorizedRoleList"
       title="Closure Authorized Role" help="Authorized roles for closure"/>
-
-    <!-- Holdback accounts -->
-    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
-      title="Holdback Customer account"/>
-    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
-      title="Holdback Supplier account"/>
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="moveOnTempClosureAuthorizedRoleList"
+      title="Creation / Edition of move on temporary closed period authorized role"
+      help="Authorized roles for creation or edition of move on temporary closed period"/>
 
     <!-- Cut off accounts -->
     <many-to-one name="prepaidExpensesAccount" title="Prepaid expenses account"
@@ -304,6 +308,9 @@
       title="Result account (profit)"/>
     <many-to-one ref="com.axelor.apps.account.db.Account" name="resultLossAccount"
       title="Result account (loss)"/>
+
+    <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
+      help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -414,7 +421,6 @@
 
 
       <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
-      <field name="allowRemovalValidatedMove" on="UPDATE"/>
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>

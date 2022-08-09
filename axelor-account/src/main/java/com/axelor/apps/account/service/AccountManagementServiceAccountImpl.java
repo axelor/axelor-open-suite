@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
@@ -225,6 +226,21 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   }
 
   @Override
+  public Account getCashAccount(AccountManagement accountManagement, PaymentMode paymentMode)
+      throws AxelorException {
+    if (accountManagement == null || paymentMode == null) {
+      return null;
+    }
+    if (accountManagement != null && accountManagement.getCashAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
+          paymentMode.getCode());
+    }
+    return accountManagement.getCashAccount();
+  }
+
+  @Override
   public Account getPurchVatRegulationAccount(
       AccountManagement accountManagement, Tax tax, Company company) throws AxelorException {
     if (accountManagement != null && accountManagement.getPurchVatRegulationAccount() == null) {
@@ -248,5 +264,18 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
           company.getCode());
     }
     return accountManagement.getSaleVatRegulationAccount();
+  }
+
+  @Override
+  public Account getFinancialDiscountAccount(
+      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException {
+    if (accountManagement != null && accountManagement.getFinancialDiscountAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX),
+          tax.getCode(),
+          company.getCode());
+    }
+    return accountManagement.getFinancialDiscountAccount();
   }
 }

@@ -81,6 +81,9 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_MOVES_CONSISTENCY_CONTROL:
         batch = controlMovesConsistency(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF:
+        batch = accountingCutOff(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -180,6 +183,10 @@ public class AccountingBatchService extends AbstractBatchService {
 
   public Batch controlMovesConsistency(AccountingBatch accountingBatch) {
     return Beans.get(BatchControlMovesConsistency.class).run(accountingBatch);
+  }
+
+  public Batch accountingCutOff(AccountingBatch accountingBatch) {
+    return Beans.get(BatchAccountingCutOff.class).run(accountingBatch);
   }
 
   @Transactional

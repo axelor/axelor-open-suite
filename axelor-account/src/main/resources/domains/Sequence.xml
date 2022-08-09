@@ -35,6 +35,7 @@
         public static final String SUB_ROGATION_RELEASE = "subrogationRelease";
         public static final String FIXED_ASSET = "fixedAsset";
         public static final String NOTE_BILLS = "noteBills";
+        public static final String PAYMENT_SESSION = "paymentSession";
         ]]></extra-code>
   </entity>
 

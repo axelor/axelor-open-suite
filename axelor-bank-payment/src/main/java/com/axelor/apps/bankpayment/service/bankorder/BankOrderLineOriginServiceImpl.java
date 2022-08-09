@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -53,13 +54,27 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
   protected String computeRelatedToSelectName(Model model) {
 
     if (model instanceof Invoice) {
-
+      Invoice invoice = ((Invoice) model);
+      if (invoice.getMove() != null) {
+        return invoice.getMove().getOrigin() != null && !"".equals(invoice.getMove().getOrigin())
+            ? invoice.getMove().getOrigin()
+            : invoice.getMove().getReference();
+      }
       return ((Invoice) model).getInvoiceId();
 
     } else if (model instanceof PaymentScheduleLine) {
 
       return ((PaymentScheduleLine) model).getName();
 
+    } else if (model instanceof InvoiceTerm) {
+      InvoiceTerm invoiceTerm = ((InvoiceTerm) model);
+      if (invoiceTerm.getMoveLine() != null && invoiceTerm.getMoveLine().getMove() != null) {
+        return (invoiceTerm.getMoveLine().getOrigin() != null)
+                && !("".equals(invoiceTerm.getMoveLine().getOrigin()))
+            ? invoiceTerm.getMoveLine().getOrigin()
+            : invoiceTerm.getMoveLine().getMove().getReference();
+      }
+      return invoiceTerm.getName();
     } else if (model instanceof Reimbursement) {
 
       return ((Reimbursement) model).getRef();
@@ -69,13 +84,26 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
   protected LocalDate computeRelatedToSelectDate(Model model) {
     if (model instanceof Invoice) {
-
+      Invoice invoice = ((Invoice) model);
+      if (invoice.getMove() != null) {
+        return invoice.getMove().getOriginDate() != null
+            ? invoice.getMove().getOriginDate()
+            : invoice.getMove().getDate();
+      }
       return ((Invoice) model).getInvoiceDate();
 
     } else if (model instanceof PaymentScheduleLine) {
 
       return ((PaymentScheduleLine) model).getScheduleDate();
 
+    } else if (model instanceof InvoiceTerm) {
+      InvoiceTerm invoiceTerm = ((InvoiceTerm) model);
+      if (invoiceTerm.getMoveLine() != null) {
+        return invoiceTerm.getMoveLine().getOriginDate() != null
+            ? invoiceTerm.getMoveLine().getOriginDate()
+            : invoiceTerm.getMoveLine().getDate();
+      }
+      return invoiceTerm.getOriginDate();
     } else if (model instanceof Reimbursement) {
 
       return null;
@@ -92,6 +120,8 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
       return ((PaymentScheduleLine) model).getScheduleDate();
 
+    } else if (model instanceof InvoiceTerm) {
+      return ((InvoiceTerm) model).getDueDate();
     } else if (model instanceof Reimbursement) {
 
       return null;

@@ -180,7 +180,7 @@
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <button name="confirmBtn" title="Confirmer"
-        onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
+        onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
     </panel>
   </form>
 
@@ -384,7 +384,9 @@
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
           domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" required="true"
@@ -468,7 +470,7 @@
         css="bold red"/>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="clientPartner == null || ($enableSalesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content">
         <panel-related name="detailLinesPanel"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
@@ -693,7 +695,7 @@
       <button name="seperateInNewQuotationBtn" title="Separate in a new quotation"
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
-        onClick="action-sale-order-method-update-sale-order-line-list" showIf="statusSelect == 1"
+        onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
         if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
@@ -1364,10 +1366,7 @@
   </action-group>
 
   <action-group name="action-group-sale-order-merge-action">
-    <action name="action-sale-order-method-merge-sale"
-      if="!__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-method-merge-supplychain"
-      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-method-merge-sale"/>
   </action-group>
 
   <action-group name="action-sale-group-onchange-company">
@@ -1402,7 +1401,7 @@
     <action name="action-sale-order-attrs-availability"/>
     <action name="action-sale-order-group-set-defualts-from-opportunity"
       if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
-    <action name="action-sale-order-record-load-trading-name-config"/>
+    <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
   </action-group>
 
@@ -1423,10 +1422,10 @@
     <field name="salespersonUser" expr="eval: __parent__?.user"/>
   </action-record>
 
-  <action-record name="action-sale-order-record-load-trading-name-config"
+  <action-record name="action-sale-order-record-get-trading-names-management-config"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="$enableSalesProductByTradName"
-      expr="eval: __config__.app.getApp('sale').enableSalesProductByTradName"/>
+    <field name="$enableTradingNamesManagement"
+      expr="eval: __config__.app.getApp('base').enableTradingNamesManagement"/>
   </action-record>
 
   <action-group name="action-group-sale-saleorder-onload">
@@ -1440,7 +1439,7 @@
     <action name="action-sale-order-attrs-availability"/>
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
-    <action name="action-sale-order-record-load-trading-name-config"/>
+    <action name="action-sale-order-record-get-trading-names-management-config"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1472,7 +1471,8 @@
     <action name="action-sale-order-record-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-sale-order-method-address-str"/>
-    <action name="action-sale-order-method-fill-price-list" if="!template"/>
+    <action name="action-sale-order-method-fill-price-list"
+      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-set-contact-partner"/>
@@ -1577,12 +1577,12 @@
   </action-method>
 
   <action-method name="action-sale-order-method-merge-sale">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="mergeSaleOrder"/>
+    <call class="com.axelor.apps.sale.web.SaleOrderMergingController" method="mergeSaleOrder"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-merge-supplychain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="mergeSaleOrder"/>
+  <action-method name="action-sale-order-method-merge-from-pop-up">
+    <call class="com.axelor.apps.sale.web.SaleOrderMergingController"
+      method="mergeSaleOrderFromPopUp"/>
   </action-method>
 
   <action-method name="action-sale-order-method-confirm">
@@ -1730,8 +1730,9 @@
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
     <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
-      if="__config__.app.isApp('account')"/>
-    <field name="currency" expr="eval: clientPartner?.currency" if="!template"/>
+      if="__config__.app.isApp('account') &amp;&amp; saleOrderLineList?.isEmpty()"/>
+    <field name="currency" expr="eval: clientPartner?.currency"
+      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode != null"/>
     <field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode"
@@ -1959,7 +1960,7 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId =
       :saleOrder</domain>
-    <context name="saleOrder" expr="eval: __self__.id"/>
+    <context name="saleOrder" expr="eval: __this__.id"/>
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
 
@@ -2147,6 +2148,11 @@
   <action-method name="action-sale-order-method-update-sale-order-line-list">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineList"/>
   </action-method>
+
+  <action-group name="action-sale-order-group-compute-pricing-scale-btn">
+    <action name="action-sale-order-method-update-sale-order-line-list"/>
+    <action name="action-sale-order-method-compute"/>
+  </action-group>
 
   <action-attrs name="action-sale-order-attrs-template-deafult-currency">
     <attribute name="value" for="currency" expr="eval: _clientPartnerCurrency"

@@ -18,17 +18,19 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,8 +44,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected MoveLineTaxService moveLineTaxService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
-  protected AccountManagementService accountManagementService;
   protected PaymentModeService paymentModeService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public MoveCounterPartServiceImpl(
@@ -53,7 +55,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       MoveLineTaxService moveLineTaxService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
-      AccountManagementService accountManagementService,
+      AccountManagementAccountService accountManagementAccountService,
       PaymentModeService paymentModeService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
@@ -61,7 +63,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     this.moveLineTaxService = moveLineTaxService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
-    this.accountManagementService = accountManagementService;
+    this.accountManagementAccountService = accountManagementAccountService;
     this.paymentModeService = paymentModeService;
   }
 
@@ -126,8 +128,16 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       accountingAccount =
           accountingSituationService.getCustomerAccount(move.getPartner(), move.getCompany());
     } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-        && move.getPaymentMode() != null) {
-      accountingAccount = paymentModeService.getPaymentModeAccount(move);
+        && move.getPaymentMode() != null
+        && move.getCompany() != null) {
+      AccountManagement accountManagement =
+          accountManagementAccountService.getAccountManagement(
+              move.getPaymentMode().getAccountManagementList(), move.getCompany());
+      if (ObjectUtils.notEmpty(accountManagement)) {
+        accountingAccount =
+            accountManagementAccountService.getCashAccount(
+                accountManagement, move.getPaymentMode());
+      }
     }
     return accountingAccount;
   }

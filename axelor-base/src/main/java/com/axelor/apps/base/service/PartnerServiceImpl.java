@@ -508,14 +508,10 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
-
-    for (BankDetails bankDetails : partner.getBankDetailsList()) {
-      if (bankDetails.getIsDefault()) {
-        return bankDetails;
-      }
-    }
-
-    return null;
+    return partner.getBankDetailsList().stream()
+        .filter(BankDetails::getIsDefault)
+        .findFirst()
+        .orElse(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -672,29 +668,6 @@ public class PartnerServiceImpl implements PartnerService {
       return companyStr.substring(0, companyStr.length() - 1);
     }
     return null;
-  }
-
-  @Override
-  public String getPartnerDomain(Partner partner) {
-    String domain = "";
-
-    if (partner != null) {
-      if (partner.getCurrency() != null) {
-        domain += String.format(" AND self.currency.id = %d", partner.getCurrency().getId());
-      }
-      if (partner.getSalePartnerPriceList() != null) {
-        domain +=
-            String.format(
-                " AND self.salePartnerPriceList.id = %s",
-                partner.getSalePartnerPriceList().getId());
-      }
-      if (partner.getFiscalPosition() != null) {
-        domain +=
-            String.format(" AND self.fiscalPosition.id = %s", partner.getFiscalPosition().getId());
-      }
-    }
-
-    return domain;
   }
 
   @Override

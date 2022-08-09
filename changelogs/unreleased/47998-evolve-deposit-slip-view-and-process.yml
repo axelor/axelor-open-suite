@@ -1,0 +1,9 @@
+---
+title: "EVOLVE DEPOSIT SLIP VIEW AND PROCESS"
+type: feature
+description: |
+  We need to improve Deposit slip object and process in order to be able to :
+  - manage moves of type value of collection
+  - choose which paymentVouchers to include in the deposit slip
+  - be able to create a deposit slip for payment vouchers with different company bank details
+

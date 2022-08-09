@@ -275,6 +275,8 @@ public interface IExceptionMessage {
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
 
+  static final String PAYMENT_SESSION_GENERATED_BANK_ORDER = /*$$(*/
+      "The bank order %s has been generated successfully." /*)*/;
   static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
       "Email adress is missing for partner %s" /*)*/;
 
@@ -282,6 +284,12 @@ public interface IExceptionMessage {
       "Move line's query formula has not been evaluated to a Move line" /*)*/;
   static final String BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER = /*$$(*/
       "Partner's query formula has not been evaluated to a Partner" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
 
   static final String STATEMENT_REMOVE_NOT_OK_NB = /*$$(*/
       "%d bank statement couldn't be deleted, please check the logs." /*)*/;

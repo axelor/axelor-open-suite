@@ -313,18 +313,26 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         BigDecimal amount;
         if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
           if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
+              || fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+                I18n.get("Appropriation Provision Tangible Fixed Asset Account")
+                    + " / "
+                    + I18n.get("Provision Tangible Fixed Asset Account"));
+          }
+          debitLineAccount = fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount();
+          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+        } else {
+          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
               || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
                 I18n.get("Provision Tangible Fixed Asset Account")
                     + " / "
-                    + I18n.get("WB Provision Tangible Fixed Asset Account"));
+                    + I18n.get("Written-back provision tangible fixed asset account"));
           }
-
-          debitLineAccount = fixedAssetCategory.getChargeAccount();
-          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-        } else {
           debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
           creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
         }

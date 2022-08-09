@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
@@ -47,7 +46,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
 
   protected FixedAssetLineService fixedAssetLineService;
-  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDateService fixedAssetDateService;
   private boolean canGenerateLines = false;
   private FixedAssetLine firstPlannedFixedAssetLine;
   private int listSizeAfterClear;
@@ -56,11 +55,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   public FixedAssetLineEconomicUpdateComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       FixedAssetLineService fixedAssetLineService,
-      AnalyticFixedAssetService analyticFixedAssetService,
+      FixedAssetDateService fixedAssetDateService,
       AppBaseService appBaseService) {
     super(fixedAssetFailOverControlService, appBaseService);
     this.fixedAssetLineService = fixedAssetLineService;
-    this.analyticFixedAssetService = analyticFixedAssetService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
@@ -109,7 +108,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
-    return analyticFixedAssetService.computeFirstDepreciationDate(
+    return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset,
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
@@ -142,7 +141,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
-    return analyticFixedAssetService.computeFirstDepreciationDate(
+    return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset,
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
@@ -150,7 +149,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    return analyticFixedAssetService.computeFirstDepreciationDate(
+    return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset,
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));

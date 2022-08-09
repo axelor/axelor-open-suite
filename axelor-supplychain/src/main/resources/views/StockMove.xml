@@ -62,6 +62,27 @@
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
 
+  <form id="supplychain-stock-move-form" name="stock-move-form" title="Stock move"
+    model="com.axelor.apps.stock.db.StockMove" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-stock-stockmove-onnew, action-stock-move-attrs-fill-ctx"/>
+      <attribute name="onLoad"
+        value="action-group-stock-stockmove-onload, action-stock-move-attrs-fill-ctx"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']">
+      <insert position="after">
+        <panel name="hiddenPanel" hidden="true">
+          <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-stock-move-attrs-fill-ctx">
+    <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
+  </action-attrs>
+
   <form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove"
     title="Mass Cust. Stock Move Invoicing">
     <panel-related name="$customerStockMoveToInvoicePanel"
