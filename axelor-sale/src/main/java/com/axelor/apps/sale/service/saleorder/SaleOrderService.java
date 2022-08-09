@@ -120,7 +120,7 @@ public interface SaleOrderService {
    */
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException;
 
-  SaleOrder seperateInNewQuotation(
+  SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
 }

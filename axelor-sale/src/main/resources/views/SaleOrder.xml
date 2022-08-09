@@ -692,8 +692,8 @@
       <button if="__config__.app.getApp('sale').getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
-      <button name="seperateInNewQuotationBtn" title="Separate in a new quotation"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
         if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
@@ -1626,8 +1626,8 @@
       method="handleComplementaryProducts"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-seperate-in-new-quotation">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="seperateInNewQuotation"/>
+  <action-method name="action-sale-order-method-separate-in-new-quotation">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="separateInNewQuotation"/>
   </action-method>
 
   <action-method
