@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.ValidationException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -505,9 +506,16 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
     String domain = null;
+    String bomsProductsList = createBomProductList(unitCostCalculation.getCompanySet());
     if (this.hasDefaultBOMSelected()) {
       if (company != null) {
-        domain = "self.defaultBillOfMaterial.company.id = " + company.getId().toString() + "";
+        domain =
+            "(self.id in ("
+                + bomsProductsList
+                + ")"
+                + " OR self.defaultBillOfMaterial.company.id = "
+                + company.getId().toString()
+                + ")";
       } else {
         domain = "self.defaultBillOfMaterial IS NOT NULL";
       }
@@ -531,12 +539,23 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       domain =
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
-              + ") AND self.defaultBillOfMaterial.company IN ("
+              + ") AND (self.defaultBillOfMaterial.company IN ("
               + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + ") OR self.id in ("
+              + bomsProductsList
+              + ")"
               + ") AND self.procurementMethodSelect IN ('produce', 'buyAndProduce') AND self.dtype = 'Product'";
     }
     log.debug("Product Domain: {}", domain);
     return domain;
+  }
+
+  protected String createBomProductList(Set<Company> companySet) throws AxelorException {
+
+    return StringTool.getIdListString(
+        billOfMaterialService.getBillOfMaterialSet(companySet).stream()
+            .map(BillOfMaterial::getProduct)
+            .collect(Collectors.toList()));
   }
 
   @Override

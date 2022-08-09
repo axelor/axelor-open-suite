@@ -431,4 +431,16 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     return billOfMaterial;
   }
+
+  @Override
+  public List<BillOfMaterial> getBillOfMaterialSet(Set<Company> companySet) throws AxelorException {
+
+    List<Long> idCompanyList = companySet.stream().map(Company::getId).collect(Collectors.toList());
+
+    return billOfMaterialRepo
+        .all()
+        .filter("self.company.id in (:companySet)")
+        .bind("companySet", idCompanyList)
+        .fetch();
+  }
 }

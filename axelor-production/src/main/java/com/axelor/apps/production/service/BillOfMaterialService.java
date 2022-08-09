@@ -28,6 +28,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface BillOfMaterialService {
 
@@ -72,4 +73,13 @@ public interface BillOfMaterialService {
   @CallMethod
   public BillOfMaterial getDefaultBOM(Product originalProduct, Company company)
       throws AxelorException;
+
+  /**
+   * Return the boms that belong to any society in companySet
+   *
+   * @param companySet
+   * @return
+   * @throws AxelorException
+   */
+  public List<BillOfMaterial> getBillOfMaterialSet(Set<Company> companySet) throws AxelorException;
 }
