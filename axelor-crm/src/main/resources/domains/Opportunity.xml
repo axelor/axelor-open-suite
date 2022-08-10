@@ -8,7 +8,8 @@
   <entity name="Opportunity" lang="java">
 
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
+      title="Customer / Prospect"/>
     <many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="expectedCloseDate" title="Expected close date"/>
@@ -36,12 +37,12 @@
     <string name="opportunitySeq" title="Reference" readonly="true" unique="true"/>
 
     <decimal name="recurrentAmount" title="Recurrent amount"/>
-    <integer name="periodicitySelect" title="Periodicity"
-      selection="crm.opportunity.periodicity.select"/>
+    <decimal name="expectedDurationOfRecurringRevenue"
+      title="Expected duration of recurring revenue (in months)"/>
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>
     <integer name="opportunityRating" title="Opportunity score"
-      selection="orange.rating.icon.select"/>
+      selection="gold.rating.icon.select"/>
 
     <track>
       <field name="name"/>
