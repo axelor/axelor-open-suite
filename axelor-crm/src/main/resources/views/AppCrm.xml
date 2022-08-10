@@ -11,6 +11,7 @@
         requiredIf="assignableUsers == 1"/>
       <field name="displayCustomerDescriptionInOpportunity" widget="boolean-switch"/>
       <field name="isManageRecurrent" widget="boolean-switch"/>
+      <field name="defaultRecurringDuration" showIf="isManageRecurrent"/>
     </panel>
     <panel name="actionPanel">
       <button name="generateCRMConfigurationsBtn" title="Generate CRM configurations"
