@@ -271,7 +271,8 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Transactional
-  public void loseLead(Lead lead, LostReason lostReason) throws AxelorException {
+  public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
+      throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
     if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
       throw new AxelorException(
@@ -281,6 +282,7 @@ public class LeadServiceImpl implements LeadService {
     lead.setLeadStatus(
         Beans.get(LeadStatusRepository.class).all().filter("self.isLost = ?", true).fetchOne());
     lead.setLostReason(lostReason);
+    lead.setLostReasonStr(lostReasonStr);
   }
 
   public String processFullName(String enterpriseName, String name, String firstName) {

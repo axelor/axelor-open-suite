@@ -90,7 +90,8 @@ public interface LeadService {
    * @param lead a context lead object
    * @param lostReason the specified lost reason
    */
-  public void loseLead(Lead lead, LostReason lostReason) throws AxelorException;
+  public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
+      throws AxelorException;
 
   public String processFullName(String enterpriseName, String name, String firstName);
 
