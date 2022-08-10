@@ -254,9 +254,10 @@ public class InvoiceToolService {
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);
   }
-
-  public Map<Account, BigDecimal> getAmountMap(List<InvoiceLine> invoiceLineList) {
-    Map<Account, BigDecimal> amountMap = new HashMap<>();
+  
+  public Map<Account, BigDecimal> getAmountMap(
+          Map<Account, BigDecimal> amountMap,
+          List<InvoiceLine> invoiceLineList) {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       if (amountMap.containsKey(invoiceLine.getAccount())) {
         amountMap.put(
@@ -269,8 +270,9 @@ public class InvoiceToolService {
     return amountMap;
   }
 
-  public Map<Tax, BigDecimal> getTaxMap(List<InvoiceLineTax> invoiceLineTaxList) {
-    Map<Tax, BigDecimal> taxMap = new HashMap<>();
+  public Map<Tax, BigDecimal> getTaxMap(
+          Map<Tax, BigDecimal> taxMap,
+          List<InvoiceLineTax> invoiceLineTaxList) {
     for (InvoiceLineTax tax : invoiceLineTaxList) {
       if (taxMap.containsKey(tax.getTaxLine().getTax())) {
         taxMap.put(
@@ -284,8 +286,9 @@ public class InvoiceToolService {
   }
 
   public Map<PaymentMode, BigDecimal> getPaymentMap(
-      List<InvoicePayment> invoicePaymentList, Invoice invoice) {
-    Map<PaymentMode, BigDecimal> paymentMap = new HashMap<>();
+          Map<PaymentMode, BigDecimal> paymentMap,
+          List<InvoicePayment> invoicePaymentList,
+          Invoice invoice) {
     if (CollectionUtils.isEmpty(invoicePaymentList)) {
       if (paymentMap.containsKey(invoice.getPaymentMode())) {
         paymentMap.put(

@@ -1,13 +1,6 @@
 package com.axelor.apps.account.service.batch;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -128,11 +121,11 @@ public class BatchGenerateMoves extends BatchStrategy {
           invoiceRepository
               .all()
               .filter(
-                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND (self.validatedDate BETWEEN ? AND ?) AND self.tradingName = ? and self.company = ?",
+                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.tradingName = ? and self.company = ?",
                   InvoiceRepository.STATUS_VALIDATED,
                   InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-                  period.getFromDate(),
-                  period.getToDate(),
+                  period.getFromDate().getMonthValue(),
+                  period.getFromDate().getYear(),
                   tradingName,
                   company)
               .fetch();
@@ -141,11 +134,11 @@ public class BatchGenerateMoves extends BatchStrategy {
           invoiceRepository
               .all()
               .filter(
-                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND (self.validatedDate BETWEEN ? AND ?) AND self.company = ?",
+                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.company = ?",
                   InvoiceRepository.STATUS_VALIDATED,
                   InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-                  period.getFromDate(),
-                  period.getToDate(),
+                  period.getFromDate().getMonthValue(),
+                  period.getFromDate().getYear(),
                   company)
               .fetch();
     }
@@ -179,9 +172,9 @@ public class BatchGenerateMoves extends BatchStrategy {
     Map<PaymentMode, BigDecimal> paymentMap = new HashMap<>();
 
     for (Invoice invoice : invoiceList) {
-      amountMap = invoiceToolService.getAmountMap(invoice.getInvoiceLineList());
-      taxMap = invoiceToolService.getTaxMap(invoice.getInvoiceLineTaxList());
-      paymentMap = invoiceToolService.getPaymentMap(invoice.getInvoicePaymentList(), invoice);
+      amountMap = invoiceToolService.getAmountMap(amountMap, invoice.getInvoiceLineList());
+      taxMap = invoiceToolService.getTaxMap(taxMap, invoice.getInvoiceLineTaxList());
+      paymentMap = invoiceToolService.getPaymentMap(paymentMap, invoice.getInvoicePaymentList(), invoice);
     }
 
     int ref = 1;
@@ -250,5 +243,28 @@ public class BatchGenerateMoves extends BatchStrategy {
       moveValidateService.validateWellBalancedMove(paymentMove);
       paymentMoveMap.put(entry.getKey(), paymentMove);
     }
+
+    for (Invoice invoice : invoiceList) {
+      invoice.addBatchSetItem(getBatch());
+      invoice.setMove(move);
+      invoice.setStatusSelect(InvoiceRepository.STATUS_VENTILATED);
+      invoice.setAmountPaid(invoice.getInTaxTotal());
+      invoice.setAmountRemaining(BigDecimal.ZERO);
+
+      InvoicePayment invoicePayment = new InvoicePayment();
+      invoicePayment.setAmount(invoice.getInTaxTotal());
+      invoicePayment.setCurrency(invoice.getCurrency());
+      invoicePayment.setInvoice(invoice);
+      invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_PAYMENT);
+      invoicePayment.setPaymentMode(invoice.getPaymentMode());
+      invoicePayment.setMove(paymentMoveMap.get(invoice.getPaymentMode()));
+      invoicePayment.setPaymentDate(date);
+      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      invoice.setInvoiceId(
+          sequenceService.getSequenceNumber(
+              accountConfigService.getCustInvSequence(accountConfig), invoice.getInvoiceDate()));
+      invoicePaymentRepository.save(invoicePayment);
+    }
+    moveValidateService.updateValidateStatus(move, false);
   }
 }
