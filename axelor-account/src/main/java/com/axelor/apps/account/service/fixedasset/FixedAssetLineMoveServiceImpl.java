@@ -480,6 +480,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         fixedAsset.getFixedAssetSeq() != null
             ? fixedAsset.getFixedAssetSeq()
             : fixedAsset.getReference();
+    Integer counter = 0;
 
     // Creating move
     Move move =
@@ -532,7 +533,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 chargeAmount,
                 true,
                 disposalDate,
-                1,
+                ++counter,
                 origin,
                 fixedAsset.getName());
         moveLines.add(chargeAccountDebitMoveLine);
@@ -541,9 +542,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
       }
       if (chargeAmount.signum() == 0
-          && (cumulativeDepreciationAmount == null
-              || (cumulativeDepreciationAmount != null
-                  && cumulativeDepreciationAmount.signum() > 0))) {
+          && (cumulativeDepreciationAmount == null || cumulativeDepreciationAmount.signum() > 0)) {
         cumulativeDepreciationAmount = fixedAsset.getGrossValue();
       }
       MoveLine deprecationAccountDebitMoveLine =
@@ -554,7 +553,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               cumulativeDepreciationAmount,
               true,
               disposalDate,
-              1,
+              ++counter,
               origin,
               fixedAsset.getName());
       moveLines.add(deprecationAccountDebitMoveLine);
@@ -569,7 +568,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               fixedAsset.getGrossValue(),
               false,
               disposalDate,
-              2,
+              ++counter,
               origin,
               fixedAsset.getName());
       moveLines.add(creditMoveLine);
