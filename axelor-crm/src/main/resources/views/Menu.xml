@@ -121,7 +121,7 @@
     <view type="grid" name="lead-historical-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
-    <domain>self.leadStatus.isClosed = true</domain>
+    <domain>self.leadStatus.isClosed = true OR self.leadStatus.isLost = true</domain>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate"

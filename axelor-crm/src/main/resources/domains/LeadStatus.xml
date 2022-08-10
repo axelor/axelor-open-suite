@@ -9,7 +9,7 @@
     <string name="name" title="Name"/>
     <integer name="sequence" title="Sequence"/>
     <boolean name="isOpen" title="Open"/>
-    <boolean name="isClosed" title="Closed"/>
+    <boolean name="isClosed" title="Closed" unique="true" nullable="true" hidden="true"/>
     <boolean name="isLost" title="Lost"/>
 
     <finder-method name="getDefaultStatus" using="" orderBy="sequence" filter="1 = 1"/>

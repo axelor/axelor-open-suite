@@ -110,4 +110,8 @@ public interface IExceptionMessage {
       "There's no configured sequence for opportunities for the company %s" /*)*/;
 
   public static final String CONVERT_LEAD = /*$$(*/ "Convert lead %s" /*)*/;
+
+  // Lead Status
+  public static final String CONVERTED_STATUS_DELETE = /*$$(*/
+      "Converted status can't be deleted" /*)*/;
 }
