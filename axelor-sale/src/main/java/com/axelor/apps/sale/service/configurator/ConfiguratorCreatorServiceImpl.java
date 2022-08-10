@@ -111,6 +111,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   protected boolean isEditable(MetaJsonField field) {
     switch (field.getType()) {
+      case MetaJsonFieldRepository.TYPE_BUTTON:
       case MetaJsonFieldRepository.TYPE_PANEL:
       case MetaJsonFieldRepository.TYPE_LABEL:
       case MetaJsonFieldRepository.TYPE_SPACER:
