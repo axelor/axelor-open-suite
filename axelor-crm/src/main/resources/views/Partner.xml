@@ -179,8 +179,8 @@
 
   <form id="crm-partner-contact-form" name="partner-contact-form" title="Contact"
     model="com.axelor.apps.base.db.Partner" extension="true">
-    <extend target="//field[@name='picture']">
-      <replace/>
+    <extend target="/">
+    	<attribute name="onNew" value="action-group-partner-contact-onNew"/>
     </extend>
     <extend target="//label[@name='facebookLabel']">
       <replace/>
@@ -209,7 +209,6 @@
       <insert position="before">
         <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
-        <field name="isNoContact" colSpan="4"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
 			<h4>
@@ -374,6 +373,12 @@
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
+  </action-group>
+  
+  <action-group name="action-group-partner-contact-onNew">
+    <action name="action-partner-contact-record-default"/>
+    <action name="action-partner-attrs-partner-seq-editable"/>
+    <action name="action-partner-attrs-set-default"/>
   </action-group>
 
 </object-views>
