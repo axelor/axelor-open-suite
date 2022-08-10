@@ -452,7 +452,7 @@ WHERE Report.id = ?
 	AND (Report.payment_mode IS NULL OR Move.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
 	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner IS NULL OR MoveLine.partner = PartnerSet.partner_set)
 	AND (MoveLine.id 	     IS NULL OR (
-		Report.currency	  = Move.company_currency
+		Report.currency	  = Move.currency
 		AND Report.company = Move.company
 		AND Move.ignore_in_accounting_ok IN ('false', null) 
 		AND (Move.status_select IN (2, 3) OR (Move.status_select = 5 AND Report.display_simulated_move))
