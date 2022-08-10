@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -506,7 +507,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
     String domain = null;
-    String bomsProductsList = createBomProductList(unitCostCalculation.getCompanySet());
+    String bomsProductsList = createBomProductList(unitCostCalculation, company);
     if (this.hasDefaultBOMSelected()) {
       if (company != null) {
         domain =
@@ -535,6 +536,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
                 + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
                 + ")";
       }
+
+      domain +=
+          " AND self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
+              + unitCostCalculation.getProductSubTypeSelect()
+              + ")";
     } else {
       domain =
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
@@ -550,7 +556,17 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     return domain;
   }
 
-  protected String createBomProductList(Set<Company> companySet) throws AxelorException {
+  protected String createBomProductList(UnitCostCalculation unitCostCalculation, Company company)
+      throws AxelorException {
+
+    Set<Company> companySet = new HashSet<>();
+
+    if (unitCostCalculation.getCompanySet() != null) {
+      companySet.addAll(unitCostCalculation.getCompanySet());
+    }
+    if (company != null) {
+      companySet.add(company);
+    }
 
     return StringTool.getIdListString(
         billOfMaterialService.getBillOfMaterialSet(companySet).stream()

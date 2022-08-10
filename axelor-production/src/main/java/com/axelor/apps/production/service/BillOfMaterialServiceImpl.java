@@ -435,6 +435,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public List<BillOfMaterial> getBillOfMaterialSet(Set<Company> companySet) throws AxelorException {
 
+    if (companySet == null || companySet.isEmpty()) {
+      return billOfMaterialRepo.all().fetch();
+    }
     List<Long> idCompanyList = companySet.stream().map(Company::getId).collect(Collectors.toList());
 
     return billOfMaterialRepo
