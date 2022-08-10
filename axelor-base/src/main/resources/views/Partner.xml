@@ -1180,8 +1180,7 @@
   <action-group name="action-group-partner-onload">
     <action name="action-partner-attrs-change-name"/>
     <action name="action-partner-attrs-show-specific-tax-note"/>
-    <action name="action-partner-method-set-social-network-url"
-      if="!__config__.app.isApp('crm')"/>
+    <action name="action-partner-method-set-social-network-url"/>
     <action name="action-partner-attrs-hide-employee-panel"
       if="__config__.app.isApp('employee')"/>
     <action name="action-partner-account-attrs-hide-supplier-account"/>

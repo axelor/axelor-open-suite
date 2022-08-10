@@ -87,6 +87,10 @@ public class EventManagementRepository extends EventRepository {
       }
     }
 
+    if (entity.getStatusSelect() == EventRepository.STATUS_REALIZED) {
+      entity.getPartner().setLastEventDate(entity.getStartDateTime().toLocalDate());
+    }
+
     return super.save(entity);
   }
 
