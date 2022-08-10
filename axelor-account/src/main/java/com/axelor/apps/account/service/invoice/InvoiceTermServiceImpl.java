@@ -144,11 +144,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
     BigDecimal sum = BigDecimal.ZERO;
-    BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
+    BigDecimal total = getTotalInvoiceTermsAmount(moveLine);
+    Move move = moveLine.getMove();
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
         sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
+      }
+    }
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLineIt : move.getMoveLineList()) {
+        if (!moveLineIt.equals(moveLine)
+            && moveLineIt.getAccount() != null
+            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && moveLineIt.getInvoiceTermList() != null) {
+          for (InvoiceTerm invoiceTerm : moveLineIt.getInvoiceTermList()) {
+            sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
+          }
+        }
       }
     }
     return sum;
@@ -325,8 +338,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-      MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
-      moveLine.addInvoiceTermListItem(invoiceTerm);
+      findInvoiceTermsInInvoice(invoice.getMove().getMoveLineList(), invoiceTerm, invoice);
     }
 
     return invoiceTerm;
@@ -357,12 +369,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermPercentage.setScale(
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
-    BigDecimal amount;
-    if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
-      amount = moveLine.getDebit();
-    } else {
-      amount = moveLine.getCredit();
-    }
+    BigDecimal amount = getTotalInvoiceTermsAmount(moveLine);
 
     amount =
         amount
@@ -385,6 +392,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .all()
             .filter("self.invoice.id = ?1 AND self.isHoldBack is not true", invoice.getId())
             .fetchOne();
+
     if (invoiceTerm == null) {
       return null;
     } else {
@@ -1296,5 +1304,35 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 .collect(Collectors.joining(",")))
         .append(")");
     return pfpValidatorUserDomain.toString();
+  }
+
+  protected void findInvoiceTermsInInvoice(
+      List<MoveLine> moveLineList, InvoiceTerm invoiceTerm, Invoice invoice) {
+    MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
+    if (moveLine == null && !CollectionUtils.isEmpty(moveLineList)) {
+      for (MoveLine ml : moveLineList) {
+        if (ml.getAccount().getHasInvoiceTerm()) {
+          ml.addInvoiceTermListItem(invoiceTerm);
+          return;
+        }
+      }
+    } else {
+      moveLine.addInvoiceTermListItem(invoiceTerm);
+    }
+  }
+
+  public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    BigDecimal total = moveLine.getDebit().max(moveLine.getCredit());
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLineIt : move.getMoveLineList()) {
+        if (!moveLineIt.equals(moveLine)
+            && moveLineIt.getAccount() != null
+            && moveLineIt.getAccount().getHasInvoiceTerm()) {
+          total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
+        }
+      }
+    }
+    return total;
   }
 }

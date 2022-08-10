@@ -109,7 +109,7 @@ public class InvoiceTermController {
       return invoice.getInTaxTotal();
     } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
       MoveLine moveLine = parentContext.asType(MoveLine.class);
-      return moveLine.getDebit().max(moveLine.getCredit());
+      return Beans.get(InvoiceTermService.class).getTotalInvoiceTermsAmount(moveLine);
     } else {
       return BigDecimal.ZERO;
     }
