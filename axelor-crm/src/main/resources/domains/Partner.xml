@@ -16,7 +16,6 @@
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>
     <boolean name="isDoNotCall" title="Do not call"/>
     <boolean name="isDoNotEmail" title="Do not email"/>
-    <boolean name="isNoContact" title="No contact" default="false"/>
 
     <!-- Change title -->
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
