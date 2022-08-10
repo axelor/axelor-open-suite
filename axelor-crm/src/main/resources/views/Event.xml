@@ -283,7 +283,7 @@
     </panel-mail>
   </form>
 
-  <cards name="event-cards" title="Events" css="rect-image" width="50%"
+  <cards name="event-cards" title="Events" css="rect-image" width="100%"
     model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     <field name="subject"/>
     <field name="typeSelect"/>
@@ -321,8 +321,8 @@
 			<div ng-show="!description" ng-bind-html="description"></div>
 			<br/><br/>
 			<div>
-				<button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent">Done</button>
-				<button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent">Cancel</button>
+				<button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
+				<button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
 			</div>
 	      </div>
 	  <div>

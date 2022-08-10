@@ -129,6 +129,7 @@
             <field name="taxNbr" colSpan="4" showTitle="true"/>
             <field name="saleTurnover" colSpan="4" showTitle="true"/>
             <field name="isKeyAccount" colSpan="4" showTitle="true"/>
+            <field name="isNurturing" colSpan="4" showTitle="true"/>
           </panel>
           <panel name="settingsPanel" title="Settings" colSpan="12">
             <field name="language" colSpan="6" canEdit="false"/>
