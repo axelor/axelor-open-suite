@@ -302,7 +302,7 @@ public class MoveValidateService {
 
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
 
-    if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+    if (daybook && move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);

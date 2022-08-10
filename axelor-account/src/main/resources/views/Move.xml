@@ -352,7 +352,7 @@
 
   <action-group name="action-account-move-group-validate-click">
     <action name="action-account-validate-prompt"
-      if="(!company?.accountConfig?.accountingDaybook &amp;&amp;statusSelect == 1) || (company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect == 2 || statusSelect == 5))"/>
+      if="!company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect == 1 || statusSelect == 2 || statusSelect == 5)"/>
     <action name="save"/>
     <action name="action-move-method-validate"/>
   </action-group>
@@ -454,7 +454,14 @@
       if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
     <attribute name="title" for="validateBtn"
       expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
-      if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)"/>
+      if="eval: company?.accountConfig?.accountingDaybook
+&amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED
+&amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)"/>
+    <attribute name="title" for="validateBtn"
+      expr="eval: com.axelor.i18n.I18n.get('DayBook.button')"
+      if="eval: company?.accountConfig?.accountingDaybook
+ &amp;&amp;
+(statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
   </action-attrs>
 
   <action-attrs

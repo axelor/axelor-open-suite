@@ -143,7 +143,7 @@
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
     <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+      expr="eval: __user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-move-line" parent="account-root-move"
