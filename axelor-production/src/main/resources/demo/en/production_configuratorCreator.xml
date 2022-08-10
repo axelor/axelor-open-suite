@@ -393,7 +393,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>13</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -432,7 +432,7 @@
             <![CDATA[self.productCategory.code = 'CARTM' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>6</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -471,7 +471,7 @@
             <![CDATA[self.productCategory.code = 'DD' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>7</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -510,7 +510,7 @@
             <![CDATA[self.productCategory.code = 'MEM' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>10</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -549,7 +549,7 @@
             <![CDATA[self.productCategory.code = 'BOIT' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>5</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -588,7 +588,7 @@
             <![CDATA[self.productCategory.code = 'ECR' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>8</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -626,7 +626,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>0</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -664,7 +664,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>3</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -702,7 +702,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>4</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -740,7 +740,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>11</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -778,7 +778,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>1</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -816,7 +816,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>14</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -854,7 +854,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>2</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -894,7 +894,7 @@
           </domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>9</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -932,7 +932,7 @@
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>12</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1099,7 +1099,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>0</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1137,7 +1137,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>7</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1177,7 +1177,7 @@ return cp*nbOrdi_1
           </domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>4</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1215,7 +1215,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>6</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1253,7 +1253,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>5</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1291,7 +1291,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>3</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1329,7 +1329,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>2</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1367,7 +1367,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>1</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1405,7 +1405,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>8</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1443,7 +1443,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>9</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
@@ -1481,7 +1481,7 @@ return cp*nbOrdi_1
           <domain></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>10</sequence>
-          <onChange>action-configurator-update-indicators</onChange>
+          <onChange></onChange>
           <onClick></onClick>
           <widgetAttrs></widgetAttrs>
           <contextField>configuratorCreator</contextField>
