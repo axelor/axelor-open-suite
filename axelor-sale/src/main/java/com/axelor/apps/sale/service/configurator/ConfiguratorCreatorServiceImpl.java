@@ -64,6 +64,9 @@ import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
+  protected static final String ACTION_CONFIGURATOR_UPDATE_INDICATORS =
+      "action-configurator-update-indicators";
+
   protected ConfiguratorCreatorRepository configuratorCreatorRepo;
   protected AppBaseService appBaseService;
   protected MetaFieldRepository metaFieldRepository;
@@ -100,7 +103,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
       // fill onChange if empty and relevant
       if (Strings.isNullOrEmpty(field.getOnChange()) && isEditable(field)) {
-        field.setOnChange("action-configurator-update-indicators");
+        field.setOnChange(ACTION_CONFIGURATOR_UPDATE_INDICATORS);
       }
     }
     configuratorCreatorRepo.save(creator);
