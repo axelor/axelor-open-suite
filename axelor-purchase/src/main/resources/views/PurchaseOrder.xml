@@ -323,8 +323,7 @@
         onClick="save,action-purchase-order-method-finish-purchase-order"
         if-module="axelor-supplychain"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times"
-        showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"
-        onClick="save,action-group-purchase-order-cancel"/>
+        showIf="statusSelect &lt;= 3" onClick="save,action-group-purchase-order-cancel"/>
       <button name="backToValidatedBtn" title="Back to validated order"
         showIf="statusSelect == 4" if-module="axelor-supplychain"
         onClick="save,action-purchase-order-method-set-status-to-validated"
@@ -579,6 +578,8 @@
     <action name="action-purchase-order-attrs-interco"/>
     <action name="action-purchase-order-attrs-external-reference"/>
     <action name="action-purchase-order-record-load-trading-name-config"/>
+    <action name="action-purchase-order-method-show-cancel-btn"
+      if="__config__.app.isApp('supplychain') &amp;&amp; statusSelect == 3"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-company-change-actions">
@@ -1022,6 +1023,11 @@
   <action-method name="action-purchase-order-method-set-status-to-validated">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="backToValidatedStatus"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-show-cancel-btn">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="manageCancelPurchaseOrder"/>
   </action-method>
 
   <action-record name="action-purchase-order-record-set-stock-location"

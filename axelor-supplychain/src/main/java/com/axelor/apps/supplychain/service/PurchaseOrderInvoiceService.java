@@ -104,4 +104,6 @@ public interface PurchaseOrderInvoiceService {
   void displayErrorMessageIfPurchaseOrderIsInvoiceable(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
+
+  boolean containsRelatedVentilatedInvoice(PurchaseOrder purchaseOrder);
 }

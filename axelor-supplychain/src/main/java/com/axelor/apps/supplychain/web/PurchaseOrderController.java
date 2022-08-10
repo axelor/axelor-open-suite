@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.db.JPA;
@@ -446,6 +447,21 @@ public class PurchaseOrderController {
         response.setFlash(message);
       }
       response.setValues(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageCancelPurchaseOrder(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_VALIDATED) {
+        response.setAttr(
+            "cancelBtn",
+            "hidden",
+            Beans.get(PurchaseOrderInvoiceService.class)
+                .containsRelatedVentilatedInvoice(purchaseOrder));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

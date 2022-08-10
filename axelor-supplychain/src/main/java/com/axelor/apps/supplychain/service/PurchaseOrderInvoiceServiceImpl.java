@@ -729,4 +729,17 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
           purchaseOrder.getPurchaseOrderSeq());
     }
   }
+
+  @Override
+  public boolean containsRelatedVentilatedInvoice(PurchaseOrder purchaseOrder) {
+    List<Invoice> relatedVentilatedInvoiceList =
+        invoiceRepo
+            .all()
+            .filter(
+                "self.purchaseOrder.id = ?1 AND self.statusSelect = ?2",
+                purchaseOrder.getId(),
+                InvoiceRepository.STATUS_VENTILATED)
+            .fetch();
+    return !relatedVentilatedInvoiceList.isEmpty();
+  }
 }
