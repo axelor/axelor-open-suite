@@ -102,7 +102,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
 
           @Override
           public void imported(Integer imported, Integer total) {
-            importLog.append("Total records: " + total + ", Total imported: " + total);
+            importLog.append("Total records: " + total + ", Total imported: " + total + "\n");
           }
 
           @Override
@@ -110,13 +110,13 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
             try {
               completeAfterImport(arg0);
             } catch (AxelorException e) {
-              importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
+              importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()) + "\n");
             }
           }
 
           @Override
           public void handle(Model arg0, Exception err) {
-            importLog.append("Error in import: " + Arrays.toString(err.getStackTrace()));
+            importLog.append("Error in import: " + Arrays.toString(err.getStackTrace()) + "\n");
           }
         };
 
