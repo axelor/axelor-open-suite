@@ -181,7 +181,10 @@ public class LeadController {
     try {
       Lead lead = request.getContext().asType(Lead.class);
       Beans.get(LeadService.class)
-          .loseLead(Beans.get(LeadRepository.class).find(lead.getId()), lead.getLostReason());
+          .loseLead(
+              Beans.get(LeadRepository.class).find(lead.getId()),
+              lead.getLostReason(),
+              lead.getLostReasonStr());
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -90,7 +90,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence" onChange="save"/>
+          x-order="sequence" onChange="action-lead-group-lead-status-onchange"/>
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
@@ -262,8 +262,10 @@
       <field name="contactDate" colSpan="6"/>
       <field name="lastEventDate" readonly="true"/>
       <field name="nextScheduledEventDate"/>
-      <field name="lostReason" showIf="leadStatus.isLost"/>
+      <field name="lostReason" showIf="leadStatus.isLost" colSpan="6"/>
+      <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
       <field name="leadStatus.isLost" hidden="true"/>
+      <field name="lostReason.freeText" hidden="true"/>
     </panel>
 
     <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
@@ -338,6 +340,11 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="loseLead"/>
   </action-method>
 
+  <action-group name="action-lead-group-lead-status-onchange">
+    <action name="save" if="!leadStatus.isLost"/>
+    <action name="action-lead-view-lose" if="leadStatus.isLost"/>
+  </action-group>
+
   <action-group name="action-group-crm-lead-onnew">
     <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
@@ -388,6 +395,17 @@
       for="primaryCountry"/>
     <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
   </action-attrs>
+
+  <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
+    title="Lose">
+    <view type="form" name="lead-lose-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
+  </action-view>
 
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
     model="com.axelor.apps.base.db.Wizard">
