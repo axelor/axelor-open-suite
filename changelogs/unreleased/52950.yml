@@ -1,0 +1,10 @@
+---
+title: Fix on purchase order merge process
+type: fix
+description: |
+  Fix cast exception & rollback exception.
+  Also refactor to inject classes instead of Beans.get
+
+  ```
+  $ find -iregex ".*domains.*.xml" | xargs -l sed -i 's|cachable="|cacheable="|g'
+  ```
