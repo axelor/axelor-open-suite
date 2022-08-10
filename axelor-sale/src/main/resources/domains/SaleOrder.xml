@@ -196,6 +196,9 @@
       <message if="statusSelect == 5" tag="warning">Canceled</message>
     </track>
 
+
+    <entity-listener class="com.axelor.apps.sale.db.repo.listener.SaleOrderListener"/>
+
   </entity>
 
 </domain-models>

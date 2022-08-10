@@ -1,0 +1,2 @@
+title: "SaleOrder: Fixed a bug that occured on save when the 'Manage partner complementary product' option was activated"
+type: fix

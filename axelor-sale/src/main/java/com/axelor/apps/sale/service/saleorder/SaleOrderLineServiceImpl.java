@@ -1045,7 +1045,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER);
     this.computeProductInformation(complementarySOLine, saleOrder);
     this.computeValues(saleOrder, complementarySOLine);
-    saleOrderLineRepo.save(complementarySOLine);
     return newComplementarySOLines;
   }
 
