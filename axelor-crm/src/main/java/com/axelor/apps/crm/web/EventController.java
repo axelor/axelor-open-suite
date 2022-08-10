@@ -545,6 +545,7 @@ public class EventController {
               ? EventRepository.STATUS_REALIZED
               : EventRepository.STATUS_FINISHED);
       Beans.get(EventService.class).saveEvent(event);
+      leadLastEventDate(request, response);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
