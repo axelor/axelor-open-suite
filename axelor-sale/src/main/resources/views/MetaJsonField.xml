@@ -29,7 +29,8 @@
             x-target="com.axelor.meta.db.MetaSelect" x-target-name="name"/>
         </panel>
         <field name="widget" widget="widget-select"/>
-        <field name="$showedOnChange" type="string" hideIf="type === 'button'"
+        <field name="$showedOnChange" type="string"
+          hideIf="$contains(['button', 'panel', 'label', 'spacer', 'separator'], type)"
           onChange="action-configurator-record-meta-on-change" title="On change" colSpan="12"/>
         <field name="onChange" hidden="true" colSpan="12"/>
         <field name="onClick" colSpan="12" showIf="type === 'button'"
