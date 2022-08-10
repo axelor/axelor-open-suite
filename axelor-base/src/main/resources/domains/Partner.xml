@@ -91,7 +91,6 @@
     <string name="description" title="Description" large="true"/>
     <many-to-one name="industrySector" title="Industry sector"
       ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
-    <integer name="nbrEmployees" title="Employees (Nbr)" min="0"/>
     <integer name="saleTurnover" title="Turnover"/>
     <string name="registrationCode" title="Registration code"/>
     <many-to-one name="mainActivity" title="Main Activity"

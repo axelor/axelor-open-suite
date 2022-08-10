@@ -123,12 +123,12 @@
             <field name="industrySector" colSpan="4" widget="SuggestBox"/>
             <field name="department" colSpan="4" form-view="department-form"
               grid-view="department-grid"/>
-            <field name="nbrEmployees" colSpan="4"/>
             <field name="registrationCode" colSpan="4"/>
             <field name="source" hidden="false" colSpan="4"/>
             <field name="taxNbr" colSpan="4" showTitle="true"/>
             <field name="saleTurnover" colSpan="4" showTitle="true"/>
             <field name="isKeyAccount" colSpan="4" showTitle="true"/>
+            <field name="sizeSelect" colSpan="4" showTitle="true"/>
             <field name="isNurturing" colSpan="4" showTitle="true"/>
           </panel>
           <panel name="settingsPanel" title="Settings" colSpan="12">
