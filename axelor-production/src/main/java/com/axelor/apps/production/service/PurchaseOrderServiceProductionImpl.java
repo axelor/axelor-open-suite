@@ -37,12 +37,15 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupplychainImpl {
+
+  protected final ManufOrderRepository manufOrderRepo;
+
+  protected final AppProductionService appProductionService;
 
   @Inject
   public PurchaseOrderServiceProductionImpl(
@@ -53,7 +56,9 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       PurchaseOrderStockService purchaseOrderStockService,
       BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      PurchaseOrderLineService purchaseOrderLineService) {
+      PurchaseOrderLineService purchaseOrderLineService,
+      ManufOrderRepository manufOrderRepo,
+      AppProductionService appProductionService) {
     super(
         appSupplychainService,
         accountConfigService,
@@ -63,6 +68,9 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
         budgetSupplychainService,
         purchaseOrderLineRepository,
         purchaseOrderLineService);
+
+    this.manufOrderRepo = manufOrderRepo;
+    this.appProductionService = appProductionService;
   }
 
   @Override
@@ -91,6 +99,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
     return mergedPurchaseOrder;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
@@ -118,28 +127,22 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
     return mergedPurchaseOrder;
   }
 
-  @SuppressWarnings("unchecked")
-  private void setMergedPurchaseOrderForManufOrder(
+  protected void setMergedPurchaseOrderForManufOrder(
       PurchaseOrder mergedPurchaseOrder, List<PurchaseOrder> purchaseOrderList) {
 
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageOutsourcing()) {
+      return;
+    }
 
-    if (appProductionService.isApp("production")
-        && appProductionService.getAppProduction().getManageOutsourcing()) {
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
 
-      ManufOrderRepository manufOrderRepository = Beans.get(ManufOrderRepository.class);
-      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      List<ManufOrder> manufOrderList =
+          manufOrderRepo.all().filter("self.purchaseOrder.id = ?1", purchaseOrder.getId()).fetch();
 
-        List<ManufOrder> manufOrderList =
-            (List<ManufOrder>)
-                manufOrderRepository
-                    .all()
-                    .filter("self.purchaseOrder.id = ?1", purchaseOrder.getId());
-
-        for (ManufOrder manufOrder : manufOrderList) {
-          manufOrder.setPurchaseOrder(mergedPurchaseOrder);
-          manufOrderRepository.save(manufOrder);
-        }
+      for (ManufOrder manufOrder : manufOrderList) {
+        manufOrder.setPurchaseOrder(mergedPurchaseOrder);
+        manufOrderRepo.save(manufOrder);
       }
     }
   }
