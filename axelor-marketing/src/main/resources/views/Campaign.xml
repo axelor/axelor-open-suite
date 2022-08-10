@@ -195,7 +195,7 @@
   </kanban>
 
   <cards name="campaign-cards" model="com.axelor.apps.marketing.db.Campaign" title="Campaign"
-    css="rect-image" width="50%" orderBy="-eventStartDateT">
+    css="rect-image" width="100%" orderBy="-eventStartDateT">
     <field name="name"/>
     <field name="campaignType"/>
     <field name="stageSelect"/>

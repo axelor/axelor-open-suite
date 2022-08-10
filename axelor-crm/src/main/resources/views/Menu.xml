@@ -21,6 +21,24 @@
     <context name="_internalUserId" expr="eval:__user__.id"/>
   </action-view>
 
+  <menuitem name="crm-root-prospects" parent="crm-root" title="Prospects"
+    action="crm.root.prospects" order="4"/>
+
+  <action-view name="crm.root.prospects" title="Prospects"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-customer-grid"/>
+    <view type="form" name="partner-customer-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <context name="_isProspect" expr="true"/>
+    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="json-enhance" expr="eval:true"/>
+  </action-view>
+
+
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"
     action="crm.root.customers" order="5"/>
 
@@ -31,10 +49,9 @@
     <view type="form" name="partner-customer-form"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
-    <domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
+    <domain>self.isContact = false AND self.isCustomer = true</domain>
     <context name="_isCustomer" expr="true"/>
-    <context name="_domain"
-      expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
+    <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
     <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
