@@ -90,7 +90,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence"/>
+          x-order="sequence" onChange="save"/>
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
@@ -240,7 +240,7 @@
         <panel-dashlet name="leadReceivedEmailsPanel" title="Received emails"
           action="action-lead-view-received-emails" colSpan="12" height="550"/>
       </panel>
-      <panel-dashlet name="leadMarketingCampaignPanel" title="Marketing Campaign"
+      <panel-dashlet name="leadMarketingCampaignPanel" title="Marketing campaign"
         if="__config__.app.isApp('marketing')" if-module="axelor-marketing"
         action="action-lead-view-marketing-campaigns" colSpan="12" height="500"/>
     </panel-tabs>
@@ -262,7 +262,8 @@
       <field name="contactDate" colSpan="6"/>
       <field name="lastEventDate" readonly="true"/>
       <field name="nextScheduledEventDate"/>
-      <field name="lostReason"/>
+      <field name="lostReason" showIf="leadStatus.isLost"/>
+      <field name="leadStatus.isLost" hidden="true"/>
     </panel>
 
     <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
