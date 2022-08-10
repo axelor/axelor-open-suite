@@ -166,8 +166,8 @@
         if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
         readonlyIf="$get('opportunityStatus.typeSelect') != 0">
         <field name="recurrentAmount"/>
-        <field name="periodicitySelect"/>
-        <field name="startDate"/>
+        <field name="expectedDurationOfRecurringRevenue"/>
+        <field name="startDate" onChange="action-method-opportunity-fill-end-date"/>
         <field name="endDate"/>
       </panel>
       <panel name="descriptionPanel" title="Description">
@@ -409,8 +409,9 @@
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <field name="periodicitySelect" expr="eval: 1"
-      if="__config__.app.getApp('crm').isManageRecurrent"/>
+    <field name="expectedDurationOfRecurringRevenue"
+      expr="eval: __config__.app.getApp('crm').defaultRecurringDuration"
+      if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration != null"/>
     <field name="opportunityStatus"
       expr="eval: __repo__(OpportunityStatus).getDefaultStatus()"/>
   </action-record>
@@ -499,6 +500,10 @@
 
   <action-method name="action-method-opportunity-set-stage-closed-lost">
     <call method="setStageClosedLost" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-method-opportunity-fill-end-date">
+    <call method="fillEndDate" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
 
   <action-view name="dashlet.opportunity" title="Opportunities"

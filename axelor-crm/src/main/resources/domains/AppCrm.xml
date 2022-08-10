@@ -14,7 +14,8 @@
       ref="com.axelor.auth.db.Group"/>
     <boolean name="displayCustomerDescriptionInOpportunity"
       title="Display customer description in opportunity"/>
-    <boolean name="isManageRecurrent" title="Manage recurrent"/>
+    <boolean name="isManageRecurrent" title="Manage recurrent on opportunities"/>
+    <decimal name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
