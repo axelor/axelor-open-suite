@@ -305,19 +305,9 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+        "<a class='fa fa-google' href='https://www.google.com/search?q="
             + name
-            + "' target='_blank' />");
-    urlMap.put(
-        "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
-            + name
-            + "&init=public"
-            + "' target='_blank'/>");
-    urlMap.put(
-        "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
-            + name
+            + "&gws_rd=cr"
             + "' target='_blank' />");
     urlMap.put(
         "linkedin",
@@ -331,11 +321,6 @@ public class PartnerServiceImpl implements PartnerService {
               + name.replace("+", "/")
               + "' target='_blank' />");
     }
-    urlMap.put(
-        "youtube",
-        "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-            + name
-            + "' target='_blank' />");
 
     return urlMap;
   }
