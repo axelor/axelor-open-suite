@@ -134,7 +134,7 @@
       expr="eval: name.substring(0, name.indexOf('_'))"
       if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
     <attribute name="value" for="$showedOnChange"
-      expr="eval: onChange.substring(0, onChange.indexOf(','))"
+      expr="eval: onChange.substring(0, onChange.lastIndexOf(','))"
       if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator' &amp;&amp; onChange &amp;&amp; onChange != '' &amp;&amp; onChange != 'action-configurator-update-indicators'"/>
   </action-attrs>
 
