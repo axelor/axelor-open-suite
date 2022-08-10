@@ -38,6 +38,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Singleton
 public class OpportunityController {
@@ -110,5 +112,15 @@ public class OpportunityController {
               .getLocalizedTitle());
     }
     return status;
+  }
+
+  public void fillEndDate(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    LocalDate startDate = opportunity.getStartDate();
+    BigDecimal recurringRevanue = opportunity.getExpectedDurationOfRecurringRevenue();
+    if (recurringRevanue != null && startDate != null) {
+      LocalDate newDate = startDate.plusMonths(recurringRevanue.longValue());
+      response.setValue("endDate", newDate);
+    }
   }
 }

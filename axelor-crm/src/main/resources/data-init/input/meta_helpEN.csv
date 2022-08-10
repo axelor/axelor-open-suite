@@ -16,3 +16,5 @@
 "axelor-crm";"TargetConfiguration";"target-configuration-form";"user";"Enables to select the user to which the goal is assigned. "
 "axelor-crm";"TargetConfiguration";"target-configuration-form";"team";"Enables to select the team to which the goal is assigned. "
 "axelor-crm";"TargetConfiguration";"target-configuration-form";"periodTypeSelect";"Enables to select an activity period for a goal. If a goal is created for a weekly period and is set to be completed in 6 months, a new goal with the same characteristics will be automatically created each week. "
+"axelor-crm";"AppCrm";"app-crm-config-form";"isManageRecurrent";"When enabled, this configuration displays a 'Recurring' tab on opportunities that allows you to indicate that a recurring revenue amount is expected for this opportunity, as well as the expected recurring start date and duration. "
+"axelor-crm";"AppCrm";"app-crm-config-form";"defaultRecurringDuration";"This field allows you to set a default value in months for the expected duration of recurring revenue on opportunities. "
