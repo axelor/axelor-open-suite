@@ -52,16 +52,12 @@
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
-    <field name="simpleFullName"/>
+    <field name="simpleFullName" width="300"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
-    <field name="fiscalPosition.code" title="Fiscal position"/>
-    <field name="registrationCode"/>
-    <field name="mainAddress"/>
-    <field name="mainAddress.zip"/>
-    <field name="mainAddress.city"/>
+    <field name="user"/>
     <field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -892,9 +888,6 @@
     <field name="partnerCategory"/>
     <field name="partnerTypeSelect"/>
     <field name="titleSelect"/>
-    <field name="fiscalPosition.code"/>
-    <field name="registrationCode"/>
-    <field name="companyStr"/>
     <field name="mainAddress"/>
     <field name="isProspect"/>
     <field name="isEmployee"/>
@@ -903,6 +896,7 @@
     <field name="isSubcontractor"/>
     <field name="isFactor"/>
     <field name="isCarrier"/>
+    <field name="leadScoring"/>
     <template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -916,7 +910,6 @@
                 <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
-			  	{{$fmt('registrationCode')}}
 			  	<address>
 			  	{{mainAddress.fullName}}
 			  	</address>
@@ -924,8 +917,14 @@
 			    {{fixedPhone}}<br/>
 			    {{emailAddress.address}}<br/>
 			    {{partnerCategory.name}}<br/>
-			    <strong><span x-translate>Companies</span></strong> : {{companyStr}}<br/>
-			    <strong><span x-translate>Fiscal position</span></strong> : {{fiscalPosition.code}}</span>
+			    <span ng-show="record.isProspect">
+			    	<span ng-show="!record.leadScoring"><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
+                	<span ng-show="record.leadScoring && leadScoring == 1.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
+                	<span ng-show="record.leadScoring && leadScoring == 2.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
+                	<span ng-show="record.leadScoring && leadScoring == 3.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
+                	<span ng-show="record.leadScoring && leadScoring == 4.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
+                	<span ng-show="record.leadScoring && leadScoring == 5.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i></span>
+                </span><br/>
 			    <h4 style="text-align: right;">
 					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
 					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
