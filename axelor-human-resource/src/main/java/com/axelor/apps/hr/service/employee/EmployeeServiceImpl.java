@@ -28,11 +28,8 @@ import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
-import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -44,7 +41,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
@@ -148,35 +144,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
                 .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
-  }
-
-  @Override
-  public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException {
-    BigDecimal daysWorks = getDaysWorksInPeriod(employee, fromDate, toDate);
-
-    BigDecimal daysLeave = BigDecimal.ZERO;
-    List<LeaveRequest> leaveRequestList =
-        Beans.get(LeaveRequestRepository.class)
-            .all()
-            .filter(
-                "self.user = ?1 AND self.duration > 0"
-                    + " AND self.statusSelect = ?2"
-                    + " AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT"
-                    + " AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
-                employee.getUser(),
-                LeaveRequestRepository.STATUS_VALIDATED,
-                fromDate,
-                toDate)
-            .fetch();
-
-    for (LeaveRequest leaveRequest : leaveRequestList) {
-      daysLeave =
-          daysLeave.add(
-              Beans.get(LeaveService.class).computeDuration(leaveRequest, fromDate, toDate));
-    }
-
-    return daysWorks.subtract(daysLeave);
   }
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
