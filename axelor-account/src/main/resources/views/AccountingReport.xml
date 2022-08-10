@@ -158,6 +158,10 @@
           onChange="action-accounting-report-record-global-by-partner"/>
         <field name="detailed" hideIf="reportType.typeSelect != 4"
           onChange="action-accounting-report-record-detailed"/>
+        <field name="displayDeltaYear"
+          showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 1"/>
+        <field name="displayDeltaYearPercentage"
+          showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 1"/>
         <field name="displaySimulatedMove"
           showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
