@@ -135,10 +135,7 @@ public class LeadController {
         Beans.get(LeadService.class)
             .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
   public void getLeadImportConfig(ActionRequest request, ActionResponse response) {
