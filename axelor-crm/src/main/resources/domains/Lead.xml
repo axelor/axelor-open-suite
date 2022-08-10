@@ -76,15 +76,21 @@
     <date name="lastEventDate" title="Last event date"/>
     <date name="nextScheduledEventDate" title="Next scheduled event date"/>
     <integer name="leadScoring" title="Lead scoring" selection="gold.rating.icon.select"/>
-    <integer name="leadSize" title="Size" selection="crm.lead.size.select"/>
+    <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
     <boolean name="isKeyAccount" title="Key account"/>
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type" title="Type"/>
     <many-to-many ref="com.axelor.apps.crm.db.LeadTag" name="leadTagSet" title="Tags"/>
 
-
-
     <extra-code>
     <![CDATA[
+		//lead size select
+		public static final int LEAD_SIZE_ONE_TO_TWENTY = 1;
+		public static final int LEAD_SIZE_TWENTY_TO_HUNDERED = 2;
+		public static final int LEAD_SIZE_HUNDERED_TO_FIVE_HUNDRED = 3;
+		public static final int LEAD_SIZE_FIVE_HUNDRED_TO_ONE_THOUSAND = 4;
+		public static final int LEAD_SIZE_ONE_THOUSAND_TO_TWO_THOUSAND = 5;
+		public static final int LEAD_SIZE_OVER_TWO_THOUSAND = 6;
+
     	public static final int CONVERT_LEAD_CREATE_PARTNER = 1;
     	public static final int CONVERT_LEAD_SELECT_PARTNER = 2;
     	public static final int CONVERT_LEAD_CREATE_CONTACT = 1;

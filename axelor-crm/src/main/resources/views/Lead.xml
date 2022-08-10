@@ -269,13 +269,14 @@
     </panel>
 
     <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
-      <field name="leadScoring" widget="ImageSelect" x-labels="false"/>
-      <field name="leadSize"/>
-      <field name="isKeyAccount"/>
+      <field name="leadScoring" widget="ImageSelect" x-labels="false" colSpan="6"/>
+      <field name="sizeSelect" colSpan="6"/>
+      <field name="isKeyAccount" colSpan="6"/>
+      <field name="isNurturing" colSpan="6"/>
       <field name="source" canEdit="false" colSpan="6" form-view="source-form"
         grid-view="source-grid" canNew="true"/>
-      <field name="isNurturing"/>
-      <field name="type" grid-view="partner-category-grid" form-view="partner-category-form"/>
+      <field name="type" grid-view="partner-category-grid" form-view="partner-category-form"
+        colSpan="6"/>
       <field name="leadTagSet" widget="TagSelect" x-color-field="colorSelect"
         grid-view="lead-tag-grid" form-view="lead-tag-form"/>
     </panel>

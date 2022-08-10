@@ -191,15 +191,8 @@
     <option value="1">1 to 20</option>
     <option value="2">20 to 100</option>
     <option value="3">100 to 500</option>
-    <option value="4">Over 500</option>
+    <option value="4">500 to 1000</option>
+    <option value="5">1000 to 2000</option>
+    <option value="6">Over 2000</option>
   </selection>
-
-  <selection name="partner.size.select">
-    <option value="1 to 20">1 to 20</option>
-    <option value="20 to 100">20 to 100</option>
-    <option value="100 to 500">100 to 500</option>
-    <option value="500 to 2000">500 to 2000</option>
-    <option value="more than 2000">More than 2000</option>
-  </selection>
-
 </object-views>

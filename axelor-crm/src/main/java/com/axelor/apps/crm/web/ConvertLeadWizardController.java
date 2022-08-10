@@ -220,6 +220,7 @@ public class ConvertLeadWizardController {
     response.setAttr("isKeyAccount", "value", lead.getIsKeyAccount());
     response.setAttr("leadScoring", "value", lead.getLeadScoring());
     response.setAttr("partnerCategory", "value", lead.getType());
+    response.setAttr("sizeSelect", "value", lead.getSizeSelect());
     response.setAttr("isNurturing", "value", lead.getIsNurturing());
     if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
       if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
@@ -236,7 +237,6 @@ public class ConvertLeadWizardController {
     }
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-    response.setAttr("nbrEmployees", "value", 0);
   }
 
   public void setIndividualPartner(ActionRequest request, ActionResponse response)
