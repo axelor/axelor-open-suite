@@ -139,7 +139,8 @@ public class AnalyticMoveLineQueryController {
     this.queryAxisDomain(request, response, true);
   }
 
-  protected void queryAxisDomain(ActionRequest request, ActionResponse response, boolean reverse) {
+  protected void queryAxisDomain(
+      ActionRequest request, ActionResponse response, boolean isReverseQuery) {
     try {
       AnalyticMoveLineQuery analyticMoveLineQuery =
           ContextTool.getContextParent(request.getContext(), AnalyticMoveLineQuery.class, 1);
@@ -147,7 +148,7 @@ public class AnalyticMoveLineQueryController {
       if (analyticMoveLineQuery != null) {
         List<AnalyticAxis> analyticAxisList =
             Beans.get(AnalyticMoveLineQueryService.class)
-                .getAvailableAnalyticAxes(analyticMoveLineQuery, reverse);
+                .getAvailableAnalyticAxes(analyticMoveLineQuery, isReverseQuery);
         String analyticAxisIds =
             analyticAxisList.isEmpty()
                 ? "0"

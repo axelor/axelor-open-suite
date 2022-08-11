@@ -302,12 +302,12 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
 
   @Override
   public List<AnalyticAxis> getAvailableAnalyticAxes(
-      AnalyticMoveLineQuery analyticMoveLineQuery, boolean reverse) {
+      AnalyticMoveLineQuery analyticMoveLineQuery, boolean isReverseQuery) {
     String alreadyPresentSearchAnalyticAxesIds =
         this.getAlreadyPresentAnalyticAxesIds(
             analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList());
     String alreadyPresentReverseAnalyticAxesIds =
-        reverse
+        isReverseQuery
             ? this.getAlreadyPresentAnalyticAxesIds(
                 analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())
             : "0";
@@ -317,7 +317,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
         .filter(
             String.format(
                 "self.company = :company AND self.id %s IN (:alreadyPresentSearchAnalyticAxes) AND self.id NOT IN (:alreadyPresentReverseAnalyticAxes)",
-                reverse ? "" : "NOT"))
+                isReverseQuery ? "" : "NOT"))
         .bind("company", analyticMoveLineQuery.getCompany())
         .bind("alreadyPresentSearchAnalyticAxes", alreadyPresentSearchAnalyticAxesIds)
         .bind("alreadyPresentReverseAnalyticAxes", alreadyPresentReverseAnalyticAxesIds)

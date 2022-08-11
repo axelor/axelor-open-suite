@@ -39,5 +39,5 @@ public interface AnalyticMoveLineQueryService {
       AnalyticMoveLineQuery analyticMoveLineQuery);
 
   List<AnalyticAxis> getAvailableAnalyticAxes(
-      AnalyticMoveLineQuery analyticMoveLineQuery, boolean reverse);
+      AnalyticMoveLineQuery analyticMoveLineQuery, boolean isReverseQuery);
 }
