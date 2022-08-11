@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
@@ -1355,13 +1356,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine) {
+    return this.getTotalInvoiceTermsAmount(moveLine, null, true);
+  }
+
+  public BigDecimal getTotalInvoiceTermsAmount(
+      MoveLine moveLine, Account holdbackAccount, boolean holdback) {
     Move move = moveLine.getMove();
     BigDecimal total = moveLine.getDebit().max(moveLine.getCredit());
     if (move != null && move.getMoveLineList() != null) {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
         if (!moveLineIt.equals(moveLine)
+            && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
-            && moveLineIt.getAccount().getHasInvoiceTerm()) {
+            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && (holdback || !moveLineIt.getAccount().equals(holdbackAccount))) {
           total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
         }
       }

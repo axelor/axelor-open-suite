@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -284,6 +285,9 @@ public interface InvoiceTermService {
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);
+
+  BigDecimal getTotalInvoiceTermsAmount(
+      MoveLine moveLine, Account holdbackAccount, boolean holdback);
 
   void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
 
