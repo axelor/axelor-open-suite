@@ -296,7 +296,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
-    line.setSelectedComplementaryProductList(null);
+    line.clearSelectedComplementaryProductList();
     return line;
   }
 
@@ -1063,7 +1063,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       complementarySOLine = new SaleOrderLine();
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
-      saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+      complementarySOLine.setMainSaleOrderLine(saleOrderLine);
       newComplementarySOLines.add(complementarySOLine);
     }
     return complementarySOLine;
