@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -153,6 +154,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       boolean includeNotStockManagedProduct = accountingBatch.getIncludeNotStockManagedProduct();
       boolean automaticReverse = accountingBatch.getAutomaticReverse();
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
+      Account forecastedInvCustAccount = accountingBatch.getForecastedInvCustAccount();
+      Account forecastedInvSuppAccount = accountingBatch.getForecastedInvSuppAccount();
 
       List<Move> moveList =
           cutOffSupplyChainService.generateCutOffMovesFromStockMove(
@@ -168,7 +171,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
               ati,
               includeNotStockManagedProduct,
               automaticReverse,
-              automaticReconcile);
+              automaticReconcile,
+              forecastedInvCustAccount,
+              forecastedInvSuppAccount);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateStockMove(stockMove);

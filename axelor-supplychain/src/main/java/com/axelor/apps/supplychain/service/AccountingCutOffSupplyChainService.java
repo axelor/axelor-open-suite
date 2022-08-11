@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.AccountingCutOffService;
@@ -50,7 +51,9 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
       boolean ati,
       boolean includeNotStockManagedProduct,
       boolean automaticReverse,
-      boolean automaticReconcile)
+      boolean automaticReconcile,
+      Account forecastedInvCustAccount,
+      Account forecastedInvSuppAccount)
       throws AxelorException;
 
   public Move generateCutOffMoveFromStockMove(
@@ -65,7 +68,9 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
       boolean recoveredTax,
       boolean ati,
       boolean includeNotStockManagedProduct,
-      boolean isReverse)
+      boolean isReverse,
+      Account forecastedInvCustAccount,
+      Account forecastedInvSuppAccount)
       throws AxelorException;
 
   @CallMethod
