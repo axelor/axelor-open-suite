@@ -1,3 +1,20 @@
+## [6.1.18] (2022-08-11)
+
+#### Fixed
+
+* PrintTemplate & PrintTemplateLine: several UI improvments
+
+  - Illustrative sentence added to the top of the line template to explain the different possibilities.
+  - The help explanations of the 'content' 'conditions' & 'title' text areas have been modified.
+  - A new text area 'Notes' has been added to the line template to help distinguish lines the grid.
+  - The column 'conditions' is now displayed in the grid.
+* MRP: reset date fields when copying an existing MRP.
+* Lunch voucher: fix lunch voucher computation: half-day leaves now correctly reduce number of lunch vouchers by one.
+* Accounting: fixed the "Revenues vs Expenses" chart.
+* Manufacturing Order: fixed an issue preventing to finish a manufacturing order with a operation order on standby.
+* Expense: fixed an issue where expense ventilation did not work after setting accounting analytic template to expense lines.
+* Account clearance: Fixed errors when fetching excess payments preventing the process from working correctly.
+
 ## [6.1.17] (2022-08-01)
 
 #### Fixed
@@ -711,6 +728,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.18]: https://github.com/axelor/axelor-open-suite/compare/v6.1.17...v6.1.18
 [6.1.17]: https://github.com/axelor/axelor-open-suite/compare/v6.1.16...v6.1.17
 [6.1.16]: https://github.com/axelor/axelor-open-suite/compare/v6.1.15...v6.1.16
 [6.1.15]: https://github.com/axelor/axelor-open-suite/compare/v6.1.14...v6.1.15
