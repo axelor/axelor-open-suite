@@ -75,7 +75,7 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   /**
-   * Return the boms that belong to any society in companySet
+   * Return the boms that belong to any company in companySet
    *
    * @param companySet
    * @return
