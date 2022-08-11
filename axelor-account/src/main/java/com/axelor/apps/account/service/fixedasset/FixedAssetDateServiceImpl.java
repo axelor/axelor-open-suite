@@ -47,11 +47,20 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
     if (fixedAsset.getPeriodicityTypeSelect() == null || date == null) {
       return date;
     }
-    if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
-      return LocalDate.of(date.getYear(), 12, 31);
+    return computeLastDayWithPeriodicity(date, fixedAsset.getPeriodicityTypeSelect());
+  }
+
+  @Override
+  public LocalDate computeLastDayWithPeriodicity(LocalDate date, int periodicityType) {
+
+    if (date == null) {
+      return date;
     }
-    if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+    if (periodicityType == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
       return date.with(TemporalAdjusters.lastDayOfMonth());
+    }
+    if (periodicityType == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
+      return LocalDate.of(date.getYear(), 12, 31);
     }
     return date;
   }

@@ -14,4 +14,13 @@ public interface FixedAssetDateService {
    * @param date
    */
   LocalDate computeLastDayOfPeriodicity(FixedAsset fixedAsset, LocalDate date);
+
+  /**
+   * Compute the last day of date depending on periodicity type
+   *
+   * @param date
+   * @param periodicityType
+   * @return
+   */
+  LocalDate computeLastDayWithPeriodicity(LocalDate date, int periodicityType);
 }

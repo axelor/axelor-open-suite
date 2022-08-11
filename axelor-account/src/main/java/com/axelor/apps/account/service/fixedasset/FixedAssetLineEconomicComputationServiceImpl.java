@@ -49,6 +49,11 @@ public class FixedAssetLineEconomicComputationServiceImpl
       return fixedAsset.getFailoverDate();
     }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
+      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_MONTH
+          && fixedAsset.getPeriodicityInMonth() == 12) {
+        return fixedAssetDateService.computeLastDayWithPeriodicity(
+            fixedAsset.getFirstServiceDate(), FixedAssetRepository.PERIODICITY_TYPE_YEAR);
+      }
       return fixedAssetDateService.computeLastDayOfPeriodicity(
           fixedAsset, fixedAsset.getFirstServiceDate());
     }

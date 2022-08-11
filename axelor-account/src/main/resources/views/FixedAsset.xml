@@ -104,7 +104,7 @@
         <field name="fiscalNumberOfDepreciation"
           onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration"/>
         <field name="fiscalPeriodicityTypeSelect"
-          onChange="action-group-account-fixed-asset-onchange-fiscal-periodicity-type"/>
+          onChange="action-group-account-fixed-asset-onchange-fiscal-periodicity-type,action-attrs-fixed-asset-copy-fiscal-periodicity-type"/>
         <field name="fiscalPeriodicityInMonth" showIf="fiscalPeriodicityTypeSelect == 1"
           onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration, action-fixed-asset-category-record-compute-duration"
           min="1" hidden="true"/>
@@ -137,7 +137,7 @@
           onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="periodicityTypeSelect"
-          onChange="action-attrs-account-periodicity-type-select-on-change, action-fixed-asset-category-record-compute-duration"/>
+          onChange="action-attrs-account-periodicity-type-select-on-change, action-fixed-asset-category-record-compute-duration,action-attrs-fixed-asset-copy-periodicity-type"/>
         <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
           onChange="action-fixed-asset-category-record-compute-duration" min="1" hidden="true"/>
         <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"
@@ -766,6 +766,16 @@
       if="depreciationPlanSelect != null &amp;&amp;  depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue" expr="eval:false"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-fixed-asset-copy-periodicity-type">
+    <attribute name="value" for="fiscalPeriodicityTypeSelect"
+      expr="eval: periodicityTypeSelect"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-fixed-asset-copy-fiscal-periodicity-type">
+    <attribute name="value" for="periodicityTypeSelect"
+      expr="eval: fiscalPeriodicityTypeSelect"/>
   </action-attrs>
 
   <action-record
