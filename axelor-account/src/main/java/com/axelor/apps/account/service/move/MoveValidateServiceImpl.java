@@ -247,6 +247,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
     if (authorizedFunctionalOriginSelect != null
         && !(Splitter.on(",")
+            .trimResults()
             .splitToList(authorizedFunctionalOriginSelect)
             .contains(functionalOriginSelect.toString()))) {
 
@@ -390,6 +391,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.completeMoveLines(move);
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
     this.updateValidateStatus(move, dayBookMode);
+
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      this.generateFixedAssetMoveLine(move);
+    }
+
     moveRepository.save(move);
 
     if (updateCustomerAccount) {
@@ -480,7 +486,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                 || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE))) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
-      this.generateFixedAssetMoveLine(move);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     }

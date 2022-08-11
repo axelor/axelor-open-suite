@@ -7,6 +7,11 @@
 
   <entity name="AccountingBatch" lang="java">
 
+    <many-to-one name="forecastedInvCustAccount"
+      title="Forecasted invoice customer account" ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="forecastedInvSuppAccount"
+      title="Forecasted invoice supplier account" ref="com.axelor.apps.account.db.Account"/>
+
     <extra-code><![CDATA[
 
 		// ACCOUNTING CUT OFF

@@ -273,7 +273,12 @@
   <action-record name="action-record-payment-session-on-change-payment-mode"
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="daysMarginOnPaySession" expr="eval: paymentMode?.daysMarginOnPaySession"/>
-    <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
+    <field name="partnerTypeSelect"
+      expr="eval: __repo__(PaymentSession).PARTNER_TYPE_CUSTOMER"
+      if="paymentMode?.inOutSelect == __repo__(PaymentMode).IN"/>
+    <field name="partnerTypeSelect"
+      expr="eval: __repo__(PaymentSession).PARTNER_TYPE_SUPPLIER"
+      if="paymentMode?.inOutSelect == __repo__(PaymentMode).OUT"/>
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
     <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
   </action-record>
