@@ -1,3 +1,21 @@
+## [6.0.29] (2022-08-11)
+
+#### Fixed
+
+* PrintTemplate & PrintTemplateLine: several UI improvments
+
+  - Illustrative sentence added to the top of the line template to explain the different possibilities.
+  - The help explanations of the 'content' 'conditions' & 'title' text areas have been modified.
+  - A new text area 'Notes' has been added to the line template to help distinguish lines the grid.
+  - The column 'conditions' is now displayed in the grid.
+
+* MRP: reset date fields when copying an existing MRP.
+* Lunch voucher: fix lunch voucher computation: half-day leaves now correctly reduce number of lunch vouchers by one.
+* Accounting: fixed the "Revenues vs Expenses" chart.
+* Manufacturing Order: fixed an issue preventing to finish a manufacturing order with a operation order on standby.
+* Expense: fixed an issue where expense ventilation did not work after setting accounting analytic template to expense lines.
+* Account clearance: Fixed errors when fetching excess payments preventing the process from working correctly.
+
 ## [6.0.28] (2022-08-01)
 
 #### Fixed
@@ -889,6 +907,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.29]: https://github.com/axelor/axelor-open-suite/compare/v6.0.28...v6.0.29
 [6.0.28]: https://github.com/axelor/axelor-open-suite/compare/v6.0.27...v6.0.28
 [6.0.27]: https://github.com/axelor/axelor-open-suite/compare/v6.0.26...v6.0.27
 [6.0.26]: https://github.com/axelor/axelor-open-suite/compare/v6.0.25...v6.0.26
