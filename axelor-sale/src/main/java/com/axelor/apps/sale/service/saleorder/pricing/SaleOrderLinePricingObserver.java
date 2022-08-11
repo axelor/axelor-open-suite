@@ -7,6 +7,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import java.util.Objects;
 
 public class SaleOrderLinePricingObserver implements PricingObserver {
@@ -74,5 +75,14 @@ public class SaleOrderLinePricingObserver implements PricingObserver {
     } else {
       this.saleOrderLine.setPricingScaleLogs(logs.toString());
     }
+  }
+
+  @Override
+  public void updateMetaJsonFieldToPopulate(MetaJsonField field) {
+    logs.append(
+        String.format(
+            I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_POPULATED_CUSTOM_FIELD),
+            field != null ? field.getName() : "null"));
+    logs.append("\n");
   }
 }

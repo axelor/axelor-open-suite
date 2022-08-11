@@ -21,9 +21,11 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -43,21 +45,25 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
 
   @Inject
   public FixedAssetServiceSupplyChainImpl(
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetValidateService fixedAssetValidateService) {
     super(
+        fixedAssetDateService,
         fixedAssetLineService,
         fixedAssetDerogatoryLineService,
         fixedAssetRepository,
         fixedAssetLineServiceFactory,
         sequenceService,
         accountConfigService,
-        appBaseService);
+        appBaseService,
+        fixedAssetValidateService);
   }
 
   @Transactional

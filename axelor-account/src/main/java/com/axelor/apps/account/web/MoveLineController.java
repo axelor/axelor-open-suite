@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -34,12 +35,15 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
@@ -60,6 +64,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveLineController {
@@ -162,9 +167,7 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
             moveLineList.add(moveLine);
           }
         }
@@ -328,6 +331,12 @@ public class MoveLineController {
             if (!accountingAccount.getUseForPartnerBalance()) {
               response.setValue("partner", null);
             }
+            AnalyticDistributionTemplate analyticDistributionTemplate =
+                accountingAccount.getAnalyticDistributionTemplate();
+            if (accountingAccount.getAnalyticDistributionAuthorized()
+                && analyticDistributionTemplate != null) {
+              response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+            }
           }
 
           TaxLine taxLine =
@@ -375,11 +384,14 @@ public class MoveLineController {
   public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
     boolean readonly = false;
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
     try {
       if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
         readonly = true;
       }
-      if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
+      if (moveLine.getAccount() != null
+          && move.getPartner() != null
+          && moveLine.getAccount().getUseForPartnerBalance()) {
         readonly = true;
       }
       response.setAttr("partner", "readonly", readonly);
@@ -605,6 +617,93 @@ public class MoveLineController {
         Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(moveLine);
         response.setValues(moveLine);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      response.setAttr(
+          "invoiceTermPanel",
+          "readonly",
+          Beans.get(MoveLineControlService.class)
+              .isInvoiceTermReadonly(moveLine, request.getUser()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void displayInvoiceTermWarningMessage(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      response.setAttr(
+          "$invoiceTermListPercentageWarningText",
+          "hidden",
+          !(Beans.get(MoveLineControlService.class).displayInvoiceTermWarningMessage(moveLine)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+
+      response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
+      response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void validateCutOffBatch(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      if (!context.containsKey("_ids")) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+      }
+
+      List<Long> ids =
+          (List)
+              (((List) context.get("_ids"))
+                  .stream()
+                      .filter(ObjectUtils::notEmpty)
+                      .map(input -> Long.parseLong(input.toString()))
+                      .collect(Collectors.toList()));
+      Long id = (long) (int) context.get("_batchId");
+
+      if (CollectionUtils.isEmpty(ids)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+      } else {
+        Batch batch = Beans.get(MoveLineService.class).validateCutOffBatch(ids, id);
+        response.setFlash(batch.getComments());
+      }
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
+      response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

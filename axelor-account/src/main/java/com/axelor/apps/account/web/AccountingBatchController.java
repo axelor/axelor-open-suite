@@ -259,4 +259,8 @@ public class AccountingBatchController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void actionAccountingCutOff(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF, request, response);
+  }
 }

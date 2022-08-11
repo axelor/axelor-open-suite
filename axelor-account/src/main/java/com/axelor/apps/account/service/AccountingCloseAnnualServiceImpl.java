@@ -267,6 +267,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             originDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,
             false,

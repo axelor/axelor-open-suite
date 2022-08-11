@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
@@ -36,7 +35,6 @@ import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -317,14 +315,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
 
       if (accountingReport.getReportType().getTypeSelect()
-          > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
-        JournalType journalType = this.getJournalType(accountingReport);
-        if (journalType != null) {
-          this.addParams("self.move.journal.journalType = ?%d", journalType);
-        }
-      }
-
-      if (accountingReport.getReportType().getTypeSelect()
               >= AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER
           && accountingReport.getDisplayOnlyNotCompletelyLetteredMoveLines()) {
         this.addParams("self.amountRemaining > 0");
@@ -437,37 +427,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
         accountingReport.getReportType().getTypeSelect());
-  }
-
-  public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException {
-    if (accountingReport.getReportType() == null) {
-      return null;
-    }
-
-    Company company = accountingReport.getCompany();
-
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    switch (accountingReport.getReportType().getTypeSelect()) {
-      case AccountingReportRepository.EXPORT_SALES:
-        return accountConfigService.getSaleJournalType(accountConfig);
-
-      case AccountingReportRepository.EXPORT_REFUNDS:
-        return accountConfigService.getCreditNoteJournalType(accountConfig);
-
-      case AccountingReportRepository.EXPORT_TREASURY:
-        return accountConfigService.getCashJournalType(accountConfig);
-
-      case AccountingReportRepository.EXPORT_PURCHASES:
-        return accountConfigService.getPurchaseJournalType(accountConfig);
-
-      default:
-        break;
-    }
-
-    return null;
   }
 
   public Account getAccount(AccountingReport accountingReport) {

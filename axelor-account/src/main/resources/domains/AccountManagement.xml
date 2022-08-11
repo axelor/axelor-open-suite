@@ -35,6 +35,14 @@
     <many-to-one name="interbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Interbank code"/>
 
+    <many-to-one name="globalAccountingCashAccount"
+      ref="com.axelor.apps.account.db.Account" title="Global Accounting account"/>
+
+    <many-to-one name="chequeDepositJournal" ref="com.axelor.apps.account.db.Journal"/>
+
+    <many-to-one name="pmtNotificationTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Email model for Payment notice"/>
+
     <!-- Cut off -->
     <many-to-one name="purchVatRegulationAccount"
       title="VAT Regularization account on purchase" ref="com.axelor.apps.account.db.Account"/>
@@ -50,7 +58,13 @@
       return name;
       ]]>
     </string>
+
     <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode"/>
+    <unique-constraint columns="paymentMode,bankDetails,company"/>
+
+    <finder-method name="find" using="paymentMode,bankDetails,company"
+      cacheable="true"/>
+
   </entity>
 
 </domain-models>

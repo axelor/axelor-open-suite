@@ -70,4 +70,25 @@ public interface AccountingSituationService {
    */
   @CallMethod
   BankDetails getCompanySalesBankDetails(Company company, Partner partner);
+
+  /**
+   * Get holdback customer account from accounting situation or account config.
+   *
+   * @param partner
+   * @param company
+   * @return
+   */
+  Account getHoldBackCustomerAccount(Partner partner, Company company) throws AxelorException;
+
+  /**
+   * Get holdback supplier account from accounting situation or account config.
+   *
+   * @param partner
+   * @param company
+   * @return
+   */
+  Account getHoldBackSupplierAccount(Partner partner, Company company) throws AxelorException;
+
+  void setHoldBackAccounts(AccountingSituation accountingSituation, Partner partner)
+      throws AxelorException;
 }

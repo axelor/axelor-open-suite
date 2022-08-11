@@ -332,8 +332,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && move.getPeriod() != null
         && moveLine != null
         && moveLine.getDate() != null
-        && (!moveLine.getDate().isAfter(move.getPeriod().getFromDate())
-            || !moveLine.getDate().isBefore(move.getPeriod().getToDate()))) {
+        && (moveLine.getDate().isBefore(move.getPeriod().getFromDate())
+            || moveLine.getDate().isAfter(move.getPeriod().getToDate()))) {
       if (move.getCurrency() != null
           && move.getCurrency().getSymbol() != null
           && moveLine.getAccount() != null) {

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -60,7 +61,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected PaymentService paymentService;
   protected ReconcileService reconcileService;
   protected MoveExcessPaymentService moveExcessPaymentService;
-
+  protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
 
   @Inject
@@ -75,7 +76,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       PaymentService paymentService,
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      JournalRepository journalRepository) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
@@ -87,6 +89,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.reconcileService = reconcileService;
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
+    this.journalRepository = journalRepository;
   }
 
   /**
@@ -141,6 +144,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
               invoice.getFiscalPosition(),
+              invoice.getBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
               origin,
@@ -151,6 +155,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setInvoice(invoice);
 
         move.setTradingName(invoice.getTradingName());
+        move.setPaymentCondition(invoice.getPaymentCondition());
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
@@ -342,7 +347,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               reconcileService.createReconcile(
                   invoiceCustomerMoveLine, creditMoveLine, amount, false);
           if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
+            reconcileService.confirmReconcile(reconcile, true, true);
           }
         }
       }
@@ -422,9 +427,43 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       Reconcile reconcile =
           reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
       if (reconcile != null) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
     return oDmove;
+  }
+
+  @Override
+  public boolean isPartnerNotCompatible(Move move) {
+    Journal journal = move.getJournal();
+    Partner partner = move.getPartner();
+    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null) {
+      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
+      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
+        switch (compatiblePartnerType) {
+          case JournalRepository.IS_PROSPECT:
+            if (partner.getIsProspect()) {
+              return false;
+            }
+            break;
+          case JournalRepository.IS_CUSTOMER:
+            if (partner.getIsCustomer()) {
+              return false;
+            }
+            break;
+          case JournalRepository.IS_SUPPLIER:
+            if (partner.getIsSupplier()) {
+              return false;
+            }
+            break;
+          case JournalRepository.IS_FACTOR:
+            if (!partner.getIsFactor()) {
+              return false;
+            }
+            break;
+        }
+      }
+    }
+    return true;
   }
 }

@@ -18,11 +18,13 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -38,6 +40,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -70,11 +73,16 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setPaymentVoucher(null);
       copy.setRejectOk(false);
       copy.setInvoice(null);
+      copy.setPaymentSession(null);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 
       if (moveLineList != null) {
+        MoveLineInvoiceTermService moveLineInvoiceTermService =
+            Beans.get(MoveLineInvoiceTermService.class);
+
         moveLineList.forEach(moveLine -> resetMoveLine(moveLine, copy.getDate()));
+        moveLineList.forEach(moveLineInvoiceTermService::updateInvoiceTermsParentFields);
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -101,12 +109,44 @@ public class MoveManagementRepository extends MoveRepository {
     if (analyticMoveLineList != null) {
       moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
     }
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().forEach(this::resetInvoiceTerm);
+    }
+  }
+
+  public void resetInvoiceTerm(InvoiceTerm invoiceTerm) {
+    invoiceTerm.setIsPaid(false);
+    invoiceTerm.setApplyFinancialDiscount(false);
+    invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
+    invoiceTerm.setIsSelectedOnPaymentSession(false);
+    invoiceTerm.setDebtRecoveryBlockingOk(false);
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
+    invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+    invoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
+    invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+    invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
+    invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
+    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    invoiceTerm.setImportId(null);
+    invoiceTerm.setPaymentSession(null);
+    invoiceTerm.setPfpPartialReason(null);
+    invoiceTerm.setReasonOfRefusalToPay(null);
+    invoiceTerm.setReasonOfRefusalToPayStr(null);
+    invoiceTerm.setPfpValidatorUser(null);
+    invoiceTerm.setFinancialDiscount(null);
+    invoiceTerm.setDecisionPfpTakenDate(null);
+    invoiceTerm.setInvoice(null);
   }
 
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
@@ -117,6 +157,7 @@ public class MoveManagementRepository extends MoveRepository {
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
         for (MoveLine moveLine : moveLineList) {
+          moveLineControlService.validateMoveLine(moveLine);
           List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
           if (analyticMoveLineList != null) {
             for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {

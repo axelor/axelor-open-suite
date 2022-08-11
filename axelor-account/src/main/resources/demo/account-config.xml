@@ -59,6 +59,10 @@
     <bind column="validAccountTypes" to="validAccountTypeSet"
       search="self.technicalTypeSelect in :validAccountTypes"
       eval="validAccountTypes.split('\\|') as List"/>
+    <bind column="validAccounts" to="validAccountSet"
+      search="self.code in :validAccounts and self.company.importId = :company_importId"
+      eval="validAccounts.split('\\|') as List"/>
+    <bind to="company" search="self.importId = :company_importId"/>
   </input>
 
   <input file="account_paymentMode.csv" separator=";"
@@ -72,6 +76,9 @@
 
   <input file="account_paymentCondition.csv" separator=";"
     type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId"/>
+
+  <input file="account_paymentConditionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId"/>
 
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
     search="self.importId = :importId" update="true"
@@ -160,6 +167,9 @@
       to="journal" update="true" if="journal_importId"/>
     <bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true"
       if="bankDetails_importId"/>
+    <bind
+      search="self.code = :globalAccountingCashAccount_code and self.company.importId = :company_id"
+      to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
   </input>
 
   <input file="account_cfonbConfig.csv" separator=";"
@@ -241,7 +251,6 @@
     type="com.axelor.apps.account.db.AccountingReportType" search="self.importId = :importId">
     <bind to="name" column="name"/>
     <bind to="reportExportTypeSelect" eval="'1'"/>
-    <bind to="typeSelect" eval="'3000'"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"/>
   </input>

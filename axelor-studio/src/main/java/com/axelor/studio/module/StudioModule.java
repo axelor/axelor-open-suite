@@ -34,6 +34,10 @@ import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.SelectionBuilderRepo;
 import com.axelor.studio.db.repo.SelectionBuilderRepository;
+import com.axelor.studio.db.repo.WsAuthenticatorRepo;
+import com.axelor.studio.db.repo.WsAuthenticatorRepository;
+import com.axelor.studio.db.repo.WsConnectorRepo;
+import com.axelor.studio.db.repo.WsConnectorRepository;
 import com.axelor.studio.service.ChartRecordViewService;
 import com.axelor.studio.service.ChartRecordViewServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderExportService;
@@ -65,5 +69,7 @@ public class StudioModule extends AxelorModule {
     bind(ChartRecordViewService.class).to(ChartRecordViewServiceImpl.class);
     bind(WsConnectorService.class).to(WsConnectoServiceImpl.class);
     bind(WsAuthenticatorService.class).to(WsAuthenticatorServiceImpl.class);
+    bind(WsConnectorRepository.class).to(WsConnectorRepo.class);
+    bind(WsAuthenticatorRepository.class).to(WsAuthenticatorRepo.class);
   }
 }

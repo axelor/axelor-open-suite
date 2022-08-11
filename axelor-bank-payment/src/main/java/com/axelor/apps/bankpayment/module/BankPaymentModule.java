@@ -19,8 +19,10 @@ package com.axelor.apps.bankpayment.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
+import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
@@ -50,6 +52,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
+import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
@@ -57,6 +60,7 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
@@ -80,7 +84,6 @@ import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimb
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCancelServiceBankPayImpl;
-import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPay;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
@@ -133,8 +136,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(PaymentScheduleLineBankPaymentService.class)
         .to(PaymentScheduleLineBankPaymentServiceImpl.class);
 
-    bind(InvoicePaymentCreateServiceBankPay.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
-
     bind(InvoicePaymentCreateServiceImpl.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
 
     bind(InvoicePaymentController.class).to(InvoicePaymentBankPayController.class);
@@ -159,6 +160,9 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankPaymentBankStatementLineAFB120Repository.class);
     bind(BankStatementRuleService.class).to(BankStatementRuleServiceImpl.class);
     bind(BankStatementQueryService.class).to(BankStatementQueryServiceImpl.class);
+    bind(PaymentSessionValidateServiceImpl.class)
+        .to(PaymentSessionValidateBankPaymentServiceImpl.class);
+    bind(PaymentSessionAccountRepository.class).to(PaymentSessionBankPaymentRepository.class);
 
     bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);
   }

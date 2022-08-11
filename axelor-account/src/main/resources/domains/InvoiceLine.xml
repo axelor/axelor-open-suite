@@ -93,6 +93,15 @@
 	    ]]>
     </string>
 
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.companyExTaxTotal != null && this.companyExTaxTotal.signum() > 0) {
+				return this.companyExTaxTotal;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
+
     <extra-code>
 		<![CDATA[
 			// TYPE SELECT

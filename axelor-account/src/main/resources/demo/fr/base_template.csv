@@ -19,6 +19,18 @@ L'équipe Axelor</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2
+"Envoi avis de paiement";"PaymentSession";2;;;;"true";"invoiceTermList";"$PaymentSession.company.name$ - Avis de règlement";"<p>Madame, Monsieur,</p>
+
+<p>Nous vous informons que nous avons émis un $PaymentSession.paymentMode.name$ en la faveur de votre société $PaymentSession.partnerForEmail.name$ en règlement des opérations ci-dessous en date du $PaymentSession.paymentDate; format=""dd/MM/yyyy""$:<br>
+$invoiceTermList : { it |<br>
+$it.name$ - $it.dueDate; format=""dd/MM/yyyy""$ - $it.paymentAmount$$it.paymentSession.currency.code$<br>
+}$</p>
+
+<p>Vous en souhaitant bonne réception.</p>
+
+<p>Cordialement,<br>
+Le service comptabilité.<br>
+Société $PaymentSession.company.name$</p>";"$PaymentSession.partnerForEmail.emailAddress.address$";;;2
 "Releve facture";"NoteBills";2;;"34";;"true";;"Votre relevé de facture";"<p>Bonjour,</p>
 
 <p>Vous trouverez ci-joint votre relevé de facture</p>

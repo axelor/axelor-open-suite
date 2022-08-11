@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
 import com.axelor.apps.account.service.ClosureAssistantService;
@@ -9,7 +10,6 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
-import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -74,7 +74,7 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
       }
       SupplychainBatch supplychainBatch =
           supplychainBatchService.createNewSupplychainBatch(
-              SupplychainBatchRepository.ACTION_ACCOUNTING_CUT_OFF,
+              AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF,
               AuthUtils.getUser().getActiveCompany());
       if (supplychainBatch != null && supplychainBatch.getId() != null) {
         return ActionView.define(I18n.get("Supplychain Batch"))

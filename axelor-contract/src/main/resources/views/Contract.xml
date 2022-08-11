@@ -16,7 +16,7 @@
   </grid>
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
-    width="large" readonlyIf="statusSelect == 3" onNew="action-contract-record-default"
+    width="large" readonlyIf="statusSelect == 3" onNew="action-contract-group-on-new"
     onLoad="action-contract-group-on-load" onSave="action-contract-method-is-valid">
     <toolbar>
       <button name="printContractBtn" title="Print" hidden="true" icon="fa-print"
@@ -346,6 +346,11 @@
     <call class="com.axelor.apps.contract.web.ContractController" method="close"/>
   </action-method>
 
+  <action-group name="action-contract-group-on-new">
+    <action name="action-contract-record-default"/>
+    <action name="action-contract-attrs-partner-payment-config"/>
+  </action-group>
+
   <action-group name="action-contract-group-on-load">
     <action name="action-contract-attrs-require-payment-config"/>
     <action name="action-contract-attrs-readonly-by-config"/>
@@ -364,7 +369,7 @@
     <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
     <field name="currentContractVersion"
       expr="action:action-record-contract-version-default-record"/>
-    <field name="partner" expr="eval: _partner"/>
+    <field name="partner" expr="eval: _clientPartner" if="_clientPartner != null"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
     <field name="project" expr="eval:_project" if="_project != null"/>
   </action-record>

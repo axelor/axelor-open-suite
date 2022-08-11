@@ -20,6 +20,8 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -46,6 +48,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -67,6 +70,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveRepository moveRepository;
 
   @Inject
   public MoveToolServiceImpl(
@@ -74,12 +78,14 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveRepository moveRepository) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveRepository = moveRepository;
   }
 
   @Override
@@ -149,6 +155,43 @@ public class MoveToolServiceImpl implements MoveToolService {
       return moveLineToolService.getDebitCustomerMoveLine(invoice);
     } else {
       return moveLineToolService.getCreditCustomerMoveLine(invoice);
+    }
+  }
+
+  /**
+   * Method that returns all move lines of an invoice payment that are not completely lettered
+   *
+   * @param invoicePayment Invoice payment
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException {
+    List<MoveLine> moveLines = Lists.newArrayList();
+    if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+        if (!moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
+          moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
+        }
+      }
+    }
+    return moveLines;
+  }
+
+  /**
+   * Method that returns all the move lines of an invoice that are not completely lettered
+   *
+   * @param invoice Invoice
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
+    if (this.isDebitCustomer(invoice, true)) {
+      return moveLineToolService.getDebitCustomerMoveLines(invoice);
+    } else {
+      return moveLineToolService.getCreditCustomerMoveLines(invoice);
     }
   }
 
@@ -358,11 +401,13 @@ public class MoveToolServiceImpl implements MoveToolService {
 
       Beans.get(InvoiceRepository.class).save(invoice);
 
-      MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
+      List<MoveLine> moveLines = this.getInvoiceCustomerMoveLines(invoice);
       //			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
 
-      if (moveLine != null) {
-        inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
+      if (!CollectionUtils.isEmpty(moveLines)) {
+        for (MoveLine moveLine : moveLines) {
+          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
+        }
 
         if (isMinus) {
           inTaxTotalRemaining = inTaxTotalRemaining.negate();
@@ -577,5 +622,23 @@ public class MoveToolServiceImpl implements MoveToolService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
     }
+  }
+
+  @Override
+  public boolean checkMoveOriginIsDuplicated(Move move) throws AxelorException {
+    List<Move> moveList = null;
+    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
+      moveList =
+          moveRepository
+              .all()
+              .filter(
+                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
+                  move.getId(),
+                  move.getOrigin(),
+                  move.getPeriod().getYear(),
+                  move.getPartner())
+              .fetch();
+    }
+    return !ObjectUtils.isEmpty(moveList);
   }
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -52,16 +53,19 @@ public class PaymentServiceImpl implements PaymentService {
   protected MoveLineCreateService moveLineCreateService;
 
   protected AppAccountService appAccountService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PaymentServiceImpl(
       AppAccountService appAccountService,
+      AppBaseService appBaseService,
       ReconcileService reconcileService,
       MoveLineCreateService moveLineCreateService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -129,7 +133,8 @@ public class PaymentServiceImpl implements PaymentService {
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
-        log.debug("Emploie du trop perçu : ligne en débit : {})", debitMoveLine);
+        log.debug(
+            "Emploie du trop perçu : ligne en débit : {})", debitMoveLine.getAmountRemaining());
 
         log.debug(
             "Emploie du trop perçu : ligne en débit (restant à payer): {})",
@@ -139,11 +144,10 @@ public class PaymentServiceImpl implements PaymentService {
 
       for (MoveLine creditMoveLine : creditMoveLines) {
 
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
+        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
 
           for (MoveLine debitMoveLine : debitMoveLines) {
-            if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
-                && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
+            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
               try {
                 createReconcile(
                     debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
@@ -204,7 +208,7 @@ public class PaymentServiceImpl implements PaymentService {
     // End gestion du passage en 580
 
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
 
       debitTotalRemaining = debitTotalRemaining.subtract(amount);
       creditTotalRemaining = creditTotalRemaining.subtract(amount);
@@ -302,7 +306,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     for (Reconcile reconcile : reconcileList) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     // Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -416,7 +420,7 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (Reconcile reconcile : reconcileList) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
     // Si il y a un restant à payer, alors on crée un dû.

@@ -1042,4 +1042,26 @@
     <category key="_situation" type="text" title="Situation"/>
     <series key="_amount" type="bar" title="Amount"/>
   </chart>
+
+  <custom name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"
+    title="Custom">
+    <dataset type="jpql"><![CDATA[
+
+	 select CONCAT(round(sum(self.amountPaid),2), ' €') as Amount, _partner.name as Supplier, _bankDetails.fullName as BankDetails
+	 from InvoiceTerm as self
+	 left join self.moveLine.partner as _partner
+	 left join self.bankDetails as _bankDetails
+	 where self.isSelectedOnPaymentSession = true and self.paymentSession.id = :_id
+	 group by _partner.id,_bankDetails.id
+	 order by _partner.name
+	 ]]></dataset>
+    <template><![CDATA[
+
+	<report-table data='data' columns='Supplier,BankDetails,Amount'></report-table>
+
+
+	 ]]></template>
+  </custom>
+
+
 </object-views>

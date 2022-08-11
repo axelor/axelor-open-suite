@@ -23,17 +23,21 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.time.LocalDate;
+import com.google.inject.Singleton;
 
+@Singleton
 public class InvoiceController {
 
   public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
-
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      LocalDate estimatedPaymentDate =
+      if (invoice.getDueDate() == null) {
+        return;
+      }
+      invoice =
           Beans.get(InvoiceEstimatedPaymentService.class).computeEstimatedPaymentDate(invoice);
-      response.setValue("estimatedPaymentDate", estimatedPaymentDate);
+      response.setValues(invoice);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

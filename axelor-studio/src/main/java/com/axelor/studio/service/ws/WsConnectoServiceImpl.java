@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.ws;
 
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -207,7 +208,9 @@ public class WsConnectoServiceImpl implements WsConnectorService {
         String value = wsKeyValue.getWsValue();
         if (!Strings.isNullOrEmpty(value)) {
           value = templates.fromText(wsKeyValue.getWsValue()).make(ctx).render();
-          if (wsKeyValue.getWsKey().equals("Authorization")) {
+          if (!StringUtils.isBlank(value)
+              && value.startsWith("Basic")
+              && wsKeyValue.getWsKey().equals("Authorization")) {
             headers.add(
                 wsKeyValue.getWsKey(),
                 "Basic " + new String(Base64.encodeBase64(value.getBytes())));

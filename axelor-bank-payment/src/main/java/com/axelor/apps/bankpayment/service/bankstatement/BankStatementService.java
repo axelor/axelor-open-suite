@@ -399,4 +399,15 @@ public class BankStatementService {
       bankDetailsRepository.save(bankDetail);
     }
   }
+
+  public List<BankStatementLineAFB120> getBankStatementLines(BankStatement bankStatement) {
+    List<BankStatementLineAFB120> bankStatementLines;
+    bankStatementLines =
+        bankPaymentBankStatementLineAFB120Repository
+            .all()
+            .filter("self.bankStatement = :bankStatement")
+            .bind("bankStatement", bankStatement)
+            .fetch();
+    return bankStatementLines;
+  }
 }

@@ -30,7 +30,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,6 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException {
 
-    List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>();
     Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
 
     for (PurchaseRequest purchaseRequest : purchaseRequests) {
@@ -93,49 +91,14 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
         purchaseOrder = createPurchaseOrder(purchaseRequest);
       }
 
-      for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
-        PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
-        Product product = purchaseRequestLine.getProduct();
+      this.generatePoLineListFromPurchaseRequest(purchaseRequest, purchaseOrder, groupByProduct);
 
-        purchaseOrderLine =
-            groupByProduct && purchaseOrder != null
-                ? getPoLineByProduct(product, purchaseOrder)
-                : null;
-
-        purchaseOrderLine =
-            purchaseOrderLineService.createPurchaseOrderLine(
-                purchaseOrder,
-                product,
-                purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
-                null,
-                purchaseRequestLine.getQuantity(),
-                purchaseRequestLine.getUnit());
-        purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
-        purchaseOrderLineList.add(purchaseOrderLine);
-        purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
-      }
-      purchaseOrder.getPurchaseOrderLineList().addAll(purchaseOrderLineList);
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
       purchaseOrderRepo.save(purchaseOrder);
-      purchaseRequest.setPurchaseOrder(purchaseOrder);
-      purchaseRequestRepo.save(purchaseRequest);
     }
     List<PurchaseOrder> purchaseOrders =
         purchaseOrderMap.values().stream().collect(Collectors.toList());
     return purchaseOrders;
-  }
-
-  private PurchaseOrderLine getPoLineByProduct(Product product, PurchaseOrder purchaseOrder) {
-
-    PurchaseOrderLine purchaseOrderLine =
-        purchaseOrder.getPurchaseOrderLineList() != null
-                && !purchaseOrder.getPurchaseOrderLineList().isEmpty()
-            ? purchaseOrder.getPurchaseOrderLineList().stream()
-                .filter(poLine -> poLine.getProduct().equals(product))
-                .findFirst()
-                .orElse(null)
-            : null;
-    return purchaseOrderLine;
   }
 
   protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
@@ -157,5 +120,27 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
   protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
     return purchaseRequest.getSupplierUser().getId().toString();
+  }
+
+  protected void generatePoLineListFromPurchaseRequest(
+      PurchaseRequest purchaseRequest, PurchaseOrder purchaseOrder, Boolean groupByProduct)
+      throws AxelorException {
+
+    for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
+
+      Product product = purchaseRequestLine.getProduct();
+
+      PurchaseOrderLine purchaseOrderLine =
+          purchaseOrderLineService.createPurchaseOrderLine(
+              purchaseOrder,
+              product,
+              purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
+              null,
+              purchaseRequestLine.getQuantity(),
+              purchaseRequestLine.getUnit());
+
+      purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+      purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+    }
   }
 }
