@@ -62,6 +62,7 @@
     <panel-tabs name="mainPanelTab">
       <panel name="filterPanel" title="Filter">
         <field name="currency"/>
+        <spacer/>
         <field name="year" canEdit="false"
           readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)"
           hideIf="reportType.typeSelect != 2  &amp;&amp; reportType.typeSelect != 12  &amp;&amp; reportType.typeSelect != 15 &amp;&amp; reportType.typeSelect != 16  &amp;&amp; reportType.typeSelect != 17 &amp;&amp; reportType.typeSelect != 19 &amp;&amp; reportType.typeSelect != 20 &amp;&amp; reportType.typeSelect != 3000"
