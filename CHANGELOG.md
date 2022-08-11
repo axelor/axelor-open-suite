@@ -1,3 +1,14 @@
+## [5.4.22] (2022-08-11)
+
+#### Fixed
+
+* MRP: reset date fields when copying an existing MRP.
+* Lunch voucher: fix lunch voucher computation: half-day leaves now correctly reduce number of lunch vouchers by one.
+* Accounting: fixed the "Revenues vs Expenses" chart.
+* Manufacturing Order: fixed an issue preventing to finish a manufacturing order with a operation order on standby.
+* Expense: fixed an issue where expense ventilation did not work after setting accounting analytic template to expense lines.
+* Account clearance: Fixed errors when fetching excess payments preventing the process from working correctly.
+
 ## [5.4.21] (2022-08-01)
 
 #### Fixed
@@ -654,6 +665,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.22]: https://github.com/axelor/axelor-open-suite/compare/v5.4.21...v5.4.22
 [5.4.21]: https://github.com/axelor/axelor-open-suite/compare/v5.4.20...v5.4.21
 [5.4.20]: https://github.com/axelor/axelor-open-suite/compare/v5.4.19...v5.4.20
 [5.4.19]: https://github.com/axelor/axelor-open-suite/compare/v5.4.18...v5.4.19

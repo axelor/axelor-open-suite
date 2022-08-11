@@ -1,2 +1,0 @@
-title: "ManufOrder: Fixed NPE that occured when we tried to finish a manuf order with a operation order on standby"
-type: fix
