@@ -1,3 +1,0 @@
----
-title: "SaleOrder: fixed an error preventing sale order save when the 'Manage partner complementary product' option was activated."
-type: fix

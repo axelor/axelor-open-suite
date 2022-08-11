@@ -1,5 +1,0 @@
----
-title: "Lunch voucher : fix calculation with leave request"
-type: fix
-description: |
-  Half day of leave now correctly reduces number of lunch voucher by one.
