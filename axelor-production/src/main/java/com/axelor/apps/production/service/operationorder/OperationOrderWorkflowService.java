@@ -330,8 +330,11 @@ public class OperationOrderWorkflowService {
                 "self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL",
                 operationOrder.getId())
             .fetchOne();
-    duration.setStoppedBy(AuthUtils.getUser());
-    duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+
+    if (duration != null) {
+      duration.setStoppedBy(AuthUtils.getUser());
+      duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+    }
 
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
@@ -342,7 +345,9 @@ public class OperationOrderWorkflowService {
       }
     }
 
-    operationOrderDurationRepo.save(duration);
+    if (duration != null) {
+      operationOrderDurationRepo.save(duration);
+    }
   }
 
   /**
