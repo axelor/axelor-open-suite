@@ -234,35 +234,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
     checkInactiveJournal(move);
+    checkFunctionalOriginSelect(move);
 
     validateVatSystem(move);
 
     Integer functionalOriginSelect = move.getFunctionalOriginSelect();
-    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_15),
-          move.getReference());
-    }
-    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
-    if (authorizedFunctionalOriginSelect != null
-        && !(Splitter.on(",")
-            .trimResults()
-            .splitToList(authorizedFunctionalOriginSelect)
-            .contains(functionalOriginSelect.toString()))) {
-
-      Option selectionItem =
-          MetaStore.getSelectionItem(
-              "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_14),
-          selectionItem.getLocalizedTitle(),
-          move.getReference(),
-          journal.getName(),
-          journal.getCode());
-    }
-
     if (functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
         && functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
       for (MoveLine moveLine : move.getMoveLineList()) {
@@ -319,6 +295,32 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             move.getPartner() != null ? move.getPartner().getFullName() : "",
             move.getPeriod().getYear().getName());
       }
+    }
+  }
+
+  protected void checkFunctionalOriginSelect(Move move) throws AxelorException {
+    Integer functionalOriginSelect = move.getFunctionalOriginSelect();
+    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
+      return;
+    }
+    Journal journal = move.getJournal();
+    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+    if (authorizedFunctionalOriginSelect != null
+        && !(Splitter.on(",")
+            .trimResults()
+            .splitToList(authorizedFunctionalOriginSelect)
+            .contains(functionalOriginSelect.toString()))) {
+
+      Option selectionItem =
+          MetaStore.getSelectionItem(
+              "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_14),
+          selectionItem.getLocalizedTitle(),
+          move.getReference(),
+          journal.getName(),
+          journal.getCode());
     }
   }
 

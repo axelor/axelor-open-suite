@@ -91,7 +91,7 @@
         <field name="commonPosition"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="company" required="true" canEdit="false" widget="SuggestBox"
-          onChange="action-account-validate"
+          onChange="action-account-group-company-onChange"
           readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
@@ -300,6 +300,11 @@
     <action name="action-record-account-tax-system-value"/>
   </action-group>
 
+  <action-group name="action-account-group-company-onChange">
+    <action name="action-account-record-clean-analytic"/>
+    <action name="action-account-validate"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -363,6 +368,11 @@
   <action-record name="action-account-record-uncheck-tax-required"
     model="com.axelor.apps.account.db.Account">
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
+  </action-record>
+
+  <action-record name="action-account-record-clean-analytic"
+    model="com.axelor.apps.account.db.Account">
+    <field name="analyticDistributionTemplate" expr="eval:null"/>
   </action-record>
 
   <action-record name="action-record-account-tax-system-value"
