@@ -252,7 +252,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       senderRecord +=
           cfonbToolService.createZone(
               I18n.get("12 - Bank order currency"),
-              senderCurrency.getCode(),
+              senderCurrency.getCodeISO(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               3);
@@ -289,7 +289,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       senderRecord +=
           cfonbToolService.createZone(
               I18n.get("16 - Bank order currency"),
-              senderCurrency.getCode(),
+              senderCurrency.getCodeISO(),
               cfonbToolService.STATUS_DEPENDENT,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               3);
@@ -384,7 +384,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
         senderRecord +=
             cfonbToolService.createZone(
                 I18n.get("21 - Currency"),
-                bankOrderCurrency.getCode(),
+                bankOrderCurrency.getCodeISO(),
                 cfonbToolService.STATUS_MANDATORY,
                 cfonbToolService.FORMAT_ALPHA_NUMERIC,
                 3);
@@ -749,7 +749,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       if (isMultiCurrencies) {
         String bankOrderCurrencyCode = "";
         if (bankOrderLine.getBankOrderCurrency() != null) {
-          bankOrderCurrencyCode = bankOrderLine.getBankOrderCurrency().getCode();
+          bankOrderCurrencyCode = bankOrderLine.getBankOrderCurrency().getCodeISO();
         }
         detailRecord +=
             cfonbToolService.createZone(
@@ -1211,7 +1211,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       totalRecord +=
           cfonbToolService.createZone(
               I18n.get("11 - Bank details code"),
-              senderCurrency.getCode(),
+              senderCurrency.getCodeISO(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               3);

@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -115,9 +116,18 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
+
       String description = null;
       if (journal != null) {
         description = journal.getDescriptionModel();
+      }
+
+      if (journal.getDescriptionIdentificationOk() && origin != null) {
+        if (ObjectUtils.isEmpty(description)) {
+          description = origin;
+        } else {
+          description += " " + origin;
+        }
       }
 
       log.debug(
@@ -168,8 +178,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                     journal.getIsInvoiceMoveConsolidated(),
                     isPurchase,
                     isDebitCustomer));
-
-        moveToolService.setOriginAndDescriptionOnMoveLineList(move);
 
         moveRepository.save(move);
 

@@ -73,7 +73,8 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="3"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false" readonly="true"/>
           <field name="date"
@@ -107,6 +108,7 @@
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
         </panel>
+        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3"
@@ -174,7 +176,7 @@
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
         <button
-          showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
       </panel>
@@ -221,7 +223,7 @@
       <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
         <viewer>
 					<![CDATA[
-						<h3>{{$fmt('$totalDebit')+' '+$fmt('companyCurrency.code')}}</h3>
+						<h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
 					]]>
         </viewer>
       </field>
@@ -229,7 +231,7 @@
         readonly="true">
         <viewer>
 					<![CDATA[
-						<h3>{{$fmt('$totalCredit')+' '+$fmt('companyCurrency.code')}}</h3>
+						<h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
 					]]>
         </viewer>
       </field>
@@ -237,8 +239,8 @@
         <viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('companyCurrency.code')}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('companyCurrency.code')}}</span>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
 						</h3>
 					]]>
         </viewer>
@@ -276,6 +278,7 @@
           onChange="action-move-record-set-currency-code"/>
         <field name="companyCurrency" readonly="true"/>
         <field name="currencyCode" hidden="true"/>
+        <field name="$companyCurrencyCodeIso" hidden="true"/>
       </panel>
 
       <panel name="fecImportPanel" title="FEC Import" showIf="technicalOriginSelect == 4">
@@ -320,7 +323,8 @@
             onChange="action-move-group-journal-on-change"
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <field name="date" hideIf="statusSelect == 3" colSpan="3"
             onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
@@ -336,6 +340,8 @@
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
         <field name="origin" colSpan="3"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
+        <field name="$companyCurrencyCodeIso" hidden="true"/>
       </panel>
       <panel name="otherDetailsPanel" readonlyIf="statusSelect == 3" colSpan="3">
         <field name="$viewerTags" showTitle="false">
@@ -380,7 +386,7 @@
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
         <button
-          showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
@@ -425,7 +431,7 @@
       <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3" type="decimal">
         <viewer><![CDATA[
 
-					<h3>{{$fmt('$totalDebit')+' '+$fmt('companyCurrency.code')}}</h3>
+					<h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
 
 			]]></viewer>
       </field>
@@ -433,7 +439,7 @@
         type="decimal">
         <viewer><![CDATA[
 
-					<h3>{{$fmt('$totalCredit')+' '+$fmt('companyCurrency.code')}}</h3>
+					<h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
 
 			]]></viewer>
       </field>
@@ -441,8 +447,8 @@
         <viewer><![CDATA[
 
 					<h3>
-						<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('companyCurrency.code')}}</span>
-						<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('companyCurrency.code')}}</span>
+						<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
+						<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
 					</h3>
 
 			]]></viewer>
@@ -505,6 +511,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-onload">
+    <action name="action-move-attrs-set-company-currency-code-iso"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
     <action name="action-move-attrs-validate-button-title"/>
@@ -607,13 +614,14 @@
   <action-record name="default-move-record-currency"
     model="com.axelor.apps.account.db.Move">
     <field name="companyCurrency" expr="eval: company?.currency"/>
+    <field name="$companyCurrencyCodeIso" expr="eval: company?.currency.codeISO"/>
     <field name="currency" expr="eval: company?.currency"/>
-    <field name="currencyCode" expr="eval: company?.currency.code"/>
+    <field name="currencyCode" expr="eval: company?.currency.codeISO"/>
   </action-record>
 
   <action-record name="action-move-record-set-currency-code"
     model="com.axelor.apps.account.db.Move">
-    <field name="currencyCode" expr="eval: currency?.code"/>
+    <field name="currencyCode" expr="eval: currency?.codeISO"/>
   </action-record>
 
   <action-record name="action-move-record-journal"
@@ -624,7 +632,7 @@
   <action-record name="action-account-move-record-set-currency"
     model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency"/>
-    <field name="currencyCode" expr="eval: partner?.currency?.code"/>
+    <field name="currencyCode" expr="eval: partner?.currency?.codeISO"/>
   </action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
@@ -675,6 +683,11 @@
     <attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
     <attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
     <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-set-company-currency-code-iso">
+    <attribute for="$companyCurrencyCodeIso" name="value"
+      expr="eval: company?.currency.codeISO"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->
