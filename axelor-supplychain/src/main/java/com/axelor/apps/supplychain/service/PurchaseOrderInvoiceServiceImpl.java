@@ -73,8 +73,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private InvoiceServiceSupplychainImpl invoiceService;
-  private InvoiceRepository invoiceRepo;
+  protected InvoiceServiceSupplychainImpl invoiceService;
+  protected InvoiceRepository invoiceRepo;
   protected TimetableRepository timetableRepo;
   protected AppSupplychainService appSupplychainService;
 
