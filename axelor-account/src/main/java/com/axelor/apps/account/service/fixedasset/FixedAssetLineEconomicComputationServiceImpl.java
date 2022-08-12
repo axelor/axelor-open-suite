@@ -100,8 +100,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation();
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation());
   }
 
   @Override
@@ -146,8 +146,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override

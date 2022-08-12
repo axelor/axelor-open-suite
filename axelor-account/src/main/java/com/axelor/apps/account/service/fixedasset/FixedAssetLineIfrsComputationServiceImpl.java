@@ -61,8 +61,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsNumberOfDepreciation();
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getIfrsNumberOfDepreciation());
   }
 
   @Override
@@ -107,8 +107,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getIfrsNbrOfPastDepreciations());
   }
 
   @Override

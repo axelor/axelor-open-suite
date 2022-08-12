@@ -261,7 +261,8 @@
       <field name="correctedAccountingValue"
         readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
       <field name="numberOfDepreciation"
-        readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2 || isEqualToFiscalDepreciation"/>
+        readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2 || isEqualToFiscalDepreciation"
+        onChange="action-fixed-asset-category-record-compute-duration"/>
     </panel>
     <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true"
       hidden="true">
