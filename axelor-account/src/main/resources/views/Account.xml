@@ -60,8 +60,10 @@
     </panel>
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
-        <field name="name" colSpan="9" css="bold"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
+          readonlyIf="$isReadOnly"/>
+        <field name="name" colSpan="9" css="bold" readonlyIf="$isReadOnly"/>
+        <field name="$isReadOnly" hidden="true" readonly="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
@@ -77,7 +79,7 @@
         <field name="parentAccount" onChange="action-account-validate"
           domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
-        <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
+        <field name="reconcileOk" widget="boolean-switch" colSpan="3" readonlyIf="$isReadOnly"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
@@ -88,7 +90,8 @@
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+            onChange="action-account-group-on-change-analytic-distribution-authorized"
+            readonlyIf="$isReadOnly"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
@@ -347,7 +350,7 @@
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
-    <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
+    <attribute name="value" for="$isReadOnly"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
   </action-attrs>
 
