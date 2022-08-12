@@ -108,8 +108,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation() - this.listSizeAfterClear;
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation())
+        .subtract(BigDecimal.valueOf(this.listSizeAfterClear));
   }
 
   @Override
@@ -149,10 +150,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
-    return getFixedAssetLineList(fixedAsset).size()
-        - listSizeAfterClear
-        + fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(
+        getFixedAssetLineList(fixedAsset).size()
+            - listSizeAfterClear
+            + fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -245,8 +247,8 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override

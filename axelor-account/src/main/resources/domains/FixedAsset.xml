@@ -134,6 +134,8 @@
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
     <many-to-one name="assetDisposalReason"
       ref="com.axelor.apps.account.db.AssetDisposalReason" title="Disposal Reason"/>
+
+    <integer name="initialPeriodicityInMonth" title="Initial periodicity in month"/>
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
