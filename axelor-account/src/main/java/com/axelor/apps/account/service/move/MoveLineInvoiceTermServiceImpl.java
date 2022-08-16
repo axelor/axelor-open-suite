@@ -96,6 +96,18 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         && CollectionUtils.isNotEmpty(holdbackMoveLine.getInvoiceTermList())) {
       holdbackMoveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
     }
+
+    if (!containsHoldback) {
+      MoveLine moveLineWithHoldbackAccount =
+          this.getHoldbackMoveLine(moveLine, move, holdbackAccount);
+
+      if (moveLineWithHoldbackAccount != null) {
+        moveLineWithHoldbackAccount.clearInvoiceTermList();
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
+      }
+    }
   }
 
   public void updateInvoiceTermsParentFields(MoveLine moveLine) {
