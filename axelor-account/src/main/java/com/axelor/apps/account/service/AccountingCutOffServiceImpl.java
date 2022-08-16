@@ -630,9 +630,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       Move move, Account taxAccount, TaxLine taxLine, Integer vatSystem) {
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       for (MoveLine line : move.getMoveLineList()) {
-        if (line.getAccount() == taxAccount
-            && line.getTaxLine() == taxLine
-            && line.getVatSystemSelect() == vatSystem) {
+        if (line.getAccount().equals(taxAccount)
+            && line.getTaxLine() != null
+            && line.getTaxLine().equals(taxLine)
+            && line.getVatSystemSelect() != null
+            && line.getVatSystemSelect().equals(vatSystem)) {
           return line;
         }
       }
