@@ -147,7 +147,7 @@ public class MapRestCrm {
         String currencyCode = "";
 
         if (opportunity.getCurrency() != null) {
-          currencyCode = opportunity.getCurrency().getCode();
+          currencyCode = opportunity.getCurrency().getCodeISO();
         }
 
         String amtLabel = "Amount";

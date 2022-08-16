@@ -78,8 +78,8 @@
   </form>
 
   <action-group name="action-analytic-move-line-query-group-on-new">
-    <action name="action-analytic-move-line-query-origin-select-domain"/>
     <action name="action-analytic-move-line-query-record-default"/>
+    <action name="action-analytic-move-line-query-origin-select-domain"/>
   </action-group>
 
   <action-attrs name="action-analytic-move-line-query-attrs-set-company-domain">

@@ -491,7 +491,7 @@
       </panel>
       <panel-dashlet name="bankReconciliationLinePanel"
         title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"
-        canAttach="false" showIf="account.accountType.technicalTypeSelect == 'cash'"/>
+        showIf="account.accountType.technicalTypeSelect == 'cash'" canAttach="false"/>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
       <field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
@@ -729,7 +729,7 @@
       </panel>
       <panel-dashlet name="bankReconciliationLinePanel"
         title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"
-        canAttach="false" showIf="account.accountType.technicalTypeSelect == 'cash'"/>
+        showIf="account.accountType.technicalTypeSelect == 'cash'" canAttach="false"/>
     </panel-tabs>
 
     <panel-mail name="mailPanel">

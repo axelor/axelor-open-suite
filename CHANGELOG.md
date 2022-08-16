@@ -1,3 +1,32 @@
+## [6.2.6] (2022-08-11)
+
+#### Fixed
+
+* Print Template: several UI improvements
+
+  - Illustrative sentence added to the top of the line template to explain the different possibilities.
+  - The help explanations of the 'content' 'conditions' & 'title' text areas have been modified.
+  - A new text area 'Notes' has been added to the line template to help distinguish lines the grid.
+  - The column 'conditions' is now displayed in the grid.
+
+* Product: fixed a bug where a opened product variant was marked as dirty.
+* Sale Order: fixed an error preventing sale order save when the 'Manage partner complementary product' option was activated.
+* Configurator creator: change title from Configurator type to Configurator model for uniformity.
+* Expense: fixed an issue where expense ventilation did not work after setting accounting analytic template to expense lines.
+* Lunch voucher: fix lunch voucher computation: half-day leaves now correctly reduce number of lunch vouchers by one.
+* MRP: reset date fields when copying an existing MRP.
+* App manufacturing: Use the same title for both app and view.
+* Manufacturing Order: fixed an issue preventing to finish a manufacturing order with a operation order on standby.
+* Analytic Accounting Template: fixed an issue where default analytic template was not retrieved correctly on move line.
+* Analytic Accounting Template: corrected analytic distribution template not resetting after company change in account.
+* Move: hide 'Generate counterpart' on validated accounting moves.
+* Move Line: corrected wrong description in invoice move lines and added missing origin in move description.
+* Move Line: display bank reconciliation information only for line with a cash account.
+* Accounting period: Fix variation(%) in general balance report.
+* Accounting period: fixed an error impacting the performance of the process to close a period.
+* Accounting: fixed the "Revenues vs Expenses" chart.
+* Account clearance: Fixed errors when fetching excess payments preventing the process from working correctly.
+
 ## [6.2.5] (2022-07-29)
 
 #### Changes
@@ -520,6 +549,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.6]: https://github.com/axelor/axelor-open-suite/compare/v6.2.5...v6.2.6
 [6.2.5]: https://github.com/axelor/axelor-open-suite/compare/v6.2.4...v6.2.5
 [6.2.4]: https://github.com/axelor/axelor-open-suite/compare/v6.2.3...v6.2.4
 [6.2.3]: https://github.com/axelor/axelor-open-suite/compare/v6.2.2...v6.2.3
