@@ -509,7 +509,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (!purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && !purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         exTaxTotal = exTaxTotal.add(purchaseOrderLine.getExTaxTotal());
       }
     }
