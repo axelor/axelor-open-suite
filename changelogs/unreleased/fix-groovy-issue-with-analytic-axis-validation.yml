@@ -1,0 +1,3 @@
+---
+title: "Account Config : Fixed groovy error that occurred while saving the account configuration when 'Manage analytic accounting' option was activated"
+type: fix
