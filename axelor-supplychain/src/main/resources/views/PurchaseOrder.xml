@@ -10,6 +10,8 @@
     <extend target="/">
       <attribute name="onNew"
         value="action-group-purchase-order-on-new-actions,supplychain-action-create-shipment-cost-line-purchase"/>
+      <attribute name="onLoad"
+        value="action-supplychain-group-purchase-order-on-load-actions"/>
     </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange"
@@ -21,6 +23,11 @@
         value="action-purchase-order-method-compute,supplychain-action-create-shipment-cost-line-purchase"/>
     </extend>
   </form>
+
+  <action-group name="action-supplychain-group-purchase-order-on-load-actions">
+    <action name="action-group-purchase-order-on-load-actions"/>
+    <action name="action-purchase-order-method-show-cancel-btn" if="statusSelect == 3"/>
+  </action-group>
 
   <action-method name="action-purchase-order-method-generate-control-invoice">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
@@ -71,6 +78,11 @@
   <action-method name="supplychain-action-create-shipment-cost-line-purchase">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="createShipmentCostLine"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-show-cancel-btn">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="manageCancelPurchaseOrder"/>
   </action-method>
 
 </object-views>
