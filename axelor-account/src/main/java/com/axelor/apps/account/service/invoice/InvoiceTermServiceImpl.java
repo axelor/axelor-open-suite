@@ -740,6 +740,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " AND self.bankDetails IS NOT NULL "
             + " AND self.paymentMode = :paymentMode"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession IS TRUE ";
+
     String termsMoveLineCondition =
         " AND ((self.moveLine.partner.isCustomer IS TRUE "
             + " AND :partnerTypeSelect = :partnerTypeClient"
@@ -750,9 +751,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " AND (:activatePfp IS FALSE "
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment IS FALSE  "
             + " OR self.pfpValidateStatusSelect IN (:pfpValidateStatusValidated, :pfpValidateStatusPartiallyValidated)))) ";
-    String paymentHistoryCondition =
-        " AND self.isPaid = FALSE"
-            + " AND self.amountRemaining > 0";
+
+    String paymentHistoryCondition = " AND self.isPaid = FALSE" + " AND self.amountRemaining > 0";
+
     return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
   }
 
