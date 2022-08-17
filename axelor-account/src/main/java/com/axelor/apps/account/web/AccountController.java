@@ -73,21 +73,20 @@ public class AccountController {
       ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      Long accountId = account.getId();
-      if (accountId == null) {
-        accountId = 0L;
-      }
-      List<Account> sameAccountList =
+      Long accountId = account.getId() == null ? 0L : account.getId();
+
+      long sameAccountCount =
           Beans.get(AccountRepository.class)
               .all()
               .filter(
-                  "self.company = ?1 AND self.code = ?2 AND self.id != ?3",
-                  account.getCompany(),
-                  account.getCode(),
-                  accountId)
-              .fetch();
-      if (!ObjectUtils.isEmpty(sameAccountList)) {
+                  "self.company = :company AND self.code = :code AND self.id != :id AND self.status = :activeStatus")
+              .bind("company", account.getCompany())
+              .bind("code", account.getCode())
+              .bind("id", accountId)
+              .bind("activeStatus", AccountRepository.STATUS_ACTIVE)
+              .count();
 
+      if (sameAccountCount > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
@@ -96,7 +95,7 @@ public class AccountController {
       }
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

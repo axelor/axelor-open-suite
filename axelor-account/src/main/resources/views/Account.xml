@@ -48,7 +48,7 @@
 
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" width="large"
-    onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
+    onNew="action-account-record-new,action-method-account-hide-analytic"
     onLoad="action-group-account-account-onload" onSave="action-account-group-onsave"
     canDelete="!isRegulatoryAccount">
     <panel name="statusPanel">
@@ -190,8 +190,7 @@
   </form>
 
   <form name="account-info-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large"
-    onLoad="action-attrs-account-account-readonly-if-account-in-move-line">
+    model="com.axelor.apps.account.db.Account" width="large">
     <panel name="mainPanel" title="Account details" readonly="true">
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
       <field name="name" colSpan="9" css="bold"/>
@@ -241,7 +240,8 @@
   </action-view>
 
   <action-group name="action-account-group-onsave">
-    <action name="action-account-method-check-if-code-already-exist-for-company"/>
+    <action name="action-account-method-check-if-code-already-exist-for-company"
+      if="statusSelect == 1"/>
     <action name="action-on-change-distribution-template-account"/>
     <action name="action-account-method-verify-template-value"
       if="__this__.analyticDistributionTemplate != null"/>
@@ -271,7 +271,6 @@
 
   <action-group name="action-group-account-account-onload">
     <action name="action-account-method-compute-balance"/>
-    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
   </action-group>
@@ -441,11 +440,6 @@
   <action-method name="action-account-method-verify-template-value">
     <call class="com.axelor.apps.account.web.AccountController" method="verifyTemplateValues"/>
   </action-method>
-
-  <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
-    <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
-      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
-  </action-attrs>
 
   <action-attrs name="action-attrs-account-set-is-retrieved-on-payment-session">
     <attribute name="value" for="isRetrievedOnPaymentSession" expr="eval: hasInvoiceTerm"/>
