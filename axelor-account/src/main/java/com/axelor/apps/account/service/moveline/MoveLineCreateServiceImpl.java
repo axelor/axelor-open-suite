@@ -77,7 +77,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxAccountService taxAccountService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      MoveLineConsolidateService moveLineConsolidateService) {
+      MoveLineConsolidateService moveLineConsolidateService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -85,6 +86,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
+    this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
   }
 
   /**

@@ -1,0 +1,3 @@
+---
+title: "Invoice: Fixed NPE on invoice ventilation when the analytic move lines are generated."
+type: fix
