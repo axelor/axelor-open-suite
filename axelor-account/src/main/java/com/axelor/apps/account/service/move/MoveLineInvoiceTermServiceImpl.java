@@ -105,7 +105,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         moveLineWithHoldbackAccount.clearInvoiceTermList();
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK_2));
       }
     }
   }
@@ -158,7 +158,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
               moveLine.getOriginDate(),
               move.getMoveLineList().size() + 1,
               moveLine.getOrigin(),
-              moveLine.getDescription());
+              null);
+      holdbackMoveLine.setDescription(moveLine.getDescription());
       this.updateMoveLine(moveLine, holdbackAmount, true);
 
       moveLineToolService.setCurrencyAmount(moveLine);
