@@ -55,9 +55,9 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -1348,35 +1348,33 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public List<Invoice> getValidatedInvoiceListForFiscalPeriod(
-          TradingName tradingName,
-          Period period,
-          Company company) {
+      TradingName tradingName, Period period, Company company) {
     List<Invoice> invoiceList = new ArrayList<>();
     if (tradingName != null) {
       invoiceList =
-              invoiceRepo
-                      .all()
-                      .filter(
-                              "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.tradingName = ? and self.company = ?",
-                              InvoiceRepository.STATUS_VALIDATED,
-                              InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-                              period.getFromDate().getMonthValue(),
-                              period.getFromDate().getYear(),
-                              tradingName,
-                              company)
-                      .fetch();
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.tradingName = ? and self.company = ?",
+                  InvoiceRepository.STATUS_VALIDATED,
+                  InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                  period.getFromDate().getMonthValue(),
+                  period.getFromDate().getYear(),
+                  tradingName,
+                  company)
+              .fetch();
     } else {
       invoiceList =
-              invoiceRepo
-                      .all()
-                      .filter(
-                              "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.company = ?",
-                              InvoiceRepository.STATUS_VALIDATED,
-                              InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-                              period.getFromDate().getMonthValue(),
-                              period.getFromDate().getYear(),
-                              company)
-                      .fetch();
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.company = ?",
+                  InvoiceRepository.STATUS_VALIDATED,
+                  InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                  period.getFromDate().getMonthValue(),
+                  period.getFromDate().getYear(),
+                  company)
+              .fetch();
     }
     return invoiceList;
   }

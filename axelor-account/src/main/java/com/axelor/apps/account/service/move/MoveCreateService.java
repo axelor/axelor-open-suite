@@ -183,9 +183,14 @@ public interface MoveCreateService {
   Move createMove(
       Journal journal,
       Company company,
+      Partner partner,
+      Currency currency,
       Period period,
       LocalDate date,
       TradingName tradingName,
-      PaymentMode paymentMode)
+      PaymentMode paymentMode,
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException;
 }

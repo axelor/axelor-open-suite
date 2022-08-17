@@ -85,6 +85,7 @@
     <boolean name="isMoveGenerationByTradingName"
       title="Manage move generation by trading name"
       help="Enable move generation being handled by trading name. If enabled with no trading name selected, all trading names will be considered selected."/>
+    <boolean name="isMoveManagedByPartners" title="Manage move generation by partners"/>
 
     <extra-code><![CDATA[
 

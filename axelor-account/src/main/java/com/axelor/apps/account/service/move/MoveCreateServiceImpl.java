@@ -55,6 +55,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
+  protected SequenceService sequenceService;
   protected CompanyConfigService companyConfigService;
 
   protected AppAccountService appAccountService;
@@ -64,10 +65,12 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       AppAccountService appAccountService,
       PeriodService periodService,
       MoveRepository moveRepository,
+      SequenceService sequenceService,
       CompanyConfigService companyConfigService) {
 
     this.periodService = periodService;
     this.moveRepository = moveRepository;
+    this.sequenceService = sequenceService;
     this.companyConfigService = companyConfigService;
 
     this.appAccountService = appAccountService;
@@ -342,25 +345,31 @@ public class MoveCreateServiceImpl implements MoveCreateService {
   public Move createMove(
       Journal journal,
       Company company,
+      Partner partner,
+      Currency currency,
       Period period,
       LocalDate date,
       TradingName tradingName,
-      PaymentMode paymentMode)
+      PaymentMode paymentMode,
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     Move move =
         createMove(
             journal,
             company,
-            company.getCurrency(),
+            currency,
+            partner,
+            date,
             null,
             paymentMode,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            0,
-            null,
-            null);
+            functionalOriginSelect,
+            origin,
+            description);
     move.setPeriod(period);
-    move.setDate(date);
     move.setTradingName(tradingName);
     return moveRepository.save(move);
   }

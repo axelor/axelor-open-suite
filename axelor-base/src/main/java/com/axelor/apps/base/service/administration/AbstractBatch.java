@@ -140,6 +140,8 @@ public abstract class AbstractBatch {
 
     batch.setEndDate(ZonedDateTime.now());
     batch.setDuration(getDuring());
+    batch.setDone(done);
+    batch.setAnomaly(anomaly);
 
     checkPoint();
 

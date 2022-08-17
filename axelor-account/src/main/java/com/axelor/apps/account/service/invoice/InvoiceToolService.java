@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -37,9 +38,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.shiro.util.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -254,10 +255,17 @@ public class InvoiceToolService {
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);
   }
-  
+
+  public Map<Currency, List<Invoice>> getCurrencyMap(List<Invoice> invoiceList) {
+    return invoiceList.stream().collect(Collectors.groupingBy(Invoice::getCurrency));
+  }
+
+  public Map<Partner, List<Invoice>> getPartnerMap(List<Invoice> invoiceList) {
+    return invoiceList.stream().collect(Collectors.groupingBy(Invoice::getPartner));
+  }
+
   public Map<Account, BigDecimal> getAmountMap(
-          Map<Account, BigDecimal> amountMap,
-          List<InvoiceLine> invoiceLineList) {
+      Map<Account, BigDecimal> amountMap, List<InvoiceLine> invoiceLineList) {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       if (amountMap.containsKey(invoiceLine.getAccount())) {
         amountMap.put(
@@ -271,8 +279,7 @@ public class InvoiceToolService {
   }
 
   public Map<Tax, BigDecimal> getTaxMap(
-          Map<Tax, BigDecimal> taxMap,
-          List<InvoiceLineTax> invoiceLineTaxList) {
+      Map<Tax, BigDecimal> taxMap, List<InvoiceLineTax> invoiceLineTaxList) {
     for (InvoiceLineTax tax : invoiceLineTaxList) {
       if (taxMap.containsKey(tax.getTaxLine().getTax())) {
         taxMap.put(
@@ -286,9 +293,9 @@ public class InvoiceToolService {
   }
 
   public Map<PaymentMode, BigDecimal> getPaymentMap(
-          Map<PaymentMode, BigDecimal> paymentMap,
-          List<InvoicePayment> invoicePaymentList,
-          Invoice invoice) {
+      Map<PaymentMode, BigDecimal> paymentMap,
+      List<InvoicePayment> invoicePaymentList,
+      Invoice invoice) {
     if (CollectionUtils.isEmpty(invoicePaymentList)) {
       if (paymentMap.containsKey(invoice.getPaymentMode())) {
         paymentMap.put(
