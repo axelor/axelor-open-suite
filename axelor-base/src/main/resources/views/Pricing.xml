@@ -10,6 +10,7 @@
     <field name="productCategory"/>
     <field name="concernedModel" hidden="true"/>
     <field name="startDate"/>
+    <field name="endDate"/>
     <field name="name"/>
     <field name="previousPricing"/>
   </grid>
@@ -21,6 +22,7 @@
         <field name="name"/>
         <field name="startDate" required="true"/>
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
+        <field name="endDate"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
           required="true" domain="self.name = 'SaleOrderLine'"/>
       </panel>

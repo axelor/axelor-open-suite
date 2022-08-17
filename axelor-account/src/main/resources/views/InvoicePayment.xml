@@ -103,11 +103,11 @@
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
-      <field name="companyBankDetails" canEdit="false"
+      <field name="companyBankDetails" canEdit="false" required="true"
         onSelect="action-invoice-payment-method-bank-details-domain" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
       <field name="paymentDate"
-        onChange="action-invoice-payment-method-mass-payment-set-amount"/>
+        onChange="action-invoice-payment-method-mass-payment-set-amount" required="true"/>
 
       <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
       <field name="bankDepositDate"
@@ -124,9 +124,15 @@
       <field name="invoicesSelected" hidden="true"/>
       <button name="validateBtn" title="Validate"
         showIf="paymentMode != null &amp;&amp; paymentDate != null"
-        onClick="action-invoice-payment-method-validate-mass-payment,close"/>
+        onClick="action-invoice-payment-group-validate-mass-payment"/>
     </panel>
   </form>
+
+  <action-group name="action-invoice-payment-group-validate-mass-payment">
+    <action name="action-invoice-payment-validate-mass-payment"/>
+    <action name="action-invoice-payment-method-validate-mass-payment"/>
+    <action name="close"/>
+  </action-group>
 
   <action-group name="action-invoice-payment-group-new">
     <action name="action-invoice-payment-record-new"/>
@@ -147,6 +153,11 @@
     <action name="action-invoice-payment-record-mass-payment-new"/>
     <action name="action-invoice-payment-method-mass-payment-set-amount"/>
   </action-group>
+
+  <action-validate name="action-invoice-payment-validate-mass-payment">
+    <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
+    <error message="Please fill in the date." if="paymentDate == null"/>
+  </action-validate>
 
   <action-record name="action-invoice-payment-record-new"
     model="com.axelor.apps.account.db.InvoicePayment">

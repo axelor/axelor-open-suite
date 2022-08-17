@@ -61,11 +61,12 @@
     </panel>
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8"
-        readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount">
+        readonlyIf="$isReadOnly || (accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount)">
         <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
           onChange="action-group-code-on-change"/>
         <field name="name" colSpan="9" css="bold"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
+        <field name="$isReadOnly" hidden="true" readonly="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
@@ -100,7 +101,8 @@
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
-          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
+          hideIf="accountType.technicalTypeSelect == 'view'"
+          readonlyIf="$isReadOnly || isRegulatoryAccount"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
@@ -121,7 +123,8 @@
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
           hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+            onChange="action-account-group-on-change-analytic-distribution-authorized"
+            readonlyIf="$isReadOnly"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
@@ -443,7 +446,7 @@
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
-    <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
+    <attribute name="value" for="$isReadOnly"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
   </action-attrs>
 
