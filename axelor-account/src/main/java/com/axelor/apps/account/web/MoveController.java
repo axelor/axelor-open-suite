@@ -44,7 +44,6 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -107,7 +106,7 @@ public class MoveController {
       if (move.getDate() != null && move.getCompany() != null) {
         Period period =
             Beans.get(PeriodService.class)
-                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+                .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
         if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
 
           response.setValue("period", period);
@@ -169,8 +168,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -219,8 +217,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -228,7 +225,7 @@ public class MoveController {
                       move.getReference()));
             }
           }
-          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+          Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
           response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
         } else {
@@ -563,13 +560,11 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
       User user = AuthUtils.getUser();
-      if (move.getPeriod() != null
-          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
-        response.setError(
-            I18n.get(
-                "This period is temporarily closed and you do not have the necessary permissions to create entries"));
-      }
+      Period period = move.getPeriod();
+      boolean isAuthorizedToAccountOnPeriod =
+          periodServiceAccount.isAuthorizedToAccountOnPeriod(period, user);
+
+      Beans.get(PeriodService.class).checkClosedPeriod(period, isAuthorizedToAccountOnPeriod);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -632,6 +627,19 @@ public class MoveController {
           response.setValue("partner", null);
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void isAuthorizedOnPeriod(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      User user = AuthUtils.getUser();
+      response.setValue(
+          "$validatePeriod",
+          !Beans.get(PeriodServiceAccount.class)
+              .isAuthorizedToAccountOnPeriod(move.getPeriod(), user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -1,0 +1,8 @@
+---
+title: adding a custom field for cities to visualize both city name and postal code
+type: feature
+description: |
+  Added a fullName field in City object composed of name and zip code.
+  This data is used as a name when selecting a city from a list generated
+  in a many-to-on relation and is more generally used to describe a city, as
+  multiple city entities can have the same name but different zip codes.

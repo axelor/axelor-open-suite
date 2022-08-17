@@ -47,7 +47,7 @@
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-    <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
+    <integer name="functionalOriginSelect" title="Functional origin"
       selection="iaccount.move.functional.origin.select"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading name"/>

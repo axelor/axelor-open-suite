@@ -26,7 +26,6 @@
         onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="allowRemovalValidatedMove"/>
       <field name="generateMoveForAdvancePayment" colSpan="4"/>
       <field name="accountingDaybook" colSpan="4"/>
       <field name="isActivateSimulatedMove" colSpan="4"/>
@@ -138,6 +137,7 @@
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
           <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
           <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
         </panel>
         <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProductController {
 
@@ -50,7 +51,9 @@ public class ProductController {
         stockLocationId = 0L;
       } else if (companyId != 0L && stockLocationId != 0L) {
         StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
-        if (sl != null && sl.getCompany() != null && sl.getCompany().getId() != companyId) {
+        if (sl != null
+            && sl.getCompany() != null
+            && !Objects.equals(sl.getCompany().getId(), companyId)) {
           stockLocationId = 0L;
           response.setValue("stockLocation", null);
           context.put("$stockLocation", null);
@@ -85,7 +88,7 @@ public class ProductController {
 
     if (companyId != 0L && stockLocationId != 0L) {
       StockLocation stockLocation = Beans.get(StockLocationRepository.class).find(stockLocationId);
-      if (stockLocation != null && stockLocation.getCompany().getId() == companyId) {
+      if (stockLocation != null && Objects.equals(stockLocation.getCompany().getId(), companyId)) {
         List<Long> stockLocationIdList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocationId(stockLocation, false);

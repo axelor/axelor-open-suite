@@ -457,6 +457,7 @@
     <option value="pdf">PDF</option>
   </selection>
   <selection name="invoice.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>

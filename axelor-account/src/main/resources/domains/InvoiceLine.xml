@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" lang="java">
+  <entity name="InvoiceLine" lang="java"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -78,6 +79,15 @@
 	  		return name;
 	    ]]>
     </string>
+
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.companyExTaxTotal != null && this.companyExTaxTotal.signum() > 0) {
+				return this.companyExTaxTotal;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
 
     <extra-code>
 		<![CDATA[

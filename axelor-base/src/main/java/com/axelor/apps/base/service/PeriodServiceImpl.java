@@ -32,6 +32,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
 import javax.persistence.Query;
@@ -213,6 +214,21 @@ public class PeriodServiceImpl implements PeriodService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED),
           period.getName());
+    }
+  }
+
+  @Override
+  public void checkClosedPeriod(Period period, boolean isAuthorizedToAccountOnPeriod)
+      throws AxelorException {
+    List<Integer> unauthorizedStatus = new ArrayList<>();
+    unauthorizedStatus.add(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
+    unauthorizedStatus.add(PeriodRepository.STATUS_CLOSED);
+    if (period != null
+        && !isAuthorizedToAccountOnPeriod
+        && unauthorizedStatus.contains(period.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
     }
   }
 
