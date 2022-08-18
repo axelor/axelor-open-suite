@@ -26,7 +26,8 @@
   <form name="fixed-asset-form" title="Fixed asset"
     model="com.axelor.apps.account.db.FixedAsset"
     onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
-    onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload">
+    onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload"
+    canDelete="statusSelect == 1">
     <panel>
       <panel name="statusSelectPanel" colSpan="12">
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="6"
