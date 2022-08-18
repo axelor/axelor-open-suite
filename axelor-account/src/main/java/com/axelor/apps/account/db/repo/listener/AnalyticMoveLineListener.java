@@ -30,10 +30,13 @@ public class AnalyticMoveLineListener {
             || analyticMoveLine.getMoveLine().getMove().getStatusSelect()
                 == MoveRepository.STATUS_DAYBOOK)) {
 
-      Beans.get(MoveAccountingMoveLineAnalyticLineControlService.class)
-          .checkInactiveAnalyticAccount(analyticMoveLine);
-      Beans.get(MoveAccountingMoveLineAnalyticLineControlService.class)
-          .checkInactiveAnalyticJournal(analyticMoveLine);
+      MoveAccountingMoveLineAnalyticLineControlService
+          moveAccountingMoveLineAnalyticLineControlService =
+              Beans.get(MoveAccountingMoveLineAnalyticLineControlService.class);
+      moveAccountingMoveLineAnalyticLineControlService.checkInactiveAnalyticAccount(
+          analyticMoveLine);
+      moveAccountingMoveLineAnalyticLineControlService.checkInactiveAnalyticJournal(
+          analyticMoveLine);
     }
 
     log.debug("Applied pre-save operations");

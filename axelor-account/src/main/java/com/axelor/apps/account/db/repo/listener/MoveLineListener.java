@@ -30,7 +30,9 @@ public class MoveLineListener {
 
     // Control and completion to do in any cases
     Beans.get(MoveLinePreSaveControlService.class).checkValidity(moveLine);
-    Beans.get(MoveLineCompletionService.class).completeAnalyticMoveLine(moveLine);
+    MoveLineCompletionService moveLineCompletionService =
+        Beans.get(MoveLineCompletionService.class);
+    moveLineCompletionService.completeAnalyticMoveLine(moveLine);
 
     // Operations to do if the move line is related to a move
     Move move = moveLine.getMove();
@@ -41,7 +43,7 @@ public class MoveLineListener {
       if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
 
-        Beans.get(MoveLineCompletionService.class).freezeAccountAndPartnerFields(moveLine);
+        moveLineCompletionService.freezeAccountAndPartnerFields(moveLine);
       }
 
       if (move.getStatusSelect() != MoveRepository.STATUS_NEW
