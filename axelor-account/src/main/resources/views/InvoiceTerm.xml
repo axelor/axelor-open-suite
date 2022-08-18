@@ -3,9 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="invoice-term-grid" title="Invoice terms"
-    orderBy="-moveLine.originDate,-moveLine.dueDate" model="com.axelor.apps.account.db.InvoiceTerm"
-    canNew="false" canDelete="false">
+  <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <field name="moveLine.origin"/>
     <field name="moveLine.originDate"/>
     <field name="moveLine.move.journal"/>
@@ -57,7 +56,7 @@
     <field name="currency"/>
   </grid>
 
-  <grid name="invoice-term-move-line-grid" title="Invoice terms"
+  <grid name="invoice-term-move-line-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
       <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
@@ -88,7 +87,7 @@
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
   </grid>
 
-  <grid name="invoice-term-invoice-payment-grid" title="Invoice terms"
+  <grid name="invoice-term-invoice-payment-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
       <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
@@ -122,7 +121,7 @@
   </grid>
 
   <grid name="invoice-term-move-line-invoice-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" canDelete="false">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="sequence" canDelete="false">
     <field name="sequence"/>
     <field name="name"/>
     <field name="dueDate"/>
@@ -145,8 +144,8 @@
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="moveLine.partner.name,dueDate"
-    groupBy="moveLine.partner" edit-icon="true">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="sequence" groupBy="moveLine.partner"
+    edit-icon="true">
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
     <field name="moveLine.partner"/>

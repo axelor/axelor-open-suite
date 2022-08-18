@@ -290,6 +290,15 @@ public interface IExceptionMessage {
 
   static final String MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE = /*$$(*/
       "The sum of all invoice terms percentages is not equal to 100." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
+      "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
+      "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE = /*$$(*/
+      "At least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually." /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
   static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
       "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
@@ -1333,4 +1342,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE = /*$$(*/
       "Watch out, a record with same origin/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific origin/reference." /*)*/;
+
+  static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
+      "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
 }

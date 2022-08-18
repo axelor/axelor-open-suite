@@ -40,6 +40,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
   protected PaymentModeService paymentModeService;
@@ -50,6 +51,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
       MoveLineCreateService moveLineCreateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
       AccountManagementAccountService accountManagementAccountService,
@@ -57,6 +59,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.moveLineCreateService = moveLineCreateService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
     this.accountManagementAccountService = accountManagementAccountService;
@@ -71,6 +74,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       return;
     }
     move.addMoveLineListItem(counterPartMoveLine);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(counterPartMoveLine, true);
+
     moveRepository.save(move);
   }
 

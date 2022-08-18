@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
@@ -238,6 +239,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             null,
             amount,
             paymentConditionLine.getPaymentPercentage(),
+            paymentConditionLine
+                    .getPaymentCondition()
+                    .getPaymentConditionLineList()
+                    .indexOf(paymentConditionLine)
+                + 1,
             paymentConditionLine.getIsHoldback());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
@@ -357,7 +363,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setIsCustomized(true);
     invoiceTerm.setIsPaid(false);
-    invoiceTerm.setIsHoldBack(false);
     BigDecimal invoiceTermPercentage = new BigDecimal(100);
     BigDecimal percentageSum = computePercentageSum(moveLine);
 
@@ -381,7 +386,32 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
 
+    if (move != null
+        && move.getPaymentCondition() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
+      PaymentConditionLine nextPaymentConditionLine =
+          move.getPaymentCondition().getPaymentConditionLineList().stream()
+              .filter(it -> it.getPaymentPercentage().compareTo(invoiceTerm.getPercentage()) == 0)
+              .findFirst()
+              .orElse(
+                  move.getPaymentCondition()
+                      .getPaymentConditionLineList()
+                      .get(moveLine.getInvoiceTermList().size()));
+
+      invoiceTerm.setDueDate(this.computeDueDate(move, nextPaymentConditionLine));
+
+      if (nextPaymentConditionLine.getIsHoldback()) {
+        invoiceTerm.setIsHoldBack(true);
+      }
+    }
+
     return invoiceTerm;
+  }
+
+  @Override
+  public LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine) {
+    return InvoiceToolService.getDueDate(
+        paymentConditionLine, Optional.of(move).map(Move::getOriginDate).orElse(move.getDate()));
   }
 
   @Override
@@ -897,7 +927,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       User pfpUser,
       PaymentMode paymentMode,
       LocalDate date,
-      BigDecimal amount) {
+      BigDecimal amount,
+      int sequence) {
     return this.createInvoiceTerm(
         null,
         moveLine,
@@ -908,6 +939,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         null,
         amount,
         BigDecimal.valueOf(100),
+        sequence,
         false);
   }
 
@@ -922,9 +954,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       LocalDate estimatedPaymentDate,
       BigDecimal amount,
       BigDecimal percentage,
+      int sequence,
       boolean isHoldBack) {
     InvoiceTerm newInvoiceTerm = new InvoiceTerm();
 
+    newInvoiceTerm.setSequence(sequence);
     newInvoiceTerm.setInvoice(invoice);
     newInvoiceTerm.setIsCustomized(false);
     newInvoiceTerm.setIsPaid(false);
@@ -1196,8 +1230,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean isEnoughAmountToPay(
       List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date) {
     BigDecimal amountToPay =
-        filterNotAwaitingPayment(invoiceTermList).stream()
-            .filter(it -> !it.getIsPaid() && it.getAmountPaid().signum() > 0)
+        invoiceTermList.stream()
+            .filter(this::isNotReadonly)
             .map(it -> this.getAmountRemaining(it, date))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -1322,17 +1356,38 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine) {
+    return this.getTotalInvoiceTermsAmount(moveLine, null, true);
+  }
+
+  public BigDecimal getTotalInvoiceTermsAmount(
+      MoveLine moveLine, Account holdbackAccount, boolean holdback) {
     Move move = moveLine.getMove();
     BigDecimal total = moveLine.getDebit().max(moveLine.getCredit());
     if (move != null && move.getMoveLineList() != null) {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
         if (!moveLineIt.equals(moveLine)
+            && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
-            && moveLineIt.getAccount().getHasInvoiceTerm()) {
+            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && (holdback || !moveLineIt.getAccount().equals(holdbackAccount))) {
           total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
         }
       }
     }
     return total;
+  }
+
+  @Override
+  public void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentMode(move.getPaymentMode());
+    invoiceTerm.setBankDetails(move.getPartnerBankDetails());
+  }
+
+  @Override
+  public boolean isNotReadonly(InvoiceTerm invoiceTerm) {
+    return !invoiceTerm.getIsPaid()
+        && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0
+        && this.isNotAwaitingPayment(invoiceTerm)
+        && invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING;
   }
 }
