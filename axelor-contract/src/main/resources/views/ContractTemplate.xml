@@ -88,7 +88,7 @@
                 <panel name="invoicingDetailsPanel" hidden="true" showIf="isPeriodicInvoicing"
                   colSpan="9">
                   <field name="invoicingDuration" colSpan="4" canEdit="false"
-                    requiredIf="isPeriodicInvoicing"/>
+                    requiredIf="isPeriodicInvoicing" domain="self.applicationTypeSelect = 2"/>
                   <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                   <field name="isVersionProratedInvoice" hidden="true"
                     showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
@@ -104,7 +104,7 @@
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
               <field name="renewalDuration" hidden="true" showIf="isTacitRenewal" colSpan="3"
-                requiredIf="isTacitRenewal"/>
+                requiredIf="isTacitRenewal" domain="self.applicationTypeSelect = 2"/>
               <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal"
                 colSpan="6" widget="boolean-switch"/>
             </editor>
@@ -116,14 +116,14 @@
             <panel title="Engagement" name="engagementPanel">
               <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
               <field name="engagementDuration" showIf="isWithEngagement" colSpan="6"
-                canNew="true" requiredIf="isWithEngagement"/>
+                canNew="true" requiredIf="isWithEngagement" domain="self.applicationTypeSelect = 2"/>
               <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12"
                 requiredIf="isWithEngagement"/>
             </panel>
             <panel title="Prior notice" name="priorNoticePanel">
               <field name="isWithPriorNotice" widget="boolean-switch"/>
               <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true"
-                requiredIf="isWithPriorNotice"/>
+                requiredIf="isWithPriorNotice" domain="self.applicationTypeSelect = 2"/>
             </panel>
           </editor>
         </field>
