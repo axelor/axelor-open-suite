@@ -480,7 +480,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         fixedAsset.getFixedAssetSeq() != null
             ? fixedAsset.getFixedAssetSeq()
             : fixedAsset.getReference();
-    Integer counter = 0;
+    int counter = 0;
 
     // Creating move
     Move move =

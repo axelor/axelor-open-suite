@@ -137,6 +137,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
 
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
+
       FixedAssetLine depreciationFixedAssetLine =
           fixedAssetLineService.generateProrataDepreciationLine(
               fixedAsset, disposalDate, previousRealizedLine);
