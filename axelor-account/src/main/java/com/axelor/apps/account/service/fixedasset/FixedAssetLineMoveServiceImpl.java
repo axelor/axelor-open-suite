@@ -480,7 +480,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         fixedAsset.getFixedAssetSeq() != null
             ? fixedAsset.getFixedAssetSeq()
             : fixedAsset.getReference();
-    int counter = 0;
+    int moveLineSequenceCounter = 0;
 
     // Creating move
     Move move =
@@ -533,7 +533,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 chargeAmount,
                 true,
                 disposalDate,
-                ++counter,
+                ++moveLineSequenceCounter,
                 origin,
                 fixedAsset.getName());
         moveLines.add(chargeAccountDebitMoveLine);
@@ -553,7 +553,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               cumulativeDepreciationAmount,
               true,
               disposalDate,
-              ++counter,
+              ++moveLineSequenceCounter,
               origin,
               fixedAsset.getName());
       moveLines.add(deprecationAccountDebitMoveLine);
@@ -568,7 +568,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               fixedAsset.getGrossValue(),
               false,
               disposalDate,
-              ++counter,
+              ++moveLineSequenceCounter,
               origin,
               fixedAsset.getName());
       moveLines.add(creditMoveLine);
