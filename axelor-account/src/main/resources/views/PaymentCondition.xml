@@ -17,7 +17,7 @@
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="isFree" colSpan="3"/>
-      <panel-related colSpan="12" name="paymentConditionLineListPanel"
+      <panel-related colSpan="12" name="paymentConditionLineListPanel" canMove="true"
         title="Payment condition lines" field="paymentConditionLineList"
         grid-view="payment-condition-line-grid" form-view="payment-condition-line-form"/>
       <field name="advancePaymentNeeded"

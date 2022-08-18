@@ -239,11 +239,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             null,
             amount,
             paymentConditionLine.getPaymentPercentage(),
-            paymentConditionLine
-                    .getPaymentCondition()
-                    .getPaymentConditionLineList()
-                    .indexOf(paymentConditionLine)
-                + 1,
+            paymentConditionLine.getSequence() + 1,
             paymentConditionLine.getIsHoldback());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
