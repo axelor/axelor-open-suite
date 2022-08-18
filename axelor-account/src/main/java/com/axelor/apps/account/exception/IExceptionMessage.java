@@ -292,10 +292,10 @@ public interface IExceptionMessage {
       "The sum of all invoice terms percentages is not equal to 100." /*)*/;
 
   static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
-      "The move payment condition is defining at least one holdback and there is no corresponding move line." /*)*/;
+      "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
 
   static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
-      "There is at least a holdback move line but move payment condition is not defining any." /*)*/;
+      "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
 
   static final String MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE = /*$$(*/
       "At least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually." /*)*/;
