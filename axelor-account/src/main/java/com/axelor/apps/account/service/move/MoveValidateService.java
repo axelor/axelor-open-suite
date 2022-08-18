@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.move.control.accounting.MoveAccountingControlService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface MoveValidateService {
 
@@ -35,7 +34,9 @@ public interface MoveValidateService {
   void completeMoveLines(Move move);
 
   /**
-   * This method is deprecated, please use  {@link MoveAccountingControlService#deepControlAccounting(Move)}
+   * This method is deprecated, please use {@link
+   * MoveAccountingControlService#deepControlAccounting(Move)}
+   *
    * @param move
    * @deprecated
    * @throws AxelorException
