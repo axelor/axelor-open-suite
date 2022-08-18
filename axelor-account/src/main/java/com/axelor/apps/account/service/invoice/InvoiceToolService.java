@@ -46,16 +46,8 @@ public class InvoiceToolService {
   public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-      return invoiceDate;
-    }
-    if (invoice.getInvoiceTermList().size() == 1) {
-      return invoice.getInvoiceTermList().get(0).getDueDate();
-    }
-    return invoice.getInvoiceTermList().stream()
-        .map(invoiceTerm -> invoiceTerm.getDueDate())
-        .max(Comparator.comparing(LocalDate::toEpochDay))
-        .orElse(null);
+    return Beans.get(InvoiceTermService.class)
+        .getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
   @CallMethod

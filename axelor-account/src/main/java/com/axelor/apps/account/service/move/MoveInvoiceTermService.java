@@ -11,4 +11,6 @@ public interface MoveInvoiceTermService {
   boolean updateInvoiceTerms(Move move);
 
   void recreateInvoiceTerms(Move move) throws AxelorException;
+
+  void updateMoveLineDueDates(Move move);
 }
