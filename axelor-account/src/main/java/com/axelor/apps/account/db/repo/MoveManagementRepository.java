@@ -108,6 +108,29 @@ public class MoveManagementRepository extends MoveRepository {
 
       Beans.get(MoveCompletionService.class).completeMove(move);
       Beans.get(MoveUpdateService.class).updateInDayBookMode(move);
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+        Beans.get(MoveValidateService.class).checkPreconditions(move);
+      }
+      if (move.getCurrency() != null) {
+        move.setCurrencyCode(move.getCurrency().getCodeISO());
+      }
+      Beans.get(MoveSequenceService.class).setDraftSequence(move);
+      MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
+      List<MoveLine> moveLineList = move.getMoveLineList();
+      if (moveLineList != null) {
+        for (MoveLine moveLine : moveLineList) {
+          List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+          if (analyticMoveLineList != null) {
+            for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+              analyticMoveLine.setAccount(moveLine.getAccount());
+              analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+            }
+          }
+          moveLineControlService.controlAccountingAccount(moveLine);
+        }
+      }
       return super.save(move);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

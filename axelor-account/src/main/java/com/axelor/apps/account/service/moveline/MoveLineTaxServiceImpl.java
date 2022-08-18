@@ -28,12 +28,10 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -70,14 +68,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine generateTaxPaymentMoveLineList(
       MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException {
-    int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
-    if (functionalOrigin == PriceListRepository.TYPE_PURCHASE) {
-      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
-    } else if (functionalOrigin == PriceListRepository.TYPE_SALE) {
-      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
-    } else {
-      functionalOrigin = 0;
-    }
 
     BigDecimal paymentAmount = reconcile.getAmount();
     BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
@@ -102,7 +92,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               appBaseService.getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
-      taxPaymentMoveLine.setFunctionalOriginSelect(functionalOrigin);
+      taxPaymentMoveLine.setFunctionalOriginSelect(InvoiceToolService.getFunctionalOrigin(invoice));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 

@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.move.control.accounting.MoveAccountingCon
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class MoveSimulateServiceImpl implements MoveSimulateService {
 
@@ -38,6 +39,17 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.moveAccountingControlService = moveAccountingControlService;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException {
+    if (moveList == null) {
+      return;
+    }
+
+    for (Move move : moveList) {
+      this.simulate(move);
+    }
   }
 
   @Override
