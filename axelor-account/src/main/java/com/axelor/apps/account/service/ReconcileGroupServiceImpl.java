@@ -227,7 +227,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     int status = reconcileGroup.getStatusSelect();
@@ -257,7 +257,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
             .filter("self.reconcileGroup = :reconcileGroup")
             .bind("reconcileGroup", reconcileGroup)
             .fetch();
-    Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLines);
+    Beans.get(MoveLineService.class).reconcileMoveLines(moveLines);
   }
 
   @Override
