@@ -108,7 +108,7 @@
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"/>
-    <field name="vatSystemSelect" 
+    <field name="vatSystemSelect"
       readonlyIf="move.statusSelect != 1 || account.accountType.technicalTypeSelect != 'tax'"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account').getManageAnalyticAccounting()"
