@@ -92,7 +92,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               appBaseService.getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
-      taxPaymentMoveLine.setFunctionalOriginSelect(getFunctionalOrigin(invoice));
+      taxPaymentMoveLine.setFunctionalOriginSelect(InvoiceToolService.getFunctionalOrigin(invoice));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
@@ -100,16 +100,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
     this.computeTaxAmount(customerMoveLine);
     return moveLineRepository.save(customerMoveLine);
-  }
-
-  protected int getFunctionalOrigin(Invoice invoice) throws AxelorException {
-    int functionalOrigin = 0;
-    if (InvoiceToolService.isPurchase(invoice)) {
-      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
-    } else {
-      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
-    }
-    return functionalOrigin;
   }
 
   @Override
