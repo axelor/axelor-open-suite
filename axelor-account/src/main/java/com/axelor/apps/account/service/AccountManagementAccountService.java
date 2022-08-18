@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.Company;
@@ -82,5 +83,10 @@ public interface AccountManagementAccountService extends AccountManagementServic
       AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
 
   public Account getFinancialDiscountAccount(
-      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
+      AccountManagement accountManagement,
+      Tax tax,
+      Company company,
+      Journal journal,
+      int vatSystemSelect)
+      throws AxelorException;
 }
