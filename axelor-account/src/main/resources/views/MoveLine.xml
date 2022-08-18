@@ -108,7 +108,7 @@
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"/>
-    <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"/>
+    <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1 || account.accountType.technicalTypeSelect != 'tax'"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account').getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -152,6 +152,8 @@
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
+    <field name="move.statusSelect" hidden="true"/>
+    <field name="account.accountType.technicalTypeSelect" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
