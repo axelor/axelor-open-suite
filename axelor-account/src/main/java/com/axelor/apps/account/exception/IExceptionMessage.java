@@ -58,6 +58,8 @@ public interface IExceptionMessage {
       /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
       /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
+  static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
+      /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/
