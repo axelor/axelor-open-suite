@@ -108,7 +108,7 @@
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"/>
-    <field name="vatSystemSelect" readonly="true"/>
+    <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account').getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -469,7 +469,7 @@
           colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
           domain="self.endDate > :date OR self.endDate IS NULL"
           readonlyIf="!account.isTaxAuthorizedOnMoveLine"/>
-        <field name="vatSystemSelect" readonly="true"
+        <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"
           showIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="reimbursementStatusSelect"
@@ -703,7 +703,7 @@
           colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
           domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="vatSystemSelect" readonly="true"
+        <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"
           showIf="account.accountType.technicalTypeSelect == 'tax'"
           requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="reimbursementStatusSelect"
