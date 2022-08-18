@@ -105,8 +105,16 @@ public class MoveLineController {
       throws AxelorException {
     try {
 
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Context context = request.getContext();
+      Context parent = context.getParent();
+      MoveLine moveLine = context.asType(MoveLine.class);
+      Move move = null;
+      if (ObjectUtils.notEmpty(parent) && parent.getContextClass() == Move.class) {
+        move = parent.asType(Move.class);
+      } else {
+        move = moveLine.getMove();
+      }
+
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
