@@ -4,12 +4,15 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-grid"
-    orderBy="company,product,productCategory,startDate,name">
+    groupBy="concernedModel" orderBy="company,product,productCategory,startDate,name">
     <field name="company"/>
     <field name="product"/>
     <field name="productCategory"/>
+    <field name="concernedModel" hidden="true"/>
     <field name="startDate"/>
+    <field name="endDate"/>
     <field name="name"/>
+    <field name="previousPricing"/>
   </grid>
 
   <form model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-form"
@@ -19,6 +22,7 @@
         <field name="name"/>
         <field name="startDate" required="true"/>
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
+        <field name="endDate"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
           required="true" domain="self.name = 'SaleOrderLine'"/>
       </panel>

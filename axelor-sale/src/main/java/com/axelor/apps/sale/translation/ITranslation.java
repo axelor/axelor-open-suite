@@ -40,4 +40,6 @@ public interface ITranslation {
       "Result of the evaluation of the result rule: %s"; /*)*/
   public static final String SALE_ORDER_LINE_OBSERVER_POPULATED_FIELD = /*$$(*/
       "Populated field: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_POPULATED_CUSTOM_FIELD = /*$$(*/
+      "Populated custom field: %s"; /*)*/
 }

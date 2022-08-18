@@ -18,12 +18,17 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.db.BankDetails;
@@ -221,6 +226,19 @@ public class PaymentVoucherController {
             .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
       }
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setReceiptDisplay(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      boolean displayReceipt =
+          Beans.get(PaymentVoucherControlService.class).isReceiptDisplayed(paymentVoucher);
+
+      response.setAttr("receiptNo", "hidden", !displayReceipt);
+      response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

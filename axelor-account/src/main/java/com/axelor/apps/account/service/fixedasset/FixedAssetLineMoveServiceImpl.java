@@ -316,14 +316,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+                I18n.get("Charge account")
+                    + " / "
+                    + I18n.get("Provision Tangible Fixed Asset Account"));
+          }
+          debitLineAccount = fixedAssetCategory.getChargeAccount();
+          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+        } else {
+          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
+              || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
                 I18n.get("Provision Tangible Fixed Asset Account")
                     + " / "
                     + I18n.get("WB Provision Tangible Fixed Asset Account"));
           }
-
-          debitLineAccount = fixedAssetCategory.getChargeAccount();
-          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-        } else {
           debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
           creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
         }

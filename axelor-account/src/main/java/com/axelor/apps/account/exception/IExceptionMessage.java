@@ -804,13 +804,12 @@ public interface IExceptionMessage {
       "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
-  static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
+  static final String PAYMENT_MODE_1 = /*$$(*/
+      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
 
   static final String PAYMENT_MODE_2 = /*$$(*/
-      "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
-  static final String PAYMENT_MODE_4 = /*$$(*/
+  static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
 
   static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
@@ -928,6 +927,8 @@ public interface IExceptionMessage {
       "Missing subrogation release sequence for company %s" /*)*/;
   static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
       "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
+  public static final String SUBROGATION_RELEASE_BACK_TO_ACCOUNTED_WRONG_STATUS = /*$$(*/
+      "Can only go back to accounted from a cleared or cancelled subrogation release." /*)*/;
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
@@ -1077,6 +1078,9 @@ public interface IExceptionMessage {
   static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
+  static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
+      "Please select a cash account in config of the payment mode %s" /*)*/;
+
   static final String MASS_UPDATE_SUCCESSFUL =
       /*$$(*/ "Operation successful : %s record(s) updated." /*)*/;
 
@@ -1089,6 +1093,13 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
 
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+
+  static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
+      "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
+
+  static final String MOVE_14 = /*$$(*/
+      "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }

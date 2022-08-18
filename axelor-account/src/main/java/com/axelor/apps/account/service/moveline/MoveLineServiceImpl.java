@@ -245,7 +245,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
-    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    if (moveLine.getIsSelectedBankReconciliation() != null) {
+      moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    } else {
+      moveLine.setIsSelectedBankReconciliation(true);
+    }
     return moveLineRepository.save(moveLine);
   }
 

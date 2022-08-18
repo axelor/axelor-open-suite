@@ -337,6 +337,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setInvoiceLine(invoiceLine);
       fixedAsset.setPurchaseAccountMove(invoice.getMove());
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+      fixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_INVOICE);
 
       fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
       if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {

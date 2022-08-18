@@ -14,6 +14,7 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="bindMetaFile" widget="binary-link"/>
+      <field name="functionalOriginSelect"/>
     </panel>
   </form>
 

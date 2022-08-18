@@ -187,6 +187,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">integer</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">0</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
