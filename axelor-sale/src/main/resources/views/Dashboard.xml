@@ -252,7 +252,7 @@
   <action-view title="Average margin rate per customer"
     model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.margin.rate.per.customer">
     <view type="chart" name="chart.margin.rate.per.customer"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
     <context name="activeCompany"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
   </action-view>
@@ -260,7 +260,7 @@
   <action-view title="Average markup per customer"
     model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.markup.per.customer">
     <view type="chart" name="chart.markup.rate.per.customer"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
     <context name="activeCompany"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
   </action-view>

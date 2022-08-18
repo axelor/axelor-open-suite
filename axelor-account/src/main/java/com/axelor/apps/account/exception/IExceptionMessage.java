@@ -927,6 +927,8 @@ public interface IExceptionMessage {
       "Missing subrogation release sequence for company %s" /*)*/;
   static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
       "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
+  public static final String SUBROGATION_RELEASE_BACK_TO_ACCOUNTED_WRONG_STATUS = /*$$(*/
+      "Can only go back to accounted from a cleared or cancelled subrogation release." /*)*/;
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
@@ -1091,6 +1093,13 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No record has been selected" /*)*/;
 
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
+
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+
+  static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
+      "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
+
+  static final String MOVE_14 = /*$$(*/
+      "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }

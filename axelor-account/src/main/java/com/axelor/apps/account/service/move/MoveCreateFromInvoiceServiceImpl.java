@@ -29,15 +29,13 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -115,23 +113,25 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
+
       String description = null;
       if (journal != null) {
         description = journal.getDescriptionModel();
+      }
+
+      if (journal.getDescriptionIdentificationOk() && origin != null) {
+        if (ObjectUtils.isEmpty(description)) {
+          description = origin;
+        } else {
+          description += " " + origin;
+        }
       }
 
       log.debug(
           "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
           new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-      int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
-      if (functionalOrigin == PriceListRepository.TYPE_PURCHASE) {
-        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
-      } else if (functionalOrigin == PriceListRepository.TYPE_SALE) {
-        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
-      } else {
-        functionalOrigin = 0;
-      }
+      int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
       boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
       move =
@@ -168,8 +168,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                     journal.getIsInvoiceMoveConsolidated(),
                     isPurchase,
                     isDebitCustomer));
-
-        moveToolService.setOriginAndDescriptionOnMoveLineList(move);
 
         moveRepository.save(move);
 

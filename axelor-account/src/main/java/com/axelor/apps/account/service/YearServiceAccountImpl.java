@@ -17,11 +17,8 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReportedBalanceLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -39,7 +36,6 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -217,36 +213,5 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     } else {
       return BigDecimal.ZERO;
     }
-  }
-
-  @Deprecated
-  public BigDecimal computeReportedBalance2(
-      LocalDate fromDate, LocalDate toDate, Partner partner, Account account) {
-
-    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
-
-    List<? extends MoveLine> moveLineList =
-        moveLineRepo
-            .all()
-            .filter(
-                "self.partner = ?1 AND self.ignoreInAccountingOk = 'false' AND self.date >= ?2 AND self.date <= ?3 AND self.account = ?4",
-                partner,
-                fromDate,
-                toDate,
-                account)
-            .fetch();
-
-    BigDecimal reportedBalanceAmount = BigDecimal.ZERO;
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        reportedBalanceAmount = reportedBalanceAmount.subtract(moveLine.getAmountRemaining());
-      } else if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-        reportedBalanceAmount = reportedBalanceAmount.add(moveLine.getAmountRemaining());
-      }
-    }
-    if (log.isDebugEnabled()) {
-      log.debug("Reported balance amount : {}", reportedBalanceAmount);
-    }
-    return reportedBalanceAmount;
   }
 }

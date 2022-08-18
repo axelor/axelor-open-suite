@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.pricing;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingRule;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,5 +104,16 @@ public abstract class AbstractObservablePricing implements ObservablePricing {
   @Override
   public void notifyStarted() {
     observers.forEach(PricingObserver::computationStarted);
+  }
+
+  /**
+   * Notify observers that field to populate is field
+   *
+   * @param pricingRule
+   * @param result
+   */
+  @Override
+  public void notifyMetaJsonFieldToPopulate(MetaJsonField field) {
+    observers.forEach(observer -> observer.updateMetaJsonFieldToPopulate(field));
   }
 }

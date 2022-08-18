@@ -211,7 +211,7 @@
 
   <action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
     model="com.axelor.apps.supplychain.db.Mrp">
-    <view type="grid" name="mrp-grid"/>
+    <view type="grid" name="mrp-manuf-order-grid"/>
     <view type="form" name="mrp-manuf-order-form"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self.mrpTypeSelect = 2</domain>
@@ -224,7 +224,7 @@
     model="com.axelor.apps.supplychain.db.MrpForecast">
     <view type="grid" name="mrp-forecast-grid"/>
     <view type="form" name="mrp-forecast-form"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration"
@@ -318,7 +318,7 @@
     model="com.axelor.apps.production.db.MachineTool">
     <view type="grid" name="machine-tool-grid"/>
     <view type="form" name="machine-tool-form"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
