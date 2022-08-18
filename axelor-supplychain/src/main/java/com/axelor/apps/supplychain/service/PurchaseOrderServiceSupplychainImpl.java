@@ -116,7 +116,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        "Creation of a purchase order : Company = {},  External reference = {}, Supplier = {}",
         company.getName(),
         externalReference,
         supplierPartner.getFullName());

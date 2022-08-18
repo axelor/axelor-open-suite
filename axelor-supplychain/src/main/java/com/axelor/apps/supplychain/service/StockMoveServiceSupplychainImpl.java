@@ -141,7 +141,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       return super.realize(stockMove, check);
     }
 
-    LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
+    LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 

@@ -128,7 +128,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
 
       log.debug(
-          "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
+          "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
           new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
       int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
@@ -280,7 +280,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
       // We directly use excess if invoice and excessPayment share the same account
       if (moveToolService.isSameAccount(creditMoveLineList, account)) {
-        List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
+        List<MoveLine> debitMoveLineList = new ArrayList<>();
         debitMoveLineList.add(invoiceCustomerMoveLine);
         paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
       }
@@ -288,8 +288,10 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       else {
 
         log.debug(
-            "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
-            new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+            "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
+            invoice.getInvoiceId(),
+            company.getName(),
+            journal.getCode());
 
         Move move =
             moveCreateService.createMove(
@@ -365,12 +367,14 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
     log.debug(
-        "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
-        new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+        "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
+        invoice.getInvoiceId(),
+        company.getName(),
+        journal.getCode());
 
     BigDecimal remainingAmount = invoice.getInTaxTotal().abs();
 
-    log.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
+    log.debug("Amount to pay with the credit note : {}", remainingAmount);
 
     Move oDmove =
         moveCreateService.createMove(
