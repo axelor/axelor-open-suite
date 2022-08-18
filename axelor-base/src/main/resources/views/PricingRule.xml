@@ -33,8 +33,10 @@
       <field name="metaJsonField" title="Custom field"
         onSelect="action-pricing-rule-attrs-on-select-meta-json-field" hidden="true"/>
       <field name="scale"
-        showIf="typeSelect == 2 &amp;&amp; fieldToPopulate.typeName == 'BigDecimal'"/>
+        showIf="typeSelect == 2 &amp;&amp; (fieldToPopulate.typeName == 'BigDecimal' || (fieldToPopulate.json == true &amp;&amp; metaJsonField != null &amp;&amp; metaJsonField.type == 'decimal'))"/>
       <field name="fieldToPopulate.typeName" hidden="true"/>
+      <field name="fieldToPopulate.json" hidden="true"/>
+      <field name="metaJsonField.type" hidden="true"/>
     </panel>
   </form>
 

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -224,7 +225,11 @@ public class PricingComputer extends AbstractObservablePricing {
         Object result = scriptHelper.eval(resultPricingRule.getFormula());
         notifyResultPricingRule(resultPricingRule, result);
         notifyFieldToPopulate(fieldToPopulate);
+        String typeName = getTypeNameFieldToPopulate(resultPricingRule);
         if (fieldToPopulate != null) {
+          if (typeName.equals("BigDecimal")) {
+            result = setScale(result, resultPricingRule.getScale());
+          }
           if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
             String newMetaJsonAttrs = buildMetaJsonAttrs(resultPricingRule, result);
             Mapper.of(classModel).set(model, fieldToPopulate.getName(), newMetaJsonAttrs);
@@ -241,6 +246,27 @@ public class PricingComputer extends AbstractObservablePricing {
         }
       }
     }
+  }
+
+  protected BigDecimal setScale(Object result, int scale) {
+    if (result instanceof BigDecimal) {
+      return ((BigDecimal) result).setScale(scale, RoundingMode.HALF_UP);
+    }
+    return null;
+  }
+
+  protected String getTypeNameFieldToPopulate(PricingRule resultPricingRule)
+      throws AxelorException {
+
+    MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+    if (fieldToPopulate != null) {
+      if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
+        return MetaTool.jsonTypeToType(resultPricingRule.getMetaJsonField().getType());
+      }
+      return fieldToPopulate.getTypeName();
+    }
+
+    return "";
   }
 
   protected String buildMetaJsonAttrs(PricingRule resultPricingRule, Object result)
