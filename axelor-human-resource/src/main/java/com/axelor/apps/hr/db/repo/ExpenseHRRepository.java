@@ -18,7 +18,6 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
@@ -31,8 +30,12 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseHRRepository extends ExpenseRepository {
 
-  @Inject protected AppBaseService appBaseService;
-  @Inject protected ExpenseFetchPeriodService expenseFetchPeriodService;
+  protected ExpenseFetchPeriodService expenseFetchPeriodService;
+
+  @Inject
+  public ExpenseHRRepository(ExpenseFetchPeriodService expenseFetchPeriodService) {
+    this.expenseFetchPeriodService = expenseFetchPeriodService;
+  }
 
   @Override
   public Expense save(Expense expense) {
@@ -61,7 +64,7 @@ public class ExpenseHRRepository extends ExpenseRepository {
       }
     }
     if (CollectionUtils.isNotEmpty(expense.getKilometricExpenseLineList())) {
-      expense.getKilometricExpenseLineList().stream().forEach(line -> line.setExpenseDate(null));
+      expense.getKilometricExpenseLineList().forEach(line -> line.setExpenseDate(null));
     }
     expense.setSentDate(null);
     expense.setValidatedBy(null);

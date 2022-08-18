@@ -26,14 +26,22 @@ import com.google.inject.Inject;
 
 public class ExpenseFetchPeriodServiceImpl implements ExpenseFetchPeriodService {
 
-  @Inject protected AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ExpenseFetchPeriodServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public Period getPeriod(Expense expense) {
 
     return JPA.all(Period.class)
         .filter(
-            "self.fromDate <= :todayDate AND self.toDate >= :todayDate AND self.allowExpenseCreation = true AND self.year.company = :company AND self.year.typeSelect = :typeSelect")
+            "self.fromDate <= :todayDate AND self.toDate >= :todayDate "
+                + "AND self.allowExpenseCreation = true "
+                + "AND self.year.company = :company "
+                + "AND self.year.typeSelect = :typeSelect")
         .bind("todayDate", appBaseService.getTodayDate(expense.getCompany()))
         .bind("company", expense.getCompany())
         .bind("typeSelect", YearRepository.TYPE_FISCAL)
