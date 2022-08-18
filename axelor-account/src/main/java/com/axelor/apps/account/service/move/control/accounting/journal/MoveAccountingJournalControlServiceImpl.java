@@ -38,6 +38,11 @@ public class MoveAccountingJournalControlServiceImpl
         "Checking authorized function origin of move {} with journal {}", move, move.getJournal());
 
     Integer functionalOriginSelect = move.getFunctionalOriginSelect();
+
+    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
+      return;
+    }
+
     Journal journal = move.getJournal();
     String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
 

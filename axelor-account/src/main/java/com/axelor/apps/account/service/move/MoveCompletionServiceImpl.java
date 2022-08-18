@@ -29,7 +29,7 @@ public class MoveCompletionServiceImpl implements MoveCompletionService {
     Objects.requireNonNull(move);
 
     if (move.getCurrency() != null) {
-      move.setCurrencyCode(move.getCurrency().getCode());
+      move.setCurrencyCode(move.getCurrency().getCodeISO());
     }
 
     moveSequenceService.setDraftSequence(move);

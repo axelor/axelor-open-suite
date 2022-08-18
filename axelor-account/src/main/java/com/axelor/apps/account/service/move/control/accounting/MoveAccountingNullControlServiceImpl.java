@@ -66,13 +66,5 @@ public class MoveAccountingNullControlServiceImpl implements MoveAccountingNullC
           I18n.get(IExceptionMessage.MOVE_8),
           move.getReference());
     }
-
-    Integer functionalOriginSelect = move.getFunctionalOriginSelect();
-    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_13),
-          move.getReference());
-    }
   }
 }
