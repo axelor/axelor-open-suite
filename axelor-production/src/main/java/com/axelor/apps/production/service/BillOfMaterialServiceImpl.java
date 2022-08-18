@@ -17,22 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -56,6 +40,20 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
@@ -436,17 +434,18 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  public Stream<BillOfMaterial> getBillOfMaterialSetStream(Set<Company> companySet) throws AxelorException {
+  public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
 
     if (companySet == null || companySet.isEmpty()) {
-      return Stream.empty();
+      return Collections.emptyList();
     }
-    List<Long> idCompanyList = companySet.stream().map(Company::getId).collect(Collectors.toList());
+    String stringQuery =
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+    Query query = JPA.em().createQuery(stringQuery, Long.class);
 
-    return billOfMaterialRepo
-        .all()
-        .filter("self.company.id in (:companySet)")
-        .bind("companySet", idCompanyList)
-        .fetchStream();
+    query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));
+    List<Long> productIds = (List<Long>) query.getResultList();
+
+    return productIds;
   }
 }

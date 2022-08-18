@@ -17,31 +17,6 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.validation.ValidationException;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -79,6 +54,28 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.ValidationException;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnitCostCalculationServiceImpl implements UnitCostCalculationService {
 
@@ -571,11 +568,9 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       companySet.add(company);
     }
 
-    return StringTool.getIdListString(
-        billOfMaterialService.getBillOfMaterialSetStream(companySet)
-            .map(BillOfMaterial::getProduct)
-            .distinct()
-            .collect(Collectors.toList()));
+    return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
+        .map(id -> id.toString())
+        .collect(Collectors.joining(","));
   }
 
   @Override

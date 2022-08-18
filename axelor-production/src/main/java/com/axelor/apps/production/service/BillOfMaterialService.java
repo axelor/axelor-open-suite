@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -31,6 +25,10 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 public interface BillOfMaterialService {
 
@@ -77,11 +75,11 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   /**
-   * Return the boms that belong to any company in companySet
+   * Returns all the products from boms
    *
    * @param companySet
    * @return
    * @throws AxelorException
    */
-  public Stream<BillOfMaterial> getBillOfMaterialSetStream(Set<Company> companySet) throws AxelorException;
+  List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
 }
