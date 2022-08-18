@@ -137,11 +137,11 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     for (Partner partner : partnerList) {
       partner = partnerRepository.find(partner.getId());
       year = yearRepository.find(year.getId());
-      log.debug("Company currently being processed: {}", partner.getName());
+      log.debug("Partner currently being processed: {}", partner.getName());
 
       for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
         if (accountingSituation.getCompany().equals(year.getCompany())) {
-          log.debug("We add a line to the accounting situation found");
+          log.debug("Adding a line to the found accounting situation");
 
           BigDecimal reportedBalanceAmount =
               this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);

@@ -53,9 +53,7 @@ public final class DecimalTool {
 
     prorataValue = prorata(totalDays, days, value, scale);
 
-    LOG.debug(
-        "Prorata ({} for {} to {}) the date of {} : {}",
-        new Object[] {value, fromDate, toDate, date, prorataValue});
+    LOG.debug("Prorata ({} from {} to {}) at {} : {}", value, fromDate, toDate, date, prorataValue);
 
     return prorataValue;
   }

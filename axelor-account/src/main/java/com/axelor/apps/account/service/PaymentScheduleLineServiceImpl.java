@@ -132,12 +132,10 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     }
 
     log.debug(
-        "Creation of payment schedule line number {} for the date {} and amount of {}",
-        new Object[] {
-          paymentScheduleLine.getScheduleLineSeq(),
-          paymentScheduleLine.getScheduleDate(),
-          paymentScheduleLine.getInTaxAmount()
-        });
+        "Creation of payment schedule line number {} for the date {} and amount {}",
+        paymentScheduleLine.getScheduleLineSeq(),
+        paymentScheduleLine.getScheduleDate(),
+        paymentScheduleLine.getInTaxAmount());
 
     return paymentScheduleLine;
   }

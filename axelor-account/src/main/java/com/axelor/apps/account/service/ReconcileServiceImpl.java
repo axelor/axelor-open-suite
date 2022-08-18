@@ -523,7 +523,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
 
     BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
-    log.debug("Amount to pay / to letter for debit : {}", debitAmountRemaining);
+    log.debug("Debit amount to pay / to reconcile: {}", debitAmountRemaining);
     if (debitAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
       Company company = reconcile.getDebitMoveLine().getMove().getCompany();
 
@@ -563,7 +563,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException {
     if (creditMoveLine != null) {
       BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
-      log.debug("Amount to pay / to letter for credit : {}", creditAmountRemaining);
+      log.debug("Credit amount to pay / to reconcile: {}", creditAmountRemaining);
 
       if (creditAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
         AccountConfig accountConfig =

@@ -289,7 +289,7 @@ public class IrrecoverableService {
     }
 
     log.debug(
-        "Number of payment schedule to change to unrecoverable for the partner : {}",
+        "Number of payment schedule to shift to irrecoverable for the partner : {}",
         paymentScheduleLineList.size());
 
     return paymentScheduleLineList;

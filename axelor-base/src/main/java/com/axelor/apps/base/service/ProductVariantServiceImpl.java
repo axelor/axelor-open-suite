@@ -257,7 +257,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     if (productVariantValue1 != null) {
 
       LOG.debug(
-          "Research of a variant product which has at least attributes {} : {}",
+          "Searching for a variant product which has at least attributes {} : {}",
           productVariantValue1.getProductVariantAttr().getCode(),
           productVariantValue1.getCode());
 

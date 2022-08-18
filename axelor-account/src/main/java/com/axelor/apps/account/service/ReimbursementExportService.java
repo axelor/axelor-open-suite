@@ -101,7 +101,7 @@ public class ReimbursementExportService {
       Reimbursement reimbursement, List<MoveLine> moveLineList, BigDecimal total) {
 
     log.debug("In fillMoveLineSet");
-    log.debug("Number of overpayment found : {}", moveLineList.size());
+    log.debug("Number of overpayment(s) found: {}", moveLineList.size());
 
     for (MoveLine moveLine : moveLineList) {
       // On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'

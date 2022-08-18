@@ -185,7 +185,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       throws AxelorException {
 
     logger.debug(
-        "Creation of a sale order : Company = {},  External reference = {}, Supplier = {}",
+        "Creation of a sale order : Company = {},  External reference = {}, Customer = {}",
         company.getName(),
         externalReference,
         clientPartner.getFullName());
