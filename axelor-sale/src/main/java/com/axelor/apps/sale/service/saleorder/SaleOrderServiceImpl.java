@@ -453,6 +453,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
 
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrder.getClientPartner() == null) {
+      return;
+    }
     List<ComplementaryProduct> complementaryProducts =
         saleOrder.getClientPartner().getComplementaryProductList();
 
