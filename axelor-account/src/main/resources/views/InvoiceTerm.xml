@@ -518,13 +518,17 @@
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
         readonlyIf="isPaid || paymentSession || amountRemaining != amount || !$popup()">
         <field name="dueDate" required="true"
-          onChange="action-invoice-term-record-update-customized-true"/>
-        <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
+          onChange="action-invoice-term-record-update-customized-true"
+          readonlyIf="$isPaymentConditionFree == false"/>
+        <field name="isHoldBack"
+          readonlyIf="financialDiscount != null || $isPaymentConditionFree == false"/>
         <field name="estimatedPaymentDate" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
+        <field name="amount" title="To pay / To use"
+          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"/>
-        <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
+        <field name="percentage"
+          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-group-move-line-percentage-onchange"
           validIf="percentage > 0"/>
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
@@ -542,6 +546,7 @@
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
+        <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
@@ -764,6 +769,9 @@
     <field name="$isPaymentConditionFree"
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"
       expr="eval: __parent__?.paymentCondition?.isFree"/>
+    <field name="$isPaymentConditionFree"
+      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLine'"
+      expr="eval: __parent__?.move?.paymentCondition?.isFree"/>
   </action-record>
 
   <action-record name="action-invoice-term-record-update-customized-true"

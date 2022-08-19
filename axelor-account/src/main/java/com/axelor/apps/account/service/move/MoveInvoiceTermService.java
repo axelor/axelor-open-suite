@@ -13,6 +13,8 @@ public interface MoveInvoiceTermService {
 
   void recreateInvoiceTerms(Move move) throws AxelorException;
 
+  void updateMoveLineDueDates(Move move);
+
   boolean displayDueDate(Move move);
 
   LocalDate computeDueDate(Move move, boolean isSingleTerm);

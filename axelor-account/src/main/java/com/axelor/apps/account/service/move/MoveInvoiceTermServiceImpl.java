@@ -92,6 +92,13 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     }
   }
 
+  public void updateMoveLineDueDates(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setDueDate(
+              invoiceTermService.getDueDate(moveLine.getInvoiceTermList(), moveLine.getOriginDate()));
+    }
+  }
+
   @Override
   public boolean displayDueDate(Move move) {
     return move.getJournal() != null

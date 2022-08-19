@@ -292,4 +292,6 @@ public interface InvoiceTermService {
   void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
 
   boolean isNotReadonly(InvoiceTerm invoiceTerm);
+
+  LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
 }

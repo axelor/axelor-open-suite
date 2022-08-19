@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
@@ -106,8 +107,16 @@ public class MoveLineController {
       throws AxelorException {
     try {
 
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Context context = request.getContext();
+      Context parent = context.getParent();
+      MoveLine moveLine = context.asType(MoveLine.class);
+      Move move = null;
+      if (ObjectUtils.notEmpty(parent) && parent.getContextClass() == Move.class) {
+        move = parent.asType(Move.class);
+      } else {
+        move = moveLine.getMove();
+      }
+
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
@@ -731,6 +740,14 @@ public class MoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateDueDates(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    LocalDate dueDate =
+            Beans.get(InvoiceTermService.class)
+                    .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());
+    response.setValue("dueDate", dueDate);
   }
 
   private LocalDate extractDueDate(ActionRequest request) {
