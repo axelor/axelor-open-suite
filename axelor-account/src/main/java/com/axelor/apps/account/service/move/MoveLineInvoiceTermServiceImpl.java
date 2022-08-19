@@ -28,9 +28,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
 
-  protected int counter = 1;
-  protected int holdbackCounter = 1;
-
   @Inject
   public MoveLineInvoiceTermServiceImpl(
       InvoiceTermService invoiceTermService,
@@ -56,7 +53,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           moveLine.getCredit().signum() == 0 ? moveLine.getDebit() : moveLine.getCredit();
 
       this.computeInvoiceTerm(
-          moveLine, move, move.getDate(), BigDecimal.valueOf(100), amount, false);
+          moveLine, move, move.getDate(), BigDecimal.valueOf(100), amount, 1, false);
 
       return;
     }
@@ -192,6 +189,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             invoiceTermService.computeDueDate(move, paymentConditionLine),
             paymentConditionLine.getPaymentPercentage(),
             total,
+            paymentConditionLine.getSequence() + 1,
             paymentConditionLine.getIsHoldback());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
@@ -203,6 +201,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       LocalDate dueDate,
       BigDecimal percentage,
       BigDecimal total,
+      int sequence,
       boolean isHoldback) {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
@@ -224,7 +223,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         null,
         amount,
         percentage,
-        isHoldback ? this.holdbackCounter++ : this.counter++,
+        sequence,
         isHoldback);
   }
 
