@@ -34,6 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
@@ -68,13 +69,15 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void generateCounterpartMoveLine(Move move) throws AxelorException {
+  public void generateCounterpartMoveLine(Move move, LocalDate singleTermDueDate)
+      throws AxelorException {
     MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
     if (counterPartMoveLine == null) {
       return;
     }
     move.addMoveLineListItem(counterPartMoveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(counterPartMoveLine, true);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
+        counterPartMoveLine, singleTermDueDate, true);
 
     moveRepository.save(move);
   }

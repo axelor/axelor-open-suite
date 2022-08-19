@@ -444,7 +444,10 @@ public class MoveController {
           && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
               || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
         Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move);
-        response.setReload(true);
+
+        if (request.getContext().get("_source").equals("autoTaxLineGenerateBtn")) {
+          response.setReload(true);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -555,7 +558,8 @@ public class MoveController {
     try {
       Move move =
           Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
-      Beans.get(MoveCounterPartService.class).generateCounterpartMoveLine(move);
+      Beans.get(MoveCounterPartService.class)
+          .generateCounterpartMoveLine(move, this.extractDueDate(request));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -746,18 +750,24 @@ public class MoveController {
 
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
+      MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
+
       if (request.getContext().containsKey("paymentConditionChange")
           && (boolean) request.getContext().get("paymentConditionChange")) {
         Move move = request.getContext().asType(Move.class);
         move = Beans.get(MoveRepository.class).find(move.getId());
 
-        Beans.get(MoveInvoiceTermService.class).recreateInvoiceTerms(move);
+        moveInvoiceTermService.recreateInvoiceTerms(move);
+
+        if (moveInvoiceTermService.displayDueDate(move)) {
+          response.setAttr("$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true));
+        }
       } else if (request.getContext().containsKey("headerChange")
           && (boolean) request.getContext().get("headerChange")) {
         Move move = request.getContext().asType(Move.class);
         move = Beans.get(MoveRepository.class).find(move.getId());
 
-        boolean isAllUpdated = Beans.get(MoveInvoiceTermService.class).updateInvoiceTerms(move);
+        boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
         if (!isAllUpdated) {
           response.setFlash(I18n.get(IExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
@@ -766,6 +776,55 @@ public class MoveController {
 
       response.setValue("$paymentConditionChange", false);
       response.setValue("$headerChange", false);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void displayAndComputeDueDate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
+      boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
+
+      response.setAttr("$dueDate", "hidden", !displayDueDate);
+
+      if (displayDueDate) {
+        if (request.getContext().get("dueDate") == null) {
+          response.setAttr("$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true));
+        }
+      } else {
+        response.setAttr("$dueDate", "value", null);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  private LocalDate extractDueDate(ActionRequest request) {
+    if (!request.getContext().containsKey("dueDate")
+        || request.getContext().get("dueDate") == null) {
+      return null;
+    }
+
+    Object dueDateObj = request.getContext().get("dueDate");
+    if (dueDateObj.getClass() == LocalDate.class) {
+      return (LocalDate) dueDateObj;
+    } else {
+      return LocalDate.parse((String) dueDateObj);
+    }
+  }
+
+  public void updateDueDate(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().containsKey("dueDate")
+          && request.getContext().get("dueDate") != null) {
+        Move move = request.getContext().asType(Move.class);
+        move = Beans.get(MoveRepository.class).find(move.getId());
+
+        Beans.get(MoveInvoiceTermService.class)
+            .updateSingleInvoiceTermDueDate(move, this.extractDueDate(request));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

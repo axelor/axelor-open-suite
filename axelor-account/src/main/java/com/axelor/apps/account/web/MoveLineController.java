@@ -62,6 +62,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -721,13 +722,33 @@ public class MoveLineController {
             moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
           }
 
-          Beans.get(MoveLineInvoiceTermService.class).generateDefaultInvoiceTerm(moveLine, false);
+          Beans.get(MoveLineInvoiceTermService.class)
+              .generateDefaultInvoiceTerm(moveLine, this.extractDueDate(request), false);
         }
       }
 
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  private LocalDate extractDueDate(ActionRequest request) {
+    Context parentContext = request.getContext().getParent();
+
+    if (parentContext == null) {
+      return null;
+    }
+
+    if (!parentContext.containsKey("dueDate") || parentContext.get("dueDate") == null) {
+      return null;
+    }
+
+    Object dueDateObj = parentContext.get("dueDate");
+    if (dueDateObj.getClass() == LocalDate.class) {
+      return (LocalDate) dueDateObj;
+    } else {
+      return LocalDate.parse((String) dueDateObj);
     }
   }
 }
