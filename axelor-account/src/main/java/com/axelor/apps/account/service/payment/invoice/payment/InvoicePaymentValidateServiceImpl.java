@@ -369,6 +369,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             move.getDescription()));
 
     if (isFinancialDiscount
+        && invoicePayment != null
+        && invoicePayment.getFinancialDiscount() != null
         && invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_VAT
         && financialDiscountMoveLine != null) {
@@ -411,7 +413,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       for (AccountManagement accountManagement :
           purchFinancialDiscountTax.getAccountManagementList()) {
         if (accountManagement.getCompany().equals(company)) {
-          purchAccount = accountManagement.getFinancialDiscountAccount();
+          // purchAccount = accountManagement.getFinancialDiscountAccount();
         }
       }
 
@@ -433,7 +435,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       for (AccountManagement accountManagement :
           saleFinancialDiscountTax.getAccountManagementList()) {
         if (accountManagement.getCompany().equals(company)) {
-          saleAccount = accountManagement.getFinancialDiscountAccount();
+          // saleAccount = accountManagement.getFinancialDiscountAccount();
         }
       }
 

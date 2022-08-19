@@ -277,12 +277,11 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       Journal journal,
       int vatSystemSelect)
       throws AxelorException {
-    if (accountManagement != null && accountManagement.getFinancialDiscountAccount() == null) {}
-
-    Account financialDiscountAccount = null;
-    if (accountManagement != null && journal != null) {
-      if (journal.getJournalType().getTechnicalTypeSelect()
-          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+    if (accountManagement != null) {
+      Account financialDiscountAccount = null;
+      if (journal != null
+          && journal.getJournalType().getTechnicalTypeSelect()
+              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
         if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
           financialDiscountAccount = accountManagement.getAllowedFinDiscountTaxVatSystem1Account();
           if (financialDiscountAccount == null) {
@@ -333,8 +332,10 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
           }
         }
       }
+
+      return financialDiscountAccount;
     }
 
-    return accountManagement.getFinancialDiscountAccount();
+    return null;
   }
 }
