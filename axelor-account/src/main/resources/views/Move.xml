@@ -66,6 +66,7 @@
         <panel name="moveContentPanel"
           readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
+            readonlyIf="moveLineList.length &gt; 0"
             onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-method-hide-axis-analytic-account-move-line"
             form-view="company-form" grid-view="company-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"

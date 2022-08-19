@@ -62,6 +62,7 @@ public class MoveValidateService {
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
+  protected MoveControlService moveControlService;
 
   @Inject
   public MoveValidateService(
@@ -72,7 +73,8 @@ public class MoveValidateService {
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      MoveControlService moveControlService) {
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -81,6 +83,7 @@ public class MoveValidateService {
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
+    this.moveControlService = moveControlService;
   }
 
   /**
@@ -155,6 +158,8 @@ public class MoveValidateService {
           String.format(I18n.get(IExceptionMessage.MOVE_12), move.getReference()));
     }
 
+    moveControlService.checkSameCompany(move);
+
     if (move.getMoveLineList().stream()
         .allMatch(
             moveLine ->
@@ -198,6 +203,8 @@ public class MoveValidateService {
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
         moveLineControlService.validateMoveLine(moveLine);
+        moveLineControlService.checkAccountCompany(moveLine);
+        moveLineControlService.checkJournalCompany(moveLine);
       }
       this.validateWellBalancedMove(move);
     }

@@ -970,4 +970,13 @@ public interface IExceptionMessage {
 
   static final String FIXED_ASSET_CATEGORY_MISSING_DEBIT_OR_CREDIT_ACCOUNT = /*$$(*/
       "Please select a debit and credit account in fixed asset category %s" /*)*/;
+
+  static final String MOVE_INCOHERENCY_DETECTED_JOURNAL_COMPANY = /*$$(*/
+      "Incoherency detected as the company defined on the move %s is different from the company associated to the journal %s." /*)*/;
+
+  static final String MOVE_LINE_INCOHERENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+      "Incoherency detected as the company defined on the move %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  static final String MOVE_LINE_INCOHERENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+      "Incoherency detected as the company defined on the journal %s is different from the company associated to the accounts on the move line(s)." /*)*/;
 }
