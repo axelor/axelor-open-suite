@@ -1,6 +1,0 @@
----
-title: "Sale order: change the conditions for the error message if Intercom field is not filled"
-type: fix
-description: |
-  The error message now appears if the stock location country is different from the delivery country when the stock location is not empty.
-  Or if the delivery country is different from the company country when the stock location is empty.
