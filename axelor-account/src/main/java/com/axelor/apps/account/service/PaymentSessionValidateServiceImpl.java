@@ -569,21 +569,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
-    Account cashAccount =
-        paymentModeService.getPaymentModeAccount(
+    return paymentModeService.getPaymentModeAccount(
             paymentSession.getPaymentMode(),
             paymentSession.getCompany(),
             paymentSession.getBankDetails(),
             isGlobal);
-
-    if (cashAccount == null && isGlobal) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT),
-          paymentSession.getPaymentMode().getName());
-    }
-
-    return cashAccount;
   }
 
   @Transactional(rollbackOn = {Exception.class})
