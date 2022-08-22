@@ -728,8 +728,10 @@ public class MoveLineController {
             moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
           }
 
+          LocalDate dueDate = this.extractDueDate(request);
+          moveLine.setDueDate(dueDate);
           Beans.get(MoveLineInvoiceTermService.class)
-              .generateDefaultInvoiceTerm(moveLine, this.extractDueDate(request), false);
+              .generateDefaultInvoiceTerm(moveLine, dueDate, false);
         }
       }
 
