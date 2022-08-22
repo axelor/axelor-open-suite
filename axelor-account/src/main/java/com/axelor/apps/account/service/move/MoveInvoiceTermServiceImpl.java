@@ -84,9 +84,15 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   @Override
   public void recreateInvoiceTerms(Move move) throws AxelorException {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      boolean isSingleTerm = this.isSingleTerm(move);
+
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount().getHasInvoiceTerm()) {
           moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
+
+          if (isSingleTerm && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+            moveLine.setDueDate(moveLine.getInvoiceTermList().get(0).getDueDate());
+          }
         }
       }
     }
@@ -128,14 +134,14 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  public LocalDate computeDueDate(Move move, boolean isSingleTerm) {
+  public LocalDate computeDueDate(Move move, boolean isSingleTerm, boolean isDateChange) {
     if (move.getPaymentCondition() == null
         || CollectionUtils.isEmpty(move.getPaymentCondition().getPaymentConditionLineList())
         || move.getPaymentCondition().getPaymentConditionLineList().size() > 1) {
       return null;
     }
 
-    if (isSingleTerm && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+    if (isSingleTerm && !isDateChange && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       InvoiceTerm singleInvoiceTerm = this.getSingleInvoiceTerm(move);
 
       if (singleInvoiceTerm != null) {
@@ -160,6 +166,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         && invoiceTermService.isNotReadonly(singleInvoiceTerm)
         && !Objects.equals(dueDate, singleInvoiceTerm.getDueDate())) {
       singleInvoiceTerm.setDueDate(dueDate);
+      singleInvoiceTerm.getMoveLine().setDueDate(dueDate);
       invoiceTermRepo.save(singleInvoiceTerm);
     }
   }

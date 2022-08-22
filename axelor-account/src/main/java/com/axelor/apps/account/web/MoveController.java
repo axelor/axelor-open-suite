@@ -761,7 +761,8 @@ public class MoveController {
         moveInvoiceTermService.recreateInvoiceTerms(move);
 
         if (moveInvoiceTermService.displayDueDate(move)) {
-          response.setAttr("$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true));
+          response.setAttr(
+              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
         }
       } else if (request.getContext().containsKey("headerChange")
           && (boolean) request.getContext().get("headerChange")) {
@@ -789,7 +790,7 @@ public class MoveController {
 
       if (previousMove != null && !Objects.equals(move.getPartner(), previousMove.getPartner())) {
         Beans.get(MoveLineService.class)
-                .updatePartner(move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
+            .updatePartner(move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
 
         response.setValue("moveLineList", move.getMoveLineList());
       }
@@ -808,7 +809,13 @@ public class MoveController {
 
       if (displayDueDate) {
         if (request.getContext().get("dueDate") == null) {
-          response.setAttr("$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true));
+          boolean isDateChange =
+              request.getContext().containsKey("dateChange")
+                  && (boolean) request.getContext().get("dateChange");
+
+          response.setAttr(
+              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
+          response.setAttr("$dateChange", "value", false);
         }
       } else {
         response.setAttr("$dueDate", "value", null);

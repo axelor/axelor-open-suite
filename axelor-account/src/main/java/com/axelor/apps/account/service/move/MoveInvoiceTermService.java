@@ -17,7 +17,7 @@ public interface MoveInvoiceTermService {
 
   boolean displayDueDate(Move move);
 
-  LocalDate computeDueDate(Move move, boolean isSingleTerm);
+  LocalDate computeDueDate(Move move, boolean isSingleTerm, boolean isDateChange);
 
   void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate);
 }

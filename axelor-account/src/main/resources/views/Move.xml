@@ -85,7 +85,8 @@
               onChange="action-group-move-date-onchange" hideIf="statusSelect == 3"/>
             <field name="originDate" onChange="action-account-move-group-set-origin-date"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
-            <field name="$dueDate" type="date" title="Due date" hidden="true"/>
+            <field name="$dueDate" type="date" title="Due date" hidden="true"
+              help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -118,6 +119,7 @@
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
+          <field name="$dateChange" type="boolean" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
@@ -635,6 +637,8 @@
     <action name="action-account-move-method-check-duplicated-move-origin"
       if="journal.hasDuplicateDetectionOnOrigin"/>
     <action name="action-move-method-set-moveline-origin-dates"/>
+    <action name="action-move-attrs-date-change"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
@@ -661,6 +665,8 @@
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
+    <action name="action-move-attrs-date-change"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
@@ -679,6 +685,7 @@
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-move-line-list-onchange">
@@ -1037,6 +1044,11 @@
 
   <action-attrs name="action-move-attrs-payment-condition-change">
     <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-date-change">
+    <attribute name="value" for="$dateChange" expr="eval: true"/>
+    <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
