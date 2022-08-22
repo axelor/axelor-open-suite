@@ -40,4 +40,8 @@ public interface PaymentSessionService {
   List<Journal> getJournals(PaymentSession paymentSession);
 
   public int removeMultiplePaymentSessions(List<Long> paymentSessionIds) throws AxelorException;
+
+  public void selectAll(PaymentSession paymentSession) throws AxelorException;
+
+  public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
 }

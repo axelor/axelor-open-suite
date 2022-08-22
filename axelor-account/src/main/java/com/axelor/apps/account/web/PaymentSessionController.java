@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionCancelService;
@@ -277,5 +279,60 @@ public class PaymentSessionController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  public void selectAll(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).selectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unSelectAll(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).unSelectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setButtonAttrs(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
+
+      if (invoiceTermList.isEmpty()) {
+        return;
+      }
+
+      boolean isSelectedReadonly = true;
+      boolean isUnSelectedReadonly = true;
+
+      if (invoiceTermList.stream().anyMatch(term -> !term.getIsSelectedOnPaymentSession())) {
+        isSelectedReadonly = false;
+      }
+
+      if (invoiceTermList.stream().anyMatch(term -> term.getIsSelectedOnPaymentSession())) {
+        isUnSelectedReadonly = false;
+      }
+
+      response.setAttr("selectAllBtn", "hidden", false);
+      response.setAttr("unselectAllBtn", "hidden", false);
+      response.setAttr("selectAllBtn", "readonly", isSelectedReadonly);
+      response.setAttr("unselectAllBtn", "readonly", isUnSelectedReadonly);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
