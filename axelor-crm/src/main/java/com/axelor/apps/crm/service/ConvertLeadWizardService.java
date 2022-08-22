@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
@@ -85,6 +86,7 @@ public class ConvertLeadWizardService {
         partner.setCurrency(activeCompany.getCurrency());
       }
     }
+    Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
 
     return partner;
   }

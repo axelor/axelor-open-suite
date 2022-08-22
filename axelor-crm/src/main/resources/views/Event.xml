@@ -294,36 +294,35 @@
     <template><![CDATA[
 		<div>
 		  <div class="span12">
-		  	<div class="span4">
-				<span class="label label-default" style="background-color: #58427C;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
-				<span class="label label-default" style="background-color: #DA3287;" ng-show="record.typeSelect == 3" x-translate>Task</span>
-				<span class="label label-default" style="background-color: #FF7E00;" ng-show="record.typeSelect == 5" x-translate>Note</span>
+			  <div>
+                  <div style="float: left; margin-right:100px;">
+                    <span class="label label-default" style="background-color: #58427C;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
+                    <span class="label label-default" style="background-color: #DA3287;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+                    <span class="label label-default" style="background-color: #FF7E00;" ng-show="record.typeSelect == 5" x-translate>Note</span>
 
-				<span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Call</span>
+                    <span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Call</span>
 
-				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1 &amp;&amp; record.typeSelect != 5" x-translate>Planned</span>
-         		<span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
-         		<span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
-				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11 &amp;&amp; record.typeSelect != 5" x-translate>Not started</span>
-				<span class="label label-warning" ng-show="record.statusSelect == 12 &amp;&amp; record.typeSelect != 5" x-translate>On going</span>
-				<span class="label label-important" ng-show="record.statusSelect == 13 &amp;&amp; record.typeSelect != 5" x-translate>Pending</span>
-				<span class="label label-success" ng-show="record.statusSelect == 14 &amp;&amp; record.typeSelect != 5" x-translate>Finished</span>
-				<span class="label label-default" style="background-color: #AB274F;" ng-show="record.statusSelect == 15 &amp;&amp; record.typeSelect != 5" x-translate>Reported</span>
-			</div>
-			<br/><br/>
-		  	<span>
-				<strong>{{subject}}</strong><br/>
-				{{$fmt('startDateTime')}}
-	        </span>
+                    <span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1 &amp;&amp; record.typeSelect != 5" x-translate>Planned</span>
+                    <span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
+                    <span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+                    <span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11 &amp;&amp; record.typeSelect != 5" x-translate>Not started</span>
+                    <span class="label label-warning" ng-show="record.statusSelect == 12 &amp;&amp; record.typeSelect != 5" x-translate>On going</span>
+                    <span class="label label-important" ng-show="record.statusSelect == 13 &amp;&amp; record.typeSelect != 5" x-translate>Pending</span>
+                    <span class="label label-success" ng-show="record.statusSelect == 14 &amp;&amp; record.typeSelect != 5" x-translate>Finished</span>
+                    <span class="label label-default" style="background-color: #AB274F;" ng-show="record.statusSelect == 15 &amp;&amp; record.typeSelect != 5" x-translate>Reported</span>
+                </div>
+                  <div style="float: left;">
+                    <strong>{{subject}}</strong><br/>
+                    {{$fmt('startDateTime')}}
+                </div>
+                <div style="float: right;margin-right:20px;">
+                    <button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
+                    <button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
+                </div>
+	        </div>
 			<br/></br/>
-			<strong><span x-translate>Description </span> :</strong><br/>
 			<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
 			<div ng-show="!description" ng-bind-html="description"></div>
-			<br/><br/>
-			<div>
-				<button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
-				<button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
-			</div>
 	      </div>
 	  <div>
 	 ]]></template>
@@ -421,6 +420,7 @@
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
     <action name="action-method-event-fill-lead-event-date" if="statusSelect == 2"/>
+    <action name="action-method-event-fill-partner-scheduled-date"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
@@ -690,6 +690,11 @@
   <action-method name="action-method-event-fill-lead-event-date"
     model="com.axelor.apps.crm.db.Event">
     <call class="com.axelor.apps.crm.web.EventController" method="leadLastEventDate"/>
+  </action-method>
+
+  <action-method name="action-method-event-fill-partner-scheduled-date"
+    model="com.axelor.apps.crm.db.Event">
+    <call class="com.axelor.apps.crm.web.EventController" method="partnerScheduledEventDate"/>
   </action-method>
 
   <!-- ACTION METHOD -->
