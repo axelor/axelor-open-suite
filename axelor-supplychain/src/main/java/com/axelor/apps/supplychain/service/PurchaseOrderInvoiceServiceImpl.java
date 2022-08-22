@@ -740,4 +740,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             .count()
         > 0;
   }
+
+  @Override
+  public void checkRelatedVentilatedInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (containsRelatedVentilatedInvoice(purchaseOrder)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_CONTAINS_VENTILATED_INVOICE));
+    }
+  }
 }

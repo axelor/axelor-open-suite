@@ -306,6 +306,9 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
       "Can only go back to confirmed if completed." /*)*/;
 
+  static final String PURCHASE_ORDER_CONTAINS_VENTILATED_INVOICE = /*$$(*/
+      "You cannot cancel this purchase order because one or more ventilated invoices are linked to it" /*)*/;
+
   /*
    * MRP Service
    */

@@ -106,4 +106,6 @@ public interface PurchaseOrderInvoiceService {
       throws AxelorException;
 
   boolean containsRelatedVentilatedInvoice(PurchaseOrder purchaseOrder);
+
+  void checkRelatedVentilatedInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
 }

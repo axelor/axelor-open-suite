@@ -36,6 +36,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   protected AppAccountService appAccountService;
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
   @Inject
   public PurchaseOrderWorkflowServiceSupplychainImpl(
@@ -46,13 +47,15 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       BudgetSupplychainService budgetSupplychainService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderInvoiceService purchaseOrderInvoiceService) {
     super(purchaseOrderService, purchaseOrderRepo, appPurchaseService);
     this.appSupplychainService = appSupplychainService;
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.appAccountService = appAccountService;
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
   }
 
   @Override
@@ -86,6 +89,8 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   @Override
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    purchaseOrderInvoiceService.checkRelatedVentilatedInvoice(purchaseOrder);
+
     super.cancelPurchaseOrder(purchaseOrder);
 
     if (appSupplychainService.isApp("supplychain") && appAccountService.isApp("budget")) {

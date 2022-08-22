@@ -114,10 +114,13 @@ public class PurchaseOrderController {
   }
 
   public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void generateBudgetDistribution(ActionRequest request, ActionResponse response) {

@@ -82,6 +82,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected StockMoveService stockMoveService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -93,7 +94,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      PurchaseOrderInvoiceService purchaseOrderInvoiceService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -104,6 +106,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.stockMoveService = stockMoveService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
   }
 
   /**
@@ -479,6 +482,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
+    purchaseOrderInvoiceService.checkRelatedVentilatedInvoice(purchaseOrder);
 
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
