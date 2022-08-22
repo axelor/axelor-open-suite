@@ -54,6 +54,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -246,24 +247,26 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(IExceptionMessage.MOVE_15),
           move.getReference());
     }
-    String authorizedFunctionalOriginSelect =
-        journal.getAuthorizedFunctionalOriginSelect().replaceAll("\\s+", "");
-    if (authorizedFunctionalOriginSelect != null
-        && !(Splitter.on(",")
-            .splitToList(authorizedFunctionalOriginSelect)
-            .contains(functionalOriginSelect.toString()))) {
+    if (!Strings.isNullOrEmpty(journal.getAuthorizedFunctionalOriginSelect())) {
+      String authorizedFunctionalOriginSelect =
+          journal.getAuthorizedFunctionalOriginSelect().replaceAll("\\s+", "");
+      if (!Strings.isNullOrEmpty(authorizedFunctionalOriginSelect)
+          && !(Splitter.on(",")
+              .splitToList(authorizedFunctionalOriginSelect)
+              .contains(functionalOriginSelect.toString()))) {
 
-      Option selectionItem =
-          MetaStore.getSelectionItem(
-              "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
+        Option selectionItem =
+            MetaStore.getSelectionItem(
+                "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
 
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_14),
-          selectionItem.getLocalizedTitle(),
-          move.getReference(),
-          journal.getName(),
-          journal.getCode());
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_14),
+            selectionItem.getLocalizedTitle(),
+            move.getReference(),
+            journal.getName(),
+            journal.getCode());
+      }
     }
 
     if (functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
