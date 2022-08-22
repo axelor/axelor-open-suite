@@ -25,12 +25,18 @@
       <field name="typeSelect" onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="fieldTypeSelect" showIf="typeSelect == 1"/>
       <field name="operatorSelect" showIf="typeSelect == 1 &amp;&amp; fieldTypeSelect != 0"/>
+      <field name="scale" showIf="typeSelect == 1 &amp;&amp; fieldTypeSelect == 1"/>
       <field name="formula" widget="CodeEditor" x-code-syntax="groovy" colSpan="12"/>
       <field name="fieldToPopulate" domain="self.metaModel = :concernedModel"
         showIf="typeSelect == 2" onChange="action-pricing-rule-attrs-display-meta-json-field"/>
       <field name="tempVarName" showIf="typeSelect == 2"/>
       <field name="metaJsonField" title="Custom field"
         onSelect="action-pricing-rule-attrs-on-select-meta-json-field" hidden="true"/>
+      <field name="scale"
+        showIf="typeSelect == 2 &amp;&amp; (fieldToPopulate.typeName == 'BigDecimal' || (fieldToPopulate.json == true &amp;&amp; metaJsonField != null &amp;&amp; metaJsonField.type == 'decimal'))"/>
+      <field name="fieldToPopulate.typeName" hidden="true"/>
+      <field name="fieldToPopulate.json" hidden="true"/>
+      <field name="metaJsonField.type" hidden="true"/>
     </panel>
   </form>
 

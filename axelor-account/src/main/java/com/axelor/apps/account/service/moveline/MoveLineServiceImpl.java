@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -48,6 +49,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -378,5 +380,11 @@ public class MoveLineServiceImpl implements MoveLineService {
     batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
 
     return batchAccountingCutOff.getBatch();
+  }
+
+  public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
+    moveLineList.stream()
+        .filter(it -> Objects.equals(it.getPartner(), previousPartner))
+        .forEach(it -> it.setPartner(partner));
   }
 }

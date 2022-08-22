@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
@@ -57,4 +58,6 @@ public interface MoveLineService {
   void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
 
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+
+  void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 }
