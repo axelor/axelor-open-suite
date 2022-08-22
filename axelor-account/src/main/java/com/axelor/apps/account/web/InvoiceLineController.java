@@ -415,7 +415,8 @@ public class InvoiceLineController {
       String userLanguage = AuthUtils.getUser().getLanguage();
       String partnerLanguage = partner.getLanguage().getCode();
 
-      if (!internationalService.compareCurrentLanguageWithPartner(partner)) {
+      if (!internationalService.compareCurrentLanguageWithPartner(partner)
+          && invoiceLine.getProduct() != null) {
         response.setValue(
             "description",
             internationalService.translate(

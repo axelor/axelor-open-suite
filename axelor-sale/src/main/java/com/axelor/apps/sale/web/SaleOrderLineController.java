@@ -415,7 +415,8 @@ public class SaleOrderLineController {
       String userLanguage = AuthUtils.getUser().getLanguage();
       String partnerLanguage = partner.getLanguage().getCode();
 
-      if (!internationalService.compareCurrentLanguageWithPartner(partner)) {
+      if (!internationalService.compareCurrentLanguageWithPartner(partner)
+          && saleOrderLine.getProduct() != null) {
         response.setValue(
             "description",
             internationalService.translate(
