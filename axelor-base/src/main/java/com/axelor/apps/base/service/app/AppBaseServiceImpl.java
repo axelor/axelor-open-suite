@@ -245,7 +245,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
       AppSettings appSettings = AppSettings.get();
 
-      String apps = appSettings.get("application.apps");
+      String apps = appSettings.get("aos.apps.install-apps");
       if (StringUtils.isBlank(apps)) {
         return;
       }
