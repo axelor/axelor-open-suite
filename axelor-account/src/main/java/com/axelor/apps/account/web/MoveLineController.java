@@ -434,7 +434,7 @@ public class MoveLineController {
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
 
-      for (int i = 1; i <= 5; i++) {
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
 
         if (move != null
             && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
@@ -523,7 +523,7 @@ public class MoveLineController {
                   !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
               for (AnalyticAxisByCompany analyticAxisByCompany :
                   accountConfig.getAnalyticAxisByCompanyList()) {
-                if (analyticAxisByCompany.getOrderSelect() == i) {
+                if (analyticAxisByCompany.getSequence() + 1 == i) {
                   analyticAxis = analyticAxisByCompany.getAnalyticAxis();
                 }
               }
