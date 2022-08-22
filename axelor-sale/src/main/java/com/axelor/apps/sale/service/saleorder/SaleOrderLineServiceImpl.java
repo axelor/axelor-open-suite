@@ -412,7 +412,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;

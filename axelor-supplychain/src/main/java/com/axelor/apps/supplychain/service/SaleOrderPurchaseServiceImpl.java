@@ -116,9 +116,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {
 
-    LOG.debug(
-        "Création d'une commande fournisseur pour le devis client : {}",
-        saleOrder.getSaleOrderSeq());
+    LOG.debug("Creation of a purchase order for the sale order : {}", saleOrder.getSaleOrderSeq());
 
     PurchaseOrder purchaseOrder =
         purchaseOrderSupplychainService.createPurchaseOrder(

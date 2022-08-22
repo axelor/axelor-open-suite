@@ -311,7 +311,7 @@ public class CfonbImportService {
     int totalRecord = Integer.parseInt(endingCFONB.substring(amountPosStart, amountPosEnd));
 
     log.debug(
-        "Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})",
+        "Control of record detail total amount ({}) and record total amount ({})",
         new Object[] {totalAmount, totalRecord});
 
     if (totalAmount != totalRecord) {
@@ -354,7 +354,7 @@ public class CfonbImportService {
     detailData[3] = detailCFONB.substring(226, 228); // Motif du rejet
 
     log.debug(
-        "Obtention des données d'un enregistrement détail CFONB: Date de rejet = {}, Ref prélèvement = {}, Montant rejeté = {}, Motif du rejet = {}",
+        "Data of CFONB record detail : Rejection date = {}, Direct debit ref = {}, Amount rejected = {}, Rejection reason = {} ",
         new Object[] {detailData[0], detailData[1], detailData[2], detailData[3]});
 
     return detailData;
@@ -407,7 +407,7 @@ public class CfonbImportService {
     String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
     log.debug(
-        "Obtention enregistrement en-tête CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+        "CFONB record header: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
 
     for (String s : file) {
@@ -469,7 +469,7 @@ public class CfonbImportService {
     String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
     log.debug(
-        "Obtention enregistrement détails CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+        "CFONB record details: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
 
     for (String s : file) {
@@ -526,7 +526,7 @@ public class CfonbImportService {
     String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
     log.debug(
-        "Obtention enregistrement fin CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+        "CFONB record end: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
     for (String s : file) {
       if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {

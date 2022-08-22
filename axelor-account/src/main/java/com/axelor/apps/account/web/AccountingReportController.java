@@ -143,7 +143,7 @@ public class AccountingReportController {
 
     try {
       Account account = Beans.get(AccountingReportService.class).getAccount(accountingReport);
-      logger.debug("Compte : {}", account);
+      logger.debug("Account : {}", account);
       response.setValue("account", account);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -383,7 +383,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Override
   public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException {
 
-    log.debug("Comptabilisation de l'écriture comptable {}", move.getReference());
+    log.debug("Accounting of the move {}", move.getReference());
 
     this.checkPreconditions(move);
 

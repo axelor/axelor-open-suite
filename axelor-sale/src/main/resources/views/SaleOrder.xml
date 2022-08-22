@@ -2076,7 +2076,11 @@
     <alert message="The total amount of quotation is zero. Do you want to proceed ?"
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
-      if="__config__.app.isApp('supplychain') &amp;&amp; incoterm == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != &quot;FR&quot;"/>
+      if="__config__.app.isApp('supplychain')
+          &amp;&amp; incoterm == null
+          &amp;&amp; (
+          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"

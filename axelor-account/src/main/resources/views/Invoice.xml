@@ -556,8 +556,8 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+      <field name="originDate" showIf="$contains([1,2], operationTypeSelect)"
+        requiredIf="$contains([1,2], operationTypeSelect) &amp;&amp; (statusSelect &lt;= 2 || operationSubTypeSelect == 2)"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>

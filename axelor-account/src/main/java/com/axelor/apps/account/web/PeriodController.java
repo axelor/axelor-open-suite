@@ -101,11 +101,16 @@ public class PeriodController {
       Period period =
           Beans.get(PeriodRepository.class).find(request.getContext().asType(Period.class).getId());
       if (period != null) {
+        boolean isReadOnly =
+            period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED;
+
         Boolean isInMove =
             (Beans.get(PeriodControlService.class).isLinkedToMove(period)
                 && Beans.get(PeriodControlService.class).isStatusValid(period));
-        response.setAttr("fromDate", "readonly", isInMove);
-        response.setAttr("toDate", "readonly", isInMove);
+        response.setAttr("mainPanel", "readonly", isReadOnly);
+        response.setAttr("fromDate", "readonly", isReadOnly || isInMove);
+        response.setAttr("toDate", "readonly", isReadOnly || isInMove);
       }
 
     } catch (Exception e) {

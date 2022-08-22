@@ -80,6 +80,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -489,11 +490,10 @@ public class ExpenseController {
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(expense.getCompany());
     for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
       compt++;
-      if (expenseLine
-          .getExpenseDate()
-          .isAfter(Beans.get(AppBaseService.class).getTodayDate(expense.getCompany()))) {
+      if (expenseLine.getExpenseDate() != null && expenseLine.getExpenseDate().isAfter(todayDate)) {
         expenseLineListId.add(compt);
       }
     }

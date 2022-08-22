@@ -1965,6 +1965,111 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">Sum&lt;30daysByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["&lt;30days"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum30&lt;days&lt;60ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["30&lt;days&lt;60"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum60&lt;days&lt;90ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["60&lt;days&lt;90"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum90&lt;days&lt;120ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["90&lt;days&lt;120"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum120&lt;days&lt;150ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["120&lt;days&lt;150"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum150&lt;days&lt;180ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["120&lt;days&lt;150"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum180&lt;daysByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["180&lt;days"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1716">
@@ -1980,6 +2085,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="width">0.9270833333333334in</property>
                         </column>
                         <column id="1771">
+                            <property name="suppressDuplicates">false</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -2979,14 +3085,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6337">
+                                        <data id="6435">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">&lt;30days</property>
+                                            <property name="resultSetColumn">Sum&lt;30daysByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="6295">
@@ -2996,14 +3098,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6338">
+                                        <data id="6436">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">30&lt;days&lt;60</property>
+                                            <property name="resultSetColumn">Sum30&lt;days&lt;60ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1744">
@@ -3013,14 +3111,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6339">
+                                        <data id="6437">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">60&lt;days&lt;90</property>
+                                            <property name="resultSetColumn">Sum60&lt;days&lt;90ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1745">
@@ -3030,14 +3124,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6340">
+                                        <data id="6438">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">90&lt;days&lt;120</property>
+                                            <property name="resultSetColumn">Sum90&lt;days&lt;120ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1746">
@@ -3047,14 +3137,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6341">
+                                        <data id="6439">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">120&lt;days&lt;150</property>
+                                            <property name="resultSetColumn">Sum120&lt;days&lt;150ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1747">
@@ -3064,14 +3150,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6342">
+                                        <data id="6440">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">150&lt;days&lt;180</property>
+                                            <property name="resultSetColumn">Sum150&lt;days&lt;180ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1748">
@@ -3081,14 +3163,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6343">
+                                        <data id="6441">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">180&lt;days</property>
+                                            <property name="resultSetColumn">Sum180&lt;daysByInvoiceName</property>
                                         </data>
                                     </cell>
                                 </row>
