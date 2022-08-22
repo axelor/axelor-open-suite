@@ -2985,6 +2985,7 @@
 "This batch has already been running for this move date",,,
 "This batch requires the bank payment module.",,,
 "This batch requires the human resources module.",,,
+"This field allows to modify directly the move line due date which is by default calculated based on the payment condition.",,,
 "This field allows you to select a grouping value among the grouping values ​​1 defined on the axis to which this account is attached.",,,
 "This field allows you to select a parent analytical account. Only analytical accounts with an analytical level higher than one unit and belonging to the same axis will be selectable.",,,
 "This field indicates the number of Analytical Axes that will be managed on the company, and in particular for entering the analytical breakdown during the creation of accounting entries. The order of the analytical axes is to be defined in the Order of analytical axes table below.",,,

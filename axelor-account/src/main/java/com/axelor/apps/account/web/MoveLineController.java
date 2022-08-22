@@ -728,7 +728,10 @@ public class MoveLineController {
             moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
           }
 
-          Beans.get(MoveLineInvoiceTermService.class).generateDefaultInvoiceTerm(moveLine, false);
+          LocalDate dueDate = this.extractDueDate(request);
+          moveLine.setDueDate(dueDate);
+          Beans.get(MoveLineInvoiceTermService.class)
+              .generateDefaultInvoiceTerm(moveLine, dueDate, false);
         }
       }
 
@@ -744,5 +747,24 @@ public class MoveLineController {
         Beans.get(InvoiceTermService.class)
             .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());
     response.setValue("dueDate", dueDate);
+  }
+
+  private LocalDate extractDueDate(ActionRequest request) {
+    Context parentContext = request.getContext().getParent();
+
+    if (parentContext == null) {
+      return null;
+    }
+
+    if (!parentContext.containsKey("dueDate") || parentContext.get("dueDate") == null) {
+      return null;
+    }
+
+    Object dueDateObj = parentContext.get("dueDate");
+    if (dueDateObj.getClass() == LocalDate.class) {
+      return (LocalDate) dueDateObj;
+    } else {
+      return LocalDate.parse((String) dueDateObj);
+    }
   }
 }

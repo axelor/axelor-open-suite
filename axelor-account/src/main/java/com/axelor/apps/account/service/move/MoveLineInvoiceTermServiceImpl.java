@@ -43,6 +43,13 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   @Override
   public void generateDefaultInvoiceTerm(MoveLine moveLine, boolean canCreateHolbackMoveLine)
       throws AxelorException {
+    this.generateDefaultInvoiceTerm(moveLine, null, canCreateHolbackMoveLine);
+  }
+
+  @Override
+  public void generateDefaultInvoiceTerm(
+      MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
+      throws AxelorException {
     Move move = moveLine.getMove();
 
     if (move == null) {
@@ -71,7 +78,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     for (PaymentConditionLine paymentConditionLine :
         move.getPaymentCondition().getPaymentConditionLineList()) {
       if (paymentConditionLine.getIsHoldback() == isHoldback) {
-        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, total);
+        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
       } else if (paymentConditionLine.getIsHoldback()
           && !this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
         holdbackMoveLine =
@@ -80,6 +87,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 moveLine,
                 paymentConditionLine,
                 holdbackAccount,
+                singleTermDueDate,
                 total,
                 canCreateHolbackMoveLine);
       }
@@ -120,6 +128,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLine moveLine,
       PaymentConditionLine paymentConditionLine,
       Account holdbackAccount,
+      LocalDate singleTermDueDate,
       BigDecimal total,
       boolean canCreateHolbackMoveLine)
       throws AxelorException {
@@ -165,7 +174,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       move.addMoveLineListItem(holdbackMoveLine);
     }
 
-    this.computeInvoiceTerm(holdbackMoveLine, move, paymentConditionLine, total);
+    this.computeInvoiceTerm(holdbackMoveLine, move, paymentConditionLine, singleTermDueDate, total);
 
     return holdbackMoveLine;
   }
@@ -181,12 +190,21 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected void computeInvoiceTerm(
-      MoveLine moveLine, Move move, PaymentConditionLine paymentConditionLine, BigDecimal total) {
+      MoveLine moveLine,
+      Move move,
+      PaymentConditionLine paymentConditionLine,
+      LocalDate singleTermDueDate,
+      BigDecimal total) {
+    LocalDate dueDate =
+        singleTermDueDate != null
+            ? singleTermDueDate
+            : invoiceTermService.computeDueDate(move, paymentConditionLine);
+
     InvoiceTerm invoiceTerm =
         this.computeInvoiceTerm(
             moveLine,
             move,
-            invoiceTermService.computeDueDate(move, paymentConditionLine),
+            dueDate,
             paymentConditionLine.getPaymentPercentage(),
             total,
             paymentConditionLine.getSequence() + 1,
