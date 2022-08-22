@@ -493,9 +493,12 @@
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
-      <panel-dashlet name="partnerOpportunitiesPanel" title="Opportunity" colSpan="12"
-        action="action-partner-view-opportunities" height="550" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+      <panel name="opportunitiesPanel" title="Opportunities" showIf="id != null"
+        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+        <button name="createOpportunityBtn" title="Create opportunity"
+          onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
+        <panel-include view="incl-opportunities-partner-form"/>
+      </panel>
       <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
         hideIf="isEmployee" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""

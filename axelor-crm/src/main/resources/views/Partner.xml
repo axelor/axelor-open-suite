@@ -20,6 +20,12 @@
       showIf="id != null" action="dashlet.customer.crm.activities" height="350"/>
   </form>
 
+  <form name="incl-opportunities-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner">
+    <panel-dashlet name="partnerOpportunityPanel" colSpan="12"
+      action="action-partner-view-opportunities" height="550"/>
+  </form>
+
   <form name="incl-event-actions-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
@@ -263,6 +269,8 @@
   <action-view name="action-partner-view-create-opportunity"
     title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     <view type="form" name="opportunity-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
     <context name="_partner" expr="eval: __this__"/>
     <context name="_internalUserId" expr="eval: __user__.id"/>
   </action-view>
