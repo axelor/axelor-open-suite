@@ -84,6 +84,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       CompanyConfigService companyConfigService,
       CurrencyService currencyService,
       FiscalPositionAccountService fiscalPositionAccountService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       TaxAccountService taxAccountService,
       InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
@@ -94,6 +95,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.taxAccountService = taxAccountService;
     this.invoiceService = invoiceService;
     this.moveLineToolService = moveLineToolService;
@@ -248,11 +250,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
-    if (ObjectUtils.isEmpty(account)
-        || ObjectUtils.notEmpty(account) && !account.getUseForPartnerBalance()) {
-      partner = null;
-    }
-
     return new MoveLine(
         move,
         partner,
@@ -322,9 +319,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       boolean isDebitCustomer)
       throws AxelorException {
 
-    log.debug(
-        "Création des lignes d'écriture comptable de la facture/l'avoir {}",
-        invoice.getInvoiceId());
+    log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
@@ -379,7 +374,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
         log.debug(
-            "Traitement de la ligne de facture : compte comptable = {}, montant = {}",
+            "Processing of the invoice line : account = {}, amount = {}",
             new Object[] {account.getName(), companyExTaxTotal});
 
         if (invoiceLine.getAnalyticDistributionTemplate() == null
@@ -773,10 +768,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+
+    if (newOrUpdatedMoveLine.getPartner() == null) {
+      newOrUpdatedMoveLine.setPartner(move.getPartner());
+    }
+
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
+
     return newOrUpdatedMoveLine;
   }
 

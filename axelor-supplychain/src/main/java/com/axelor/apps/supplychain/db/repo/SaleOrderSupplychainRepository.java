@@ -49,7 +49,6 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
         saleOrderLine.setDeliveredQty(null);
         saleOrderLine.setAmountInvoiced(null);
         saleOrderLine.setInvoiced(null);
-        saleOrderLine.setInvoicingDate(null);
         saleOrderLine.setIsInvoiceControlled(null);
         saleOrderLine.setReservedQty(BigDecimal.ZERO);
       }

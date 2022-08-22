@@ -18,6 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.AppAccount;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
@@ -27,6 +28,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -132,5 +134,13 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     copy.setSaleAccountMove(null);
     copy.setDisposalMove(null);
     return copy;
+  }
+
+  @Override
+  public void remove(FixedAsset entity) {
+    if (entity.getStatusSelect() != FixedAssetRepository.STATUS_DRAFT) {
+      throw new PersistenceException(I18n.get(IExceptionMessage.FIXED_ASSET_CAN_NOT_BE_REMOVE));
+    }
+    super.remove(entity);
   }
 }

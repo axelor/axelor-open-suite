@@ -241,7 +241,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public Invoice compute(final Invoice invoice) throws AxelorException {
 
-    log.debug("Calcul de la facture");
+    log.debug("Invoice computation");
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator() {
@@ -282,7 +282,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
 
-    log.debug("Validation de la facture");
+    log.debug("Invoice validation");
 
     compute(invoice);
 
@@ -339,7 +339,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
-    log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
 
     ventilateFactory.getVentilator(invoice).process();
 
@@ -364,7 +364,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException {
 
-    log.debug("Annulation de la facture {}", invoice.getInvoiceId());
+    log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
