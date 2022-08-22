@@ -541,13 +541,13 @@
 
 
   <menuitem name="manufacturing-conf-work-center-group-model" parent="manufacturing-conf"
-    title="Work center groups" action="manufacturing.conf.work.center.group.model"
+    title="Work center model groups" action="manufacturing.conf.work.center.group.model"
     if="__config__.app.getApp('production').getManageWorkCenterGroup()"/>
 
   <action-view name="manufacturing.conf.work.center.group.model"
-    title="Work center group" model="com.axelor.apps.production.db.WorkCenterGroup">
+    title="Work center model groups" model="com.axelor.apps.production.db.WorkCenterGroup">
     <view type="grid" name="work-center-group-model-grid"/>
-    <view type="form" name="work-center-group-model-form-from-menu"/>
+    <view type="form" name="work-center-group-model-form"/>
     <domain>self.template IS TRUE</domain>
     <context name="_template" expr="eval: true"/>
   </action-view>

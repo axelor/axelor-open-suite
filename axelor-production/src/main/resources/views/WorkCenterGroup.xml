@@ -69,8 +69,8 @@
 
   </form>
 
-  <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
-    name="work-center-group-model-form-from-menu"
+  <form name="work-center-group-model-form" title="Work center group model"
+    model="com.axelor.apps.production.db.WorkCenterGroup"
     onNew="action-production-work-center-record-on-new">
     <panel-include view="work-center-group-form-from-menu"/>
   </form>
