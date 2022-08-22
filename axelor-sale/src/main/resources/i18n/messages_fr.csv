@@ -566,7 +566,7 @@
 "The currency is required and must be the same for all sale orders","La devise est requise et doit être la même pour toutes les commandes clients",,
 "The field %s is of type %s, but the configured script returned value is of type %s.","Le champ %s est de type %s, mais le résultat du script est de type %s.",,
 "The fiscal position must be the same for all sale orders","La position fiscale doit être la même pour toutes les commandes clients",,
-"The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;","La langue du tiers est différente de la langue actuelle. La description et le nom du produit doivent être en :&amp;nbsp;",,
+"The partner's language is different from the current language. Description and product name should be in :",,,
 "The sale order was canceled","Le devis ou la commande client a été annulé(e)",,
 "The script must be written in","Le script doit être écrit en",,
 "The syntax of the script is correct.","La syntaxe du script est correcte.",,

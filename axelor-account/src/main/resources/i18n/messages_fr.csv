@@ -2541,7 +2541,7 @@
 "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation.","Le Compte tiers ne peut être déterminé. Veuillez configurer le compte tiers dans la facture ou configurer la situation comptable du tiers.",,
 "The partner is blocked for invoicing.","Le tiers est bloqué pour la facturation.",,
 "The partner is required and must be the same for all invoices","Le tiers est obligatoire et doit être le même pour l'ensemble des factures",,
-"The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;","La langue du tiers est différente de la langue actuelle. La description et le nom du produit doivent être en :&amp;nbsp;",,
+"The partner's language is different from the current language. Description and product name should be in :",,,
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.","Le paiement ne peut pas être réalisé car le montant restant sur la facture %s est inférieur ou égale à 0.",,
 "The payment mode is not in adequacy with the invoice type","Le paiement n'est pas en adéquation avec le type de facture ",,
 "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves","La période de l’écriture %s est temporairement clôturée et vous n'avez pas les autorisations nécessaires pour modifier des écritures comptables.",,

@@ -96,6 +96,15 @@
     </panel>
 
     <panel name="mainPanel" hideIf="lineTypeSelect == 1">
+      <field name="$partnerLanguage" hidden="true"/>
+      <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+        showTitle="false">
+        <viewer depends="$partnerLanguage">
+          <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :</span> {{record.$partnerLanguage}}</div>
+              ]]>
+        </viewer>
+      </field>
       <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
       <field name="availableStatus" readonly="true" hidden="true" colSpan="2">
         <viewer><![CDATA[
@@ -200,15 +209,6 @@
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
       <field name="$isReadOnly" hidden="true"/>
       <panel name="descriptionPanel" title="Description" colSpan="12">
-        <field name="$partnerLanguage" hidden="true"/>
-        <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
-          showTitle="false">
-          <viewer depends="$partnerLanguage">
-            <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;</span>{{record.$partnerLanguage}}</div>
-              ]]>
-          </viewer>
-        </field>
         <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
       </panel>
       <field name="regime"/>

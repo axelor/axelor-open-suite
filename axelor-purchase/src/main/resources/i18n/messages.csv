@@ -315,7 +315,7 @@
 "The field 'Stock Location' must be filled.",,,
 "The line cannot be null.",,,
 "The minimum order quantity of %s to the supplier is not respected.",,,
-"The partner's language is different from the current language. Description and product name should be in :&amp;nbsp;",,,
+"The partner's language is different from the current language. Description and product name should be in :",,,
 "The supplier Partner is required and must be the same for all purchase orders",,,
 "The supplier of the purchase order is different from the default supplier of the product.",,,
 "The trading name must be the same for all purchase orders",,,
