@@ -203,10 +203,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
         String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
-        if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-            || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
-            || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-            || accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+        if (this.isGenerateMoveLineForAutoTax(accountType)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
               move, map, newMap, moveLine, taxLine, accountType);
@@ -216,6 +213,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     moveLineList.addAll(newMap.values());
     moveRepository.save(move);
+  }
+
+  protected boolean isGenerateMoveLineForAutoTax(String accountType) {
+    return accountType.equals(AccountTypeRepository.TYPE_DEBT)
+        || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
+        || accountType.equals(AccountTypeRepository.TYPE_INCOME)
+        || accountType.equals(AccountTypeRepository.TYPE_ASSET);
   }
 
   @Override
