@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -575,6 +576,21 @@ public class EventController {
       LocalDateTime endEventDate = event.getEndDateTime();
       if (lead != null && endEventDate != null) {
         Beans.get(EventService.class).leadLastEventDate(lead, endEventDate);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void partnerScheduledEventDate(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      Partner partner = event.getPartner();
+      LocalDateTime startDateTime = event.getStartDateTime();
+      if (partner != null
+          && startDateTime != null
+          && event.getStatusSelect() == EventRepository.STATUS_PLANNED) {
+        Beans.get(EventService.class).partnerStartDate(partner, startDateTime);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
