@@ -851,7 +851,7 @@ public interface IExceptionMessage {
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   static final String PAYMENT_MODE_CASH_ACCOUNT = /*$$(*/
-          "You must configure a %scash account for the company %s and the payment mode %s" /*)*/;
+      "You must configure a %scash account for the company %s and the payment mode %s" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/

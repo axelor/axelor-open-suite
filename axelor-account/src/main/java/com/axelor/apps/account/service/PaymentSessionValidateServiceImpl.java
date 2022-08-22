@@ -570,10 +570,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
     return paymentModeService.getPaymentModeAccount(
-            paymentSession.getPaymentMode(),
-            paymentSession.getCompany(),
-            paymentSession.getBankDetails(),
-            isGlobal);
+        paymentSession.getPaymentMode(),
+        paymentSession.getCompany(),
+        paymentSession.getBankDetails(),
+        isGlobal);
   }
 
   @Transactional(rollbackOn = {Exception.class})
