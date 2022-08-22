@@ -265,11 +265,17 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      this.addParams(
-          "self.account = ?%d",
+      Account cashPositionVariationAccount =
           Beans.get((AccountConfigService.class))
               .getAccountConfig(accountingReport.getCompany())
-              .getCashPositionVariationAccount());
+              .getCashPositionVariationAccount();
+      if (cashPositionVariationAccount != null) {
+        this.addParams("self.account = ?%d", cashPositionVariationAccount);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT));
+      }
     }
 
     if (this.compareReportType(

@@ -2467,6 +2467,7 @@
 "You must configure a RIB for the reimbursement",,,
 "You must configure a RIB.",,,
 "You must configure a timetable sequence for the company %s",,,
+"You must configure an account for cashier regulation.",,,
 "You must create a contact for user %s",,,
 "You must select a company for the move %s",,,
 "You must select a currency for company %s",,,

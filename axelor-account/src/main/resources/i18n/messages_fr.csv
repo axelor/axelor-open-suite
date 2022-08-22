@@ -2467,6 +2467,7 @@
 "You must configure a RIB for the reimbursement","Veuillez configurer un RIB pour le remboursement",,
 "You must configure a RIB.","Vous devez configurer un RIB.",,
 "You must configure a timetable sequence for the company %s","Veuillez configurer une séquence Echéancier pour la société %s",,
+"You must configure an account for cashier regulation.","Vous devez configurer un compte comptable pour l'écart de réglement.",,
 "You must create a contact for user %s","Veuillez créer un contact pour l'utilisateur %s",,
 "You must select a company for the move %s","Veuillez sélectionner une société pour l'écriture %s",,
 "You must select a currency for company %s","Veuillez sélectionner une devise pour la société %s",,
