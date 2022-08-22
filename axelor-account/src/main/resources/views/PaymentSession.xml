@@ -131,6 +131,8 @@
       <button name="sendEmailsBtn" title="Send emails payment notice"
         showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
         onClick="save,action-payment-session-method-send-emails"/>
+      <button name="viewSentEmailsBtn" title="View emails sent"
+        onClick="save,action-payment-session-view-all-sent-emails" showIf="hasEmailsSent"/>
       <field name="hasEmailsSent" readonly="true"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
@@ -371,6 +373,18 @@
     <domain>self.paymentSession.id = :_id AND self.isSelectedOnPaymentSession IS TRUE AND
       (self.isPaid IS TRUE OR self.paymentAmount > self.amountRemaining)</domain>
     <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-payment-session-view-all-sent-emails" title="Emails"
+    model="com.axelor.apps.message.db.Message">
+    <view type="grid" name="message-grid"/>
+    <view type="form" name="message-form"/>
+    <domain>self.mediaTypeSelect = 2 AND self.id IN (SELECT message.id FROM MultiRelated as related
+      WHERE related.relatedToSelect
+      = :relatedToSelect AND related.relatedToSelectId =
+      :relatedToSelectId)</domain>
+    <context name="relatedToSelectId" expr="eval: id"/>
+    <context name="relatedToSelect" expr="eval: _model"/>
   </action-view>
 
 </object-views>
