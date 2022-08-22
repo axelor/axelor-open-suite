@@ -45,11 +45,6 @@
 
   </form>
 
-  <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
-    name="work-center-group-model-form">
-    <panel-include view="work-center-group-form"/>
-  </form>
-
   <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
     name="work-center-group-form-from-menu" onNew="action-production-work-center-record-on-new">
 
@@ -74,7 +69,7 @@
 
   </form>
 
-  <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
+  <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
     name="work-center-group-model-form-from-menu"
     onNew="action-production-work-center-record-on-new">
     <panel-include view="work-center-group-form-from-menu"/>
