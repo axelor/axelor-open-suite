@@ -710,15 +710,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (newAccount == null) {
-
-      if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-          || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
-      } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
-      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
-      }
+      newAccount = this.getTaxAccount(taxLine, company, accountType);
     }
 
     if (newAccount == null) {
@@ -779,6 +771,20 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     return newOrUpdatedMoveLine;
+  }
+
+  protected Account getTaxAccount(TaxLine taxLine, Company company, String accountType) {
+    switch (accountType) {
+      case AccountTypeRepository.TYPE_DEBT:
+      case AccountTypeRepository.TYPE_CHARGE:
+        return taxAccountService.getAccount(taxLine.getTax(), company, true, false);
+      case AccountTypeRepository.TYPE_INCOME:
+        return taxAccountService.getAccount(taxLine.getTax(), company, false, false);
+      case AccountTypeRepository.TYPE_ASSET:
+        return taxAccountService.getAccount(taxLine.getTax(), company, true, true);
+      default:
+        return null;
+    }
   }
 
   protected MoveLine createMoveLine(LocalDate date, TaxLine taxLine, Account account, Move move)
