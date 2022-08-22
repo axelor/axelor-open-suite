@@ -75,4 +75,6 @@ public interface EventService {
   public EmailAddress getEmailAddress(Event event);
 
   void leadLastEventDate(Lead lead, LocalDateTime date);
+
+  void partnerStartDate(Partner partner, LocalDateTime date);
 }

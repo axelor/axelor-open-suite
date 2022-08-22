@@ -293,6 +293,7 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueEleme
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
+import com.axelor.apps.account.service.wizard.AccountConvertLeadWizardServiceImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -302,6 +303,7 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
@@ -606,5 +608,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
 
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
+
+    bind(BaseConvertLeadWizardService.class).to(AccountConvertLeadWizardServiceImpl.class);
   }
 }

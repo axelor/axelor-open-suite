@@ -633,4 +633,10 @@ public class EventServiceImpl implements EventService {
   public void leadLastEventDate(Lead lead, LocalDateTime date) {
     lead.setLastEventDate(date.toLocalDate());
   }
+
+  @Override
+  @Transactional
+  public void partnerStartDate(Partner partner, LocalDateTime date) {
+    partner.setScheduledEventDate(date.toLocalDate());
+  }
 }

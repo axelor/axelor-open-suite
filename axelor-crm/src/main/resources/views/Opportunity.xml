@@ -301,7 +301,7 @@
   </form>
 
   <cards name="opportunity-cards" model="com.axelor.apps.crm.db.Opportunity"
-    title="Opportunities" css="rect-image" width="50%" orderBy="-expectedCloseDate">
+    title="Opportunities" css="rect-image" width="100%" orderBy="-expectedCloseDate">
     <field name="name"/>
     <field name="opportunityStatus"/>
     <field name="amount"/>
@@ -337,9 +337,8 @@
                     <span ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:#FF7722;'></i><span><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i></span></span>
 	            </div>
 				<br/>
-				<strong><span x-translate>Description </span> :</strong><br/>
-				<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
-				<div ng-show="!description" ng-bind-html="description"></div>
+				 <div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
+				 <div ng-show="!description" ng-bind-html="description"></div>
 		      </div>
 		  <div>
 	 	]]></template>
