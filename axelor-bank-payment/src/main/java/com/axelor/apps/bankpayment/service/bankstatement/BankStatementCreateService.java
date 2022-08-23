@@ -52,37 +52,30 @@ public class BankStatementCreateService {
     return bankStatement;
   }
 
-  protected String computeName(BankStatement bankStatement) {
-
-    String name = "";
+  public String computeName(BankStatement bankStatement) {
+    StringBuilder builder = new StringBuilder();
 
     if (bankStatement.getEbicsPartner() != null) {
-      name += bankStatement.getEbicsPartner().getPartnerId();
+      builder.append(bankStatement.getEbicsPartner().getPartnerId());
     }
-
     if (bankStatement.getBankStatementFileFormat() != null) {
-      if (name != "") {
-        name += "-";
+      if (!builder.toString().isEmpty()) {
+        builder.append("-");
       }
-      name += bankStatement.getBankStatementFileFormat().getName();
+      builder.append(bankStatement.getBankStatementFileFormat().getName());
     }
-
-    try {
-      if (bankStatement.getFromDate() != null) {
-        if (name != "") {
-          name += "-";
-        }
-        name += bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+    if (bankStatement.getFromDate() != null) {
+      if (!builder.toString().isEmpty()) {
+        builder.append("-");
       }
-      if (bankStatement.getToDate() != null) {
-        if (name != "") {
-          name += "-";
-        }
-        name += bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-      }
-    } catch (Exception e) {
+      builder.append(bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
     }
-
-    return name;
+    if (bankStatement.getToDate() != null) {
+      if (!builder.toString().isEmpty()) {
+        builder.append("-");
+      }
+      builder.append(bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+    }
+    return builder.toString();
   }
 }
