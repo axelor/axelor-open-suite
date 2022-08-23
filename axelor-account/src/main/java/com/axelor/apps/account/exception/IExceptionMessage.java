@@ -850,6 +850,9 @@ public interface IExceptionMessage {
   static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
+  static final String PAYMENT_MODE_CASH_ACCOUNT = /*$$(*/
+      "You must configure a %scash account for the company %s and the payment mode %s" /*)*/;
+
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
       "%s : Payment voucher n° %s, the paid amount should be positive" /*)*/;
@@ -1231,9 +1234,6 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
       "%d accounting move(s) successfully generated." /*)*/;
-
-  static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
-      "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
 
   static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
       "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;

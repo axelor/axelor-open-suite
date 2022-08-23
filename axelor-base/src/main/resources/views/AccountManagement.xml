@@ -140,9 +140,7 @@
         <field if="__config__.app.isApp('account')" if-module="axelor-account"
           name="globalAccountingCashAccount" canEdit="false"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          showIf="paymentMode.accountingMethodSelect == 3"
-          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.accountingMethodSelect == 3 "
-          form-view="account-form" grid-view="account-grid"/>
+          requiredIf="typeSelect == 3" form-view="account-form" grid-view="account-grid"/>
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
           onSelect="action-account-management-attrs-bank-details-domain"
           onChange="action-account-management-attrs-bank-details-on-change"
