@@ -79,10 +79,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
         counterPartMoveLine, singleTermDueDate, true);
 
-    if (singleTermDueDate != null) {
-      counterPartMoveLine.setDueDate(singleTermDueDate);
-    }
-
     moveRepository.save(move);
   }
 

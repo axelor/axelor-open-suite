@@ -15,4 +15,6 @@ public interface MoveLineInvoiceTermService {
   void updateInvoiceTermsParentFields(MoveLine moveLine);
 
   void recreateInvoiceTerms(MoveLine moveLine) throws AxelorException;
+
+  void setDueDateFromInvoiceTerms(MoveLine moveLine);
 }
