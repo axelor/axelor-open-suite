@@ -177,7 +177,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter(10, accountingReport.getReportType().getTypeSelect())
             .setParameter(11, accountingReport.getMinAmountExcl());
     partnerIds = partnerQuery.getResultList();
-    if (partnerIds == null || partnerIds.isEmpty()) {
+    if (CollectionUtils.isEmpty(partnerIds)) {
       return new ArrayList<Long>();
     }
 
