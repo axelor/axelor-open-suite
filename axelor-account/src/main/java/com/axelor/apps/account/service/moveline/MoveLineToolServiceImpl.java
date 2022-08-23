@@ -319,7 +319,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
-    return ml.getTaxLine() == taxLine
+    return ml.getTaxLine() != null
+        && ml.getTaxLine().equals(taxLine)
         && ml.getVatSystemSelect() == vatSystem
         && ml.getId() != id
         && ml.getAccount().getAccountType() != null
