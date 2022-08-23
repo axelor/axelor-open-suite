@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
@@ -65,6 +66,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -225,7 +227,7 @@ public class MoveController {
                       move.getReference()));
             }
           }
-          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+          Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
           response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
         } else {
@@ -640,6 +642,22 @@ public class MoveController {
           "$validatePeriod",
           !Beans.get(PeriodServiceAccount.class)
               .isAuthorizedToAccountOnPeriod(move.getPeriod(), user));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updatePartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Move previousMove = Beans.get(MoveRepository.class).find(move.getId());
+
+      if (previousMove != null && !Objects.equals(move.getPartner(), previousMove.getPartner())) {
+        Beans.get(MoveLineService.class)
+            .updatePartner(move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
+
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

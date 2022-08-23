@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="fixed-asset-grid" title="Fixed assets"
-    model="com.axelor.apps.account.db.FixedAsset" orderBy="-createdOn,company">
+    model="com.axelor.apps.account.db.FixedAsset" orderBy="company.code,-fixedAssetSeq,-reference">
     <menubar>
       <menu name="fixedAssetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedFixedAssetsItem" title="Validate selected fixed assets"
@@ -12,6 +12,7 @@
           prompt="Are you sure you want to validate all selected fixed assets ?"/>
       </menu>
     </menubar>
+    <field name="fixedAssetSeq"/>
     <field name="name"/>
     <field name="partner" grid-view="partner-supplier-grid" form-view="partner-form"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -26,7 +27,8 @@
   <form name="fixed-asset-form" title="Fixed asset"
     model="com.axelor.apps.account.db.FixedAsset"
     onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
-    onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload">
+    onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload"
+    canDelete="statusSelect == 1">
     <panel>
       <panel name="statusSelectPanel" colSpan="12">
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="6"
@@ -429,7 +431,7 @@
       if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)"
       message="First depreciation date cannot be before Acquisition date."/>
     <error
-      if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt; fiscalPeriodicityInMonth &amp;&amp; fiscalPeriodicityTypeSelect == 1"
+      if="acquisitionDate != null &amp;&amp; firstDepreciationDate != null &amp;&amp; java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt; fiscalPeriodicityInMonth &amp;&amp; fiscalPeriodicityTypeSelect == 1"
       message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
   </action-validate>
 

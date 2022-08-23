@@ -7,9 +7,9 @@
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-attrs-fill-ctx"/>
+        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
       <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-attrs-fill-ctx"/>
+        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs"/>
     </extend>
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
@@ -184,5 +184,10 @@
     <field name="requestedReservedQty" expr="eval: qty"
       if="__parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
   </action-record>
+
+  <action-group name="action-sale-order-line-group-manage-attrs">
+    <action name="action-sale-order-line-attrs-hide-panel"/>
+    <action name="action-sale-order-line-attrs-fill-ctx"/>
+  </action-group>
 
 </object-views>

@@ -264,7 +264,8 @@ public class IrrecoverableService {
       }
     }
 
-    log.debug("Nombre de facture à passer en irrécouvrable pour le tiers : {}", invoiceList.size());
+    log.debug(
+        "Number of invoices to change to unrecoverable for the partner : {}", invoiceList.size());
 
     return invoiceList;
   }
@@ -288,7 +289,7 @@ public class IrrecoverableService {
     }
 
     log.debug(
-        "Nombre d'échéances à passer en irrécouvrable pour le tiers : {}",
+        "Number of payment schedule to shift to irrecoverable for the partner : {}",
         paymentScheduleLineList.size());
 
     return paymentScheduleLineList;
@@ -322,7 +323,7 @@ public class IrrecoverableService {
 
         i++;
         try {
-          log.debug("Tiers : {}", payerPartner.getName());
+          log.debug("Partner : {}", payerPartner.getName());
           this.createIrrecoverableCustomerLine(
               irrecoverable,
               payerPartner,
@@ -375,7 +376,7 @@ public class IrrecoverableService {
         this.createIrrecoverablePaymentScheduleLineLineList(icl, paymentScheduleLineList));
     icl.setIrrecoverableInvoiceLineList(this.createIrrecoverableInvoiceLineList(icl, invoiceList));
 
-    log.debug("Ligne client : {}", icl);
+    log.debug("Customer line : {}", icl);
 
     return icl;
   }
@@ -392,7 +393,7 @@ public class IrrecoverableService {
   public void manageIrrecoverableInvoice(Irrecoverable irrecoverable, Invoice invoice)
       throws AxelorException {
 
-    log.debug("Facture : {}", invoice.getInvoiceId());
+    log.debug("Invoice : {}", invoice.getInvoiceId());
     irrecoverable = retrieveAndInit(irrecoverable);
     invoice = invoiceRepo.find(invoice.getId());
     this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
@@ -404,7 +405,7 @@ public class IrrecoverableService {
   public void manageIrrecoverablePaymentScheduleLine(
       Irrecoverable irrecoverable, PaymentScheduleLine paymentScheduleLine) throws AxelorException {
 
-    log.debug("Ligne d'échéancier : {}", paymentScheduleLine.getName());
+    log.debug("Payment schedule line : {}", paymentScheduleLine.getName());
     irrecoverable = retrieveAndInit(irrecoverable);
     paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
     this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
@@ -612,7 +613,7 @@ public class IrrecoverableService {
     iil.setIrrecoverableReportLineList(
         this.createIrrecoverableReportLineList(iil, invoice, prorataRate));
 
-    log.debug("Ligne facture : {}", iil);
+    log.debug("Invoice line : {}", iil);
 
     return iil;
   }
@@ -642,7 +643,7 @@ public class IrrecoverableService {
     ipsll.setIrrecoverableReportLineList(
         this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, tax));
 
-    log.debug("Ligne échéance rejetée : {}", ipsll);
+    log.debug("Irrecoverable payment schedule line : {}", ipsll);
 
     return ipsll;
   }
@@ -769,7 +770,7 @@ public class IrrecoverableService {
     irl.setValue(value);
     irl.setIrrecoverableInvoiceLine(iil);
 
-    log.debug("Ligne reporting : {}", irl);
+    log.debug("Irrecoverable report line : {}", irl);
 
     return irl;
   }
@@ -791,7 +792,7 @@ public class IrrecoverableService {
     irl.setValue(value);
     irl.setIrrecoverablePaymentScheduleLineLine(ipsll);
 
-    log.debug("Ligne reporting : {}", irl);
+    log.debug("Irrecoverable report line : {}", irl);
 
     return irl;
   }
@@ -816,7 +817,7 @@ public class IrrecoverableService {
               .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_UP);
     }
 
-    log.debug("Taux d'impayé pour la facture {} : {}", invoice.getInvoiceId(), prorataRate);
+    log.debug("Prorata rate for the invoice {} : {}", invoice.getInvoiceId(), prorataRate);
 
     return prorataRate;
   }

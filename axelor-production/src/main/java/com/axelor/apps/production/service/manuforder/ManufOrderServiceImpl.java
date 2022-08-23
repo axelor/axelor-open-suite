@@ -288,7 +288,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       LocalDateTime plannedEndDateT)
       throws AxelorException {
 
-    logger.debug("Création d'un OF {}", priority);
+    logger.debug("Creation of a manufacturing order {}", priority);
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
 
@@ -335,10 +335,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
     ProdProcess prodProcess = manufOrder.getProdProcess();
 
-    if (manufOrder.getPlannedStartDateT() == null) {
-      manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
-    }
-
     if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
 
       for (ProdProcessLine prodProcessLine :
@@ -347,10 +343,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
       }
     }
-
-    manufOrderRepo.save(manufOrder);
-
-    manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
     manufOrderRepo.save(manufOrder);
   }
