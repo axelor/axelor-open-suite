@@ -180,9 +180,9 @@
 231;3;1;;;1;;;;100;41
 232;2;2;"Participation des salariés";"participation-salaries";2;;;;100;42
 233;2;2;"Impôts sur les bénéfices";"impots-benefices";2;;;;100;43
-234;2;3;"Cout direct d'achat";"cout-direct-achat";1;"rules[""607-achats-marchandises""]+rules[""6037-variations-stocks-marchandises""]+rules[""6097-RRR""]";;;100;6
-235;2;3;"Ventes de marchandises";"ventes-marchandises";1;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;100;2
-236;2;3;"Production vendue";"production-vendue";1;"rules[""704-705-706-708-travaux-etudes-produits""]-rules[""709-RRR""]";;;100;11
+234;1;3;"Cout direct d'achat";"cout-direct-achat";1;"rules[""607-achats-marchandises""]+rules[""6037-variations-stocks-marchandises""]+rules[""6097-RRR""]";;;100;6
+235;1;3;"Ventes de marchandises";"ventes-marchandises";1;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;100;2
+236;1;3;"Production vendue";"production-vendue";1;"rules[""704-705-706-708-travaux-etudes-produits""]-rules[""709-RRR""]";;;100;11
 237;1;3;"Marge commerciale";"marge-commerciale";1;"rules[""ventes-marchandises""]+rules[""cout-direct-achat""]";;;100;7
 238;1;3;"Production de l'exercice";"production-exercice";1;"rules[""701-702-703-ventes-produits""]+rules[""production-vendue""]+rules[""713-production-stockee""]+rules[""72-Production-immobilisee""]";;;100;15
 239;1;3;"Valeur ajoutée";"valeur-ajoutee";1;"rules[""marge-commerciale""]+rules[""production-exercice""]+rules[""achat-appro""]+rules[""autres-charges-externes""]";;;100;19
