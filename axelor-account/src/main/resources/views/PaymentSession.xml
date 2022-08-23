@@ -84,14 +84,14 @@
       <field name="partnerTypeSelect" readonlyIf="!paymentMode" selection-in="[1,2,3]"/>
       <field name="bankDetails" readonlyIf="!company" form-view="bank-details-form"
         grid-view="bank-details-grid"
-        onSelect="action-attrs-payment-session-set-bank-details-domain"
-        onChange="action-record-payment-session-on-change-bank-details"/>
+        onSelect="action-payment-session-method-set-bank-details-domain"
+        onChange="action-payment-session-group-bank-details-onchange"/>
       <field name="paymentDate" onChange="action-payment-session-condition-dates"/>
       <field name="nextSessionDate" readonlyIf="!paymentDate"
         onChange="action-payment-session-condition-dates"/>
       <field name="assignedToUser"/>
       <field name="journal" readonlyIf="!company"
-        onSelect="action-attrs-payment-session-set-journal-domain"/>
+        onSelect="action-payment-session-method-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </panel>
     <panel name="searchPanel"
@@ -203,17 +203,6 @@
       for="company"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-payment-session-set-bank-details-domain">
-    <attribute name="domain"
-      expr="eval: &quot;self.id = (${company?.defaultBankDetails?.id})&quot;" for="bankDetails"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-payment-session-set-journal-domain">
-    <attribute name="domain"
-      expr="eval: &quot; self.company.id = (${company?.id?:__user__?.activeCompany?.id}) and self.journalType.technicalTypeSelect = 4 and self.id IN (${__this__?.paymentMode?.accountManagementList?.collect{it.journal.id}?.join(',')}) &quot;"
-      for="journal"/>
-  </action-attrs>
-
   <action-attrs name="action-attrs-payment-session-reset-on-company-change">
     <attribute name="value" expr="eval: null" for="journal"/>
     <attribute name="value" expr="eval: null" for="bankDetails"/>
@@ -267,7 +256,6 @@
 
   <action-record name="action-record-payment-session-on-change-bank-details"
     model="com.axelor.apps.account.db.PaymentSession">
-    <field name="company" expr="eval: bankDetails?.company"/>
     <field name="currency" expr="eval: bankDetails?.currency"
       if="bankDetails?.currency != null"/>
   </action-record>
@@ -321,6 +309,16 @@
       method="checkIsAllInvoiceTerms"/>
   </action-method>
 
+  <action-method name="action-payment-session-method-set-bank-details-domain">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setBankDetailsDomain"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-set-journal-domain">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setJournalDomain"/>
+  </action-method>
+
   <action-group name="action-group-payment-session-search-eligible-terms">
     <action name="save"/>
     <action name="action-method-payment-session-search-eligible-terms"/>
@@ -340,6 +338,11 @@
   <action-group name="action-group-payment-session-set-default-values">
     <action name="action-record-payment-session-set-default-values"/>
     <action name="action-group-payment-session-on-company-change"/>
+  </action-group>
+
+  <action-group name="action-payment-session-group-bank-details-onchange">
+    <action name="action-record-payment-session-on-change-bank-details"/>
+    <action name="action-method-payment-session-set-journal"/>
   </action-group>
 
   <action-condition name="action-payment-session-condition-dates">
