@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.BankDetails;
@@ -37,7 +38,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -93,18 +93,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public void setJournal(PaymentSession paymentSession) {
-    if (paymentSession.getCompany() != null
-        && paymentSession.getPaymentMode() != null
-        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
-      Optional<Journal> journal =
-          paymentSession.getPaymentMode().getAccountManagementList().stream()
-              .filter(
-                  accountManagement ->
-                      paymentSession.getCompany().equals(accountManagement.getCompany())
-                          && accountManagement.getJournal() != null)
-              .map(AccountManagement::getJournal)
-              .findFirst();
-      journal.ifPresent(paymentSession::setJournal);
+    List<Journal> journalList = this.getJournals(paymentSession);
+
+    if (CollectionUtils.isNotEmpty(journalList)) {
+      paymentSession.setJournal(journalList.get(0));
+    } else {
+      paymentSession.setJournal(null);
     }
   }
 
@@ -136,10 +130,25 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   public List<BankDetails> getBankDetails(PaymentSession paymentSession) {
     Company company = paymentSession.getCompany();
-    Journal journal = paymentSession.getJournal();
     PaymentMode paymentMode = paymentSession.getPaymentMode();
 
-    if (journal == null
+    if (paymentMode == null || CollectionUtils.isEmpty(paymentMode.getAccountManagementList())) {
+      return new ArrayList<>();
+    }
+
+    return paymentMode.getAccountManagementList().stream()
+        .filter(it -> Objects.equals(company, it.getCompany()))
+        .map(AccountManagement::getBankDetails)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Journal> getJournals(PaymentSession paymentSession) {
+    Company company = paymentSession.getCompany();
+    BankDetails bankDetails = paymentSession.getBankDetails();
+    PaymentMode paymentMode = paymentSession.getPaymentMode();
+
+    if (bankDetails == null
         || paymentMode == null
         || CollectionUtils.isEmpty(paymentMode.getAccountManagementList())) {
       return new ArrayList<>();
@@ -149,8 +158,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         .filter(
             it ->
                 Objects.equals(company, it.getCompany())
-                    && Objects.equals(journal, it.getJournal()))
-        .map(AccountManagement::getBankDetails)
+                    && Objects.equals(bankDetails, it.getBankDetails()))
+        .map(AccountManagement::getJournal)
+        .filter(
+            it ->
+                it.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
         .collect(Collectors.toList());
   }
 }

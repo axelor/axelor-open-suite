@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
 import java.util.List;
@@ -34,4 +35,6 @@ public interface PaymentSessionService {
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession);
 
   List<BankDetails> getBankDetails(PaymentSession paymentSession);
+
+  List<Journal> getJournals(PaymentSession paymentSession);
 }

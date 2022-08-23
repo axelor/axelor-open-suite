@@ -85,14 +85,13 @@
       <field name="bankDetails" readonlyIf="!company" form-view="bank-details-form"
         grid-view="bank-details-grid"
         onSelect="action-payment-session-method-set-bank-details-domain"
-        onChange="action-record-payment-session-on-change-bank-details"/>
+        onChange="action-payment-session-group-bank-details-onchange"/>
       <field name="paymentDate" onChange="action-payment-session-condition-dates"/>
       <field name="nextSessionDate" readonlyIf="!paymentDate"
         onChange="action-payment-session-condition-dates"/>
       <field name="assignedToUser"/>
       <field name="journal" readonlyIf="!company"
-        onSelect="action-attrs-payment-session-set-journal-domain"
-        onChange="action-method-payment-session-set-bank-details"/>
+        onSelect="action-payment-session-method-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </panel>
     <panel name="searchPanel"
@@ -200,12 +199,6 @@
     <attribute name="domain"
       expr="eval: &quot;self.id IN (${__user__?.companySet?.collect{it.id}.join(',')}) &quot;"
       for="company"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-payment-session-set-journal-domain">
-    <attribute name="domain"
-      expr="eval: &quot; self.company.id = (${company?.id?:__user__?.activeCompany?.id}) and self.journalType.technicalTypeSelect = 4 and self.id IN (${__this__?.paymentMode?.accountManagementList?.collect{it.journal.id}?.join(',')}) &quot;"
-      for="journal"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-payment-session-reset-on-company-change">
@@ -319,6 +312,11 @@
       method="setBankDetailsDomain"/>
   </action-method>
 
+  <action-method name="action-payment-session-method-set-journal-domain">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setJournalDomain"/>
+  </action-method>
+
   <action-group name="action-group-payment-session-search-eligible-terms">
     <action name="save"/>
     <action name="action-method-payment-session-search-eligible-terms"/>
@@ -330,14 +328,19 @@
   </action-group>
 
   <action-group name="action-group-payment-session-on-payment-mode-change">
-    <action name="action-method-payment-session-set-journal"/>
     <action name="action-method-payment-session-set-bank-details"/>
+    <action name="action-method-payment-session-set-journal"/>
     <action name="action-record-payment-session-on-change-payment-mode"/>
   </action-group>
 
   <action-group name="action-group-payment-session-set-default-values">
     <action name="action-record-payment-session-set-default-values"/>
     <action name="action-group-payment-session-on-company-change"/>
+  </action-group>
+
+  <action-group name="action-payment-session-group-bank-details-onchange">
+    <action name="action-record-payment-session-on-change-bank-details"/>
+    <action name="action-method-payment-session-set-journal"/>
   </action-group>
 
   <action-condition name="action-payment-session-condition-dates">
