@@ -16,6 +16,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -267,14 +268,15 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {
     Partner partner = moveLine.getPartner() != null ? moveLine.getPartner() : move.getPartner();
 
-    if (moveLine.getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+    if (Lists.newArrayList(
+            MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET)
+        .contains(moveLine.getMove().getFunctionalOriginSelect())) {
       return accountingSituationService.getHoldBackSupplierAccount(partner, move.getCompany());
     } else if (moveLine.getMove().getFunctionalOriginSelect()
         == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       return accountingSituationService.getHoldBackCustomerAccount(partner, move.getCompany());
     } else {
-      return moveLine.getAccount();
+      return null;
     }
   }
 
