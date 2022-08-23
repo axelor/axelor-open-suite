@@ -2345,7 +2345,7 @@
 "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)","Veuillez sélectionner un compte comptable de TVA à régulariser à l'achat pour la taxe : %s (Société : %s)",,
 "Please select a VAT Regularization account on sale for Tax: %s (company: %s)","Veuillez sélectionner un compte comptable de TVA à régulariser à la vente pour la taxe : %s (Société : %s)",,
 "Please select a cash account in config of the payment mode %s","Veuillez sélectionner un compte de vente dans la configuration du mode de paiement %s",,
-"Please select a financial discount account for Tax: %s (company: %s)",,,
+"Please select a financial discount account for Tax: %s (company: %s)","Veuillez sélectionner un compte d'escompte pour la taxe : %s (société : %s)",,
 "Please select a payment mode to generate the counterpart","Veuillez sélectionner un mode de paiement pour générer la contrepartie",,
 "Please select a purchase financial discount account in account config for company %s.","Veuillez sélectionner un compte d’escompte à l’achat dans la configuration de la société %s.",,
 "Please select a purchase financial discount tax in account config for company %s.","Veuillez sélectionner une taxe sur escompte à l'achat dans la configuration de la société %s.",,
