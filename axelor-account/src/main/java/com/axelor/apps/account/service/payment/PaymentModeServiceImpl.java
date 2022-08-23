@@ -182,7 +182,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         paymentMode,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.PAYMENT_MODE_CASH_ACCOUNT),
-        global ? I18n.get("global ") : "",
+        global ? String.format("%s ", I18n.get("global")) : "",
         company.getName(),
         paymentMode.getName());
   }
