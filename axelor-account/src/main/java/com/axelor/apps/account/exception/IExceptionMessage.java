@@ -1350,4 +1350,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
       "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
+
+  static final String PAYMENT_SESSION_MULTIPLE_DELETION = /*$$(*/
+      "Only the payment sessions at the status 'Cancelled' have been deleted." /*)*/;
 }
