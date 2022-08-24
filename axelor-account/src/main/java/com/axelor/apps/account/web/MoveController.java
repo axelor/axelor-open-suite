@@ -51,6 +51,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -735,13 +736,18 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      if (Beans.get(MoveToolService.class).checkMoveOriginIsDuplicated(move)) {
-        response.setAlert(
-            String.format(
-                I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
-                move.getReference(),
-                move.getPartner() != null ? move.getPartner().getFullName() : "",
-                move.getPeriod().getYear().getName()));
+      if (move.getJournal() != null
+          && move.getPartner() != null
+          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
+        List<Move> moveList = Beans.get(MoveToolService.class).getMovesWithDuplicatedOrigin(move);
+        if (ObjectUtils.notEmpty(moveList)) {
+          response.setAlert(
+              String.format(
+                  I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
+                  moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
+                  move.getPartner().getFullName(),
+                  move.getPeriod().getYear().getName()));
+        }
       }
 
     } catch (Exception e) {

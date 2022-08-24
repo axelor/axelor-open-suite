@@ -625,7 +625,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public boolean checkMoveOriginIsDuplicated(Move move) throws AxelorException {
+  public List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException {
     List<Move> moveList = null;
     if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
       moveList =
@@ -639,6 +639,6 @@ public class MoveToolServiceImpl implements MoveToolService {
                   move.getPartner())
               .fetch();
     }
-    return !ObjectUtils.isEmpty(moveList);
+    return moveList;
   }
 }

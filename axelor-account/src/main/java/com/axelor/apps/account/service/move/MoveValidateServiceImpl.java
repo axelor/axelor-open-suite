@@ -315,15 +315,18 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       this.validateWellBalancedMove(move);
 
       if (move.getJournal() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()
-          && moveToolService.checkMoveOriginIsDuplicated(move)) {
-        throw new AxelorException(
-            move,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
-            move.getReference(),
-            move.getPartner() != null ? move.getPartner().getFullName() : "",
-            move.getPeriod().getYear().getName());
+          && move.getPartner() != null
+          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
+        List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
+        if (ObjectUtils.notEmpty(moveList)) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
+              moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
+              move.getPartner().getFullName(),
+              move.getPeriod().getYear().getName());
+        }
       }
     }
   }
