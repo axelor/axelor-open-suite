@@ -114,7 +114,7 @@ public class PaymentVoucherLoadService {
         || paymentVoucher.getOperationTypeSelect()
             == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       query +=
-          "and (self.pfpValidateStatusSelect != :pfpStatusAwaiting OR self.pfpValidateStatusSelect != :pfpStatusLitigation) ";
+          "AND self.pfpValidateStatusSelect NOT IN (:pfpStatusAwaiting, :pfpStatusLitigation) ";
     }
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
