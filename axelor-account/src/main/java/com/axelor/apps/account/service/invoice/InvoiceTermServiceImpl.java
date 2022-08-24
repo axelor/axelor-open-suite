@@ -926,8 +926,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      percentage =
-          amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 10, RoundingMode.HALF_UP);
+      percentage = amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 7, RoundingMode.HALF_UP);
     }
     return percentage;
   }
