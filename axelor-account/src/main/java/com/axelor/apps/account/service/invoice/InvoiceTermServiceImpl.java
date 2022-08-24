@@ -865,13 +865,29 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getInvoice() != null
+    BigDecimal total;
+
+    if (invoiceTerm.getInvoice() != null) {
+      total = invoiceTerm.getInvoice().getTaxTotal();
+    } else {
+      total =
+          invoiceTerm.getMoveLine().getMove().getMoveLineList().stream()
+              .filter(
+                  it ->
+                      it.getAccount()
+                          .getAccountType()
+                          .getTechnicalTypeSelect()
+                          .equals(AccountTypeRepository.TYPE_TAX))
+              .map(it -> it.getDebit().max(it.getCredit()))
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+
+    if (total.signum() > 0
         && invoiceTerm.getFinancialDiscount() != null
         && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return invoiceTerm
-          .getInvoice()
-          .getTaxTotal()
+      return total
           .multiply(invoiceTerm.getPercentage())
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
