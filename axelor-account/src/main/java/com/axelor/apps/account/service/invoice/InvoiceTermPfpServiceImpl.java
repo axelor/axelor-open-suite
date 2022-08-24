@@ -182,6 +182,21 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Transactional(rollbackOn = {Exception.class})
   protected void createPfpInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
+    BigDecimal percentage;
+    int sequence;
+
+    if (invoice != null) {
+      percentage = invoiceTermService.computeCustomizedPercentage(amount, invoice.getInTaxTotal());
+      sequence = invoice.getInvoiceTermList().size() + 1;
+    } else {
+      percentage =
+          originalInvoiceTerm
+              .getMoveLine()
+              .getCredit()
+              .max(originalInvoiceTerm.getMoveLine().getDebit());
+      sequence = originalInvoiceTerm.getMoveLine().getInvoiceTermList().size() + 1;
+    }
+
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
             invoice,
@@ -192,7 +207,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getDueDate(),
             originalInvoiceTerm.getEstimatedPaymentDate(),
             amount,
-            invoiceTermService.computeCustomizedPercentage(amount, originalInvoiceTerm.getAmount()),
+            percentage,
+            sequence,
             originalInvoiceTerm.getIsHoldBack());
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -212,7 +228,13 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmount());
     originalInvoiceTerm.setPercentage(
         invoiceTermService.computeCustomizedPercentage(
-            grantedAmount, originalInvoiceTerm.getAmount()));
+            grantedAmount,
+            invoice != null
+                ? invoice.getInTaxTotal()
+                : originalInvoiceTerm
+                    .getMoveLine()
+                    .getCredit()
+                    .max(originalInvoiceTerm.getMoveLine().getDebit())));
     originalInvoiceTerm.setAmount(grantedAmount);
     originalInvoiceTerm.setAmountRemaining(grantedAmount);
     originalInvoiceTerm.setPfpValidateStatusSelect(

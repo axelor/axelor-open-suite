@@ -54,6 +54,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -234,32 +235,38 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
     checkInactiveJournal(move);
+    checkFunctionalOriginSelect(move);
 
     validateVatSystem(move);
 
     Integer functionalOriginSelect = move.getFunctionalOriginSelect();
+
     if (functionalOriginSelect == null || functionalOriginSelect == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_15),
           move.getReference());
     }
-    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
-    if (authorizedFunctionalOriginSelect != null
-        && !(Splitter.on(",")
-            .splitToList(authorizedFunctionalOriginSelect)
-            .contains(functionalOriginSelect.toString()))) {
+    if (!Strings.isNullOrEmpty(journal.getAuthorizedFunctionalOriginSelect())) {
+      String authorizedFunctionalOriginSelect =
+          journal.getAuthorizedFunctionalOriginSelect().replaceAll("\\s+", "");
+      if (!Strings.isNullOrEmpty(authorizedFunctionalOriginSelect)
+          && !(Splitter.on(",")
+              .splitToList(authorizedFunctionalOriginSelect)
+              .contains(functionalOriginSelect.toString()))) {
 
-      Option selectionItem =
-          MetaStore.getSelectionItem(
-              "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_14),
-          selectionItem.getLocalizedTitle(),
-          move.getReference(),
-          journal.getName(),
-          journal.getCode());
+        Option selectionItem =
+            MetaStore.getSelectionItem(
+                "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
+
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_14),
+            selectionItem.getLocalizedTitle(),
+            move.getReference(),
+            journal.getName(),
+            journal.getCode());
+      }
     }
 
     if (functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
@@ -324,6 +331,32 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
+  protected void checkFunctionalOriginSelect(Move move) throws AxelorException {
+    Integer functionalOriginSelect = move.getFunctionalOriginSelect();
+    if (functionalOriginSelect == null || functionalOriginSelect == 0) {
+      return;
+    }
+    Journal journal = move.getJournal();
+    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+    if (authorizedFunctionalOriginSelect != null
+        && !(Splitter.on(",")
+            .trimResults()
+            .splitToList(authorizedFunctionalOriginSelect)
+            .contains(functionalOriginSelect.toString()))) {
+
+      Option selectionItem =
+          MetaStore.getSelectionItem(
+              "iaccount.move.functional.origin.select", functionalOriginSelect.toString());
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_14),
+          selectionItem.getLocalizedTitle(),
+          move.getReference(),
+          journal.getName(),
+          journal.getCode());
+    }
+  }
+
   protected void checkClosurePeriod(Move move) throws AxelorException {
 
     if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
@@ -356,7 +389,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Override
   public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException {
 
-    log.debug("Comptabilisation de l'écriture comptable {}", move.getReference());
+    log.debug("Accounting of the move {}", move.getReference());
 
     this.checkPreconditions(move);
 
@@ -389,10 +422,16 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     moveInvoiceTermService.generateInvoiceTerms(move);
+    moveInvoiceTermService.updateMoveLineDueDates(move);
 
     this.completeMoveLines(move);
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
     this.updateValidateStatus(move, dayBookMode);
+
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      this.generateFixedAssetMoveLine(move);
+    }
+
     moveRepository.save(move);
 
     if (updateCustomerAccount) {
@@ -483,7 +522,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                 || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE))) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
-      this.generateFixedAssetMoveLine(move);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     }

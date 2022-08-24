@@ -525,7 +525,8 @@
       </field>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
-        form-view="bank-details-form" grid-view="bank-details-grid"/>
+        form-view="bank-details-form" grid-view="bank-details-grid"
+        requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -538,6 +539,7 @@
           <viewer>{{record.addressStr}}</viewer>
 
         </field>
+        <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
 
       <field name="supplierInvoiceNb"
@@ -554,8 +556,8 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+      <field name="originDate" showIf="$contains([1,2], operationTypeSelect)"
+        requiredIf="$contains([1,2], operationTypeSelect) &amp;&amp; (statusSelect &lt;= 2 || operationSubTypeSelect == 2)"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
@@ -1152,12 +1154,14 @@ InvoiceSet.length > 0))"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
-        form-view="bank-details-form" grid-view="bank-details-grid"/>
+        form-view="bank-details-form" grid-view="bank-details-grid"
+        requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+      <field name="paymentMode.typeSelect" hidden="true"/>
     </panel>
 
     <panel-tabs name="invoiceDetails">

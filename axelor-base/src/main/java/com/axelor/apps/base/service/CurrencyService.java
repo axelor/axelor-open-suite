@@ -138,10 +138,10 @@ public class CurrencyService {
 
     for (CurrencyConversionLine ccl : currencyConversionLineList) {
 
-      String cclStartCode = ccl.getStartCurrency().getCode();
-      String cclEndCode = ccl.getEndCurrency().getCode();
-      String startCode = startCurrency.getCode();
-      String endCode = endCurrency.getCode();
+      String cclStartCode = ccl.getStartCurrency().getCodeISO();
+      String cclEndCode = ccl.getEndCurrency().getCodeISO();
+      String startCode = startCurrency.getCodeISO();
+      String endCode = endCurrency.getCodeISO();
       LocalDate fromDate = ccl.getFromDate();
       LocalDate toDate = ccl.getToDate();
 
@@ -263,15 +263,15 @@ public class CurrencyService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CURRENCY_3),
-            startCurrency.getCode(),
-            endCurrency.getCode(),
+            startCurrency.getCodeISO(),
+            endCurrency.getCodeISO(),
             existingFromDate);
       } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CURRENCY_11),
-            startCurrency.getCode(),
-            endCurrency.getCode());
+            startCurrency.getCodeISO(),
+            endCurrency.getCodeISO());
       }
     }
   }

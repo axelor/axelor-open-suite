@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -46,16 +47,8 @@ public class InvoiceToolService {
   public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-      return invoiceDate;
-    }
-    if (invoice.getInvoiceTermList().size() == 1) {
-      return invoice.getInvoiceTermList().get(0).getDueDate();
-    }
-    return invoice.getInvoiceTermList().stream()
-        .map(invoiceTerm -> invoiceTerm.getDueDate())
-        .max(Comparator.comparing(LocalDate::toEpochDay))
-        .orElse(null);
+    return Beans.get(InvoiceTermService.class)
+        .getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
   @CallMethod
@@ -317,5 +310,27 @@ public class InvoiceToolService {
     copy.setFinancialDiscountRate(BigDecimal.ZERO);
     copy.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
     copy.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    copy.setOldMove(null);
+    copy.setBillOfExchangeBlockingOk(false);
+    copy.setBillOfExchangeBlockingReason(null);
+    copy.setBillOfExchangeBlockingToDate(null);
+    copy.setBillOfExchangeBlockingByUser(null);
+  }
+
+  /**
+   * Returns the functional origin of the invoice
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  public static int getFunctionalOrigin(Invoice invoice) throws AxelorException {
+    int functionalOrigin = 0;
+    if (isPurchase(invoice)) {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+    } else {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
+    }
+    return functionalOrigin;
   }
 }

@@ -16,7 +16,7 @@
     </toolbar>
     <panel name="testingPanel" title="Testing"
       if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
-      <field name="today"/>
+      <field name="todayDateT"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="configurationPanel" title="Configuration" colSpan="12">

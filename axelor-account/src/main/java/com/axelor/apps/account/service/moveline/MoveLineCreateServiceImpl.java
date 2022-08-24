@@ -30,11 +30,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -71,8 +70,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected CompanyConfigService companyConfigService;
   protected CurrencyService currencyService;
   protected FiscalPositionAccountService fiscalPositionAccountService;
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
-  protected AnalyticMoveLineService analyticMoveLineService;
+  protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected TaxAccountService taxAccountService;
   protected InvoiceService invoiceService;
   protected MoveLineToolService moveLineToolService;
@@ -86,8 +84,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       CompanyConfigService companyConfigService,
       CurrencyService currencyService,
       FiscalPositionAccountService fiscalPositionAccountService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      AnalyticMoveLineService analyticMoveLineService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       TaxAccountService taxAccountService,
       InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
@@ -98,8 +95,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
-    this.analyticMoveLineService = analyticMoveLineService;
+    this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.taxAccountService = taxAccountService;
     this.invoiceService = invoiceService;
     this.moveLineToolService = moveLineToolService;
@@ -254,11 +250,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
-    if (ObjectUtils.isEmpty(account)
-        || ObjectUtils.notEmpty(account) && !account.getUseForPartnerBalance()) {
-      partner = null;
-    }
-
     return new MoveLine(
         move,
         partner,
@@ -328,9 +319,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       boolean isDebitCustomer)
       throws AxelorException {
 
-    log.debug(
-        "Création des lignes d'écriture comptable de la facture/l'avoir {}",
-        invoice.getInvoiceId());
+    log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
@@ -385,7 +374,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
         log.debug(
-            "Traitement de la ligne de facture : compte comptable = {}, montant = {}",
+            "Processing of the invoice line : account = {}, amount = {}",
             new Object[] {account.getName(), companyExTaxTotal});
 
         if (invoiceLine.getAnalyticDistributionTemplate() == null
@@ -433,15 +422,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
-                analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
-            analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-            analyticMoveLine.setInvoiceLine(null);
-            analyticMoveLine.setAccount(moveLine.getAccount());
-            analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-            analyticMoveLineService.updateAnalyticMoveLine(
-                analyticMoveLine,
-                moveLine.getDebit().add(moveLine.getCredit()),
-                moveLine.getDate());
+                analyticMoveLineGenerateRealService.createFromForecast(
+                    invoiceAnalyticMoveLine, moveLine);
             moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
           }
         } else {
@@ -728,15 +710,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (newAccount == null) {
-
-      if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-          || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
-      } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
-      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
-      }
+      newAccount = this.getTaxAccount(taxLine, company, accountType);
     }
 
     if (newAccount == null) {
@@ -786,11 +760,31 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+
+    if (newOrUpdatedMoveLine.getPartner() == null) {
+      newOrUpdatedMoveLine.setPartner(move.getPartner());
+    }
+
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
+
     return newOrUpdatedMoveLine;
+  }
+
+  protected Account getTaxAccount(TaxLine taxLine, Company company, String accountType) {
+    switch (accountType) {
+      case AccountTypeRepository.TYPE_DEBT:
+      case AccountTypeRepository.TYPE_CHARGE:
+        return taxAccountService.getAccount(taxLine.getTax(), company, true, false);
+      case AccountTypeRepository.TYPE_INCOME:
+        return taxAccountService.getAccount(taxLine.getTax(), company, false, false);
+      case AccountTypeRepository.TYPE_ASSET:
+        return taxAccountService.getAccount(taxLine.getTax(), company, true, true);
+      default:
+        return null;
+    }
   }
 
   protected MoveLine createMoveLine(LocalDate date, TaxLine taxLine, Account account, Move move)

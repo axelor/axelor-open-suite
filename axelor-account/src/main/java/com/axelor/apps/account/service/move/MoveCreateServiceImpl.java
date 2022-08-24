@@ -265,7 +265,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     if (companyCurrency != null) {
       move.setCompanyCurrency(companyCurrency);
-      move.setCompanyCurrencyCode(companyCurrency.getCode());
+      move.setCompanyCurrencyCode(companyCurrency.getCodeISO());
     }
 
     if (currency == null) {
@@ -273,7 +273,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
     if (currency != null) {
       move.setCurrency(currency);
-      move.setCurrencyCode(currency.getCode());
+      move.setCurrencyCode(currency.getCodeISO());
     }
     move.setOrigin(origin);
     move.setDescription(description);

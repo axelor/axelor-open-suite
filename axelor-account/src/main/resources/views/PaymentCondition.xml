@@ -12,12 +12,13 @@
 
   <form name="payment-condition-form" title="Payment Condition"
     model="com.axelor.apps.account.db.PaymentCondition"
+    onLoad="action-payment-condition-attrs-on-load"
     onSave="action-payment-condition-validate-payment-percentage">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="isFree" colSpan="3"/>
-      <panel-related colSpan="12" name="paymentConditionLineListPanel"
+      <panel-related colSpan="12" name="paymentConditionLineListPanel" canMove="true"
         title="Payment condition lines" field="paymentConditionLineList"
         grid-view="payment-condition-line-grid" form-view="payment-condition-line-form"/>
       <field name="advancePaymentNeeded"
@@ -35,4 +36,9 @@
     <error message="The sum of line percentages (payment percentage) must be equal to 100"
       if="eval: paymentConditionLineList?.collect(){ it?.paymentPercentage }?.sum() != 100"/>
   </action-validate>
+
+  <action-attrs name="action-payment-condition-attrs-on-load">
+    <attribute name="readonly" for="mainPanel"
+      expr="eval: __repo__(Invoice).all().filter('self.paymentCondition.id = ?1', id).fetchOne() != null || __repo__(Move).all().filter('self.paymentCondition.id = ?1', id).fetchOne() != null"/>
+  </action-attrs>
 </object-views>

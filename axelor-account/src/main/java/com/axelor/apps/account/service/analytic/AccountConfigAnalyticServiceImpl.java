@@ -89,7 +89,7 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
     for (AnalyticAxisByCompany analyticAxisByCompanyInit : initialList) {
       for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
-        if (analyticAxisByCompanyInit.getOrderSelect() == analyticAxisByCompany.getOrderSelect()
+        if (analyticAxisByCompanyInit.getSequence() == analyticAxisByCompany.getSequence()
             && !analyticAxisByCompanyInit
                 .getAnalyticAxis()
                 .equals(analyticAxisByCompany.getAnalyticAxis())) {

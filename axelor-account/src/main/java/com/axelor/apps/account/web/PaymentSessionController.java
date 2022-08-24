@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -24,6 +25,7 @@ import com.axelor.apps.account.service.PaymentSessionCancelService;
 import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionValidateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
@@ -35,6 +37,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -217,6 +220,44 @@ public class PaymentSessionController {
           Beans.get(PaymentSessionValidateService.class).isEmpty(paymentSession));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+
+      String bankDetailsIds =
+          Beans.get(PaymentSessionService.class).getBankDetails(paymentSession).stream()
+              .map(BankDetails::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
+
+      response.setAttr(
+          "bankDetails",
+          "domain",
+          String.format("self.id IN (%s)", bankDetailsIds.isEmpty() ? "0" : bankDetailsIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setJournalDomain(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+
+      String journalIds =
+          Beans.get(PaymentSessionService.class).getJournals(paymentSession).stream()
+              .map(Journal::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
+
+      response.setAttr(
+          "journal",
+          "domain",
+          String.format("self.id IN (%s)", journalIds.isEmpty() ? "0" : journalIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -181,11 +181,8 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     throw new AxelorException(
         paymentMode,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get("Company")
-            + " : %s, "
-            + I18n.get("Payment mode")
-            + " : %s: "
-            + I18n.get(IExceptionMessage.PAYMENT_MODE_1),
+        I18n.get(IExceptionMessage.PAYMENT_MODE_CASH_ACCOUNT),
+        global ? String.format("%s ", I18n.get("global")) : "",
         company.getName(),
         paymentMode.getName());
   }

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
@@ -144,14 +145,19 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
-        move.setCurrencyCode(move.getCurrency().getCode());
+        move.setCurrencyCode(move.getCurrency().getCodeISO());
       }
+
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
         for (MoveLine moveLine : moveLineList) {
@@ -164,6 +170,18 @@ public class MoveManagementRepository extends MoveRepository {
             }
           }
           moveLineControlService.controlAccountingAccount(moveLine);
+
+          if (!moveLine.getAccount().getHasInvoiceTerm()
+              && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+            if (moveLine.getInvoiceTermList().stream()
+                .allMatch(invoiceTermService::isNotReadonly)) {
+              moveLine.clearInvoiceTermList();
+            } else {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_INCONSISTENCY,
+                  I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));
+            }
+          }
         }
       }
 

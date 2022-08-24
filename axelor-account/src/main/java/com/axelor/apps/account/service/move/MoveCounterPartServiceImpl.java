@@ -34,12 +34,14 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
   protected PaymentModeService paymentModeService;
@@ -50,6 +52,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
       MoveLineCreateService moveLineCreateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
       AccountManagementAccountService accountManagementAccountService,
@@ -57,6 +60,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.moveLineCreateService = moveLineCreateService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
     this.accountManagementAccountService = accountManagementAccountService;
@@ -65,12 +69,20 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void generateCounterpartMoveLine(Move move) throws AxelorException {
+  public void generateCounterpartMoveLine(Move move, LocalDate singleTermDueDate)
+      throws AxelorException {
     MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
     if (counterPartMoveLine == null) {
       return;
     }
     move.addMoveLineListItem(counterPartMoveLine);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
+        counterPartMoveLine, singleTermDueDate, true);
+
+    if (singleTermDueDate != null) {
+      counterPartMoveLine.setDueDate(singleTermDueDate);
+    }
+
     moveRepository.save(move);
   }
 
@@ -98,6 +110,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             move.getMoveLineList().size() + 1,
             move.getOrigin(),
             move.getDescription());
+
+    moveLine.setDueDate(move.getOriginDate());
     moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
     moveLine.setDescription(move.getDescription());

@@ -25,8 +25,8 @@
       <field name="fixedAssetType" form-view="fixed-asset-type-form"
         grid-view="fixed-asset-type-grid"
         onChange="action-fixed-asset-category-group-onchange-fixed-asset-type"/>
-      <field name="fixedAssetType.technicalTypeSelect" hidden="true"/>
       <field name="isValidateFixedAsset"/>
+      <field name="fixedAssetType.technicalTypeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="depreciationPanel" title="Depreciation method" colspan="12">

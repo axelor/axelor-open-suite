@@ -19,11 +19,14 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -32,7 +35,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -76,35 +82,23 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public void setBankDetails(PaymentSession paymentSession) {
-    if (paymentSession.getCompany() != null
-        && paymentSession.getPaymentMode() != null
-        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
-      Optional<BankDetails> bankDetails =
-          paymentSession.getPaymentMode().getAccountManagementList().stream()
-              .filter(
-                  accountManagement ->
-                      paymentSession.getCompany().equals(accountManagement.getCompany())
-                          && accountManagement.getBankDetails() != null)
-              .map(AccountManagement::getBankDetails)
-              .findFirst();
-      bankDetails.ifPresent(paymentSession::setBankDetails);
+    List<BankDetails> bankDetailsList = this.getBankDetails(paymentSession);
+
+    if (CollectionUtils.isNotEmpty(bankDetailsList)) {
+      paymentSession.setBankDetails(bankDetailsList.get(0));
+    } else {
+      paymentSession.setBankDetails(null);
     }
   }
 
   @Override
   public void setJournal(PaymentSession paymentSession) {
-    if (paymentSession.getCompany() != null
-        && paymentSession.getPaymentMode() != null
-        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
-      Optional<Journal> journal =
-          paymentSession.getPaymentMode().getAccountManagementList().stream()
-              .filter(
-                  accountManagement ->
-                      paymentSession.getCompany().equals(accountManagement.getCompany())
-                          && accountManagement.getJournal() != null)
-              .map(AccountManagement::getJournal)
-              .findFirst();
-      journal.ifPresent(paymentSession::setJournal);
+    List<Journal> journalList = this.getJournals(paymentSession);
+
+    if (CollectionUtils.isNotEmpty(journalList)) {
+      paymentSession.setJournal(journalList.get(0));
+    } else {
+      paymentSession.setJournal(null);
     }
   }
 
@@ -131,5 +125,45 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("paymentSession", paymentSession.getId())
             .count()
         > 0;
+  }
+
+  @Override
+  public List<BankDetails> getBankDetails(PaymentSession paymentSession) {
+    Company company = paymentSession.getCompany();
+    PaymentMode paymentMode = paymentSession.getPaymentMode();
+
+    if (paymentMode == null || CollectionUtils.isEmpty(paymentMode.getAccountManagementList())) {
+      return new ArrayList<>();
+    }
+
+    return paymentMode.getAccountManagementList().stream()
+        .filter(it -> Objects.equals(company, it.getCompany()))
+        .map(AccountManagement::getBankDetails)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Journal> getJournals(PaymentSession paymentSession) {
+    Company company = paymentSession.getCompany();
+    BankDetails bankDetails = paymentSession.getBankDetails();
+    PaymentMode paymentMode = paymentSession.getPaymentMode();
+
+    if (bankDetails == null
+        || paymentMode == null
+        || CollectionUtils.isEmpty(paymentMode.getAccountManagementList())) {
+      return new ArrayList<>();
+    }
+
+    return paymentMode.getAccountManagementList().stream()
+        .filter(
+            it ->
+                Objects.equals(company, it.getCompany())
+                    && Objects.equals(bankDetails, it.getBankDetails()))
+        .map(AccountManagement::getJournal)
+        .filter(
+            it ->
+                it.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+        .collect(Collectors.toList());
   }
 }

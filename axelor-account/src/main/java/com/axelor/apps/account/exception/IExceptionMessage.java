@@ -60,6 +60,8 @@ public interface IExceptionMessage {
       /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
       /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
+  static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
+      /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/
@@ -290,6 +292,15 @@ public interface IExceptionMessage {
 
   static final String MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE = /*$$(*/
       "The sum of all invoice terms percentages is not equal to 100." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
+      "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
+      "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
+
+  static final String MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE = /*$$(*/
+      "At least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually." /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
   static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
       "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
@@ -839,6 +850,9 @@ public interface IExceptionMessage {
   static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
+  static final String PAYMENT_MODE_CASH_ACCOUNT = /*$$(*/
+      "You must configure a %scash account for the company %s and the payment mode %s" /*)*/;
+
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
       "%s : Payment voucher n° %s, the paid amount should be positive" /*)*/;
@@ -1221,9 +1235,6 @@ public interface IExceptionMessage {
   static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
       "%d accounting move(s) successfully generated." /*)*/;
 
-  static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
-      "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
-
   static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
       "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;
 
@@ -1307,9 +1318,6 @@ public interface IExceptionMessage {
   static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
-  static final String MOVE_FUNCTIONAL_ORIGIN_MISSING = /*$$(*/
-      "The functional origin cannot be empty for the move %s" /*)*/;
-
   static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 
@@ -1336,4 +1344,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE = /*$$(*/
       "Watch out, a record with same accounting voucher/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific accounting voucher/reference." /*)*/;
+
+  static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
+      "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
 }

@@ -9,6 +9,7 @@
 
     <integer name="typeSelect" title="Type"
       selection="account.payment.condition.type.select"/>
+    <integer name="sequence" title="Nb"/>
     <integer name="periodTypeSelect" title="Period type"
       selection="account.payment.condition.period.type.select" default="1"/>
     <integer name="paymentTime" title="Payment period (N days / Month)"/>
