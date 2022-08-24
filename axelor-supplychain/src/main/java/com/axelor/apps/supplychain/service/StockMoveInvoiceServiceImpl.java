@@ -65,16 +65,16 @@ import java.util.stream.Collectors;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-  private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
-  private InvoiceRepository invoiceRepository;
-  private SaleOrderRepository saleOrderRepo;
-  private PurchaseOrderRepository purchaseOrderRepo;
-  private StockMoveLineRepository stockMoveLineRepository;
-  private InvoiceLineRepository invoiceLineRepository;
-  private SupplyChainConfigService supplyChainConfigService;
-  private AppSupplychainService appSupplychainService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected InvoiceRepository invoiceRepository;
+  protected SaleOrderRepository saleOrderRepo;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
