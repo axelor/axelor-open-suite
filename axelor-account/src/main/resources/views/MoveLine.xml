@@ -411,17 +411,18 @@
         </viewer>
       </field>
       <panel name="datesPanel" colSpan="12">
-        <field name="date" onChange="account-move-line-group-date-onchange"/>
+        <field name="date" onChange="account-move-line-group-date-onchange" readonly="true"
+          readonlyIf="move.invoice != null"/>
         <field name="dueDate" showIf="dueDate"/>
-        <field name="originDate"/>
+        <field name="originDate" readonly="true" readonlyIf="move.invoice != null"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-attrs-domain-partner" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"/>
+        onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonly="true"
+        readonlyIf="amountPaid &gt; 0 || move.invoice != null"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
@@ -436,16 +437,18 @@
       <field name="amountRemaining" colSpan="3"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
-      <field name="origin" colSpan="6"/>
+      <field name="origin" colSpan="6" readonly="true" readonlyIf="move.invoice != null"/>
       <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"
         colSpan="3"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
         colSpan="3"/>
-      <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"/>
+      <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
+        readonly="true" readonlyIf="move.invoice != null"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
       <field name="taxAmount" hidden="true"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
+      <field name="move.invoice" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-analytic-distribution-move-line-form"/>
