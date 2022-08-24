@@ -43,10 +43,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
 
-  private AppBusinessProjectService appBusinessProjectService;
+  protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public SaleOrderInvoiceProjectServiceImpl(
@@ -121,5 +122,26 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       }
     }
     return invoiceLines;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice generateInvoice(
+      SaleOrder saleOrder,
+      int operationSelect,
+      BigDecimal amount,
+      boolean isPercent,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
+      throws AxelorException {
+    Invoice invoice =
+        super.generateInvoice(
+            saleOrder, operationSelect, amount, isPercent, qtyToInvoiceMap, timetableIdList);
+    Project project = saleOrder.getProject();
+    if (project != null) {
+      invoice.setProject(project);
+    }
+    invoiceRepo.save(invoice);
+    return invoice;
   }
 }
