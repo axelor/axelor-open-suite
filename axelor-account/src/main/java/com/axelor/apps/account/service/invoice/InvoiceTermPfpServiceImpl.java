@@ -182,20 +182,22 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Transactional(rollbackOn = {Exception.class})
   protected void createPfpInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
-    BigDecimal percentage;
+    BigDecimal total;
     int sequence;
 
     if (invoice != null) {
-      percentage = invoiceTermService.computeCustomizedPercentage(amount, invoice.getInTaxTotal());
+      total = invoice.getInTaxTotal();
       sequence = invoice.getInvoiceTermList().size() + 1;
     } else {
-      percentage =
+      total =
           originalInvoiceTerm
               .getMoveLine()
               .getCredit()
               .max(originalInvoiceTerm.getMoveLine().getDebit());
       sequence = originalInvoiceTerm.getMoveLine().getInvoiceTermList().size() + 1;
     }
+
+    BigDecimal percentage = invoiceTermService.computeCustomizedPercentage(amount, total);
 
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
