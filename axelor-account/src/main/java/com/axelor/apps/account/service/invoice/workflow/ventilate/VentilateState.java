@@ -148,8 +148,14 @@ public class VentilateState extends WorkflowInvoice {
       }
       invoice.setPartnerAccount(account);
     }
+
     Account partnerAccount = invoice.getPartnerAccount();
-    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
+
+    if (!partnerAccount.getHasInvoiceTerm()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
+    } else if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
