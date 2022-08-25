@@ -206,6 +206,18 @@
       search="self.code = :purchFixedAssetsTaxVatSystem2Account_code and self.company.importId = :company_id"
       to="purchFixedAssetsTaxVatSystem2Account" update="true"
       if="purchFixedAssetsTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
   </input>
 
   <input file="account_cfonbConfig.csv" separator=";"
