@@ -40,7 +40,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount() != null
-            && moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getAccount().getHasInvoiceTerm()
             && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
           moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
         }
