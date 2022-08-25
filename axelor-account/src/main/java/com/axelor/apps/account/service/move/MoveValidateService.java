@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -55,6 +56,7 @@ public class MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineControlService moveLineControlService;
+  protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
@@ -66,6 +68,7 @@ public class MoveValidateService {
   @Inject
   public MoveValidateService(
       MoveLineControlService moveLineControlService,
+      MoveLineToolService moveLineToolService,
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
@@ -74,6 +77,7 @@ public class MoveValidateService {
       PartnerRepository partnerRepository,
       AppBaseService appBaseService) {
     this.moveLineControlService = moveLineControlService;
+    this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
@@ -198,6 +202,8 @@ public class MoveValidateService {
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
         moveLineControlService.validateMoveLine(moveLine);
+
+        moveLineToolService.checkDateInPeriod(move, moveLine);
       }
       this.validateWellBalancedMove(move);
     }
