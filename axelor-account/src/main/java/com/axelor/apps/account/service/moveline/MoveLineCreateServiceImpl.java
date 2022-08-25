@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
@@ -745,58 +746,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (newAccount == null) {
-      if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-          || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-        AccountingSituation accountingSituation =
-            accountingSituationRepository.findByCompanyAndPartner(company, partner);
-        int vatSystemSelect = 0;
-        if (accountingSituation != null) {
-          if (accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-            vatSystemSelect = moveLine.getVatSystemSelect();
-          } else if (accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_DELIVERY) {
-            vatSystemSelect = 1;
-          }
-        }
-        newAccount =
-            taxAccountService.getAccount(
-                taxLine.getTax(), company, move.getJournal(), vatSystemSelect, false);
-
-      } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-        AccountingSituation accountingSituation =
-            accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
-        int vatSystemSelect = 0;
-        if (accountingSituation != null) {
-          if (accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-            vatSystemSelect = moveLine.getVatSystemSelect();
-          } else if (accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_DELIVERY) {
-            vatSystemSelect = 1;
-          }
-        }
-        newAccount =
-            taxAccountService.getAccount(
-                taxLine.getTax(), company, move.getJournal(), vatSystemSelect, false);
-      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-
-        AccountingSituation accountingSituation =
-            accountingSituationRepository.findByCompanyAndPartner(company, partner);
-        int vatSystemSelect = 0;
-        if (accountingSituation != null) {
-          if (accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-            vatSystemSelect = moveLine.getVatSystemSelect();
-          } else if (accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_DELIVERY) {
-            vatSystemSelect = 1;
-          }
-        }
-        newAccount =
-            taxAccountService.getAccount(
-                taxLine.getTax(), company, move.getJournal(), vatSystemSelect, true);
-      }
+      newAccount =
+          this.getTaxAccount(taxLine, company, accountType, move.getJournal(), partner, moveLine);
     }
 
     if (newAccount == null) {
@@ -859,18 +810,65 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return newOrUpdatedMoveLine;
   }
 
-  protected Account getTaxAccount(TaxLine taxLine, Company company, String accountType) {
-    switch (accountType) {
-      case AccountTypeRepository.TYPE_DEBT:
-      case AccountTypeRepository.TYPE_CHARGE:
-        return taxAccountService.getAccount(taxLine.getTax(), company, true, false);
-      case AccountTypeRepository.TYPE_INCOME:
-        return taxAccountService.getAccount(taxLine.getTax(), company, false, false);
-      case AccountTypeRepository.TYPE_ASSET:
-        return taxAccountService.getAccount(taxLine.getTax(), company, true, true);
-      default:
-        return null;
+  protected Account getTaxAccount(
+      TaxLine taxLine,
+      Company company,
+      String accountType,
+      Journal journal,
+      Partner partner,
+      MoveLine moveLine)
+      throws AxelorException {
+    Account newAccount = null;
+    if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+        || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, partner);
+      int vatSystemSelect = 0;
+      if (accountingSituation != null) {
+        if (accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+          vatSystemSelect = moveLine.getVatSystemSelect();
+        } else if (accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_DELIVERY) {
+          vatSystemSelect = 1;
+        }
+      }
+      newAccount =
+          taxAccountService.getAccount(taxLine.getTax(), company, journal, vatSystemSelect, false);
+
+    } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
+      int vatSystemSelect = 0;
+      if (accountingSituation != null) {
+        if (accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+          vatSystemSelect = moveLine.getVatSystemSelect();
+        } else if (accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_DELIVERY) {
+          vatSystemSelect = 1;
+        }
+      }
+      newAccount =
+          taxAccountService.getAccount(taxLine.getTax(), company, journal, vatSystemSelect, false);
+    } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, partner);
+      int vatSystemSelect = 0;
+      if (accountingSituation != null) {
+        if (accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+          vatSystemSelect = moveLine.getVatSystemSelect();
+        } else if (accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_DELIVERY) {
+          vatSystemSelect = 1;
+        }
+      }
+      newAccount =
+          taxAccountService.getAccount(taxLine.getTax(), company, journal, vatSystemSelect, true);
     }
+    return newAccount;
   }
 
   protected MoveLine createMoveLine(LocalDate date, TaxLine taxLine, Account account, Move move)
