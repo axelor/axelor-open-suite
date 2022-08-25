@@ -934,6 +934,9 @@ public interface IExceptionMessage {
   static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
 
+  static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
+      "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
+
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
