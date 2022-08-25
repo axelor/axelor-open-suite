@@ -78,6 +78,24 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @throws AxelorException
    */
   public void closeYearProcess(Year year) throws AxelorException {
+    boolean hasPreviousYearOpened =
+        yearRepository
+                .all()
+                .filter(
+                    "self.toDate < :fromDate AND self.statusSelect = :opened AND self.typeSelect = :fiscalYear")
+                .bind("fromDate", year.getFromDate())
+                .bind("opened", YearRepository.STATUS_OPENED)
+                .bind("fiscalYear", YearRepository.TYPE_FISCAL)
+                .count()
+            > 0;
+    if (hasPreviousYearOpened) {
+      throw new AxelorException(
+          year,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.YEAR_2),
+          year.getName());
+    }
+
     year = yearRepository.find(year.getId());
 
     for (Period period : year.getPeriodList()) {

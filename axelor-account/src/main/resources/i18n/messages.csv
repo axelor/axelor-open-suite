@@ -593,6 +593,7 @@
 "Aged Balance",,,
 "Alarm",,,
 "All budgets",,,
+"All previous fiscal years must be closed before closing %s.",,,
 "Allocate per partner",,,
 "Allocated amount",,,
 "Allow accounting daybook",,,
