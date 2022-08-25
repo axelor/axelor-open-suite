@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -78,6 +80,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected MoveLineConsolidateService moveLineConsolidateService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineTaxService moveLineTaxService;
+  protected AccountingSituationRepository accountingSituationRepository;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -91,7 +94,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineConsolidateService moveLineConsolidateService,
       InvoiceTermService invoiceTermService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      AccountingSituationRepository accountingSituationRepository) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -103,6 +107,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineTaxService = moveLineTaxService;
+    this.accountingSituationRepository = accountingSituationRepository;
   }
 
   /**
@@ -339,6 +344,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           I18n.get(IExceptionMessage.MOVE_LINE_2),
           invoice.getInvoiceId());
     }
+    AccountingSituation accountingSituation = null;
+    if (isPurchase) {
+      accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
+    } else {
+      accountingSituation = accountingSituationRepository.findByCompanyAndPartner(company, partner);
+    }
 
     String origin = invoice.getInvoiceId();
 
@@ -462,7 +474,18 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         MoveLine moveLine;
         if (hasFixedAssets
             && invoiceLineTax.getCompanySubTotalOfFixedAssets().compareTo(BigDecimal.ZERO) != 0) {
-          account = taxAccountService.getAccount(tax, company, isPurchase, true);
+          int vatSystemSelect = 0;
+          if (accountingSituation != null) {
+            if (accountingSituation.getVatSystemSelect()
+                == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+              vatSystemSelect = invoiceLineTax.getVatSystemSelect();
+            } else if (accountingSituation.getVatSystemSelect()
+                == AccountingSituationRepository.VAT_DELIVERY) {
+              vatSystemSelect = 1;
+            }
+          }
+          account =
+              taxAccountService.getAccount(tax, company, move.getJournal(), vatSystemSelect, true);
           if (account == null) {
             throw new AxelorException(
                 move,
@@ -513,7 +536,18 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         if (hasOtherAssets
             && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO)
                 != 0) {
-          account = taxAccountService.getAccount(tax, company, isPurchase, false);
+          int vatSystemSelect = 0;
+          if (accountingSituation != null) {
+            if (accountingSituation.getVatSystemSelect()
+                == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+              vatSystemSelect = invoiceLineTax.getVatSystemSelect();
+            } else if (accountingSituation.getVatSystemSelect()
+                == AccountingSituationRepository.VAT_DELIVERY) {
+              vatSystemSelect = 1;
+            }
+          }
+          account =
+              taxAccountService.getAccount(tax, company, move.getJournal(), vatSystemSelect, false);
           if (account == null) {
             throw new AxelorException(
                 move,
@@ -690,6 +724,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     BigDecimal credit = moveLine.getCredit();
     LocalDate date = moveLine.getDate();
     Company company = move.getCompany();
+    Partner partner = move.getPartner();
     Account newAccount = null;
 
     FiscalPosition fiscalPosition = null;
@@ -710,7 +745,58 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (newAccount == null) {
-      newAccount = this.getTaxAccount(taxLine, company, accountType);
+      if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+          || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
+        AccountingSituation accountingSituation =
+            accountingSituationRepository.findByCompanyAndPartner(company, partner);
+        int vatSystemSelect = 0;
+        if (accountingSituation != null) {
+          if (accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+            vatSystemSelect = moveLine.getVatSystemSelect();
+          } else if (accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_DELIVERY) {
+            vatSystemSelect = 1;
+          }
+        }
+        newAccount =
+            taxAccountService.getAccount(
+                taxLine.getTax(), company, move.getJournal(), vatSystemSelect, false);
+
+      } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
+        AccountingSituation accountingSituation =
+            accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
+        int vatSystemSelect = 0;
+        if (accountingSituation != null) {
+          if (accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+            vatSystemSelect = moveLine.getVatSystemSelect();
+          } else if (accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_DELIVERY) {
+            vatSystemSelect = 1;
+          }
+        }
+        newAccount =
+            taxAccountService.getAccount(
+                taxLine.getTax(), company, move.getJournal(), vatSystemSelect, false);
+      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+
+        AccountingSituation accountingSituation =
+            accountingSituationRepository.findByCompanyAndPartner(company, partner);
+        int vatSystemSelect = 0;
+        if (accountingSituation != null) {
+          if (accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+            vatSystemSelect = moveLine.getVatSystemSelect();
+          } else if (accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_DELIVERY) {
+            vatSystemSelect = 1;
+          }
+        }
+        newAccount =
+            taxAccountService.getAccount(
+                taxLine.getTax(), company, move.getJournal(), vatSystemSelect, true);
+      }
     }
 
     if (newAccount == null) {

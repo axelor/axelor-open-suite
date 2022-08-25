@@ -82,11 +82,13 @@ public interface AccountManagementAccountService extends AccountManagementServic
   public Account getSaleVatRegulationAccount(
       AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
 
-  public Account getFinancialDiscountAccount(
+  public Account getTaxAccount(
       AccountManagement accountManagement,
       Tax tax,
       Company company,
       Journal journal,
-      int vatSystemSelect)
+      int vatSystemSelect,
+      boolean isFixedAssets,
+      boolean isFinancialDiscount)
       throws AxelorException;
 }

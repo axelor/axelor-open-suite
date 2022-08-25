@@ -97,6 +97,7 @@
     </extend>
     <extend target="//panel[@name='purchaseConfig2Panel']/field[@name='purchaseAccount']">
       <insert position="after">
+        <spacer colSpan="6"/>
         <field name="purchaseTaxVatSystem1Account"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
@@ -111,6 +112,7 @@
     <extend
       target="//panel[@name='fixedAssetsConfig2Panel']/field[@name='purchFixedAssetsAccount']">
       <insert position="after">
+        <spacer colSpan="6"/>
         <field name="purchFixedAssetsTaxVatSystem1Account"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
@@ -124,6 +126,7 @@
     </extend>
     <extend target="//panel[@name='saleConfig2Panel']/field[@name='saleAccount']">
       <insert position="after">
+        <spacer colSpan="6"/>
         <field name="saleTaxVatSystem1Account"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"

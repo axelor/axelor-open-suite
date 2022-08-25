@@ -651,12 +651,14 @@ public class PaymentVoucherConfirmService {
             moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
-                accountManagementAccountService.getFinancialDiscountAccount(
+                accountManagementAccountService.getTaxAccount(
                     accountManagement,
                     financialDiscountTax,
                     company,
                     move.getJournal(),
-                    financialDiscountMoveLine.getVatSystemSelect()),
+                    financialDiscountMoveLine.getVatSystemSelect(),
+                    false,
+                    true),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),
                 isDebitToPay,
                 paymentDate,

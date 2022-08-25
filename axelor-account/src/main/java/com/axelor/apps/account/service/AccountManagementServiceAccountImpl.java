@@ -270,72 +270,108 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   }
 
   @Override
-  public Account getFinancialDiscountAccount(
+  public Account getTaxAccount(
       AccountManagement accountManagement,
       Tax tax,
       Company company,
       Journal journal,
-      int vatSystemSelect)
+      int vatSystemSelect,
+      boolean isFixedAssets,
+      boolean isFinancialDiscount)
       throws AxelorException {
     if (accountManagement != null) {
-      Account financialDiscountAccount = null;
-      if (journal != null
-          && journal.getJournalType().getTechnicalTypeSelect()
-              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-        if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
-          financialDiscountAccount = accountManagement.getAllowedFinDiscountTaxVatSystem1Account();
-          if (financialDiscountAccount == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    IExceptionMessage
-                        .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX),
-                tax.getCode(),
-                company.getCode());
+      Account account = null;
+      String error = IExceptionMessage.ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX;
+      if (!isFixedAssets && !isFinancialDiscount) {
+        if (journal != null
+            && (journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
+                || journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                || journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER)) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getSaleTaxVatSystem1Account();
+            error = IExceptionMessage.ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
           }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getSaleTaxVatSystem2Account();
+            error = IExceptionMessage.ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        } else if (journal != null
+            && journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getPurchaseTaxVatSystem1Account();
+            error =
+                IExceptionMessage.ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+          }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getPurchaseTaxVatSystem2Account();
+            error =
+                IExceptionMessage.ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        }
+
+        return account;
+
+      } else if (isFixedAssets) {
+        if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+          account = accountManagement.getPurchFixedAssetsTaxVatSystem1Account();
+          error =
+              IExceptionMessage
+                  .ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
         }
         if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
-          financialDiscountAccount = accountManagement.getAllowedFinDiscountTaxVatSystem2Account();
-          if (financialDiscountAccount == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    IExceptionMessage
-                        .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX),
-                tax.getCode(),
-                company.getCode());
-          }
+          account = accountManagement.getPurchFixedAssetsTaxVatSystem2Account();
+          error =
+              IExceptionMessage
+                  .ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
         }
-      } else {
-        if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
-          financialDiscountAccount = accountManagement.getObtainedFinDiscountTaxVatSystem1Account();
-          if (financialDiscountAccount == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    IExceptionMessage
-                        .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX),
-                tax.getCode(),
-                company.getCode());
+      } else if (isFinancialDiscount) {
+        if (journal != null
+            && journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getAllowedFinDiscountTaxVatSystem1Account();
+            error =
+                IExceptionMessage
+                    .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
           }
-        }
-        if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
-          financialDiscountAccount = accountManagement.getObtainedFinDiscountTaxVatSystem2Account();
-          if (financialDiscountAccount == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    IExceptionMessage
-                        .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX),
-                tax.getCode(),
-                company.getCode());
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getAllowedFinDiscountTaxVatSystem2Account();
+            error =
+                IExceptionMessage
+                    .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        } else if (journal != null
+            && journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getObtainedFinDiscountTaxVatSystem1Account();
+            error =
+                IExceptionMessage
+                    .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+          }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getObtainedFinDiscountTaxVatSystem2Account();
+            error =
+                IExceptionMessage
+                    .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
           }
         }
       }
 
-      return financialDiscountAccount;
-    }
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(error),
+            tax.getCode(),
+            company.getCode());
+      }
 
+      return account;
+    }
     return null;
   }
 }
