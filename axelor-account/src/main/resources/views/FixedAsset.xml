@@ -240,7 +240,7 @@
         onChange="action-method-account-fixed-asset-compute-first-depreciation-date, action-fixed-asset-validate-check-first-depreciation-date"
         required="true"/>
       <field name="firstServiceDate"
-        onChange="action-method-account-fixed-asset-compute-first-depreciation-date"/>
+        onChange="action-method-account-fixed-asset-compute-first-depreciation-date" required="true"/>
       <field name="firstDepreciationDate"
         onChange="action-fixed-asset-validate-check-first-depreciation-date" required="true"/>
     </panel>
