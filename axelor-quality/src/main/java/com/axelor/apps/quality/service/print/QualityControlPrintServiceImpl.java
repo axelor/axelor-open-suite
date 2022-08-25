@@ -18,6 +18,7 @@
 package com.axelor.apps.quality.service.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.exception.IExceptionMessage;
 import com.axelor.apps.quality.report.IReport;
@@ -26,9 +27,17 @@ import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.io.File;
 
 public class QualityControlPrintServiceImpl {
+
+  protected ProjectService projectService;
+
+  @Inject
+  public QualityControlPrintServiceImpl(ProjectService projectService) {
+    this.projectService = projectService;
+  }
 
   public String getFileName(QualityControl qualityControl) {
 
@@ -76,9 +85,6 @@ public class QualityControlPrintServiceImpl {
   }
 
   private String getTimezone(QualityControl qualityControl) {
-    if (qualityControl.getProject() == null || qualityControl.getProject().getCompany() == null) {
-      return null;
-    }
-    return qualityControl.getProject().getCompany().getTimezone();
+    return projectService.getTimeZone(qualityControl.getProject());
   }
 }

@@ -18,8 +18,10 @@
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
       <insert position="after">
         <panel name="productPanel" title="Product" showIf="isCustomer"
-          if="__config__.app.isApp('sale')">
-          <field name="complementaryProductList" colSpan="12"/>
+          if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getManagePartnerComplementaryProduct()">
+          <field name="complementaryProductList" colSpan="12"
+            form-view="complementary-product-partner-form"
+            grid-view="complementary-product-partner-grid"/>
         </panel>
       </insert>
     </extend>

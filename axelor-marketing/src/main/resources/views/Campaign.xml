@@ -313,8 +313,10 @@
     model="com.axelor.apps.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
-    <domain>self.relatedTo1Select = 'com.axelor.apps.marketing.db.Campaign' AND
-      self.relatedTo1SelectId = :id</domain>
+    <domain>self.id IN (SELECT related.message.id FROM MultiRelated as related WHERE
+      related.relatedToSelect
+      = 'com.axelor.apps.marketing.db.Campaign' AND related.relatedToSelectId
+      = :id)</domain>
   </action-view>
 
   <action-method name="action-campaign-generate-targets"

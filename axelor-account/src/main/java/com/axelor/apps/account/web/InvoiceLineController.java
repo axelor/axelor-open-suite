@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -30,7 +31,6 @@ import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.mapper.Mapper;
@@ -107,44 +107,21 @@ public class InvoiceLineController {
       return;
     }
 
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-    BigDecimal exTaxTotal;
-    BigDecimal companyExTaxTotal;
-    BigDecimal inTaxTotal;
-    BigDecimal companyInTaxTotal;
-    BigDecimal priceDiscounted =
-        invoiceLineService.computeDiscount(invoiceLine, invoice.getInAti());
+    try {
+      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
 
-    response.setValue("priceDiscounted", priceDiscounted);
-    response.setAttr(
-        "priceDiscounted",
-        "hidden",
-        priceDiscounted.compareTo(
-                invoice.getInAti() ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice())
-            == 0);
-
-    BigDecimal taxRate = BigDecimal.ZERO;
-    if (invoiceLine.getTaxLine() != null) {
-      taxRate = invoiceLine.getTaxLine().getValue();
-      response.setValue("taxRate", taxRate);
-      response.setValue("taxCode", invoiceLine.getTaxLine().getTax().getCode());
+      response.setValues(invoiceLine);
+      response.setAttr(
+          "priceDiscounted",
+          "hidden",
+          invoiceLine
+                  .getPriceDiscounted()
+                  .compareTo(
+                      invoice.getInAti() ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice())
+              == 0);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    if (!invoice.getInAti()) {
-      exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
-    } else {
-      inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-    }
-
-    companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
-    companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
-
-    response.setValue("exTaxTotal", exTaxTotal);
-    response.setValue("inTaxTotal", inTaxTotal);
-    response.setValue("companyInTaxTotal", companyInTaxTotal);
-    response.setValue("companyExTaxTotal", companyExTaxTotal);
   }
 
   public void getProductInformation(ActionRequest request, ActionResponse response)
@@ -332,12 +309,14 @@ public class InvoiceLineController {
         Invoice invoice = this.getInvoice(request.getContext());
 
         if (product != null) {
+          FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+
           Account account =
               Beans.get(AccountManagementServiceAccountImpl.class)
                   .getProductAccount(
                       product,
                       invoice.getCompany(),
-                      invoice.getPartner().getFiscalPosition(),
+                      fiscalPosition,
                       InvoiceToolService.isPurchase(invoice),
                       invoiceLine.getFixedAssets());
           response.setValue("account", account);
@@ -401,5 +380,23 @@ public class InvoiceLineController {
               : null;
     }
     response.setValue("fixedAssetCategory", fixedAssetCategory);
+  }
+
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      invoiceLine = invoiceLineService.selectDefaultDistributionTemplate(invoiceLine);
+
+      response.setValue(
+          "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
+      response.setValue(
+          "analyticMoveLineList",
+          invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
@@ -49,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ReconcileService reconcileService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
 
   protected AppAccountService appAccountService;
 
@@ -57,10 +57,10 @@ public class PaymentServiceImpl implements PaymentService {
   public PaymentServiceImpl(
       AppAccountService appAccountService,
       ReconcileService reconcileService,
-      MoveLineService moveLineService) {
+      MoveLineCreateService moveLineCreateService) {
 
     this.reconcileService = reconcileService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.appAccountService = appAccountService;
   }
 
@@ -256,12 +256,12 @@ public class PaymentServiceImpl implements PaymentService {
       String invoiceName = "";
       if (debitMoveLine.getMove().getInvoice() != null) {
         invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
-      } else {
+      } else if (payVoucherElementToPay != null) {
         invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
       MoveLine creditMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               debitMoveLine.getPartner(),
               debitMoveLine.getAccount(),
@@ -309,7 +309,7 @@ public class PaymentServiceImpl implements PaymentService {
     if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) > 0) {
 
       MoveLine moveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,
@@ -367,7 +367,7 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
         if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
           MoveLine debitMoveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   accountMap,
@@ -423,7 +423,7 @@ public class PaymentServiceImpl implements PaymentService {
     if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) > 0) {
 
       MoveLine debitmoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,

@@ -9,6 +9,9 @@
       onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
       domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
       form-view="product-form"/>
+    <field name="stockLocation"
+      onSelect="action-inventory-line-method-set-stock-location-domain"
+      onChange="action-inventory-line-method-update-current-qty"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
       width="120" x-scale="2"/>
@@ -31,6 +34,9 @@
         onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
         domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"/>
+      <field name="stockLocation"
+        onSelect="action-inventory-line-method-set-stock-location-domain"
+        onChange="action-inventory-line-method-update-current-qty"/>
       <field name="currentQty" readonly="true"/>
       <field name="realQty" onChange="action-inventory-line-method-compute"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
@@ -57,5 +63,14 @@
 
   <action-method name="action-inventory-line-method-compute">
     <call class="com.axelor.apps.stock.web.InventoryLineController" method="compute"/>
+  </action-method>
+
+  <action-method name="action-inventory-line-method-set-stock-location-domain">
+    <call class="com.axelor.apps.stock.web.InventoryLineController"
+      method="setStockLocationDomain"/>
+  </action-method>
+
+  <action-method name="action-inventory-line-method-update-current-qty">
+    <call class="com.axelor.apps.stock.web.InventoryLineController" method="updateCurrentQty"/>
   </action-method>
 </object-views>

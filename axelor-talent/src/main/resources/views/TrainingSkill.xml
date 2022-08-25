@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="training-skill-grid" title="Training skills"
+    model="com.axelor.apps.talent.db.TrainingSkill">
+    <field name="skill"/>
+    <field name="skill.typeSelect"/>
+    <field name="graduationDate"/>
+    <field name="endOfValidityDate"/>
+  </grid>
+
+  <form name="training-skill-form" title="Training skill"
+    model="com.axelor.apps.talent.db.TrainingSkill" width="large">
+    <panel name="mainPanel">
+      <field name="skill"/>
+      <field name="skill.typeSelect"/>
+      <field name="graduationDate"/>
+      <field name="endOfValidityDate"/>
+    </panel>
+  </form>
+
+</object-views>

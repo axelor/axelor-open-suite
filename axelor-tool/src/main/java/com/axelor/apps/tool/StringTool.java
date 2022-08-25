@@ -26,12 +26,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public final class StringTool {
   private static final String[] FILENAME_SEARCH_LIST =
       new String[] {"*", "\"", "/", "\\", "?", "%", ":", "|", "<", ">"};
   private static final String[] FILENAME_REPLACEMENT_LIST =
       new String[] {"#", "'", "_", "_", "_", "_", "_", "_", "_", "_"};
+  private static final int STRING_MAX_LENGTH = 255;
 
   private StringTool() {}
 
@@ -293,12 +295,36 @@ public final class StringTool {
    * @return the cut string
    */
   public static String cutTooLongString(String str) {
-    int defaultDbStrLength = 255;
+    return cutTooLongStringWithOffset(str, 0);
+  }
+
+  /**
+   * Some strings cannot be over 255 char because of database restriction. Cut it to 252 - offset
+   * char then add "..." to indicate the string has been cut. offset must be between 0 and 255.
+   * Throw exception if offset is out of bound.
+   *
+   * @return the cut string
+   */
+  public static String cutTooLongStringWithOffset(String str, int offset) {
+    int defaultDbStrLength = STRING_MAX_LENGTH - offset;
     String fillString = "...";
+    if (defaultDbStrLength < fillString.length()) {
+      fillString = "";
+    }
     if (str.length() > defaultDbStrLength) {
       return str.substring(0, defaultDbStrLength - fillString.length()) + fillString;
     } else {
       return str;
     }
+  }
+
+  /**
+   * Escapes the characters in a string using HTML entities.
+   *
+   * @param string
+   * @return
+   */
+  public static String escapeHtml(String string) {
+    return StringEscapeUtils.escapeHtml4(string);
   }
 }

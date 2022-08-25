@@ -17,8 +17,6 @@
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines"/>
     <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine"
       title="Expense Lines"/>
-    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
-      title="Project"/>
     <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks"/>
     <integer name="logTimesSetPrioritySelect" selection="invoicing.project.priority.select"

@@ -22,9 +22,9 @@
 
 
   <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User"
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select"
+    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show"
     onSave="com.axelor.apps.base.web.UserController:validate"
-    onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select">
+    onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show">
     <panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1">
       <panel name="stepStatusPanel" colSpan="12">
         <field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12"
@@ -70,6 +70,7 @@
             <field name="chkPassword" title="Confirm password" placeholder="confirm password"
               widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
             <label name="passwordPatternDescriptionLabel" css="label-danger"/>
+            <field name="passwordUpdatedOn" readonly="true"/>
           </panel>
           <panel name="passwordOptionsPanel" showIf="code != $user">
             <field name="$generateRandomPassword" title="Generate random password"
@@ -89,9 +90,9 @@
             form-view="partner-employee-form" grid-view="partner-employee-grid">
             <editor x-viewer="true">
               <field name="fullName" readonly="true"/>
-              <field name="fixedPhone"/>
-              <field name="mobilePhone"/>
-              <field name="fax"/>
+              <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+              <field name="mobilePhone" widget="phone"/>
+              <field name="fax" widget="phone"/>
               <field name="emailAddress" form-view="email-address-simple-form"
                 canNew="!emailAddress" canSelect="false" canRemove="false"
                 placeholder="Email address"/>
@@ -150,7 +151,8 @@
         if="__config__.app.isApp('employee')"/>
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"
-      showIf="stepStatusSelect == 5">
+      showIf="stepStatusSelect == 5"
+      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
       <field name="today"/>
     </panel>
     <panel name="mainUserPanel" showIf="stepStatusSelect == 5" colSpan="12">
@@ -199,6 +201,7 @@
             <field name="sendEmailUponPasswordChange"/>
           </panel>
         </panel>
+        <field name="passwordUpdatedOn" readonly="true"/>
       </panel>
     </panel>
 
@@ -232,9 +235,9 @@
           form-view="partner-employee-form" grid-view="partner-employee-grid">
           <editor x-viewer="true">
             <field name="fullName" readonly="true"/>
-            <field name="fixedPhone"/>
-            <field name="mobilePhone"/>
-            <field name="fax"/>
+            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+            <field name="mobilePhone" widget="phone"/>
+            <field name="fax" widget="phone"/>
             <field name="emailAddress" form-view="email-address-simple-form"
               canNew="!emailAddress" canSelect="false" canRemove="false" placeholder="Email address"/>
           </editor>
@@ -242,7 +245,8 @@
       </panel>
       <panel-related name="companySetPanel" title="Internal companies"
         field="companySet" showTitle="false" canNew="false"
-        showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
+        showIf="[2,5].indexOf(stepStatusSelect) > -1"
+        onChange="action-user-attrs-set-pfp-validator-panel-show"/>
       <panel name="teamsPanel" title="Teams"
         if="__config__.app.getApp('base').getTeamManagement()"
         showIf="[2,5].indexOf(stepStatusSelect) > -1">
@@ -275,8 +279,7 @@
         colSpan="12"/>
       <panel name="substitutePfpValidatorTabPanel" title="PFP Validator"
         if-module="axelor-account"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"
-        showIf="activeCompany.accountConfig.isManagePassedForPayment">
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
         <field name="isPfpValidator" widget="boolean-switch" colSpan="4"/>
         <field name="isSuperPfpUser" widget="boolean-switch" colSpan="4"/>
         <button name="pfpSupplierListBtn" title="Supplier list"
@@ -287,8 +290,6 @@
         <panel-related field="substitutePfpValidatorList"
           name="substitutePfpValidatorListPanel" title="Substitute PFP Validator"
           showIf="isPfpValidator" colSpan="12"/>
-        <field name="activeCompany.accountConfig" hidden="true"/>
-        <field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true"/>
       </panel>
       <panel name="emailSignaturePanel" colSpan="12" title="Email signature">
         <field name="emailSignature" widget="Html" x-lite="true" height="9" colSpan="12"/>
@@ -353,6 +354,11 @@
     <panel hidden="true" colSpan="12" name="transientPasswordPanel">
       <field name="transientPassword"/>
     </panel>
+    <panel name="testingPanel" title="Testing" sidebar="true"
+      if="com.axelor.app.AppSettings.get().get('application.mode') == 'dev'">
+      <field name="today"/>
+    </panel>
+
   </form>
 
   <form name="generate-random-passwords-wizard" title="Generate random passwords"
@@ -527,6 +533,13 @@
     <action name="save"/>
   </action-group>
 
+  <action-attrs name="action-user-attrs-set-pfp-validator-panel-show">
+    <attribute name="hidden"
+      expr="eval: !companySet?.any{it->it.accountConfig?.isManagePassedForPayment}"
+      for="substitutePfpValidatorTabPanel"
+      if="__config__.app.getApp('account') != null &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
+  </action-attrs>
+
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
     title="User filters">
     <field name="workshopStockLocation" hidden="true"
@@ -542,10 +555,6 @@
     <field name="isSuperPfpUser" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
     <field name="substitutePfpValidatorList" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
-    <field name="activeCompany.accountConfig" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
-    <field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
     <field name="employee" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="appPermissions" hidden="true" if="!__config__.app.isApp('mobile')"/>

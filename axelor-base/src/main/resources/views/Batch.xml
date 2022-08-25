@@ -59,6 +59,9 @@
         onClick="action-batch-create-bank-order,action-batch-show-bank-order,close"
         if-module="axelor-bank-payment"/>
       <field name="bankOrder" hidden="true" if-module="axelor-bank-payment"/>
+      <button name="showStockHistoryLinesBtn" title="Stock history line" hidden="true"
+        colSpan="4" onClick="action-batch-show-stock-history-lines,close"
+        if-module="axelor-supplychain"/>
     </panel>
   </form>
 
@@ -100,12 +103,14 @@
       if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
     <attribute name="hidden" for="showStockMoveBtn"
-      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
+      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
     <attribute name="hidden" for="showStockMoveLinesBtn"
-      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
+      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
     <attribute name="hidden" for="showAccountMoveBtn"
       expr="(__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch'"/>
 
+    <attribute name="hidden" for="showStockHistoryLinesBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"

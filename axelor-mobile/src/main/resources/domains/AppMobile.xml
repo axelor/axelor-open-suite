@@ -33,7 +33,8 @@
       title="Products"/>
 
     <string name="mOFilterOnStockDetailStatusSelect" title="Statuses to take into account"/>
-
+    <string name="inventoryStatusSelect"
+      title="Inventories statuses to be taken into account" selection="inventory.status.select"/>
 
     <track>
       <field name="isSaleAppEnable" on="UPDATE"/>

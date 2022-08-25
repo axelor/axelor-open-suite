@@ -1,3 +1,0 @@
----
-title: "Services/Controllers : Refactor code to replace Beans.get with class injected field to avoid double injection"
-type: fix

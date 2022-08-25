@@ -36,6 +36,27 @@
       ref="com.axelor.auth.db.User" readonly="true"/>
     <date name="validatedDate" title="Validated On" readonly="true"/>
 
+    <!-- Balances -->
+
+    <decimal name="statementReconciledLineBalance" title="Statement reconciled line balance"/>
+    <decimal name="movesReconciledLineBalance" title="Moves reconciled line balance"/>
+    <decimal name="statementUnreconciledLineBalance"
+      title="Statement unrereconciled line balance"/>
+    <decimal name="movesUnreconciledLineBalance" title="Moves unreconciled line balance"/>
+    <decimal name="statementOngoingReconciledBalance"
+      title="Statement ongoing reconciled balance"/>
+    <decimal name="movesOngoingReconciledBalance" title="Moves ongoing reconciled balance"/>
+    <decimal name="statementAmountRemainingToReconcile"
+      title="Statement amount remaining to reconcile"/>
+    <decimal name="movesAmountRemainingToReconcile"
+      title="Moves amount remaining to reconcile"/>
+    <decimal name="statementTheoreticalBalance" title="Statement theoretical balance"/>
+    <decimal name="movesTheoreticalBalance" title="Moves theoretical balance"/>
+
+
+    <finder-method name="findByBankDetails" using="bankDetails" all="true"/>
+    <finder-method name="findOneByBankDetails" using="bankDetails" orderBy="-id"/>
+
     <extra-code><![CDATA[
 
 	   	// Status select

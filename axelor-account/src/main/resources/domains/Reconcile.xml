@@ -18,6 +18,7 @@
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="account.reconcile.status.select" initParam="true"/>
     <date name="reconciliationDate" title="Reconciliation date" readonly="true"/>
+    <date name="reconciliationCancelDate" title="Reconciliation cancel date" readonly="true"/>
     <!-- Will be fully reconciled if the payment amount is with a range of +/-20 cts compare to the amount
       remaining to pay -->
     <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false"
@@ -27,6 +28,9 @@
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
 
     <many-to-one name="reconcileGroup" ref="com.axelor.apps.account.db.ReconcileGroup"/>
+
+    <one-to-many ref="PaymentMoveLineDistribution"
+      name="paymentMoveLineDistributionList" title="Payment move lines distribution"/>
 
     <unique-constraint columns="reconcileSeq,company"/>
 

@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Invoice" lang="java">
+  <entity sequential="true" name="Invoice" lang="java"
+    implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -69,6 +70,8 @@
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Ventilated by"/>
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
 
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
@@ -184,7 +187,7 @@
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="Status"
-      selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+      selection="invoice.pfp.validate.status.select" readonly="true" default="0"/>
     <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
       ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
@@ -193,7 +196,30 @@
 
     <string name="headOfficeAddress" title="Head office address"/>
 
+    <boolean name="displayStockMoveOnInvoicePrinting" title="Display Deliveries on printing"
+      default="false"/>
+
+    <many-to-one name="paymentDelayReason" title="Payment delay reason"
+      ref="com.axelor.apps.account.db.PaymentDelayReason"/>
+    <string name="paymentDelayReasonComments" title="Payment delay reason comments"
+      large="true"/>
+    <date name="nextActionDate" title="Next action date"/>
+
+
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
+    <string name="legalNotice" title="Legal notice" large="true"
+      help="Legal notice displayed on invoices where a discount was granted"/>
+    <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
+
     <unique-constraint columns="invoiceId,company"/>
+
+    <finder-method name="findByMove" using="move"/>
 
     <extra-code><![CDATA[
 
@@ -229,6 +255,7 @@
 
 
 	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_NONE = 0;
 	    public static final int PFP_STATUS_AWAITING = 1;
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;
@@ -271,6 +298,10 @@
       <field name="subscriptionFromDate" on="UPDATE"/>
       <field name="subscriptionToDate" on="UPDATE"/>
       <field name="headOfficeAddress" on="UPDATE"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+      <field name="reasonOfRefusalToPay" on="UPDATE"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

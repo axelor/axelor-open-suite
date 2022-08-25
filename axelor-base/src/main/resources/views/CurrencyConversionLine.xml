@@ -32,8 +32,9 @@
       <field name="toDate" readonlyIf="fromDate == null"
         onChange="action-currency-conversion-line-method-check-date"/>
     </panel>
-    <panel name="ratePanel" title="Rate">
-      <field name="exchangeRate"/>
+    <panel name="ratePanel" title="Rate"
+      readonlyIf="startCurrency == null || endCurrency == null">
+      <field name="exchangeRate" validIf="exchangeRate &gt; 0"/>
       <field name="variations"/>
     </panel>
   </form>

@@ -50,6 +50,8 @@
           <field name="maxCapacityPerCycle" colSpan="3"/>
           <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
             x-seconds="true"/>
+          <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
+            x-seconds="true"/>
         </panel>
         <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
           <field name="product"
@@ -94,6 +96,8 @@
         <field name="minCapacityPerCycle" colSpan="3"/>
         <field name="maxCapacityPerCycle" colSpan="3"/>
         <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+          x-seconds="true"/>
+        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
           x-seconds="true"/>
       </panel>
       <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">

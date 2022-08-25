@@ -29,8 +29,9 @@ import com.axelor.apps.account.db.repo.AccountClearanceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -58,8 +59,8 @@ public class AccountClearanceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
-  protected MoveLineService moveLineService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveLineRepository moveLineRepo;
   protected SequenceService sequenceService;
   protected ReconcileService reconcileService;
@@ -68,30 +69,33 @@ public class AccountClearanceService {
   protected AccountClearanceRepository accountClearanceRepo;
   protected AppBaseService appBaseService;
   protected User user;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public AccountClearanceService(
       UserService userService,
       AppBaseService appBaseService,
-      MoveService moveService,
-      MoveLineService moveLineService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveLineRepository moveLineRepo,
       SequenceService sequenceService,
       ReconcileService reconcileService,
       TaxService taxService,
       TaxAccountService taxAccountService,
-      AccountClearanceRepository accountClearanceRepo) {
+      AccountClearanceRepository accountClearanceRepo,
+      MoveLineCreateService moveLineCreateService) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
-    this.moveService = moveService;
-    this.moveLineService = moveLineService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveLineRepo = moveLineRepo;
     this.sequenceService = sequenceService;
     this.reconcileService = reconcileService;
     this.taxService = taxService;
     this.taxAccountService = taxAccountService;
     this.accountClearanceRepo = accountClearanceRepo;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -105,7 +109,7 @@ public class AccountClearanceService {
         moveLineRepo
             .all()
             .filter(
-                "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                     + "AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) "
                     + "AND self.amountRemaining > 0 AND self.amountRemaining <= ?4 AND self.credit > 0 AND self.account in ?5 AND self.date <= ?6",
                 company,
@@ -151,7 +155,7 @@ public class AccountClearanceService {
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.validate(move);
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
@@ -174,21 +178,22 @@ public class AccountClearanceService {
 
     // Move
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                null,
-                partner,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect());
+        moveCreateService.createMove(
+            journal,
+            company,
+            null,
+            partner,
+            null,
+            partner != null ? partner.getFiscalPosition() : null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            moveLine.getMove().getFunctionalOriginSelect(),
+            null,
+            null);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             moveLine.getAccount(),
@@ -207,7 +212,7 @@ public class AccountClearanceService {
             .divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     MoveLine creditMoveLine1 =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             profitAccount,
@@ -222,7 +227,7 @@ public class AccountClearanceService {
     // Credit MoveLine 445 (Tax account)
     BigDecimal taxAmount = amount.subtract(profitAmount);
     MoveLine creditMoveLine2 =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             taxAccount,

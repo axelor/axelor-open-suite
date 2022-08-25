@@ -17,18 +17,22 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,10 +55,17 @@ public class PurchaseOrderLineTaxService {
 
     List<PurchaseOrderLineTax> purchaseOrderLineTaxList = new ArrayList<PurchaseOrderLineTax>();
     Map<TaxLine, PurchaseOrderLineTax> map = new HashMap<TaxLine, PurchaseOrderLineTax>();
+    Set<String> specificNotes = new HashSet<String>();
+
+    boolean customerSpecificNote = false;
+    FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+    if (fiscalPosition != null) {
+      customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
+    }
 
     if (purchaseOrderLineList != null && !purchaseOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de commande.");
+      LOG.debug("Création des lignes de tva pour les lignes de commande fournisseur.");
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
@@ -119,6 +130,11 @@ public class PurchaseOrderLineTaxService {
             map.put(taxLineRC, purchaseOrderLineTaxRC);
           }
         }
+        if (!customerSpecificNote) {
+          if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
+            specificNotes.add(taxEquiv.getSpecificNote());
+          }
+        }
       }
     }
 
@@ -142,6 +158,12 @@ public class PurchaseOrderLineTaxService {
       LOG.debug(
           "Ligne de TVA : Total TVA => {}, Total HT => {}",
           new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
+    }
+
+    if (!customerSpecificNote) {
+      purchaseOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
+    } else {
+      purchaseOrder.setSpecificNotes(purchaseOrder.getSupplierPartner().getSpecificTaxNote());
     }
 
     return purchaseOrderLineTaxList;

@@ -20,8 +20,12 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -32,12 +36,24 @@ import com.google.inject.persist.Transactional;
 
 public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentToolServiceImpl {
 
+  protected PartnerSupplychainService partnerSupplychainService;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected PurchaseOrderService purchaseOrderService;
+
   @Inject
   public InvoicePaymentToolServiceSupplychainImpl(
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
-      InvoicePaymentRepository invoicePaymentRepo) {
-    super(invoiceRepo, moveToolService, invoicePaymentRepo);
+      InvoicePaymentRepository invoicePaymentRepo,
+      PartnerSupplychainService partnerSupplychainService,
+      SaleOrderComputeService saleOrderComputeService,
+      PurchaseOrderService purchaseOrderService,
+      CurrencyService currencyService,
+      AppAccountService appAccountService) {
+    super(invoiceRepo, moveToolService, invoicePaymentRepo, currencyService, appAccountService);
+    this.partnerSupplychainService = partnerSupplychainService;
+    this.saleOrderComputeService = saleOrderComputeService;
+    this.purchaseOrderService = purchaseOrderService;
   }
 
   @Override
@@ -49,9 +65,17 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       return;
     }
     SaleOrder saleOrder = invoice.getSaleOrder();
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
     if (saleOrder != null) {
       // compute sale order totals
-      Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
+      saleOrderComputeService._computeSaleOrder(saleOrder);
+    }
+    if (purchaseOrder != null) {
+      purchaseOrderService._computePurchaseOrder(purchaseOrder);
+    }
+    if (invoice.getPartner().getHasBlockedAccount()
+        && !invoice.getPartner().getHasManuallyBlockedAccount()) {
+      partnerSupplychainService.updateBlockedAccount(invoice.getPartner());
     }
   }
 }

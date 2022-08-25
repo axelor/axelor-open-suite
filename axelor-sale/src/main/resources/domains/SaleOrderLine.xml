@@ -57,6 +57,7 @@
 
     <!-- Complementary Products -->
     <boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
+    <boolean name="isComplementaryPartnerProductsHandled" hidden="true"/>
     <one-to-many name="selectedComplementaryProductList"
       ref="com.axelor.apps.sale.db.ComplementaryProductSelected" title="Complementary products"
       mappedBy="saleOrderLine"/>
@@ -90,6 +91,9 @@
     <boolean name="discountsNeedReview" readonly="true"/>
 
     <decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
+
+    <string name="lineProductionComment" title="Line production commentary" large="true"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>

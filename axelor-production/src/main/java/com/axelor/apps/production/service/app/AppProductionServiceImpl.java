@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.google.inject.Singleton;
@@ -62,5 +63,14 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
     }
 
     return DEFAULT_NB_DECIMAL_DIGITS;
+  }
+
+  @Override
+  @Transactional
+  public void updatePartnerSubcontractTag() {
+    JPA.em()
+        .createQuery(
+            "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
+        .executeUpdate();
   }
 }

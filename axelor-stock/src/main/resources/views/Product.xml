@@ -148,4 +148,12 @@
     <context name="_id" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-stock-view-stock-history-line" title="Stock history line"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
+    <view type="grid" name="stock-history-line-all-grid"/>
+    <view type="form" name="stock-history-line-all-form"/>
+    <domain>self.product.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
 </object-views>

@@ -205,6 +205,14 @@ public interface IExceptionMessage {
       "Missing bank statement file format" /*)*/;
   static final String BANK_STATEMENT_EBICS_PARTNER = /*$$(*/
       "Error with EBICS partner %s: %s" /*)*/;
+  static final String BANK_STATEMENT_ALREADY_IMPORTED = /*$$(*/
+      "Bank statement already imported. Aborted." /*)*/;
+  static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
+      "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
+  static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/
+      "The balances of the bank statement are incoherent and are not following. The bankStatement file can't be imported." /*)*/;
+  static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
+      "Current bank statement doesn't contain an initial line" /*)*/;
 
   /*
    * Batch direct debit
@@ -227,4 +235,37 @@ public interface IExceptionMessage {
 
   static final String INVOICE_PAYMENT_MODE_MISSING = /*$$(*/
       "Payment mode is missing on the invoice %s" /*)*/;
+
+  /** Bank reconciliation */
+  static final String BANK_RECONCILIATION_MISSING_JOURNAL = /*$$(*/
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The journal is required to generate automatically the Move/Move Lines for those entries." /*)*/;
+
+  /** Bank reconciliation */
+  static final String BANK_RECONCILIATION_MISSING_CASH_ACCOUNT = /*$$(*/
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries." /*)*/;
+
+  static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
+      "Please select a reconciliation line" /*)*/;
+  static final String BANK_RECONCILIATION_INCOMPLETE_LINE = /*$$(*/
+      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Account, Third party). A move line will be generated automatically on the account and journal associated with the reconciliation session." /*)*/;
+
+  static final String BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE = /*$$(*/
+      "Please select one bank reconciliation line and one move line" /*)*/;
+  static final String BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE = /*$$(*/
+      "Please select one bank reconciliation line" /*)*/;
+  static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/
+      "Please select one move line" /*)*/;
+  static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
+      "Can't load while another reconciliation is open" /*)*/;
+  static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
+      "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
+
+  /** Bank Statement Query */
+  static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
 }

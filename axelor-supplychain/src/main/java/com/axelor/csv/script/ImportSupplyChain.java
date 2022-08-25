@@ -94,7 +94,7 @@ public class ImportSupplyChain {
     return bean;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
 
     try {
@@ -156,7 +156,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);

@@ -123,7 +123,8 @@
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
-          canEdit="false" onChange="action-attrs-account-invoice-line-account-onchange"/>
+          canEdit="false"
+          onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange"/>
         <panel name="assetsPanel" colSpan="3" itemSpan="12">
           <field name="fixedAssets" showTitle="false" showIf="$readonly()">
             <viewer depends="fixedAssets">
@@ -276,7 +277,7 @@
 
   <action-attrs name="action-invoice-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1 || !account?.analyticDistributionAuthorized"/>
+      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1 || !account?.analyticDistributionAuthorized"/>
   </action-attrs>
 
   <action-attrs
@@ -535,7 +536,7 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
 
     <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
+      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
     <attribute name="hidden" for="customerInvoicePanel"
       expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3"/>
@@ -548,7 +549,7 @@
 
   <action-attrs name="action-attrs-account-invoice-line-account-onchange">
     <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
+      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
   </action-attrs>
 
@@ -599,5 +600,10 @@
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
+
+  <action-method name="action-method-account-invoice-line-account-onchange">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="selectDefaultDistributionTemplate"/>
+  </action-method>
 
 </object-views>

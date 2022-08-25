@@ -19,7 +19,7 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
@@ -39,7 +39,7 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
@@ -59,7 +59,7 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
   </grid>
 
   <grid name="timesheet-validate-grid" title="Timesheet"
@@ -82,7 +82,7 @@
     <field name="toDate"/>
     <field name="sentDate"/>
     <field name="periodTotal"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
@@ -104,7 +104,8 @@
     <panel name="mainPanel">
       <panel name="detailsPanel" colSpan="9">
         <panel name="headPanel" colSpan="12">
-          <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"/>
+          <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"
+            if="__config__.app.getApp('timesheet').needValidation"/>
           <field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch"
             onChange="action-timesheet-attrs-refresh-editor"
             if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
@@ -125,31 +126,42 @@
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
           if="__config__.app.getApp('timesheet').getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
+        <field name="isCompleted" if="!__config__.app.getApp('timesheet').needValidation"
+          readonly="true"/>
       </panel>
 
       <panel name="actionsPanel" colSpan="3" itemSpan="12">
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
-          hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+          hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
+          if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="continueBtn" onClick="action-timesheet-group-continue,close"
           title="Continue"
           showIf="statusSelect == 2 &amp;&amp; user != null &amp;&amp; user.code == $user"
-          icon="fa-arrow-right"/>
+          icon="fa-arrow-right" if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="confirmContinueBtn"
           onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue"
-          hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+          hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
+          if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
-          title="Validate" icon="fa-check" css="btn-success"/>
+          title="Validate" icon="fa-check" css="btn-success"
+          if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
-          title="Refuse" icon="fa-times" css="btn-danger"/>
+          title="Refuse" icon="fa-times" css="btn-danger"
+          if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="cancelBtn" hidden="true"
-          onClick="save,action-timesheet-method-cancel,action-timesheet-attrs-buttons"
-          title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+          onClick="save,action-timesheet-method-cancel,action-timesheet-group-buttons"
+          title="Cancel" icon="fa-times-circle" css="btn-danger"
+          if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="draftBtn"
-          onClick="save,action-timesheet-method-draft,action-timesheet-attrs-buttons"
-          title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+          onClick="save,action-timesheet-method-draft,action-timesheet-group-buttons"
+          title="Return to draft status" showIf="statusSelect &gt; 3"
+          if="__config__.app.getApp('timesheet').needValidation"/>
         <button name="startStopFormBtn" title="Start&amp;Stop Timer"
           onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
           if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
+        <button name="completeBtn" onClick="save,action-timesheet-method-complete"
+          title="Complete" if="!__config__.app.getApp('timesheet').needValidation"
+          icon="fa-arrow-right"/>
       </panel>
     </panel>
 
@@ -211,7 +223,8 @@
     <panel-dashlet name="totalHoursPerDayPanel" title="Total Hours per Day"
       hidden="true" showIf="id &amp;&amp; user.employee.timesheetImputationSelect != 2"
       action="action-timesheet-view-total-hours-per-day"/>
-    <panel name="validationInfoPanel" showIf="sentDate != null">
+    <panel name="validationInfoPanel" showIf="sentDate != null"
+      if="__config__.app.getApp('timesheet').needValidation">
       <field name="sentDate"/>
       <field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="validatedBy != null"/>
@@ -259,7 +272,7 @@
     <action name="action-timesheet-method-set-show-activity"/>
     <action name="action-timesheet-attrs-enable-timesheet-manuforder"
       if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-attrs-title-project"/>
     <action name="action-timesheet-attrs-from-date"/>
@@ -277,32 +290,32 @@
   <action-group name="action-timesheet-group-confirm">
     <action name="save"/>
     <action name="action-timesheet-method-confirm"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
   </action-group>
 
   <action-group name="action-timesheet-group-continue">
     <action name="save"/>
     <action name="action-timesheet-method-continue"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
   </action-group>
 
   <action-group name="action-timesheet-group-confirm-continue">
     <action name="save"/>
     <action name="action-timesheet-method-confirm-continue"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
   </action-group>
 
   <action-group name="action-timesheet-group-validate">
     <action name="save"/>
     <action name="action-timesheet-method-valid"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
   </action-group>
 
   <action-group name="action-timesheet-group-refuse">
     <action name="save"/>
     <action name="action-timesheet-method-refuse"/>
     <action name="action-timesheet-refusal-popup-form"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
   </action-group>
 
   <action-group name="action-group-timesheet-onnew">
@@ -310,7 +323,7 @@
     <action name="action-timesheet-method-set-show-activity"/>
     <action name="action-timesheet-attrs-enable-timesheet-manuforder"
       if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <action name="action-timesheet-attrs-buttons"/>
+    <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-record-from-period-date"/>
     <action name="action-timesheet-record-to-date" if="fromDate != null"/>
@@ -394,7 +407,7 @@
 
   <action-attrs name="action-hr-timesheet-attrs-domain-project">
     <attribute name="domain" for="$project"
-      expr="eval: &quot; ${user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${user?.id} &quot;"/>
+      expr="eval: &quot; (${user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${user?.id}) AND self.isShowTimeSpent = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-title-project">
@@ -411,6 +424,14 @@
       expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
   </action-attrs>
 
+  <action-group name="action-timesheet-group-buttons">
+    <action name="action-timesheet-attrs-buttons"
+      if="__config__.app.getApp('timesheet').needValidation"/>
+    <action name="action-timesheet-attrs-need-validation-false"
+      if="!__config__.app.getApp('timesheet').needValidation"/>
+    <action name="action-timesheet-attrs-product-visibility"/>
+  </action-group>
+
   <action-attrs name="action-timesheet-attrs-buttons">
     <attribute name="hidden" for="validateBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
@@ -420,12 +441,8 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="readonly" for="headPanel"
       expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
-    <attribute name="hidden" for="getTimeFromTask"
-      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
     <attribute name="readonly" for="timesheetLineList"
       expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
-    <attribute name="hidden" for="timesheetLineList.product" expr="eval: !$showActivity"/>
-    <attribute name="hidden" for="$product" expr="eval: !$showActivity"/>
     <attribute name="readonly" for="company" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
@@ -434,6 +451,16 @@
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="user" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
+  </action-attrs>
+
+  <action-attrs name="action-timesheet-attrs-need-validation-false">
+    <attribute name="hidden" for="completeBtn"
+      expr="eval: !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager) || isCompleted"/>
+  </action-attrs>
+
+  <action-attrs name="action-timesheet-attrs-product-visibility">
+    <attribute name="hidden" for="timesheetLineList.product" expr="eval: !showActivity"/>
+    <attribute name="hidden" for="$product" expr="eval: !showActivity"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-set-visible-duration-title">
@@ -536,6 +563,10 @@
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="draft"/>
   </action-method>
 
+  <action-method name="action-timesheet-method-complete">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="complete"/>
+  </action-method>
+
   <action-method name="action-timesheet-method-timesheet-timer">
     <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
       method="editTimesheetTimerFromTimesheet"/>
@@ -566,7 +597,6 @@
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">
     <view name="chart.total.hours.per.day" type="chart"/>
-    <context name="timesheet_id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-timesheet-refusal-popup-form" title="Ground for refusal"

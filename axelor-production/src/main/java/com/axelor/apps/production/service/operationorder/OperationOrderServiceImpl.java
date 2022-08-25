@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -41,12 +42,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -60,13 +58,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
-
-  @Inject private MetaFiles metaFiles;
 
   @Inject protected BarcodeGeneratorService barcodeGeneratorService;
 
@@ -133,6 +128,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     operationOrder.setUseLineInGeneratedPurchaseOrder(
         prodProcessLine.getUseLineInGeneratedPurchaseOrder());
+
+    operationOrder.setOutsourcing(prodProcessLine.getOutsourcing());
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
@@ -494,22 +491,21 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   @Override
   public void createBarcode(OperationOrder operationOrder) {
-    try {
-      String stringId = operationOrder.getId().toString();
+    if (operationOrder != null && operationOrder.getId() != null) {
+      String serialNbr = operationOrder.getId().toString();
+      BarcodeTypeConfig barcodeTypeConfig =
+          appProductionService.getAppProduction().getBarcodeTypeConfig();
       boolean addPadding = true;
-      InputStream inStream =
+      MetaFile barcodeFile =
           barcodeGeneratorService.createBarCode(
-              stringId, appProductionService.getAppProduction().getBarcodeTypeConfig(), addPadding);
-      if (inStream != null) {
-        MetaFile barcodeFile =
-            metaFiles.upload(
-                inStream, String.format("OppOrderBarcode%d.png", operationOrder.getId()));
+              operationOrder.getId(),
+              "OppOrderBarcode%d.png",
+              serialNbr,
+              barcodeTypeConfig,
+              addPadding);
+      if (barcodeFile != null) {
         operationOrder.setBarCode(barcodeFile);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (AxelorException e) {
-      throw new ValidationException(e);
     }
   }
 }

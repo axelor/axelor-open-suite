@@ -18,17 +18,20 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -49,7 +52,10 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       SaleOrderLineRepository saleOrderLineRepo,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      AccountConfigService accountConfigService,
+      SaleOrderService saleOrderService,
+      PricingService pricingService) {
     super(
         currencyService,
         priceListService,
@@ -58,9 +64,12 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
+        saleOrderService,
         appAccountService,
         analyticMoveLineService,
-        appSupplychainService);
+        appSupplychainService,
+        accountConfigService,
+        pricingService);
   }
 
   @Transactional

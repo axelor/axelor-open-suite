@@ -10,6 +10,12 @@
     <option value="3">Supplier</option>
   </selection>
 
+  <selection name="bankpayment.bank.reconciliation.confidenceIndex">
+    <option value="1">◉</option>
+    <option value="2">■</option>
+    <option value="3">▲</option>
+  </selection>
+
   <selection name="bankpayment.bank.reconciliation.status.select">
     <option value="1">Draft</option>
     <option value="2">Validated</option>
@@ -27,7 +33,7 @@
     <option value="4">International Direct Debit</option>
     <option value="5">National Treasury transfer</option>
     <option value="6">International Treasury transfer</option>
-    <option value="7">Send bank order</option>
+    <option value="7">Send a bank order</option>
   </selection>
 
   <selection name="bankpayment.bank.order.partner.type.select">
@@ -251,6 +257,17 @@
     <option value='directDebit'>Direct debit</option>
     <option value="interbankPaymentOrder">Interbank payment order</option> <!-- seems to be unused. If delete, also do it for corresponding constant in view ExceptionOrigin.xml -->
     <option value="bankStatement">Bank Statement</option>
+  </selection>
+
+  <selection name="bank.payment.bank.statement.rule.rule.type.select">
+    <option value="0">Accounting auto</option>
+    <option value="1">Reconciliation auto</option>
+  </selection>
+
+  <selection name="bank.payment.bank.statement.query.confidence.index.select">
+    <option value="1">Green</option>
+    <option value="2">Orange</option>
+    <option value="3">Red</option>
   </selection>
 
 </object-views>

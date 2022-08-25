@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -96,6 +98,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
 
@@ -112,6 +116,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
     saleOrder.setDeliveryDate(deliveryDate);
+    saleOrder.setTaxNumber(taxNumber);
+    saleOrder.setFiscalPosition(fiscalPosition);
 
     saleOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
@@ -161,7 +167,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      Team team)
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
 
     String numSeq = "";
@@ -191,7 +199,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             externalRef,
             priceList,
             clientPartner,
-            team);
+            team,
+            taxNumber,
+            fiscalPosition);
 
     this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
@@ -251,6 +261,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
+          saleOrderLineService.resetPrice(saleOrderLine);
           saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
           saleOrderLineService.computeValues(saleOrder, saleOrderLine);
         }

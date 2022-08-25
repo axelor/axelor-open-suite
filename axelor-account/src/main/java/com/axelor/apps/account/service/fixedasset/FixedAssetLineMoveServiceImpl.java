@@ -27,11 +27,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -52,18 +55,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveRepository moveRepo;
 
-  protected MoveLineService moveLineService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Override
@@ -100,10 +103,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
-        fixedAsset.getReference(),
+        origin,
         company.getName(),
         journal.getCode());
 
@@ -115,16 +119,25 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             company.getCurrency(),
             partner,
             date,
+            date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
 
-      String origin = fixedAsset.getReference();
       Account debitLineAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account creditLineAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      if (debitLineAccount == null || creditLineAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FIXED_ASSET_CATEGORY_MISSING_DEBIT_OR_CREDIT_ACCOUNT),
+            fixedAsset.getFixedAssetCategory().getName());
+      }
       BigDecimal amount = fixedAssetLine.getDepreciation();
 
       // Creating accounting debit move line
@@ -184,6 +197,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     // Creating move
     Move move =
@@ -193,17 +207,31 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             company.getCurrency(),
             partner,
             date,
+            date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-      String origin = fixedAsset.getReference();
       Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      if (chargeAccount == null || depreciationAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FIXED_ASSET_CATEGORY_MISSING_CHARGE_OR_DEPRECIATION_ACCOUNT),
+            fixedAsset.getFixedAssetCategory().getName());
+      }
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
+      if (purchaseAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FIXED_ASSET_MISSING_PURCHASE_ACCOUNT));
+      }
       BigDecimal chargeAmount = fixedAssetLine.getResidualValue();
       BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
 
@@ -283,7 +311,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      moveLineService.computeAnalyticDistribution(moveLine);
+      moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine);
     }
   }
 }

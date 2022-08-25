@@ -24,6 +24,8 @@ import com.axelor.apps.tool.service.CipherService;
 import com.axelor.apps.tool.service.CipherServiceImpl;
 import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.apps.tool.service.ConvertBinaryToMetafileServiceImpl;
+import com.axelor.apps.tool.service.ListToolService;
+import com.axelor.apps.tool.service.ListToolServiceImpl;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.apps.tool.service.TranslationServiceImpl;
 
@@ -34,6 +36,7 @@ public class ToolModule extends AxelorModule {
     bind(CipherService.class).to(CipherServiceImpl.class);
     bind(TranslationService.class).to(TranslationServiceImpl.class);
     bind(ArchivingToolService.class).to(ArchivingToolServiceImpl.class);
+    bind(ListToolService.class).to(ListToolServiceImpl.class);
     bind(ConvertBinaryToMetafileService.class).to(ConvertBinaryToMetafileServiceImpl.class);
   }
 }

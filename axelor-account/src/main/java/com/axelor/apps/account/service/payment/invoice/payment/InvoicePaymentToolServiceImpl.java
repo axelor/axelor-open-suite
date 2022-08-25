@@ -22,10 +22,12 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -40,6 +42,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -50,6 +53,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceRepository invoiceRepo;
   protected MoveToolService moveToolService;
   protected InvoicePaymentRepository invoicePaymentRepo;
+  protected AccountConfigRepository accountConfigRepository;
+  protected CurrencyService currencyService;
+  protected AppAccountService appAccountService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -57,11 +63,15 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public InvoicePaymentToolServiceImpl(
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      CurrencyService currencyService,
+      AppAccountService appAccountService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
+    this.currencyService = currencyService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -70,9 +80,21 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     invoice.setAmountPaid(computeAmountPaid(invoice));
     invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+    invoice.setCompanyInTaxTotalRemaining(
+        getAmountInInvoiceCompanyCurrency(invoice.getAmountRemaining(), invoice));
     updateHasPendingPayments(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
+  }
+
+  protected BigDecimal getAmountInInvoiceCompanyCurrency(BigDecimal amount, Invoice invoice)
+      throws AxelorException {
+
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        invoice.getCurrency(),
+        invoice.getCompany().getCurrency(),
+        amount,
+        invoice.getInvoiceDate());
   }
 
   @Override
@@ -89,8 +111,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       return amountPaid;
     }
 
-    CurrencyService currencyService = Beans.get(CurrencyService.class);
-
     Currency invoiceCurrency = invoice.getCurrency();
 
     for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
@@ -99,12 +119,20 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
+        BigDecimal paymentAmount = invoicePayment.getAmount();
+        if (invoicePayment.getApplyFinancialDiscount()) {
+          paymentAmount =
+              paymentAmount.add(
+                  invoicePayment
+                      .getFinancialDiscountAmount()
+                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
+        }
         amountPaid =
             amountPaid.add(
                 currencyService.getAmountCurrencyConvertedAtDate(
                     invoicePayment.getCurrency(),
                     invoiceCurrency,
-                    invoicePayment.getAmount(),
+                    paymentAmount,
                     invoicePayment.getPaymentDate()));
       }
     }
@@ -167,14 +195,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments) {
+  public List<MoveLine> getMoveLinesFromPayments(
+      List<InvoicePayment> payments, boolean getCreditLines) {
     List<MoveLine> moveLines = new ArrayList<>();
     for (InvoicePayment payment : payments) {
       Move move = payment.getMove();
       if (move == null || move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
         continue;
       }
-      moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
+      if (getCreditLines) {
+        moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
+      } else {
+        moveLines.addAll(moveToolService.getToReconcileDebitMoveLines(move));
+      }
     }
     return moveLines;
   }
@@ -194,5 +227,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
           invoicePayment.getInvoice().getInvoiceId());
     }
+  }
+
+  @Override
+  public boolean applyFinancialDiscount(InvoicePayment invoicePayment) {
+    LocalDate deadLineDate = invoicePayment.getFinancialDiscountDeadlineDate();
+    return (invoicePayment != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()
+        && deadLineDate != null
+        && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
   }
 }

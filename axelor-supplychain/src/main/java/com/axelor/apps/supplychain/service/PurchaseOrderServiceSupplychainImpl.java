@@ -20,7 +20,9 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -151,6 +153,41 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     purchaseOrder.setTradingName(tradingName);
 
     return purchaseOrder;
+  }
+
+  @Override
+  public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    super._computePurchaseOrder(purchaseOrder);
+
+    if (appSupplychainService.isApp("supplychain")) {
+      if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
+        purchaseOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(purchaseOrder));
+      }
+    }
+  }
+
+  protected BigDecimal computeTotalInvoiceAdvancePayment(PurchaseOrder purchaseOrder) {
+    BigDecimal total = BigDecimal.ZERO;
+
+    if (purchaseOrder.getId() == null) {
+      return total;
+    }
+
+    List<Invoice> advancePaymentInvoiceList =
+        Beans.get(InvoiceRepository.class)
+            .all()
+            .filter(
+                "self.purchaseOrder.id = :purchaseOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+            .bind("purchaseOrderId", purchaseOrder.getId())
+            .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .fetch();
+    if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
+      return total;
+    }
+    for (Invoice advance : advancePaymentInvoiceList) {
+      total = total.add(advance.getAmountPaid());
+    }
+    return total;
   }
 
   @Transactional
@@ -369,8 +406,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional
-  public void updateToValidatedStatus(PurchaseOrder purchaseOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException {
+
+    if (purchaseOrder.getStatusSelect() == null
+        || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
+    }
+
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     purchaseOrderRepo.save(purchaseOrder);
   }
@@ -383,6 +428,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+    if (shippingCostProduct == null) {
+      return null;
+    }
     if (shipmentMode.getHasCarriagePaidPossibility()) {
       BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
       if (computeExTaxTotalWithoutShippingLines(purchaseOrder).compareTo(carriagePaidThreshold)
@@ -436,7 +484,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     List<PurchaseOrderLine> linesToRemove = new ArrayList<PurchaseOrderLine>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
       }
     }
@@ -461,7 +510,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (!purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && !purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         exTaxTotal = exTaxTotal.add(purchaseOrderLine.getExTaxTotal());
       }
     }

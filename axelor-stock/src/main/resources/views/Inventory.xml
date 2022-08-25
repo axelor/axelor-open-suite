@@ -77,10 +77,10 @@
           </panel>
         </panel>
 
-        <panel name="importPanel" title="Import"
+        <panel name="importPanel" title="import.name"
           showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
           <field name="importFile" widget="binary-link"/>
-          <button name="importFileBtn" title="Import" readonlyIf="importFile == null"
+          <button name="importFileBtn" title="import.verb" readonlyIf="importFile == null"
             onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
         </panel>
       </panel>
@@ -98,6 +98,8 @@
           domain="self.dtype = 'Product'"/>
         <field name="excludeOutOfStock" colSpan="3"/>
         <field name="includeObsolete" colSpan="3"/>
+        <spacer name="includeObsoleteSpacer" colSpan="6"/>
+        <field name="includeSubStockLocation"/>
         <panel name="racksRangePanel" title="Racks range">
           <field name="fromRack"/>
           <field name="toRack"/>
@@ -116,6 +118,8 @@
         form-view="product-form" domain="self.dtype = 'Product'"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
+      <spacer name="includeObsoleteSpacer" colSpan="6"/>
+      <field name="includeSubStockLocation"/>
       <panel name="racksRangePanel" title="Racks range">
         <field name="fromRack"/>
         <field name="toRack"/>
@@ -144,7 +148,7 @@
 
   <action-group name="action-group-stock-inventory-plan-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-plan"/>
     <action name="action-set-inventory-seq"/>
     <action name="save"/>
@@ -152,22 +156,21 @@
 
   <action-group name="action-group-stock-inventory-start-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-start"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-complete-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
-    <action name="action-inventory-validate-inventory-line-list"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-complete"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-validate-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-realize-stock-move"/>
   </action-group>
 
@@ -291,12 +294,7 @@
     <attribute name="value" for="stockLocation" expr="eval: null"/>
   </action-attrs>
 
-  <action-validate name="action-inventory-validate-inventory-line-list">
-    <error message="Please fill all inventory lines"
-      if="inventoryLineList.any { it?.realQty == null }"/>
-  </action-validate>
-
-  <action-method name="action-inventory-method-inventory-line-list-duplicat-product">
+  <action-method name="action-inventory-method-inventory-line-list-duplicate-product">
     <call class="com.axelor.apps.stock.web.InventoryController" method="checkDuplicateProduct"/>
   </action-method>
 

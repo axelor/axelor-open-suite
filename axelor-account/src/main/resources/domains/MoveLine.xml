@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine" lang="java"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -46,6 +47,8 @@
       initParam="true"/>
     <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
 
+    <string name="postedNbr" title="Posted number"/>
+
     <!-- Field not displayed, used during the payment voucher input -->
     <decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>
     <many-to-one name="paymentScheduleLine"
@@ -70,6 +73,8 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <boolean name="isOtherCurrency" default="false"/>
+
     <string name="accountCode" readonly="true"/>
     <string name="accountName" readonly="true"/>
     <string name="partnerFullName" readonly="true"/>
@@ -82,6 +87,8 @@
     <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
 
+    <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
+
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine"
       ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
@@ -90,6 +97,14 @@
       ref="com.axelor.apps.account.db.ReconcileGroup"/>
 
     <date name="originDate" title="Origin date" initParam="true"/>
+
+    <!-- DAS2 -->
+    <many-to-one name="serviceType" ref="ServiceType" title="Service type"
+      readonly="true"/>
+    <string name="serviceTypeCode" title="Service type code" readonly="true"/>
+    <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity"
+      title="DAS2 activity" readonly="true"/>
+    <string name="das2ActivityName" title="DAS2 activity name" readonly="true"/>
 
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
@@ -111,8 +126,32 @@
 		else return BigDecimal.ZERO;
 	    ]]>
     </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
+
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
+    <finder-method name="findByAccount" all="true" using="account"/>
+    <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
 
     <extra-code><![CDATA[
 

@@ -23,6 +23,8 @@ import com.axelor.exception.AxelorException;
 
 public interface ConfiguratorFormulaService {
 
+  String PARENT_SALE_ORDER_ID_FIELD_NAME = "parentSaleOrderId";
+
   /**
    * Check if the written formula is valid.
    *

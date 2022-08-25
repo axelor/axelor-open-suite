@@ -213,6 +213,19 @@ public class SequenceService {
     return nextSeq;
   }
 
+  /**
+   * Compute a test sequence by computing the next seq without any save Use for checking validity
+   * purpose
+   *
+   * @param sequence
+   * @param refDate
+   * @return the test sequence
+   */
+  public String computeTestSeq(Sequence sequence, LocalDate refDate) {
+    SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+    return computeNextSeq(sequenceVersion, sequence, refDate);
+  }
+
   protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
     long n = sequenceVersion.getNextNum();
     char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];

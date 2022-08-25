@@ -41,14 +41,22 @@ public interface IExceptionMessage {
   static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
   static final String CURRENCY_3 = /*$$(*/
-      "WARNING : please close the current conversion period to create a new one." /*)*/;
+      "WARNING : For the specified currencies %s/%s, please first close the current open conversion period starting %3$tm/%3$td/%3$tY (by filling the end date) to then create a new one. Periods dates shouldn't overlap." /*)*/;
   static final String CURRENCY_4 = /*$$(*/
       "The end date has to be greater than or equal to the start date." /*)*/;
   static final String CURRENCY_5 = /*$$(*/
       "Both currencies must be saved before currency rate apply" /*)*/;
   static final String CURRENCY_6 = /*$$(*/ "Currency conversion webservice not working" /*)*/;
   static final String CURRENCY_7 = /*$$(*/
-      "No currency conversion rate found for the date %s to %s. Please change the conversion date" /*)*/;
+      "Currency conversion rate not found over the past 7 days for the currency %s to %s. Please input the date and rate manually." /*)*/;
+  static final String CURRENCY_8 = /*$$(*/
+      "The webservice URL to retrieve exchange rate is not configured. Please select the method to retrieve exchange rates in the App Base configuration > Tab Interfaces > Panel Webservices" /*)*/;
+  static final String CURRENCY_9 = /*$$(*/
+      "WARNING : Process to retrieve exchange rate didn't work due to incorrect value in 'Currency Ws URL' in AppBase. Please contact support team for further investigation." /*)*/;
+  static final String CURRENCY_10 = /*$$(*/
+      "There was no exchange rate found for %1$tm/%1$td/%1$tY. The retrieved exchange rate was the applicable rate at %2$tm/%2$td/%2$tY" /*)*/;
+  static final String CURRENCY_11 = /*$$(*/
+      "WARNING : For the specified currencies %s/%s, the input fromDate is overlapping with an already existing conversion record. Period dates shouldn't overlap and are set on an included-included basis e.g. [From Date - To Date]." /*)*/;
 
   static final String COMPANY_CURRENCY = /*$$(*/
       "%s : Please, configure a currency for the company %s" /*)*/;
@@ -81,6 +89,9 @@ public interface IExceptionMessage {
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
   static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
+
+  String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
+  String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/ "Error when closing period %s" /*)*/;
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
@@ -90,6 +101,12 @@ public interface IExceptionMessage {
   String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully," /*)*/;
   String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
   String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+  String ABSTRACT_BATCH_FINISHED_SUBJECT = /*$$(*/ "Batch %s is now finished" /*)*/;
+  String ABSTRACT_BATCH_FINISHED_DEFAULT_MESSAGE = /*$$(*/ "Batch execution is now finished" /*)*/;
+  String ABSTRACT_BATCH_MESSAGE_ON_EXCEPTION = /*$$(*/
+      "Error happened during batch execution" /*)*/;
+
   /** Indicator generator grouping service */
   public static final String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/
       "Error : no export path has been set" /*)*/;
@@ -348,6 +365,8 @@ public interface IExceptionMessage {
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
+  public static final String ABC_ANALYSIS_ALREADY_STARTED = /*$$(*/
+      "Analysis is already on going." /*)*/;
 
   /* DMS Import */
   public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
@@ -422,8 +441,6 @@ public interface IExceptionMessage {
       "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
-  public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
-      "Refresh page to reflect changes in selection" /*)*/;
 
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
@@ -431,13 +448,25 @@ public interface IExceptionMessage {
 
   /* Geonames import */
   public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
-  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
-      "Please fill in GeoNames URL in Base application configuration." /*)*/;
+  public static final String GEONAMES_DUMP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
+  public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
       "Please upload csv or txt or zip files only." /*)*/;
   public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
+
+  public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
+
+  /* Pricing scale */
+  public static final String PRICING_1 = /*$$(*/
+      "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
+
+  public static final String PRICING_2 = /*$$(*/
+      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 }

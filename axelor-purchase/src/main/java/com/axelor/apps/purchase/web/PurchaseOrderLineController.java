@@ -114,8 +114,7 @@ public class PurchaseOrderLineController {
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
             .getTaxEquiv(
-                purchaseOrder.getSupplierPartner().getFiscalPosition(),
-                purchaseOrderLine.getTaxLine().getTax()));
+                purchaseOrder.getFiscalPosition(), purchaseOrderLine.getTaxLine().getTax()));
   }
 
   public void updateProductInformation(ActionRequest request, ActionResponse response) {
@@ -365,10 +364,11 @@ public class PurchaseOrderLineController {
     if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
         && purchaseOrderLine.getProduct() != null
         && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
+      if (company.getPartner() != null) {
+        domain += "self.id != " + company.getPartner().getId() + " AND ";
+      }
       domain +=
-          "self.id != "
-              + company.getPartner().getId()
-              + " AND self.id IN "
+          "self.id IN "
               + purchaseOrderLine.getProduct().getSupplierCatalogList().stream()
                   .map(s -> s.getSupplierPartner().getId())
                   .collect(Collectors.toList())

@@ -21,16 +21,13 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
-import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
-import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
@@ -173,30 +170,6 @@ public class EventController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  @SuppressWarnings("rawtypes")
-  public void assignToMeLead(ActionRequest request, ActionResponse response) {
-
-    LeadService leadService = Beans.get(LeadService.class);
-    LeadRepository leadRepo = Beans.get(LeadRepository.class);
-
-    if (request.getContext().get("id") != null) {
-      Lead lead = leadRepo.find((Long) request.getContext().get("id"));
-      lead.setUser(AuthUtils.getUser());
-      if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
-        lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
-      leadService.saveLead(lead);
-    } else if (((List) request.getContext().get("_ids")) != null) {
-      for (Lead lead :
-          leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
-        lead.setUser(AuthUtils.getUser());
-        if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
-          lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
-        leadService.saveLead(lead);
-      }
-    }
-    response.setReload(true);
   }
 
   @SuppressWarnings("rawtypes")

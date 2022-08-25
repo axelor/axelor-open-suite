@@ -20,9 +20,11 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -34,6 +36,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -241,19 +244,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
-      if (product != null) {
-        invoiceLine.setProductCode(
-            (String) productCompanyService.get(product, "code", invoice.getCompany()));
-        Account account =
-            accountManagementService.getProductAccount(
-                product,
-                invoice.getCompany(),
-                invoice.getPartner().getFiscalPosition(),
-                InvoiceToolService.isPurchase(invoice),
-                invoiceLine.getFixedAssets());
-        invoiceLine.setAccount(account);
-      }
-
       if (product != null && purchaseOrderLine.getFixedAssets()) {
         FixedAssetCategory fixedAssetCategory =
             accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
@@ -286,6 +276,32 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       analyticMoveLineList =
           invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+    }
+
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+
+    // Determine and set the account for the line
+    if (product != null) {
+      invoiceLine.setProductCode(
+          (String) productCompanyService.get(product, "code", invoice.getCompany()));
+      Account account =
+          accountManagementService.getProductAccount(
+              product,
+              invoice.getCompany(),
+              fiscalPosition,
+              isPurchase,
+              invoiceLine.getFixedAssets());
+      invoiceLine.setAccount(account);
+    }
+
+    // Determine and set the taxEquiv for the line
+    if (product != null) {
+      TaxEquiv taxEquiv =
+          Beans.get(AccountManagementService.class)
+              .getProductTaxEquiv(product, invoice.getCompany(), fiscalPosition, isPurchase);
+
+      invoiceLine.setTaxEquiv(taxEquiv);
     }
 
     return invoiceLine;

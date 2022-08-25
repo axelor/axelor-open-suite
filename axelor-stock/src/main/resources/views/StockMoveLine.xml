@@ -450,6 +450,7 @@
           onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain" canEdit="false"/>
         <field name="trackingNumberSeq" title="Tracking Nbr."
           onChange="action-stock-move-line-wizard-record-set-dates,action-track-number-atts-readonly-dates"/>
+        <field name="serialNbr" title="Serial Nbr"/>
         <field name="$availableQty" title="Available qty" type="decimal" width="120"
           readonly="true"/>
         <field name="counter" title="Quantity"
@@ -495,6 +496,8 @@
   </action-attrs>
 
   <action-attrs name="action-track-number-atts-from-stock-move-line">
+    <attribute name="hidden" for="$trackingNumbers.serialNbr"
+      expr="eval: _isSeqUsedForSerialNumber"/>
     <attribute name="hidden" for="$trackingNumbers.warrantyExpirationDate"
       expr="eval: !_hasWarranty"/>
     <attribute name="hidden" for="$trackingNumbers.perishableExpirationDate"

@@ -300,6 +300,11 @@
           readonlyIf="$isReadOnly !== false">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
+        <panel name="lineProductionCommentPanel" title="Line production commentary"
+          colSpan="12" readonlyIf="$isReadOnly !== false">
+          <field name="lineProductionComment" showTitle="false" colSpan="12" widget="Html"
+            x-lite="true"/>
+        </panel>
         <field name="$isReadOnly" hidden="true"/>
         <field name="product.productTypeSelect" hidden="true"/>
       </panel>
@@ -315,9 +320,9 @@
       <panel name="deliveryPanel" title="Delivery">
         <field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedDelivDate"
-          onChange="save,action-sale-order-line-supplychain-method-update-reservation-date"
+          onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
           readonlyIf="$availabiltyRequest"/>
-        <field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
+        <field name="deliveredQty" readonly="true" hidden="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
@@ -449,6 +454,11 @@
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
       </panel>
+      <panel name="lineProductionCommentPanel" title="Line production commentary" colSpan="12"
+        if="__config__.app.isApp('production')">
+        <field name="lineProductionComment" showTitle="false" colSpan="12" widget="Html"
+          x-lite="true" if="__config__.app.isApp('production')"/>
+      </panel>
     </panel>
     <panel-tabs hideIf="typeSelect == 1" name="allPanelTab">
       <panel name="marginPanel" title="Margin">
@@ -565,7 +575,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-view name="action-sale-order-line-view-show-invoice-lines"
@@ -610,6 +620,7 @@
     <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -634,6 +645,7 @@
     <action name="action-sale-order-attrs-hide-ati"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -658,6 +670,7 @@
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">
+    <action name="action-sale-order-line-method-compute-pricing-scale"/>
     <action name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/>
     <action name="action-sale-order-line-method-get-discount"/>
@@ -704,6 +717,13 @@
     <action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-method-compute-analytic-distribution"/>
   </action-group>
+
+  <action-group name="action-sale-order-line-group-deliv-estimated-date-onchange">
+    <action name="save" if="__id__"/>
+    <action name="action-sale-order-line-supplychain-method-update-reservation-date"
+      if="__id__"/>
+  </action-group>
+
   <action-attrs name="action-sale-order-attrs-hide-ati">
     <attribute name="hidden" for="exTaxTotal" expr="eval: __parent__.inAti"
       if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
@@ -818,6 +838,10 @@
       expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
   </action-record>
   <!-- ACTION METHOD -->
+
+  <action-method name="action-sale-order-line-method-compute-pricing-scale">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computePricingScale"/>
+  </action-method>
 
   <action-method name="action-sale-order-line-method-compute">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>
@@ -958,6 +982,11 @@
   <action-attrs name="action-sale-order-line-attrs-selection-in-type-select">
     <attribute name="selection-in" for="typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-delivered-qty-hidden">
+    <attribute for="deliveredQty" name="hidden"
+      expr="__parent__.statusSelect == 1 || __parent__.statusSelect == 2" if="__parent__ != null"/>
   </action-attrs>
 
   <!-- ACTION VIEW -->

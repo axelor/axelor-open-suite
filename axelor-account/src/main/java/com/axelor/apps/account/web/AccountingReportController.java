@@ -22,9 +22,13 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingReportDas2Service;
+import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
 import com.axelor.exception.service.TraceBackService;
@@ -35,9 +39,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,29 +59,59 @@ public class AccountingReportController {
    */
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-
     try {
+      AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+      AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+      AccountingReportToolService accountingReportToolService =
+          Beans.get(AccountingReportToolService.class);
 
-      String query = accountingReportService.getMoveLineList(accountingReport);
-      BigDecimal debitBalance = accountingReportService.getDebitBalance();
-      BigDecimal creditBalance = accountingReportService.getCreditBalance();
+      if (accountingReport.getReportType().getTypeSelect()
+          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
 
-      response.setValue("totalDebit", debitBalance);
-      response.setValue("totalCredit", creditBalance);
-      response.setValue("balance", debitBalance.subtract(creditBalance));
+        AccountingReportDas2Service accountingReportDas2Service =
+            Beans.get(AccountingReportDas2Service.class);
+        if (accountingReportToolService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
+          response.setError(
+              I18n.get(
+                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+          return;
+        }
 
-      ActionViewBuilder actionViewBuilder =
-          ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
-      actionViewBuilder.model(MoveLine.class.getName());
-      actionViewBuilder.add("grid", "move-line-grid");
-      actionViewBuilder.add("form", "move-line-form");
-      actionViewBuilder.param("search-filters", "move-line-filters");
-      actionViewBuilder.domain(query);
+        List<BigInteger> paymentMoveLinedistributionIdList =
+            accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
+        ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
+        actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
+        actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
+        actionViewBuilder.add("form", "payment-move-line-distribution-form");
+        actionViewBuilder.domain(
+            "self.id in (" + Joiner.on(",").join(paymentMoveLinedistributionIdList) + ")");
 
-      response.setView(actionViewBuilder.map());
+        response.setReload(true);
+        response.setView(actionViewBuilder.map());
+
+      } else {
+        String query = accountingReportService.getMoveLineList(accountingReport);
+        BigDecimal debitBalance = accountingReportService.getDebitBalance();
+        BigDecimal creditBalance = accountingReportService.getCreditBalance();
+
+        response.setValue("totalDebit", debitBalance);
+        response.setValue("totalCredit", creditBalance);
+        response.setValue("balance", debitBalance.subtract(creditBalance));
+
+        ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
+        actionViewBuilder.model(MoveLine.class.getName());
+        actionViewBuilder.add("grid", "move-line-grid");
+        actionViewBuilder.add("form", "move-line-form");
+        actionViewBuilder.param("search-filters", "move-line-filters");
+        actionViewBuilder.domain(query);
+
+        response.setView(actionViewBuilder.map());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -150,11 +187,10 @@ public class AccountingReportController {
    */
   public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
-    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-
     try {
+      AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+      accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+      AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
       int typeSelect = accountingReport.getReportType().getTypeSelect();
 
@@ -176,10 +212,11 @@ public class AccountingReportController {
 
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
           && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
-        MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
+        MetaFile accessFile = accountingReportService.export(accountingReport);
 
-        MetaFile accesssFile = moveLineExportService.exportMoveLine(accountingReport);
-        if (typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION && accesssFile != null) {
+        if ((typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION
+                || typeSelect == AccountingReportRepository.EXPORT_N4DS)
+            && accessFile != null) {
 
           response.setView(
               ActionView.define(I18n.get("Export file"))
@@ -187,25 +224,67 @@ public class AccountingReportController {
                   .add(
                       "html",
                       "ws/rest/com.axelor.meta.db.MetaFile/"
-                          + accesssFile.getId()
+                          + accessFile.getId()
                           + "/content/download?v="
-                          + accesssFile.getVersion())
+                          + accessFile.getVersion())
                   .param("download", "true")
                   .map());
         }
       } else {
-        accountingReportService.setPublicationDateTime(accountingReport);
-
-        String name = accountingReport.getReportType().getName() + " " + accountingReport.getRef();
-
-        String fileLink = accountingReportService.getReportFileLink(accountingReport, name);
-
-        logger.debug("Printing " + name);
-
+        if (Beans.get(AccountingReportToolService.class)
+            .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+          response.setError(
+              I18n.get(
+                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+          return;
+        }
+        String fileLink = accountingReportService.print(accountingReport);
+        String name = Beans.get(AccountingReportPrintService.class).computeName(accountingReport);
         response.setView(ActionView.define(name).add("html", fileLink).map());
-
-        accountingReportService.setStatus(accountingReport);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createExportFromReport(ActionRequest request, ActionResponse response) {
+
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+    AccountingReportDas2Service accountingReportDas2Service =
+        Beans.get(AccountingReportDas2Service.class);
+
+    try {
+      AccountingReport accountingExport =
+          accountingReportDas2Service.getAssociatedDas2Export(accountingReport);
+
+      if (accountingExport != null) {
+        response.setNotify(I18n.get("There is already N4DS export generated for this report."));
+
+      } else {
+        boolean complementaryExport = false;
+
+        if (accountingReportDas2Service.isThereAlreadyDas2ExportInPeriod(accountingReport)) {
+          complementaryExport = true;
+          response.setNotify(
+              I18n.get(
+                  "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export."));
+        }
+        accountingExport =
+            accountingReportService.createAccountingExportFromReport(
+                accountingReport, AccountingReportRepository.EXPORT_N4DS, complementaryExport);
+      }
+      response.setView(
+          ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_8))
+              .model(AccountingReport.class.getName())
+              .add("form", "accounting-report-export-form")
+              .add("grid", "accounting-report-export-grid")
+              .domain("self.reportType.typeSelect >= 1000 and self.reportType.typeSelect < 2000")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(accountingExport.getId()))
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

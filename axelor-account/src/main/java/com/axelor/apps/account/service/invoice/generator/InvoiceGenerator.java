@@ -313,6 +313,14 @@ public abstract class InvoiceGenerator {
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 
+    // PFP
+    if (accountConfig.getIsManagePassedForPayment()
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                && accountConfig.getIsManagePFPInRefund()))) {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    }
+
     initCollections(invoice);
 
     return invoice;
@@ -445,8 +453,10 @@ public abstract class InvoiceGenerator {
 
     // In the company accounting currency
     invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
+    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());
+
     invoice.setHasPendingPayments(false);
 
     logger.debug(

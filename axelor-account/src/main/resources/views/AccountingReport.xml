@@ -28,8 +28,9 @@
 
   <form name="accounting-report-form" title="Accounting report"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default">
-    <panel name="mainPanel">
+    onNew="action-accounting-report-group-on-new">
+    <panel name="mainPanel"
+      readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
       <field name="ref" readonly="true"/>
       <field name="date" readonlyIf="statusSelect == 2 &amp;&amp; reportType.typeSelect != 18"
         onChange="action-accounting-report-date-change-validate"/>
@@ -42,14 +43,18 @@
       <field name="reportType.typeSelect" hidden="true"/>
       <field name="exportTypeSelect"/>
       <field name="currency"/>
+      <field name="reportType.comparison" hidden="true"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
       <button name="searchBtn" title="Search"
-        hideIf="[12,15,16,17,2000,2001,18].indexOf(reportType.typeSelect) != -1"
+        hideIf="([12,15,16,17,2000,2001,18,20].indexOf(reportType.typeSelect) != -1)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
       <button name="exportBtn" title="Print" icon="fa-print"
         onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"/>
+      <button name="createAccountingExportBtn" title="Create accounting export"
+        icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
+        onClick="save,action-accounting-report-method-create-export-from-report"/>
       <field name="statusSelect"/>
       <field name="publicationDateTime"/>
     </panel>
@@ -57,37 +62,59 @@
     <panel-tabs name="mainPanelTab">
       <panel name="filterPanel" title="Filter">
         <field name="year" canEdit="false"
-          hideIf="reportType.typeSelect != 12  &amp;&amp; reportType.typeSelect != 15 &amp;&amp; reportType.typeSelect != 16  &amp;&amp; reportType.typeSelect != 17"
+          readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)"
+          hideIf="reportType.typeSelect != 2  &amp;&amp; reportType.typeSelect != 12  &amp;&amp; reportType.typeSelect != 15 &amp;&amp; reportType.typeSelect != 16  &amp;&amp; reportType.typeSelect != 17 &amp;&amp; reportType.typeSelect != 19 &amp;&amp; reportType.typeSelect != 20 &amp;&amp; reportType.typeSelect != 3000"
           onChange="action-accounting-report-record-period-dates"
           onSelect="action-accounting-report-attrs-year-domain"
-          requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 ||  reportType.typeSelect == 16  || reportType.typeSelect == 17"
+          requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 ||  reportType.typeSelect == 16  || reportType.typeSelect == 17 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 3000"
           grid-view="year-account-grid" form-view="year-account-form"/>
-        <field name="period" canEdit="false" hideIf="reportType.typeSelect == 18"
+        <field name="period" canEdit="false"
+          hideIf="reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 2) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3 &amp;&amp; year == null) "
           onChange="action-group-account-accounting-report-period-onchange"
+          requiredIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"
           onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
           grid-view="period-grid" canView="false"/>
-        <field name="dateFrom" hideIf="reportType.typeSelect == 18"
-          onChange="action-move-Live-report-record-set-date-to"
-          requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15"/>
-        <field name="dateTo" hideIf="reportType.typeSelect == 18"
-          requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15"/>
+        <field name="dateFrom"
+          readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || reportType.typeSelect == 3000"
+          hideIf="reportType.typeSelect == 18" onChange="action-move-Live-report-record-set-date-to"
+          requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
+        <field name="dateTo"
+          readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || reportType.typeSelect == 3000"
+          hideIf="reportType.typeSelect == 18"
+          requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
+        <field name="isComparativeBalance" widget="boolean-switch" colSpan="12"
+          showIf="reportType.typeSelect == 2"/>
+        <panel name="previousPeriodPanel" title="Previous period"
+          showIf="reportType.typeSelect == 2 &amp;&amp; isComparativeBalance" colSpan="12">
+          <field name="previousYear"
+            onChange="action-accounting-report-record-previous-period-dates"
+            onSelect="action-accounting-report-attrs-previous-year-domain"
+            grid-view="year-account-grid" form-view="year-account-form" colSpan="6"/>
+          <field name="previousPeriod"
+            onChange="action-accounting-report-record-previous-period-on-change"
+            onSelect="action-accounting-report-attrs-previous-period-domain" form-view="period-form"
+            grid-view="period-grid" canView="false" colSpan="6"/>
+          <field name="previousDateFrom" colSpan="6"/>
+          <field name="previousDateTo" colSpan="6"/>
+        </panel>
         <field name="journal"
-          hideIf="[0,1,2,3,4,5,10,12,13,14,15,16,17,18].indexOf(reportType.typeSelect) != -1"
+          hideIf="[0,1,2,3,4,5,10,12,13,14,15,16,17,18,19,20].indexOf(reportType.typeSelect) != -1"
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
-          grid-view="journal-grid" canEdit="false"/>
+          grid-view="journal-grid" canEdit="false"
+          onChange="action-accounting-report-record-reset-display-simulated-move"/>
         <field name="journalSet" if-module="axelor-bank-payment"
           if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect"
           canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
           grid-view="journal-grid" canEdit="false"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
-          hideIf="[1,2,3,4,5,10,12,13,14,15,16,17,18].indexOf(reportType.typeSelect) != -1"/>
+          hideIf="[1,2,3,4,5,10,12,13,14,15,16,17,18,19,20].indexOf(reportType.typeSelect) != -1"/>
         <field name="accountSet" requiredIf="reportType.typeSelect == 18"
-          hideIf="reportType.typeSelect == 3000 || reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 12"
+          hideIf="reportType.typeSelect == 3000 || reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 12 || reportType.typeSelect == 19 || reportType.typeSelect == 20"
           colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect"
           canNew="false" onSelect="action-accounting-report-attrs-accountset-domain"/>
         <field name="partnerSet"
-          hideIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 17 || reportType.typeSelect == 12 || reportType.typeSelect == 18"
+          hideIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 16 || reportType.typeSelect == 17 || reportType.typeSelect == 12 || reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20"
           colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect"
           canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
         <field name="analyticJournal"
@@ -113,10 +140,11 @@
           grid-view="analytic-distribution-template-grid"/>
         <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
           widget="boolean-switch"/>
-
+        <field name="minAmountExcl"
+          showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
       </panel>
       <panel name="printingInformationsPanel" title="Printing information"
-        hideIf="[16,17,18].indexOf(reportType.typeSelect) != -1">
+        hideIf="[16,17,18,19,20].indexOf(reportType.typeSelect) != -1">
         <field name="global"
           hideIf="[0,1,3,4,10,12,13,15,16,17].indexOf(reportType.typeSelect) != -1"
           onChange="action-accounting-report-record-global"/>
@@ -128,6 +156,9 @@
           onChange="action-accounting-report-record-global-by-partner"/>
         <field name="detailed" hideIf="reportType.typeSelect != 4"
           onChange="action-accounting-report-record-detailed"/>
+        <field name="displaySimulatedMove"
+          showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
+        <field name="journal.authorizeSimulatedMove" hidden="true"/>
         <separator title="Balance sheet entries" colSpan="12"
           showIf="reportType.typeSelect != 5 &amp;&amp; reportType.typeSelect != 16 &amp;&amp; reportType.typeSelect != 17"/>
         <field name="displayClosingAccountingMoves"
@@ -143,15 +174,20 @@
         <field name="displayMoveLineSequenceOnPrinting" showIf="reportType.typeSelect == 1"/>
         <field name="displayCumulativeBalance"
           showIf="reportType.typeSelect==7 || reportType.typeSelect==1"/>
+        <field name="company.accountConfig" hidden="true"/>
+        <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
       </panel>
     </panel-tabs>
 
     <panel sidebar="true" name="balancePanel" title="Balance"
-      hideIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 18">
+      hideIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20">
       <field name="totalDebit"/>
       <field name="totalCredit"/>
       <field name="balance"/>
     </panel>
+    <panel-related field="accountingReportMoveLineList" hidden="true"
+      grid-view="accounting-report-move-line-grid" form-view="accounting-report-move-line-form"
+      canEdit="false" canNew="false" canRemove="false"/>
 
   </form>
 
@@ -179,26 +215,26 @@
     model="com.axelor.apps.account.db.AccountingReport"
     onNew="action-accounting-report-record-default">
 
-    <panel name="searchPanel" title="Search">
+    <panel name="searchPanel" title="Search" readonlyIf="reportType.typeSelect == 1011">
       <field name="ref" readonly="true"/>
       <field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
       <field name="reportType"
         onChange="action-group-account-accounting-report-reporttype-onchange"
-        domain="self.reportExportTypeSelect = 2 AND self.company = :company"/>
+        domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"/>
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
         onChange="action-group-account-accounting-report-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
-      <field name="year" hideIf="!$contains([1000, 1010, 1001], reportType.typeSelect)"
+      <field name="year" hideIf="!$contains([1000, 1010, 1001, 1011], reportType.typeSelect)"
         onChange="action-accounting-report-record-period-dates"
         onSelect="action-accounting-report-attrs-year-domain"
-        requiredIf="$contains([1000, 1010], reportType.typeSelect)" grid-view="year-account-grid"
-        form-view="year-account-form"/>
+        requiredIf="$contains([1000, 1010,1011], reportType.typeSelect)"
+        grid-view="year-account-grid" form-view="year-account-form"/>
       <field name="period" canEdit="false"
         onChange="action-group-account-accounting-report-period-onchange"
         onSelect="action-accounting-report-attrs-period-domain"
-        hideIf="reportType.typeSelect == 1000"
-        requiredIf="!$contains([1000, 1010, 1001], reportType.typeSelect)" form-view="period-form"
-        grid-view="period-grid" canView="false"/>
+        hideIf="reportType.typeSelect == 1000 || reportType.typeSelect == 1011"
+        requiredIf="!$contains([1000, 1010, 1001, 1011], reportType.typeSelect)"
+        form-view="period-form" grid-view="period-grid" canView="false"/>
       <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"
         readonlyIf="(reportType.typeSelect == 1010 &amp;&amp; period != null) || reportType.typeSelect == 1000"
         requiredIf="reportType.typeSelect == 1001"/>
@@ -206,32 +242,39 @@
         readonlyIf="(reportType.typeSelect == 1010 &amp;&amp; period != null) || reportType.typeSelect == 1000"
         requiredIf="reportType.typeSelect == 1001"/>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
-        hideIf="$contains([1000, 1010], reportType.typeSelect)"/>
+        hideIf="$contains([1000, 1010, 1011], reportType.typeSelect)"/>
+      <field name="minAmountExcl" showIf="reportType.typeSelect == 1011"/>
       <field name="reportType.typeSelect" hidden="true"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
       <field name="statusSelect"/>
       <button name="searchBtn" title="Search"
-        showIf="statusSelect != 2 || $contains([1000, 1010, 1001], reportType.typeSelect)"
+        showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
       <button name="exportBtn" title="Export"
-        showIf="statusSelect != 2 || $contains([1000, 1010, 1001], reportType.typeSelect)"
+        showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect) || (statusSelect == 2 &amp;&amp; reportType.typeSelect == 1011 &amp;&amp; !exported)"
         onClick="action-group-account-accounting-report-export-click"/>
       <button name="showMoveExportedBtn" title="Exported moves"
-        hideIf="statusSelect != 2 || $contains([1000, 1010], reportType.typeSelect)"
+        hideIf="statusSelect != 2 || $contains([1000, 1010, 1011], reportType.typeSelect)"
         onClick="save,action-accounting-report-method-show-move-exported"/>
       <button name="replayExportBtn" title="Run export again"
-        hideIf="statusSelect != 2 || $contains([1000, 1010], reportType.typeSelect)"
+        hideIf="statusSelect != 2 || $contains([1000, 1010, 1011], reportType.typeSelect)"
         onClick="save,action-accounting-report-method-replay-export"/>
+      <field name="exported" readonly="true" hideIf="reportType.typeSelect != 1011"/>
+      <field name="complementaryExport" readonly="true" hideIf="reportType.typeSelect != 1011"/>
     </panel>
 
-    <panel sidebar="true" name="balancePanel" title="Balance">
+    <panel sidebar="true" name="balancePanel" title="Balance"
+      hideIf="reportType.typeSelect == 1011">
       <field name="totalDebit"/>
       <field name="totalCredit"/>
       <field name="balance"/>
     </panel>
-
+    <panel-related field="accountingReportMoveLineList"
+      grid-view="accounting-report-move-line-grid" form-view="accounting-report-move-line-form"
+      showIf="reportType.typeSelect == 1011 &amp;&amp; accountingReportMoveLineList.length &gt; 0"
+      canEdit="false" canNew="false" canRemove="false"/>
   </form>
 
 
@@ -260,6 +303,11 @@
     <action name="action-accounting-report-record-reset"/>
   </action-group>
 
+  <action-group name="action-accounting-report-group-on-new">
+    <action name="action-accounting-report-record-default"/>
+    <action name="action-accounting-report-attrs-on-new"/>
+  </action-group>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-accounting-report-attrs-period-domain">
@@ -270,8 +318,21 @@
       if="eval: year == null "/>
   </action-attrs>
 
+  <action-attrs name="action-accounting-report-attrs-previous-period-domain">
+    <attribute name="domain" expr="eval: &quot;self.year.id = ${previousYear?.id}&quot;"
+      for="previousPeriod" if="eval: previousYear != null"/>
+    <attribute name="domain" for="previousPeriod"
+      expr="eval: &quot; self.year.company = :company AND self.year.typeSelect = 1 &quot;"
+      if="eval: previousYear == null "/>
+  </action-attrs>
+
   <action-attrs name="action-accounting-report-attrs-year-domain">
     <attribute name="domain" for="year"
+      expr="eval: &quot;self.company.id = ${company?.id} AND self.typeSelect = 1 &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-previous-year-domain">
+    <attribute name="domain" for="previousYear"
       expr="eval: &quot;self.company.id = ${company?.id} AND self.typeSelect = 1 &quot;"/>
   </action-attrs>
 
@@ -279,6 +340,11 @@
     model="com.axelor.apps.account.db.AccountingReport">
     <attribute for="accountSet" name="domain"
       expr="eval: &quot; self.company = :company AND ((${reportType?.typeSelect} = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (${reportType?.typeSelect} &lt;&gt; 18 AND (${reportType?.typeSelect} &lt;&gt; 6 OR self.useForPartnerBalance = true))) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-on-new">
+    <attribute name="hidden" for="displaySimulatedMove"
+      expr="eval: !__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne())?.fetchOne().isActivateSimulatedMove"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -314,14 +380,31 @@
   <action-record name="action-accounting-report-record-year"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="year" expr="eval: period.year" if="eval : period != null"/>
-    <field name="year" expr="eval: null" if="!(typeSelect in [12,15,16,17])"/>
+    <field name="year" expr="eval: null"
+      if="(period == null &amp;&amp; !(typeSelect in [2,12,15,16,17]))"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-record-previous-period-on-change"
+    model="com.axelor.apps.account.db.AccountingReport">
+    <field name="previousYear" expr="eval: previousPeriod.year" if="previousPeriod != null"/>
+    <field name="previousDateFrom" expr="eval: previousPeriod.fromDate"
+      if="previousPeriod != null"/>
+    <field name="previousDateTo" expr="eval: previousPeriod.toDate"
+      if="previousPeriod != null"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-period-dates"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="period" expr="eval: null"/>
-    <field name="dateFrom" expr="eval: year.fromDate"/>
-    <field name="dateTo" expr="eval: year.toDate"/>
+    <field name="dateFrom" expr="eval: year.fromDate" if="year"/>
+    <field name="dateTo" expr="eval: year.toDate" if="year"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-record-previous-period-dates"
+    model="com.axelor.apps.account.db.AccountingReport">
+    <field name="previousPeriod" expr="eval: null"/>
+    <field name="previousDateFrom" expr="eval: previousYear.fromDate" if="previousYear"/>
+    <field name="previousDateTo" expr="eval: previousYear.toDate" if="previousYear"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-date-from-and-date-to"
@@ -372,11 +455,23 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="currency" expr="eval:__user__.activeCompany?.currency"/>
+    <field name="date" expr="eval:__config__.app.getTodayDate(null)"/>
+    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="date"
+      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
   </action-record>
 
   <action-record name="action-move-Live-report-record-set-date-to"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="dateTo" expr="eval: dateFrom" if="dateFrom &amp;&amp; !dateTo"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-record-reset-display-simulated-move"
+    model="com.axelor.apps.account.db.AccountingReport">
+    <field name="displaySimulatedMove" expr="eval: false"
+      if="!journal?.authorizeSimulatedMove"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -418,6 +513,11 @@
       method="setBankDetailsDomain"/>
   </action-method>
 
+  <action-method name="action-accounting-report-method-create-export-from-report">
+    <call class="com.axelor.apps.account.web.AccountingReportController"
+      method="createExportFromReport"/>
+  </action-method>
+
   <action-validate name="action-accounting-report-date-change-validate">
     <info
       message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report."
@@ -427,6 +527,9 @@
   <action-validate name="action-account-report-alert-typeselect">
     <alert message="Make sure that all accounting moves are validated."
       if="reportType?.typeSelect == 12 || reportType?.typeSelect == 15"/>
+    <alert
+      message="Make sure there isn't another ongoing DAS2 export for this period that has not been exported yet"
+      if="reportType?.typeSelect == 19"/>
   </action-validate>
 
   <search-filters name="accounting-report-filters"

@@ -24,6 +24,9 @@
       <field name="enableSalesProductByTradName" widget="boolean-switch"/>
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
+      <field name="enablePricingScale" widget="boolean-switch"/>
+      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
+        showIf="enablePricingScale"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

@@ -42,6 +42,8 @@ import com.axelor.apps.sale.service.PartnerSaleService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
+import com.axelor.apps.sale.service.SaleOrderDomainService;
+import com.axelor.apps.sale.service.SaleOrderDomainServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
@@ -53,6 +55,8 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
@@ -104,5 +108,7 @@ public class SaleModule extends AxelorModule {
     bind(ProductCategoryServiceImpl.class).to(ProductCategoryServiceSaleImpl.class);
     bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
+    bind(ConfiguratorMetaJsonFieldService.class).to(ConfiguratorMetaJsonFieldServiceImpl.class);
+    bind(SaleOrderDomainService.class).to(SaleOrderDomainServiceImpl.class);
   }
 }

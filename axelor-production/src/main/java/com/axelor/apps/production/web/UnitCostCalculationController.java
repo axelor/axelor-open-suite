@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -126,6 +129,86 @@ public class UnitCostCalculationController {
         response.setCanClose(true);
       } else {
         response.setError(IExceptionMessage.UNIT_COST_CALCULATION_IMPORT_CSV_ERROR);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void fillProductSetDomain(ActionRequest request, ActionResponse response) {
+    try {
+      UnitCostCalculation unitCostCalculation =
+          request.getContext().asType(UnitCostCalculation.class);
+
+      UnitCostCalculationService unitCostCalculationService =
+          Beans.get(UnitCostCalculationService.class);
+
+      Company company = null;
+
+      if (unitCostCalculationService.hasDefaultBOMSelected()) {
+        LinkedHashMap<String, Object> companyMap =
+            (LinkedHashMap<String, Object>) request.getContext().get("company");
+        if (companyMap != null) {
+          company =
+              Beans.get(CompanyRepository.class).find(((Integer) companyMap.get("id")).longValue());
+        }
+      }
+
+      String domain =
+          unitCostCalculationService.createProductSetDomain(unitCostCalculation, company);
+      response.setAttr("productSet", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void fillCompanySet(ActionRequest request, ActionResponse response) {
+    try {
+      UnitCostCalculationService unitCostCalculationService =
+          Beans.get(UnitCostCalculationService.class);
+
+      if (unitCostCalculationService.hasDefaultBOMSelected()) {
+        UnitCostCalculation unitCostCalculation =
+            request.getContext().asType(UnitCostCalculation.class);
+
+        unitCostCalculation =
+            Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+
+        LinkedHashMap<String, Object> companyMap =
+            (LinkedHashMap<String, Object>) request.getContext().get("company");
+
+        if (companyMap == null) {
+          return;
+        }
+
+        Company company =
+            Beans.get(CompanyRepository.class).find(((Integer) companyMap.get("id")).longValue());
+
+        unitCostCalculationService.fillCompanySet(unitCostCalculation, company);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillCompany(ActionRequest request, ActionResponse response) {
+    try {
+      UnitCostCalculationService unitCostCalculationService =
+          Beans.get(UnitCostCalculationService.class);
+
+      if (unitCostCalculationService.hasDefaultBOMSelected()) {
+        UnitCostCalculation unitCostCalculation =
+            request.getContext().asType(UnitCostCalculation.class);
+
+        unitCostCalculation =
+            Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+
+        Company company = unitCostCalculationService.getSingleCompany(unitCostCalculation);
+
+        response.setValue("$company", company);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

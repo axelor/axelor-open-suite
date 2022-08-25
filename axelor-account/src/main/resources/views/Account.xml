@@ -8,10 +8,12 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
+    <field name="commonPosition"/>
     <field name="reconcileOk"/>
     <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="defaultTax" hidden="true"/>
   </grid>
 
   <grid name="account-simple-grid" title="Accounting.Accounts"
@@ -40,9 +42,10 @@
   </tree>
 
   <form name="account-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new"
-    onLoad="action-account-method-compute-balance"
-    onSave="action-account-method-check-if-code-already-exist-for-company">
+    model="com.axelor.apps.account.db.Account" width="large"
+    onNew="action-account-record-new,action-method-account-hide-analytic"
+    onLoad="action-account-method-compute-balance,action-method-account-hide-analytic"
+    onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8">
         <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
@@ -55,25 +58,44 @@
       <panel name="settingsPanel" title="Settings" colSpan="12">
         <field name="accountType" required="true" form-view="account-type-form"
           grid-view="account-type-grid"/>
+        <field name="commonPosition"/>
         <field name="company" required="true" canEdit="false" widget="SuggestBox"
-          onChange="action-account-validate" readonlyIf="parentAccount != null"
+          onChange="action-account-group-company-onChange" readonlyIf="parentAccount != null"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
           domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-        <spacer name="parentAccountSpacer" colSpan="6"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-        <field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4"
-          onChange="action-account-record-uncheck-analytic-distribution-required"/>
-        <field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch"
-          colSpan="4" showIf="analyticDistributionAuthorized"/>
-        <field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch"
-          colSpan="4" showIf="analyticDistributionAuthorized"/>
-        <field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"
-          onChange="action-account-record-uncheck-tax-required"/>
-        <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine"
-          widget="boolean-switch" colSpan="4"/>
+        <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
+          <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
+            onChange="action-account-record-uncheck-tax-required"/>
+          <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
+            widget="boolean-switch"/>
+          <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
+        </panel>
+        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
+          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
+            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+          <field name="analyticDistributionRequiredOnInvoiceLines"
+            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+          <field name="analyticDistributionRequiredOnMoveLines"
+            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
+            domain="self.company = :company" colSpan="12" canNew="true" canSelect="true"
+            onChange="action-account-account-method-new-analytic-dist-template">
+            <editor>
+              <field name="name"/>
+              <field name="company" readonly="true"/>
+              <field name="analyticDistributionLineList" colSpan="12" editable="true"
+                showTitle="false" grid-view="analytic-distribution-line-editable-grid"
+                form-view="analytic-distribution-line-form"/>
+            </editor>
+          </field>
+        </panel>
+      </panel>
+      <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">
+        <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
       </panel>
       <panel name="showMoveLinesPanel" colSpan="12" showIf="id">
         <button name="showMoveLineBtn" title="Show move lines" colSpan="3"
@@ -143,12 +165,24 @@
     <action name="action-account-record-new-employee-account"/>
   </action-group>
 
+  <action-group name="action-account-group-on-change-analytic-distribution-authorized">
+    <action name="action-account-record-uncheck-analytic-distribution-required"/>
+    <action name="action-account-account-method-new-analytic-dist-template"/>
+  </action-group>
+
+  <action-group name="action-account-group-company-onChange">
+    <action name="action-account-record-clean-analytic"/>
+    <action name="action-account-validate"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="serviceType"
+      expr="eval:__config__.app.getApp('account').defaultServiceTypeTypology"/>
   </action-record>
 
   <action-validate name="action-account-validate">
@@ -197,11 +231,18 @@
       if="!analyticDistributionAuthorized"/>
     <field name="analyticDistributionRequiredOnMoveLines" expr="eval: false"
       if="!analyticDistributionAuthorized"/>
+    <field name="analyticDistributionTemplate" expr="eval: null"
+      if="!analyticDistributionAuthorized"/>
   </action-record>
 
   <action-record name="action-account-record-uncheck-tax-required"
     model="com.axelor.apps.account.db.Account">
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
+  </action-record>
+
+  <action-record name="action-account-record-clean-analytic"
+    model="com.axelor.apps.account.db.Account">
+    <field name="analyticDistributionTemplate" expr="eval:null"/>
   </action-record>
 
   <action-method name="action-account-method-compute-balance">
@@ -213,10 +254,23 @@
       method="checkIfCodeAccountAlreadyExistForCompany"/>
   </action-method>
 
+  <action-method name="action-account-account-method-new-analytic-dist-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="createAnalyticDistTemplate"/>
+  </action-method>
+
   <search-filters name="account-filters" model="com.axelor.apps.account.db.Account"
     title="Account filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-method name="action-on-change-distribution-template-account">
+    <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
+  </action-method>
+
+  <action-method name="action-method-account-hide-analytic">
+    <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
+  </action-method>
 
 </object-views>

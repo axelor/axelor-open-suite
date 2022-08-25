@@ -24,6 +24,8 @@
       <field name="action" requiredIf="metaView == null" domain="self.type = 'action-view'"
         showIf="metaView == null"/>
       <field name="colspan"/>
+      <field name="canSearch" showIf="viewType == 'grid'"/>
+      <field name="height"/>
       <field name="paginationLimit" showIf="viewType == 'grid'"/>
     </panel>
   </form>

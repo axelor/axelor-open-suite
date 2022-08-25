@@ -12,7 +12,6 @@
     <date name="advancePaymentDate" title="Date" required="true"/>
 
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
-
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       required="true"/>
     <integer name="statusSelect" title="Status" selection="advance.payment.status.select"/>

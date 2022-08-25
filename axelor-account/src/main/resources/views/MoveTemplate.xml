@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="move-template-grid" title="Move template"
+  <grid name="move-template-grid" title="Move templates"
     model="com.axelor.apps.account.db.MoveTemplate">
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -118,7 +118,8 @@
       <panel-related name="dataInputListPanel" field="dataInputList"
         type="one-to-many" showIf="moveTemplateType.typeSelect == 1"
         target="com.axelor.apps.base.db.Wizard" title="Move Lines data input"
-        grid-view="wizard-custom-in-percentage-grid" colSpan="12"/>
+        grid-view="wizard-custom-in-percentage-grid" form-view="wizard-custom-in-percentage-form"
+        colSpan="12"/>
       <panel-related name="moveTemplateSetPanel" field="moveTemplateSet"
         type="many-to-many" showIf="moveTemplateType.typeSelect == 2"
         target="com.axelor.apps.account.db.MoveTemplate" title="Move templates"
@@ -150,6 +151,26 @@
     <field name="moveTemplate" type="many-to-one"
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
   </grid>
+
+  <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
+    model="com.axelor.apps.base.db.Wizard"
+    onLoad="action-move-template-wizard-line-set-move-template"
+    onNew="action-move-template-wizard-line-set-move-template">
+    <panel name="mainPanel">
+      <field name="date" type="date" title="Date" required="true"
+        onChange="action-move-template-wizard-check-value"/>
+      <field name="moveBalance" type="decimal" precision="20" scale="2" min="0"
+        required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+      <field name="debitPartner" target-name="fullName" title="Partner to Debit"
+        onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"/>
+      <field name="creditPartner" target-name="fullName" title="Partner to Credit"
+        onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"/>
+      <field name="moveTemplate" type="many-to-one"
+        target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+    </panel>
+  </form>
 
   <action-group name="action-move-template-group-line-list-onchange">
     <action name="action-move-template-method-set-is-valid"/>

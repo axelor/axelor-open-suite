@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPClient;
@@ -114,9 +116,9 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
 
         ccline = cclRepo.find(ccline.getId());
         BigDecimal previousRate = ccline.getExchangeRate();
-        if (currentRate.compareTo(previousRate) != 0) {
+        if (currentRate.compareTo(previousRate) != 0 && today.isAfter(ccline.getFromDate())) {
           ccline.setToDate(
-              today.minusDays(1).isAfter(ccline.getFromDate()) ? today.minusDays(1) : today);
+              !today.minusDays(1).isBefore(ccline.getFromDate()) ? today.minusDays(1) : today);
           this.saveCurrencyConversionLine(ccline);
           String variations = this.getVariations(currentRate, previousRate);
           this.createCurrencyConversionLine(
@@ -138,7 +140,17 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
   @Override
   public BigDecimal convert(Currency currencyFrom, Currency currencyTo)
       throws MalformedURLException, JSONException, AxelorException {
+    return this.getRateWithDate(currencyFrom, currencyTo).getRight();
+  }
+
+  @Override
+  public Pair<LocalDate, BigDecimal> getRateWithDate(Currency currencyFrom, Currency currencyTo)
+      throws MalformedURLException, JSONException, AxelorException {
     BigDecimal rate = new BigDecimal(-1);
+
+    LocalDate todayDate =
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
 
     LOG.trace("Currerncy conversion From: {} To: {}", currencyFrom, currencyTo);
     LocalDate date =
@@ -153,51 +165,58 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
         isRelatedConversion = true;
       }
 
-      Float rt = this.validateAndGetRate(1, currencyFrom, currencyTo, date);
+      Pair<LocalDate, Float> pair =
+          this.validateAndGetRateWithDate(1, currencyFrom, currencyTo, todayDate);
+      Float rt = pair.getRight();
       if (rt == null) {
         rt = 1.0f / this.validateAndGetRate(1, currencyTo, currencyFrom, date); // reverse
       }
       rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_UP);
+      LOG.trace("Currerncy conversion rate: {}", rate);
+      return Pair.of(pair.getLeft(), rate);
     } else LOG.trace("Currency from and to must be filled to get rate");
-    LOG.trace("Currerncy conversion rate: {}", rate);
-    return rate;
+    return Pair.of(todayDate, rate);
   }
 
   @Override
   public Float validateAndGetRate(
       int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws AxelorException {
-    try {
-      HTTPResponse response = null;
+    return this.validateAndGetRateWithDate(dayCount, currencyFrom, currencyTo, date).getRight();
+  }
 
-      if (dayCount < 8) {
+  @Override
+  public Pair<LocalDate, Float> validateAndGetRateWithDate(
+      int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
+      throws AxelorException {
+    HTTPResponse response = null;
+
+    if (dayCount < 8) {
+      try {
         response = callApiBaseEuru(currencyFrom, currencyTo, date);
         LOG.trace(
             "Webservice response code: {}, response message: {}",
             response.getStatusCode(),
             response.getStatusMessage());
-        if (response.getStatusCode() != 200) return -1f;
+        if (response.getStatusCode() != 200) return Pair.of(date, -1f);
 
         if (response.getContentAsString().isEmpty()) {
-          return this.validateAndGetRate(
+          return this.validateAndGetRateWithDate(
               (dayCount + 1), currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
         } else {
-          return this.getRateFromJson(currencyFrom, currencyTo, response);
+          Float rate = this.getRateFromJson(currencyFrom, currencyTo, response);
+          return Pair.of(date, rate);
         }
-      } else {
+      } catch (Exception e) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(IExceptionMessage.CURRENCY_7),
-                date.plus(Period.ofDays(1)),
-                appBaseService.getTodayDate(
-                    Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null))));
+            e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
       }
-    } catch (Exception e) {
+    } else {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_6));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CURRENCY_7),
+          currencyFrom.getName(),
+          currencyTo.getName());
     }
   }
 
@@ -212,6 +231,13 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
         if (isRelatedConversion) {
           String fromRate = jsonResult.getJSONObject("rates").optString(currencyFrom.getCode());
           String toRate = jsonResult.getJSONObject("rates").optString(currencyTo.getCode());
+          if (StringUtils.isEmpty(toRate)) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.CURRENCY_7),
+                currencyFrom.getName(),
+                currencyTo.getName());
+          }
           isRelatedConversion = false;
           return Float.parseFloat(toRate) / Float.parseFloat(fromRate);
         } else {
@@ -224,6 +250,17 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
         if (code == 105 || code == 201) {
           return null;
         }
+      } else if (jsonResult.containsKey("error")
+          && jsonResult.getJSONObject("error").getInt("code") == 202) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CURRENCY_7),
+            currencyFrom.getName(),
+            currencyTo.getName());
+      } else if (jsonResult.containsKey("error")) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            jsonResult.getJSONObject("error").getString("info"));
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, response.getContentAsString());

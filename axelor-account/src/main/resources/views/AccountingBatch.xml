@@ -14,8 +14,7 @@
   </grid>
 
   <form onNew="action-accounting-batch-record-on-new" name="accounting-batch-form"
-    title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch"
-    onLoad="action-accounting-batch-group-on-load">
+    title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
     <panel name="mainPanel">
       <field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
@@ -30,10 +29,12 @@
       <field name="company.tradingNameSet" colSpan="12" hidden="true"/>
       <field name="isDebtRecoveryByTradingName"
         readonlyIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
-        onChange="action-accounting-batch-attrs-display-trading-name-set"/>
+        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+        showIf="actionSelect == 14"/>
       <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
         form-view="trading-name-form" domain=":company member of self.companySet" canNew="false"
-        canEdit="false"/>
+        canEdit="false" if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+        showIf="isDebtRecoveryByTradingName &amp;&amp; actionSelect == 14"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -149,7 +150,10 @@
         onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
       <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21"
         onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
-
+      <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
+        showIf="actionSelect == 23"
+        onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
+        colSpan="12"/>
     </panel>
   </form>
 
@@ -164,20 +168,15 @@
     <action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
   </action-group>
 
-  <action-group name="action-accounting-batch-group-on-load">
-    <action name="action-accounting-batch-attrs-trading-names-management"/>
-    <action name="action-accounting-batch-attrs-display-trading-name-set"/>
-  </action-group>
-
-
   <!-- ACTION RECORD -->
   <action-record name="action-accounting-batch-record-on-new"
     model="com.axelor.apps.account.db.AccountingBatch">
-    <field name="createdOn" expr="__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"
+    <field name="createdOn" expr="__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval: __config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -193,6 +192,12 @@
   </action-record>
 
   <!-- ACTION METHOD -->
+  <action-method
+    name="action-accounting-batch-method-block-customers-with-late-payments">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="blockCustomersWithLatePayments"/>
+  </action-method>
+
   <action-method name="action-accounting-batch-method-action-reimbursement">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionReimbursement"/>
@@ -266,16 +271,6 @@
   <action-attrs
     name="action-accounting-batch-attrs-set-empty-year-and-accountset-value">
     <attribute name="value" expr="eval: null" for="year,accountSet"/>
-  </action-attrs>
-
-  <action-attrs name="action-accounting-batch-attrs-trading-names-management">
-    <attribute name="hidden" for="isDebtRecoveryByTradingName"
-      expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
-  </action-attrs>
-
-  <action-attrs name="action-accounting-batch-attrs-display-trading-name-set">
-    <attribute name="hidden" for="tradingNameSet"
-      expr="!(__config__.app.getApp('base').enableTradingNamesManagement &amp;&amp; isDebtRecoveryByTradingName)"/>
   </action-attrs>
 
   <search-filters name="accounting-batch-filters"

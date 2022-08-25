@@ -45,6 +45,8 @@
         <field name="maxCapacityPerCycle" colSpan="3"/>
         <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
           x-seconds="true"/>
+        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
+          x-seconds="true"/>
       </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" height="5" colSpan="12"/>
@@ -81,10 +83,11 @@
   <action-record name="action-prod-process-line-record-default"
     model="com.axelor.apps.production.db.ProdProcessLine">
     <field name="priority"
-      expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
+      expr="eval: (__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority()? __parent__.prodProcessLineList.max{ it.getPriority() }.getPriority() : 0) + 10"/>
     <field name="stockLocation"
       expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
     <field name="workCenterTypeSelect" expr="eval: 1"/>
+    <field name="outsourcing" expr="eval: __parent__?.outsourcing"/>
   </action-record>
 
   <action-view name="action-production-view-work-center-group-wizard"
@@ -111,8 +114,14 @@
       expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
   </action-attrs>
 
+  <action-attrs name="action-prod-process-line-attrs-set-timing-of-implementation">
+    <attribute name="value" for="timingOfImplementation"
+      expr="eval: workCenter?.timingOfImplementation"/>
+  </action-attrs>
+
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-method-duration"/>
+    <action name="action-prod-process-line-attrs-set-timing-of-implementation"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
   </action-group>
 
@@ -132,6 +141,8 @@
     <call class="com.axelor.apps.production.web.ProdProcessLineController"
       method="updateDuration"/>
   </action-method>
+
+
 
   <action-method name="action-prod-process-line-method-capacity-settings">
     <call class="com.axelor.apps.production.web.ProdProcessLineController"

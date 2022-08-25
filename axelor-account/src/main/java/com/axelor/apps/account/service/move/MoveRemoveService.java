@@ -182,7 +182,8 @@ public class MoveRemoveService {
     for (Move move : moveList) {
       try {
         move = moveRepo.find(move.getId());
-        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
           this.archiveDaybookMove(move);

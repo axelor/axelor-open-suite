@@ -40,12 +40,15 @@
     <string name="moveDescription" title="Move description"/>
     <boolean name="includeNotStockManagedProduct" title="Include not stock managed product"/>
 
+    <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
 		public static final int ACTION_ACCOUNTING_CUT_OFF = 1;
 		public static final int ACTION_INVOICE_OUTGOING_STOCK_MOVES = 2;
 		public static final int ACTION_INVOICE_ORDERS = 3;
+		public static final int ACTION_UPDATE_STOCK_HISTORY = 4;
 
 		public static final String CODE_BATCH_BILL_SUB = "S_B_SUB";
 

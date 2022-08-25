@@ -30,14 +30,20 @@ public class StockConfigProductionService extends StockConfigService {
   public StockLocation getProductionVirtualStockLocation(
       StockConfig stockConfig, boolean isOutsource) throws AxelorException {
 
-    if (stockConfig.getProductionVirtualStockLocation() == null
-        || (isOutsource
-            && !stockConfig.getProductionVirtualStockLocation().getIsOutsourcingLocation())) {
+    if (stockConfig.getProductionVirtualStockLocation() == null) {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2),
           stockConfig.getCompany().getName());
+    }
+
+    if (isOutsource
+        && !stockConfig.getProductionVirtualStockLocation().getIsOutsourcingLocation()) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING));
     }
 
     return stockConfig.getProductionVirtualStockLocation();

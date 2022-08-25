@@ -41,16 +41,53 @@
     <field name="typeSelect"/>
   </grid>
 
+  <grid name="analytic-move-line-move-line-grid" title="Analytic move lines"
+    model="com.axelor.apps.account.db.AnalyticMoveLine">
+    <field name="analyticAxis"/>
+    <field name="analyticAccount"/>
+    <field name="percentage"/>
+    <field name="amount"/>
+    <field name="analyticJournal" hidden="true"/>
+    <field name="date" hidden="true"/>
+  </grid>
+
+  <grid name="analytic-move-line-invoice-grid" title="Analytic move lines"
+    model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis,analyticAccount">
+    <field name="analyticAxis" hidden="true"/>
+    <field name="analyticAccount"/>
+    <field name="percentage"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="analyticJournal"/>
+  </grid>
+
+  <form name="analytic-move-line-move-line-form" title="Analytic move line"
+    model="com.axelor.apps.account.db.AnalyticMoveLine"
+    onLoad="action-analytic-move-line-attrs-hide-fields"
+    onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
+    <panel name="mainPanel">
+      <field name="analyticAxis"
+        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"
+        onChange="action-record-onchange-axis-analytic-move-line"/>
+      <field name="analyticAccount" onSelect="action-attrs-domain-onselect-analytic-account"
+        readonlyIf="!analyticAxis"/>
+      <field name="percentage" min="0" max="100"
+        onChange="action-method-calculate-amount-with-percentage-analytic-move-line"/>
+    </panel>
+  </form>
+
   <form name="analytic-move-line-form" title="Analytic Move Line"
     model="com.axelor.apps.account.db.AnalyticMoveLine"
     onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
     onLoad="action-analytic-move-line-attrs-title-project" width="large">
     <panel name="mainPanel">
       <field name="analyticJournal" form-view="analytic-journal-form"
-        grid-view="analytic-journal-grid"/>
-      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        grid-view="analytic-journal-grid"
+        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"
+        onChange="action-record-onchange-axis-analytic-move-line"/>
       <field name="analyticAccount" form-view="analytic-account-form"
-        grid-view="analytic-account-grid"/>
+        grid-view="analytic-account-grid" onSelect="action-attrs-domain-onselect-analytic-account"/>
       <field name="date"/>
       <field name="percentage" min="0" max="100"/>
       <field name="originalPieceAmount" aggregate="sum"/>
@@ -84,13 +121,16 @@
     onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
     <panel name="mainPanel">
       <field name="analyticJournal" grid-view="analytic-journal-grid"
-        form-view="analytic-journal-form"/>
-      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        form-view="analytic-journal-form"
+        onChange="action-attrs-domain-onselect-axis-analytic-move-line"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onChange="action-attrs-domain-onselect-journal-analytic-move-line"
+        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"/>
+        form-view="analytic-account-form" onSelect="action-attrs-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
       <field name="percentage" colSpan="4" min="0" max="100"
-        onChange="action-analytic-move-line-method-compute-amount"/>
+        onChange="action-analytic-move-line-method-compute-amount,action-method-calculate-amount-with-percentage-analytic-move-line"/>
       <field name="originalPieceAmount" aggregate="sum"/>
       <field name="amount" colSpan="4" readonly="true"/>
       <field name="date" colSpan="4"/>
@@ -150,7 +190,7 @@
 
   <action-attrs name="action-analytic-move-line-attrs-hide-fields">
     <attribute for="date" name="hidden"
-      expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+      expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
     <attribute for="typeSelect" name="hidden"
       expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
     <attribute for="accountType" name="hidden"
@@ -162,17 +202,18 @@
     <action name="action-analytic-move-line-attrs-set-original-piece-amount"/>
     <action name="action-analytic-move-line-attrs-hide-fields"/>
     <action name="action-analytic-move-line-attrs-set-type-select"/>
+    <action name="action-method-analytic-move-line-move-line-onnew"/>
   </action-group>
 
   <action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
     <attribute name="value" for="isValidAnalyticMoveLineList"
-      expr="call: com.axelor.apps.account.service.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
+      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
   </action-attrs>
 
   <action-condition
     name="action-analytic-move-line-condition-valid-analytic-move-line-list">
     <check
-      error="Invalid Analytic moveLines, some axes percentage values are higher than 100%."
+      error="Invalid Analytic moveLines, some axes percentage values are different than 100%."
       field="analyticMoveLineList" if="!isValidAnalyticMoveLineList"/>
   </action-condition>
 
@@ -185,5 +226,42 @@
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
     <field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
   </search-filters>
+
+  <action-attrs name="action-attrs-domain-onselect-axis-analytic-move-line">
+    <attribute name="domain" for="analyticAxis"
+      expr="eval: &quot;self.company.id = ${analyticJournal.company.id} &quot;"
+      if="analyticJournal &amp;&amp; analyticJournal?.company"/>
+    <attribute name="domain" for="analyticAxis" expr="eval: null"
+      if="!(analyticJournal &amp;&amp; analyticJournal?.company)"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-domain-onselect-journal-analytic-move-line">
+    <attribute name="domain" for="analyticJournal"
+      expr="eval: &quot;self.company.id = ${analyticAxis.company.id} &quot;"
+      if="analyticAxis &amp;&amp; analyticAxis?.company"/>
+    <attribute name="domain" for="analyticJournal" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis?.company)"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-domain-onselect-analytic-account">
+    <attribute name="domain" for="analyticAccount"
+      expr="eval: &quot;self.analyticAxis.id = ${analyticAxis.id} &quot;" if="analyticAxis"/>
+  </action-attrs>
+
+  <action-record name="action-record-onchange-axis-analytic-move-line"
+    model="com.axelor.apps.account.db.AnalyticMoveLine">
+    <field name="analyticAccount" expr="eval: null"/>
+  </action-record>
+
+  <action-method name="action-method-analytic-move-line-move-line-onnew">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="manageNewAnalyticDistributionLine"/>
+  </action-method>
+
+  <action-method
+    name="action-method-calculate-amount-with-percentage-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="calculateAmountWithPercentage"/>
+  </action-method>
 
 </object-views>

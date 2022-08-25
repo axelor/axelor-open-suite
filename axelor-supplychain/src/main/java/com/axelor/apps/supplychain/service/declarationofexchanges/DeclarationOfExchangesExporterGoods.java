@@ -37,6 +37,7 @@ import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -238,6 +239,10 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     } else {
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         countryOrigCode = srcDstCountry;
+      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+          && ObjectUtils.notEmpty(stockMove.getFromStockLocation().getAddress())) {
+        countryOrigCode =
+            stockMove.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }

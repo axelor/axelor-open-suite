@@ -13,7 +13,9 @@
   </grid>
 
   <form name="analytic-journal-form" title="Analytic Journal"
-    model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default">
+    model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default"
+    onLoad="action-analytic-journal-on-load"
+    onSave="action-validate-for-analytic-journal-without-company">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="type" form-view="analytic-journal-type-form"
@@ -36,5 +38,21 @@
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-group name="action-analytic-journal-on-load">
+    <action name="action-attrs-analytic-journal-on-load"/>
+  </action-group>
+
+  <action-attrs name="action-attrs-analytic-journal-on-load">
+    <attribute name="readonly" for="company"
+      expr="eval: __repo__(AccountConfig).findByCompany(company).analyticJournal == __this__"
+      if="company != null &amp;&amp; __repo__(AccountConfig).findByCompany(company)"/>
+  </action-attrs>
+
+  <action-validate name="action-validate-for-analytic-journal-without-company">
+    <info
+      message="This analytic journal will not be selectable in any account configurations due to the absence of company."
+      if="company == null"/>
+  </action-validate>
 
 </object-views>

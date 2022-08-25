@@ -17,6 +17,7 @@
         form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
       <field name="paymentCondition" canEdit="false" grid-view="payment-condition-grid"
         form-view="payment-condition-form" hideIf="isEmployee"/>
+      <field name="financialDiscount"/>
       <field name="currency" canEdit="false"
         requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form"
         grid-view="currency-grid"/>
@@ -25,6 +26,8 @@
         onChange="action-partner-attrs-show-specific-tax-note,action-partner-method-get-default-specific-tax-note"/>
       <field name="specificTaxNote" colSpan="12" hidden="true"/>
       <field name="analyticDistributionTemplate" canNew="true"/>
+      <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
+        hidden="true" showIf="isSupplier"/>
       <panel name="showInvoicesPanel" colSpan="6" hideIf="isEmployee">
         <button name="showAllInvoicesBtn" title="Show invoices"
           onClick="save,action-partner-view-partner-invoice"/>
@@ -98,6 +101,10 @@
             grid-view="stop-reason-grid"/>
           <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
             grid-view="user-grid"/>
+          <panel colSpan="3">
+            <field name="createdOn" colSpan="6" showIf="createdOn"/>
+            <field name="updatedOn" colSpan="6" showIf="updatedOn"/>
+          </panel>
         </editor>
       </field>
     </panel>
@@ -135,16 +142,16 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.partner.id = :id</domain>
-    <context name="id" expr="eval: id"/>
+    <domain>self.partner.id = :partnerId</domain>
+    <context name="partnerId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
-    <context name="id" expr="eval: id"/>
+    <domain>self.partner.id = :partnerId AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
+    <context name="partnerId" expr="eval: id"/>
   </action-view>
 
   <action-method name="action-partner-method-show-client-situation">
@@ -184,7 +191,5 @@
     <context name="_partner" expr="eval: __self__"/>
     <context name="_showSingle" expr="eval:true"/>
   </action-view>
-
-
 
 </object-views>

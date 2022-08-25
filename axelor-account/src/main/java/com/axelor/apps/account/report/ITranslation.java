@@ -94,6 +94,7 @@ public interface ITranslation {
   public static final String INVOICE_PROFORMA_INVOICE = /*$$(*/ "Invoice.proformaInvoice"; /*)*/
   public static final String INVOICE_DELIVERY_ADDRESS = /*$$(*/ "Invoice.deliveryAddress"; /*)*/
   public static final String INVOICE_ORIGINAL_INVOICE = /*$$(*/ "Invoice.originalInvoice"; /*)*/
+  public static final String INVOICE_SHIPPING_DATE = /*$$(*/ "Invoice.shippingDate"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
@@ -281,8 +282,12 @@ public interface ITranslation {
       "AccountingReportType2.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_2_CREDIT = /*$$(*/
       "AccountingReportType2.credit"; /*)*/
-  public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/
-      "AccountingReportType2.generalBalance"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_VARIATION = /*$$(*/
+      "AccountingReportType2.variation"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_N = /*$$(*/ "AccountingReportType2.N"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_N_1 = /*$$(*/ "AccountingReportType2.N-1"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_VALUE = /*$$(*/
+      "AccountingReportType2.value"; /*)*/
 
   public static final String ACCOUNTING_REPORT_6_TITLE = /*$$(*/
       "AccountingReportType6.title"; /*)*/
@@ -332,6 +337,8 @@ public interface ITranslation {
       "AccountingReportType15.amount"; /*)*/
   public static final String ACCOUNTING_REPORT_15_TAX_RATE = /*$$(*/
       "AccountingReportType15.taxRate"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
+      "AccountingReportType15.fiscalPositionCode"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/
@@ -641,6 +648,64 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.total_by_account_and_analytic_template"; /*)*/
   public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ANALYTIC_TEMPLATE =
       /*$$(*/ "AccountingReportType17.total_by_analytic_template"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_19_DAS2_ACTIVITY =
+      /*$$(*/ "AccountingReportType19.das2ActivityName"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_COMPANY =
+      /*$$(*/ "AccountingReportType19.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_CURRENCY =
+      /*$$(*/ "AccountingReportType19.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_CREATED_ON =
+      /*$$(*/ "AccountingReportType19.created_on"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_FROM =
+      /*$$(*/ "AccountingReportType19.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_GRAND_TOTAL =
+      /*$$(*/ "AccountingReportType19.grandTotal"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_REGISTRATION_CODE =
+      /*$$(*/ "AccountingReportType19.registrationCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_SERVICE_TYPE =
+      /*$$(*/ "AccountingReportType19.serviceType"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_SERVICE_TYPE_LABEL =
+      /*$$(*/ "AccountingReportType19.serviceTypeLabel"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_TITLE =
+      /*$$(*/ "AccountingReportType19.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_TO = /*$$(*/ "AccountingReportType19.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_TOTAL_REPORT =
+      /*$$(*/ "AccountingReportType19.total_report"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_20_ACCOUNT_CODE =
+      /*$$(*/ "AccountingReportType20.accountCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_ACCOUNT_NAME =
+      /*$$(*/ "AccountingReportType20.accountName"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_COMPANY =
+      /*$$(*/ "AccountingReportType20.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_CURRENCY =
+      /*$$(*/ "AccountingReportType20.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_CREATED_ON =
+      /*$$(*/ "AccountingReportType20.created_on"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_CREDIT = /*$$(*/
+      "AccountingReportType20.credit"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_DEBIT = /*$$(*/
+      "AccountingReportType20.debit"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_DESCRIPTION = /*$$(*/
+      "AccountingReportType20.description"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_FROM =
+      /*$$(*/ "AccountingReportType20.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_JOURNAL =
+      /*$$(*/ "AccountingReportType20.journal"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_MOVE_LINE_DATE =
+      /*$$(*/ "AccountingReportType20.moveLineDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_MOVE_LINE_NAME =
+      /*$$(*/ "AccountingReportType20.moveLineName"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_TITLE =
+      /*$$(*/ "AccountingReportType20.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
+      /*$$(*/ "AccountingReportType20.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
+      /*$$(*/ "AccountingReportType.provisional"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
+      /*$$(*/ "AccountingReportType.status_select_title"; /*)*/
 
   public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
   public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/

@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
@@ -29,6 +31,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.CsvTool;
@@ -43,6 +46,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -61,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,6 +87,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected AppProductionService appProductionService;
   protected ProductService productService;
   protected ProductCompanyService productCompanyService;
+  protected AppBaseService appBaseService;
+  protected BillOfMaterialService billOfMaterialService;
 
   protected Map<Long, Integer> productMap;
 
@@ -94,7 +101,9 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       UnitCostCalcLineRepository unitCostCalcLineRepository,
       AppProductionService appProductionService,
       ProductService productService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AppBaseService appBaseService,
+      BillOfMaterialService billOfMaterialService) {
     this.productRepository = productRepository;
     this.unitCostCalculationRepository = unitCostCalculationRepository;
     this.unitCostCalcLineService = unitCostCalcLineService;
@@ -103,6 +112,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     this.appProductionService = appProductionService;
     this.productService = productService;
     this.productCompanyService = productCompanyService;
+    this.appBaseService = appBaseService;
+    this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
@@ -197,7 +208,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
 
     unitCostCalculation = unitCostCalculationRepository.find(unitCostCalculation.getId());
-    this.assignProductAndLevel(this.getProductList(unitCostCalculation));
+    this.assignProductAndLevel(
+        this.getProductList(unitCostCalculation), this.getSingleCompany(unitCostCalculation));
 
     calculationProcess(unitCostCalculation);
 
@@ -245,6 +257,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       throws AxelorException {
 
     int level = this.productMap.get(product.getId()).intValue();
+    Company company = this.getSingleCompany(unitCostCalculation);
 
     log.debug("Unit cost price calculation for product : {}, level : {}", product.getCode(), level);
 
@@ -253,7 +266,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
             ? CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION
             : CostSheetService.ORIGIN_BILL_OF_MATERIAL;
 
-    BillOfMaterial billOfMaterial = product.getDefaultBillOfMaterial();
+    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
@@ -343,19 +356,21 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     return productList;
   }
 
-  protected void assignProductAndLevel(Set<Product> productList) {
+  protected void assignProductAndLevel(Set<Product> productList, Company company)
+      throws AxelorException {
 
     productMap = Maps.newHashMap();
 
     for (Product product : productList) {
 
-      this.assignProductAndLevel(product);
+      this.assignProductAndLevel(product, company);
     }
   }
 
-  protected boolean hasValidBillOfMaterial(Product product) {
+  protected boolean hasValidBillOfMaterial(Product product, Company company)
+      throws AxelorException {
 
-    BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     if (defaultBillOfMaterial != null
         && (defaultBillOfMaterial.getStatusSelect() == BillOfMaterialRepository.STATUS_VALIDATED
@@ -370,13 +385,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     return false;
   }
 
-  protected void assignProductAndLevel(Product product) {
+  protected void assignProductAndLevel(Product product, Company company) throws AxelorException {
 
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
 
-    if (hasValidBillOfMaterial(product)) {
-      this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
+    if (hasValidBillOfMaterial(product, company)) {
+      this.assignProductLevel(billOfMaterialService.getDefaultBOM(product, company), 0, company);
     }
   }
 
@@ -409,8 +424,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
    *
    * @param billOfMaterial
    * @param level
+   * @param company
+   * @throws AxelorException
    */
-  protected void assignProductLevel(BillOfMaterial billOfMaterial, int level) {
+  protected void assignProductLevel(BillOfMaterial billOfMaterial, int level, Company company)
+      throws AxelorException {
 
     if (billOfMaterial.getBillOfMaterialSet() == null
         || billOfMaterial.getBillOfMaterialSet().isEmpty()
@@ -430,10 +448,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         Product subProduct = subBillOfMaterial.getProduct();
 
         if (this.productMap.containsKey(subProduct.getId())) {
-          this.assignProductLevel(subBillOfMaterial, level);
+          this.assignProductLevel(subBillOfMaterial, level, company);
 
-          if (hasValidBillOfMaterial(subProduct)) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+          if (hasValidBillOfMaterial(subProduct, company)) {
+            this.assignProductLevel(
+                billOfMaterialService.getDefaultBOM(subProduct, company), level, company);
           }
         }
       }
@@ -480,5 +499,77 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_UPDATED);
 
     unitCostCalculationRepository.save(unitCostCalculation);
+  }
+
+  @Override
+  public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
+      throws AxelorException {
+    String domain = null;
+    if (this.hasDefaultBOMSelected()) {
+      if (company != null) {
+        domain = "self.defaultBillOfMaterial.company.id = " + company.getId().toString() + "";
+      } else {
+        domain = "self.defaultBillOfMaterial IS NOT NULL";
+      }
+
+      if (unitCostCalculation.getProductCategorySet() != null
+          && !unitCostCalculation.getProductCategorySet().isEmpty()) {
+        domain +=
+            " AND self.productCategory IN ("
+                + StringTool.getIdListString(unitCostCalculation.getProductCategorySet())
+                + ")";
+      }
+
+      if (unitCostCalculation.getProductFamilySet() != null
+          && !unitCostCalculation.getProductFamilySet().isEmpty()) {
+        domain +=
+            " AND self.productFamily IN ("
+                + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
+                + ")";
+      }
+    } else {
+      domain =
+          " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
+              + unitCostCalculation.getProductSubTypeSelect()
+              + ") AND self.defaultBillOfMaterial.company IN ("
+              + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + ") AND self.procurementMethodSelect IN ('produce', 'buyAndProduce') AND self.dtype = 'Product'";
+    }
+    log.debug("Product Domain: {}", domain);
+    return domain;
+  }
+
+  @Override
+  @Transactional
+  public void fillCompanySet(UnitCostCalculation unitCostCalculation, Company company) {
+    if (company != null) {
+      unitCostCalculation.getCompanySet().clear();
+      unitCostCalculation.addCompanySetItem(company);
+      unitCostCalculationRepository.save(unitCostCalculation);
+    }
+  }
+
+  @Override
+  public Boolean hasDefaultBOMSelected() {
+    Boolean containsDefaultBOMField = false;
+    Set<MetaField> companySpecificFields =
+        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    for (MetaField field : companySpecificFields) {
+      if (field.getName().equals("defaultBillOfMaterial")) {
+        containsDefaultBOMField = true;
+        break;
+      }
+    }
+    return containsDefaultBOMField;
+  }
+
+  @Override
+  public Company getSingleCompany(UnitCostCalculation unitCostCalculation) {
+    Company company = null;
+    if (this.hasDefaultBOMSelected() && unitCostCalculation.getCompanySet().size() == 1) {
+      Iterator<Company> companyIterator = unitCostCalculation.getCompanySet().iterator();
+      company = companyIterator.next();
+    }
+    return company;
   }
 }

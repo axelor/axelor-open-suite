@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.AppProduction;
+import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,5 +34,19 @@ public class AppProductionController {
     Beans.get(AppProductionService.class).generateProductionConfigurations();
 
     response.setReload(true);
+  }
+
+  @HandleExceptionResponse
+  public void checkIfOutsourcingDisabled(ActionRequest request, ActionResponse response) {
+    AppProduction app = request.getContext().asType(AppProduction.class);
+    if (app.getId() == null) {
+      return;
+    }
+    boolean outsourcing =
+        Beans.get(AppProductionRepository.class).find(app.getId()).getManageOutsourcing();
+    boolean outsourcingContxt = app.getManageOutsourcing();
+    if (outsourcing && !outsourcingContxt) {
+      Beans.get(AppProductionService.class).updatePartnerSubcontractTag();
+    }
   }
 }

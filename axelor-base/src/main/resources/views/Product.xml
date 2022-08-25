@@ -75,8 +75,11 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
     <field name="name"/>
     <field name="productVariant" width="200"/>
+    <field name="purchasePrice" width="120" x-scale="2"/>
     <field name="costPrice" width="120" x-scale="2"/>
     <field name="salePrice" width="120" x-scale="2"/>
+    <field name="$availableQty" title="Available stock" type="decimal" width="120"
+      sortable="false" if="__config__.app.isApp('stock')"/>
   </grid>
 
   <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product"
@@ -296,7 +299,8 @@
             if="__config__.app.isApp('purchase')"/>
           <field name="defShipCoefByPartner"
             onChange="action-product-method-supplier-catalog-coeff" hideIf="!purchasable"
-            if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+            if-module="axelor-purchase"
+            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
         </panel>
         <panel-related name="supplierCatalogListPanel" field="supplierCatalogList"
           form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"
@@ -348,6 +352,8 @@
             action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"/>
           <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel"
             colSpan="12"/>
+          <panel-dashlet action="action-stock-view-stock-history-line"
+            name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
       </panel>
       <panel name="productionInformationsPanel" title="Production information"
@@ -421,6 +427,13 @@
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
                 onSelect="action-product-nested-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+              <field name="productVariantAttr5" showIf="productVariantAttr4" canNew="true"
+                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value5"
+                form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+              <field name="productVariantValue5Set" showIf="productVariantAttr5" colSpan="6"
+                widget="TagSelect" x-color-field="colorSelect" canNew="false"
+                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
             </editor>
           </field>
           <button name="generateProductVariantBtn" title="Generate product variants"
@@ -428,6 +441,7 @@
           <field name="manageVariantPrice"/>
           <panel-dashlet name="productVariantPanel" colSpan="12"
             action="action-product-view-product-variant" showIf="id"/>
+          <field name="$_xFillProductAvailableQty" readonly="true" hidden="true"/>
         </panel>
         <panel name="childVariantPanel" showIf="parentProduct" colSpan="12">
           <field name="productVariant" showTitle="false" canSelect="false">
@@ -454,6 +468,12 @@
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue4" showTitle="false"
                 showIf="productVariantAttr4" widget="SuggestBox"
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+              <field name="productVariantAttr5" showTitle="false" readonly="true"
+                showIf="productVariantAttr4" form-view="product-variant-attr-form"
+                grid-view="product-variant-attr-grid"/>
+              <field name="productVariantValue5" showTitle="false"
+                showIf="productVariantAttr5" widget="SuggestBox"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
             </editor>
           </field>
@@ -810,7 +830,7 @@
 
   <action-validate name="action-product-validate-end-date">
     <alert message="The product pulled-off date must be greater than the launch date."
-      if="endDate &lt; startDate"/>
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; endDate &lt; startDate"/>
   </action-validate>
 
   <action-record name="action-product-record-reset-end-date"
@@ -824,6 +844,7 @@
     <view type="grid" name="product-product-variant-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :id</domain>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-product-view-other-product-variant" title="Other variants"
@@ -832,6 +853,7 @@
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :parentId</domain>
     <context name="parentId" expr="eval: parentProduct?.id"/>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-product-view-total-variants" title="${fullName} variants"
@@ -839,6 +861,7 @@
     <view type="grid" name="product-product-variant-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :_id</domain>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">

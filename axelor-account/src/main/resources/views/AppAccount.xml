@@ -7,18 +7,21 @@
     model="com.axelor.apps.base.db.AppAccount" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="manageAnalyticAccounting" widget="boolean-switch"/>
-      <field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
       <field name="manageCustomerCredit" widget="boolean-switch"/>
       <field name="manageFactors" widget="Boolean-switch"/>
       <field name="manageAdvancePaymentInvoice" widget="boolean-switch"/>
       <field name="paymentVouchersOnInvoice" widget="boolean-switch"/>
       <field name="activatePassedForPayment" widget="boolean-switch"/>
+      <field name="manageFinancialDiscount" widget="boolean-switch"/>
       <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
         colSpan="12">
         <field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid"
           form-view="interbank-code-form"/>
         <field name="chequeInterbankCode" grid-view="interbank-code-grid"
           form-view="interbank-code-form"/>
+      </panel>
+      <panel name="accountingExportPanel" title="Accounting exports">
+        <field name="dasActiveNorm"/>
       </panel>
       <field name="partnerBalConfigSelect"/>
     </panel>
@@ -35,6 +38,10 @@
           onClick="action-app-account-method-payer-quality-process"/>
         <field name="payerQualityConfigLineList" colSpan="12"
           grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
+      </panel>
+      <panel name="das2Panel" title="DAS2" colSpan="12">
+        <field name="defaultServiceTypeTypology" form-view="service-type-form"
+          grid-view="service-type-grid"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

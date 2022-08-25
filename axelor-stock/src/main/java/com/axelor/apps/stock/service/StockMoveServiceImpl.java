@@ -84,8 +84,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
   protected ProductRepository productRepository;
-  private StockMoveToolService stockMoveToolService;
-  private StockMoveLineRepository stockMoveLineRepo;
+  protected StockMoveToolService stockMoveToolService;
+  protected StockMoveLineRepository stockMoveLineRepo;
 
   @Inject
   public StockMoveServiceImpl(
@@ -401,7 +401,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
       stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
     }
-    checkExpirationDates(stockMove);
+    stockMoveLineService.checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
     stockMoveLineService.updateLocations(
@@ -449,7 +449,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     computeMasses(stockMove);
     stockMoveRepo.save(stockMove);
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()) {
       partnerProductQualityRatingService.calculate(stockMove);
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getRealStockMoveAutomaticMail() != null
@@ -696,6 +697,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<StockMove> copyAndSplitStockMoveReverse(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, boolean split)
       throws AxelorException {
@@ -719,50 +721,66 @@ public class StockMoveServiceImpl implements StockMoveService {
             stockMove.getIncoterm(),
             0);
 
-    if (stockMove.getToAddress() != null) newStockMove.setFromAddress(stockMove.getToAddress());
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING)
-      newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
-      newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL)
-      newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
-    newStockMove.setStockMoveSeq(
-        stockMoveToolService.getSequenceStockMove(
-            newStockMove.getTypeSelect(), newStockMove.getCompany()));
-
-    for (StockMoveLine stockMoveLine : stockMoveLines) {
-
-      if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
-        StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
-
-        if (split) {
-          newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
-          newStockMoveLine.setRealQty(newStockMoveLine.getQty());
-        } else {
-          newStockMoveLine.setQty(stockMoveLine.getRealQty());
-          newStockMoveLine.setRealQty(stockMoveLine.getRealQty());
-        }
-
-        newStockMove.addStockMoveLineListItem(newStockMoveLine);
-      }
-    }
+    copyStockMoveLines(newStockMove, stockMoveLines, split);
 
     if (ObjectUtils.isEmpty(newStockMove.getStockMoveLineList())) {
       return Optional.empty();
     }
 
+    fillNewStockMoveFields(newStockMove, stockMove);
+
+    return Optional.of(stockMoveRepo.save(newStockMove));
+  }
+
+  protected void copyStockMoveLines(
+      StockMove newStockMove, List<StockMoveLine> stockMoveLines, boolean split) {
+    for (StockMoveLine stockMoveLine : stockMoveLines) {
+      if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
+        newStockMove.addStockMoveLineListItem(copyStockMoveLine(stockMoveLine, split));
+      }
+    }
+  }
+
+  protected StockMoveLine copyStockMoveLine(StockMoveLine stockMoveLine, boolean split) {
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
+
+    if (split) {
+      newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
+      newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+    } else {
+      newStockMoveLine.setQty(stockMoveLine.getRealQty());
+      newStockMoveLine.setRealQty(stockMoveLine.getRealQty());
+    }
+    return newStockMoveLine;
+  }
+
+  protected void fillNewStockMoveFields(StockMove newStockMove, StockMove stockMove)
+      throws AxelorException {
+    if (stockMove.getToAddress() != null) {
+      newStockMove.setFromAddress(stockMove.getToAddress());
+    }
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
+    }
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
+    }
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
+      newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
+    }
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
             newStockMove.getTypeSelect(), newStockMove.getCompany()));
+
     newStockMove.setName(
         stockMoveToolService.computeName(
             newStockMove,
-            newStockMove.getStockMoveSeq()
-                + " "
-                + I18n.get(IExceptionMessage.STOCK_MOVE_8)
-                + " "
-                + stockMove.getStockMoveSeq()
-                + " )"));
+            String.format(
+                I18n.get(IExceptionMessage.STOCK_MOVE_8),
+                newStockMove.getStockMoveSeq(),
+                stockMove.getStockMoveSeq())));
     if (stockMove.getPartner() != null) {
       newStockMove.setShipmentMode(stockMove.getPartner().getShipmentMode());
       newStockMove.setFreightCarrierMode(stockMove.getPartner().getFreightCarrierMode());
@@ -781,8 +799,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setOriginId(stockMove.getOriginId());
     newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
     newStockMove.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
-
-    return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
   @Override
@@ -1252,13 +1268,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       stockMoveLineService.setAvailableStatus(stockMoveLine);
-    }
-  }
-
-  @Override
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
-    if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockMoveLineService.checkExpirationDates(stockMove);
     }
   }
 

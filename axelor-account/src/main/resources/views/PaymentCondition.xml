@@ -32,5 +32,4 @@
     <field name="advancePaymentNeeded" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
   </search-filters>
-
 </object-views>

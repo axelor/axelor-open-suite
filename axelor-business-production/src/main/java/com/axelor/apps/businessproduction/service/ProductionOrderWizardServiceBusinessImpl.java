@@ -116,6 +116,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
             project,
             startDateT.toLocalDateTime(),
             endDateT != null ? endDateT.toLocalDateTime() : null,
+            null,
             null);
 
     if (productionOrder != null) {

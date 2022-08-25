@@ -27,7 +27,7 @@
       <field name="typeSelect"/>
       <field name="amount"/>
       <field name="estimatedDate"/>
-      <field name="forecastReason"/>
+      <field name="forecastRecapLineType" domain="self.elementSelect = 5"/>
       <field name="realizationDate"/>
       <field name="comments" colSpan="12"/>
     </panel>

@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -33,6 +34,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -58,7 +60,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      MetaFiles metaFiles) {
     super(
         sequenceService,
         operationOrderService,
@@ -68,7 +72,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         appProductionService,
         manufOrderRepo,
         prodProductRepo,
-        productCompanyService);
+        productCompanyService,
+        barcodeGeneratorService,
+        metaFiles);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 

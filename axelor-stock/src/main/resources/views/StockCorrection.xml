@@ -44,8 +44,6 @@
         onChange="action-stock-correction-method-set-deault-qtys"/>
       <spacer name="trackingNumberSpacer"/>
       <field name="realQty" colSpan="4"/>
-      <field name="futureQty" colSpan="4"/>
-      <field name="reservedQty" colSpan="4"/>
     </panel>
     <panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
       <field name="stockCorrectionReason" canEdit="false" colSpan="12" required="true"/>
@@ -76,7 +74,7 @@
       expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
       if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
     <attribute name="domain" for="product"
-      expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation) AND self.dtype = 'Product'&quot;"
+      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
       if="stockLocation != null"/>
   </action-attrs>
 

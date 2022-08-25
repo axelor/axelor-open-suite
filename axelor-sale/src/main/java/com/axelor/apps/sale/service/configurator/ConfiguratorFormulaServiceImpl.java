@@ -20,12 +20,14 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 
@@ -37,7 +39,16 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     ScriptBindings defaultValueBindings =
         Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
     Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
-    String wantedTypeName = formula.getMetaField().getTypeName();
+    String wantedTypeName;
+    MetaJsonField metaJsonField = formula.getMetaJsonField();
+    if (metaJsonField != null) {
+      wantedTypeName =
+          MetaTool.getWantedClassName(
+              metaJsonField, MetaTool.jsonTypeToType(metaJsonField.getType()));
+    } else {
+      wantedTypeName = formula.getMetaField().getTypeName();
+    }
+
     if (result == null) {
       throw new AxelorException(
           formula,

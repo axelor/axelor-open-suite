@@ -19,8 +19,10 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -45,18 +47,22 @@ public class CurrencyService {
 
   protected AppBaseService appBaseService;
 
+  protected CurrencyConversionLineRepository currencyConversionLineRepo;
+
   private LocalDate today;
 
   @Inject
-  public CurrencyService(AppBaseService appBaseService) {
+  public CurrencyService(
+      AppBaseService appBaseService, CurrencyConversionLineRepository currencyConversionLineRepo) {
 
     this.appBaseService = appBaseService;
     this.today =
         appBaseService.getTodayDate(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+    this.currencyConversionLineRepo = currencyConversionLineRepo;
   }
 
-  public CurrencyService(LocalDate today) {
+  public CurrencyService(AppBaseService appBaseService, LocalDate today) {
 
     this.appBaseService = appBaseService;
     this.today = today;
@@ -205,5 +211,46 @@ public class CurrencyService {
     }
 
     return date;
+  }
+
+  public void checkOverLappingPeriod(
+      CurrencyConversionLine currentCcl, List<CurrencyConversionLine> currencyConversionLines)
+      throws AxelorException {
+
+    LocalDate fromDate = currentCcl.getFromDate();
+    LocalDate toDate = currentCcl.getToDate();
+    Currency startCurrency = currentCcl.getStartCurrency();
+    Currency endCurrency = currentCcl.getEndCurrency();
+
+    if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_4));
+    }
+
+    for (CurrencyConversionLine existingCcl : currencyConversionLines) {
+      if (existingCcl.equals(currentCcl)
+          || !(existingCcl.getStartCurrency().equals(startCurrency)
+              && existingCcl.getEndCurrency().equals(endCurrency))) {
+        continue;
+      }
+
+      LocalDate existingFromDate = existingCcl.getFromDate();
+      LocalDate existingToDate = existingCcl.getToDate();
+
+      if (existingToDate == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CURRENCY_3),
+            startCurrency.getCode(),
+            endCurrency.getCode(),
+            existingFromDate);
+      } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CURRENCY_11),
+            startCurrency.getCode(),
+            endCurrency.getCode());
+      }
+    }
   }
 }

@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -57,6 +58,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,24 +272,17 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
-      return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
-    }
-    return computeSimpleFullName(partner);
+    return ComputeNameTool.computeFullName(
+        partner.getName(),
+        partner.getFirstName(),
+        partner.getPartnerSeq(),
+        String.valueOf(partner.getId()));
   }
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getName())
-        && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getName() + " " + partner.getFirstName();
-    } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      return partner.getName();
-    } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getFirstName();
-    } else {
-      return "" + partner.getId();
-    }
+    return ComputeNameTool.computeSimpleFullName(
+        partner.getName(), partner.getFirstName(), String.valueOf(partner.getId()));
   }
 
   @Override
@@ -366,14 +361,12 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {
+
     String query =
-        "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
-            + partner.getId()
-            + ") "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
-            + partner.getId()
-            + ")";
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     if (partner.getEmailAddress() != null) {
       query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
@@ -681,29 +674,6 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public String getPartnerDomain(Partner partner) {
-    String domain = "";
-
-    if (partner != null) {
-      if (partner.getCurrency() != null) {
-        domain += String.format(" AND self.currency.id = %d", partner.getCurrency().getId());
-      }
-      if (partner.getSalePartnerPriceList() != null) {
-        domain +=
-            String.format(
-                " AND self.salePartnerPriceList.id = %s",
-                partner.getSalePartnerPriceList().getId());
-      }
-      if (partner.getFiscalPosition() != null) {
-        domain +=
-            String.format(" AND self.fiscalPosition.id = %s", partner.getFiscalPosition().getId());
-      }
-    }
-
-    return domain;
-  }
-
-  @Override
   public String getTaxNbrFromRegistrationCode(Partner partner) {
     String taxNbr = "";
 
@@ -798,5 +768,18 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return siren;
+  }
+
+  @Override
+  public List<Long> getPartnerIdsByType(String type) {
+    StringBuilder query = new StringBuilder();
+    query.append("self.");
+    query.append(type);
+    query.append("=true");
+    return (!StringUtils.isEmpty(type))
+        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
+            .map(m -> (long) m.get("id"))
+            .collect(Collectors.toList())
+        : new ArrayList<>();
   }
 }

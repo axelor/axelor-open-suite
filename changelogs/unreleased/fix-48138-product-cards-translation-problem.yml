@@ -1,7 +1,0 @@
----
-title: Fixed translation problem on product cards view
-type: fix
-description: |
-  Full name of products was not translated in the products card view. 
-  Resolved problem: when now entering new translation on product form, 
-  it is displayed in the card view when choosing the corresponding language.

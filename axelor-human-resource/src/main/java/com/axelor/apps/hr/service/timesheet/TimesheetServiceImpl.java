@@ -63,6 +63,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -88,10 +89,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
@@ -117,6 +120,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetlineRepo;
   protected TimesheetRepository timeSheetRepository;
+  protected ProjectService projectService;
   private ExecutorService executor = Executors.newCachedThreadPool();
   private static final int ENTITY_FIND_TIMEOUT = 10000;
   private static final int ENTITY_FIND_INTERVAL = 50;
@@ -135,7 +139,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetlineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -149,6 +154,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.productCompanyService = productCompanyService;
     this.timesheetlineRepo = timesheetlineRepo;
     this.timeSheetRepository = timeSheetRepository;
+    this.projectService = projectService;
   }
 
   @Override
@@ -241,7 +247,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional
   public void validate(Timesheet timesheet) {
-
+    timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
     timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
@@ -958,7 +964,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.membersUserSet.id = ?1 and "
                     + "self.imputable = true "
-                    + "and self.statusSelect != 3",
+                    + "and self.projectStatus.isCompleted = false "
+                    + "and self.isShowTimeSpent = true",
                 user.getId())
             .fetch();
 
@@ -1086,26 +1093,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
-    User user = timesheet.getUser();
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
-      TimesheetLine timesheetLine = new TimesheetLine();
-      timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
-      timesheetLine.setDuration(
-          timesheetLineService.computeHoursDuration(
-              timesheet, projectPlanningTime.getPlannedHours(), false));
-      timesheetLine.setTimesheet(timesheet);
-      timesheetLine.setUser(user);
-      timesheetLine.setProduct(projectPlanningTime.getProduct());
-      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
-      timesheetLine.setProject(projectPlanningTime.getProject());
-      timesheetLine.setDate(projectPlanningTime.getDate());
-      timesheetLine.setProjectPlanningTime(projectPlanningTime);
+      TimesheetLine timesheetLine = createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
       timesheet.addTimesheetLineListItem(timesheetLine);
     }
   }
 
-  private List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
+  protected List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
     List<ProjectPlanningTime> planningList;
 
     if (timesheet.getToDate() == null) {
@@ -1229,5 +1224,46 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       }
     }
     timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
+  }
+
+  protected TimesheetLine createTimeSheetLineFromPPT(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    TimesheetLine timesheetLine = new TimesheetLine();
+    Project project = projectPlanningTime.getProject();
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setDuration(
+        timesheetLineService.computeHoursDuration(
+            timesheet, projectPlanningTime.getPlannedHours(), false));
+    timesheetLine.setTimesheet(timesheet);
+    timesheetLine.setUser(timesheet.getUser());
+    timesheetLine.setProduct(projectPlanningTime.getProduct());
+    if (project.getIsShowTimeSpent()) {
+      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
+      timesheetLine.setProject(projectPlanningTime.getProject());
+    }
+    timesheetLine.setDate(projectPlanningTime.getDate());
+    timesheetLine.setProjectPlanningTime(projectPlanningTime);
+    return timesheetLine;
+  }
+
+  @Override
+  public Set<Long> getContextProjectIds() {
+    User currentUser = AuthUtils.getUser();
+    Project contextProject = currentUser.getContextProject();
+    Set<Long> projectIdsSet = new HashSet<>();
+    if (contextProject == null) {
+      List<Project> allTimeSpentProjectList =
+          projectRepo.all().filter("self.isShowTimeSpent = true").fetch();
+      for (Project timeSpentProject : allTimeSpentProjectList) {
+        projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+      }
+    } else {
+      if (!currentUser.getIsIncludeSubContextProjects()) {
+        projectIdsSet.add(contextProject.getId());
+        return projectIdsSet;
+      }
+      projectService.getChildProjectIds(projectIdsSet, contextProject);
+    }
+    return projectIdsSet;
   }
 }

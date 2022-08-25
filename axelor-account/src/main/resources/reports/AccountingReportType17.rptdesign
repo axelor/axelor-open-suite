@@ -2531,6 +2531,7 @@ ORDER BY Account.code]]></xml-property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="5553"/>
                         <column id="5554">
                             <property name="width">15%</property>

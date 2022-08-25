@@ -122,12 +122,21 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
   @Override
   public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
+    checkOnGoing(abcAnalysis);
     reset(abcAnalysis);
     start(abcAnalysis);
     getAbcAnalysisClassList(abcAnalysis);
     createAllABCAnalysisLine(abcAnalysis);
     doAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
     finish(abcAnalysisRepository.find(abcAnalysis.getId()));
+  }
+
+  protected void checkOnGoing(ABCAnalysis abcAnalysis) throws AxelorException {
+    if (abcAnalysis.getStatusSelect() == ABCAnalysisRepository.STATUS_ANALYZING) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.ABC_ANALYSIS_ALREADY_STARTED));
+    }
   }
 
   @Transactional

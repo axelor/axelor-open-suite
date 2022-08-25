@@ -101,4 +101,10 @@ public interface AppBaseService extends AppService {
   void setManageMultiBanks(boolean manageMultiBanks);
 
   String getCustomStyle();
+
+  /**
+   * Get process timeout value. If the value is inferior or equal to 0, we return the default value
+   * (10 seconds).
+   */
+  int getProcessTimeout();
 }

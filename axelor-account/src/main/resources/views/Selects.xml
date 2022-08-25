@@ -82,6 +82,8 @@
     <option order="15" value="14">General ledger (old presentation)</option>
     <option order="17" value="16">Acquisitions</option>
     <option order="18" value="17">Summary of gross values and depreciation</option>
+    <option order="19" value="19">Preparatory Process for fees declaration</option>
+    <option order="20" value="20">Fees declaration supporting file</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
     <option value="1006">Export sale -> Acc. Soft.</option>
@@ -89,6 +91,7 @@
     <option value="1008">Export treasury -> Acc. Soft.</option>
     <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
+    <option value="1011">Export N4DS</option>
     <option order="2000" value="2000">Analytic balance</option>
     <option order="2001" value="2001">Analytic general ledger</option>
     <option order="3000" value="3000">Custom state</option>
@@ -102,6 +105,7 @@
     <option value="1008">Export treasury -> Acc. Soft.</option>
     <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
+    <option value="1011">Export N4DS</option>
   </selection>
 
   <selection name='accounting.report.config.line.type.select'>
@@ -131,6 +135,7 @@
     <option value='2'>Accounted</option>
     <option value='3'>Validated</option>
     <option value='4'>Canceled</option>
+    <option value='5'>Simulated</option>
   </selection>
 
   <selection name='iaccount.move.technical.origin.select'>
@@ -196,8 +201,8 @@
     <option value="18">Move export</option>
     <option value="19">Credit Transfer</option>
     <option value="20">Realize fixed asset lines</option>
-    <option value="21">Close the annual accounts of the past year</option>
-    <option value="22">Open the annual accounts of the next year</option>
+    <option value="21">Close/Open the annual accounts</option>
+    <option value="23">Block customer with late payment issues</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -288,7 +293,7 @@
   <selection name='account.general.analytic.distribution.type.select'>
     <option value='1'>Free</option>
     <option value='2'>Per partner</option>
-    <option value='3'>Per product/family</option>
+    <option value='3'>Per product/family/account</option>
   </selection>
 
   <selection name="invoice.payment.type.select">
@@ -393,6 +398,17 @@
     <option value="2">Payment to the factor after factor return</option>
   </selection>
 
+  <selection name="accounting.report.type.comparison.select">
+    <option value="1">No comparison</option>
+    <option value="2">Previous year</option>
+    <option value="3">Same period on previous year</option>
+  </selection>
+
+  <selection name="accounting.report.type.no.of.periods.select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+  </selection>
+
   <selection name="account.fixed.type.category.computation.method.select">
     <option value="linear">Linear</option>
     <option value="degressive">Degressive</option>
@@ -418,7 +434,8 @@
   <selection name="account.move.date.of.reversion.type.select">
     <option value="1">Today</option>
     <option value="2">Date of original move</option>
-    <option value="3">Choose date</option>
+    <option value="3">Today + 1</option>
+    <option value="4">Choose date</option>
   </selection>
 
   <selection name="invoice.report.type">
@@ -434,6 +451,7 @@
     <option value="pdf">PDF</option>
   </selection>
   <selection name="invoice.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>
@@ -460,6 +478,21 @@
     <option value="isSupplier">Supplier</option>
     <option value="isCarrier">Carrier</option>
     <option value="isFactor">Factor</option>
+    <option value="isEmployee">Employee</option>
+  </selection>
+
+  <selection name="account.journal.type.technical.type.select">
+    <option value="1">Expense</option>
+    <option value="2">Sale</option>
+    <option value="3">Credit note</option>
+    <option value="4">Treasury</option>
+    <option value="5">Other</option>
+  </selection>
+
+  <selection name="account.account.common.position.select">
+    <option value="0">None</option>
+    <option value="1">Credit</option>
+    <option value="2">Debit</option>
   </selection>
 
   <selection name='iaccount.move.functional.origin.select'>
@@ -498,6 +531,41 @@
     <option value="1">Cheque</option>
     <option value="2">Cash</option>
     <option value="3">Bill of Exchange</option>
+  </selection>
+
+  <selection name="account.config.analytic.axis.order.select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </selection>
+
+  <selection name="account.general.analytic.axis.type.select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </selection>
+
+  <selection name="account.general.analytic.grouping.value.grouping">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+  </selection>
+
+  <selection name="account.financial.discount.discount.base.select">
+    <option value="0">Tax excluded</option>
+    <option value="1">Tax included</option>
   </selection>
 
 </object-views>
