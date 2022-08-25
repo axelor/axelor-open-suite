@@ -347,8 +347,7 @@ public abstract class InvoiceGenerator {
    */
   public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 
-    logger.debug(
-        "Peupler une facture => lignes de factures: {} ", new Object[] {invoiceLines.size()});
+    logger.debug("Populate an invoice => invoice lines : {} ", invoiceLines.size());
 
     initCollections(invoice);
 
@@ -360,8 +359,8 @@ public abstract class InvoiceGenerator {
       invoice.getInvoiceLineList().addAll(invoiceLines);
       invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
     } else {
-      invoiceLines.stream().forEach(invoice::addInvoiceLineListItem);
-      invoiceTaxLines.stream().forEach(invoice::addInvoiceLineTaxListItem);
+      invoiceLines.forEach(invoice::addInvoiceLineListItem);
+      invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
     }
 
     computeInvoice(invoice);

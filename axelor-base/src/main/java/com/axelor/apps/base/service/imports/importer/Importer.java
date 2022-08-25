@@ -90,7 +90,7 @@ public abstract class Importer {
   public Importer init(ImportConfiguration configuration, File workspace) {
     setConfiguration(configuration);
     setWorkspace(workspace);
-    log.debug("Initialisation de l'import pour la configuration {}", configuration.getName());
+    log.debug("Initialization of the import for the configuration {}", configuration.getName());
     return this;
   }
 

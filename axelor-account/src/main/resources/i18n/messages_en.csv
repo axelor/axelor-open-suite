@@ -1868,6 +1868,7 @@
 "Ongoing Cession",,,
 "Ongoing Schedules",,,
 "Ongoing asset",,,
+"Only fixed assets at draft status can be deleted.",,,
 "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status",,,
 "Open the year accounts",,,
 "Opening",,,

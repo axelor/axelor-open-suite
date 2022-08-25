@@ -343,13 +343,10 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
-        }
-
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
+
         response.setValue("taxLine", taxLine);
       }
 

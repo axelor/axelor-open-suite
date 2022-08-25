@@ -530,6 +530,7 @@
     <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
     <action name="save"/>
     <action name="action-move-method-update-in-day-book-mode"/>
   </action-group>
@@ -797,6 +798,10 @@
 
   <action-method name="action-account-move-method-exception-counterpart">
     <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-partner">
+    <call class="com.axelor.apps.account.web.MoveController" method="updatePartner"/>
   </action-method>
 
   <!-- ACTION VIEW -->
