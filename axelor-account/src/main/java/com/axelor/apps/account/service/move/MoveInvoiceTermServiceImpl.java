@@ -84,15 +84,9 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   @Override
   public void recreateInvoiceTerms(Move move) throws AxelorException {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      boolean isSingleTerm = this.isSingleTerm(move);
-
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount().getHasInvoiceTerm()) {
           moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
-
-          if (isSingleTerm && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-            moveLine.setDueDate(moveLine.getInvoiceTermList().get(0).getDueDate());
-          }
         }
       }
     }

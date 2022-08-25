@@ -101,6 +101,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (holdbackMoveLine != null
         && CollectionUtils.isNotEmpty(holdbackMoveLine.getInvoiceTermList())) {
       holdbackMoveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
+      this.setDueDateFromInvoiceTerms(holdbackMoveLine);
     }
 
     if (!containsHoldback) {
@@ -114,6 +115,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK_2));
       }
     }
+
+    this.setDueDateFromInvoiceTerms(moveLine);
   }
 
   public void updateInvoiceTermsParentFields(MoveLine moveLine) {
@@ -304,5 +307,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (move.getPaymentCondition() != null) {
       this.generateDefaultInvoiceTerm(moveLine, false);
     }
+  }
+
+  @Override
+  public void setDueDateFromInvoiceTerms(MoveLine moveLine) {
+    moveLine.setDueDate(
+        invoiceTermService.getDueDate(moveLine.getInvoiceTermList(), moveLine.getDueDate()));
   }
 }
