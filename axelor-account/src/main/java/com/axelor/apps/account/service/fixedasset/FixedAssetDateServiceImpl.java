@@ -32,7 +32,8 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
         && periodicityTypeSelect != null
         && firstDepreciationDateInitSelect != null) {
       if (firstDepreciationDateInitSelect
-          == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION) {
+              == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION
+          || fixedAsset.getFirstServiceDate() == null) {
         fixedAsset.setFirstDepreciationDate(
             this.computeLastDayOfPeriodicity(fixedAsset, fixedAsset.getAcquisitionDate()));
       } else {

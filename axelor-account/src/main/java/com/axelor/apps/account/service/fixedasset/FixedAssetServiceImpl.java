@@ -365,7 +365,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int transferredReason,
       String comments)
       throws AxelorException {
-    if (disposalDate.isBefore(fixedAsset.getFirstServiceDate())) {
+    LocalDate firstServiceDate =
+        fixedAsset.getFirstServiceDate() == null
+            ? fixedAsset.getAcquisitionDate()
+            : fixedAsset.getFirstServiceDate();
+    if (disposalDate.isBefore(firstServiceDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
