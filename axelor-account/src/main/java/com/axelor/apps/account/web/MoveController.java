@@ -128,28 +128,16 @@ public class MoveController {
 
   @SuppressWarnings("unchecked")
   public void validateMultipleMoves(ActionRequest request, ActionResponse response) {
-    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+    List<Integer> moveIds = (List<Integer>) request.getContext().get("_ids");
     if (moveIds != null && !moveIds.isEmpty()) {
 
-      List<? extends Move> moveList =
-          Beans.get(MoveRepository.class)
-              .all()
-              .filter(
-                  "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
-                  moveIds,
-                  MoveRepository.STATUS_VALIDATED,
-                  MoveRepository.STATUS_CANCELED)
-              .order("date")
-              .fetch();
-      if (!moveList.isEmpty()) {
-        boolean error =
-            Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveList);
-        if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
-        else {
-          response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
-          response.setReload(true);
-        }
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
+      boolean error =
+          Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveIds);
+      if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
+      else {
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
+        response.setReload(true);
+      }
     } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
   }
 
