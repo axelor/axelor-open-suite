@@ -372,15 +372,18 @@ public class MoveValidateService {
     }
   }
 
-  public boolean validateMultiple(List<? extends Move> moveList) {
+  public boolean validateMultiple(List<Integer> moveIds) {
     boolean error = false;
-    if (moveList == null) {
+    if (moveIds == null) {
       return error;
     }
     try {
-      for (Move move : moveList) {
-
-        validate(moveRepository.find(move.getId()));
+      for (Integer moveId : moveIds) {
+        Move move = moveRepository.find(moveId.longValue());
+        if (move.getStatusSelect() != MoveRepository.STATUS_VALIDATED
+            && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+          validate(move);
+        }
         JPA.clear();
       }
     } catch (Exception e) {
