@@ -40,6 +40,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -54,10 +55,12 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -546,7 +549,11 @@ public class EventController {
               ? EventRepository.STATUS_REALIZED
               : EventRepository.STATUS_FINISHED);
       Beans.get(EventService.class).saveEvent(event);
-      leadLastEventDate(request, response);
+      Lead lead = event.getLead();
+      if (lead.getLastEventDate() == null
+          || lead.getLastEventDate().compareTo(event.getEndDateTime().toLocalDate()) < 0) {
+        leadLastEventDate(request, response);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -563,9 +570,44 @@ public class EventController {
               ? EventRepository.STATUS_CANCELED
               : EventRepository.STATUS_REPORTED);
       Beans.get(EventService.class).saveEvent(event);
+      Lead lead = event.getLead();
+      LocalDateTime currentDateTime = event.getEndDateTime();
+      if (lead.getLastEventDate().equals(currentDateTime.toLocalDate())) {
+        Long eventId = event.getId();
+        List<Event> eventList =
+            lead.getEventList().stream()
+                .filter(
+                    e ->
+                        e.getId() != eventId
+                            && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
+                            && e.getEndDateTime().compareTo(currentDateTime) <= 0)
+                .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
+                .collect(Collectors.toList());
+
+        LocalDateTime prevDate = null;
+        if (!eventList.isEmpty()) {
+          prevDate = eventList.get(0).getEndDateTime();
+        }
+        Beans.get(EventService.class).leadLastEventDate(lead, prevDate);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void leadScheduledEventDate(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      Lead lead = event.getLead();
+      LocalDateTime startDateTime = event.getStartDateTime();
+      if (lead != null
+          && startDateTime != null
+          && event.getStatusSelect() == EventRepository.STATUS_PLANNED) {
+        Beans.get(EventService.class).computeLeadStartDate(lead, startDateTime);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
