@@ -608,7 +608,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-exception-counterpart"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-generate-counterpart"/>
@@ -616,7 +616,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-tax-lines">
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-compute-totals"/>
   </action-group>
@@ -624,7 +624,7 @@
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
 
@@ -649,7 +649,7 @@
 
 
   <action-group name="action-move-account-group-simulate">
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
