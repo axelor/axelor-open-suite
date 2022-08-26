@@ -86,6 +86,7 @@
             <field name="originDate" onChange="action-account-move-group-set-origin-date"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
             <field name="$dueDate" type="date" title="Due date" hidden="true"
+              onChange="action-account-move-group-onsave"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
           <field name="tradingName"
@@ -603,8 +604,8 @@
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
-    <action name="action-move-method-update-in-day-book-mode"/>
     <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-update-in-day-book-mode"/>
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
@@ -697,6 +698,7 @@
   <action-group name="action-move-group-payment-condition-onchange">
     <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
