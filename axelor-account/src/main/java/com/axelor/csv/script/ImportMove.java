@@ -212,6 +212,11 @@ public class ImportMove {
         }
         moveLine.setAccount(account);
       }
+
+      if (moveLine.getReconcileGroup() != null) {
+        moveLine.getReconcileGroup().setCompany(company);
+      }
+
       move.addMoveLineListItem(moveLine);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
