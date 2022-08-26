@@ -31,9 +31,14 @@ public class ImportAccount {
 
   public Object importAccount(Object bean, Map<String, Object> values) {
     Integer line = lineNo.get();
-    if (line != null) {
-      lineNo.set(line + 1);
+
+    if (line == null) {
+      lineNo.set(1);
+      line = 1;
     }
+
+    lineNo.set(line + 1);
+
     if (bean == null) {
       return null;
     }
