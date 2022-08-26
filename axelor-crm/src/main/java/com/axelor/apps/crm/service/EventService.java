@@ -77,4 +77,6 @@ public interface EventService {
   void leadLastEventDate(Lead lead, LocalDateTime date);
 
   void partnerStartDate(Partner partner, LocalDateTime date);
+
+  void computeLeadStartDate(Lead lead, LocalDateTime date);
 }
