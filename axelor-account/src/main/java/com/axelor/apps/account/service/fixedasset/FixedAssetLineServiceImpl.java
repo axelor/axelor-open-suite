@@ -62,10 +62,14 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine previousRealizedLine,
       LocalDate disposalDate) {
+    LocalDate firstServiceDate =
+        fixedAsset.getFirstServiceDate() == null
+            ? fixedAsset.getAcquisitionDate()
+            : fixedAsset.getFirstServiceDate();
     LocalDate previousRealizedDate =
         previousRealizedLine != null
             ? previousRealizedLine.getDepreciationDate()
-            : fixedAsset.getFirstServiceDate();
+            : firstServiceDate;
     long monthsBetweenDates =
         ChronoUnit.MONTHS.between(
             previousRealizedDate.plusDays(1).withDayOfMonth(1), disposalDate.withDayOfMonth(1));

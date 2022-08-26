@@ -219,7 +219,7 @@
         hidden="true"/>
       <button name="validteBtn" title="Validate"
         showIf="statusSelect &lt; 2 &amp;&amp; grossValue > 0"
-        onClick="save,action-group-account-fixed-asset-failover-control, action-method-account-fixed-asset-validate,save"
+        onClick="save,action-group-account-fixed-asset-failover-control,action-group-account-fixed-asset-validate,save"
         hidden="true"/>
       <button name="disposalBtn" title="Disposal"
         showIf="statusSelect > 1 &amp;&amp; statusSelect != 4"
@@ -394,6 +394,12 @@
     <action name="close"/>
   </action-group>
 
+  <action-group name="action-group-account-fixed-asset-validate">
+    <action name="action-fixed-asset-validate-first-service-date-null"
+      if="firstServiceDate == null"/>
+    <action name="action-method-account-fixed-asset-validate"/>
+  </action-group>
+
   <action-method name="action-method-account-fixed-asset-validate">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="validate"/>
   </action-method>
@@ -440,6 +446,11 @@
       if="!(purchaseAccount || fixedAssetCategory.fixedAssetType.technicalTypeSelect == 1)"/>
   </action-validate>
 
+  <action-validate name="action-fixed-asset-validate-first-service-date-null">
+    <alert
+      message="In the absence of the first service date, the depreciation  will be computed on the basis of the acquisition date, do you want to continue ?"/>
+  </action-validate>
+
   <action-group name="action-fixed-asset-group-disposal-click">
     <action name="action-fixed-asset-validate-check-puchase-account"/>
     <action name="action-fixed-asset-view-show-disposal-wizard"/>
@@ -448,6 +459,8 @@
   <action-group name="action-fixed-asset-group-compute-depreciation-click">
     <!-- <action name="action-fixed-asset-validate-check-first-depreciation-date"/> -->
     <action name="save"/>
+    <action name="action-fixed-asset-validate-first-service-date-null"
+      if="firstServiceDate == null"/>
     <action name="action-fixed-asset-method-compute-depreciation"/>
     <action name="save"/>
   </action-group>

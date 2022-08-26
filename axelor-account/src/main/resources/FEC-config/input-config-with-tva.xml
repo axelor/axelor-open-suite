@@ -8,21 +8,25 @@
     <option name="format" value="yyyyMMdd"/>
   </adapter>
 
-  <input call="com.axelor.csv.script.ImportMove:importFECMove" file="FEC.csv" separator=";" type="com.axelor.apps.account.db.MoveLine">
+  <input call="com.axelor.csv.script.ImportMove:importFECMove" file="FEC.csv" separator=";"
+    type="com.axelor.apps.account.db.MoveLine">
     <!-- <header>journalCode, journalName, move_reference, moveLine_date, accountCode, accountName, partnerSeq,
       partnerName, moveLine_origin, moveLineOriginDate, description, debit, credit, reconcileGroupCode, reconcileGroupDateOfLettering,
-      validationDate, currencyAmount, move_currency</header>-->
+      validationDate, currencyAmount, move_currency</header> -->
     <bind column="CompAuxNum" search="self.partnerSeq = :CompAuxNum" to="partner" update="true"/>
     <bind column="Debit" eval="Debit.replace(',', '.')" to="debit"/>
     <bind column="Credit" eval="Credit.replace(',', '.')" to="credit"/>
     <bind column="PieceRef" to="origin"/>
     <bind column="EcritureLib" to="description"/>
     <bind column="Montantdevise" eval="Montantdevise.replace(',', '.')" to="currencyAmount"/>
-    <bind column="EcritureLet" search="self.code = :EcritureLet" if="EcritureLet" to="reconcileGroup">
+    <bind column="EcritureLet" search="self.code = :EcritureLet" if="EcritureLet"
+      to="reconcileGroup">
       <bind column="EcritureLet" to="code"/>
       <bind column="DateLet" adapter="LocalDate" if="DateLet" to="dateOfLettering"/>
     </bind>
-    <bind column="taxCode" search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))" to="taxLine" update="true"/>
+    <bind column="taxCode"
+      search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))"
+      to="taxLine" update="true"/>
   </input>
 
 
