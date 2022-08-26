@@ -488,12 +488,4 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         ? fixedAssetLine.getCorrectedAccountingValue()
         : fixedAssetLine.getAccountingValue();
   }
-
-  protected LocalDate getFirstServiceDate(FixedAsset fixedAsset) {
-
-    if (fixedAsset.getFirstServiceDate() == null) {
-      return fixedAsset.getAcquisitionDate();
-    }
-    return fixedAsset.getFirstServiceDate();
-  }
 }
