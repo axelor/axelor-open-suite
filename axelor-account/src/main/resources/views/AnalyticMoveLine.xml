@@ -253,11 +253,14 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id}  AND self.company.id = ${analyticAxis.company.id}&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND self.company.id = ${analyticAxis?.company?.id}&quot;"
       if="analyticAxis &amp;&amp; analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id}&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id}&quot;"
       if="analyticAxis &amp;&amp; !analyticAxis.company"/>
+    <attribute name="domain" for="analyticAccount"
+      expr="eval: &quot;self.statusSelect = 1 &quot;"
+      if="!(analyticAxis?.company) &amp;&amp; !__parent__"/>
   </action-attrs>
 
   <action-record name="action-record-onchange-axis-analytic-move-line"
