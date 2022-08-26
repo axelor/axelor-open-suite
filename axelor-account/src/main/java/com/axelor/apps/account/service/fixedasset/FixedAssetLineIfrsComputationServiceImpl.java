@@ -25,7 +25,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return fixedAsset.getFailoverDate();
     }
-    return fixedAsset.getFirstDepreciationDate();
+    return fixedAsset.getIfrsFirstDepreciationDate();
   }
 
   @Override
@@ -47,7 +47,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
-    return fixedAsset.getFirstDepreciationDate();
+    return fixedAsset.getIfrsFirstDepreciationDate();
   }
 
   @Override
@@ -129,5 +129,10 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getIfrsFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsFirstDepreciationDateInitSelect();
   }
 }

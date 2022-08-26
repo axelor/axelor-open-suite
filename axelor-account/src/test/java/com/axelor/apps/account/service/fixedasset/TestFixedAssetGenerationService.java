@@ -121,7 +121,7 @@ public class TestFixedAssetGenerationService {
             createFixedAssetCategoryFromIsProrataTemporis(false),
             new BigDecimal("500.00"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
@@ -218,7 +218,7 @@ public class TestFixedAssetGenerationService {
             createFixedAssetCategoryFromIsProrataTemporis(true),
             new BigDecimal("500.00"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
@@ -320,7 +320,7 @@ public class TestFixedAssetGenerationService {
             createFixedAssetCategoryFromIsProrataTemporis(true),
             new BigDecimal("500.00"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
@@ -418,7 +418,7 @@ public class TestFixedAssetGenerationService {
             createFixedAssetCategoryFromIsProrataTemporis(true, true),
             new BigDecimal("102638.35"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
@@ -548,7 +548,7 @@ public class TestFixedAssetGenerationService {
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("102638.35"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
@@ -674,7 +674,7 @@ public class TestFixedAssetGenerationService {
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("102638.35"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
     fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     Assert.assertEquals(
