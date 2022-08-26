@@ -508,40 +508,47 @@ public class MoveLineController {
 
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = null;
+
       if (request.getContext().getParent() != null) {
-        Move move = request.getContext().getParent().asType(Move.class);
-        if (move != null && move.getCompany() != null) {
-          AccountConfig accountConfig =
-              Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-          if (Beans.get(MoveLineComputeAnalyticService.class)
-              .checkManageAnalytic(move.getCompany())) {
-            AnalyticAxis analyticAxis = null;
-            for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        move = request.getContext().getParent().asType(Move.class);
+      } else if (moveLine.getId() != null) {
+        moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+        move = moveLine.getMove();
+      }
+
+      if (move != null && move.getCompany() != null) {
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        if (Beans.get(MoveLineComputeAnalyticService.class)
+            .checkManageAnalytic(move.getCompany())) {
+          AnalyticAxis analyticAxis = null;
+          for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+            response.setAttr(
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                "hidden",
+                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+            for (AnalyticAxisByCompany analyticAxisByCompany :
+                accountConfig.getAnalyticAxisByCompanyList()) {
+              if (analyticAxisByCompany.getSequence() + 1 == i) {
+                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+              }
+            }
+            if (analyticAxis != null) {
               response.setAttr(
                   "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                  "hidden",
-                  !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-              for (AnalyticAxisByCompany analyticAxisByCompany :
-                  accountConfig.getAnalyticAxisByCompanyList()) {
-                if (analyticAxisByCompany.getSequence() + 1 == i) {
-                  analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-                }
-              }
-              if (analyticAxis != null) {
-                response.setAttr(
-                    "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                    "title",
-                    analyticAxis.getName());
-                analyticAxis = null;
-              }
+                  "title",
+                  analyticAxis.getName());
+              analyticAxis = null;
             }
-          } else {
-            response.setAttr("analyticDistributionTemplate", "hidden", true);
-            response.setAttr("analyticMoveLineList", "hidden", true);
-            for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-              response.setAttr(
-                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true);
-            }
+          }
+        } else {
+          response.setAttr("analyticDistributionTemplate", "hidden", true);
+          response.setAttr("analyticMoveLineList", "hidden", true);
+          for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+            response.setAttr(
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true);
           }
         }
       }
