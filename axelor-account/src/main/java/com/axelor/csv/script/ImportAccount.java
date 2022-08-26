@@ -35,9 +35,9 @@ public class ImportAccount {
     if (line == null) {
       lineNo.set(1);
       line = 1;
+    } else {
+      lineNo.set(line + 1);
     }
-
-    lineNo.set(line + 1);
 
     if (bean == null) {
       return null;
