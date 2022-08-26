@@ -166,4 +166,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                     == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
         .collect(Collectors.toList());
   }
+
+  @Override
+  @Transactional
+  public int removeMultiplePaymentSessions(List<Long> paymentSessionIds) {
+    List<PaymentSession> paymentSessionList =
+        paymentSessionRepository
+            .all()
+            .filter("self.id IN :paymentSessionIds AND self.statusSelect = :cancelledStatus")
+            .bind("paymentSessionIds", paymentSessionIds)
+            .bind("cancelledStatus", PaymentSessionRepository.STATUS_CANCELLED)
+            .fetch();
+    for (PaymentSession paymentSession : paymentSessionList) {
+      paymentSessionRepository.remove(paymentSession);
+    }
+    return paymentSessionList.size();
+  }
 }

@@ -5,6 +5,10 @@
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession">
+    <toolbar>
+      <button name="removePaymentSessionBtn" title="Delete" icon="fa-trash"
+        onClick="action-payment-session-validate-remove-multiple-payment-session,action-payment-session-method-remove-multiple-payment-session"/>
+    </toolbar>
     <field name="name"/>
     <field name="createdOn"/>
     <field name="company"/>
@@ -318,6 +322,18 @@
     <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="setJournalDomain"/>
   </action-method>
+
+  <action-method name="action-payment-session-method-remove-multiple-payment-session">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="removeMultiplePaymentSessions"/>
+  </action-method>
+
+  <action-validate
+    name="action-payment-session-validate-remove-multiple-payment-session">
+    <error message="You need to select at least one payment session" if="!_ids"/>
+    <alert message="Selected records will be deleted, do you wish to continue ?"
+      if="__repo__(PaymentSession).all().filter('self.id IN ?1 AND self.statusSelect != ?2', _ids, __repo__(PaymentSession).STATUS_CANCELLED).count() == 0"/>
+  </action-validate>
 
   <action-group name="action-group-payment-session-search-eligible-terms">
     <action name="save"/>

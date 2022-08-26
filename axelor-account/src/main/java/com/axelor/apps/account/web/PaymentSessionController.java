@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -259,5 +260,20 @@ public class PaymentSessionController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removeMultiplePaymentSessions(ActionRequest request, ActionResponse response) {
+    List<Long> paymentSessionIds = (List<Long>) request.getContext().get("_ids");
+    try {
+      int deletedSessions =
+          Beans.get(PaymentSessionService.class).removeMultiplePaymentSessions(paymentSessionIds);
+      if (paymentSessionIds.size() > deletedSessions) {
+        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+    response.setReload(true);
   }
 }
