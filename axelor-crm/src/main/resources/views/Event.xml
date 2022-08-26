@@ -362,6 +362,11 @@
     <call class="com.axelor.apps.crm.web.EventController" method="assignToMeEvent"/>
   </action-method>
 
+  <action-method name="action-event-method-fill-lead-scheduled-date"
+    model="com.axelor.apps.crm.db.Event">
+    <call class="com.axelor.apps.crm.web.EventController" method="leadScheduledEventDate"/>
+  </action-method>
+
   <action-view name="dashlet.meeting" title="Meetings"
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="event-grid"/>
@@ -421,6 +426,7 @@
     <action name="action-event-attrs-show-past-event-text"/>
     <action name="action-method-event-fill-lead-event-date" if="statusSelect == 2"/>
     <action name="action-method-event-fill-partner-scheduled-date"/>
+    <action name="action-event-method-fill-lead-scheduled-date" if="statusSelect == 1"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
