@@ -303,20 +303,23 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   @Override
   public List<AnalyticAxis> getAvailableAnalyticAxes(
       AnalyticMoveLineQuery analyticMoveLineQuery, boolean isReverseQuery) {
-    String alreadyPresentSearchAnalyticAxesIds =
+    List<Long> alreadyPresentSearchAnalyticAxesIds =
         this.getAlreadyPresentAnalyticAxesIds(
             analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList());
-    String alreadyPresentReverseAnalyticAxesIds =
-        isReverseQuery
-            ? this.getAlreadyPresentAnalyticAxesIds(
-                analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())
-            : "0";
+    List<Long> alreadyPresentReverseAnalyticAxesIds = new ArrayList<>();
+    if (isReverseQuery) {
+      alreadyPresentReverseAnalyticAxesIds.addAll(
+          this.getAlreadyPresentAnalyticAxesIds(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList()));
+    } else {
+      alreadyPresentReverseAnalyticAxesIds.add(0L);
+    }
 
     return analyticAxisRepo
         .all()
         .filter(
             String.format(
-                "self.company = :company AND self.id %s IN (:alreadyPresentSearchAnalyticAxes) AND self.id NOT IN (:alreadyPresentReverseAnalyticAxes)",
+                "self.company = :company AND self.id %s IN :alreadyPresentSearchAnalyticAxes AND self.id NOT IN :alreadyPresentReverseAnalyticAxes",
                 isReverseQuery ? "" : "NOT"))
         .bind("company", analyticMoveLineQuery.getCompany())
         .bind("alreadyPresentSearchAnalyticAxes", alreadyPresentSearchAnalyticAxesIds)
@@ -324,16 +327,15 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
         .fetch();
   }
 
-  protected String getAlreadyPresentAnalyticAxesIds(
+  protected List<Long> getAlreadyPresentAnalyticAxesIds(
       List<AnalyticMoveLineQueryParameter> analyticMoveLineQueryParameterList) {
-    String alreadyPresentAnalyticAxesIds =
+    List<Long> alreadyPresentAnalyticAxesIds =
         analyticMoveLineQueryParameterList.stream()
             .map(AnalyticMoveLineQueryParameter::getAnalyticAxis)
             .filter(Objects::nonNull)
             .map(AnalyticAxis::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
-
-    return alreadyPresentAnalyticAxesIds.isEmpty() ? "0" : alreadyPresentAnalyticAxesIds;
+            .collect(Collectors.toList());
+    alreadyPresentAnalyticAxesIds.add(0L);
+    return alreadyPresentAnalyticAxesIds;
   }
 }
