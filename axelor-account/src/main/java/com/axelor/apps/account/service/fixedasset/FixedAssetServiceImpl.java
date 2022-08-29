@@ -292,18 +292,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     multiplyFieldsToSplit(fixedAsset, remainingProrata);
     fixedAsset.setQty(fixedAsset.getQty().subtract(disposalQty));
     newFixedAsset.setQty(disposalQty);
-    newFixedAsset.setName(
-        fixedAsset.getName()
-            + String.format(
-                SUFFIX_SPLITTED_FIXED_ASSET,
-                I18n.get("Quantity"),
-                disposalQty.setScale(RETURNED_SCALE)));
-    fixedAsset.setName(
-        fixedAsset.getName()
-            + String.format(
-                SUFFIX_SPLITTED_FIXED_ASSET,
-                I18n.get("Quantity"),
-                fixedAsset.getQty().setScale(RETURNED_SCALE)));
     String commentsToAdd =
         String.format(
             I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
