@@ -2726,6 +2726,7 @@
 "Short term debt duration (month)","Nbre de mois (créance + 3 mois)",,
 "Show invoices","Voir facture(s) associée(s)",,
 "Show mail","Voir mails associés",,
+"Show move line(s)","Voir la/les ligne(s) d'écriture",,
 "Show move lines","Voir les lignes d'écriture",,
 "Show related invoice term(s)","Voir échéance(s) associée(s)",,
 "Show simulated moves","Montrer les écritures simulées",,
