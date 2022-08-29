@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202111181832</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1157,6 +1157,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="overflow">hidden</property>
                                 <property name="height">35px</property>
                                 <property name="width">154px</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"]==null</expression>
+                                    </structure>
+                                </list-property>
                                 <structure name="toc"/>
                                 <property name="source">file</property>
                                 <property name="proportionalScale">true</property>
@@ -2174,16 +2180,16 @@ else {
                             <property name="width">10%</property>
                         </column>
                         <column id="4225">
-                            <property name="width">7%</property>
+                            <property name="width">10%</property>
                         </column>
                         <column id="4343">
-                            <property name="width">7%</property>
+                            <property name="width">10%</property>
                         </column>
                         <column id="4351">
-                            <property name="width">7%</property>
+                            <property name="width">10%</property>
                         </column>
                         <column id="4359">
-                            <property name="width">7%</property>
+                            <property name="width">10%</property>
                         </column>
                         <header>
                             <row id="5148">
@@ -2205,7 +2211,7 @@ else {
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">silver</property>
                                     <text id="5147">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2250,7 +2256,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -2328,7 +2334,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -2402,7 +2408,7 @@ else {
                                 </cell>
                                 <cell id="4324">
                                     <text id="4207">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2438,7 +2444,7 @@ else {
                                 </cell>
                                 <cell id="4244">
                                     <text id="4250">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2474,7 +2480,7 @@ else {
                                 </cell>
                                 <cell id="4057">
                                     <text id="4208">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2510,7 +2516,7 @@ else {
                                 </cell>
                                 <cell id="4059">
                                     <text id="4209">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2546,7 +2552,7 @@ else {
                                 </cell>
                                 <cell id="4063">
                                     <text id="4205">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2582,7 +2588,7 @@ else {
                                 </cell>
                                 <cell id="4065">
                                     <text id="4206">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2618,7 +2624,7 @@ else {
                                 </cell>
                                 <cell id="4148">
                                     <text id="4204">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2654,7 +2660,7 @@ else {
                                 </cell>
                                 <cell id="4220">
                                     <text id="4243">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2693,7 +2699,7 @@ else {
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">silver</property>
                                     <text id="5167">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2730,7 +2736,7 @@ else {
                                 <cell id="5165">
                                     <property name="backgroundColor">silver</property>
                                     <text id="5163">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2767,7 +2773,7 @@ else {
                                 <cell id="5166">
                                     <property name="backgroundColor">silver</property>
                                     <text id="5164">
-                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2820,6 +2826,7 @@ else {
                                         <property name="colSpan">15</property>
                                         <property name="rowSpan">1</property>
                                         <data id="4115">
+                                            <property name="fontSize">7.5pt</property>
                                             <property name="resultSetColumn">account</property>
                                         </data>
                                     </cell>
@@ -2831,7 +2838,7 @@ else {
                                         <property name="colSpan">7</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4141">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["account"]</expression>
                                             <property name="contentType">html</property>
@@ -2840,7 +2847,7 @@ else {
                                     <cell id="4110"/>
                                     <cell id="4112">
                                         <data id="4139">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2852,7 +2859,7 @@ else {
                                     </cell>
                                     <cell id="4113">
                                         <data id="4138">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2864,7 +2871,7 @@ else {
                                     </cell>
                                     <cell id="4151">
                                         <data id="4156">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2921,6 +2928,7 @@ else {
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4277">
+                                            <property name="fontSize">7.5pt</property>
                                             <property name="resultSetColumn">partner</property>
                                         </data>
                                     </cell>
@@ -2942,7 +2950,7 @@ else {
                                         <property name="colSpan">6</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4288">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["partner"]</expression>
                                             <property name="contentType">html</property>
@@ -2951,7 +2959,7 @@ else {
                                     <cell id="4272"/>
                                     <cell id="4273">
                                         <data id="4289">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Currency</property>
@@ -2965,7 +2973,7 @@ else {
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <data id="4290">
-                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Currency</property>
                                                 <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
@@ -2977,7 +2985,7 @@ else {
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <data id="4291">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">7pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Currency</property>
                                                 <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
@@ -3009,7 +3017,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3060,7 +3068,7 @@ else {
                                         <property name="resultSetColumn">move_sequence</property>
                                     </data>
                                     <data id="4069">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -3077,7 +3085,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3130,7 +3138,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3178,7 +3186,7 @@ else {
                                 </cell>
                                 <cell id="4327">
                                     <data id="4073">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>
                                             <property name="pattern">Short Date</property>
@@ -3189,26 +3197,26 @@ else {
                                 </cell>
                                 <cell id="4246">
                                     <data id="4251">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">journal_code1</property>
                                     </data>
                                 </cell>
                                 <cell id="4072">
                                     <data id="4071">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="resultSetColumn">move_line_description</property>
                                     </data>
                                 </cell>
                                 <cell id="4074">
                                     <data id="4075">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="resultSetColumn">partner</property>
                                     </data>
                                 </cell>
                                 <cell id="4078">
                                     <data id="4079">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -3219,7 +3227,7 @@ else {
                                 </cell>
                                 <cell id="4080">
                                     <data id="4081">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -3230,7 +3238,7 @@ else {
                                 </cell>
                                 <cell id="4150">
                                     <data id="4155">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -3247,7 +3255,7 @@ else {
                                 </cell>
                                 <cell id="4222">
                                     <data id="4242">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="marginLeft">1pt</property>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">reconcile_group_code</property>
@@ -3256,7 +3264,7 @@ else {
                                 <cell id="4339">
                                     <property name="backgroundColor">silver</property>
                                     <data id="5168">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -3268,7 +3276,7 @@ else {
                                 <cell id="4347">
                                     <property name="backgroundColor">silver</property>
                                     <data id="5169">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -3280,7 +3288,7 @@ else {
                                 <cell id="4355">
                                     <property name="backgroundColor">silver</property>
                                     <data id="5170">
-                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontSize">7pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">currencyCode</property>
                                     </data>
