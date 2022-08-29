@@ -155,12 +155,12 @@ public abstract class InvoiceGenerator {
 
     switch (operationType) {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        return InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        return InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE;
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         return InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
       default:
         throw new AxelorException(

@@ -290,9 +290,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     if (stockMove.getIsReversion()) {
       if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
-        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE;
       } else if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
-        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE;
       } else {
         return null;
       }

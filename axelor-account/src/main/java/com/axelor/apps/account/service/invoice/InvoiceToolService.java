@@ -92,10 +92,10 @@ public class InvoiceToolService {
 
     switch (invoice.getOperationTypeSelect()) {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE: // fall-through
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         return true;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND: // fall-through
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE: // fall-through
         return false;
 
       default:
@@ -122,13 +122,13 @@ public class InvoiceToolService {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         isRefund = false;
         break;
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         isRefund = true;
         break;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
         isRefund = false;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         isRefund = true;
         break;
 
@@ -224,7 +224,7 @@ public class InvoiceToolService {
     copy.setMove(null);
     copy.setInterbankCodeLine(null);
     copy.setPaymentMove(null);
-    copy.clearRefundInvoiceList();
+    copy.clearCreditNoteInvoiceList();
     copy.setRejectDate(null);
     copy.setOriginalInvoice(null);
     copy.setUsherPassageOk(false);

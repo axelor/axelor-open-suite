@@ -64,7 +64,7 @@ public class ITranslation {
 
   public static final String ANNUAL_REPORT_OF = /*$$(*/ "Employee.annualReportOf"; /*)*/
 
-  public static final String TOTAL_TO_REFUND = /*$$(*/ "TotalToRefund"; /*)*/
+  public static final String TOTAL_TO_CREDIT_NOTE = /*$$(*/ "TotalToCreditNote"; /*)*/
 
   public static final String LUNCH_VOUCHER_SIGNATURE_DOCUMENT = /*$$(*/
       "LunchVoucher.signatureDocument"; /*)*/
@@ -101,6 +101,7 @@ public class ITranslation {
       "EmployeeTimesheet.weekTotal"; /*)*/
 
   public static final String EXPENSE_TOTAL_ATI = /*$$(*/ "Expense.totalA.T.I"; /*)*/
-  public static final String EXPENSE_TOTAL_TO_REFUND = /*$$(*/ "Expense.totalToRefund"; /*)*/
+  public static final String EXPENSE_TOTAL_TO_CREDIT_NOTE = /*$$(*/
+      "Expense.totalToCreditNote"; /*)*/
   public static final String TIMESHEET_TASK = /*$$(*/ "Timesheet.task"; /*)*/
 }

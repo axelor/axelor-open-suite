@@ -55,7 +55,7 @@
 155;"paymentVoucher";"N° de paiement dec. autres moyens ";"NUMBERS";"UPPERCASE";1;4;"DECAUT%YY";;1;1
 156;"paymentVoucherReceiptNo";"N° de reçu";"NUMBERS";"UPPERCASE";1;4;"RECU%YY";;1;1
 157;"purchaseInterface";"Interface achat";"NUMBERS";"UPPERCASE";1;4;"INTACH%YY";;1;1
-158;"refundInterface";"Interface avoir";"NUMBERS";"UPPERCASE";1;4;"INTAVO%YY";;1;1
+158;"creditNoteInterface";"Interface avoir";"NUMBERS";"UPPERCASE";1;4;"INTAVO%YY";;1;1
 159;"reimbursement";"Proposition remboursement";"NUMBERS";"UPPERCASE";1;4;"REMB%YY";;1;1
 160;"saleInterface";"Interface vente";"NUMBERS";"UPPERCASE";1;4;"INTVEN%YY";;1;1
 161;"treasuryInterface";"Interface trésorerie";"NUMBERS";"UPPERCASE";1;4;"INTTRE%YY";;1;1

@@ -78,8 +78,8 @@ public class MoveToolService {
 
   /**
    * @param invoice
-   *     <p>OperationTypeSelect 1 : Supplier invoice 2 : Supplier refund 3 : Customer invoice 4 :
-   *     Customer refund
+   *     <p>OperationTypeSelect 1 : Supplier invoice 2 : Supplier credit note 3 : Customer invoice 4
+   *     : Customer Credit note
    * @return
    * @throws AxelorException
    */
@@ -91,13 +91,13 @@ public class MoveToolService {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         isDebitCustomer = false;
         break;
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         isDebitCustomer = true;
         break;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
         isDebitCustomer = true;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         isDebitCustomer = false;
         break;
 

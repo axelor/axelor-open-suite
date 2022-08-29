@@ -2793,7 +2793,7 @@ PaymentMode.name as payment_mode,InvoicePayment.amount,
 Currency.symbol,
 (CASE WHEN InvoicePayment.type_select = 1 THEN 'Advance Payment'
 WHEN InvoicePayment.type_select = 2 THEN 'Payment'
-WHEN InvoicePayment.type_select = 3 THEN 'Refund invoice'
+WHEN InvoicePayment.type_select = 3 THEN 'Credit note invoice'
 WHEN InvoicePayment.type_select = 4 THEN 'Invoice'
 WHEN InvoicePayment.type_select = 5 THEN 'Other'
 WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select
@@ -3134,7 +3134,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
@@ -3142,7 +3142,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
 			'Invoice.invoiceNo'
 		}
 	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
+		'Invoice.creditNoteNo'
 	}
 } else if(row["status_select"] == "4") {
 	'Invoice.cancelInvoiceNo'
@@ -3654,7 +3654,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
@@ -3662,7 +3662,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
 			'Invoice.invoiceNo'
 		}
 	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
+		'Invoice.creditNoteNo'
 	}
 } else if(row["status_select"] == "4") {
 	'Invoice.cancelInvoiceNo'

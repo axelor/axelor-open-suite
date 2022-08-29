@@ -54,7 +54,7 @@
 	   	// TYPE SELECT
 		public static final int TYPE_ADVANCEPAYMENT = 1;
 		public static final int TYPE_PAYMENT = 2;
-		public static final int TYPE_REFUND_INVOICE = 3;
+		public static final int TYPE_CREDIT_NOTE_INVOICE = 3;
 		public static final int TYPE_INVOICE = 4;
 		public static final int TYPE_OTHER = 5;
 		public static final int TYPE_ADV_PAYMENT_IMPUTATION = 6;

@@ -409,7 +409,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoice = toPositivePriceInvoice(invoice);
     if (invoice.getExTaxTotal().signum() == 0
         && stockMoveList.stream().allMatch(StockMove::getIsReversion)) {
-      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE);
     }
     stockMoveList.forEach(invoice::addStockMoveSetItem);
     return Optional.of(invoice);
@@ -502,7 +502,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoice = toPositivePriceInvoice(invoice);
     if (invoice.getExTaxTotal().signum() == 0
         && stockMoveList.stream().allMatch(StockMove::getIsReversion)) {
-      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE);
     }
     stockMoveList.forEach(invoice::addStockMoveSetItem);
     return Optional.of(invoice);

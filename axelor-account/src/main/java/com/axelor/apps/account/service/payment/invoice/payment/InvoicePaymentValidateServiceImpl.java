@@ -185,7 +185,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (invoicePayment.getInvoice().getOperationTypeSelect()
             == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || invoicePayment.getInvoice().getOperationTypeSelect()
-            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE) {
       origin = invoicePayment.getInvoice().getSupplierInvoiceNb();
     }
     Move move =

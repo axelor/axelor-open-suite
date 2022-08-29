@@ -321,13 +321,13 @@ public class VentilateState extends WorkflowInvoice {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         return accountConfigService.getSuppInvSequence(accountConfig);
 
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE:
         return accountConfigService.getSuppRefSequence(accountConfig);
 
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
         return accountConfigService.getCustInvSequence(accountConfig);
 
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE:
         return accountConfigService.getCustRefSequence(accountConfig);
 
       default:

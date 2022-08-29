@@ -99,7 +99,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     map.put("$overdueInvoices", getOverdueInvoicesIndicator(user));
     map.put("$awaitingInvoices", getAwaitingInvoicesIndicator(user));
     map.put("$totalRemaining", getTotalRemainingIndicator(user));
-    map.put("$myRefund", getRefundIndicator(user));
+    map.put("$myCreditNote", getRefundIndicator(user));
     /* Helpdesk */
     map.put("$customerTickets", getCustomerTicketsIndicator(user));
     map.put("$companyTickets", getCompanyTicketsIndicator(user));
@@ -510,7 +510,7 @@ public class ClientViewServiceImpl implements ClientViewService {
             "self.partner.id = "
                 + user.getPartner().getId()
                 + " AND self.operationTypeSelect = "
-                + InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+                + InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE);
 
     if (user.getActiveCompany() != null) {
       filter =

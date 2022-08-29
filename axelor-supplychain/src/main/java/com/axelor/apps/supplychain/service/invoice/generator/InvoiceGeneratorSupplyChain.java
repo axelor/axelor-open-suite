@@ -41,7 +41,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
       throws AxelorException {
     super(
         isRefund
-            ? InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+            ? InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE
             : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
         saleOrder.getCompany(),
         saleOrder.getPaymentCondition(),
@@ -67,7 +67,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
       throws AxelorException {
     super(
         isRefund
-            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE
             : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
         purchaseOrder.getCompany(),
         purchaseOrder.getPaymentCondition(),

@@ -132,7 +132,7 @@ public interface InvoiceService {
   @Transactional
   public void usherProcess(Invoice invoice);
 
-  String checkNotImputedRefunds(Invoice invoice) throws AxelorException;
+  String checkNotImputedCreditNotes(Invoice invoice) throws AxelorException;
 
   /**
    * Créer un avoir.
@@ -144,7 +144,7 @@ public interface InvoiceService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public Invoice createRefund(Invoice invoice) throws AxelorException;
+  public Invoice createCreditNote(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
 

@@ -92,7 +92,9 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   protected NotificationItem createNotificationItem(Invoice invoice) {
-    if (invoice.getOperationTypeSelect().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+    if (invoice
+        .getOperationTypeSelect()
+        .equals(InvoiceRepository.OPERATION_TYPE_CLIENT_CREDIT_NOTE)) {
       return new NotificationItem(invoice, invoice.getAmountRemaining().negate());
     } else {
       return new NotificationItem(invoice, invoice.getAmountRemaining());

@@ -61,8 +61,8 @@
             widget="info-button" onClick="action-method-show-client-view-awaiting-invoices"/>
           <button name="$totalRemaining" title="Total remaining" width="190px"
             widget="info-button" onClick="action-method-show-client-view-total-remaining"/>
-          <button name="$myRefund" title="My refund" width="190px" widget="info-button"
-            onClick="action-method-show-client-view-refund"/>
+          <button name="$myCreditNote" title="My credit note" width="190px"
+            widget="info-button" onClick="action-method-show-client-view-credit-note"/>
 
         </panel>
         <panel name="deliveryPanel" title="Delivery" if-module="axelor-stock" itemSpan="12"
@@ -267,9 +267,10 @@
       method="showClientMyTotalRemaining"/>
   </action-method>
 
-  <action-method name="action-method-show-client-view-refund"
+  <action-method name="action-method-show-client-view-credit-note"
     model="com.axelor.apps.base.db.Wizard">
-    <call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyRefund"/>
+    <call class="com.axelor.apps.portal.web.ClientViewController"
+      method="showClientMyCreditNote"/>
   </action-method>
 
   <!-- Ticket OnClick -->

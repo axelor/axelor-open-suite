@@ -253,7 +253,7 @@
     <filter title="Customer payments with remaining">
       <domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
     </filter>
-    <filter title="Customer refunds">
+    <filter title="Customer Credit notes">
       <domain>self.operationTypeSelect = 4</domain>
     </filter>
     <filter title="Supplier payments">
@@ -265,7 +265,7 @@
     <filter title="Confirmed Supplier payments">
       <domain>self.operationTypeSelect = 1 AND self.statusSelect = 3</domain>
     </filter>
-    <filter title="Supplier refunds">
+    <filter title="Supplier Credit notes">
       <domain>self.operationTypeSelect = 2</domain>
     </filter>
   </search-filters>

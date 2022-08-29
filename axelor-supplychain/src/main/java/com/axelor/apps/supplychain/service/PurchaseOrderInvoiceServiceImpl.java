@@ -208,7 +208,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             purchaseOrder,
             currentInvoiceId,
             excludeCurrentInvoice,
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_CREDIT_NOTE);
 
     if (purchaseAmount != null) {
       invoicedAmount = invoicedAmount.add(purchaseAmount);

@@ -20,14 +20,14 @@
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
 
-  <menuitem name="invoice-root-custrefunds" parent="invoice-root" order="10"
-    title="Cust. Refunds" action="invoice.root.custrefunds"/>
+  <menuitem name="invoice-root-cust-credit-notes" parent="invoice-root" order="10"
+    title="Cust. Credit notes" action="invoice.root.cust.creditnotes"/>
 
-  <action-view name="invoice.root.custrefunds" title="Cust. Refunds"
+  <action-view name="invoice.root.cust.creditnotes" title="Cust. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-refund-grid"/>
+    <view type="grid" name="invoice-credit-note-grid"/>
     <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="customer-refunds-filters"/>
+    <view-param name="search-filters" value="customer-credit-notes-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
     <context name="todayDate"
@@ -67,8 +67,8 @@
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3) and
+      = 1 or (self.company.accountConfig.isManagePFPInCreditNote = true and self.operationTypeSelect
+      = 2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3) and
       self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
@@ -84,19 +84,19 @@
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3)</domain>
+      = 1 or (self.company.accountConfig.isManagePFPInCreditNote = true and self.operationTypeSelect
+      = 2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3)</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="20"
-    title="Suppl. Refunds" action="invoice.root.purchase.suprefunds"/>
+  <menuitem name="invoice-root-purchase-sup-credit-notes" parent="invoice-root" order="20"
+    title="Suppl. Credit notes" action="invoice.root.purchase.sup.creditnotes"/>
 
-  <action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
+  <action-view name="invoice.root.purchase.sup.creditnotes" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-refund-grid"/>
+    <view type="grid" name="invoice-supplier-credit-note-grid"/>
     <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="supplier-refunds-filters"/>
+    <view-param name="search-filters" value="supplier-credit-notes-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
     <context name="todayDate"
@@ -681,14 +681,14 @@
     <context name="_operationTypeSelect" expr="eval:3"/>
   </action-view>
 
-  <menuitem name="top-invoicing-custrefunds" title="Cust. Refunds"
-    action="top.invoicing.custrefunds" parent="top-invoicing" top="true"/>
+  <menuitem name="top-invoicing-cust-credit-notes" title="Cust. Credit notes"
+    action="top.invoicing.cust.creditnotes" parent="top-invoicing" top="true"/>
 
-  <action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
+  <action-view name="top.invoicing.cust.creditnotes" title="Cust. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-refund-grid"/>
+    <view type="grid" name="invoice-credit-note-grid"/>
     <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="customer-refunds-filters"/>
+    <view-param name="search-filters" value="customer-credit-notes-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
   </action-view>
@@ -705,14 +705,14 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="top-invoicing-supplrefunds" title="Suppl. Refunds"
-    action="top.invoicing.supplrefunds" parent="top-invoicing" top="true"/>
+  <menuitem name="top-invoicing-suppl-credit-notes" title="Suppl. Credit notes"
+    action="top.invoicing.suppl.creditnotes" parent="top-invoicing" top="true"/>
 
-  <action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
+  <action-view name="top.invoicing.suppl.creditnotes" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-refund-grid"/>
+    <view type="grid" name="invoice-supplier-credit-note-grid"/>
     <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="supplier-refunds-filters"/>
+    <view-param name="search-filters" value="supplier-credit-note-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
   </action-view>
