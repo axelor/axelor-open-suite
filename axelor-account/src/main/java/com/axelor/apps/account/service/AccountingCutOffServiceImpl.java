@@ -158,7 +158,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                         == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES
                     ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
                     : JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)
-            .bind("date", moveDate.toString());
+            .bind("date", moveDate);
 
     if (company != null) {
       moveQuery.bind("company", company.getId());
