@@ -4117,7 +4117,7 @@ row._outer["first_name"]
                             <structure>
                                 <property name="name">total_discount</property>
                                 <text-property name="displayName">total_discount</text-property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"] + row["sumNegativeExTaxTotal"]</expression>
+                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
