@@ -94,12 +94,12 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
         BigDecimal currentRate = BigDecimal.ZERO;
         Float rate = 0.0f;
 
-        if (!ccline.getStartCurrency().getCode().equals(EURO_CURRENCY_CODE)
-            && !ccline.getEndCurrency().getCode().equals(EURO_CURRENCY_CODE)) {
+        if (!ccline.getStartCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)
+            && !ccline.getEndCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)) {
 
           isRelatedConversion = true;
           rate = this.getRateFromJson(ccline.getStartCurrency(), ccline.getEndCurrency(), response);
-        } else if (ccline.getStartCurrency().getCode().equals(EURO_CURRENCY_CODE)) {
+        } else if (ccline.getStartCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)) {
           rate = this.getRateFromJson(ccline.getStartCurrency(), ccline.getEndCurrency(), response);
         } else {
           rate = this.getRateFromJson(ccline.getEndCurrency(), ccline.getStartCurrency(), response);
@@ -160,8 +160,8 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
     if (currencyFrom != null && currencyTo != null) {
 
       if (!isFixerApiPaid
-          && !currencyFrom.getCode().equals(EURO_CURRENCY_CODE)
-          && !currencyTo.getCode().equals(EURO_CURRENCY_CODE)) {
+          && !currencyFrom.getCodeISO().equals(EURO_CURRENCY_CODE)
+          && !currencyTo.getCodeISO().equals(EURO_CURRENCY_CODE)) {
         isRelatedConversion = true;
       }
 
@@ -229,8 +229,8 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
       if (jsonResult.containsKey("rates")) {
 
         if (isRelatedConversion) {
-          String fromRate = jsonResult.getJSONObject("rates").optString(currencyFrom.getCode());
-          String toRate = jsonResult.getJSONObject("rates").optString(currencyTo.getCode());
+          String fromRate = jsonResult.getJSONObject("rates").optString(currencyFrom.getCodeISO());
+          String toRate = jsonResult.getJSONObject("rates").optString(currencyTo.getCodeISO());
           if (StringUtils.isEmpty(toRate)) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -241,11 +241,11 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
           isRelatedConversion = false;
           return Float.parseFloat(toRate) / Float.parseFloat(fromRate);
         } else {
-          String rate = jsonResult.getJSONObject("rates").optString(currencyTo.getCode());
+          String rate = jsonResult.getJSONObject("rates").optString(currencyTo.getCodeISO());
           return Float.parseFloat((rate));
         }
       } else if (jsonResult.containsKey("error")
-          && currencyTo.getCode().equals(EURO_CURRENCY_CODE)) {
+          && currencyTo.getCodeISO().equals(EURO_CURRENCY_CODE)) {
         int code = jsonResult.getJSONObject("error").getInt("code");
         if (code == 105 || code == 201) {
           return null;
@@ -302,9 +302,9 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
         url =
             new URL(
                 this.getUrlString(
-                    date, EURO_CURRENCY_CODE, currencyFrom.getCode(), currencyTo.getCode()));
+                    date, EURO_CURRENCY_CODE, currencyFrom.getCodeISO(), currencyTo.getCodeISO()));
       } else {
-        url = new URL(this.getUrlString(date, currencyFrom.getCode(), currencyTo.getCode()));
+        url = new URL(this.getUrlString(date, currencyFrom.getCodeISO(), currencyTo.getCodeISO()));
       }
     } else {
       url = new URL(this.getUrlString(date, EURO_CURRENCY_CODE));

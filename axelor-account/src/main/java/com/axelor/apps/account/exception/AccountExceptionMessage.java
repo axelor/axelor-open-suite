@@ -1093,4 +1093,10 @@ public final class AccountExceptionMessage {
   public static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   public static final String CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+
+  static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
+    "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
+
+  static final String MOVE_14 = /*$$(*/
+    "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }

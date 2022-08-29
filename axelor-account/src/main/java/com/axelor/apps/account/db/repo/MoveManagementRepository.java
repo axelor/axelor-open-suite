@@ -106,11 +106,13 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
-        move.setCurrencyCode(move.getCurrency().getCode());
+        move.setCurrencyCode(move.getCurrency().getCodeISO());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);

@@ -554,7 +554,7 @@ public class DebtRecoveryService {
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
 
         if (referenceDate != null) {
-          log.debug("date de référence : {} ", referenceDate);
+          log.debug("reference date : {} ", referenceDate);
           debtRecovery.setReferenceDate(referenceDate);
         } else {
           throw new AxelorException(
@@ -621,7 +621,7 @@ public class DebtRecoveryService {
           }
         } else {
           log.debug(
-              "Tiers {}, Société {} - Niveau de relance en attente ",
+              "Partner {}, Company {} - Reminder level : on hold",
               partner.getName(),
               company.getName());
           // TODO Alarm ?

@@ -108,7 +108,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       throws AxelorException {
 
     logger.debug(
-        "Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
+        "Creation of an operation {} for the manufacturing order {}",
+        priority,
+        manufOrder.getManufOrderSeq());
 
     String operationName = prodProcessLine.getName();
 

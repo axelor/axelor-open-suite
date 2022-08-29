@@ -53,7 +53,6 @@ public class ClosePeriodCallableService implements Callable<Period> {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void closePeriodAndSendMessage() throws AxelorException {
     Beans.get(PeriodService.class).close(period);
     Beans.get(MailMessageService.class)

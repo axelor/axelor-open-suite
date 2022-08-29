@@ -192,7 +192,8 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
         Map<String, Object> headers = new HashMap<>();
         headers.put("Accept", "application/json");
         request.setHeaders(headers);
-        URL url = new URL(this.getUrlString(date, currencyFrom.getCode(), currencyTo.getCode()));
+        URL url =
+            new URL(this.getUrlString(date, currencyFrom.getCodeISO(), currencyTo.getCodeISO()));
         // URL url = new URL(String.format(WSURL,currencyFrom.getCode()));
         LOG.trace("Currency conversion webservice URL: {}", new Object[] {url.toString()});
         request.setUrl(url);
@@ -236,7 +237,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
     try {
       Float rt = null;
 
-      int compareCode = currencyFrom.getCode().compareTo(currencyTo.getCode());
+      int compareCode = currencyFrom.getCodeISO().compareTo(currencyTo.getCodeISO());
       String[] currencyRateArr = new String[2];
 
       JSONObject jsonResult = new JSONObject(response.getContentAsString());
@@ -264,7 +265,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
         observations = new JSONObject(seriesOf.getJSONObject("observations").toString());
         rateValue = new JSONArray(observations.get(observations.length() - 1).toString());
 
-        if (currencyTo.getCode().equals("EUR")) {
+        if (currencyTo.getCodeISO().equals("EUR")) {
           rt = 1.0f / Float.parseFloat(rateValue.get(0).toString());
         } else {
           rt = Float.parseFloat(rateValue.get(0).toString());

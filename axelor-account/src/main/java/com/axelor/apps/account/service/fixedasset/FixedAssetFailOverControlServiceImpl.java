@@ -66,7 +66,9 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
               I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM));
         } else if (fixedAssetCategory.getFirstDepreciationDateInitSelect()
                 == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-            && (chronoUnit.between(fixedAsset.getFirstServiceDate(), fixedAsset.getFailoverDate())
+            && (fixedAsset.getFirstServiceDate() == null
+                || chronoUnit.between(
+                        fixedAsset.getFirstServiceDate(), fixedAsset.getFailoverDate())
                     >= fixedAsset.getFiscalNumberOfDepreciation()
                 || fixedAsset.getFailoverDate().isBefore(fixedAsset.getFirstServiceDate()))) {
           throw new AxelorException(

@@ -256,7 +256,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(StockExceptionMessage.STOCK_MOVE_PLAN_WRONG_STATUS));
     }
 
-    LOG.debug("Planification du mouvement de stock : {} ", stockMove.getStockMoveSeq());
+    LOG.debug("Stock move planification : {} ", stockMove.getStockMoveSeq());
 
     if (stockMove.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
@@ -387,7 +387,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(StockExceptionMessage.STOCK_MOVE_REALIZATION_WRONG_STATUS));
     }
 
-    LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
+    LOG.debug("Stock realization : {} ", stockMove.getStockMoveSeq());
 
     if (checkOngoingInventoryFlag) {
       checkOngoingInventory(stockMove);
@@ -830,7 +830,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
-    LOG.debug("Annulation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
+    LOG.debug("Stock move cancel : {} ", stockMove.getStockMoveSeq());
     int initialStatus = stockMove.getStatusSelect();
     setCancelStatus(stockMove);
     if (initialStatus == StockMoveRepository.STATUS_PLANNED) {
@@ -1013,7 +1013,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException {
 
     LOG.debug(
-        "Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ",
+        "Creation of a reversed stock move of the stock move : {} ",
         new Object[] {stockMove.getStockMoveSeq()});
 
     return copyAndSplitStockMoveReverse(stockMove, false);

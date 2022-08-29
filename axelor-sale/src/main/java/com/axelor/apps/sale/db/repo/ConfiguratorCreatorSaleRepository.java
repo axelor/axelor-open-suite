@@ -24,6 +24,11 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaJsonField;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
@@ -33,6 +38,7 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
     ConfiguratorCreator copy = super.copy(entity, deep);
     copy.setCopyNeedingUpdate(true);
     copy.setName(copy.getName() + " (" + I18n.get(SaleExceptionMessage.COPY) + ")");
+    addTemporalOnAttributesAndIndicatorsName(copy);
     return copy;
   }
 
@@ -42,10 +48,11 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
       if (entity.getCopyNeedingUpdate()) {
         entity = super.save(entity);
         entity.setCopyNeedingUpdate(false);
-        Beans.get(ConfiguratorCreatorImportService.class).fixAttributesName(entity);
         ConfiguratorCreatorService configuratorCreatorService =
             Beans.get(ConfiguratorCreatorService.class);
+        Beans.get(ConfiguratorCreatorImportService.class).fixAttributesName(entity);
         configuratorCreatorService.updateAttributes(entity);
+        configuratorCreatorService.removeTemporalAttributesAndIndicators(entity);
         configuratorCreatorService.updateIndicators(entity);
         return entity;
       } else {
@@ -54,6 +61,26 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Quick fix for constrainst issue
+   *
+   * @param entity
+   */
+  protected void addTemporalOnAttributesAndIndicatorsName(ConfiguratorCreator entity) {
+    List<MetaJsonField> metaJsonFields = new ArrayList<>();
+    metaJsonFields.addAll(
+        Optional.ofNullable(entity.getAttributes()).orElse(Collections.emptyList()));
+    metaJsonFields.addAll(
+        Optional.ofNullable(entity.getIndicators()).orElse(Collections.emptyList()));
+    for (MetaJsonField metaJsonField : metaJsonFields) {
+      String name = metaJsonField.getName();
+      if (name != null) {
+        // FIX FOR CONSTRAINT ISSUE
+        metaJsonField.setName(name + "$AXELORTMP");
+      }
     }
   }
 }

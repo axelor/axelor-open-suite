@@ -154,7 +154,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {} ",
+        "Stock update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {}, Future quantity? {}, Is increment? {}, Date? {} ",
         stockLocation.getName(),
         product.getCode(),
         qty,
@@ -295,7 +295,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
+        "Stock detail update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {}, Future quantity? {}, Is increment? {}, Date? {}, Tracking number? {} ",
         stockLocation.getName(),
         product.getCode(),
         qty,
@@ -421,7 +421,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Récupération ligne de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {} ",
+        "Get stock line: Stock location? {}, Product? {}, Current quantity? {}, Future quantity? {}, Date? {} ",
         stockLocationLine.getStockLocation().getName(),
         product.getCode(),
         stockLocationLine.getCurrentQty(),
@@ -444,7 +444,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Récupération ligne de détail de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {}, Variante? {}, Num de suivi? {} ",
+        "Get stock line detail: Stock location? {}, Product? {}, Current quantity? {}, Future quantity? {}, Date? {}, Num de suivi? {} ",
         detailLocationLine.getDetailsStockLocation().getName(),
         product.getCode(),
         detailLocationLine.getCurrentQty(),
@@ -503,7 +503,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   public StockLocationLine createLocationLine(StockLocation stockLocation, Product product) {
 
     LOG.debug(
-        "Création d'une ligne de stock : Entrepot? {}, Produit? {} ",
+        "Stock line creation : Stock location? {}, Product? {} ",
         stockLocation.getName(),
         product.getCode());
 
@@ -524,7 +524,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber) {
 
     LOG.debug(
-        "Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Num de suivi? {} ",
+        "Stock line detail creation : Stock location? {}, Product? {}, Tracking number? {} ",
         stockLocation.getName(),
         product.getCode(),
         trackingNumber.getTrackingNumberSeq());

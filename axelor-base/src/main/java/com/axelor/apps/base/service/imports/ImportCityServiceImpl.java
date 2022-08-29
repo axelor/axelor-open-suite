@@ -243,6 +243,10 @@ public class ImportCityServiceImpl implements ImportCityService {
     String downloadUrl = getDownloadUrl(geonamesFile);
     MetaFile metaFile = null;
 
+    if (StringUtils.isEmpty(downloadUrl)) {
+      return metaFile;
+    }
+
     try {
       File tempDir = java.nio.file.Files.createTempDirectory(null).toFile();
       File downloadFile = new File(tempDir, downloadFileName);
@@ -488,18 +492,20 @@ public class ImportCityServiceImpl implements ImportCityService {
     switch (geonamesFile) {
       case DUMP:
         downloadUrl = appBase.getGeoNamesDumpUrl();
+        if (StringUtils.isEmpty(downloadUrl)) {
+          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_DUMP_URL_NOT_SPECIFIED) + "\n");
+        }
         break;
+
       case ZIP:
         downloadUrl = appBase.getGeoNamesZipUrl();
+        if (StringUtils.isEmpty(downloadUrl)) {
+          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_ZIP_URL_NOT_SPECIFIED) + "\n");
+        }
         break;
+
       default:
         printWriter.append(I18n.get(BaseExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
-    }
-
-    if (StringUtils.isEmpty(downloadUrl)) {
-      printWriter.append(
-          String.format(I18n.get(BaseExceptionMessage.GEONAMES_URL_NOT_SPECIFIED), downloadUrl)
-              + "\n");
     }
 
     return downloadUrl;
@@ -524,8 +530,10 @@ public class ImportCityServiceImpl implements ImportCityService {
       MetaFile zipImportDataFile = this.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
       MetaFile dumpImportDataFile = this.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
 
-      importHistoryList.add(this.importCity(typeSelect + "-zip", zipImportDataFile));
-      importHistoryList.add(this.importCity(typeSelect + "-dump", dumpImportDataFile));
+      if (zipImportDataFile != null && dumpImportDataFile != null) {
+        importHistoryList.add(this.importCity(typeSelect + "-zip", zipImportDataFile));
+        importHistoryList.add(this.importCity(typeSelect + "-dump", dumpImportDataFile));
+      }
     } catch (Exception e) {
       printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
     }

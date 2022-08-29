@@ -148,8 +148,9 @@ public class ImportMove {
           move.setCurrencyCode(values.get("Idevise").toString());
         }
 
+        Journal journal = null;
         if (values.get("JournalCode") != null) {
-          Journal journal =
+          journal =
               Beans.get(JournalRepository.class)
                   .all()
                   .filter(
@@ -179,6 +180,18 @@ public class ImportMove {
           move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }
         move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_IMPORT);
+
+        if (fecImport != null && fecImport.getImportFECType().getFunctionalOriginSelect() > 0) {
+          move.setFunctionalOriginSelect(fecImport.getImportFECType().getFunctionalOriginSelect());
+        } else if (journal != null) {
+          String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+
+          if (StringUtils.notEmpty(authorizedFunctionalOriginSelect)
+              && authorizedFunctionalOriginSelect.split(",").length == 1) {
+            move.setFunctionalOriginSelect(Integer.parseInt(authorizedFunctionalOriginSelect));
+          }
+        }
+
         moveRepository.save(move);
       }
       if (values.get("CompteNum") != null) {
@@ -199,6 +212,11 @@ public class ImportMove {
         }
         moveLine.setAccount(account);
       }
+
+      if (moveLine.getReconcileGroup() != null) {
+        moveLine.getReconcileGroup().setCompany(company);
+      }
+
       move.addMoveLineListItem(moveLine);
     } catch (AxelorException e) {
       TraceBackService.trace(e);

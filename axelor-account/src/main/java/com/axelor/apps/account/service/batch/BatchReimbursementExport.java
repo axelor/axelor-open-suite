@@ -176,7 +176,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
     for (Reimbursement reimbursement : reimbursementList) {
 
-      log.debug("Remboursement n° {}", reimbursement.getRef());
+      log.debug("Reimbursement n° {}", reimbursement.getRef());
 
       updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
     }
@@ -188,7 +188,7 @@ public class BatchReimbursementExport extends BatchStrategy {
       try {
         partner = partnerRepository.find(partner.getId());
 
-        log.debug("Tiers n° {}", partner.getName());
+        log.debug("Partner n° {}", partner.getName());
 
         List<MoveLine> moveLineList =
             moveLineRepo
@@ -204,7 +204,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                     MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
                 .fetch();
 
-        log.debug("Liste des trop perçus : {}", moveLineList);
+        log.debug("Overpayment list : {}", moveLineList);
 
         if (moveLineList != null && !moveLineList.isEmpty()) {
 
@@ -247,7 +247,7 @@ public class BatchReimbursementExport extends BatchStrategy {
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour le tiers {}",
+            "Anomaly generated for the partner {}",
             partnerRepository.find(partner.getId()).getName());
 
       } finally {

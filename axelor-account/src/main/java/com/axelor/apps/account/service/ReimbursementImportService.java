@@ -249,7 +249,7 @@ public class ReimbursementImportService {
    * @throws AxelorException
    */
   public void testCompanyField(Company company) throws AxelorException {
-    log.debug("Test de la société {}", company.getName());
+    log.debug("Test of the company {}", company.getName());
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 

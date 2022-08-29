@@ -204,7 +204,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
         if (paymentScheduleLine.getInTaxAmount() != null) {
 
           log.debug(
-              "Somme TTC des lignes de l'échéancier {} : total = {}, ajout = {}",
+              "A.T.I. amount of the lines of the payment schedule {} : total = {}, tax amount : {}",
               new Object[] {
                 paymentSchedule.getPaymentScheduleSeq(),
                 totalAmount,
@@ -217,7 +217,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     }
 
     log.debug(
-        "Obtention de la somme TTC des lignes de l'échéancier {} : {}",
+        "Get A.T.I. amount of lines of payment schedule {} : {}",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), totalAmount});
 
     return totalAmount;
@@ -234,7 +234,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   public void updatePaymentSchedule(PaymentSchedule paymentSchedule, BigDecimal inTaxTotal) {
 
     log.debug(
-        "Mise à jour de l'échéancier {} : {}",
+        "Payment schedule update {} : {}",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), inTaxTotal});
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
@@ -242,7 +242,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLineRepository.STATUS_IN_PROGRESS
           && !paymentScheduleLine.getRejectedOk()) {
 
-        log.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
+        log.debug("Update of the line : {} ", paymentScheduleLine.getName());
 
         paymentScheduleLine.setInTaxAmount(inTaxTotal);
       }
@@ -346,7 +346,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   @Transactional(rollbackOn = {Exception.class})
   public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-    log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
+    log.debug("Validation of the payment schedule {}", paymentSchedule.getPaymentScheduleSeq());
 
     if (paymentSchedule.getPaymentScheduleLineList() == null
         || paymentSchedule.getPaymentScheduleLineList().isEmpty()) {
@@ -442,7 +442,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
                   PaymentScheduleLineRepository.STATUS_IN_PROGRESS)
               .fetchOne()
           == null) {
-        log.debug("Dernière échéance");
+        log.debug("Last payment schedule");
         return true;
       } else {
         return false;
@@ -462,7 +462,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   @Override
   public void closePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-    log.debug("Cloture de l'échéancier");
+    log.debug("Closing of the payment schedule");
 
     // On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
 

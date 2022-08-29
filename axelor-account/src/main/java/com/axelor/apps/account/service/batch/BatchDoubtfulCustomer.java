@@ -100,15 +100,11 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
       // FACTURES
       List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);
-      log.debug(
-          "Nombre d'écritures de facture concernées (Créance de + 6 mois) au 411 : {} ",
-          moveList.size());
+      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveList.size());
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
       moveList = doubtfulCustomerService.getMove(1, doubtfulCustomerAccount, company);
-      log.debug(
-          "Nombre d'écritures de facture concernées (Créance de + 3 mois) au 411 : {} ",
-          moveList.size());
+      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveList.size());
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 
       // FACTURES REJETES
@@ -116,7 +112,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           (List<MoveLine>)
               doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
       log.debug(
-          "Nombre de lignes d'écriture de rejet concernées (Créance de + 6 mois) au 411 : {} ",
+          "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
           moveLineList.size());
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
@@ -125,7 +121,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           (List<MoveLine>)
               doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
       log.debug(
-          "Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",
+          "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
           moveLineList.size());
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
@@ -178,7 +174,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour la facture {}",
+            "Anomaly generated for the invoice {}",
             moveRepo.find(move.getId()).getInvoice().getInvoiceId());
 
       } finally {
@@ -240,7 +236,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour la facture {}",
+            "Anomaly generated for the invoice {}",
             moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 
       } finally {

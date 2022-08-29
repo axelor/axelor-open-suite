@@ -172,7 +172,7 @@ public class BatchReimbursementImport extends BatchStrategy {
                     moveRepo.find(move.getId()),
                     rejectDate);
             if (reimbursement != null) {
-              log.debug("Remboursement n° {} traité", reimbursement.getRef());
+              log.debug("Reimbursement n° {} processed", reimbursement.getRef());
               seq++;
               i++;
               updateReimbursement(reimbursement);

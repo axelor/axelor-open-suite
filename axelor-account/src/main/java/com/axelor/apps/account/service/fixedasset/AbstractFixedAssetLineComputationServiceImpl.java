@@ -468,8 +468,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
 
-    LocalDate d =
-        DateTool.plusMonths(fixedAsset.getFirstServiceDate(), getDurationInMonth(fixedAsset));
+    LocalDate firstServiceDate =
+        fixedAsset.getFirstServiceDate() == null
+            ? fixedAsset.getAcquisitionDate()
+            : fixedAsset.getFirstServiceDate();
+    LocalDate d = DateTool.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         getComputationMethodSelect(fixedAsset))) {
       d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));

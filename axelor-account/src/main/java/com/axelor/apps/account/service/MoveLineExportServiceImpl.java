@@ -1249,7 +1249,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         }
 
         if (move.getCurrency() != null) {
-          items[17] = move.getCurrency().getCode();
+          items[17] = move.getCurrency().getCodeISO();
         }
         allMoveLineData.add(items);
       }

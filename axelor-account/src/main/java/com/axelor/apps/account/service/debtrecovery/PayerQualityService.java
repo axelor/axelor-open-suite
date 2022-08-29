@@ -68,7 +68,7 @@ public class PayerQualityService {
         .filter(
             "(self.debtRecovery.accountingSituation.partner = ?1 OR self.debtRecovery.tradingNameAccountingSituation.partner = ?1) AND self.debtRecoveryDate > ?2",
             partner,
-            appAccountService.getTodayDate().minusYears(1))
+            appAccountService.getTodayDate(null).minusYears(1))
         .fetch();
   }
 
@@ -98,10 +98,11 @@ public class PayerQualityService {
     List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
     log.debug(
-        "Tiers {} : Nombre de relances concernées : {}",
+        "Partner {} : Number of recovery concerned : {}",
         partner.getName(),
         debtRecoveryHistoryList.size());
-    log.debug("Tiers {} : Nombre de rejets concernés : {}", partner.getName(), moveLineList.size());
+    log.debug(
+        "Partner {} : Number of rejection concerned : {}", partner.getName(), moveLineList.size());
 
     for (DebtRecoveryHistory debtRecoveryHistory : debtRecoveryHistoryList) {
       burden =
@@ -110,7 +111,7 @@ public class PayerQualityService {
     for (MoveLine moveLine : moveLineList) {
       burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
     }
-    log.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
+    log.debug("Partner {} : Payer quality : {}", partner.getName(), burden);
     return burden;
   }
 
@@ -178,7 +179,7 @@ public class PayerQualityService {
         if (burden.compareTo(BigDecimal.ZERO) == 1) {
           partner.setPayerQuality(burden);
           partnerRepository.save(partner);
-          log.debug("Tiers payeur {} : Qualité payeur : {}", partner.getName(), burden);
+          log.debug("Partner payer {} : Payer quality : {}", partner.getName(), burden);
         }
       }
     }

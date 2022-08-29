@@ -220,7 +220,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       items[2] = invoice.getInvoiceDate().toString();
       items[3] = invoice.getDueDate().toString();
       items[4] = inTaxTotal.toString();
-      items[5] = invoice.getCurrency().getCode();
+      items[5] = invoice.getCurrency().getCodeISO();
       allMoveLineData.add(items);
     }
 

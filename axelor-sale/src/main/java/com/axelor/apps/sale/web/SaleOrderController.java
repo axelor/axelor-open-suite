@@ -19,7 +19,6 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -52,7 +51,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -61,13 +59,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.team.db.Team;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -76,7 +71,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -350,233 +344,6 @@ public class SaleOrderController {
       response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public void mergeSaleOrder(ActionRequest request, ActionResponse response) {
-    List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
-    List<Long> saleOrderIdList = new ArrayList<Long>();
-    boolean fromPopup = false;
-    String lineToMerge;
-    if (request.getContext().get("saleQuotationToMerge") != null) {
-      lineToMerge = "saleQuotationToMerge";
-    } else {
-      lineToMerge = "saleOrderToMerge";
-    }
-
-    if (request.getContext().get(lineToMerge) != null) {
-
-      if (request.getContext().get(lineToMerge) instanceof List) {
-        // No confirmation popup, sale orders are content in a parameter list
-        List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
-        for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
-        }
-      } else {
-        // After confirmation popup, sale order's id are in a string separated by ","
-        String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
-        for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
-        }
-        fromPopup = true;
-      }
-    }
-
-    // Check if currency, clientPartner and company are the same for all selected sale orders
-    Currency commonCurrency = null;
-    Partner commonClientPartner = null;
-    Company commonCompany = null;
-    Partner commonContactPartner = null;
-    Team commonTeam = null;
-    TaxNumber commonTaxNumber = null;
-    // Useful to determine if a difference exists between tax number of all sale orders
-    boolean existTaxNumberDiff = false;
-    FiscalPosition commonFiscalPosition = null;
-    // Useful to determine if a difference exists between fiscal positions of all sale orders
-    boolean existFiscalPositionDiff = false;
-    // Useful to determine if a difference exists between teams of all sale orders
-    boolean existTeamDiff = false;
-    // Useful to determine if a difference exists between contact partners of all sale orders
-    boolean existContactPartnerDiff = false;
-    PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all sale orders
-    boolean existPriceListDiff = false;
-
-    SaleOrder saleOrderTemp;
-    int count = 1;
-    for (Long saleOrderId : saleOrderIdList) {
-      saleOrderTemp = JPA.em().find(SaleOrder.class, saleOrderId);
-      saleOrderList.add(saleOrderTemp);
-      if (count == 1) {
-        commonCurrency = saleOrderTemp.getCurrency();
-        commonClientPartner = saleOrderTemp.getClientPartner();
-        commonCompany = saleOrderTemp.getCompany();
-        commonContactPartner = saleOrderTemp.getContactPartner();
-        commonTeam = saleOrderTemp.getTeam();
-        commonPriceList = saleOrderTemp.getPriceList();
-        commonTaxNumber = saleOrderTemp.getTaxNumber();
-        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
-      } else {
-        if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
-          commonCurrency = null;
-        }
-        if (commonClientPartner != null
-            && !commonClientPartner.equals(saleOrderTemp.getClientPartner())) {
-          commonClientPartner = null;
-        }
-        if (commonCompany != null && !commonCompany.equals(saleOrderTemp.getCompany())) {
-          commonCompany = null;
-        }
-        if (commonContactPartner != null
-            && !commonContactPartner.equals(saleOrderTemp.getContactPartner())) {
-          commonContactPartner = null;
-          existContactPartnerDiff = true;
-        }
-        if (commonTeam != null && !commonTeam.equals(saleOrderTemp.getTeam())) {
-          commonTeam = null;
-          existTeamDiff = true;
-        }
-        if (commonPriceList != null && !commonPriceList.equals(saleOrderTemp.getPriceList())) {
-          commonPriceList = null;
-          existPriceListDiff = true;
-        }
-        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
-            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
-                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
-          commonTaxNumber = null;
-          existTaxNumberDiff = true;
-        }
-        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
-            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
-                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
-          commonFiscalPosition = null;
-          existFiscalPositionDiff = true;
-        }
-      }
-      count++;
-    }
-
-    StringBuilder fieldErrors = new StringBuilder();
-    if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
-    }
-    if (commonClientPartner == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
-    }
-    if (commonCompany == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
-    }
-
-    if (existTaxNumberDiff) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.SaleExceptionMessage
-                  .SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
-    }
-
-    if (existFiscalPositionDiff) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
-    }
-
-    if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
-      return;
-    }
-
-    // Check if priceList or contactPartner are content in parameters
-    if (request.getContext().get("priceList") != null) {
-      commonPriceList =
-          JPA.em()
-              .find(
-                  PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
-    }
-    if (request.getContext().get("contactPartner") != null) {
-      commonContactPartner =
-          JPA.em()
-              .find(
-                  Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
-    }
-    if (request.getContext().get("team") != null) {
-      commonTeam =
-          JPA.em()
-              .find(
-                  Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
-    }
-
-    if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
-      // Need to display intermediate screen to select some values
-      ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge sale order")
-              .model(Wizard.class.getName())
-              .add("form", "sale-order-merge-confirm-form")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true");
-
-      if (existPriceListDiff) {
-        confirmView.context("contextPriceListToCheck", "true");
-      }
-      if (existContactPartnerDiff) {
-        confirmView.context("contextContactPartnerToCheck", "true");
-        confirmView.context("contextPartnerId", commonClientPartner.getId().toString());
-      }
-      if (existTeamDiff) {
-        confirmView.context("contextTeamToCheck", "true");
-      }
-
-      confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
-
-      response.setView(confirmView.map());
-
-      return;
-    }
-
-    try {
-      SaleOrder saleOrder =
-          Beans.get(SaleOrderCreateService.class)
-              .mergeSaleOrders(
-                  saleOrderList,
-                  commonCurrency,
-                  commonClientPartner,
-                  commonCompany,
-                  commonContactPartner,
-                  commonPriceList,
-                  commonTeam,
-                  commonTaxNumber,
-                  commonFiscalPosition);
-      if (saleOrder != null) {
-        // Open the generated sale order in a new tab
-        response.setView(
-            ActionView.define("Sale order")
-                .model(SaleOrder.class.getName())
-                .add("grid", "sale-order-grid")
-                .add("form", "sale-order-form")
-                .param("search-filters", "sale-order-filters")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(saleOrder.getId()))
-                .map());
-        response.setCanClose(true);
-      }
-    } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
     }
   }
 

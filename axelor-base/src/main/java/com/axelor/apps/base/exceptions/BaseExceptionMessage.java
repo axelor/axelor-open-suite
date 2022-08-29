@@ -77,6 +77,10 @@ public final class BaseExceptionMessage {
   public static final String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
   public static final String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/
       "Error when closing period %s" /*)*/;
+
+  public static final String PERIOD_CLOSED_AND_NO_PERMISSIONS =
+      /*$$(*/ "This period is closed and you do not have the necessary permissions to create entries" /*)*/;
+
   /** Abstract batch */
   public static final String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
