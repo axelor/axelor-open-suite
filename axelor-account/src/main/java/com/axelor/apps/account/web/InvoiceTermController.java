@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -167,7 +167,8 @@ public class InvoiceTermController {
         }
       } else if (ObjectUtils.isEmpty(invoiceTermId)) {
         if (ObjectUtils.isEmpty(invoiceTermIds)) {
-          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
+          response.setError(
+              I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
           return;
         }
         Integer recordsSelected = invoiceTermIds.size();
@@ -179,7 +180,7 @@ public class InvoiceTermController {
                     invoiceTerm.getReasonOfRefusalToPayStr());
         response.setFlash(
             String.format(
-                I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
+                I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
                 recordsRefused,
                 recordsSelected));
         response.setCanClose(true);
@@ -250,7 +251,8 @@ public class InvoiceTermController {
     try {
       List<Long> invoiceTermIds = (List<Long>) request.getContext().get("_ids");
       if (ObjectUtils.isEmpty(invoiceTermIds)) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
+        response.setError(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
         return;
       }
       Integer recordsSelected = invoiceTermIds.size();
@@ -258,7 +260,7 @@ public class InvoiceTermController {
           Beans.get(InvoiceTermPfpService.class).massValidatePfp(invoiceTermIds);
       response.setFlash(
           String.format(
-              I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
+              I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
               recordsUpdated,
               recordsSelected));
       response.setReload(true);
@@ -270,7 +272,7 @@ public class InvoiceTermController {
   public void pfpPartialReasonConfirm(ActionRequest request, ActionResponse response) {
     try {
       if (ObjectUtils.isEmpty(request.getContext().get("_id"))) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_NOT_SAVED));
+        response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_NOT_SAVED));
         return;
       }
 
@@ -280,21 +282,24 @@ public class InvoiceTermController {
 
       BigDecimal grantedAmount = new BigDecimal((String) request.getContext().get("grantedAmount"));
       if (grantedAmount.signum() == 0) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
+        response.setError(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
         return;
       }
 
       BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
       if (grantedAmount.compareTo(invoiceAmount) >= 0) {
         response.setValue("$grantedAmount", originalInvoiceTerm.getAmountRemaining());
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
+        response.setFlash(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }
 
       PfpPartialReason partialReason =
           (PfpPartialReason) request.getContext().get("pfpPartialReason");
       if (ObjectUtils.isEmpty(partialReason)) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
+        response.setError(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
         return;
       }
 

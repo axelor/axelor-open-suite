@@ -43,7 +43,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
@@ -247,7 +247,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_1),
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_1),
           company.getName());
     }
     return seq;
@@ -269,7 +269,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
               purchaseOrder.getPurchaseOrderSeq()));
     }
 
@@ -305,7 +305,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_REQUEST_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_REQUEST_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
@@ -320,7 +320,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
           blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
+          I18n.get(PurchaseExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }
     if (purchaseOrder.getVersionNumber() == 1

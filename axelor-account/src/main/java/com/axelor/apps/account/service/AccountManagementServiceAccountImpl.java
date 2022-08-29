@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -92,7 +92,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
+        I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
         product != null ? product.getCode() : null,
         company.getName());
   }
@@ -157,7 +157,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * Get the product analytic distribution template
    *
    * @param product
-   * @param compan
+   * @param company
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family
@@ -234,7 +234,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getCashAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
           paymentMode.getCode());
     }
     return accountManagement.getCashAccount();
@@ -246,7 +246,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getPurchVatRegulationAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX),
           tax.getCode(),
           company.getCode());
     }
@@ -259,7 +259,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getSaleVatRegulationAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX),
           tax.getCode(),
           company.getCode());
     }
@@ -272,7 +272,8 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getFinancialDiscountAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX),
+          I18n.get(
+              AccountExceptionMessage.ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX),
           tax.getCode(),
           company.getCode());
     }

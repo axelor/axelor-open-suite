@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportDas2Service;
 import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
@@ -98,7 +98,7 @@ public class AccountingReportController {
         List<BigInteger> paymentMoveLinedistributionIdList =
             accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
         ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
+            ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
         actionViewBuilder.add("form", "payment-move-line-distribution-form");
@@ -118,7 +118,7 @@ public class AccountingReportController {
         response.setValue("balance", debitBalance.subtract(creditBalance));
 
         ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
+            ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(MoveLine.class.getName());
         actionViewBuilder.add("grid", "move-line-grid");
         actionViewBuilder.add("form", "move-line-form");
@@ -192,7 +192,7 @@ public class AccountingReportController {
       if (accountingReport.getExportTypeSelect() == null
           || accountingReport.getExportTypeSelect().isEmpty()
           || typeSelect == 0) {
-        response.setFlash(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_4));
+        response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_4));
         response.setReload(true);
         return;
       }
@@ -272,7 +272,7 @@ public class AccountingReportController {
                 accountingReport, AccountingReportRepository.EXPORT_N4DS, complementaryExport);
       }
       response.setView(
-          ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_8))
+          ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_8))
               .model(AccountingReport.class.getName())
               .add("form", "accounting-report-export-form")
               .add("grid", "accounting-report-export-grid")
@@ -289,7 +289,7 @@ public class AccountingReportController {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
     ActionViewBuilder actionViewBuilder =
-        ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
+        ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_6));
     actionViewBuilder.model(Move.class.getName());
     actionViewBuilder.add("grid", "move-grid");
     actionViewBuilder.param("search-filters", "move-filters");

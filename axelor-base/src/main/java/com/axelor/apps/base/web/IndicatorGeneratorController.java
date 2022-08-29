@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -41,7 +41,7 @@ public class IndicatorGeneratorController {
       Beans.get(IndicatorGeneratorService.class)
           .run(Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
+      response.setFlash(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

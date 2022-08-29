@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -260,7 +260,7 @@ public class InvoicePaymentController {
         response.setValues(invoicePayment);
 
         if (amountError) {
-          response.setFlash(I18n.get(IExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
+          response.setFlash(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
         }
       }
     } catch (Exception e) {

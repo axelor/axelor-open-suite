@@ -20,7 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionCancelService;
 import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.apps.account.service.PaymentSessionService;
@@ -84,7 +84,7 @@ public class PaymentSessionController {
       int errorCode =
           Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
       if (errorCode == 1) {
-        response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
       } else if (errorCode == 2) {
         ActionView.ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get("Invoice terms"))
@@ -147,10 +147,11 @@ public class PaymentSessionController {
       response.setReload(true);
 
       if (emailCount == 0) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
       } else {
         response.setFlash(
-            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
+            String.format(
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -195,7 +196,7 @@ public class PaymentSessionController {
                 .collect(Collectors.joining(",")));
         response.setError(
             String.format(
-                I18n.get(IExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
                 partnerFullNames.toString(),
                 paymentSession.getPaymentMode().getCode()));
       }
@@ -204,7 +205,8 @@ public class PaymentSessionController {
           Beans.get(PaymentSessionValidateService.class).checkIsHoldBackWithRefund(paymentSession);
       if (isHoldBackWithRefund) {
         response.setError(
-            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
+            String.format(
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
       }
 
     } catch (Exception e) {
@@ -269,7 +271,7 @@ public class PaymentSessionController {
       int deletedSessions =
           Beans.get(PaymentSessionService.class).removeMultiplePaymentSessions(paymentSessionIds);
       if (paymentSessionIds.size() > deletedSessions) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

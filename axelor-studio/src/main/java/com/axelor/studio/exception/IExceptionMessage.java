@@ -17,6 +17,8 @@
  */
 package com.axelor.studio.exception;
 
+/** @deprecated Replaced by {@link StudioExceptionMessage} */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Check if app builder code is not conflicting with existing app. */

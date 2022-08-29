@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
@@ -60,7 +60,8 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
                   I18n.get(
-                      IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA),
+                      ProductionExceptionMessage
+                          .CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA),
                   confProdProduct.getId()));
         } else {
           product = (Product) computedProduct;
@@ -72,7 +73,9 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
               confProdProduct,
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
-                  I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_PRODUCT),
+                  I18n.get(
+                      ProductionExceptionMessage
+                          .CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_PRODUCT),
                   confProdProduct.getId()));
         }
       }
@@ -85,7 +88,9 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
               confProdProduct,
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
-                  I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_QTY_FORMULA),
+                  I18n.get(
+                      ProductionExceptionMessage
+                          .CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_QTY_FORMULA),
                   confProdProduct.getId()));
         } else {
           qty = new BigDecimal(computedQty.toString());
@@ -97,7 +102,8 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
               confProdProduct,
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
-                  I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_QTY),
+                  I18n.get(
+                      ProductionExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_QTY),
                   confProdProduct.getId()));
         }
       }
@@ -110,7 +116,9 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
               confProdProduct,
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
-                  I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_UNIT_FORMULA),
+                  I18n.get(
+                      ProductionExceptionMessage
+                          .CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_UNIT_FORMULA),
                   confProdProduct.getId()));
         } else {
           unit = (Unit) computedUnit;
@@ -122,7 +130,8 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
               confProdProduct,
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
-                  I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_UNIT),
+                  I18n.get(
+                      ProductionExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_UNIT),
                   confProdProduct.getId()));
         }
       }
@@ -147,7 +156,7 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
           confProdProduct,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           String.format(
-              I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_CONDITION),
+              I18n.get(ProductionExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_CONDITION),
               confProdProduct.getId()));
     }
 

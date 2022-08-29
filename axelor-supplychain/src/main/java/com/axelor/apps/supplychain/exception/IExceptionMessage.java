@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.supplychain.exception;
 
-/** @author axelor */
+/**
+ * @author axelor *
+ * @deprecated Replaced by {@link SupplychainExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
   /** Purchase order Invoice Service and controller */
   static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;

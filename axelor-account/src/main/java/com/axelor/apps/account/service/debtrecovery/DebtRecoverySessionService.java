@@ -25,10 +25,11 @@ import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -241,8 +242,8 @@ public class DebtRecoverySessionService {
           "%s :\n"
               + I18n.get("Partner")
               + " %s: +"
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_SESSION_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           (debtRecovery.getTradingName() == null
                   ? debtRecovery.getAccountingSituation()
                   : debtRecovery.getTradingNameAccountingSituation())
@@ -259,8 +260,6 @@ public class DebtRecoverySessionService {
     throw new AxelorException(
         debtRecovery,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(
-            com.axelor.apps.account.exception.IExceptionMessage
-                .DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND));
+        I18n.get(AccountExceptionMessage.DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND));
   }
 }

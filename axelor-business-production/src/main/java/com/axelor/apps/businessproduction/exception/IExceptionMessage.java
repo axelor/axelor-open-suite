@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.businessproduction.exception;
 
+/** @deprecated Replaced by {@link BusinessProductionExceptionMessage} */
+@Deprecated
 public interface IExceptionMessage {
 
   String OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION = /*$$(*/
