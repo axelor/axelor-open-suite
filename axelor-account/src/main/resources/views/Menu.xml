@@ -67,7 +67,7 @@
     <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>(self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
-      NULL AND self.moveLine.move.statusSelect IN (2,3) AND self.pfpValidateStatusSelect = 1 AND
+      NULL AND self.moveLine.move.statusSelect IN (2,3)) AND self.pfpValidateStatusSelect = 1 AND
       self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
@@ -83,7 +83,7 @@
     <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>(self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
-      NULL AND self.moveLine.move.statusSelect IN (2,3) AND self.pfpValidateStatusSelect = 1</domain>
+      NULL AND self.moveLine.move.statusSelect IN (2,3)) AND self.pfpValidateStatusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
