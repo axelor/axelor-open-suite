@@ -140,24 +140,29 @@ def attributeMethod = {
     return attribute
 }
 
-def configuratorProductFormulaMethod = {
-    configuratorProductFormula = ""
-        cc(it).configuratorProductFormulaList?.each( { cf ->
-                configuratorProductFormula += """
-                <configuratorProductFormula>
+def configuratorFormulaMethod = {
+    configuratorFormula = ""
+        cc(it).configuratorFormulaList?.each( { cf ->
+                configuratorFormula += """
+                <configuratorFormula>
                 """
                 if (cf.metaField?.id != null) {
-                configuratorProductFormula += "<metaField>${cf.metaField?.name}</metaField>"
+                configuratorFormula += "<metaField>${ cf.metaField?.name}</metaField>"
                 }
+<<<<<<< HEAD
 	            if (cf.metaJsonField != null) {
 		            configuratorProductFormula += """
 		                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
 	            }   		              
                 configuratorProductFormula += 	"""
+=======
+                configuratorFormula += 	"""
+>>>>>>> 83d8fcab85 (Configurator: add free field in indicator list)
                 <formula>"""
                 if (cf.formula != null) {
-                configuratorProductFormula += "${cf.formula}"
+                configuratorFormula += "${cf.formula}"
                 }
+<<<<<<< HEAD
                 configuratorProductFormula += """</formula>
                 <showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
                 <configuratorCreatorImportId>${cf.productCreator?.id}</configuratorCreatorImportId>
@@ -186,13 +191,19 @@ def configuratorSOLineFormulaMethod = {
                 configuratorSOLineFormula += "${cf.formula}"
                 }
                 configuratorSOLineFormula += """</formula>
+=======
+                configuratorFormula += """</formula>
+>>>>>>> 83d8fcab85 (Configurator: add free field in indicator list)
                 <showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
+                <typeSelect>${cf.typeSelect}</typeSelect>
+                <freeIndicatorName>${cf.freeIndicatorName}</freeIndicatorName>
+                <freeIndicatorTitle>${cf.freeIndicatorTitle}</freeIndicatorTitle>
                 <updateFromSelect>${cf.updateFromSelect}</updateFromSelect>
-                <configuratorCreatorImportId>${cf.soLineCreator?.id}</configuratorCreatorImportId>
-                </configuratorSOLineFormula>
+                <configuratorCreatorImportId>${cf.creator?.id}</configuratorCreatorImportId>
+                </configuratorFormula>
                 """
                 })
-    return configuratorSOLineFormula
+    return configuratorFormula
 }
 
 def authorizedUserMethod = {
@@ -223,9 +234,7 @@ def authorizedGroupMethod = {
         <name><% out << cc(it).name %></name>
         <attributes><% out << attributeMethod(it) %></attributes>
 
-        <configuratorProductFormulaList><% out << configuratorProductFormulaMethod(it) %></configuratorProductFormulaList>
-
-        <configuratorSOLineFormulaList><% out << configuratorSOLineFormulaMethod(it) %></configuratorSOLineFormulaList>
+        <configuratorFormulaList><% out << configuratorFormulaMethod(it) %></configuratorFormulaList>
 
         <authorizedUserSet><% out << authorizedUserMethod(it) %>
         </authorizedUserSet>

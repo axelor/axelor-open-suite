@@ -30,6 +30,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
@@ -74,5 +76,13 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     } else {
       return calculatedValue.getClass().getSimpleName();
     }
+  }
+
+  @Override
+  public List<ConfiguratorFormula> filterListOnType(
+      List<ConfiguratorFormula> configuratorFormulaList, int type) {
+    return configuratorFormulaList.stream()
+        .filter(configuratorFormula -> type == configuratorFormula.getTypeSelect())
+        .collect(Collectors.toList());
   }
 }

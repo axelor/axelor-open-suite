@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface ConfiguratorFormulaService {
 
@@ -42,4 +43,16 @@ public interface ConfiguratorFormulaService {
    * @return the name of the class.
    */
   String getCalculatedClassName(Object calculatedValue);
+
+  /**
+   * Filters given configurator formula on given type of the formula. Does not modify the list, but
+   * return a new list instead.
+   *
+   * @param configuratorFormulaList a non null list of configurator formula
+   * @param type can be any select value for the formula type listed in {@link
+   *     com.axelor.apps.sale.db.repo.ConfiguratorFormulaRepository}
+   * @return the filtered list
+   */
+  List<ConfiguratorFormula> filterListOnType(
+      List<ConfiguratorFormula> configuratorFormulaList, int type);
 }

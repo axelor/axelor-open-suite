@@ -79,6 +79,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_ON_GENERATING_TYPE_ERROR = /*$$(*/
       "The field %s is of type %s, but the configured script returned value is of type %s." /*)*/;
 
+  String CONFIGURATOR_FORMULA_UNKNOWN_TYPE_SELECT = /*$$(*/
+      "The integer %s is not associated with any type of configurator formula." /*)*/;
+
   static final String SALE_ORDER_EDIT_ORDER_NOTIFY = /*$$(*/
       "At least one sale order line has a stock move with availability request." /*)*/;
 
@@ -89,6 +92,13 @@ public interface IExceptionMessage {
       "Missing mapped by: unidirectional one-to-many are not supported by the configurator." /*)*/;
 
   static final String COPY = /*$$(*/ "copy" /*)*/;
+
+  /*
+   * Used in configurator formula view
+   */
+  static final String CONFIGURATOR_FORMULA_VIEW_PRODUCT_FIELD = /*$$(*/ "Product field" /*)*/;
+  static final String CONFIGURATOR_FORMULA_VIEW_SALE_ORDER_LINE_FIELD = /*$$(*/
+      "Sale order line field" /*)*/;
 
   public static final String SALE_ORDER_LINE_PRICING_NOT_APPLIED = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
