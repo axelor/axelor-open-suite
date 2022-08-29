@@ -25,11 +25,13 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -225,6 +227,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     int status = reconcileGroup.getStatusSelect();
@@ -243,6 +246,18 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
       }
     }
+  }
+
+  @Override
+  public void letter(ReconcileGroup reconcileGroup) throws AxelorException {
+
+    List<MoveLine> moveLines =
+        moveLineRepository
+            .all()
+            .filter("self.reconcileGroup = :reconcileGroup")
+            .bind("reconcileGroup", reconcileGroup)
+            .fetch();
+    Beans.get(MoveLineService.class).reconcileMoveLines(moveLines);
   }
 
   @Override
