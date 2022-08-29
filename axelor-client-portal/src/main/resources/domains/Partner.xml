@@ -7,7 +7,7 @@
 
   <entity name="Partner" lang="java">
 
-    <string name="password" title="Password"/>
+    <string name="password" title="Password" encrypted="true"/>
 
   </entity>
 

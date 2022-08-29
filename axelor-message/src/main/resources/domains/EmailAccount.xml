@@ -11,7 +11,7 @@
     <integer name="serverTypeSelect" title="Server Type" required="true"
       selection="mail.account.server.type.select" default="1"/>
     <string name="login" title="Login"/>
-    <string name="password" title="Password"/>
+    <string name="password" title="Password" encrypted="true"/>
     <string name="host" title="Host" required="true"/>
     <integer name="port" title="Port" min="1" nullable="true"/>
     <integer name="securitySelect" title="SSL/STARTTLS"
