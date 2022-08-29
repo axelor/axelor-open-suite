@@ -74,7 +74,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
-  public static final String SUFFIX_SPLITTED_FIXED_ASSET = "-%s %.2f";
 
   @Inject
   public FixedAssetServiceImpl(
