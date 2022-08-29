@@ -60,15 +60,19 @@ public class TaxService {
     if (tax.getActiveTaxLine() != null) {
       return tax.getActiveTaxLine();
     }
+    if (localDate != null) {
+      if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty()) {
 
-    if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty()) {
+        for (TaxLine taxLine : tax.getTaxLineList()) {
 
-      for (TaxLine taxLine : tax.getTaxLineList()) {
-
-        if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
-          return taxLine;
+          if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
+            return taxLine;
+          }
         }
       }
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.TAX_DATE_MISSING));
     }
 
     throw new AxelorException(
