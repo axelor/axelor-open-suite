@@ -1324,9 +1324,6 @@ public interface IExceptionMessage {
   static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 
-  static final String MOVE_15 = /*$$(*/
-      "The functional origin cannot be empty for the move %s. Please fill it in." /*)*/;
-
   static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
 
