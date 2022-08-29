@@ -347,10 +347,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
     AccountingSituation accountingSituation = null;
     if (isPurchase) {
+      accountingSituation = accountingSituationRepository.findByCompanyAndPartner(company, partner);
+    } else {
       accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
-    } else {
-      accountingSituation = accountingSituationRepository.findByCompanyAndPartner(company, partner);
     }
 
     String origin = invoice.getInvoiceId();
@@ -496,6 +496,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 company.getName());
           }
 
+          companyTaxTotal = invoiceLineTax.getCompanySubTotalOfFixedAssets();
           if (currencyService.isUnevenRounding(
               invoice.getCurrency(),
               invoice.getCompany().getCurrency(),
@@ -558,6 +559,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 company.getName());
           }
 
+          companyTaxTotal = invoiceLineTax.getCompanySubTotalExcludingFixedAssets();
           if (currencyService.isUnevenRounding(
               invoice.getCurrency(),
               invoice.getCompany().getCurrency(),
@@ -827,7 +829,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       if (accountingSituation != null) {
         if (accountingSituation.getVatSystemSelect()
             == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-          vatSystemSelect = moveLine.getVatSystemSelect();
+          vatSystemSelect = moveLine.getAccount().getVatSystemSelect();
         } else if (accountingSituation.getVatSystemSelect()
             == AccountingSituationRepository.VAT_DELIVERY) {
           vatSystemSelect = 1;
@@ -859,7 +861,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       if (accountingSituation != null) {
         if (accountingSituation.getVatSystemSelect()
             == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-          vatSystemSelect = moveLine.getVatSystemSelect();
+          vatSystemSelect = moveLine.getAccount().getVatSystemSelect();
         } else if (accountingSituation.getVatSystemSelect()
             == AccountingSituationRepository.VAT_DELIVERY) {
           vatSystemSelect = 1;
