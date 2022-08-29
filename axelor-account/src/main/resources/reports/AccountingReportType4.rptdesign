@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -293,72 +293,84 @@
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">&lt;30days</property>
                     <property name="nativeName">&lt;30days</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">30&lt;days&lt;60</property>
                     <property name="nativeName">30&lt;days&lt;60</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">60&lt;days&lt;90</property>
                     <property name="nativeName">60&lt;days&lt;90</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">90&lt;days&lt;120</property>
                     <property name="nativeName">90&lt;days&lt;120</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">120&lt;days&lt;150</property>
                     <property name="nativeName">120&lt;days&lt;150</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">150&lt;days&lt;180</property>
                     <property name="nativeName">150&lt;days&lt;180</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">180&lt;days</property>
                     <property name="nativeName">180&lt;days</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">SoldeClient</property>
                     <property name="nativeName">SoldeClient</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">showProvisionTitle</property>
                     <property name="nativeName">showProvisionTitle</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
@@ -464,7 +476,7 @@ UNION
 Select MoveLine.partner_full_name as partner_name, 
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val  <= 30
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date  <= 30
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -472,8 +484,8 @@ ELSE MoveLine.amount_remaining
 END)
 else 0   
 END) as "<30days",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val > 30
-	AND AccountingReport.date_to - MoveLine.date_val <= 60
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date > 30
+	AND AccountingReport.date_to - MoveLine.due_date <= 60
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -481,8 +493,8 @@ ELSE MoveLine.amount_remaining
 END)
 else 0   
 END) as "30<days<60",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val > 60
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val <= 90
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date > 60
+	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date <= 90
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -490,8 +502,8 @@ ELSE MoveLine.amount_remaining
 END)
 else 0   
 END) as "60<days<90",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val > 90
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val <= 120
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date > 90
+	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date <= 120
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -499,8 +511,8 @@ ELSE MoveLine.amount_remaining
 END)
 else 0   
 END) as "90<days<120",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val > 120
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val <= 150
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date > 120
+	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date <= 150
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -508,8 +520,8 @@ ELSE MoveLine.amount_remaining
 END)
 else 0   
 END) as "120<days<150",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val > 150
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val <= 180
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date > 150
+	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date <= 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -517,7 +529,7 @@ ELSE MoveLine.amount_remaining
 END)
 else 0   
 END) as "150<days<180",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.date_val > 180
+SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - MoveLine.due_date > 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN MoveLine.amount_remaining * -1
@@ -540,9 +552,8 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 where
 (AccountingReport.currency = Move.company_currency) AND
-(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
-(AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
-MoveLine.date_val <= AccountingReport.date_val and 
+(AccountingReport.date_from IS NULL OR MoveLine.due_date >= AccountingReport.date_from) AND 
+(AccountingReport.date_to IS NULL OR MoveLine.due_date <= AccountingReport.date_to) AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
