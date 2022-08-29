@@ -799,6 +799,7 @@
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
+    <action name="action-move-line-method-hide-axis-analytic-account"/>
   </action-group>
 
   <action-group name="action-account-moveline-move-onload-group">
