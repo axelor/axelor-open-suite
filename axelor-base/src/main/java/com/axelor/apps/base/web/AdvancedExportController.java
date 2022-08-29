@@ -356,7 +356,8 @@ public class AdvancedExportController {
       Mapper mapper = Mapper.of(klass);
 
       for (MetaField field : metaFields) {
-        if (!mapper.getProperty(field.getName()).isTransient()) {
+        if (mapper.getProperty(field.getName()) != null
+            && !mapper.getProperty(field.getName()).isTransient()) {
           metaFieldList.add(field.getId());
         }
       }
