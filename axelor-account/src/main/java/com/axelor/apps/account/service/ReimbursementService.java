@@ -18,10 +18,14 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -43,16 +47,23 @@ public class ReimbursementService {
    * @param reimbursement Un remboursement
    */
   @Transactional
-  public void updatePartnerCurrentRIB(Reimbursement reimbursement) {
+  public void updatePartnerCurrentRIB(Reimbursement reimbursement) throws AxelorException {
     BankDetails bankDetails = reimbursement.getBankDetails();
     Partner partner = reimbursement.getPartner();
     BankDetails defaultBankDetails = partnerService.getDefaultBankDetails(partner);
 
-    if (bankDetails != null && partner != null && !bankDetails.equals(defaultBankDetails)) {
-      defaultBankDetails.setIsDefault(false);
-      bankDetails.setIsDefault(true);
-      partner.addBankDetailsListItem(bankDetails);
-      partnerRepository.save(partner);
+    if (defaultBankDetails != null) {
+      if (bankDetails != null && partner != null && !bankDetails.equals(defaultBankDetails)) {
+        defaultBankDetails.setIsDefault(false);
+        bankDetails.setIsDefault(true);
+        partner.addBankDetailsListItem(bankDetails);
+        partnerRepository.save(partner);
+      }
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
+          partner.getName());
     }
   }
 }
