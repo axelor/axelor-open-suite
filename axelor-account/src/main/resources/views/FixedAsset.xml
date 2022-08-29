@@ -151,7 +151,7 @@
           onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="periodicityTypeSelect"
-          onChange="action-attrs-account-periodicity-type-select-on-change, action-fixed-asset-category-record-compute-duration"/>
+          onChange="action-attrs-account-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-first-depreciation-date,action-fixed-asset-category-record-compute-duration"/>
         <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
           onChange="action-fixed-asset-category-record-compute-duration" min="1" hidden="true"/>
         <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"
@@ -194,7 +194,7 @@
         <field name="ifrsNumberOfDepreciation"
           onChange="action-record-account-fixed-asset-compute-ifrs-duration"/>
         <field name="ifrsPeriodicityTypeSelect"
-          onChange="action-attrs-account-ifrs-periodicity-type-select-on-change, action-record-account-fixed-asset-compute-ifrs-duration"/>
+          onChange="action-attrs-account-ifrs-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-first-depreciation-date,action-record-account-fixed-asset-compute-ifrs-duration"/>
         <field name="ifrsPeriodicityInMonth"
           onChange="action-record-account-fixed-asset-compute-ifrs-duration"
           showIf="ifrsPeriodicityTypeSelect == 1" min="1" hidden="true"/>
@@ -661,6 +661,9 @@
       if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     <action name="action-fixed-asset-method-onchange-set-values"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
+    <action name="action-attrs-account-change-fiscal-depreciation-date-init-select"/>
+    <action name="action-attrs-account-change-ifrs-depreciation-date-init-select"/>
+    <action name="action-attrs-account-change-depreciation-date-init-select"/>
     <action name="action-attrs-account-fixed-asset-reset-residual-value"/>
     <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
   </action-group>

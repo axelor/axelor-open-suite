@@ -51,11 +51,6 @@ public class FixedAssetLineIfrsComputationServiceImpl
   }
 
   @Override
-  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    return fixedAsset.getAcquisitionDate();
-  }
-
-  @Override
   protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
     return fixedAsset.getIfrsFixedAssetLineList();
   }
