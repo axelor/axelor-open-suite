@@ -12,7 +12,8 @@
   </grid>
 
   <form title="Group Menu Assistant" name="meta-group-menu-assistant-form"
-    model="com.axelor.meta.db.MetaGroupMenuAssistant" width="large">
+    model="com.axelor.meta.db.MetaGroupMenuAssistant"
+    onNew="action-meta-group-menu-assistant-record-set-values-onNew" width="large">
     <panel name="mainPanel">
       <panel-related name="groupSetPanel" field="groupSet" colSpan="6"/>
       <panel-related name="roleSetPanel" field="roleSet" colSpan="6"/>
@@ -41,5 +42,10 @@
   <action-method name="action-meta-method-import-group-menu">
     <call class="com.axelor.meta.web.MetaGroupMenuAssistantController" method="importGroupMenu"/>
   </action-method>
+
+  <action-record name="action-meta-group-menu-assistant-record-set-values-onNew"
+    model="com.axelor.meta.db.MetaGroupMenuAssistant">
+    <field name="language" expr="eval: 'en'"/>
+  </action-record>
 
 </object-views>
