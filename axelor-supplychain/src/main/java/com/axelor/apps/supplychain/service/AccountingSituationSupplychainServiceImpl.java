@@ -25,11 +25,16 @@ import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CurrencyRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -47,6 +52,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   protected AppAccountService appAccountService;
   protected SaleOrderRepository saleOrderRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
+  protected CurrencyService currencyService;
+  protected CurrencyRepository currencyRepository;
 
   @Inject
   public AccountingSituationSupplychainServiceImpl(
@@ -55,11 +62,15 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       AccountingSituationRepository accountingSituationRepo,
       AppAccountService appAccountService,
       SaleOrderRepository saleOrderRepository,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      CurrencyService currencyService,
+      CurrencyRepository currencyRepository) {
     super(accountConfigService, paymentModeService, accountingSituationRepo);
     this.appAccountService = appAccountService;
     this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.currencyService = currencyService;
+    this.currencyRepository = currencyRepository;
   }
 
   @Override
@@ -113,11 +124,19 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
         if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
           BigDecimal inTaxInvoicedAmount = getInTaxInvoicedAmount(saleOrder);
 
+          BigDecimal usedCreditToAdd = saleOrder.getInTaxTotal().subtract(inTaxInvoicedAmount);
+
+          usedCreditToAdd =
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  saleOrder.getCurrency(),
+                  accountingSituation.getCompany().getCurrency(),
+                  usedCreditToAdd,
+                  appAccountService.getTodayDate(accountingSituation.getCompany()));
+
           BigDecimal usedCredit =
               accountingSituation
                   .getUsedCredit()
-                  .add(saleOrder.getInTaxTotal())
-                  .subtract(inTaxInvoicedAmount);
+                  .add(usedCreditToAdd.setScale(2, RoundingMode.HALF_UP));
 
           accountingSituation.setUsedCredit(usedCredit);
         }
@@ -143,48 +162,83 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   @Override
   public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation)
       throws AxelorException {
-    BigDecimal sum = BigDecimal.ZERO;
-    List<SaleOrder> saleOrderList =
-        saleOrderRepository
-            .all()
-            .filter(
-                "self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
-                accountingSituation.getCompany(),
-                accountingSituation.getPartner(),
-                SaleOrderRepository.STATUS_DRAFT_QUOTATION,
-                SaleOrderRepository.STATUS_CANCELED)
-            .fetch();
-    for (SaleOrder saleOrder : saleOrderList) {
-      sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
-    }
+    BigDecimal sum = computeUsedCreditFromSaleOrder(accountingSituation);
     // subtract the amount of payments if there is no move created for
     // invoice payments
     if (!accountConfigService
         .getAccountConfig(accountingSituation.getCompany())
         .getGenerateMoveForInvoicePayment()) {
-      List<InvoicePayment> invoicePaymentList =
-          invoicePaymentRepository
-              .all()
-              .filter(
-                  "self.invoice.company = :company"
-                      + " AND self.invoice.partner = :partner"
-                      + " AND self.statusSelect = :validated"
-                      + " AND self.typeSelect != :imputation")
-              .bind("company", accountingSituation.getCompany())
-              .bind("partner", accountingSituation.getPartner())
-              .bind("validated", InvoicePaymentRepository.STATUS_VALIDATED)
-              .bind("imputation", InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION)
-              .fetch();
-      if (invoicePaymentList != null) {
-        for (InvoicePayment invoicePayment : invoicePaymentList) {
-          sum = sum.subtract(invoicePayment.getAmount());
-        }
-      }
+      sum = sum.subtract(computeInvoicePaymentAmountPaid(accountingSituation));
     }
     sum = accountingSituation.getBalanceCustAccount().add(sum);
     accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_UP));
 
     return accountingSituation;
+  }
+
+  /** Returns the computed sale order amount that was not invoiced. */
+  protected BigDecimal computeUsedCreditFromSaleOrder(AccountingSituation accountingSituation)
+      throws AxelorException {
+    BigDecimal sum = BigDecimal.ZERO;
+    Company company = accountingSituation.getCompany();
+    if (company == null) {
+      return sum;
+    }
+    List<Object[]> currencyWithSumList =
+        JPA.em()
+            .createQuery(
+                "SELECT self.currency.id, SUM(self.inTaxTotal * "
+                    + "(CASE self.exTaxTotal "
+                    + "WHEN 0 THEN 1 "
+                    + "ELSE (1 - self.amountInvoiced / self.exTaxTotal) END)"
+                    + ") "
+                    + "FROM SaleOrder self "
+                    + "WHERE self.company = :company AND self.clientPartner = :partner "
+                    + "AND self.statusSelect > :statusDraft AND self.statusSelect < :statusCanceled "
+                    + "GROUP BY self.currency.id")
+            .setParameter("company", company)
+            .setParameter("partner", accountingSituation.getPartner())
+            .setParameter("statusDraft", SaleOrderRepository.STATUS_DRAFT_QUOTATION)
+            .setParameter("statusCanceled", SaleOrderRepository.STATUS_CANCELED)
+            .getResultList();
+
+    Currency companyCurrency = company.getCurrency();
+    for (Object[] result : currencyWithSumList) {
+      Currency currency = currencyRepository.find((Long) result[0]);
+      BigDecimal total = (BigDecimal) result[1];
+      sum =
+          sum.add(
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  currency, companyCurrency, total, appAccountService.getTodayDate(company)));
+    }
+    return sum;
+  }
+
+  /**
+   * Returns the computed amount of invoice payment. Only needs to be used if payment are not
+   * generating accounting moves.
+   */
+  protected BigDecimal computeInvoicePaymentAmountPaid(AccountingSituation accountingSituation) {
+    BigDecimal sum = BigDecimal.ZERO;
+    List<InvoicePayment> invoicePaymentList =
+        invoicePaymentRepository
+            .all()
+            .filter(
+                "self.invoice.company = :company"
+                    + " AND self.invoice.partner = :partner"
+                    + " AND self.statusSelect = :validated"
+                    + " AND self.typeSelect != :imputation")
+            .bind("company", accountingSituation.getCompany())
+            .bind("partner", accountingSituation.getPartner())
+            .bind("validated", InvoicePaymentRepository.STATUS_VALIDATED)
+            .bind("imputation", InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION)
+            .fetch();
+    if (invoicePaymentList != null) {
+      for (InvoicePayment invoicePayment : invoicePaymentList) {
+        sum = sum.subtract(invoicePayment.getAmount());
+      }
+    }
+    return sum;
   }
 
   private boolean isUsedCreditExceeded(AccountingSituation accountingSituation) {
