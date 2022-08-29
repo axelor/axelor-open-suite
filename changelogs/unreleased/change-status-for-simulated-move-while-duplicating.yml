@@ -1,0 +1,3 @@
+---
+title: "MOVE : Duplicating a move with status Simulated (=5) don't reinit the move status to New"
+type: fix
