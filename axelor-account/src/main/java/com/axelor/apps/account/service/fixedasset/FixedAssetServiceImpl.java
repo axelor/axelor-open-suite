@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.common.ObjectUtils;
@@ -126,14 +126,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && disposalDate.isAfter(previousPlannedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2));
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2));
     }
 
     if (previousRealizedLine != null
         && !disposalDate.isAfter(previousRealizedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
     }
 
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
@@ -306,7 +306,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 fixedAsset.getQty().setScale(RETURNED_SCALE)));
     String commentsToAdd =
         String.format(
-            I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
+            I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT),
             disposalQty,
             splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     newFixedAsset.setComments(comments);
@@ -372,7 +372,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (disposalDate.isBefore(firstServiceDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
     }
     Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineService.findOldestFixedAssetLine(
@@ -381,7 +381,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && !disposalDate.isAfter(fixedAssetLine.get().getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
     }
     FixedAssetLine correspondingFixedAssetLine =
         fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
@@ -421,7 +421,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (firstPlannedDerogatoryLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
     }
     fixedAssetDerogatoryLineService.generateDerogatoryCessionMove(
         firstPlannedDerogatoryLine, lastRealizedDerogatoryLine);
@@ -542,19 +542,19 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
     }
     if (disposalQty.compareTo(fixedAsset.getQty()) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX),
           fixedAsset.getQty().toString());
     }
     if (disposalQty.compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
     }
   }
 }

@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
@@ -160,15 +160,16 @@ public class AnalyticDistributionTemplateServiceImpl
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(
-              IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
+              AccountExceptionMessage
+                  .ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
     } else if (checkAxis) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
+          I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
     } else if (checkJournal) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
+          I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
     }
   }
 
@@ -209,7 +210,7 @@ public class AnalyticDistributionTemplateServiceImpl
         if (analyticDistributionLine.getAnalyticAccount() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING));
+              I18n.get(AccountExceptionMessage.FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING));
         }
       }
     }

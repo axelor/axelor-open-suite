@@ -27,7 +27,7 @@ import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
@@ -136,7 +136,7 @@ public class ImportMove {
           throw new AxelorException(
               fecImport,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND),
+              I18n.get(AccountExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND),
               moveLine.getDate(),
               company);
         }
@@ -162,7 +162,7 @@ public class ImportMove {
             throw new AxelorException(
                 fecImport,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND),
+                I18n.get(AccountExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND),
                 values.get("JournalCode"));
           }
           move.setJournal(journal);
@@ -207,7 +207,7 @@ public class ImportMove {
           throw new AxelorException(
               fecImport,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND),
+              I18n.get(AccountExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND),
               values.get("CompteNum"));
         }
         moveLine.setAccount(account);

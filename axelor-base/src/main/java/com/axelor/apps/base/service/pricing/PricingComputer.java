@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.PricingLine;
 import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
@@ -172,7 +172,7 @@ public class PricingComputer extends AbstractObservablePricing {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(IExceptionMessage.PRICING_2),
+              I18n.get(BaseExceptionMessage.PRICING_2),
               this.product.getName() + "/" + this.product.getProductCategory().getName(),
               pricing.getCompany().getName(),
               classModel.getSimpleName()));

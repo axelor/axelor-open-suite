@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -73,7 +73,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     if (CollectionUtils.isEmpty(reconcileList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_GROUP_VALIDATION_NO_LINES),
+          I18n.get(AccountExceptionMessage.RECONCILE_GROUP_VALIDATION_NO_LINES),
           reconcileGroup);
     }
 

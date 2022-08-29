@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.administration;
 
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -64,7 +64,7 @@ public class IndicatorGeneratorService {
     if (request == null || request.isEmpty()) {
       log =
           String.format(
-              I18n.get(IExceptionMessage.INDICATOR_GENERATOR_1), indicatorGenerator.getCode());
+              I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_1), indicatorGenerator.getCode());
     }
 
     String result = "";
@@ -80,7 +80,7 @@ public class IndicatorGeneratorService {
 
       log +=
           String.format(
-              I18n.get(IExceptionMessage.INDICATOR_GENERATOR_2), indicatorGenerator.getCode());
+              I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_2), indicatorGenerator.getCode());
     }
 
     indicatorGenerator.setLog(log);

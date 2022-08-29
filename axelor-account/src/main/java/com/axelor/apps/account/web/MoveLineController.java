@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
@@ -215,7 +215,7 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
+        response.setAlert(I18n.get(AccountExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

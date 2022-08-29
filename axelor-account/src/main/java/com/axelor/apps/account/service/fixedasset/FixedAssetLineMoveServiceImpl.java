@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -129,7 +129,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (!isBatch && !isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
       if (generateMove) {
@@ -315,7 +315,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+                I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
                 I18n.get("Charge account")
                     + " / "
                     + I18n.get("Provision Tangible Fixed Asset Account"));
@@ -327,7 +327,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+                I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
                 I18n.get("Provision Tangible Fixed Asset Account")
                     + " / "
                     + I18n.get("WB Provision Tangible Fixed Asset Account"));
@@ -427,7 +427,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         if (debitLineAccount == null || creditLineAccount == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
+              I18n.get(
+                  AccountExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
               I18n.get("IFRS Charge Account") + " / " + I18n.get("IFRS Depreciation Account"));
         }
       } else {
@@ -436,7 +437,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         if (debitLineAccount == null || creditLineAccount == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
+              I18n.get(
+                  AccountExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
               I18n.get("Charge account") + " / " + I18n.get("Depreciation account"));
         }
       }
@@ -525,7 +527,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(
-                    IExceptionMessage
+                    AccountExceptionMessage
                         .IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING),
                 I18n.get("Realised Assets Value Account"));
           }
@@ -665,7 +667,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(
-                IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING),
+                AccountExceptionMessage
+                    .IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING),
             I18n.get("Realised Assets Income Account")
                 + " / "
                 + I18n.get("Debt Receivable Account")
