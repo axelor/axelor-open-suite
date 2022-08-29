@@ -231,7 +231,8 @@ public interface InvoiceTermService {
       PaymentMode paymentMode,
       LocalDate date,
       BigDecimal amount,
-      int sequence);
+      int sequence)
+      throws AxelorException;
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
@@ -244,7 +245,10 @@ public interface InvoiceTermService {
       BigDecimal amount,
       BigDecimal percentage,
       int sequence,
-      boolean isHoldBack);
+      boolean isHoldBack)
+      throws AxelorException;
+
+  void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException;
 
   void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
 

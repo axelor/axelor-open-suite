@@ -53,7 +53,7 @@
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="PFP Status"
-      selection="invoiceterm.pfp.validate.status.select" readonly="true" default="1"/>
+      selection="invoiceterm.pfp.validate.status.select" readonly="true" default="0"/>
     <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
       ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
@@ -93,6 +93,7 @@
     <extra-code><![CDATA[
 
 	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_STATUS_NO_PFP = 0;
 	    public static final int PFP_STATUS_AWAITING = 1;
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;

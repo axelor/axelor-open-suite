@@ -12,6 +12,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -169,7 +170,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       InvoiceTerm originalInvoiceTerm,
       BigDecimal invoiceAmount,
       BigDecimal grantedAmount,
-      PfpPartialReason partialReason) {
+      PfpPartialReason partialReason)
+      throws AxelorException {
     BigDecimal amount = invoiceAmount.subtract(grantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
     originalInvoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
@@ -181,7 +183,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void createPfpInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
+      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException {
     BigDecimal total;
     int sequence;
 

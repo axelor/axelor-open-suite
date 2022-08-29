@@ -198,7 +198,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       Move move,
       PaymentConditionLine paymentConditionLine,
       LocalDate singleTermDueDate,
-      BigDecimal total) {
+      BigDecimal total)
+      throws AxelorException {
     LocalDate dueDate =
         singleTermDueDate != null
             ? singleTermDueDate
@@ -224,7 +225,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       BigDecimal percentage,
       BigDecimal total,
       int sequence,
-      boolean isHoldback) {
+      boolean isHoldback)
+      throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
             ? total

@@ -66,16 +66,9 @@
     <view type="grid" name="invoice-term-pfp-grid"/>
     <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>(self.invoice.company.accountConfig.isManagePassedForPayment IS TRUE OR
-      self.moveLine.move.company.accountConfig.isManagePassedForPayment IS TRUE) AND ((self.invoice
-      IS NOT NULL AND self.invoice.statusSelect IN (2,3) AND (self.invoice.operationTypeSelect = 1
-      OR (self.invoice.company.accountConfig.isManagePFPInRefund IS TRUE AND
-      self.invoice.operationTypeSelect = 2))) OR (self.invoice IS NULL AND
-      self.moveLine.move.statusSelect IN (2,3) AND
-      (self.moveLine.move.journal.journalType.technicalTypeSelect = 1 OR
-      (self.moveLine.move.company.accountConfig.isManagePFPInRefund IS TRUE AND
-      self.moveLine.move.journal.journalType.technicalTypeSelect = 3)))) AND
-      self.pfpValidateStatusSelect = 1 AND self.pfpValidatorUser = :_currentUser</domain>
+    <domain>(self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
+      NULL AND self.moveLine.move.statusSelect IN (2,3) AND self.pfpValidateStatusSelect = 1 AND
+      self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
   </action-view>
@@ -89,16 +82,8 @@
     <view type="grid" name="invoice-term-pfp-grid"/>
     <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>(self.invoice.company.accountConfig.isManagePassedForPayment IS TRUE OR
-      self.moveLine.move.company.accountConfig.isManagePassedForPayment IS TRUE) AND ((self.invoice
-      IS NOT NULL AND self.invoice.statusSelect IN (2,3) AND (self.invoice.operationTypeSelect = 1
-      OR (self.invoice.company.accountConfig.isManagePFPInRefund IS TRUE AND
-      self.invoice.operationTypeSelect = 2))) OR (self.invoice IS NULL AND
-      self.moveLine.move.statusSelect IN (2,3) AND
-      (self.moveLine.move.journal.journalType.technicalTypeSelect = 1 OR
-      (self.moveLine.move.company.accountConfig.isManagePFPInRefund IS TRUE AND
-      self.moveLine.move.journal.journalType.technicalTypeSelect = 3)))) AND
-      self.pfpValidateStatusSelect = 1</domain>
+    <domain>(self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
+      NULL AND self.moveLine.move.statusSelect IN (2,3) AND self.pfpValidateStatusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 

@@ -400,7 +400,7 @@
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
         readonlyIf="isPaid || paymentSession"
-        showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3].includes(invoice.statusSelect) "
+        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(invoice.statusSelect) "
         colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
@@ -568,9 +568,7 @@
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
         readonlyIf="isPaid || paymentSession"
-        showIf="moveLine.move.company.accountConfig.isManagePassedForPayment
-                &amp;&amp; (moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund &amp;&amp; moveLine.move.journal.journalType.technicalTypeSelect == 3))
-                &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
+        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
         colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
@@ -696,6 +694,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-invoice-term-record-set-show-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-term-method-set-pfp-status"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -906,6 +905,10 @@
       method="computeFinancialDiscount"/>
   </action-method>
 
+  <action-method name="action-invoice-term-method-set-pfp-status">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="setPfpStatus"/>
+  </action-method>
+
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="form" name="invoice-term-refusal-to-pay-wizard-form"/>
@@ -966,14 +969,10 @@
 
   <action-attrs name="action-invoice-term-attrs-display-actions">
     <attribute name="hidden" for="actionPanel"
-      expr="eval: !invoice.company?.accountConfig?.isManagePassedForPayment
-                  || (invoice.operationTypeSelect != 1 &amp;&amp; (!invoice.company?.accountConfig?.isManagePFPInRefund || invoice.operationTypeSelect != 2 ))
-                  || ![2,3,4].contains(invoice.statusSelect)"
+      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(invoice.statusSelect)"
       if="invoice != null"/>
     <attribute name="hidden" for="actionPanel"
-      expr="eval: !moveLine?.move?.company?.accountConfig?.isManagePassedForPayment
-                  || (moveLine?.move?.journal?.journalType?.technicalTypeSelect != 1 &amp;&amp; (!moveLine?.move?.company?.accountConfig?.isManagePFPInRefund || moveLine?.move?.journal?.journalType?.technicalTypeSelect != 3))
-                  || ![2,3,4].contains(moveLine?.move?.statusSelect)"
+      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
       if="invoice == null &amp;&amp; moveLine != null"/>
   </action-attrs>
 </object-views>
