@@ -243,13 +243,15 @@
         readonlyIf="isPaid || paymentSession"
         if="__config__.app.getApp('account').getActivatePassedForPayment()">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
-          <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
+          <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"
+            selection-in="[1,2,3,4]"/>
           <field name="pfpValidatorUser" colSpan="4" canEdit="false"
             onSelect="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpStatusDecision" hidden="true" showIf="pfpValidateStatusSelect > 1">
-          <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"/>
+          <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"
+            selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12" itemSpan="4">
@@ -403,13 +405,15 @@
         showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(invoice.statusSelect) "
         colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
-          <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
+          <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"
+            selection-in="[1,2,3,4]"/>
           <field name="pfpValidatorUser" colSpan="4" canEdit="false"
             onSelect="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpStatusDecision" hidden="true" showIf="pfpValidateStatusSelect > 1">
-          <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"/>
+          <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"
+            selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" itemSpan="4">
           <field name="decisionPfpTakenDate" readonly="true"/>
@@ -571,13 +575,15 @@
         showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
         colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
-          <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
+          <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"
+            selection-in="[1,2,3,4]"/>
           <field name="pfpValidatorUser" colSpan="4" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpStatusDecision" hidden="true" showIf="pfpValidateStatusSelect > 1">
-          <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"/>
+          <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"
+            selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" itemSpan="4">
           <field name="decisionPfpTakenDate" readonly="true"/>
