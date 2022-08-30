@@ -1254,9 +1254,6 @@
   <cards name="sale-order-quotation-cards" title="Sale order quotation"
     model="com.axelor.apps.sale.db.SaleOrder" width="300px" css="rect-image" orderBy="-orderDate">
     <menubar>
-      <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
-      </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
