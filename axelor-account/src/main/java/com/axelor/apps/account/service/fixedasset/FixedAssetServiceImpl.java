@@ -620,6 +620,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public boolean checkDepreciationPlans(FixedAsset fixedAsset) {
+    if (fixedAsset.getDepreciationPlanSelect() == null) {
+      return false;
+    }
     List<String> depreciationPlans =
         Arrays.asList((fixedAsset.getDepreciationPlanSelect().replace(" ", "")).split(","));
     return !fixedAsset.getIsEqualToFiscalDepreciation()
