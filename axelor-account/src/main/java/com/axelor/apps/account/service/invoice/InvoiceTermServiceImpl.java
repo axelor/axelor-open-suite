@@ -1038,7 +1038,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException {
     if (invoiceTerm != null) {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
@@ -1396,10 +1396,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public boolean isNotReadonly(InvoiceTerm invoiceTerm) {
+    return this.isNotReadonlyExceptPfp(invoiceTerm)
+        && invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING;
+  }
+
+  @Override
+  public boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm) {
     return !invoiceTerm.getIsPaid()
         && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0
-        && this.isNotAwaitingPayment(invoiceTerm)
-        && invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING;
+        && this.isNotAwaitingPayment(invoiceTerm);
   }
 
   public LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate) {
@@ -1410,5 +1415,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .map(InvoiceTerm::getDueDate)
         .max(LocalDate::compareTo)
         .orElse(defaultDate);
+  }
+
+  @Override
+  public void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException {
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      toggle(invoiceTerm, value);
+    }
   }
 }

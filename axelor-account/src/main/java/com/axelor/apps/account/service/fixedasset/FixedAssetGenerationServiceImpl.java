@@ -28,10 +28,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -314,7 +315,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         throw new AxelorException(
             invoiceLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
+            I18n.get(AccountExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
             invoiceLine.getProductName());
       }
 
@@ -374,8 +375,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     if (!sequenceService.hasSequence(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           fixedAsset.getCompany().getName());
     }
     String seq =
@@ -414,7 +415,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     if (moveLine.getDescription() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
           moveLine.getName());
     }
     fixedAsset.setName(moveLine.getDescription());

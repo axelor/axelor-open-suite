@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PaymentSessionService {
@@ -37,4 +38,10 @@ public interface PaymentSessionService {
   List<BankDetails> getBankDetails(PaymentSession paymentSession);
 
   List<Journal> getJournals(PaymentSession paymentSession);
+
+  public int removeMultiplePaymentSessions(List<Long> paymentSessionIds) throws AxelorException;
+
+  public void selectAll(PaymentSession paymentSession) throws AxelorException;
+
+  public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
 }

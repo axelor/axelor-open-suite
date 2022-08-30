@@ -33,7 +33,7 @@ import com.axelor.apps.cash.management.db.ForecastRecapLine;
 import com.axelor.apps.cash.management.db.ForecastRecapLineType;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapLineTypeRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
-import com.axelor.apps.cash.management.exception.IExceptionMessage;
+import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.apps.cash.management.report.IReport;
 import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.apps.crm.db.Opportunity;
@@ -351,7 +351,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
+                I18n.get(
+                    CashManagementExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
   }
@@ -414,7 +415,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
+                I18n.get(
+                    CashManagementExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
   }
@@ -467,7 +469,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
+                I18n.get(
+                    CashManagementExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
   }
@@ -589,7 +592,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
+                I18n.get(
+                    CashManagementExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
   }
@@ -624,7 +628,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
+                I18n.get(
+                    CashManagementExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
   }

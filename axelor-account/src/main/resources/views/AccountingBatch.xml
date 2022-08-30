@@ -507,18 +507,15 @@
       :_researchJournal)
       OR (:_researchJournal = 0 AND
       self.move.journal.journalType.technicalTypeSelect = :_journalType))
-      AND
-      YEAR(self.move.date) =
-      :_year
+      AND DATE(:_moveDate) >=
+      self.move.date
       AND self.move.statusSelect IN (2, 3, 5)
-      AND YEAR(self.cutOffEndDate) > :_year
-      AND
-      self.move.company.id = :_company
+      AND self.cutOffEndDate > DATE(:_moveDate)
+      AND self.move.company.id = :_company
     </domain>
     <context name="_researchJournal"
       expr="eval: researchJournal != null ? researchJournal.id : 0"/>
     <context name="_journalType" expr="eval: accountingCutOffTypeSelect == 3 ? 1 : 2"/>
-    <context name="_year" expr="eval: moveDate.getYear()"/>
     <context name="_moveDate" expr="eval: moveDate"/>
     <context name="_company" expr="eval: company.id"/>
     <context name="_cutOffPreview" expr="eval: true"/>

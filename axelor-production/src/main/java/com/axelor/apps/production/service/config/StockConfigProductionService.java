@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.production.service.config;
 
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -43,7 +43,7 @@ public class StockConfigProductionService extends StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_2),
           stockConfig.getCompany().getName());
     }
 
@@ -52,7 +52,7 @@ public class StockConfigProductionService extends StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING));
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING));
     }
 
     return stockConfig.getProductionVirtualStockLocation();
@@ -63,7 +63,7 @@ public class StockConfigProductionService extends StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_3),
           stockConfig.getCompany().getName());
     }
     return stockConfig.getWasteStockLocation();
@@ -85,7 +85,7 @@ public class StockConfigProductionService extends StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_4),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_4),
           stockConfig.getCompany().getName());
     }
     return finishedProductsDefaultStockLocation;
@@ -106,7 +106,7 @@ public class StockConfigProductionService extends StockConfigService {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_5),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_5),
           stockConfig.getCompany().getName());
     }
     return componentDefaultStockLocation;

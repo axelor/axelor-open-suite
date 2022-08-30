@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.Partner;
@@ -257,7 +257,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               .collect(Collectors.<MoveLine>toList())
               .isEmpty()) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.SAME_TAX_MOVE_LINES));
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(AccountExceptionMessage.SAME_TAX_MOVE_LINES));
       }
     }
   }

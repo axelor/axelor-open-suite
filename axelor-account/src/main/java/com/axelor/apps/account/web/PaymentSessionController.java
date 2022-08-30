@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionCancelService;
 import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.apps.account.service.PaymentSessionService;
@@ -28,6 +30,7 @@ import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -83,7 +86,7 @@ public class PaymentSessionController {
       int errorCode =
           Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
       if (errorCode == 1) {
-        response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
       } else if (errorCode == 2) {
         ActionView.ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get("Invoice terms"))
@@ -146,10 +149,11 @@ public class PaymentSessionController {
       response.setReload(true);
 
       if (emailCount == 0) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
       } else {
         response.setFlash(
-            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
+            String.format(
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -194,7 +198,7 @@ public class PaymentSessionController {
                 .collect(Collectors.joining(",")));
         response.setError(
             String.format(
-                I18n.get(IExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
                 partnerFullNames.toString(),
                 paymentSession.getPaymentMode().getCode()));
       }
@@ -203,7 +207,8 @@ public class PaymentSessionController {
           Beans.get(PaymentSessionValidateService.class).checkIsHoldBackWithRefund(paymentSession);
       if (isHoldBackWithRefund) {
         response.setError(
-            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
+            String.format(
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
       }
 
     } catch (Exception e) {
@@ -258,6 +263,76 @@ public class PaymentSessionController {
           String.format("self.id IN (%s)", journalIds.isEmpty() ? "0" : journalIds));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removeMultiplePaymentSessions(ActionRequest request, ActionResponse response) {
+    List<Long> paymentSessionIds = (List<Long>) request.getContext().get("_ids");
+    try {
+      int deletedSessions =
+          Beans.get(PaymentSessionService.class).removeMultiplePaymentSessions(paymentSessionIds);
+      if (paymentSessionIds.size() > deletedSessions) {
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+    response.setReload(true);
+  }
+
+  public void selectAll(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).selectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unSelectAll(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).unSelectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setButtonAttrs(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
+
+      if (invoiceTermList.isEmpty()) {
+        return;
+      }
+
+      boolean isSelectedReadonly = true;
+      boolean isUnSelectedReadonly = true;
+
+      if (invoiceTermList.stream().anyMatch(term -> !term.getIsSelectedOnPaymentSession())) {
+        isSelectedReadonly = false;
+      }
+
+      if (invoiceTermList.stream().anyMatch(term -> term.getIsSelectedOnPaymentSession())) {
+        isUnSelectedReadonly = false;
+      }
+
+      response.setAttr("selectAllBtn", "hidden", false);
+      response.setAttr("unselectAllBtn", "hidden", false);
+      response.setAttr("selectAllBtn", "readonly", isSelectedReadonly);
+      response.setAttr("unselectAllBtn", "readonly", isUnSelectedReadonly);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

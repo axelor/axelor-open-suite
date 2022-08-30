@@ -29,7 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -128,7 +128,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
 
@@ -620,7 +620,7 @@ public class MoveToolServiceImpl implements MoveToolService {
                 .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+          I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
     }
   }
 

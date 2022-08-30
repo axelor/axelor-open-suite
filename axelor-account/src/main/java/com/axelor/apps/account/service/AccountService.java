@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.tool.StringTool;
@@ -232,7 +232,7 @@ public class AccountService {
         account.setCode(code.substring(0, accountCodeNbrCharSelect));
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED),
+            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED),
             accountCodeLength,
             accountCodeNbrCharSelect);
       } else if (accountCodeLength < accountCodeNbrCharSelect
@@ -256,7 +256,7 @@ public class AccountService {
         account.setCode(code.substring(0, accountCodeNbrCharSelect));
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT),
+            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT),
             lineNo,
             account.getCode());
       } else if (accountCodeLength < accountCodeNbrCharSelect

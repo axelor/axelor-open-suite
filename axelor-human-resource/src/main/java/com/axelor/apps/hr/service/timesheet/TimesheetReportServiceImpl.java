@@ -35,7 +35,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReminderRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReportRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -154,7 +154,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     if (reminderTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE));
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE));
     }
     List<TimesheetReminder> timesheetReminders = getTimesheetReminderList(timesheetReport);
     return sendEmailMessage(timesheetReminders, reminderTemplate);

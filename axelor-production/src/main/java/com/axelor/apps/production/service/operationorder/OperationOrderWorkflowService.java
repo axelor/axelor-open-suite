@@ -33,7 +33,7 @@ import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -291,7 +291,7 @@ public class OperationOrderWorkflowService {
         throw new AxelorException(
             workCenter,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
       duration += machine.getStartingDuration();
@@ -662,7 +662,7 @@ public class OperationOrderWorkflowService {
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
           prodProcessLine.getProdProcess() != null
               ? prodProcessLine.getProdProcess().getCode()
               : "null",
@@ -687,7 +687,7 @@ public class OperationOrderWorkflowService {
         throw new AxelorException(
             workCenter,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
       duration += machine.getStartingDuration();
