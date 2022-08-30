@@ -939,6 +939,7 @@ public class BankReconciliationService {
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
     for (MoveLine moveLine : moveLines) {
       moveLine = moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLine.setIsSelectedBankReconciliation(false);
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
