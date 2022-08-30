@@ -47,7 +47,8 @@
   </form>
 
   <form name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period"
-    onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet">
+    onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet"
+    onNew="action-period-record-set-value-onNew">
     <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
@@ -136,6 +137,12 @@
   <action-record name="action-period-record-status-open"
     model="com.axelor.apps.base.db.Period">
     <field name="statusSelect" expr="eval: __repo__(Period).STATUS_OPENED"/>
+  </action-record>
+
+  <action-record name="action-period-record-set-value-onNew"
+    model="com.axelor.apps.base.db.Period">
+    <field name="year" expr="eval:__parent__"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Year' &amp;&amp; __parent__.typeSelect == 1"/>
   </action-record>
 
 </object-views>
