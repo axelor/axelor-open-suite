@@ -656,7 +656,7 @@ public class PaymentVoucherConfirmService {
                     financialDiscountTax,
                     company,
                     move.getJournal(),
-                    financialDiscountMoveLine.getVatSystemSelect(),
+                    financialDiscountMoveLine.getAccount().getVatSystemSelect(),
                     false,
                     true),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),

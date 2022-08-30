@@ -376,7 +376,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && financialDiscountMoveLine != null) {
       Account financialDiscountVATAccount =
           this.getFinancialDiscountVATAccount(
-              invoice, company, move.getJournal(), financialDiscountMoveLine.getVatSystemSelect());
+              invoice, company, move.getJournal(), financialDiscountMoveLine.getAccount().getVatSystemSelect());
 
       if (financialDiscountVATAccount != null) {
         move.addMoveLineListItem(

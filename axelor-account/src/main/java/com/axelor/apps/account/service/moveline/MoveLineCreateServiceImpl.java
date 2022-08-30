@@ -845,7 +845,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       if (accountingSituation != null) {
         if (accountingSituation.getVatSystemSelect()
             == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-          vatSystemSelect = moveLine.getVatSystemSelect();
+          vatSystemSelect = moveLine.getAccount().getVatSystemSelect();
         } else if (accountingSituation.getVatSystemSelect()
             == AccountingSituationRepository.VAT_DELIVERY) {
           vatSystemSelect = 1;
