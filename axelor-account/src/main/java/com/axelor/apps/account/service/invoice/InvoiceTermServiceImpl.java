@@ -514,7 +514,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (pfpCondition) {
       queryStr =
-          queryStr + " AND self.pfpValidateStatusSelect IN (:validated, :partiallyValidated)";
+          queryStr
+              + " AND self.pfpValidateStatusSelect IN (:noPfp, :validated, :partiallyValidated)";
     }
 
     Query<InvoiceTerm> invoiceTermQuery =
@@ -522,6 +523,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (pfpCondition) {
       invoiceTermQuery
+          .bind("noPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
           .bind("validated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
           .bind("partiallyValidated", InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
     }
@@ -748,6 +750,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .bind("functionalOriginClient", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .bind("functionalOriginSupplier", MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
             .bind("activatePfp", appAccountService.getAppAccount().getActivatePassedForPayment())
+            .bind("noPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
             .bind("pfpValidateStatusValidated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
             .bind(
                 "pfpValidateStatusPartiallyValidated",
@@ -783,7 +786,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
             + " AND (:activatePfp IS FALSE "
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment IS FALSE  "
-            + " OR self.pfpValidateStatusSelect IN (:pfpValidateStatusValidated, :pfpValidateStatusPartiallyValidated)))) ";
+            + " OR self.pfpValidateStatusSelect IN (:noPfp, :pfpValidateStatusValidated, :pfpValidateStatusPartiallyValidated)))) ";
 
     String paymentHistoryCondition = " AND self.isPaid = FALSE" + " AND self.amountRemaining > 0";
 
@@ -1034,7 +1037,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (accountConfig.getIsManagePassedForPayment()
         && (isSupplierPurchase || (isSupplierRefund && accountConfig.getIsManagePFPInRefund()))) {
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    } else {
+      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_NO_PFP);
     }
   }
 

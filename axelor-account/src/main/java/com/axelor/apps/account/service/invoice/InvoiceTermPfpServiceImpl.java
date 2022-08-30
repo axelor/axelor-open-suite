@@ -52,23 +52,29 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Integer massValidatePfp(List<Long> invoiceTermIds) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_VALIDATED)
-            .fetch();
+    List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
+
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
         validatePfp(invoiceTerm, currentUser);
         updatedRecords++;
       }
     }
+
     return updatedRecords;
+  }
+
+  protected List<InvoiceTerm> getInvoiceTerms(List<Long> invoiceTermIds) {
+    return invoiceTermRepo
+        .all()
+        .filter(
+            "self.id IN :invoiceTermIds AND self.pfpValidateStatusSelect NOT IN (:pfpStatusAwaiting, :pfpStatusLitigation)")
+        .bind("invoiceTermIds", invoiceTermIds)
+        .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
+        .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+        .fetch();
   }
 
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
@@ -123,25 +129,21 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       List<Long> invoiceTermIds,
       CancelReason reasonOfRefusalToPay,
       String reasonOfRefusalToPayStr) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_LITIGATION)
-            .fetch();
+    List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
+
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       boolean invoiceTermCheck =
           ObjectUtils.notEmpty(invoiceTerm.getCompany())
               && ObjectUtils.notEmpty(reasonOfRefusalToPay);
+
       if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
         refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
         updatedRecords++;
       }
     }
+
     return updatedRecords;
   }
 
