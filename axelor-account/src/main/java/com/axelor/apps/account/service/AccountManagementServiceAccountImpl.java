@@ -330,8 +330,12 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
         }
       } else if (isFinancialDiscount) {
         if (journal != null
-            && journal.getJournalType().getTechnicalTypeSelect()
-                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+                && journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER) {
           if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
             account = accountManagement.getAllowedFinDiscountTaxVatSystem1Account();
             error =
