@@ -1,0 +1,3 @@
+---
+title: "Cheque rejection: Fix NPE when validating a cheque rejection linked to a payment voucher without generated move"
+type: fix

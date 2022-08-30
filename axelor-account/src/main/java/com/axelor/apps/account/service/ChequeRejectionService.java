@@ -117,7 +117,10 @@ public class ChequeRejectionService {
 
     PaymentVoucher paymentVoucher = chequeRejection.getPaymentVoucher();
 
-    Move paymentMove = paymentVoucher.getGeneratedMove();
+    Move paymentMove =
+        paymentVoucher.getGeneratedMove() != null
+            ? paymentVoucher.getGeneratedMove()
+            : paymentVoucher.getValueForCollectionMove();
 
     InterbankCodeLine interbankCodeLine = chequeRejection.getInterbankCodeLine();
 
