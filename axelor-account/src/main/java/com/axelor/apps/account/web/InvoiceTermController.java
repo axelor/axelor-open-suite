@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -417,6 +418,33 @@ public class InvoiceTermController {
       response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpStatus(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      if (invoiceTerm.getInvoice() == null) {
+        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        invoiceTerm.setInvoice(invoice);
+      }
+
+      if (invoiceTerm.getMoveLine() == null) {
+        MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+        if (moveLine != null && moveLine.getMove() == null) {
+          Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+          moveLine.setMove(move);
+        }
+
+        invoiceTerm.setMoveLine(moveLine);
+      }
+
+      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm);
+      response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -22,5 +23,6 @@ public interface InvoiceTermPfpService {
       InvoiceTerm originalInvoiceTerm,
       BigDecimal invoiceAmount,
       BigDecimal grantedAmount,
-      PfpPartialReason partialReason);
+      PfpPartialReason partialReason)
+      throws AxelorException;
 }

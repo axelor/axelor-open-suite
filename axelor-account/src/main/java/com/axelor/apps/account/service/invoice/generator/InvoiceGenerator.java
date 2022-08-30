@@ -314,13 +314,7 @@ public abstract class InvoiceGenerator {
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 
-    // PFP
-    if (accountConfig.getIsManagePassedForPayment()
-        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                && accountConfig.getIsManagePFPInRefund()))) {
-      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
-    }
+    InvoiceToolService.setPfpStatus(invoice);
 
     initCollections(invoice);
 

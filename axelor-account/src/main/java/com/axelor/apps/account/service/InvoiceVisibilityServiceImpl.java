@@ -179,7 +179,9 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
         || invoice.getInvoiceTermList().stream()
             .anyMatch(
                 it ->
-                    it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_VALIDATED
+                    it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_NO_PFP
+                        || it.getPfpValidateStatusSelect()
+                            == InvoiceTermRepository.PFP_STATUS_VALIDATED
                         || it.getPfpValidateStatusSelect()
                             == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
   }
