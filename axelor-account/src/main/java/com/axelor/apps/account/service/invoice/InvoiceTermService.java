@@ -296,4 +296,6 @@ public interface InvoiceTermService {
   boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
 
   LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
+
+  void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
 }

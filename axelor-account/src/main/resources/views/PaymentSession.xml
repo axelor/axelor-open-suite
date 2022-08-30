@@ -108,6 +108,10 @@
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; sessionTotalAmount > 0" readonlyIf="statusSelect > 1"
         onClick="action-method-payment-session-search-eligible-terms"/>
+      <button name="selectAllBtn" title="Select all"
+        onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
+      <button name="unselectAllBtn" title="Unselect all"
+        onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
         showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
@@ -422,5 +426,17 @@
     <domain>self.move.paymentSession.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
+
+  <action-method name="action-payment-session-method-select-all">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="selectAll"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-unselect-all">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="unSelectAll"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-set-button-attrs">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="setButtonAttrs"/>
+  </action-method>
 
 </object-views>
