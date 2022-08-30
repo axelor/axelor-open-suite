@@ -153,7 +153,8 @@ public class AccountClearanceService {
 
     for (MoveLine moveLine : moveLineList) {
       Account taxAccount =
-          taxAccountService.getAccount(tax, company, journal, moveLine.getVatSystemSelect(), false);
+          taxAccountService.getAccount(
+              tax, company, journal, moveLine.getAccount().getVatSystemSelect(), false);
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
