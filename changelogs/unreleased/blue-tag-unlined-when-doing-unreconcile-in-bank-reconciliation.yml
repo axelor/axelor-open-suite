@@ -1,0 +1,3 @@
+---
+title: "BANK RECONCILIATION : When moveLine is selected and then button Unselect is clicked, the postedNbr is empty but the line are still selected."
+type: fix
