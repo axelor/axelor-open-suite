@@ -1442,7 +1442,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return !invoiceTerm.getIsPaid()
         && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0
         && this.isNotAwaitingPayment(invoiceTerm)
-        && invoiceTerm.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING;
+        && invoiceTerm.getPfpValidateStatusSelect() <= InvoiceTermRepository.PFP_STATUS_AWAITING;
   }
 
   public LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate) {
