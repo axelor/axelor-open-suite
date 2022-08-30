@@ -36,7 +36,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
@@ -129,7 +129,8 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       throw new AxelorException(
           batch,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
+          I18n.get(
+              BankPaymentExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
     }
 
     PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
@@ -143,7 +144,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         throw new AxelorException(
             paymentSchedule,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
+            I18n.get(BankPaymentExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
     }
   }
 
@@ -174,7 +175,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       throw new AxelorException(
           batch,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
     }
 
     BankOrder bankOrder = bankOrderRepo.find(bankOrderList.iterator().next().getId());

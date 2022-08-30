@@ -1439,10 +1439,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public boolean isNotReadonly(InvoiceTerm invoiceTerm) {
+    return this.isNotReadonlyExceptPfp(invoiceTerm)
+        && invoiceTerm.getPfpValidateStatusSelect() <= InvoiceTermRepository.PFP_STATUS_AWAITING;
+  }
+
+  @Override
+  public boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm) {
     return !invoiceTerm.getIsPaid()
         && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0
-        && this.isNotAwaitingPayment(invoiceTerm)
-        && invoiceTerm.getPfpValidateStatusSelect() <= InvoiceTermRepository.PFP_STATUS_AWAITING;
+        && this.isNotAwaitingPayment(invoiceTerm);
   }
 
   public LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate) {

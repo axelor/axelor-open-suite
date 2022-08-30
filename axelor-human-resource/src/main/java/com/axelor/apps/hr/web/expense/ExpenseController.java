@@ -48,7 +48,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
@@ -165,7 +165,7 @@ public class ExpenseController {
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
     if (expenseMap == null) {
-      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      response.setError(I18n.get(HumanResourceExceptionMessage.EXPENSE_NOT_SELECTED));
       return;
     }
     Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
@@ -677,7 +677,7 @@ public class ExpenseController {
       if (employee == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
             AuthUtils.getUser().getName());
       }
 

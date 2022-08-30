@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.account.service.fecimport;
 
+import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.base.db.Company;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 
 public interface FECImportService {
@@ -29,4 +31,6 @@ public interface FECImportService {
    * @return company.
    */
   Company getCompany(MetaFile dataMetaFile);
+
+  void letterImportedReconcileGroup(FECImport fecImport) throws AxelorException;
 }

@@ -69,7 +69,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)
             .flatMap(Collection::stream)
-            .filter(invoiceTermService::isNotReadonly)
+            .filter(invoiceTermService::isNotReadonlyExceptPfp)
             .collect(Collectors.toList());
 
     invoiceTermToUpdateList.forEach(it -> invoiceTermService.updateFromMoveHeader(move, it));

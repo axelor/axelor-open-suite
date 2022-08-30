@@ -19,7 +19,7 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
@@ -56,7 +56,7 @@ public class SupplychainBatchService extends AbstractBatchService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             supplychainBatch.getActionSelect(),
             supplychainBatch.getCode());
     }

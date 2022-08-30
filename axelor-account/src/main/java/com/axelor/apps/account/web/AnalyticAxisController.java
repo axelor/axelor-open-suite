@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
@@ -129,7 +129,8 @@ public class AnalyticAxisController {
 
         if (Beans.get(AnalyticAccountService.class)
             .checkChildrenAccount(analyticAxis.getCompany(), childrenList)) {
-          response.setError(I18n.get(IExceptionMessage.ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY));
+          response.setError(
+              I18n.get(AccountExceptionMessage.ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY));
         }
       }
     } catch (Exception e) {

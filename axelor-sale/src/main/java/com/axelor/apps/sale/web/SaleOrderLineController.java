@@ -28,7 +28,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
@@ -118,7 +118,7 @@ public class SaleOrderLineController {
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
             response.setFlash(
                 String.format(
-                    I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
+                    I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
                     defaultPricing.get().getName()));
           }
         }

@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
@@ -91,7 +91,8 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
                 I18n.get(
-                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA),
+                    ProductionExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA),
                 confProdProcessLine.getId()));
       } else {
         name = String.valueOf(computedName);
@@ -103,7 +104,9 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
             confProdProcessLine,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME),
+                I18n.get(
+                    ProductionExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME),
                 confProdProcessLine.getId()));
       }
     }
@@ -138,7 +141,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
                 I18n.get(
-                    IExceptionMessage
+                    ProductionExceptionMessage
                         .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER_GROUP),
                 confProdProcessLine.getId()));
       }
@@ -157,7 +160,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
                   I18n.get(
-                      IExceptionMessage
+                      ProductionExceptionMessage
                           .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA),
                   confProdProcessLine.getId()));
         } else {
@@ -171,7 +174,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
                   I18n.get(
-                      IExceptionMessage
+                      ProductionExceptionMessage
                           .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER),
                   confProdProcessLine.getId()));
         }
@@ -271,7 +274,8 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
           confProdProcessLine,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           String.format(
-              I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION),
+              I18n.get(
+                  ProductionExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION),
               confProdProcessLine.getId()));
     }
 

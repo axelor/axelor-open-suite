@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -117,7 +117,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
         if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.CURRENCY_6));
+              I18n.get(BaseExceptionMessage.CURRENCY_6));
         }
 
         ccl = cclRepo.find(ccl.getId());
@@ -210,7 +210,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
       } catch (Exception e) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CURRENCY_7),
+            I18n.get(BaseExceptionMessage.CURRENCY_7),
             currencyFrom.getName(),
             currencyTo.getName());
       }
@@ -224,7 +224,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CURRENCY_7),
+          I18n.get(BaseExceptionMessage.CURRENCY_7),
           currencyFrom.getName(),
           currencyTo.getName());
     }

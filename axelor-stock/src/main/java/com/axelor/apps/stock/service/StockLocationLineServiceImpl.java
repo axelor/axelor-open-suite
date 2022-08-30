@@ -31,7 +31,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -143,7 +143,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (stockLocationLineUnit == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_MISSING_UNIT),
           stockLocation.getName(),
           product.getFullName());
     }
@@ -251,7 +251,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_3),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_3),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
     }
@@ -283,7 +283,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (stockLocationLineUnit == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DETAIL_LOCATION_LINE_MISSING_UNIT),
+          I18n.get(StockExceptionMessage.DETAIL_LOCATION_LINE_MISSING_UNIT),
           trackingNumber.getTrackingNumberSeq(),
           stockLocation.getName(),
           product.getFullName());
@@ -331,7 +331,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_1),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
 
@@ -352,7 +352,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_2),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_2),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode(),
           trackingNumber);
@@ -373,7 +373,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_1),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
     }
@@ -631,7 +631,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (stockLocationLine.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_MISSING_UNIT),
           stockLocationLine.getStockLocation().getName(),
           product.getFullName());
     }

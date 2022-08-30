@@ -297,5 +297,7 @@ public interface InvoiceTermService {
 
   boolean isNotReadonly(InvoiceTerm invoiceTerm);
 
+  boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
+
   LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
 }

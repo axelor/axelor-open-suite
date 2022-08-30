@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
@@ -280,7 +280,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_MISSING_DATE));
+          I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE));
     }
     if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
       taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
@@ -341,7 +341,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.DATE_NOT_IN_PERIOD_MOVE),
+            I18n.get(AccountExceptionMessage.DATE_NOT_IN_PERIOD_MOVE),
             moveLine.getCurrencyAmount(),
             move.getCurrency().getSymbol(),
             moveLine.getAccount().getCode());
@@ -349,7 +349,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT));
+            I18n.get(AccountExceptionMessage.DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT));
       }
     }
   }
