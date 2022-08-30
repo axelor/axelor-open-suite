@@ -41,6 +41,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ChequeRejectionService {
 
@@ -109,8 +110,6 @@ public class ChequeRejectionService {
 
     PaymentVoucher paymentVoucher = chequeRejection.getPaymentVoucher();
 
-    Move paymentMove = paymentVoucher.getGeneratedMove();
-
     Partner partner = paymentVoucher.getPartner();
 
     InterbankCodeLine interbankCodeLine = chequeRejection.getInterbankCodeLine();
@@ -137,7 +136,12 @@ public class ChequeRejectionService {
 
     int ref = 1;
 
-    for (MoveLine moveLine : paymentMove.getMoveLineList()) {
+    List<MoveLine> moveLineList =
+        paymentVoucher.getGeneratedMove() != null
+            ? paymentVoucher.getGeneratedMove().getMoveLineList()
+            : paymentVoucher.getValueForCollectionMove().getMoveLineList();
+
+    for (MoveLine moveLine : moveLineList) {
 
       if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
         // Debit MoveLine
