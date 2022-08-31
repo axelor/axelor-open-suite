@@ -61,7 +61,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -250,7 +250,7 @@ public class MrpServiceImpl implements MrpService {
       throw new AxelorException(
           Mrp.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
+          I18n.get(SupplychainExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
     }
     // Get the stock for each product on each stock location
     this.createAvailableStockMrpLines();
@@ -343,7 +343,7 @@ public class MrpServiceImpl implements MrpService {
     if (counter > MAX_ITERATION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MRP_TOO_MANY_ITERATIONS));
+          I18n.get(SupplychainExceptionMessage.MRP_TOO_MANY_ITERATIONS));
     }
 
     boolean doASecondPass = false;
@@ -387,8 +387,7 @@ public class MrpServiceImpl implements MrpService {
     BigDecimal cumulativeQty = mrpLine.getCumulativeQty();
 
     MrpLineType mrpLineType = mrpLine.getMrpLineType();
-    if (mrpLineType != null
-        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
         && mrpLine.getEstimatedDeliveryMrpLine() != null) {
       return false;
     }
@@ -1304,7 +1303,7 @@ public class MrpServiceImpl implements MrpService {
     if (fieldName == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.MRP_STOCK_HISTORY_FIELD_SELECT_MISSING,
+          SupplychainExceptionMessage.MRP_STOCK_HISTORY_FIELD_SELECT_MISSING,
           mrpLineType.getName());
     }
 
@@ -1565,7 +1564,7 @@ public class MrpServiceImpl implements MrpService {
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MRP_NO_PRODUCT));
+          I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT));
     }
 
     return productSet;
@@ -1608,13 +1607,13 @@ public class MrpServiceImpl implements MrpService {
       if (product.getUnit() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_NO_PRODUCT_UNIT),
+            I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_UNIT),
             product.getFullName());
       }
       if (!this.productMap.containsKey(product.getId())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_NO_PRODUCT_ID),
+            I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_ID),
             product.getCode(),
             product.getName());
       }
@@ -1748,8 +1747,10 @@ public class MrpServiceImpl implements MrpService {
       this.runCalculation(mrp);
       mailMessageService.sendNotification(
           AuthUtils.getUser(),
-          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
-          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
+          String.format(
+              I18n.get(SupplychainExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
+          String.format(
+              I18n.get(SupplychainExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
           mrp.getId(),
           mrp.getClass());
     } catch (Exception e) {
@@ -1764,7 +1765,8 @@ public class MrpServiceImpl implements MrpService {
     TraceBackService.trace(e);
     mailMessageService.sendNotification(
         AuthUtils.getUser(),
-        String.format(I18n.get(IExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
+        String.format(
+            I18n.get(SupplychainExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
         e.getMessage(),
         mrp.getId(),
         mrp.getClass());

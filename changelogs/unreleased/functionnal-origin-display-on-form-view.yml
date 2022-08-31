@@ -1,0 +1,7 @@
+---
+title : "MOVE : functionnal origin - display on form view"
+type : change
+description: |
+  Display the field 'functionnal origin' only if at less two values are allowed on the selected journal. Means we hide the field if :
+  - no functionnal origin is allowed on the journal
+  - only one value is allowed. In this case we automatically fill it on the accounting move and hide it.

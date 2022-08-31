@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.imports;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
@@ -146,7 +147,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           this.getClass().getResourceAsStream("/import-configs/" + typeSelect + "-config.xml");
 
       if (bindFileInputStream == null) {
-        printWriter.append(I18n.get(IExceptionMessage.IMPORTER_3) + "\n");
+        printWriter.append(I18n.get(BaseExceptionMessage.IMPORTER_3) + "\n");
       }
 
       try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
@@ -242,6 +243,10 @@ public class ImportCityServiceImpl implements ImportCityService {
     String downloadUrl = getDownloadUrl(geonamesFile);
     MetaFile metaFile = null;
 
+    if (StringUtils.isEmpty(downloadUrl)) {
+      return metaFile;
+    }
+
     try {
       File tempDir = java.nio.file.Files.createTempDirectory(null).toFile();
       File downloadFile = new File(tempDir, downloadFileName);
@@ -275,7 +280,8 @@ public class ImportCityServiceImpl implements ImportCityService {
                 break;
 
               default:
-                printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
+                printWriter.append(
+                    I18n.get(BaseExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
             }
 
             LOG.debug("Length of file : {}", cityTextFile.length());
@@ -287,10 +293,10 @@ public class ImportCityServiceImpl implements ImportCityService {
       FileUtils.forceDelete(tempDir);
 
     } catch (UnknownHostException hostExp) {
-      printWriter.append(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR) + "\n");
+      printWriter.append(I18n.get(BaseExceptionMessage.SERVER_CONNECTION_ERROR) + "\n");
     } catch (IOException e) {
       printWriter.append(
-          String.format(I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND), downloadUrl) + "\n");
+          String.format(I18n.get(BaseExceptionMessage.NO_DATA_FILE_FOUND), downloadUrl) + "\n");
     }
     return metaFile;
   }
@@ -327,7 +333,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       if (!txtFileFound) {
         printWriter.append(
             String.format(
-                    I18n.get(IExceptionMessage.NO_TEXT_FILE_FOUND),
+                    I18n.get(BaseExceptionMessage.NO_TEXT_FILE_FOUND),
                     requiredFileName,
                     dataFile.getFileName())
                 + "\n");
@@ -486,18 +492,20 @@ public class ImportCityServiceImpl implements ImportCityService {
     switch (geonamesFile) {
       case DUMP:
         downloadUrl = appBase.getGeoNamesDumpUrl();
+        if (StringUtils.isEmpty(downloadUrl)) {
+          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_DUMP_URL_NOT_SPECIFIED) + "\n");
+        }
         break;
+
       case ZIP:
         downloadUrl = appBase.getGeoNamesZipUrl();
+        if (StringUtils.isEmpty(downloadUrl)) {
+          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_ZIP_URL_NOT_SPECIFIED) + "\n");
+        }
         break;
-      default:
-        printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
-    }
 
-    if (StringUtils.isEmpty(downloadUrl)) {
-      printWriter.append(
-          String.format(I18n.get(IExceptionMessage.GEONAMES_URL_NOT_SPECIFIED), downloadUrl)
-              + "\n");
+      default:
+        printWriter.append(I18n.get(BaseExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
     }
 
     return downloadUrl;
@@ -522,8 +530,10 @@ public class ImportCityServiceImpl implements ImportCityService {
       MetaFile zipImportDataFile = this.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
       MetaFile dumpImportDataFile = this.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
 
-      importHistoryList.add(this.importCity(typeSelect + "-zip", zipImportDataFile));
-      importHistoryList.add(this.importCity(typeSelect + "-dump", dumpImportDataFile));
+      if (zipImportDataFile != null && dumpImportDataFile != null) {
+        importHistoryList.add(this.importCity(typeSelect + "-zip", zipImportDataFile));
+        importHistoryList.add(this.importCity(typeSelect + "-dump", dumpImportDataFile));
+      }
     } catch (Exception e) {
       printWriter.append(e.getLocalizedMessage() + " at " + e.getStackTrace()[0] + "\n");
     }

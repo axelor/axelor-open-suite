@@ -21,6 +21,9 @@ public class SaleOrderLinePricingObserver implements PricingObserver {
 
   @Override
   public void updatePricing(Pricing pricing) {
+    if (logs.length() > 0) {
+      logs.append("\n");
+    }
     logs.append(
         String.format(
             I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_IDENTIFIED_PRICING), pricing.getName()));

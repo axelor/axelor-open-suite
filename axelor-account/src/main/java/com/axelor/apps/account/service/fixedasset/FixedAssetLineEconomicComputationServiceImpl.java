@@ -49,8 +49,11 @@ public class FixedAssetLineEconomicComputationServiceImpl
       return fixedAsset.getFailoverDate();
     }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAssetDateService.computeLastDayOfPeriodicity(
-          fixedAsset, fixedAsset.getFirstServiceDate());
+      LocalDate firstServiceDate =
+          fixedAsset.getFirstServiceDate() == null
+              ? fixedAsset.getAcquisitionDate()
+              : fixedAsset.getFirstServiceDate();
+      return fixedAssetDateService.computeLastDayOfPeriodicity(fixedAsset, firstServiceDate);
     }
     return fixedAsset.getFirstDepreciationDate();
   }
@@ -74,15 +77,18 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAssetDateService.computeLastDayOfPeriodicity(
-          fixedAsset, fixedAsset.getFirstServiceDate());
+      LocalDate firstServiceDate =
+          fixedAsset.getFirstServiceDate() == null
+              ? fixedAsset.getAcquisitionDate()
+              : fixedAsset.getFirstServiceDate();
+      return fixedAssetDateService.computeLastDayOfPeriodicity(fixedAsset, firstServiceDate);
     }
     return fixedAsset.getFirstDepreciationDate();
   }
 
   @Override
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
+    if (!fixedAsset.getIsEqualToFiscalDepreciation() && fixedAsset.getFirstServiceDate() != null) {
       return fixedAsset.getFirstServiceDate();
     }
     return fixedAsset.getAcquisitionDate();
