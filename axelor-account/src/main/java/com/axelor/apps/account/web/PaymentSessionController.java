@@ -222,7 +222,7 @@ public class PaymentSessionController {
                 .map(InvoiceTerm::getBankDetails)
                 .distinct()
                 .map(BankDetails::getFullName)
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("<br>"));
 
         response.setError(
             String.format(
