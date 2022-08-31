@@ -231,7 +231,8 @@ public interface InvoiceTermService {
       PaymentMode paymentMode,
       LocalDate date,
       BigDecimal amount,
-      int sequence);
+      int sequence)
+      throws AxelorException;
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
@@ -244,7 +245,10 @@ public interface InvoiceTermService {
       BigDecimal amount,
       BigDecimal percentage,
       int sequence,
-      boolean isHoldBack);
+      boolean isHoldBack)
+      throws AxelorException;
+
+  void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException;
 
   void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
 
@@ -293,5 +297,9 @@ public interface InvoiceTermService {
 
   boolean isNotReadonly(InvoiceTerm invoiceTerm);
 
+  boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
+
   LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
+
+  void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
 }

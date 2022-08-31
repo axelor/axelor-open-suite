@@ -47,7 +47,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
@@ -149,7 +149,7 @@ public class MrpLineServiceImpl implements MrpLineService {
         throw new AxelorException(
             mrpLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_LINE_1),
+            I18n.get(SupplychainExceptionMessage.MRP_LINE_1),
             product.getFullName());
       }
     }

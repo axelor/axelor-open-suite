@@ -20,7 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -75,7 +75,7 @@ public class TaxAccountService {
     if (accountManagement == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_TAX_CONFIG_MISSING),
+          I18n.get(AccountExceptionMessage.ACCOUNT_TAX_CONFIG_MISSING),
           tax.getCode(),
           company.getCode());
     } else if (isPurchase) {

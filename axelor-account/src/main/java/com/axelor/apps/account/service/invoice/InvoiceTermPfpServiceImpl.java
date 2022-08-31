@@ -12,6 +12,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,23 +52,29 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Integer massValidatePfp(List<Long> invoiceTermIds) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_VALIDATED)
-            .fetch();
+    List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
+
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
         validatePfp(invoiceTerm, currentUser);
         updatedRecords++;
       }
     }
+
     return updatedRecords;
+  }
+
+  protected List<InvoiceTerm> getInvoiceTerms(List<Long> invoiceTermIds) {
+    return invoiceTermRepo
+        .all()
+        .filter(
+            "self.id IN :invoiceTermIds AND self.pfpValidateStatusSelect NOT IN (:pfpStatusAwaiting, :pfpStatusLitigation)")
+        .bind("invoiceTermIds", invoiceTermIds)
+        .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
+        .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+        .fetch();
   }
 
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
@@ -122,25 +129,21 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       List<Long> invoiceTermIds,
       CancelReason reasonOfRefusalToPay,
       String reasonOfRefusalToPayStr) {
-    List<InvoiceTerm> invoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "self.id in ? AND self.pfpValidateStatusSelect != ?",
-                invoiceTermIds,
-                InvoiceTermRepository.PFP_STATUS_LITIGATION)
-            .fetch();
+    List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
+
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       boolean invoiceTermCheck =
           ObjectUtils.notEmpty(invoiceTerm.getCompany())
               && ObjectUtils.notEmpty(reasonOfRefusalToPay);
+
       if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
         refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
         updatedRecords++;
       }
     }
+
     return updatedRecords;
   }
 
@@ -169,7 +172,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       InvoiceTerm originalInvoiceTerm,
       BigDecimal invoiceAmount,
       BigDecimal grantedAmount,
-      PfpPartialReason partialReason) {
+      PfpPartialReason partialReason)
+      throws AxelorException {
     BigDecimal amount = invoiceAmount.subtract(grantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
     originalInvoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
@@ -181,7 +185,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void createPfpInvoiceTerm(
-      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
+      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException {
     BigDecimal total;
     int sequence;
 

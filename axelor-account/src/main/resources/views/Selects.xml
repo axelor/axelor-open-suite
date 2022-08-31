@@ -463,6 +463,7 @@
   </selection>
 
   <selection name="invoiceterm.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2" order="3">PFP validated</option>
     <option value="3" order="4">Litigation</option>

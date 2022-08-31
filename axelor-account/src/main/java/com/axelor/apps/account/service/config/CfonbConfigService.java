@@ -19,8 +19,9 @@ package com.axelor.apps.account.service.config;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -34,8 +35,8 @@ public class CfonbConfigService extends AccountConfigService {
     if (cfonbConfig == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return cfonbConfig;
@@ -54,8 +55,8 @@ public class CfonbConfigService extends AccountConfigService {
     if (senderRecordCodeExportCFONB == null || senderRecordCodeExportCFONB.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
     return senderRecordCodeExportCFONB;
@@ -66,8 +67,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getSenderNumExportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -77,8 +78,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getSenderNameCodeExportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -88,8 +89,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getRecipientRecordCodeExportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -99,8 +100,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getTotalRecordCodeExportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -110,8 +111,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getTransferOperationCodeExportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_7),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_7),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -122,8 +123,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getDirectDebitOperationCodeExportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_8),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_8),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -134,8 +135,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getHeaderRecordCodeImportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_9),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_9),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -145,8 +146,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getDetailRecordCodeImportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_10),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_10),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -156,8 +157,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getEndingRecordCodeImportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_11),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_11),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -167,8 +168,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getTransferOperationCodeImportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_12),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_12),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -179,8 +180,8 @@ public class CfonbConfigService extends AccountConfigService {
         || cfonbConfig.getDirectDebitOperationCodeImportCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_CONFIG_13),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_CONFIG_13),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }

@@ -6,7 +6,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -112,7 +112,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         moveLineWithHoldbackAccount.clearInvoiceTermList();
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK_2));
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK_2));
       }
     }
 
@@ -151,7 +151,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         moveLine.clearInvoiceTermList();
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
       }
 
       holdbackMoveLine =
@@ -198,7 +198,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       Move move,
       PaymentConditionLine paymentConditionLine,
       LocalDate singleTermDueDate,
-      BigDecimal total) {
+      BigDecimal total)
+      throws AxelorException {
     LocalDate dueDate =
         singleTermDueDate != null
             ? singleTermDueDate
@@ -224,7 +225,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       BigDecimal percentage,
       BigDecimal total,
       int sequence,
-      boolean isHoldback) {
+      boolean isHoldback)
+      throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
             ? total
@@ -297,7 +299,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       if (!moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));
       }
 
       moveLine.clearInvoiceTermList();

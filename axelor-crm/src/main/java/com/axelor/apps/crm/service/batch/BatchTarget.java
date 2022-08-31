@@ -17,9 +17,10 @@
  */
 package com.axelor.apps.crm.service.batch;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -68,7 +69,7 @@ public class BatchTarget extends BatchStrategy {
         TraceBackService.trace(
             new Exception(
                 String.format(
-                    I18n.get(IExceptionMessage.BATCH_TARGET_1),
+                    I18n.get(CrmExceptionMessage.BATCH_TARGET_1),
                     targetConfigurationRepo.find(targetConfiguration.getId()).getCode()),
                 e),
             ExceptionOriginRepository.CRM,
@@ -96,14 +97,13 @@ public class BatchTarget extends BatchStrategy {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2) + "\n";
+    String comment = I18n.get(CrmExceptionMessage.BATCH_TARGET_2) + "\n";
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_TARGET_3) + "\n", batch.getDone());
+            "\t* %s " + I18n.get(CrmExceptionMessage.BATCH_TARGET_3) + "\n", batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

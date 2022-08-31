@@ -135,13 +135,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     String queryStr =
         "((:researchJournal > 0 AND self.journal.id = :researchJournal) "
             + "  OR (:researchJournal = 0 AND self.journal.journalType.technicalTypeSelect = :journalType))"
-            + "AND YEAR(self.date) = :year "
+            + "AND self.date <= :date "
             + "AND self.statusSelect IN (2, 3, 5) "
             + "AND EXISTS(SELECT 1 FROM MoveLine ml "
             + " WHERE ml.move = self "
             + " AND ml.account.manageCutOffPeriod IS TRUE "
             + " AND ml.cutOffStartDate != null AND ml.cutOffEndDate != null "
-            + " AND YEAR(ml.cutOffEndDate) > :year)";
+            + " AND ml.cutOffEndDate > :date)";
 
     if (company != null) {
       queryStr += " AND self.company = :company";
@@ -158,7 +158,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                         == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES
                     ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
                     : JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)
-            .bind("year", moveDate.getYear());
+            .bind("date", moveDate);
 
     if (company != null) {
       moveQuery.bind("company", company.getId());
@@ -347,7 +347,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (moveLine.getAccount().getManageCutOffPeriod()
           && moveLine.getCutOffStartDate() != null
           && moveLine.getCutOffEndDate() != null
-          && (moveLine.getCutOffEndDate().getYear() > moveDate.getYear() || isReverse)) {
+          && (moveLine.getCutOffEndDate().isAfter(moveDate) || isReverse)) {
         moveLineAccount = moveLine.getAccount();
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
         BigDecimal convertedAmount =

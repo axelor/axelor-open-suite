@@ -204,7 +204,7 @@
           colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
-          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+          showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>

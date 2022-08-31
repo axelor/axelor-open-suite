@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.marketing.exception;
 
+/** @deprecated Replaced by {@link MarketingExceptionMessage} */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String EMPTY_TARGET = /*$$(*/ "Please select target" /*)*/;

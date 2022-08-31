@@ -18,18 +18,22 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,13 +50,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   protected PaymentSessionRepository paymentSessionRepository;
   protected InvoiceTermRepository invoiceTermRepository;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public PaymentSessionServiceImpl(
       PaymentSessionRepository paymentSessionRepository,
-      InvoiceTermRepository invoiceTermRepository) {
+      InvoiceTermRepository invoiceTermRepository,
+      InvoiceTermService invoiceTermService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -118,13 +125,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
-    return invoiceTermRepository
-            .all()
-            .filter(
-                "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS FALSE")
-            .bind("paymentSession", paymentSession.getId())
-            .count()
-        > 0;
+    return getTermsBySession(paymentSession, false).count() > 0;
   }
 
   @Override
@@ -181,5 +182,31 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       paymentSessionRepository.remove(paymentSession);
     }
     return paymentSessionList.size();
+  }
+
+  @Override
+  @Transactional
+  public void selectAll(PaymentSession paymentSession) throws AxelorException {
+    List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
+    invoiceTermService.toggle(invoiceTermList, true);
+    computeTotalPaymentSession(paymentSession);
+  }
+
+  @Override
+  @Transactional
+  public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
+    List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
+    invoiceTermService.toggle(invoiceTermList, false);
+    computeTotalPaymentSession(paymentSession);
+  }
+
+  protected Query<InvoiceTerm> getTermsBySession(
+      PaymentSession paymentSession, boolean isSelectedOnPaymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession")
+        .bind("paymentSession", paymentSession.getId())
+        .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
   }
 }

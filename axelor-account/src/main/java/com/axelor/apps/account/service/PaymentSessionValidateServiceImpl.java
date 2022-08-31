@@ -13,7 +13,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -700,7 +700,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     if (moveCount > 0) {
       flashMessage.append(
-          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+          String.format(
+              I18n.get(AccountExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
     }
 
     return flashMessage;

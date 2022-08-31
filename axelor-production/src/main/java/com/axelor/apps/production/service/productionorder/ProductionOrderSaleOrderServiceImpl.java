@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -117,7 +117,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         throw new AxelorException(
             saleOrderLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
+            I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
             product.getName(),
             product.getCode());
       }
@@ -175,7 +175,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       if (depth >= 100) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+            I18n.get(ProductionExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
       }
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
       for (BillOfMaterial childBom : childBomList) {

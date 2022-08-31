@@ -24,12 +24,13 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
@@ -178,8 +179,8 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n" + I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          "%s :\n" + I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
     return seq;
@@ -329,7 +330,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       throw new AxelorException(
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH),
+          I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH),
           total,
           paymentSchedule.getInTaxAmount());
     }
@@ -352,8 +353,8 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       throw new AxelorException(
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           paymentSchedule.getPaymentScheduleSeq());
     }
 
@@ -589,7 +590,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     throw new AxelorException(
         partner,
         TraceBackRepository.CATEGORY_MISSING_FIELD,
-        I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
+        I18n.get(AccountExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
         partner.getName());
   }
 

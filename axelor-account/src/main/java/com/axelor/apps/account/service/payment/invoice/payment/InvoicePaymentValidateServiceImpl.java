@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -140,9 +140,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage
-                  .ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
+          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
     }
   }
 
@@ -261,7 +259,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         if (reconcile == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
+              I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
               invoiceMoveLine.getName(),
               invoiceMoveLine.getAccount().getCode(),
               customerMoveLine.getName(),
