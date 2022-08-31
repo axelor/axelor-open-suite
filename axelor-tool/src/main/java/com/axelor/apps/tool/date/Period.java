@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool.date;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -180,7 +180,7 @@ public class Period {
         + " - "
         + this.to
         + "("
-        + I18n.get(IExceptionMessage.PERIOD_1)
+        + I18n.get(ToolExceptionMessage.PERIOD_1)
         + " :"
         + this.days360
         + ")";

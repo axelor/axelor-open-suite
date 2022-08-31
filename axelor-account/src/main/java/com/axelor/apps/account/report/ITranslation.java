@@ -231,6 +231,8 @@ public interface ITranslation {
       "AccountingReportType4.180days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_AGE_OF_THE_DEBT = /*$$(*/
       "AccountingReportType4.ageOfTheDebt"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_NON_DUE = /*$$(*/
+      "AccountingReportType4.nonDue"; /*)*/
 
   public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
       "AccountingReportType7.title"; /*)*/

@@ -20,7 +20,7 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -102,7 +102,7 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
             || childProductCategory.equals(productCategory)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY),
+              I18n.get(BaseExceptionMessage.PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY),
               childProductCategory.getCode());
         }
         descendantsProductCategoryList.add(childProductCategory);

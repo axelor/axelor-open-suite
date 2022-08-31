@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -85,7 +85,7 @@ public class CancelState extends WorkflowInvoice {
     if (invoice.getOldMove() != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_CANCEL_1));
+          I18n.get(AccountExceptionMessage.INVOICE_CANCEL_1));
     }
 
     Move move = invoice.getMove();

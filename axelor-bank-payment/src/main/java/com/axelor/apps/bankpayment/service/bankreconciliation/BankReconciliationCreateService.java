@@ -139,7 +139,7 @@ public class BankReconciliationCreateService {
       if (name != "") {
         name += "-";
       }
-      name += bankReconciliation.getCurrency().getCode();
+      name += bankReconciliation.getCurrency().getCodeISO();
     }
     if (bankReconciliation.getBankDetails() != null) {
       if (name != "") {

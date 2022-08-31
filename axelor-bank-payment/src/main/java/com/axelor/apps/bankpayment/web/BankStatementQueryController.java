@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryFetchService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
@@ -45,7 +45,7 @@ public class BankStatementQueryController {
                   BankStatementRuleRepository.RULE_TYPE_RECONCILIATION_AUTO,
                   bankStatementQuery.getId());
       if (ObjectUtils.notEmpty(bsq)) {
-        response.setError(I18n.get(IExceptionMessage.BANK_STATEMENT_QUERY_SEQUENCE_USED));
+        response.setError(I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_QUERY_SEQUENCE_USED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
