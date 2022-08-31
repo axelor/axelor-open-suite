@@ -24,6 +24,7 @@ import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
+import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -33,7 +34,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,10 +165,11 @@ public class MrpController {
     Mrp mrp = request.getContext().asType(Mrp.class);
 
     try {
-      List<Long> idList = new ArrayList<Long>();
-      idList = Beans.get(MrpService.class).getSaleOrderLinesComplyingToMrpLineTypes(mrp);
+      List<Long> idList =
+          Beans.get(MrpFilterSaleOrderLineService.class)
+              .getSaleOrderLinesComplyingToMrpLineTypes(mrp);
 
-      String idListStr = idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
+      String idListStr = idList.stream().map(Object::toString).collect(Collectors.joining(","));
 
       response.setAttr("saleOrderLineSet", "domain", "self.id IN (" + idListStr + ")");
     } catch (Exception e) {

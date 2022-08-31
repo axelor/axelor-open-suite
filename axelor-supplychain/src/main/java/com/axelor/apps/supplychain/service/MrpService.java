@@ -23,7 +23,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 public interface MrpService extends Callable<Mrp> {
@@ -40,8 +39,6 @@ public interface MrpService extends Callable<Mrp> {
   public void generateProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
 
   public void reset(Mrp mrp);
-
-  public List<Long> getSaleOrderLinesComplyingToMrpLineTypes(Mrp mrp);
 
   public void undoManualChanges(Mrp mrp);
 
