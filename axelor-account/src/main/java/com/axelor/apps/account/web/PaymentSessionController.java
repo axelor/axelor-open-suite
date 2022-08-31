@@ -186,9 +186,11 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      PaymentSessionValidateService paymentSessionValidateService =
+          Beans.get(PaymentSessionValidateService.class);
+
       List<Partner> partnerWithNegativeAmountList =
-          Beans.get(PaymentSessionValidateService.class)
-              .getPartnersWithNegativeAmount(paymentSession);
+          paymentSessionValidateService.getPartnersWithNegativeAmount(paymentSession);
 
       if (!ObjectUtils.isEmpty(partnerWithNegativeAmountList)) {
         StringBuilder partnerFullNames = new StringBuilder("");
@@ -204,13 +206,31 @@ public class PaymentSessionController {
       }
 
       boolean isHoldBackWithRefund =
-          Beans.get(PaymentSessionValidateService.class).checkIsHoldBackWithRefund(paymentSession);
+          paymentSessionValidateService.checkIsHoldBackWithRefund(paymentSession);
       if (isHoldBackWithRefund) {
         response.setError(
             String.format(
                 I18n.get(AccountExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
       }
 
+      List<InvoiceTerm> invoiceTermsWithInActiveBankDetails =
+          paymentSessionValidateService.getInvoiceTermsWithInActiveBankDetails(paymentSession);
+
+      if (ObjectUtils.notEmpty(invoiceTermsWithInActiveBankDetails)) {
+        String bankDetailNames =
+            invoiceTermsWithInActiveBankDetails.stream()
+                .map(InvoiceTerm::getBankDetails)
+                .distinct()
+                .map(BankDetails::getFullName)
+                .collect(Collectors.joining("<br>"));
+
+        response.setError(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .PAYMENT_SESSION_INVOICE_TERM_WITH_IN_ACTIVE_BANK_DETAILS),
+                bankDetailNames));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
