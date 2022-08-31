@@ -162,9 +162,6 @@
           <field name="irrecoverableReasonPassage"/>
           <field name="irrecoverableStandardRateTax" grid-view="tax-grid" form-view="tax-form"/>
         </panel>
-        <panel name="taxPaymentPanel" title="Tax payment" colSpan="12">
-          <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
-        </panel>
         <panel name="defaultPaymentModesPanel" title="Default Payment Modes" colSpan="12">
           <field name="inPaymentMode" grid-view="payment-mode-grid"
             form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
