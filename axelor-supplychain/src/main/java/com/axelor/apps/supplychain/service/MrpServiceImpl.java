@@ -819,7 +819,7 @@ public class MrpServiceImpl implements MrpService {
 
   protected void createSaleOrderMrpLines() throws AxelorException {
     List<MrpLineType> saleOrderMrpLineTypeList =
-        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp);
+        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
     if (saleOrderMrpLineTypeList == null || saleOrderMrpLineTypeList.isEmpty()) {
       return;
     }
@@ -969,7 +969,7 @@ public class MrpServiceImpl implements MrpService {
     idList.add((long) -1);
 
     List<MrpLineType> saleOrderMrpLineTypeList =
-        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp);
+        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
 
     if ((saleOrderMrpLineTypeList != null || !saleOrderMrpLineTypeList.isEmpty())
         && mrp.getStockLocation() != null) {
@@ -1459,7 +1459,7 @@ public class MrpServiceImpl implements MrpService {
         .fetchOne();
   }
 
-  protected List<MrpLineType> getMrpLineTypeList(int elementSelect, Mrp mrp) {
+  protected List<MrpLineType> getMrpLineTypeList(int elementSelect) {
 
     int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
     return mrpLineTypeRepository
