@@ -6258,7 +6258,7 @@ else {
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF> row["translation"] != null ? row["translation"] : row._outer["product_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF> row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <data id="5384">
                                         <property name="fontSize">8pt</property>

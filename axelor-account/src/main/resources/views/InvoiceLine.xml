@@ -408,6 +408,7 @@
     <action name="action-invoice-line-method-get-fixed-asset-category"
       if="__config__.app.isApp('account')"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-invoice-line-method-translate-product-description-and-name"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -615,6 +616,12 @@
   <action-method name="action-method-account-invoice-line-account-onchange">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="selectDefaultDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="translateProductDescriptionAndName"/>
   </action-method>
 
   <action-attrs name="action-invoice-line-attrs-display-different-language-message">
