@@ -61,6 +61,7 @@
           canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
         <field name="fixedAssetCategory.fixedAssetType" hidden="true"/>
         <field name="fixedAssetCategory.fixedAssetType.technicalTypeSelect" hidden="true"/>
+        <field name="fixedAssetCategory.depreciationPlanSelect" hidden="true"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel">
@@ -132,7 +133,7 @@
           onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="computationMethodSelect"
           onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-method-check-depreciation-plans"
-          requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
+          requiredIf="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
           hidden="true"/>
         <field name="numberOfDepreciation"
@@ -459,7 +460,7 @@
       if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)"
       message="First depreciation date cannot be before Acquisition date."/>
     <error
-      if="acquisitionDate != null &amp;&amp; firstDepreciationDate != null &amp;&amp; java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt; fiscalPeriodicityInMonth &amp;&amp; fiscalPeriodicityTypeSelect == 1"
+      if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt; fiscalPeriodicityInMonth &amp;&amp; fiscalPeriodicityTypeSelect == 1"
       message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
   </action-validate>
 
@@ -628,6 +629,8 @@
   </action-group>
 
   <action-group name="action-group-account-record-on-change-asset-category">
+    <action name="action-account-group-fixed-asset-category-depreciation-plan-null"
+      if="fixedAssetCategory != null &amp;&amp; fixedAssetCategory.depreciationPlanSelect == null"/>
     <action name="action-account-attrs-fill-depreciation-plan"/>
     <action name="action-account-attrs-fill-fiscal-panel"
       if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
@@ -643,6 +646,21 @@
     <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
     <action name="action-fixed-asset-method-check-depreciation-plans"/>
   </action-group>
+
+  <action-group name="action-account-group-fixed-asset-category-depreciation-plan-null">
+    <action name="action-account-attrs-fixed-asset-category-reset"/>
+    <action name="action-account-validate-fixed-asset-category-depreciation-plan-null"/>
+  </action-group>
+
+  <action-attrs name="action-account-attrs-fixed-asset-category-reset">
+    <attribute name="value" for="fixedAssetCategory" expr="eval: null"/>
+  </action-attrs>
+
+  <action-validate
+    name="action-account-validate-fixed-asset-category-depreciation-plan-null">
+    <error
+      message="The fixed asset category does not have value in its depreciation plan and it can not be used"/>
+  </action-validate>
 
   <action-attrs name="action-account-attrs-fill-depreciation-plan">
     <attribute name="value" for="depreciationPlanSelect"
