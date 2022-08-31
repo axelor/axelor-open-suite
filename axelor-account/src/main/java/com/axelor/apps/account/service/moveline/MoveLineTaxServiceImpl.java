@@ -249,6 +249,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               .filter(
                   ml ->
                       moveLineToolService.isEqualTaxMoveLine(
+                          moveline.getAccount(),
                           moveline.getTaxLine(),
                           moveline.getVatSystemSelect(),
                           moveline.getId(),

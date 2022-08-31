@@ -146,13 +146,20 @@ public class AccountClearanceService {
 
     BigDecimal taxRate =
         taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
-    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     Account profitAccount = accountConfig.getProfitAccount();
     Journal journal = accountConfig.getAccountClearanceJournal();
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      Account taxAccount =
+          taxAccountService.getAccount(
+              tax,
+              company,
+              journal,
+              moveLine.getAccount().getVatSystemSelect(),
+              false,
+              moveLine.getMove().getFunctionalOriginSelect());
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);

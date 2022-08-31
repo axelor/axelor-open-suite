@@ -652,8 +652,15 @@ public class PaymentVoucherConfirmService {
             moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
-                accountManagementAccountService.getFinancialDiscountAccount(
-                    accountManagement, financialDiscountTax, company),
+                accountManagementAccountService.getTaxAccount(
+                    accountManagement,
+                    financialDiscountTax,
+                    company,
+                    move.getJournal(),
+                    financialDiscountAccount.getVatSystemSelect(),
+                    move.getFunctionalOriginSelect(),
+                    false,
+                    true),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),
                 isDebitToPay,
                 paymentDate,
