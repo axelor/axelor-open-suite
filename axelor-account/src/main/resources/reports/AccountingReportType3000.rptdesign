@@ -157,74 +157,7 @@ var temp = {};]]></method>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="RulesDS" id="9">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">type</property>
-                    <property name="alias">type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">type</text-property>
-                    <text-property name="heading">type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_label</property>
-                    <property name="alias">rule_label</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule_label</text-property>
-                    <text-property name="heading">rule_label</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_code</property>
-                    <property name="alias">rule_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule_code</text-property>
-                    <text-property name="heading">rule_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_type</property>
-                    <property name="alias">rule_type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">rule_type</text-property>
-                    <text-property name="heading">rule_type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">result</property>
-                    <property name="alias">result</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">result</text-property>
-                    <text-property name="heading">result</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">hidden</property>
-                    <property name="alias">hidden</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">hidden</text-property>
-                    <text-property name="heading">hidden</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule</property>
-                    <property name="alias">rule</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule</text-property>
-                    <text-property name="heading">rule</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diff</property>
-                    <property name="alias">account_diff</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">account_diff</text-property>
-                    <text-property name="heading">account_diff</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diffn1</property>
-                    <property name="alias">account_diffn1</property>
-                    <property name="analysis">measure</property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diffn2</property>
-                    <property name="alias">account_diffn2</property>
-                    <property name="analysis">measure</property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">ReportId</property>
@@ -238,65 +171,7 @@ var temp = {};]]></method>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">sequence</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">type</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">rule_label</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">rule_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">rule_type</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">result</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">hidden</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">rule</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">account_diff</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">account_diffn1</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
-                        <property name="name">account_diffn2</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <method name="onFetch"><![CDATA[var value;
 var valuen1;
 var valuen2;
@@ -332,74 +207,7 @@ if (row["rule_type"] == 2) {
 	rulesn2[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn2'));
 }]]></method>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">sequence</property>
-                    <property name="nativeName">sequence</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">type</property>
-                    <property name="nativeName">type</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">rule_label</property>
-                    <property name="nativeName">rule_label</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">rule_code</property>
-                    <property name="nativeName">rule_code</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">rule_type</property>
-                    <property name="nativeName">rule_type</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">result</property>
-                    <property name="nativeName">result</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">hidden</property>
-                    <property name="nativeName">hidden</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">rule</property>
-                    <property name="nativeName">rule</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">account_diff</property>
-                    <property name="nativeName">account_diff</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">account_diffn1</property>
-                    <property name="nativeName">account_diffn1</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">11</property>
-                    <property name="name">account_diffn2</property>
-                    <property name="nativeName">account_diffn2</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[WITH MoveLineQuery as (SELECT DISTINCT
 	ConfigLine.sequence,
 	ConfigLine.type_select 				  as type,
@@ -434,7 +242,7 @@ ON AccountSet.account_accounting_report_config_line = ConfigLine.id
 LEFT JOIN account_account as Account
 ON Account.id = AccountSet.account_set 
 OR Account.account_type = AccountType.id
-OR Account.code LIKE ConfigLine.account_code
+OR Account.code SIMILAR TO ConfigLine.account_code
 
 LEFT JOIN account_move_line as MoveLine
 ON MoveLine.account = Account.id 
