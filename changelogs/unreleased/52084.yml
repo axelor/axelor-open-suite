@@ -1,9 +1,3 @@
 ---
 title: Correclty add title lines when 'Do not display the header and end of pack' is checked
 type: fix
-description: |
-  On pack the boolean 'Do not display the header and end of pack' was also affecting title lines.
-  It is no longer the case and a title line is well added on the sale order when we add the pack no matter the value of 'Do not display the header and end of pack'
-  ```
-  $ find -iregex ".*domains.*.xml" | xargs -l sed -i 's|cachable="|cacheable="|g'
-  ```
