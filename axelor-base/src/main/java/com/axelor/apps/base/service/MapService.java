@@ -19,7 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -99,7 +99,7 @@ public class MapService {
     throw new AxelorException(
         appBaseService.getAppBase(),
         TraceBackRepository.CATEGORY_NO_VALUE,
-        I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR),
+        I18n.get(BaseExceptionMessage.MAP_RESPONSE_ERROR),
         restResponse);
 
     /*
@@ -447,7 +447,7 @@ public class MapService {
   public String getGoogleMapsApiKey() {
     Preconditions.checkArgument(
         StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey()),
-        I18n.get(IExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
+        I18n.get(BaseExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
     return appBaseService.getAppBase().getGoogleMapsApiKey();
   }
 

@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -162,7 +162,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+        I18n.get(BaseExceptionMessage.ACCOUNT_MANAGEMENT_3),
         product.getCode(),
         company.getName());
   }
@@ -193,7 +193,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+        I18n.get(BaseExceptionMessage.ACCOUNT_MANAGEMENT_3),
         product.getCode(),
         company.getName());
   }
@@ -258,7 +258,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2),
+        I18n.get(BaseExceptionMessage.ACCOUNT_MANAGEMENT_2),
         product.getCode());
   }
 }

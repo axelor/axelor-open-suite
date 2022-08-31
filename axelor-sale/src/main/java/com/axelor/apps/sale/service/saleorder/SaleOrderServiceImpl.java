@@ -33,7 +33,7 @@ import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -129,7 +129,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
+          I18n.get(SaleExceptionMessage.SALES_ORDER_COMPLETED));
     }
 
     saleOrder.setOrderBeingEdited(true);
@@ -321,7 +321,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+              I18n.get(SaleExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
         }
       }
     }

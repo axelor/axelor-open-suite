@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
@@ -127,7 +127,7 @@ public class FixedAssetController {
         && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
     }
     try {
@@ -409,7 +409,7 @@ public class FixedAssetController {
           && disposalQty.compareTo(fixedAsset.getQty()) == 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL));
+            I18n.get(AccountExceptionMessage.FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);

@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -59,7 +59,7 @@ public class ExpenseLineProjectController {
         (List<Map<String, Object>>) request.getContext().get("expenseLineSet");
 
     if (expenseLineSet == null || expenseLineSet.isEmpty()) {
-      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           expenseLineSet.stream()

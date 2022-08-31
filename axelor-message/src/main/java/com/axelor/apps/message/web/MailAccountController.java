@@ -19,7 +19,7 @@ package com.axelor.apps.message.web;
 
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -45,7 +45,7 @@ public class MailAccountController {
       response.setValue("isValid", Boolean.TRUE);
       response.setValue("change", Boolean.FALSE);
       response.setValue("newPassword", null);
-      response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_3));
+      response.setFlash(I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_3));
 
     } catch (Exception e) {
 

@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -68,7 +69,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
@@ -295,7 +296,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.EXPENSE_MISSING_PERIOD));
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_MISSING_PERIOD));
     }
 
     if (expense.getKilometricExpenseLineList() != null
@@ -397,7 +398,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(com.axelor.apps.account.exception.IExceptionMessage.EMPLOYEE_PARTNER),
+          I18n.get(AccountExceptionMessage.EMPLOYEE_PARTNER),
           expense.getEmployee().getName());
     }
 
@@ -505,7 +506,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_4),
           count - 1, // we are using the move line sequence count to get the expense line count
           company.getName());
     }
@@ -555,7 +556,7 @@ public class ExpenseServiceImpl implements ExpenseService {
           e,
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE));
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_CANCEL_MOVE));
     }
 
     expenseRepository.save(expense);
@@ -590,7 +591,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         throw new AxelorException(
             expense,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE));
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE));
       }
       expense.setPaymentMode(paymentMode);
     }
@@ -722,7 +723,7 @@ public class ExpenseServiceImpl implements ExpenseService {
           || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL));
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));
       } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
         Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
       }
@@ -935,7 +936,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     throw new AxelorException(
         expense,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE),
+        I18n.get(HumanResourceExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE),
         expense.getCompany().getName());
   }
 
@@ -1004,7 +1005,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     if (expenseDate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED));
+          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED));
     }
 
     for (EmployeeVehicle vehicle : vehicleList) {

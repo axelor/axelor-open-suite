@@ -23,10 +23,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayerQualityConfigLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -166,8 +167,8 @@ public class PayerQualityService {
     if (payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYER_QUALITY_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.PAYER_QUALITY_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     List<Partner> partnerList = this.getPartnerList();
