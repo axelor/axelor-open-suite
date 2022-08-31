@@ -19,7 +19,7 @@ public class MoveControlServiceImpl implements MoveControlService {
     if (journal != null && company != null && !company.equals(journal.getCompany())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MOVE_INCOHERENCY_DETECTED_JOURNAL_COMPANY),
+          I18n.get(IExceptionMessage.MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY),
           move.getReference(),
           journal.getName());
     }

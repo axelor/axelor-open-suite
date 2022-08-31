@@ -121,7 +121,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (optMoveCompany.isPresent() && !optMoveCompany.get().equals(accountCompany)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MOVE_LINE_INCOHERENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY),
+          I18n.get(IExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY),
           moveLine.getMove().getReference());
     }
   }
@@ -137,7 +137,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(
-              IExceptionMessage.MOVE_LINE_INCOHERENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY),
+              IExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY),
           moveLine.getMove().getJournal().getName());
     }
   }
