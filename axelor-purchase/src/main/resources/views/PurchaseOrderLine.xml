@@ -106,7 +106,7 @@
           showTitle="false">
           <viewer depends="$partnerLanguage">
             <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name should be in :</span> {{record.$partnerLanguage}}</div>
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
               ]]>
           </viewer>
         </field>
