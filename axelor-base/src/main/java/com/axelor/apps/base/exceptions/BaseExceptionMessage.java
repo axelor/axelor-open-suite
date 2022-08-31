@@ -445,6 +445,10 @@ public final class BaseExceptionMessage {
 
   /* Geonames import */
   public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
+  public static final String GEONAMES_DUMP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
+  public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
@@ -473,4 +477,9 @@ public final class BaseExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+
+  public static final String META_JSON_TYPE_NO_MATCH_OBJECT_VALUE = /*$$(*/
+      "Error: The type of the field %s does not match the type of the value %s" /*)*/;
+  public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
+      "Error: The type of the field %s is not managed by the adapter" /*)*/;
 }

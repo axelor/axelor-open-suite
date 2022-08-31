@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
@@ -81,7 +80,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
     if (!accountOpt.isPresent()) {
       String exceptionMessage =
-          I18n.get(IExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
       exceptionMessage += " ";
       exceptionMessage +=
           I18n.get("Company")
