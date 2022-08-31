@@ -6,7 +6,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.mapper.Mapper;
@@ -55,7 +55,8 @@ public class BankStatementQueryServiceImpl implements BankStatementQueryService 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(
-              IExceptionMessage.BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE));
+              BankPaymentExceptionMessage
+                  .BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE));
     }
 
     return (MoveLine) moveLine;
@@ -76,7 +77,8 @@ public class BankStatementQueryServiceImpl implements BankStatementQueryService 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(
-              IExceptionMessage.BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER));
+              BankPaymentExceptionMessage
+                  .BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER));
     }
 
     return (Partner) partner;

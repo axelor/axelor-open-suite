@@ -1,6 +1,6 @@
 package com.axelor.apps.base.service.metajsonattrs;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -85,12 +85,12 @@ public class MetaJsonAttrsAdapter {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.META_JSON_TYPE_NOT_MANAGED),
+            I18n.get(BaseExceptionMessage.META_JSON_TYPE_NOT_MANAGED),
             fieldName);
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_INCONSISTENCY,
-        I18n.get(IExceptionMessage.META_JSON_TYPE_NO_MATCH_OBJECT_VALUE),
+        I18n.get(BaseExceptionMessage.META_JSON_TYPE_NO_MATCH_OBJECT_VALUE),
         fieldName,
         value);
   }

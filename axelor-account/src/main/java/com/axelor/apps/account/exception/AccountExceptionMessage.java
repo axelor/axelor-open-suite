@@ -39,6 +39,8 @@ public final class AccountExceptionMessage {
           /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
   public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
       /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
+  public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
+      /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   public static final String BANK_STATEMENT_1 = /*$$(*/
@@ -183,6 +185,8 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   public static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
+  public static final String ACCOUNTING_REPORT_9 = /*$$(*/
+      "Error : Missing accounting report type for %s" /*)*/;
   public static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
   public static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/
@@ -812,6 +816,8 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_MODE_4 = /*$$(*/
       "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
 
+  public static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
+      "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
   /** Payment voucher control service */
   public static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
       "%s : Payment voucher n° %s, the paid amount should be positive" /*)*/;
@@ -929,6 +935,8 @@ public final class AccountExceptionMessage {
       "Missing subrogation release sequence for company %s" /*)*/;
   public static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
       "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
+  public static final String SUBROGATION_RELEASE_BACK_TO_ACCOUNTED_WRONG_STATUS = /*$$(*/
+      "Can only go back to accounted from a cleared or cancelled subrogation release." /*)*/;
 
   /** MoveLine */
   public static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
@@ -1077,6 +1085,9 @@ public final class AccountExceptionMessage {
 
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
+      "Please select a cash account in config of the payment mode %s" /*)*/;
 
   public static final String MASS_UPDATE_SUCCESSFUL =
       /*$$(*/ "Operation successful : %s record(s) updated." /*)*/;
