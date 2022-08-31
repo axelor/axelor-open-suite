@@ -32,8 +32,7 @@ public class HttpExceptionHandlerImpl implements MethodInterceptor {
       return ResponseConstructor.build(Response.Status.CONFLICT, e.getMessage());
     } catch (Exception e) {
       TraceBackService.trace(e);
-      return ResponseConstructor.build(
-          Response.Status.INTERNAL_SERVER_ERROR, "Error while creating resource");
+      return ResponseConstructor.build(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 }
