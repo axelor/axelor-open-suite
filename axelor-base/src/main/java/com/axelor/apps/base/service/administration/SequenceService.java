@@ -44,6 +44,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.List;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
@@ -382,5 +383,25 @@ public class SequenceService {
     fn.append(sequence.getName());
 
     return fn.toString();
+  }
+
+  public List<SequenceVersion> updateSequenceVersions(
+      Sequence sequence, LocalDate todayDate, LocalDate endOfDate) {
+
+    List<SequenceVersion> sequenceVersionList = sequence.getSequenceVersionList();
+    SequenceVersion lastSequenceVersion;
+    lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
+
+    if (lastSequenceVersion == null) {
+      // Checking yearly to prevent an anomaly only fixed in 6.3
+      lastSequenceVersion = sequenceVersionRepository.findByYear(sequence, todayDate.getYear());
+    }
+
+    SequenceVersion finalLastSequenceVersion = lastSequenceVersion;
+    sequenceVersionList.stream()
+        .filter(sequenceVersion -> sequenceVersion.equals(finalLastSequenceVersion))
+        .forEach(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
+
+    return sequenceVersionList;
   }
 }
