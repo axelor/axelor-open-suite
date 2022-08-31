@@ -486,7 +486,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             }
           }
           account =
-              taxAccountService.getAccount(tax, company, move.getJournal(), vatSystemSelect, true);
+              taxAccountService.getAccount(
+                  tax,
+                  company,
+                  move.getJournal(),
+                  vatSystemSelect,
+                  true,
+                  move.getFunctionalOriginSelect());
           if (account == null) {
             throw new AxelorException(
                 move,
@@ -549,7 +555,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             }
           }
           account =
-              taxAccountService.getAccount(tax, company, move.getJournal(), vatSystemSelect, false);
+              taxAccountService.getAccount(
+                  tax,
+                  company,
+                  move.getJournal(),
+                  vatSystemSelect,
+                  false,
+                  move.getFunctionalOriginSelect());
           if (account == null) {
             throw new AxelorException(
                 move,
@@ -836,7 +848,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
       newAccount =
-          taxAccountService.getAccount(taxLine.getTax(), company, journal, vatSystemSelect, false);
+          taxAccountService.getAccount(
+              taxLine.getTax(),
+              company,
+              journal,
+              vatSystemSelect,
+              false,
+              moveLine.getMove().getFunctionalOriginSelect());
 
     } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
       AccountingSituation accountingSituation =
@@ -852,7 +870,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
       newAccount =
-          taxAccountService.getAccount(taxLine.getTax(), company, journal, vatSystemSelect, false);
+          taxAccountService.getAccount(
+              taxLine.getTax(),
+              company,
+              journal,
+              vatSystemSelect,
+              false,
+              moveLine.getMove().getFunctionalOriginSelect());
     } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
 
       AccountingSituation accountingSituation =
@@ -868,7 +892,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
       newAccount =
-          taxAccountService.getAccount(taxLine.getTax(), company, journal, vatSystemSelect, true);
+          taxAccountService.getAccount(
+              taxLine.getTax(),
+              company,
+              journal,
+              vatSystemSelect,
+              true,
+              moveLine.getMove().getFunctionalOriginSelect());
     }
     return newAccount;
   }

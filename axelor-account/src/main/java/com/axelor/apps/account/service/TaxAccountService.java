@@ -38,13 +38,25 @@ public class TaxAccountService {
   }
 
   public Account getAccount(
-      Tax tax, Company company, Journal journal, int vatSystemSelect, boolean isFixedAssets)
+      Tax tax,
+      Company company,
+      Journal journal,
+      int vatSystemSelect,
+      boolean isFixedAssets,
+      int functionalOrigin)
       throws AxelorException {
 
     AccountManagement accountManagement = this.getTaxAccount(tax, company);
 
     return accountManagementAccountService.getTaxAccount(
-        accountManagement, tax, company, journal, vatSystemSelect, isFixedAssets, false);
+        accountManagement,
+        tax,
+        company,
+        journal,
+        vatSystemSelect,
+        functionalOrigin,
+        isFixedAssets,
+        false);
   }
 
   protected AccountManagement getTaxAccount(Tax tax, Company company) {

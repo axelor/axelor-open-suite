@@ -658,6 +658,7 @@ public class PaymentVoucherConfirmService {
                     company,
                     move.getJournal(),
                     financialDiscountAccount.getVatSystemSelect(),
+                    move.getFunctionalOriginSelect(),
                     false,
                     true),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),

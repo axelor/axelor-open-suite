@@ -88,6 +88,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
       Company company,
       Journal journal,
       int vatSystemSelect,
+      int functionalOrigin,
       boolean isFixedAssets,
       boolean isFinancialDiscount)
       throws AxelorException;

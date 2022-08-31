@@ -377,7 +377,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               invoice,
               company,
               move.getJournal(),
-              financialDiscountMoveLine.getAccount().getVatSystemSelect());
+              financialDiscountMoveLine.getAccount().getVatSystemSelect(),
+              move.getFunctionalOriginSelect());
 
       if (financialDiscountVATAccount != null) {
         move.addMoveLineListItem(
@@ -413,7 +414,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   protected Account getFinancialDiscountVATAccount(
-      Invoice invoice, Company company, Journal journal, int vatSystemSelect)
+      Invoice invoice, Company company, Journal journal, int vatSystemSelect, int functionalOrigin)
       throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Tax tax =
@@ -426,6 +427,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             .findFirst()
             .orElse(null);
     return accountManagementAccountService.getTaxAccount(
-        accountManagement, tax, company, journal, vatSystemSelect, false, true);
+        accountManagement, tax, company, journal, vatSystemSelect, functionalOrigin, false, true);
   }
 }
