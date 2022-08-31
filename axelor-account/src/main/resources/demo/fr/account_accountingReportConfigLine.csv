@@ -93,36 +93,36 @@
 90;1;3;"Dettes";"dettes";;"rules['emobc'] + rules['auteo'] + rules['eedadedc'] + rules['eedf'] + rules['aeascec'] + rules['dfecr'] + rules['dfes'] + rules['dsiecr'] + rules['autde'] + rules['pcda'] + rules['edcp']";;;102;91
 91;3;1;;;;;;;102;92
 92;1;3;"TOTAL PASSIFS";"totpas";;"rules['cappro'] + rules['autfp'] + rules['dettes']";;;102;93
-95;2;2;"Vente de marchandises";"vdem";1;;;"707000|708700|709700";101;1
-96;2;2;"Production vendue";"proven";1;;;"700|701000|701200|702000|703000|704000|704100|704200|705000|706000|707100|707200|707210|707300|708000|708100|708200|708300|708400|708500|708600|708800|709000|709100|709200|709400|709500|709600|709700|709800";101;0
-97;2;2;"Production stockée";"prosto";1;;;713000;101;2
-98;2;2;"Production immobilisée";"proimo";1;;;720000;101;3
+95;2;2;"Vente de marchandises";"vdem";1;;;"707000|708700|709700|707100|707200|707210|707300";101;0
+96;2;2;"Production vendue";"proven";1;;;"700|701000|701200|702000|703000|704000|704100|704200|705000|706000|708000|708100|708200|708300|708400|708500|708600|708800|709000|709100|709200|709400|709500|709600|709700|709800";101;1
+97;2;2;"Production stockée";"prosto";1;;;"713000|713300|713310|713350|713400|713410|713450|713500|713510|713550|713580";101;2
+98;2;2;"Production immobilisée";"proimo";1;;;"721000|722000";101;3
 99;2;2;"Subventions d'exploitation";"subdex";1;;;740000;101;4
-100;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc";1;;;"781000|791000";101;5
+100;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc";1;;;"781000|781100|781110|781120|781500|781600|781610|781620|781700|781730|781740|791000";101;5
 101;2;2;"Autres produits";"autpro";1;;;"750|751000|751100|751600|751800|752000|753000|754000|758000";101;6
 102;1;3;"Produits d'exploitation";"prodex";;"rules['vdem'] + rules['proven'] + rules['prosto'] + rules['proimo'] + rules['subdex'] + rules['rdpatc'] + rules['autpro']";;;101;7
 103;3;1;;;;;;;101;8
-104;2;2;"Achats de marchandises";"acdem";1;;;"607000|608700|609700";101;9
+104;2;2;"Achats de marchandises";"acdem";1;;;"607000|607100|607200|609700";101;9
 105;2;2;"Variation de stocks de marchandises";"vdsdm";1;;;603700;101;10
-106;2;2;"Achats de matières premières";"acdemp";1;;;"601000|602000|608100|608200|609100|609200";101;11
+106;2;2;"Achats de matières premières";"acdemp";1;;;"601000|601100|601200|601700|602000|602100|602110|602120|602200|602210|602220|602230|602240|602250|602600|602610|602650|602670";101;11
 107;2;2;"Variations de stocks";"vadest";1;;;"603100|603200";101;12
-108;2;2;"Autres charges externes";"auchex";1;;;"604000|605000|606000|610000|620000|608400|608500|608600|609400|609500|609600";101;13
+108;2;2;"Autres charges externes";"auchex";1;;;"604000|605000|606000|606100|606300|606400|606800|608000|609400|609500|609600|609800|611000|612200|612500|613500|613600|614000|615200|615500|615600|616100|616200|616360|616370|616380|616400|616500|617000|618100|618300|618500";101;13
 109;2;2;"Impôts taxes et versements assimilés";"iteva";1;;;630000;101;14
-110;2;2;"Salaires et traitements";"saetr";1;;;"641000|644000";101;15
-111;2;2;"Charges sociales";"chasoc";1;;;"645000|646000|647000|648000|649000";101;16
-112;2;2;"Dotations aux amortissements, dépréciations";"doaad";1;;;"681100|681200|681600|681700";101;17
+110;2;2;"Salaires et traitements";"saetr";1;;;"641000|641100|641200|641300|641400|641500|644000";101;15
+111;2;2;"Charges sociales";"chasoc";1;;;"645000|645100|645200|645300|645400|645800|646000|647000|647100|647200|647300|647400|647500|648000";101;16
+112;2;2;"Dotations aux amortissements, dépréciations";"doaad";1;;;"681100|681110|681120|681200|681600|681700";101;17
 113;2;2;"Dotations aux provisions";"doaupr";1;;;681500;101;18
 114;2;2;"Autres charges";"autcha";1;;;"650|651000|651100|651600|651800|653000|654000|654100|654400|658000";101;19
 115;1;3;"Charges d'exploitation";"chadex";;"rules['acdem'] + rules['vdsdm'] + rules['acdemp'] + rules['vadest'] + rules['auchex'] + rules['iteva'] + rules['saetr'] + rules['chasoc'] + rules['doaad'] + rules['doaupr'] + rules['autcha']";;;101;20
 116;3;1;;;;;;;101;21
-117;2;2;"Bénéfice attribué ou perte transférée";"baopt";1;;;755000;101;22
-118;2;2;"Perte supportée ou bénéfice transféré";"psobt";1;;;655000;101;23
+117;2;2;"Bénéfice attribué ou perte transférée";"baopt";1;;;"755000|755100|755500";101;22
+118;2;2;"Perte supportée ou bénéfice transféré";"psobt";1;;;"655000|655100|655500";101;23
 119;1;3;"Quote-part de résultat sur opérations faites en commun";"qprofc";;"rules['baopt'] + rules['psobt']";;;101;24
 120;3;1;;;;;;;101;25
-121;2;2;"Produits financiers de participation";"prfidp";1;;;761000;101;26
-122;2;2;"Produits financiers d'autres valeurs mobilières et créances de l'actif immobilisé";"pfdvmcai";1;;;762000;101;27
+121;2;2;"Produits financiers de participation";"prfidp";1;;;"761000|761100|761600|761700";101;26
+122;2;2;"Produits financiers d'autres valeurs mobilières et créances de l'actif immobilisé";"pfdvmcai";1;;;"762000|762100|762600|762700";101;27
 123;2;2;"Autres intérêts et produits assimilés";"aiepa";1;;;"763000|764000|765000|768000";101;28
-124;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc2";1;;;"786000|796000";101;29
+124;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc2";1;;;"786000|786500|786600|786620|786650|796000";101;29
 125;2;2;"Différences positives de change";"dipodc";1;;;766000;101;30
 126;2;2;"Produits nets de cessions de VMP";"pndcdv";1;;;767000;101;31
 127;1;3;"Produits financiers";"profin";;"rules['prdidp'] + rules['psobt'] + rules['qprofc'] + rules['prfidp'] + rules['pfdvmcai'] + rules['aiepa'] + rules['rdpatc2'] + rules['dipodc'] + rules['pndcdv']";;;101;32
@@ -147,21 +147,21 @@
 146;3;1;;;;;;;101;51
 147;2;2;"Impôts sur les bénéfices";"imslbe";1;;;"690|691000|695000|695100|695200|695400|696000|697000|698000|698100|698900|699000";101;52
 200;2;2;"Ventes de marchandises (707)";"707-ventesDeMarchandises";2;;;"707000|707100|707200|707210|707300";100;0
-201;2;2;"Rabais, remise, ristourne sur ventes de marchandises (7097)";"7097-RRR-ventes-de-marchandises";2;;;;100;1
-202;2;2;"Ventes de produits";"701-702-703-ventes-produits";2;;;;100;12
+201;2;2;"Rabais, remise, ristourne sur ventes de marchandises (7097)";"7097-RRR-ventes-de-marchandises";2;;;"709700";100;1
+202;2;2;"Ventes de produits";"701-702-703-ventes-produits";2;;;"701000|701200|702000|703000";100;12
 203;3;1;;;1;;;;100;8
 204;3;1;;;1;;;;100;16
-205;2;2;"Subventions d'exploitation";"74-subventions-exploitation";2;;;;100;21
-206;2;2;"Travaux, études, produits vendues";"704-705-706-708-travaux-etudes-produits";2;;;;100;9
-207;2;2;"Rabais, remises, ristournes accordés";"709-RRR";2;;;;100;10
+205;2;2;"Subventions d'exploitation";"74-subventions-exploitation";2;;;"740000";100;21
+206;2;2;"Travaux, études, produits vendues";"704-705-706-708-travaux-etudes-produits";2;;;"704100|704200|705000|706000|708100|708200|708300|708400|708500|708600|708700|708800";100;9
+207;2;2;"Rabais, remises, ristournes accordés";"709-RRR";2;;;"709100|709200|709400|709500|709600|707800";100;10
 208;2;2;"Impôts, taxes et versements assimilés";"63-impots-taxes";2;;;"63|631000|631100|631200|631300|631400|631800|633000|633100|633200|633300|633400|633500|633800|635000|635100|635110|635120|635130|635140|635200|635300|635400|635410|635800|637000|637100|637200|637400|637800";100;22
 209;2;2;"Production stockée";"713-production-stockee";2;;;"713000|713300|713310|713350|713400|713410|713450|713500|713510|713550|713580";100;13
 210;2;2;"Production immobilisée";"72-Production-immobilisee";2;;;"72|721000|722000";100;14
-211;2;2;"Achat de marchandises (607)";"607-achats-marchandises";2;;;;100;5
-212;2;2;"Variations des stocks de marchandises (6037)";"6037-variations-stocks-marchandises";2;;;;100;3
-213;2;2;"Rabais, remises et ristournes sur achat de marchandises";"6097-RRR";2;;;;100;4
-214;2;2;"Achats d'approvisionnements";"achat-appro";2;;;;100;17
-215;2;2;"Autres charges externes";"autres-charges-externes";2;;;;100;18
+211;2;2;"Achat de marchandises (607)";"607-achats-marchandises";2;;;"607100|607200";100;5
+212;2;2;"Variations des stocks de marchandises (6037)";"6037-variations-stocks-marchandises";2;;;"603700";100;3
+213;2;2;"Rabais, remises et ristournes sur achat de marchandises";"6097-RRR";2;;;"609700";100;4
+214;2;2;"Achats d'approvisionnements";"achat-appro";2;;;"601100|601200|601700|602110|602120|602210|602220|602230|602240|602250|602610|602650|602670|604000|605000";100;17
+215;2;2;"Autres charges externes";"autres-charges-externes";2;;;"606100|606300|606400|606800|608000|611000|612200|612500|613500|613600|614000|615200|615500|615600|616100|616200|616360|616370|616380|616400|616500|617000|618100|618300|618500";100;18
 216;3;1;;;1;;;;100;20
 217;3;1;;;1;;;;100;25
 218;2;2;"Reprises sur amortissements & provisions";"781-reprises-amort";2;;;"781000|781100|781110|781120|781500|781600|781610|781620|781700|781730|781740";100;26
@@ -171,15 +171,15 @@
 222;2;2;"Transferts de charges d'exploitation";"791-transferts-charges";2;;;791000;100;30
 223;2;2;"Charges de personnel";"64-charges-personnel";1;;;"64|641000|641100|641200|641300|641400|641500|644000|645|645100|645200|645300|645400|645800|646|647000|647100|647200|647300|647400|647500|648000";100;23
 224;3;1;;;1;;;;100;32
-225;2;2;"Quotes-parts d'opérations faites en commun";"755-655-quotes-parts";2;;;;100;33
-226;2;2;"Produits financiers";"76-786-796-produits-financiers";2;;;;100;34
-227;2;2;"Charges financières";"66-686-charges-financieres";2;;;;100;35
+225;2;2;"Quotes-parts d'opérations faites en commun";"755-655-quotes-parts";2;;;"655100|655500|755100|755500";100;33
+226;2;2;"Produits financiers";"76-786-796-produits-financiers";2;;;"761100|761600|761700|762100|762600|762700|763100|763800|764000|766000|767000|768000|786500|786620|786650|796000";100;34
+227;2;2;"Charges financières";"66-686-charges-financieres";2;;;"686100|686500|686600|686620|686650|686800";100;35
 228;3;1;;;1;;;;100;37
-229;2;2;"Produits exceptionnels";"77-787-797-produits-exceptionnels";2;;;;100;38
-230;2;2;"Charges exceptionnelles";"67-687-charges-exceptionnelles";2;;;;100;39
+229;2;2;"Produits exceptionnels";"77-787-797-produits-exceptionnels";2;;;"771100|771300|771400|771500|771700|771800|772000|775100|775200|775600|775800|777000|778100|778200|778300|778800|787200|787250|787260|787270|787300|787400|787500|787600|797000";100;38
+230;2;2;"Charges exceptionnelles";"67-687-charges-exceptionnelles";2;;;"671100|671200|671300|671400|671500|671700|671800|675100|675200|675600|675800|678100|678200|678300|678800";100;39
 231;3;1;;;1;;;;100;41
-232;2;2;"Participation des salariés";"participation-salaries";2;;;;100;42
-233;2;2;"Impôts sur les bénéfices";"impots-benefices";2;;;;100;43
+232;2;2;"Participation des salariés";"participation-salaries";2;;;"691000";100;42
+233;2;2;"Impôts sur les bénéfices";"impots-benefices";2;;;"695100|695200|695400";100;43
 234;1;3;"Cout direct d'achat";"cout-direct-achat";1;"rules[""607-achats-marchandises""]+rules[""6037-variations-stocks-marchandises""]+rules[""6097-RRR""]";;;100;6
 235;1;3;"Ventes de marchandises";"ventes-marchandises";1;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;100;2
 236;1;3;"Production vendue";"production-vendue";1;"rules[""704-705-706-708-travaux-etudes-produits""]-rules[""709-RRR""]";;;100;11
