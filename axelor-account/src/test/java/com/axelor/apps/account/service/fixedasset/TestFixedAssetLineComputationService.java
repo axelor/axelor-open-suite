@@ -100,9 +100,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("23.89"),
-            new BigDecimal("23.89"),
-            new BigDecimal("476.11")),
+            new BigDecimal("25.00"),
+            new BigDecimal("25.00"),
+            new BigDecimal("475.00")),
         fixedAssetLine.get());
   }
 
@@ -154,9 +154,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("23.89"),
-            new BigDecimal("23.89"),
-            new BigDecimal("476.11"));
+            new BigDecimal("25.00"),
+            new BigDecimal("25.00"),
+            new BigDecimal("475.00"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
             fixedAsset, firstFixedAssetLine);
@@ -166,8 +166,8 @@ public class TestFixedAssetLineComputationService {
             LocalDate.of(2021, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("123.89"),
-            new BigDecimal("376.11")),
+            new BigDecimal("125.00"),
+            new BigDecimal("375.00")),
         fixedAssetLine);
   }
 
@@ -289,9 +289,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("20000.00"),
-            new BigDecimal("5250.00"),
-            new BigDecimal("5250.00"),
-            new BigDecimal("14750.00")),
+            new BigDecimal("5852.78"),
+            new BigDecimal("5852.78"),
+            new BigDecimal("14147.22")),
         fixedAssetLine.get());
   }
 

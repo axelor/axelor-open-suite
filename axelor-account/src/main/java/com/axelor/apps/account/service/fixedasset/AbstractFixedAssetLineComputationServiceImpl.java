@@ -494,9 +494,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (getFirstDateDepreciationInitSelect(fixedAsset)
             == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
         && fixedAsset.getFirstServiceDate() != null) {
-      return fixedAsset.getFirstServiceDate();
+      return fixedAsset.getFirstServiceDate().withDayOfMonth(1);
     } else {
-      return fixedAsset.getAcquisitionDate();
+      return fixedAsset.getAcquisitionDate().withDayOfMonth(1);
     }
   }
 }
