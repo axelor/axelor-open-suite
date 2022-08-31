@@ -853,7 +853,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               vatSystemSelect,
               false,
               moveLine.getMove().getFunctionalOriginSelect());
-    } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+    } else if (accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
 
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, partner);

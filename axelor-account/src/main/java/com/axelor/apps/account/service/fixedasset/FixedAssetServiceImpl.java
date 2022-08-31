@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
-import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -314,7 +313,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     multiplyFieldsToSplit(newFixedAsset, prorata);
     multiplyFieldsToSplit(fixedAsset, remainingProrata);
 
-    String nameType = "";
     String commentsToAdd = "";
 
     // Qty or grossValue
@@ -322,7 +320,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       newFixedAsset.setQty(amount);
       fixedAsset.setQty(newAmount);
 
-      nameType = I18n.get("Quantity");
       commentsToAdd =
           String.format(
               I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT),
@@ -332,7 +329,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       newFixedAsset.setGrossValue(amount);
       fixedAsset.setGrossValue(newAmount);
 
-      nameType = I18n.get(ITranslation.FIXED_ASSET_SPLIT_AMOUNT);
       commentsToAdd =
           String.format(
               I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT_AMOUNT),
@@ -340,10 +336,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               fixedAsset.getCompany().getCurrency().getCode(),
               splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
-
-    // Names
-    newFixedAsset.setName(String.format("%s - %s (%.2f)", fixedAsset.getName(), nameType, amount));
-    fixedAsset.setName(String.format("%s - %s (%.2f)", fixedAsset.getName(), nameType, newAmount));
 
     // Comments
     newFixedAsset.setComments(
