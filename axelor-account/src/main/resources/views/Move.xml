@@ -83,7 +83,7 @@
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
               onChange="action-group-move-date-onchange" hideIf="statusSelect == 3"/>
-            <field name="originDate" onChange="action-account-move-group-set-origin-date"
+            <field name="originDate" onChange="action-move-group-origin-date-onchange"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
             <field name="$dueDate" type="date" title="Due date" hidden="true"
               onChange="action-account-move-group-onsave"
@@ -606,6 +606,7 @@
     <action name="action-move-method-round-invoice-term-percentages"/>
     <action name="action-move-method-update-due-date"/>
     <action name="action-move-method-update-in-day-book-mode"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
@@ -698,6 +699,11 @@
   <action-group name="action-move-group-payment-condition-onchange">
     <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-account-move-group-onsave"/>
+  </action-group>
+
+  <action-group name="action-move-group-origin-date-onchange">
+    <action name="action-account-move-group-set-origin-date"/>
     <action name="action-account-move-group-onsave"/>
   </action-group>
 
