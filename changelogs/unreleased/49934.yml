@@ -1,0 +1,2 @@
+title: "Cost calculation: Fixed a bug where we could not select a product if the company of the default bom's product was different"
+type: fix

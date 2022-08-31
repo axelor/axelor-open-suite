@@ -50,8 +50,9 @@
         onChange="action-sequence-method-compute-fullname"/>
       <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
         onChange="action-sequence-method-compute-fullname"/>
-      <field name="yearlyResetOk" readonlyIf="monthlyResetOk"/>
-      <field name="monthlyResetOk" onChange="action-sequence-monthly-reset"/>
+      <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
+        onChange="action-sequence-group-yearly-reset-on-change"/>
+      <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
     </panel>
     <panel-related name="sequenceVersionListPanel" field="sequenceVersionList"
       grid-view="sequence-version-grid" form-view="sequence-version-form"/>
@@ -127,6 +128,25 @@
   <action-method name="action-sequence-method-compute-fullname">
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
   </action-method>
+
+  <action-method name="action-sequence-method-update-sequence-version-monthly">
+    <call class="com.axelor.apps.base.web.SequenceController"
+      method="updateSequenceVersionsMonthly"/>
+  </action-method>
+
+  <action-method name="action-sequence-method-update-sequence-version-yearly">
+    <call class="com.axelor.apps.base.web.SequenceController"
+      method="updateSequenceVersionsYearly"/>
+  </action-method>
+
+  <action-group name="action-sequence-group-yearly-reset-on-change">
+    <action name="action-sequence-method-update-sequence-version-yearly"/>
+  </action-group>
+
+  <action-group name="action-sequence-group-monthly-reset-on-change">
+    <action name="action-sequence-method-update-sequence-version"/>
+    <action name="action-sequence-monthly-reset"/>
+  </action-group>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
     title="Sequence filters">

@@ -1099,4 +1099,14 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
+
+  public static final String MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY = /*$$(*/
+      "Inconsistency detected as the company defined on the move %s is different from the company associated to the journal %s." /*)*/;
+
+  public static final String MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+      "Inconsistency detected as the company defined on the move %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  public static final String
+      MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+          "Inconsistency detected as the company defined on the journal %s is different from the company associated to the accounts on the move line(s)." /*)*/;
 }

@@ -63,6 +63,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AppBaseService appBaseService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveControlService moveControlService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -75,7 +76,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveControlService moveControlService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
@@ -87,6 +89,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.appBaseService = appBaseService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveControlService = moveControlService;
   }
 
   /**
@@ -168,6 +171,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           move.getReference());
     }
 
+    moveControlService.checkSameCompany(move);
+
     if (move.getMoveLineList().stream()
         .allMatch(
             moveLine ->
@@ -225,6 +230,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
 
         moveLineControlService.validateMoveLine(moveLine);
+        moveLineControlService.checkAccountCompany(moveLine);
+        moveLineControlService.checkJournalCompany(moveLine);
       }
       this.validateWellBalancedMove(move);
     }
