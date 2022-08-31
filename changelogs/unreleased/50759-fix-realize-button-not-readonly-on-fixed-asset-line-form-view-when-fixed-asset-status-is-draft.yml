@@ -1,0 +1,3 @@
+---
+title: "FIXED ASSET LINES: corrected realize button not readonly on fixed asset line form view when fixed asset status is draft"
+type: fix

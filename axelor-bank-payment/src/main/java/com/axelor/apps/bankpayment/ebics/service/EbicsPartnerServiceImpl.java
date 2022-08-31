@@ -23,7 +23,7 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.tool.date.DateTool;
@@ -193,7 +193,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
+              I18n.get(BankPaymentExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
               "<ul>"
                   + Joiner.on("").join(Iterables.transform(bankDetailsWithoutCurrency, addLi))
                   + "<ul>"),

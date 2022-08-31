@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -38,6 +39,7 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -223,8 +225,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -239,8 +241,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -255,8 +257,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -271,8 +273,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -1247,7 +1249,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         }
 
         if (move.getCurrency() != null) {
-          items[17] = move.getCurrency().getCode();
+          items[17] = move.getCurrency().getCodeISO();
         }
         allMoveLineData.add(items);
       }
@@ -1781,7 +1783,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL));
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL));
     }
     fileName += ".csv";
 

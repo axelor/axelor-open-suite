@@ -41,7 +41,7 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -133,7 +133,7 @@ public class PayrollPreparationService {
       throw new AxelorException(
           payrollPreparation,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
 

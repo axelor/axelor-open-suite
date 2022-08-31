@@ -44,7 +44,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -142,7 +142,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PO_INVOICE_1),
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_1),
           purchaseOrder.getPurchaseOrderSeq());
     }
 
@@ -316,7 +316,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
     }
     BigDecimal percentSum = BigDecimal.ZERO;
     List<Timetable> timetableList = new ArrayList<>();
@@ -342,7 +342,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
     }
 
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
@@ -360,7 +360,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
         throw new AxelorException(
             purchaseOrderLine,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.PO_INVOICE_QTY_MAX));
+            I18n.get(SupplychainExceptionMessage.PO_INVOICE_QTY_MAX));
       }
     }
     return this.generateInvoice(
@@ -564,13 +564,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT));
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT));
     }
     if (advancePaymentAccount == null) {
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PO_INVOICE_MISSING_SUPPLIER_ADVANCE_PAYMENT_ACCOUNT),
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_MISSING_SUPPLIER_ADVANCE_PAYMENT_ACCOUNT),
           purchaseOrder.getCompany().getName());
     }
 
@@ -725,7 +725,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PO_INVOICE_TOO_MUCH_INVOICED),
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_TOO_MUCH_INVOICED),
           purchaseOrder.getPurchaseOrderSeq());
     }
   }

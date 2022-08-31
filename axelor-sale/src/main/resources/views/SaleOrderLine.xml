@@ -320,9 +320,9 @@
       <panel name="deliveryPanel" title="Delivery">
         <field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedDelivDate"
-          onChange="save,action-sale-order-line-supplychain-method-update-reservation-date"
+          onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
           readonlyIf="$availabiltyRequest"/>
-        <field name="deliveredQty" readonly="true"/>
+        <field name="deliveredQty" readonly="true" hidden="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
@@ -338,7 +338,6 @@
       <panel name="invoicingFollowUpPanel" title="Invoicing"
         readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
-        <field name="invoicingDate"/>
         <field name="amountInvoiced"/>
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
@@ -624,6 +623,7 @@
     <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -648,6 +648,7 @@
     <action name="action-sale-order-attrs-hide-ati"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -719,6 +720,13 @@
     <action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-method-compute-analytic-distribution"/>
   </action-group>
+
+  <action-group name="action-sale-order-line-group-deliv-estimated-date-onchange">
+    <action name="save" if="__id__"/>
+    <action name="action-sale-order-line-supplychain-method-update-reservation-date"
+      if="__id__"/>
+  </action-group>
+
   <action-attrs name="action-sale-order-attrs-hide-ati">
     <attribute name="hidden" for="exTaxTotal" expr="eval: __parent__.inAti"
       if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
@@ -955,6 +963,12 @@
       if="eval: __user__.group?.isClient" expr="true"/>
   </action-attrs>
 
+  <action-attrs name="action-sale-order-line-attrs-hide-panel">
+    <attribute name="hidden"
+      for="stockMoveLineOfSOPanel,projectTaskListPanel,invoicingFollowUpPanel" expr="true"
+      if="__parent__.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
+  </action-attrs>
+
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
     <attribute name="hidden" for="allPanelTab" if="eval: __user__.group?.isClient"
       expr="true"/>
@@ -977,6 +991,11 @@
   <action-attrs name="action-sale-order-line-attrs-selection-in-type-select">
     <attribute name="selection-in" for="typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-delivered-qty-hidden">
+    <attribute for="deliveredQty" name="hidden"
+      expr="__parent__.statusSelect == 1 || __parent__.statusSelect == 2" if="__parent__ != null"/>
   </action-attrs>
 
   <!-- ACTION VIEW -->

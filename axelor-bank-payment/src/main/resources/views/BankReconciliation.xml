@@ -65,7 +65,7 @@
           readonlyIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)"
           colSpan="3" onClick="save,action-bank-reconciliation-method-load-bank-statement"/>
         <button name="loadOtherBankStatementBtn" title="Load other bank statements"
-          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; includeOtherBankStatements"
+          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements"
           readonlyIf="statusSelect == 2" colSpan="3"
           onClick="save,action-bank-reconciliation-method-load-other-bank-statement"/>
         <button name="autoAccounting" title="Auto accounting" readonlyIf="statusSelect == 2"

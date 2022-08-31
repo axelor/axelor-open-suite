@@ -55,6 +55,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
@@ -337,10 +338,22 @@ public class BankReconciliationService {
       debit = bankReconciliationLine.getCredit();
       credit = bankReconciliationLine.getDebit();
       account = bankStatementRule.getAccountManagement().getCashAccount();
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
+            bankStatementRule.getSearchLabel());
+      }
     } else {
       debit = bankReconciliationLine.getDebit();
       credit = bankReconciliationLine.getCredit();
       account = bankStatementRule.getCounterpartAccount();
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING),
+            bankStatementRule.getSearchLabel());
+      }
     }
     boolean isDebit = debit.compareTo(credit) > 0;
     moveLine =
@@ -1036,7 +1049,8 @@ public class BankReconciliationService {
       if (bankDetails == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL));
       }
       if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
         uniqueBankDetails = false;
@@ -1069,7 +1083,7 @@ public class BankReconciliationService {
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
-                IExceptionMessage
+                BankPaymentExceptionMessage
                     .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
       } else if (br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
@@ -1078,12 +1092,13 @@ public class BankReconciliationService {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
       } else if (moveLines.size() == 0) {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     } else if (br.getBankReconciliationLineList().stream()
                 .filter(line -> line.getIsSelectedBankReconciliation())
@@ -1099,7 +1114,7 @@ public class BankReconciliationService {
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
-                IExceptionMessage
+                BankPaymentExceptionMessage
                     .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
       } else if (br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
@@ -1108,12 +1123,13 @@ public class BankReconciliationService {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
       } else if (moveLines.size() > 1) {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     }
   }

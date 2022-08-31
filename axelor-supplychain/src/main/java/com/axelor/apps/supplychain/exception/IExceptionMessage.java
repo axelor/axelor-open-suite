@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.supplychain.exception;
 
-/** @author axelor */
+/**
+ * @author axelor *
+ * @deprecated Replaced by {@link SupplychainExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
   /** Purchase order Invoice Service and controller */
   static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
@@ -323,4 +327,10 @@ public interface IExceptionMessage {
 
   static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
 }

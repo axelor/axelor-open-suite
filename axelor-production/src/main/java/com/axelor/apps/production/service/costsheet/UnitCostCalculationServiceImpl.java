@@ -30,7 +30,7 @@ import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
@@ -189,7 +189,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       InputStream bindFileInputStream =
           this.getClass().getResourceAsStream("/import-configs/" + "csv-config.xml");
       if (bindFileInputStream == null) {
-        throw new ValidationException(IExceptionMessage.UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR);
+        throw new ValidationException(
+            ProductionExceptionMessage.UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR);
       }
       FileOutputStream outputStream = new FileOutputStream(configFile);
       IOUtils.copy(bindFileInputStream, outputStream);
@@ -330,7 +331,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
+          I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
     }
 
     return productSet;

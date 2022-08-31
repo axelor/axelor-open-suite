@@ -43,7 +43,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
@@ -116,7 +116,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        "Creation of a purchase order : Company = {},  External reference = {}, Supplier = {}",
         company.getName(),
         externalReference,
         supplierPartner.getFullName());
@@ -390,7 +390,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         throw new AxelorException(
             budget,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.PURCHASE_ORDER_2),
+            I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_2),
             budget.getCode());
       }
     }
@@ -413,7 +413,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
@@ -428,6 +428,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+    if (shippingCostProduct == null) {
+      return null;
+    }
     if (shipmentMode.getHasCarriagePaidPossibility()) {
       BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
       if (computeExTaxTotalWithoutShippingLines(purchaseOrder).compareTo(carriagePaidThreshold)
@@ -481,7 +484,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     List<PurchaseOrderLine> linesToRemove = new ArrayList<>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
       }
     }
@@ -506,7 +510,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (!purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && !purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         exTaxTotal = exTaxTotal.add(purchaseOrderLine.getExTaxTotal());
       }
     }
