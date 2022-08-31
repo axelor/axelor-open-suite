@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -148,14 +148,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       incrementDone();
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class).getPayrollPreparationExportHeader(),
+        payrollPreparationService.getPayrollPreparationExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -177,15 +177,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       total++;
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class)
-            .getPayrollPreparationMeilleurGestionExportHeader(),
+        payrollPreparationService.getPayrollPreparationMeilleurGestionExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -199,7 +198,8 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     String comment =
         String.format(
-            I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_EXPORT_RECAP) + '\n', total);
+            I18n.get(HumanResourceExceptionMessage.BATCH_PAYROLL_PREPARATION_EXPORT_RECAP) + '\n',
+            total);
 
     addComment(comment);
     super.stop();

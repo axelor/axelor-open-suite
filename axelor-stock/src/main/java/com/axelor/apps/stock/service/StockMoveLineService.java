@@ -177,7 +177,7 @@ public interface StockMoveLineService {
    * @param stockMove
    * @throws AxelorException
    */
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException;
+  public void checkExpirationDates(StockMove stockMove);
 
   /**
    * Return unit found in stock move line, or if the unit is empty, take the unit from the product.

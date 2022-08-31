@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -38,9 +39,11 @@ public class MoveDueService {
 
   private MoveLineRepository moveLineRepository;
 
-  @Inject
-  public MoveDueService(MoveLineRepository moveLineRepository) {
+  protected InvoiceService invoiceService;
 
+  @Inject
+  public MoveDueService(MoveLineRepository moveLineRepository, InvoiceService invoiceService) {
+    this.invoiceService = invoiceService;
     this.moveLineRepository = moveLineRepository;
   }
 
@@ -68,6 +71,8 @@ public class MoveDueService {
 
     List<MoveLine> debitMoveLines = Lists.newArrayList();
 
+    debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
+
     // Ajout de la facture d'origine
     MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
 
@@ -87,8 +92,8 @@ public class MoveDueService {
                         + " AND self.account.useForPartnerBalance = ?4 AND self.debit > 0 AND self.amountRemaining > 0 "
                         + " AND self.partner = ?5 AND self NOT IN (?6) ORDER BY self.date ASC ",
                     company,
-                    MoveRepository.STATUS_VALIDATED,
                     MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
                     true,
                     partner,
                     debitMoveLines)
@@ -102,8 +107,8 @@ public class MoveDueService {
                         + " AND self.account.useForPartnerBalance = ?4 AND self.debit > 0 AND self.amountRemaining > 0 "
                         + " AND self.partner = ?5 ORDER BY self.date ASC ",
                     company,
-                    MoveRepository.STATUS_VALIDATED,
                     MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
                     true,
                     partner)
                 .fetch();
@@ -111,7 +116,7 @@ public class MoveDueService {
       debitMoveLines.addAll(othersDebitMoveLines);
     }
 
-    log.debug("Nombre de ligne à payer avec l'avoir récupéré : {}", debitMoveLines.size());
+    log.debug("Number of lines to pay with the credit note : {}", debitMoveLines.size());
 
     return debitMoveLines;
   }

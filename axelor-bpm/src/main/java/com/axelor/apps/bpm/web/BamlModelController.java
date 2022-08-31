@@ -34,18 +34,15 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import java.util.Map;
 
 public class BamlModelController {
-
-  @Inject protected BamlService bamlService;
 
   public void generateCode(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BamlModel model = request.getContext().asType(BamlModel.class);
 
-    String xml = bamlService.extractBamlXml(model.getBamlXml());
+    String xml = Beans.get(BamlService.class).extractBamlXml(model.getBamlXml());
     if (xml != null) {
       String resultScript = Beans.get(BamlService.class).generateGroovyCode(xml);
       response.setValue("resultScript", resultScript);

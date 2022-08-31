@@ -91,7 +91,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
       } else {
         return writeExcel(data);
       }
-    } catch (Exception e) {
+    } catch (ClassNotFoundException | IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
@@ -99,7 +99,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
   private Map<String, List<String[]>> createData(
       ObjectDataConfig objectDataConfig, Long recordId, String language)
-      throws ClassNotFoundException {
+      throws ClassNotFoundException, AxelorException {
 
     Map<String, List<String[]>> data = new HashMap<>();
 

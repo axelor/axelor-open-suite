@@ -76,4 +76,11 @@ public interface ConfiguratorCreatorService {
    * @param creator
    */
   void activate(ConfiguratorCreator creator);
+
+  /**
+   * Method for a quick fix on a constraint issue
+   *
+   * @param creator
+   */
+  void removeTemporalAttributesAndIndicators(ConfiguratorCreator creator);
 }

@@ -20,7 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountClearanceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -36,10 +36,10 @@ import java.util.Map;
 public class AccountClearanceController {
 
   public void getExcessPayment(ActionRequest request, ActionResponse response) {
-
-    AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
-
     try {
+      AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
+      accountClearance = Beans.get(AccountClearanceRepository.class).find(accountClearance.getId());
+
       Beans.get(AccountClearanceService.class).setExcessPayment(accountClearance);
       response.setReload(true);
     } catch (Exception e) {
@@ -68,7 +68,7 @@ public class AccountClearanceController {
     Map<String, Object> viewMap = new HashMap<String, Object>();
 
     Context context = request.getContext();
-    viewMap.put("title", I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_7));
+    viewMap.put("title", I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_7));
     viewMap.put("resource", MoveLine.class.getName());
     viewMap.put("domain", "self.accountClearance.id = " + context.get("id"));
     response.setView(viewMap);

@@ -9,11 +9,13 @@
 
     <string name="label" title="Label"/>
     <string name="code" title="Code"/>
-    <integer name="sequence"/>
+    <integer name="sequence"
+      help="Field used to define the sequencing order for automatic reconcile. Rules will be applied in ascending order"/>
     <integer name="typeSelect" title="Type"
       selection="accounting.report.config.line.type.select" required="true"/>
     <integer name="ruleTypeSelect" title="Rule type"
-      selection="accounting.report.config.line.rule.type.select" required="true"/>
+      selection="accounting.report.config.line.rule.type.select" required="true"
+      help="Field to define if this query is to be used for accounting or reconcile during automatic proccesses. For the auto reconcile, a sequence must be defined."/>
     <integer name="resultSelect" title="Result" default="1"
       selection="accounting.report.config.line.sum.of.account.select"/>
     <boolean name="hidden" title="Hidden"/>

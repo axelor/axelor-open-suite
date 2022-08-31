@@ -43,6 +43,8 @@
     <many-to-one name="creditNoteJournalType"
       ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
 
+    <many-to-one name="supplierAdvancePaymentAccount"
+      ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
 
     <!-- ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"
@@ -58,13 +60,15 @@
     <many-to-one name="cashPositionVariationAccount"
       ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account"
-      title="Advance Payment Account"/>
+      title="Customer advance payment account"/>
     <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
     <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
     <many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account"
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
+    <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bill of exchange receivable account"/>
 
 
     <!-- Automatic account creation for partners -->
@@ -82,9 +86,6 @@
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
-
-    <many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax"
-      title="Tax for management fee"/>
 
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -169,7 +170,6 @@
     <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice"
       title="Allow cancelation of ventilated invoice"/>
-    <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
@@ -213,6 +213,8 @@
     <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
     <boolean name="displayHeadOfficeAddrOnInvoicePrinting"
       title="Display head office address on invoice printing"/>
+    <boolean name="displayStockMoveOnInvoicePrinting"
+      title="Display Deliveries information on invoice printing" default="false"/>
     <string name="invoiceClientBox" large="true" multiline="true"
       title="Client box in invoice"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
@@ -236,6 +238,59 @@
       help="Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"
       default="10000"/>
 
+    <!-- Move Line -->
+    <boolean name="isDescriptionRequired" title="Description required"/>
+    <boolean name="isActivateSimulatedMove" title="Activate Simulated Moves ?"
+      help="Field used to activate the Simulated status on the Move entries. Simulated move have no direct accounting impact but can be optionally used on accounting reports to perform simulations."/>
+
+    <!-- Late payment blocking -->
+    <boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
+    <integer name="numberOfDaysBeforeAccountBlocking"
+      title="Number of days before account blocking"/>
+
+    <boolean name="manageAnalyticAccounting" title="Manage analytic accounting"
+      help="If this field is activated, the management of cost accounting will be offered at each place where the entry or choice of parameters related to cost accounting is necessary at the same time as the company."/>
+    <integer name="nbrOfAnalyticAxisSelect" title="Nbr. of analytic axis"
+      selection="account.general.analytic.axis.type.select" default="1"
+      help="This field indicates the number of Analytical Axes that will be managed on the company, and in particular for entering the analytical breakdown during the creation of accounting entries. The order of the analytical axes is to be defined in the Order of analytical axes table below."/>
+    <integer name="analyticDistributionTypeSelect" title="Analytic distribution type"
+      selection="account.general.analytic.distribution.type.select" default="1"/>
+    <one-to-many name="analyticAxisByCompanyList" ref="AnalyticAxisByCompany"
+      title="Order of Analytic Axis" mappedBy="accountConfig"/>
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal"
+      title="Default analytic journal"/>
+
+
+    <!-- DAS2 - N4DS -->
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="dasContactPartner"
+      title="Main partner DAS"
+      help="Field to store the main contact used in DAS declaration export. Also make sure this contact has a valid email address, otherwise it will be impossible to generate the declaration file. If this field is empty, it will be impossible to generate the file, an alert will be generated."/>
+
+
+    <many-to-one name="purchFinancialDiscountAccount"
+      ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account"/>
+    <many-to-one name="saleFinancialDiscountAccount"
+      ref="com.axelor.apps.account.db.Account" title="Sale financial discount account"/>
+    <many-to-one name="purchFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
+      title="Purchase financial discount tax"/>
+    <many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
+      title="Sale financial discount tax"/>
+
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="temporaryClosureAuthorizedRoleList" title="Temporary Closure Authorized Role"
+      help="Authorized roles for temporary closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role" name="closureAuthorizedRoleList"
+      title="Closure Authorized Role" help="Authorized roles for closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="moveOnTempClosureAuthorizedRoleList"
+      title="Creation / Edition of move on temporary closed period authorized role"
+      help="Authorized roles for creation or edition of move on temporary closed period"/>
+
+    <!-- Holdback accounts -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Supplier account"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -252,6 +307,9 @@
 		public static final int AUTOMATIC_ACCOUNT_CREATION_PREFIX = 1;
 		public static final int AUTOMATIC_ACCOUNT_CREATION_SEQUENCE = 2;
 
+		public static final int DISTRIBUTION_TYPE_FREE = 1;
+		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
+		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
 
 	]]></extra-code>
 
@@ -283,6 +341,7 @@
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
+      <field name="billOfExchReceivAccount" on="UPDATE"/>
 
       <field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
       <field name="customerAccountPrefix" on="UPDATE"/>
@@ -296,8 +355,6 @@
 
       <field name="autoReconcileOnInvoice" on="UPDATE"/>
       <field name="autoReconcileOnPayment" on="UPDATE"/>
-
-      <field name="payingBackTax" on="UPDATE"/>
 
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>
@@ -342,7 +399,6 @@
 
 
       <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
-      <field name="allowRemovalValidatedMove" on="UPDATE"/>
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -25,7 +26,8 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,6 +42,8 @@ public class TrackingNumberService {
   @Inject private SequenceService sequenceService;
 
   @Inject private TrackingNumberRepository trackingNumberRepo;
+
+  @Inject private AppStockService appStockService;
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
@@ -90,7 +94,7 @@ public class TrackingNumberService {
       throw new AxelorException(
           product,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TRACK_NUMBER_DATE_MISSING),
+          I18n.get(StockExceptionMessage.TRACK_NUMBER_DATE_MISSING),
           product.getFullName(),
           origin);
     }
@@ -115,7 +119,7 @@ public class TrackingNumberService {
       throw new AxelorException(
           product,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
+          I18n.get(StockExceptionMessage.TRACKING_NUMBER_1),
           company.getName(),
           product.getCode());
     }
@@ -133,6 +137,19 @@ public class TrackingNumberService {
       }
     }
     trackingNumber.setTrackingNumberSeq(seq);
+
+    // In case of barcode generation, retrieve the one set on tracking number configuration
+    AppStock appStock = appStockService.getAppStock();
+    if (appStock != null && appStock.getActivateTrackingNumberBarCodeGeneration()) {
+      if (appStock.getEditTrackingNumberBarcodeType()) {
+        trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
+      } else {
+        trackingNumber.setBarcodeTypeConfig(appStock.getTrackingNumberBarcodeTypeConfig());
+      }
+      if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+        trackingNumber.setSerialNumber(seq);
+      }
+    }
 
     return trackingNumber;
   }

@@ -370,7 +370,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
   private boolean isValidNode(String activityId, WkfProcess wkfProcess, String klassName) {
 
     WkfTaskConfig wkfTaskConfig =
-        Beans.get(WkfTaskConfigRepository.class)
+        wkfTaskConfigRepository
             .all()
             .filter("self.processId = ?1 and self.name = ?2", wkfProcess.getProcessId(), activityId)
             .fetchOne();

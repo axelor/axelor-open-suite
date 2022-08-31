@@ -37,6 +37,7 @@ import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -238,6 +239,10 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     } else {
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         countryOrigCode = srcDstCountry;
+      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+          && ObjectUtils.notEmpty(stockMove.getFromStockLocation().getAddress())) {
+        countryOrigCode =
+            stockMove.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }
@@ -274,13 +279,16 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     }
 
     String invoiceId = "";
+    StringBuilder invoiceIdBld = new StringBuilder();
     Set<Invoice> invoiceSet = stockMove.getInvoiceSet();
     if (invoiceSet != null) {
       for (Invoice invoice : invoiceSet) {
         if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-          invoiceId += invoice.getInvoiceId() + "|";
+          invoiceIdBld.append(invoice.getInvoiceId() + "|");
         }
       }
+
+      invoiceId = invoiceIdBld.toString();
       if (invoiceId != null && !invoiceId.isEmpty()) {
         invoiceId = invoiceId.substring(0, invoiceId.length() - 1);
       }

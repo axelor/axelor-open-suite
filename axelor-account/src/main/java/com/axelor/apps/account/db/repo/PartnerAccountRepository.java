@@ -51,7 +51,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       }
 
       if (appService.isApp("account")) {
-        if (partner.getIsContact() == false || partner.getIsEmployee()) {
+        if (!partner.getIsContact() || partner.getIsEmployee()) {
           // Create & fill
           accountingSituationInitService.createAccountingSituation(this.find(partner.getId()));
         }

@@ -37,21 +37,22 @@
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="updateTaskBtn" title="Update tasks"
-        onClick="save,action-project-invoicing-assistant-batch-method-update-task"
+        onClick="save,action-project-invoicing-assistant-batch-method-run-batch"
         showIf="actionSelect == 1"/>
       <button name="generateInvoicingProjectBtn" title="Generate invoicing projects"
-        onClick="save,action-project-invoicing-assistant-batch-method-generate-inv-project"
+        onClick="save,action-project-invoicing-assistant-batch-method-run-batch"
         showIf="actionSelect == 2"/>
     </panel>
   </form>
 
   <action-record name="action-project-invoicing-assistant-batch-record-on-new"
     model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -66,9 +67,9 @@
     <field name="deadlineDate" expr="eval: null" if="actionSelect == 1"/>
   </action-record>
 
-  <action-method name="action-project-invoicing-assistant-batch-method-update-task">
+  <action-method name="action-project-invoicing-assistant-batch-method-run-batch">
     <call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController"
-      method="actionUpdateTask"/>
+      method="runBatch"/>
   </action-method>
 
   <action-method name="action-project-invoicing-assistant-batch-method-show-task">
@@ -80,12 +81,6 @@
     name="action-project-invoicing-assistant-batch-method-show-timesheet-line">
     <call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController"
       method="showUpdatedTimesheetLine"/>
-  </action-method>
-
-  <action-method
-    name="action-project-invoicing-assistant-batch-method-generate-inv-project">
-    <call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController"
-      method="actionGenerateInvoicingProject"/>
   </action-method>
 
   <action-method

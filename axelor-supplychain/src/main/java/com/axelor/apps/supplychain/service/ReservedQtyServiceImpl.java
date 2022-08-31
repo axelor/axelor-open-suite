@@ -33,7 +33,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
@@ -156,18 +156,18 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (reservedQty.signum() < 0 || requestedReservedQty.signum() < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE));
     }
     if (requestedReservedQty.compareTo(plannedQty) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUESTED_QTY_TOO_HIGH),
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_REQUESTED_QTY_TOO_HIGH),
           stockMoveLineSeq);
     }
     if (reservedQty.compareTo(plannedQty) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_ALLOCATED_QTY_TOO_HIGH),
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_ALLOCATED_QTY_TOO_HIGH),
           stockMoveLineSeq);
     }
   }
@@ -536,7 +536,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (allocatedRequestedQty.signum() < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW));
     }
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       BigDecimal stockMoveRequestedQty =
@@ -603,7 +603,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           convertedAvailableQtyInStockMove.subtract(convertedReservedQtyInStockMove);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY),
+          I18n.get(SupplychainExceptionMessage.LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY),
           stockLocationLine.getProduct().getFullName(),
           availableQty,
           neededQty);
@@ -655,7 +655,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (availableQtyToBeReserved.compareTo(diffReservedQuantityLocation) < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_QTY_NOT_AVAILABLE));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_QTY_NOT_AVAILABLE));
     }
     // update in stock move line and sale order line
     updateReservedQuantityInStockMoveLineFromSaleOrderLine(
@@ -756,7 +756,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       if (availableQtyToBeReserved.compareTo(diffReservedQuantityLocation) < 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_QTY_NOT_AVAILABLE));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_QTY_NOT_AVAILABLE));
       }
       stockMoveLine.setReservedQty(newReservedQty);
 
@@ -791,6 +791,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         stockLocationLine.getRequestedReservedQty().add(diffReservedQuantityLocation));
 
     stockMoveLine.setRequestedReservedQty(newReservedQty);
+    if (stockMoveLine.getRequestedReservedQty().compareTo(stockMoveLine.getReservedQty()) < 0) {
+      updateReservedQty(stockMoveLine, stockMoveLine.getRequestedReservedQty());
+    }
   }
 
   /**
@@ -802,12 +805,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (stockMoveLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
     }
     if (qty.signum() < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE));
     }
   }
 
@@ -829,7 +832,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       throw new AxelorException(
           stockMoveLine.getStockMove(),
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_AVAILABILITY_REQUEST));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_AVAILABILITY_REQUEST));
     }
   }
 
@@ -970,7 +973,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (stockMoveLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
     }
     // search for the maximum quantity that can be allocated.
     StockLocationLine stockLocationLine =
@@ -1037,7 +1040,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (saleOrderLine.getQty().signum() < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
     }
     StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
     if (stockMoveLine != null) {
@@ -1061,7 +1064,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       if (stockMoveLine.getQty().signum() < 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
       }
       this.updateRequestedReservedQty(stockMoveLine, stockMoveLine.getQty());
     }

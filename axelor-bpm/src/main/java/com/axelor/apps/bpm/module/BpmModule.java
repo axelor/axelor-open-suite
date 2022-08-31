@@ -24,6 +24,7 @@ import com.axelor.apps.bpm.db.repo.BpmWkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.BpmWkfModelRepository;
 import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
+import com.axelor.apps.bpm.listener.ServerStartListener;
 import com.axelor.apps.bpm.listener.WkfRequestListener;
 import com.axelor.apps.bpm.mapper.BpmMapperScriptGeneratorServiceImpl;
 import com.axelor.apps.bpm.service.AppLoaderExportBpmServiceImpl;
@@ -88,5 +89,6 @@ public class BpmModule extends AxelorModule {
     bind(AppLoaderExportServiceImpl.class).to(AppLoaderExportBpmServiceImpl.class);
     bind(BpmDashboardService.class).to(BpmDashboardServiceImpl.class);
     bind(AppLoaderImportServiceImpl.class).to(AppLoaderImportBpmServiceImpl.class);
+    bind(ServerStartListener.class);
   }
 }

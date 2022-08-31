@@ -22,10 +22,11 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -57,86 +58,89 @@ public class StockLocationController {
    * @throws IOException
    */
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      Context context = request.getContext();
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> stockLocationMap =
+          (LinkedHashMap<String, Object>) context.get("_stockLocation");
+      Integer stockLocationId = (Integer) stockLocationMap.get("id");
+      StockLocationService stockLocationService = Beans.get(StockLocationService.class);
+      StockLocationRepository stockLocationRepository = Beans.get(StockLocationRepository.class);
 
-    Context context = request.getContext();
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> stockLocationMap =
-        (LinkedHashMap<String, Object>) context.get("_stockLocation");
-    Integer stockLocationId = (Integer) stockLocationMap.get("id");
-    StockLocationService stockLocationService = Beans.get(StockLocationService.class);
-    StockLocationRepository stockLocationRepository = Beans.get(StockLocationRepository.class);
+      StockLocation stockLocation =
+          stockLocationId != null ? stockLocationRepository.find(new Long(stockLocationId)) : null;
+      String locationIds = "";
 
-    StockLocation stockLocation =
-        stockLocationId != null ? stockLocationRepository.find(new Long(stockLocationId)) : null;
-    String locationIds = "";
+      String printType = (String) context.get("printingType");
+      String exportType = (String) context.get("exportTypeSelect");
 
-    String printType = (String) context.get("printingType");
-    String exportType = (String) context.get("exportTypeSelect");
-
-    @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedLocations = (List<Integer>) context.get("_ids");
-    if (lstSelectedLocations != null) {
-      for (Integer it : lstSelectedLocations) {
-        Set<Long> idSet =
-            stockLocationService.getContentStockLocationIds(
-                stockLocationRepository.find(new Long(it)));
-        if (!idSet.isEmpty()) {
-          locationIds += Joiner.on(",").join(idSet) + ",";
+      @SuppressWarnings("unchecked")
+      List<Integer> lstSelectedLocations = (List<Integer>) context.get("_ids");
+      if (lstSelectedLocations != null) {
+        for (Integer it : lstSelectedLocations) {
+          Set<Long> idSet =
+              stockLocationService.getContentStockLocationIds(
+                  stockLocationRepository.find(new Long(it)));
+          if (!idSet.isEmpty()) {
+            locationIds += Joiner.on(",").join(idSet) + ",";
+          }
         }
       }
-    }
 
-    if (!locationIds.equals("")) {
-      locationIds = locationIds.substring(0, locationIds.length() - 1);
-      stockLocation = stockLocationRepository.find(new Long(lstSelectedLocations.get(0)));
-    } else if (stockLocation != null && stockLocation.getId() != null) {
-      Set<Long> idSet =
-          stockLocationService.getContentStockLocationIds(
-              stockLocationRepository.find(stockLocation.getId()));
-      if (!idSet.isEmpty()) {
-        locationIds = Joiner.on(",").join(idSet);
-      }
-    }
-
-    if (!locationIds.equals("")) {
-      String language = ReportSettings.getPrintingLocale(null);
-
-      String title = I18n.get("Stock location");
-      if (stockLocation.getName() != null) {
-        title =
-            lstSelectedLocations == null
-                ? I18n.get("Stock location") + " " + stockLocation.getName()
-                : I18n.get("Stock location(s)");
+      if (!locationIds.equals("")) {
+        locationIds = locationIds.substring(0, locationIds.length() - 1);
+        stockLocation = stockLocationRepository.find(new Long(lstSelectedLocations.get(0)));
+      } else if (stockLocation != null && stockLocation.getId() != null) {
+        Set<Long> idSet =
+            stockLocationService.getContentStockLocationIds(
+                stockLocationRepository.find(stockLocation.getId()));
+        if (!idSet.isEmpty()) {
+          locationIds = Joiner.on(",").join(idSet);
+        }
       }
 
-      if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
-        response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
+      if (!locationIds.equals("")) {
+        String language = ReportSettings.getPrintingLocale(null);
+
+        String title = I18n.get("Stock location");
+        if (stockLocation.getName() != null) {
+          title =
+              lstSelectedLocations == null
+                  ? I18n.get("Stock location") + " " + stockLocation.getName()
+                  : I18n.get("Stock location(s)");
+        }
+
+        if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
+          response.setNotify(I18n.get(StockExceptionMessage.STOCK_CONFIGURATION_MISSING));
+        }
+
+        String fileLink =
+            ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
+                .addParam("StockLocationId", locationIds)
+                .addParam("Timezone", null)
+                .addParam("Locale", language)
+                .addFormat(exportType)
+                .addParam("PrintType", printType)
+                .generate()
+                .getFileLink();
+
+        logger.debug("Printing " + title);
+
+        response.setView(ActionView.define(title).add("html", fileLink).map());
+
+      } else {
+        response.setFlash(I18n.get(StockExceptionMessage.LOCATION_2));
       }
-
-      String fileLink =
-          ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
-              .addParam("StockLocationId", locationIds)
-              .addParam("Timezone", null)
-              .addParam("Locale", language)
-              .addFormat(exportType)
-              .addParam("PrintType", printType)
-              .generate()
-              .getFileLink();
-
-      logger.debug("Printing " + title);
-
-      response.setView(ActionView.define(title).add("html", fileLink).map());
-
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setCanClose(true);
   }
 
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-    if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+    if (stockLocation.getIsValued()) {
       response.setValue(
           "stockLocationValue",
           Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
@@ -150,7 +154,7 @@ public class StockLocationController {
     List<Integer> lstSelectedLocations = (List<Integer>) request.getContext().get("_ids");
 
     response.setView(
-        ActionView.define(I18n.get(IExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
+        ActionView.define(I18n.get(StockExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
             .model(Wizard.class.getName())
             .add("form", "stock-location-print-wizard-form")
             .param("popup", "true")

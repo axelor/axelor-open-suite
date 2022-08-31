@@ -17,14 +17,23 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PurchaseOrderInvoiceService {
@@ -53,5 +62,46 @@ public interface PurchaseOrderInvoiceService {
 
   public void processPurchaseOrderLine(
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company cmpany,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate,
+      PurchaseOrder purchaseOrder)
+      throws AxelorException;
+
+  /**
+   * Generate a supplier advance payment from a purchaseOrder.
+   *
+   * @param purchaseOrder : the purchase order
+   * @param amountToInvoice : the amount of the advance payment
+   * @param isPercent : if the amount specified is in percent or not
+   * @return Invoice : The generated supplier advance payment
+   */
+  Invoice generateSupplierAdvancePayment(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
+      throws AxelorException;
+
+  /**
+   * Throws an axelor exception if PurchaseOrder is not invoiceable.
+   *
+   * @param purchaseOrder
+   * @param amountToInvoice
+   * @param isPercent
+   * @throws AxelorException
+   */
+  void displayErrorMessageIfPurchaseOrderIsInvoiceable(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
 }

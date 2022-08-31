@@ -3,20 +3,29 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="move-line-bank-reconciliation-grid" orderBy="-date" title="Move lines"
+  <grid name="move-line-bank-reconciliation-grid" orderBy="date" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canArchive="false" canNew="false">
+    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
+    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
+      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
+    <field name="postedNbr"/>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period" canView="false"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="description"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
-    <field name="debit" aggregate="sum"/>
-    <field name="credit" aggregate="sum"/>
+    <field name="debit" aggregate="sum">
+      <hilite if="debit > 0" color="green"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite if="credit > 0" color="red"/>
+    </field>
     <field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
     <field name="move.statusSelect"/>
+    <field name="isSelectedBankReconciliation" hidden="true"/>
   </grid>
-
 
   <action-group name="action-group-account-moveline-debitcredit-onchange"
     id="banck-payment-action-group-account-moveline-debitcredit-onchange">
@@ -67,5 +76,10 @@
     <field name="debit" expr="0"
       if="eval: id == null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
   </action-record>
+
+  <action-method name="action-move-line-method-set-selected">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="setSelectedBankReconciliation"/>
+  </action-method>
 
 </object-views>

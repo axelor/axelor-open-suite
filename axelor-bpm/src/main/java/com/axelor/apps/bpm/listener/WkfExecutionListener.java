@@ -62,10 +62,11 @@ public class WkfExecutionListener implements ExecutionListener {
     } else if (eventName.equals(EVENTNAME_END)) {
 
       BpmnModelElementInstance modelElementInstance = execution.getBpmnModelElementInstance();
-      String typeName = modelElementInstance.getElementType().getTypeName();
-      if (modelElementInstance != null
-          && typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
-        checkDMNValue(execution);
+      if (modelElementInstance != null) {
+        String typeName = modelElementInstance.getElementType().getTypeName();
+        if (typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
+          checkDMNValue(execution);
+        }
       }
     }
   }

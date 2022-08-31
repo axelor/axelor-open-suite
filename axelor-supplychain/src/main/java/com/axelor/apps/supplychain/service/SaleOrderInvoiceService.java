@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -258,6 +260,8 @@ public interface SaleOrderInvoiceService {
       PriceList priceList,
       PaymentMode paymentMode,
       PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
       SaleOrder saleOrder)
       throws AxelorException;
 

@@ -19,7 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -97,6 +98,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
   }
 
+  @Override
   public List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
@@ -111,7 +113,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
           || parentProductCategory.equals(productCategory)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRODUCT_CATEGORY_PARENTS_CIRCULAR_DEPENDENCY),
+            I18n.get(BaseExceptionMessage.PRODUCT_CATEGORY_PARENTS_CIRCULAR_DEPENDENCY),
             parentProductCategory.getCode());
       }
       parentProductCategoryList.add(parentProductCategory);
@@ -121,6 +123,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     return parentProductCategoryList;
   }
 
+  @Override
   public List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
@@ -138,7 +141,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             || childProductCategory.equals(productCategory)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY),
+              I18n.get(BaseExceptionMessage.PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY),
               childProductCategory.getCode());
         }
         descendantsProductCategoryList.add(childProductCategory);
@@ -153,7 +156,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
   }
 
   /**
-   * Find child of given category, and recursively parents of found parent that have a max discount.
+   * Find parent of given category, and recursively parents of found parents that have a max
+   * discount.
    *
    * @param productCategory a product category
    * @return filtered parents of the category
@@ -185,5 +189,21 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         .filter("self.parentProductCategory.id = :productCategoryId")
         .bind("productCategoryId", productCategory.getId())
         .fetch();
+  }
+
+  @Override
+  public BigDecimal getGrowthCoeff(ProductCategory productCategory) {
+    Objects.requireNonNull(productCategory);
+    return getGrowthCoeffBis(productCategory, 0);
+  }
+
+  protected BigDecimal getGrowthCoeffBis(ProductCategory productCategory, int i) {
+    if (productCategory.getGrowthCoef().compareTo(BigDecimal.ONE) != 0
+        || productCategory.getParentProductCategory() == null
+        || i == MAX_ITERATION) {
+      return productCategory.getGrowthCoef();
+    }
+
+    return getGrowthCoeffBis(productCategory.getParentProductCategory(), ++i);
   }
 }

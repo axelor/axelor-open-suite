@@ -29,17 +29,19 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -59,8 +61,9 @@ public class PaymentVoucherConfirmService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ReconcileService reconcileService;
-  protected MoveLineService moveLineService;
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
+  protected MoveLineCreateService moveLineCreateService;
   protected PaymentService paymentService;
   protected PaymentModeService paymentModeService;
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;
@@ -72,8 +75,9 @@ public class PaymentVoucherConfirmService {
   @Inject
   public PaymentVoucherConfirmService(
       ReconcileService reconcileService,
-      MoveLineService moveLineService,
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveLineCreateService moveLineCreateService,
       PaymentService paymentService,
       PaymentModeService paymentModeService,
       PaymentVoucherSequenceService paymentVoucherSequenceService,
@@ -83,8 +87,9 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherRepository paymentVoucherRepository) {
 
     this.reconcileService = reconcileService;
-    this.moveLineService = moveLineService;
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
+    this.moveLineCreateService = moveLineCreateService;
     this.paymentService = paymentService;
     this.paymentModeService = paymentModeService;
     this.paymentVoucherSequenceService = paymentVoucherSequenceService;
@@ -126,8 +131,8 @@ public class PaymentVoucherConfirmService {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_AMOUNT_EXCEEDING),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.PAYMENT_AMOUNT_EXCEEDING),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     // TODO VEIRIFER QUE LES ELEMENTS A PAYER NE CONCERNE QU'UNE SEULE DEVISE
@@ -204,17 +209,18 @@ public class PaymentVoucherConfirmService {
       // Manage all the cases in the same way. As if a move line (Excess payment) is selected, we
       // cancel it first
       Move move =
-          moveService
-              .getMoveCreateService()
-              .createMoveWithPaymentVoucher(
-                  journal,
-                  company,
-                  paymentVoucher,
-                  payerPartner,
-                  paymentDate,
-                  paymentMode,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+          moveCreateService.createMoveWithPaymentVoucher(
+              journal,
+              company,
+              paymentVoucher,
+              payerPartner,
+              paymentDate,
+              paymentMode,
+              null,
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+              paymentVoucher.getRef(),
+              null);
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());
@@ -257,7 +263,7 @@ public class PaymentVoucherConfirmService {
       // in the else case we create a classical balance on the bank account of the payment mode
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 paymentVoucher.getPartner(),
                 paymentVoucher.getMoveLine().getAccount(),
@@ -267,7 +273,6 @@ public class PaymentVoucherConfirmService {
                 moveLineNo++,
                 paymentVoucher.getRef(),
                 null);
-
         Reconcile reconcile =
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
@@ -277,7 +282,7 @@ public class PaymentVoucherConfirmService {
       } else {
 
         moveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
                 paymentModeAccount,
@@ -313,7 +318,7 @@ public class PaymentVoucherConfirmService {
                     payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
 
         moveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 paymentVoucher.getPartner(),
                 partnerAccount,
@@ -329,7 +334,7 @@ public class PaymentVoucherConfirmService {
           reconcileService.balanceCredit(moveLine);
         }
       }
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.accounting(move);
       paymentVoucher.setGeneratedMove(move);
     }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
@@ -431,7 +436,7 @@ public class PaymentVoucherConfirmService {
       invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
     }
     MoveLine moveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             paymentMove,
             payerPartner,
             moveLineToPay.getAccount(),

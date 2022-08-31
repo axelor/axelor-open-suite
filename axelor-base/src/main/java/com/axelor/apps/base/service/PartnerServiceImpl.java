@@ -30,10 +30,11 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -57,6 +58,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +156,7 @@ public class PartnerServiceImpl implements PartnerService {
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PARTNER_1));
+            I18n.get(BaseExceptionMessage.PARTNER_1));
       }
       partner.setPartnerSeq(seq);
     }
@@ -172,7 +174,7 @@ public class PartnerServiceImpl implements PartnerService {
       if (existEmailCount > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-            I18n.get(IExceptionMessage.PARTNER_EMAIL_EXIST));
+            I18n.get(BaseExceptionMessage.PARTNER_EMAIL_EXIST));
       }
     }
 
@@ -245,7 +247,8 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
           if (defaultInvoicingAddress != null) {
             throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.ADDRESS_8));
           }
           defaultInvoicingAddress = partnerAddress.getAddress();
         }
@@ -253,7 +256,8 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
           if (defaultDeliveryAddress != null) {
             throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.ADDRESS_9));
           }
           defaultDeliveryAddress = partnerAddress.getAddress();
         }
@@ -270,24 +274,17 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
-      return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
-    }
-    return computeSimpleFullName(partner);
+    return ComputeNameTool.computeFullName(
+        partner.getName(),
+        partner.getFirstName(),
+        partner.getPartnerSeq(),
+        String.valueOf(partner.getId()));
   }
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getName())
-        && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getName() + " " + partner.getFirstName();
-    } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      return partner.getName();
-    } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getFirstName();
-    } else {
-      return "" + partner.getId();
-    }
+    return ComputeNameTool.computeSimpleFullName(
+        partner.getName(), partner.getFirstName(), String.valueOf(partner.getId()));
   }
 
   @Override
@@ -366,14 +363,12 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {
+
     String query =
-        "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
-            + partner.getId()
-            + ") "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
-            + partner.getId()
-            + ")";
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     if (partner.getEmailAddress() != null) {
       query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
@@ -531,16 +526,16 @@ public class PartnerServiceImpl implements PartnerService {
     if (partner == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PARTNER_2),
-          I18n.get(IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.PARTNER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           "");
     }
     if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
       throw new AxelorException(
           partner,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PARTNER_2),
-          I18n.get(IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.PARTNER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
     } else {
       String registrationCode = partner.getRegistrationCode();
@@ -581,9 +576,8 @@ public class PartnerServiceImpl implements PartnerService {
       return null;
     }
     LocalDate today =
-        Beans.get(AppBaseService.class)
-            .getTodayDate(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
@@ -625,7 +619,7 @@ public class PartnerServiceImpl implements PartnerService {
       return locale;
     }
 
-    return Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLanguageCode();
   }
 
   /**
@@ -679,29 +673,6 @@ public class PartnerServiceImpl implements PartnerService {
       return companyStr.substring(0, companyStr.length() - 1);
     }
     return null;
-  }
-
-  @Override
-  public String getPartnerDomain(Partner partner) {
-    String domain = "";
-
-    if (partner != null) {
-      if (partner.getCurrency() != null) {
-        domain += String.format(" AND self.currency.id = %d", partner.getCurrency().getId());
-      }
-      if (partner.getSalePartnerPriceList() != null) {
-        domain +=
-            String.format(
-                " AND self.salePartnerPriceList.id = %s",
-                partner.getSalePartnerPriceList().getId());
-      }
-      if (partner.getFiscalPosition() != null) {
-        domain +=
-            String.format(" AND self.fiscalPosition.id = %s", partner.getFiscalPosition().getId());
-      }
-    }
-
-    return domain;
   }
 
   @Override
@@ -799,5 +770,18 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return siren;
+  }
+
+  @Override
+  public List<Long> getPartnerIdsByType(String type) {
+    StringBuilder query = new StringBuilder();
+    query.append("self.");
+    query.append(type);
+    query.append("=true");
+    return (!StringUtils.isEmpty(type))
+        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
+            .map(m -> (long) m.get("id"))
+            .collect(Collectors.toList())
+        : new ArrayList<>();
   }
 }

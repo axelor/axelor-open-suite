@@ -25,8 +25,6 @@
       data-form="invoice-form">Invoice</option>
     <option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid"
       data-form="expense-form">Expense</option>
-    <option value="com.axelor.apps.cash.management.db.ForecastReason"
-      data-grid="forecast-reason-grid" data-form="forecast-reason-form">Forecast reason</option>
     <option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid"
       data-form="employee-form">Employee</option>
     <option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid"

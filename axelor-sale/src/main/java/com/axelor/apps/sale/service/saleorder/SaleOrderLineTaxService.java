@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,6 +40,7 @@ public class SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Inject private SaleOrderService saleOrderService;
   @Inject private SaleOrderToolService saleOrderToolService;
 
   /**
@@ -46,10 +48,9 @@ public class SaleOrderLineTaxService {
    * devis ainsi que les sous-lignes de devis de celles-ci. Si une ligne de devis comporte des
    * sous-lignes de devis, alors on se base uniquement sur celles-ci.
    *
-   * @param invoice La facture.
-   * @param invoiceLines Les lignes de facture.
-   * @param invoiceLineTaxes Les lignes des taxes de la facture.
-   * @return La liste des lignes de taxe de la facture.
+   * @param saleOrder Le devis de vente.
+   * @param saleOrderLineList Les lignes du devis de vente.
+   * @return La liste des lignes de taxe du devis de vente.
    */
   public List<SaleOrderLineTax> createsSaleOrderLineTax(
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {
@@ -59,14 +60,14 @@ public class SaleOrderLineTaxService {
     Set<String> specificNotes = new HashSet<String>();
 
     boolean customerSpecificNote = false;
-    if (saleOrder.getClientPartner().getFiscalPosition() != null) {
-      customerSpecificNote =
-          saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+    if (fiscalPosition != null) {
+      customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
     }
 
     if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de factures.");
+      LOG.debug("Creation of VAT lines for sale order lines.");
 
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
@@ -118,7 +119,7 @@ public class SaleOrderLineTaxService {
       saleOrderLineTaxList.add(saleOrderLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "VAT line : VAT total => {}, W.T. total => {}",
           new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -109,9 +109,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -151,7 +148,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -160,60 +157,76 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">movelinename</property>
+                    <property name="alias">movelinename</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">movelinename</text-property>
                     <text-property name="heading">movelinename</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">movelinedate</property>
+                    <property name="alias">movelinedate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">movelinedate</text-property>
                     <text-property name="heading">movelinedate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">accountcode</property>
+                    <property name="alias">accountcode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">accountcode</text-property>
                     <text-property name="heading">accountcode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">accountname</property>
+                    <property name="alias">accountname</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">accountname</text-property>
                     <text-property name="heading">accountname</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">taxcode</property>
+                    <property name="alias">taxcode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">taxcode</text-property>
                     <text-property name="heading">taxcode</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">fiscalpositioncode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fiscalpositioncode</text-property>
+                    <text-property name="heading">fiscalpositioncode</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">technical_type_select</property>
+                    <property name="alias">technical_type_select</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">technical_type_select</text-property>
                     <text-property name="heading">technical_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debittaxamount</property>
+                    <property name="alias">debittaxamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debittaxamount</text-property>
                     <text-property name="heading">debittaxamount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credittaxamount</property>
+                    <property name="alias">credittaxamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credittaxamount</text-property>
                     <text-property name="heading">credittaxamount</text-property>
@@ -262,26 +275,31 @@
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">technical_type_select</property>
+                        <property name="name">fiscalpositioncode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">technical_type_select</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">debit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">debittaxamount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">credit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">credittaxamount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -327,34 +345,41 @@
                 </structure>
                 <structure>
                     <property name="position">6</property>
+                    <property name="name">fiscalpositioncode</property>
+                    <property name="nativeName">fiscalpositioncode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">technical_type_select</property>
                     <property name="nativeName">technical_type_select</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">debittaxamount</property>
                     <property name="nativeName">debittaxamount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">credittaxamount</property>
                     <property name="nativeName">credittaxamount</property>
                     <property name="dataType">decimal</property>
@@ -367,14 +392,31 @@ MoveLine.date_val as moveLineDate,
 Account.code as accountCode,
 Account.name as accountName,
 Tax.code as taxCode,
+FiscalPosition.code as fiscalPositionCode,
 AccountType.technical_type_select,
-Case  when AccountType.technical_type_select != 'tax' then MoveLine.debit
+Case  when AccountType.technical_type_select != 'tax' then 
+	Case when Move.functional_origin_select = 3 then null else 
+		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
+		end
+	end
 end as debit,
-Case when AccountType.technical_type_select = 'tax' then MoveLine.debit
+Case when AccountType.technical_type_select = 'tax' then 
+	Case when Move.functional_origin_select = 3 then null else 
+		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
+		end
+	end
 end as debitTaxAmount,
-Case  when AccountType.technical_type_select != 'tax' then MoveLine.credit
+Case  when AccountType.technical_type_select != 'tax' then 
+	Case when Move.functional_origin_select = 3 then MoveLine.credit - MoveLine.debit else 
+		Case when Move.functional_origin_select = 4 then null else MoveLine.credit
+		end
+	end
 end as credit,
-Case when AccountType.technical_type_select = 'tax' then MoveLine.credit
+Case when AccountType.technical_type_select = 'tax' then 
+	Case when Move.functional_origin_select = 3 then MoveLine.credit - MoveLine.debit else 
+		Case when Move.functional_origin_select = 4 then null else MoveLine.credit
+		end
+	end
 end as creditTaxAmount
 
 
@@ -383,6 +425,7 @@ left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
+left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
@@ -390,7 +433,7 @@ where
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
-AND (Move.status_select = 3 OR Move.status_select = 2) 
+AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND MoveLine.tax_line is not null
 AND Tax.type_select = 2
 AND (AccountingReport.display_closing_accounting_moves is true
@@ -560,6 +603,12 @@ where AccountingReport.id = ?
                     <text-property name="heading">taxname</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">fiscalpositioncode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fiscalpositioncode</text-property>
+                    <text-property name="heading">fiscalpositioncode</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">taxlinevalue</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">taxlinevalue</text-property>
@@ -618,26 +667,31 @@ where AccountingReport.id = ?
                     </structure>
                     <structure>
                         <property name="position">3</property>
+                        <property name="name">fiscalpositioncode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">taxlinevalue</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">debit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">debittaxamount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">credit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">credittaxamount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -662,34 +716,41 @@ where AccountingReport.id = ?
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">fiscalpositioncode</property>
+                    <property name="nativeName">fiscalpositioncode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">taxlinevalue</property>
                     <property name="nativeName">taxlinevalue</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">debittaxamount</property>
                     <property name="nativeName">debittaxamount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">credittaxamount</property>
                     <property name="nativeName">credittaxamount</property>
                     <property name="dataType">decimal</property>
@@ -698,27 +759,44 @@ where AccountingReport.id = ?
             </list-property>
             <xml-property name="queryText"><![CDATA[Select 
 Tax.code as taxCode,
-Tax.name as taxName, 
+Tax.name as taxName,
+FiscalPosition.code as fiscalPositionCode,
 TaxLine.value as taxLineValue, 
-sum(Case  when AccountType.technical_type_select != 'tax' then MoveLine.debit
+sum(Case  when AccountType.technical_type_select != 'tax' then 
+	Case when Move.functional_origin_select = 3 then 0 else 
+		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
+		end
+	end
 else 0
 end) as debit,
-sum(Case when AccountType.technical_type_select = 'tax' then MoveLine.debit
+sum(Case when AccountType.technical_type_select = 'tax' then 
+	Case when Move.functional_origin_select = 3 then 0 else 
+		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
+		end
+	end
 else 0
 end) as debitTaxAmount,
-sum(Case  when AccountType.technical_type_select != 'tax' then MoveLine.credit
+sum(Case  when AccountType.technical_type_select != 'tax' then
+	Case when Move.functional_origin_select = 3 then MoveLine.credit - MoveLine.debit else 
+		Case when Move.functional_origin_select = 4 then 0 else MoveLine.credit
+		end
+	end
 else 0
 end) as credit,
-sum(Case when AccountType.technical_type_select = 'tax' then MoveLine.credit
+sum(Case when AccountType.technical_type_select = 'tax' then 
+	Case when Move.functional_origin_select = 3 then MoveLine.credit - MoveLine.debit else 
+		Case when Move.functional_origin_select = 4 then 0 else MoveLine.credit
+		end
+	end
 else 0
 end) as creditTaxAmount
-
 
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
+left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
@@ -736,7 +814,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
-group by Tax.id, TaxLine.value
+group by Tax.id, TaxLine.value, FiscalPosition.code
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
     </data-sets>
@@ -1367,16 +1445,26 @@ balance
                     <expression name="expression" type="javascript">dataSetRow["taxlinevalue"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">fiscalPositionCode</property>
+                    <text-property name="displayName">fiscalPositionCode</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fiscalpositioncode"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="4116">
-                <property name="width">10%</property>
+                <property name="width">7%</property>
             </column>
             <column id="4117">
                 <property name="width">20%</property>
             </column>
+            <column id="4185">
+                <property name="width">8%</property>
+            </column>
             <column id="4139">
-                <property name="width">10%</property>
+                <property name="width">5%</property>
             </column>
             <column id="4118">
                 <property name="width">15%</property>
@@ -1401,7 +1489,7 @@ balance
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <cell id="4153">
-                        <property name="colSpan">3</property>
+                        <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1460,6 +1548,16 @@ balance
                         <label id="4087">
                             <property name="fontWeight">bold</property>
                             <text-property name="text">Nom</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4181">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4186">
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">Code Position Fiscale</text-property>
                         </label>
                     </cell>
                     <cell id="4135">
@@ -1533,7 +1631,18 @@ balance
                         <property name="borderRightWidth">thin</property>
                         <data id="4100">
                             <property name="fontSize">9pt</property>
+                            <structure name="toc"/>
                             <property name="resultSetColumn">taxname</property>
+                        </data>
+                    </cell>
+                    <cell id="4182">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4189">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">fiscalPositionCode</property>
                         </data>
                     </cell>
                     <cell id="4136">
@@ -1648,11 +1757,12 @@ balance
                         <property name="borderLeftWidth">thin</property>
                     </cell>
                     <cell id="4111"/>
-                    <cell id="4137">
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                    <cell id="4183">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <label id="4162">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">center</property>
                             <text-property name="text">Totaux</text-property>
                         </label>
                     </cell>
@@ -1701,11 +1811,12 @@ balance
                         <property name="borderLeftWidth">thin</property>
                     </cell>
                     <cell id="4124"/>
-                    <cell id="4138">
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                    <cell id="4184">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <label id="4163">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">center</property>
                             <text-property name="text">Solde</text-property>
                         </label>
                     </cell>
@@ -1810,10 +1921,17 @@ balance
                     <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">fiscalPositionCode</property>
+                    <text-property name="displayName">fiscalPositionCode</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fiscalpositioncode"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="4052">
-                <property name="width">15%</property>
+                <property name="width">10%</property>
             </column>
             <column id="4053">
                 <property name="width">7%</property>
@@ -1822,10 +1940,13 @@ balance
                 <property name="width">8%</property>
             </column>
             <column id="4055">
-                <property name="width">25%</property>
+                <property name="width">20%</property>
             </column>
             <column id="4056">
                 <property name="width">5%</property>
+            </column>
+            <column id="4194">
+                <property name="width">10%</property>
             </column>
             <column id="4060">
                 <property name="width">10%</property>
@@ -1846,7 +1967,7 @@ balance
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <cell id="4143">
-                        <property name="colSpan">5</property>
+                        <property name="colSpan">6</property>
                         <property name="rowSpan">1</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1936,6 +2057,16 @@ balance
                         <label id="4167">
                             <property name="fontWeight">bold</property>
                             <text-property name="text">Taxe</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4191">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4195">
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">Code Position Fiscale</text-property>
                         </label>
                     </cell>
                     <cell id="4057">
@@ -2049,6 +2180,16 @@ balance
                             <property name="paddingBottom">1pt</property>
                             <property name="textAlign">left</property>
                             <property name="resultSetColumn">taxcode</property>
+                        </data>
+                    </cell>
+                    <cell id="4192">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4196">
+                            <property name="fontSize">8.5pt</property>
+                            <property name="resultSetColumn">fiscalPositionCode</property>
                         </data>
                     </cell>
                     <cell id="4058">
@@ -2180,6 +2321,14 @@ balance
                         <property name="borderRightWidth">thin</property>
                     </cell>
                     <cell id="4051">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                    </cell>
+                    <cell id="4193">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>

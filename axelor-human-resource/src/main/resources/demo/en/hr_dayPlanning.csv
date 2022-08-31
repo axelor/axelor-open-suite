@@ -1,4 +1,4 @@
-weeklyPlann.importId;name;morningFrom;morningTo;afternoonFrom;afternoonTo;importId
+weeklyPlanning.importId;name;morningFrom;morningTo;afternoonFrom;afternoonTo;importId
 1;monday;08:30:00;12:00:00;14:00:00;17:30:00;1
 1;tuesday;08:30:00;12:00:00;14:00:00;17:30:00;2
 1;wednesday;08:30:00;12:00:00;14:00:00;17:30:00;3

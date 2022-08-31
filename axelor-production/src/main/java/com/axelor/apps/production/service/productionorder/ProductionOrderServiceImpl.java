@@ -25,12 +25,16 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -71,7 +75,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_ORDER_SEQ));
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_SEQ));
     }
 
     return seq;
@@ -106,7 +110,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         startDate,
         null,
         null,
-        ManufOrderService.ORIGIN_TYPE_OTHER);
+        null,
+        ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
   }
@@ -121,7 +126,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime startDate,
       LocalDateTime endDate,
       SaleOrder saleOrder,
-      int originType)
+      SaleOrderLine saleOrderLine,
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException {
 
     ManufOrder manufOrder =
@@ -133,13 +139,21 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             billOfMaterial,
             startDate,
             endDate,
-            originType);
+            manufOrderOriginType);
 
     if (manufOrder != null) {
       if (saleOrder != null) {
         manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
-        manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
+        manufOrder.setMoCommentFromSaleOrder("");
+        manufOrder.setMoCommentFromSaleOrderLine("");
+        if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
+          manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
+        }
+        if (saleOrderLine != null
+            && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
+          manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
+        }
       }
       productionOrder.addManufOrderSetItem(manufOrder);
       manufOrder.addProductionOrderSetItem(productionOrder);

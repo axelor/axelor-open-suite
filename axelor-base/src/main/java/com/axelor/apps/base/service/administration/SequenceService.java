@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.SequenceTypeSelect;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
@@ -44,6 +44,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.List;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
@@ -213,6 +214,19 @@ public class SequenceService {
     return nextSeq;
   }
 
+  /**
+   * Compute a test sequence by computing the next seq without any save Use for checking validity
+   * purpose
+   *
+   * @param sequence
+   * @param refDate
+   * @return the test sequence
+   */
+  public String computeTestSeq(Sequence sequence, LocalDate refDate) {
+    SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+    return computeNextSeq(sequenceVersion, sequence, refDate);
+  }
+
   protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
     long n = sequenceVersion.getNextNum();
     char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];
@@ -308,7 +322,7 @@ public class SequenceService {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+          I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
     return String.format("%s%d", DRAFT_PREFIX, model.getId());
   }
@@ -325,7 +339,7 @@ public class SequenceService {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+          I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
     return String.format(
         "%s%s",
@@ -369,5 +383,25 @@ public class SequenceService {
     fn.append(sequence.getName());
 
     return fn.toString();
+  }
+
+  public List<SequenceVersion> updateSequenceVersions(
+      Sequence sequence, LocalDate todayDate, LocalDate endOfDate) {
+
+    List<SequenceVersion> sequenceVersionList = sequence.getSequenceVersionList();
+    SequenceVersion lastSequenceVersion;
+    lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
+
+    if (lastSequenceVersion == null) {
+      // Checking yearly to prevent an anomaly only fixed in 6.3
+      lastSequenceVersion = sequenceVersionRepository.findByYear(sequence, todayDate.getYear());
+    }
+
+    SequenceVersion finalLastSequenceVersion = lastSequenceVersion;
+    sequenceVersionList.stream()
+        .filter(sequenceVersion -> sequenceVersion.equals(finalLastSequenceVersion))
+        .forEach(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
+
+    return sequenceVersionList;
   }
 }

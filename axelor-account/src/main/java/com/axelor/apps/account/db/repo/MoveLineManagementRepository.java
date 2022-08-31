@@ -19,8 +19,8 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -37,7 +37,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
+            I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e.getMessage(), e);
@@ -49,6 +49,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
 
   @Override
   public MoveLine save(MoveLine entity) {
+
     List<AnalyticMoveLine> analyticMoveLineList = entity.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
@@ -57,7 +58,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       }
     }
     try {
-      Beans.get(MoveLineService.class).validateMoveLine(entity);
+      Beans.get(MoveLineControlService.class).validateMoveLine(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);

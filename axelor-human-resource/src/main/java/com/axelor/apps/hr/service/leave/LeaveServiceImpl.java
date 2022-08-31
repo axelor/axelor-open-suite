@@ -34,18 +34,16 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -167,13 +165,7 @@ public class LeaveServiceImpl implements LeaveService {
     BigDecimal duration = BigDecimal.ZERO;
 
     if (from != null && to != null && leave.getLeaveReason() != null) {
-      Employee employee = leave.getUser().getEmployee();
-      if (employee == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-            leave.getUser().getName());
-      }
+      Employee employee = leave.getEmployee();
 
       switch (leave.getLeaveReason().getUnitSelect()) {
         case LeaveReasonRepository.UNIT_SELECT_DAYS:
@@ -190,7 +182,7 @@ public class LeaveServiceImpl implements LeaveService {
           throw new AxelorException(
               leave.getLeaveReason(),
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessage.LEAVE_REASON_NO_UNIT),
+              I18n.get(HumanResourceExceptionMessage.LEAVE_REASON_NO_UNIT),
               leave.getLeaveReason().getName());
       }
     }
@@ -350,7 +342,7 @@ public class LeaveServiceImpl implements LeaveService {
     if (weeklyPlanning == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
     return weeklyPlanning;
@@ -369,67 +361,43 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageSentLeaves(LeaveRequest leave) throws AxelorException {
-    Employee employee = leave.getUser().getEmployee();
-    if (employee == null) {
-      throw new AxelorException(
-          leave,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          leave.getUser().getName());
-    }
-    LeaveLine leaveLine =
-        leaveLineRepo
-            .all()
-            .filter(
-                "self.employee = ?1 AND self.leaveReason = ?2", employee, leave.getLeaveReason())
-            .fetchOne();
+    Employee employee = leave.getEmployee();
+
+    LeaveLine leaveLine = getLeaveLine(leave);
+
     if (leaveLine == null) {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
-    }
-    if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-    } else {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
     }
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageValidateLeaves(LeaveRequest leave) throws AxelorException {
-    Employee employee = leave.getUser().getEmployee();
-    if (employee == null) {
-      throw new AxelorException(
-          leave,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          leave.getUser().getName());
-    }
-    LeaveLine leaveLine =
-        leaveLineRepo
-            .all()
-            .filter(
-                "self.employee = ?1 AND self.leaveReason = ?2", employee, leave.getLeaveReason())
-            .fetchOne();
+    Employee employee = leave.getEmployee();
+
+    LeaveLine leaveLine = getLeaveLine(leave);
+
     if (leaveLine == null) {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
     }
+
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
       leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
       if (leaveLine.getQuantity().signum() == -1 && !employee.getNegativeValueLeave()) {
         throw new AxelorException(
             leave,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE),
             employee.getName());
       }
       if (leaveLine.getQuantity().signum() == -1
@@ -437,74 +405,49 @@ public class LeaveServiceImpl implements LeaveService {
         throw new AxelorException(
             leave,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
             leave.getLeaveReason().getName());
       }
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
+
     } else {
       leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException {
-    Employee employee = leave.getUser().getEmployee();
-    if (employee == null) {
-      throw new AxelorException(
-          leave,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          leave.getUser().getName());
-    }
-    LeaveLine leaveLine =
-        leaveLineRepo
-            .all()
-            .filter(
-                "self.employee = ?1 AND self.leaveReason = ?2", employee, leave.getLeaveReason())
-            .fetchOne();
+    Employee employee = leave.getEmployee();
+
+    LeaveLine leaveLine = getLeaveLine(leave);
+
     if (leaveLine == null) {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
-    }
-    if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
-    } else {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageCancelLeaves(LeaveRequest leave) throws AxelorException {
-    Employee employee = leave.getUser().getEmployee();
-    if (employee == null) {
-      throw new AxelorException(
-          leave,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          leave.getUser().getName());
-    }
-    LeaveLine leaveLine =
-        leaveLineRepo
-            .all()
-            .filter(
-                "self.employee = ?1 AND self.leaveReason = ?2", employee, leave.getLeaveReason())
-            .fetchOne();
+    Employee employee = leave.getEmployee();
+
+    LeaveLine leaveLine = getLeaveLine(leave);
+
     if (leaveLine == null) {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_LINE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
           employee.getName(),
           leave.getLeaveReason().getName());
     }
+
     if (leave.getStatusSelect() == LeaveRequestRepository.STATUS_VALIDATED) {
       if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
         leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
@@ -512,12 +455,6 @@ public class LeaveServiceImpl implements LeaveService {
         leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
       }
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
-    } else if (leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION) {
-      if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
-      } else {
-        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-      }
     }
   }
 
@@ -558,22 +495,14 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException {
-    Employee employee = leave.getUser().getEmployee();
-    if (employee == null) {
-      throw new AxelorException(
-          leave,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          leave.getUser().getName());
-    }
-
+    Employee employee = leave.getEmployee();
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
     if (weeklyPlanning == null) {
       throw new AxelorException(
           leave,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
 
@@ -591,10 +520,10 @@ public class LeaveServiceImpl implements LeaveService {
         icalendarService.createEvent(
             fromDateTime,
             toDateTime,
-            leave.getUser(),
+            leave.getEmployee().getUser(),
             leave.getComments(),
             4,
-            leave.getLeaveReason().getName() + " " + leave.getUser().getFullName());
+            leave.getLeaveReason().getName() + " " + leave.getEmployee().getName());
     icalEventRepo.save(event);
     leave.setIcalendarEvent(event);
 
@@ -721,6 +650,11 @@ public class LeaveServiceImpl implements LeaveService {
       icalEventRepo.remove(icalEventRepo.find(event.getId()));
     }
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
+    leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -751,6 +685,10 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setRequestDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -784,18 +722,15 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setValidatedBy(AuthUtils.getUser());
     leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
-    LeaveLine leaveLine =
-        Beans.get(LeaveLineRepository.class)
-            .all()
-            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-            .bind("leaveReason", leaveRequest.getLeaveReason())
-            .bind("employee", leaveRequest.getUser().getEmployee())
-            .fetchOne();
+    LeaveLine leaveLine = getLeaveLine(leaveRequest);
     if (leaveLine != null) {
       leaveRequest.setQuantityBeforeValidation(leaveLine.getQuantity());
     }
     leaveRequestRepo.save(leaveRequest);
 
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(leaveLine);
+    }
     createEvents(leaveRequest);
   }
 
@@ -828,6 +763,9 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setRefusalDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -857,11 +795,11 @@ public class LeaveServiceImpl implements LeaveService {
             + beginDate.getMonthValue()
             - todayDate.getMonthValue();
     LeaveLine leaveLine =
-        Beans.get(LeaveLineRepository.class)
+        leaveLineRepo
             .all()
             .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
             .bind("leaveReason", leaveRequest.getLeaveReason())
-            .bind("employee", leaveRequest.getUser().getEmployee())
+            .bind("employee", leaveRequest.getEmployee())
             .fetchOne();
     if (leaveLine == null) {
       if (leaveRequest.getLeaveReason() != null
@@ -877,7 +815,6 @@ public class LeaveServiceImpl implements LeaveService {
             .getQuantity()
             .add(
                 leaveRequest
-                    .getUser()
                     .getEmployee()
                     .getWeeklyPlanning()
                     .getLeaveCoef()
@@ -918,17 +855,18 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  public boolean isLeaveDay(User user, LocalDate date) {
-    return ObjectUtils.notEmpty(getLeaves(user, date));
+  public boolean isLeaveDay(Employee employee, LocalDate date) {
+    return ObjectUtils.notEmpty(getLeaves(employee, date));
   }
 
-  public List<LeaveRequest> getLeaves(User user, LocalDate date) {
+  public List<LeaveRequest> getLeaves(Employee employee, LocalDate date) {
     List<LeaveRequest> leavesList = new ArrayList<>();
     List<LeaveRequest> leaves =
         leaveRequestRepo
             .all()
-            .filter("self.user = :userId AND self.statusSelect IN (:awaitingValidation,:validated)")
-            .bind("userId", user)
+            .filter(
+                "self.employee = :employee AND self.statusSelect IN (:awaitingValidation,:validated)")
+            .bind("employee", employee)
             .bind("awaitingValidation", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
             .bind("validated", LeaveRequestRepository.STATUS_VALIDATED)
             .fetch();
@@ -950,8 +888,8 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.user = ?1 AND self.statusSelect = ?2",
-                leaveRequest.getUser(),
+                "self.employee = ?1 AND self.statusSelect = ?2",
+                leaveRequest.getEmployee(),
                 LeaveRequestRepository.STATUS_VALIDATED)
             .fetch();
     for (LeaveRequest leaveRequest2 : leaveRequestList) {
@@ -959,7 +897,7 @@ public class LeaveServiceImpl implements LeaveService {
         throw new AxelorException(
             leaveRequest,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+            I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
       }
     }
   }
@@ -986,5 +924,50 @@ public class LeaveServiceImpl implements LeaveService {
     return request1.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING
         && request2.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON
         && request1.getToDateT().isEqual(request2.getFromDateT());
+  }
+
+  @Override
+  @Transactional
+  public void updateDaysToValidate(LeaveLine leaveLine) {
+
+    List<LeaveRequest> leaveRequests =
+        leaveRequestRepo
+            .all()
+            .filter(
+                "self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.user = :user")
+            .bind("statusSelect", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
+            .bind("leaveReason", leaveLine.getLeaveReason())
+            .bind(
+                "user",
+                Optional.ofNullable(leaveLine.getEmployee()).map(Employee::getUser).orElse(null))
+            .fetch();
+
+    BigDecimal daysToValidate = BigDecimal.ZERO;
+
+    for (LeaveRequest request : leaveRequests) {
+      if (request.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
+        daysToValidate = daysToValidate.add(request.getDuration());
+      } else {
+        daysToValidate = daysToValidate.subtract(request.getDuration());
+      }
+    }
+
+    leaveLine.setDaysToValidate(daysToValidate);
+  }
+
+  @Override
+  public LeaveLine getLeaveLine(LeaveRequest leaveRequest) {
+
+    if (leaveRequest.getEmployee() == null) {
+      return null;
+    }
+
+    return leaveLineRepo
+        .all()
+        .filter(
+            "self.employee = ?1 AND self.leaveReason = ?2",
+            leaveRequest.getEmployee(),
+            leaveRequest.getLeaveReason())
+        .fetchOne();
   }
 }

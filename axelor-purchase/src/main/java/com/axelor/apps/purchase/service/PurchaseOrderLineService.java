@@ -29,6 +29,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -128,4 +129,7 @@ public interface PurchaseOrderLineService {
 
   public void checkDifferentSupplier(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionResponse response);
+
+  public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
+      throws AxelorException;
 }

@@ -17,17 +17,37 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class BankStatementLineService {
+
+  protected BankPaymentBankStatementLineAFB120Repository
+      bankPaymentBankStatementLineAFB120Repository;
+
+  @Inject
+  public BankStatementLineService(
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
+    this.bankPaymentBankStatementLineAFB120Repository =
+        bankPaymentBankStatementLineAFB120Repository;
+  }
 
   public BankStatementLine createBankStatementLine(
       BankStatement bankStatement,
@@ -64,6 +84,44 @@ public class BankStatementLineService {
         bankStatementLine.getDebit().add(bankStatementLine.getCredit()));
 
     return bankStatementLine;
+  }
+
+  public String print(
+      LocalDate fromDate, LocalDate toDate, BankDetails bankDetails, String exportType)
+      throws AxelorException {
+    String fileLink = null;
+
+    BankStatementLineAFB120 initalBankStatementLine =
+        bankPaymentBankStatementLineAFB120Repository.findLineBetweenDate(
+            fromDate,
+            toDate,
+            BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE,
+            true,
+            bankDetails);
+    BankStatementLineAFB120 finalBankStatementLine =
+        bankPaymentBankStatementLineAFB120Repository.findLineBetweenDate(
+            fromDate,
+            toDate,
+            BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE,
+            false,
+            bankDetails);
+    if (ObjectUtils.notEmpty(initalBankStatementLine)
+        && ObjectUtils.notEmpty(finalBankStatementLine)) {
+      fromDate = initalBankStatementLine.getOperationDate();
+      toDate = finalBankStatementLine.getOperationDate();
+      fileLink =
+          ReportFactory.createReport(
+                  IReport.BANK_STATEMENT_LINES,
+                  "Bank statement lines - " + fromDate + " to " + toDate)
+              .addParam("FromDate", Date.valueOf(fromDate))
+              .addParam("ToDate", Date.valueOf(toDate))
+              .addParam("BankDetails", bankDetails.getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addFormat(exportType)
+              .generate()
+              .getFileLink();
+    }
+    return fileLink;
   }
 
   @Transactional

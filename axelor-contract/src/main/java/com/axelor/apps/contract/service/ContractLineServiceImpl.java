@@ -20,7 +20,7 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -32,7 +32,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -77,7 +77,7 @@ public class ContractLineServiceImpl implements ContractLineService {
 
   @Override
   public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
+    Preconditions.checkNotNull(product, I18n.get(ContractExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     Company company =
         contractLine.getContractVersion() != null
             ? contractLine.getContractVersion().getContract() != null

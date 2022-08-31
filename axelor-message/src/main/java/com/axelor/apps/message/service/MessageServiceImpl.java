@@ -21,10 +21,13 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.MultiRelated;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.db.repo.MultiRelatedRepository;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSupport;
 import com.axelor.db.Model;
@@ -111,10 +114,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
         createMessage(
             content,
             fromEmailAddress,
-            model,
-            id,
-            null,
-            0,
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -127,6 +126,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             mediaTypeSelect,
             emailAccount,
             signature);
+    addMessageRelatedTo(message, model, id);
 
     messageRepository.save(message);
 
@@ -179,10 +179,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
         createMessage(
             content,
             fromEmailAddress,
-            model,
-            id,
-            null,
-            0,
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -195,6 +191,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             mediaTypeSelect,
             emailAccount,
             signature);
+    addMessageRelatedTo(message, model, id);
 
     return message;
   }
@@ -219,10 +216,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   protected Message createMessage(
       String content,
       EmailAddress fromEmailAddress,
-      String relatedTo1Select,
-      long relatedTo1SelectId,
-      String relatedTo2Select,
-      long relatedTo2SelectId,
       boolean sentByEmail,
       int statusSelect,
       String subject,
@@ -278,11 +271,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             sentByEmail,
             emailAccount);
 
-    message.setRelatedTo1Select(relatedTo1Select);
-    message.setRelatedTo1SelectId(relatedTo1SelectId);
-    message.setRelatedTo2Select(relatedTo2Select);
-    message.setRelatedTo2SelectId(relatedTo2SelectId);
-
     return message;
   }
 
@@ -314,7 +302,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_EMAIL) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.TEMPORARY_EMAIL_MEDIA_TYPE_ERROR));
+            I18n.get(MessageExceptionMessage.TEMPORARY_EMAIL_MEDIA_TYPE_ERROR));
       }
       message = sendByEmail(message, isTemporaryEmail);
     }
@@ -385,7 +373,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       throw new AxelorException(
           message,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MESSAGE_6));
+          I18n.get(MessageExceptionMessage.MESSAGE_6));
     }
 
     MailSender sender = new MailSender(account);
@@ -407,7 +395,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
           throw new AxelorException(
               message,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              IExceptionMessage.MESSAGE_5);
+              MessageExceptionMessage.MESSAGE_5);
         }
       }
       mailBuilder.from(fromAddress);
@@ -469,7 +457,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       throw new AxelorException(
           message,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          IExceptionMessage.SMS_ERROR_MISSING_MOBILE_NUMBER);
+          MessageExceptionMessage.SMS_ERROR_MISSING_MOBILE_NUMBER);
     }
 
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -551,15 +539,20 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     Preconditions.checkNotNull(
         message.getTemplate(),
         I18n.get("Cannot regenerate message without template associated to message."));
-    Preconditions.checkNotNull(
-        message.getRelatedTo1Select(),
-        I18n.get("Cannot regenerate message without related model."));
-    Class m = Class.forName(message.getRelatedTo1Select());
-    Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
+
+    if (ObjectUtils.isEmpty(message.getMultiRelatedList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get("Cannot regenerate message without related model."));
+    }
+
+    MultiRelated multiRelated = message.getMultiRelatedList().get(0);
+
+    Class m = Class.forName(multiRelated.getRelatedToSelect());
+    Model model = JPA.all(m).filter("self.id = ?", multiRelated.getRelatedToSelectId()).fetchOne();
     Message newMessage =
         Beans.get(TemplateMessageService.class).generateMessage(model, message.getTemplate());
-    newMessage.setRelatedTo2Select(message.getRelatedTo2Select());
-    newMessage.setRelatedTo2SelectId(message.getRelatedTo2SelectId());
+    newMessage.setMultiRelatedList(message.getMultiRelatedList());
     message.setArchived(true);
     return newMessage;
   }
@@ -567,5 +560,27 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   @Override
   public String getFullEmailAddress(EmailAddress emailAddress) {
     return emailAddress.getAddress();
+  }
+
+  @Override
+  public void addMessageRelatedTo(Message message, String relatedToSelect, Long relatedToSelectId) {
+
+    MultiRelated multiRelated =
+        Beans.get(MultiRelatedRepository.class)
+            .all()
+            .filter(
+                "self.message  = :message AND self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId")
+            .bind("message", message)
+            .bind("relatedToSelect", relatedToSelect)
+            .bind("relatedToSelectId", relatedToSelectId)
+            .fetchOne();
+    if (multiRelated != null) {
+      return;
+    }
+
+    multiRelated = new MultiRelated();
+    multiRelated.setRelatedToSelect(relatedToSelect);
+    multiRelated.setRelatedToSelectId(relatedToSelectId);
+    message.addMultiRelatedListItem(multiRelated);
   }
 }

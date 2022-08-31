@@ -27,18 +27,24 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -53,9 +59,10 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Inject protected PaymentModeService paymentModeService;
 
-  @Inject protected MoveService moveService;
+  @Inject protected MoveCreateService moveCreateService;
 
-  @Inject protected MoveLineService moveLineService;
+  @Inject protected MoveValidateService moveValidateService;
+  @Inject protected MoveLineCreateService moveLineCreateService;
 
   @Inject protected CurrencyService currencyService;
 
@@ -63,9 +70,9 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Inject protected InvoicePaymentRepository invoicePaymentRepository;
 
-  @Inject protected AdvancePaymentRepository advancePaymentRepository;
-
   @Inject protected MoveCancelService moveCancelService;
+
+  @Inject protected AppSupplychainService appSupplychainService;
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(AdvancePayment advancePayment) throws AxelorException {
@@ -94,7 +101,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     advancePaymentRepository.save(advancePayment);
   }
 
-  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) throws AxelorException {
+  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) {
     if (saleOrder.getAdvancePaymentList() == null || saleOrder.getAdvancePaymentList().isEmpty()) {
       return;
     }
@@ -134,24 +141,36 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     Partner clientPartner = saleOrder.getClientPartner();
     LocalDate advancePaymentDate = advancePayment.getAdvancePaymentDate();
     BankDetails bankDetails = saleOrder.getCompanyBankDetails();
-    String ref = saleOrder.getSaleOrderSeq();
+    String origin = saleOrder.getSaleOrderSeq();
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
+    if (bankDetails == null && appSupplychainService.getAppBase().getManageMultiBanks()) {
+      throw new AxelorException(
+          paymentMode,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          company.getName(),
+          paymentMode.getName(),
+          saleOrder.getSaleOrderSeq());
+    }
     Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                advancePayment.getCurrency(),
-                clientPartner,
-                advancePaymentDate,
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+        moveCreateService.createMove(
+            journal,
+            company,
+            advancePayment.getCurrency(),
+            clientPartner,
+            advancePaymentDate,
+            advancePaymentDate,
+            paymentMode,
+            saleOrder.getFiscalPosition(),
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     BigDecimal amountConverted =
         currencyService.getAmountCurrencyConvertedAtDate(
@@ -161,7 +180,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate);
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             clientPartner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
@@ -170,11 +189,11 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate,
             null,
             1,
-            ref,
+            origin,
             null));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             clientPartner,
             accountConfigService.getAdvancePaymentAccount(accountConfig),
@@ -183,10 +202,10 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate,
             null,
             2,
-            ref,
+            origin,
             null));
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.accounting(move);
 
     advancePayment.setMove(move);
     advancePaymentRepository.save(advancePayment);
@@ -196,7 +215,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(
-      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
+      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) {
 
     log.debug("Creating InvoicePayment from SaleOrder AdvancePayment");
     InvoicePayment invoicePayment = new InvoicePayment();

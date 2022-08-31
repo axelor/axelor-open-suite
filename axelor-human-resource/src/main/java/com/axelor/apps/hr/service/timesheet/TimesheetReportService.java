@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetReport;
 import com.axelor.apps.message.db.Message;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.List;
@@ -32,7 +32,7 @@ public interface TimesheetReportService {
     return Beans.get(TimesheetReportService.class);
   }
 
-  Set<User> getUserToBeReminded(TimesheetReport timesheetReport);
+  Set<Employee> getEmployeeToBeReminded(TimesheetReport timesheetReport);
 
   List<Message> sendReminders(TimesheetReport timesheetReport) throws AxelorException;
 

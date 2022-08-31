@@ -21,11 +21,16 @@
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
+  <input file="base_templateContext.csv" separator=";"
+    type="com.axelor.apps.message.db.TemplateContext" search="self.name = :name"/>
+
   <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
     search="self.name = :name">
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
       search="self.importId in :birtTemplateSet_importId"
       eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
   </input>
 
   <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.App"
@@ -56,6 +61,8 @@
       <bind to="title" column="title"/>
       <bind to="modelSelect" column="modelSelect"/>
     </bind>
+    <bind to="path" column="path"/>
+    <bind to="metaFieldPath" column="metaFieldPath" search="self.name = :metaFieldPath"/>
     <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
     <bind to="toExportMetaFieldSet" column="fields"
       search="self.name in :fields and self.metaModel.name = :metaModel"

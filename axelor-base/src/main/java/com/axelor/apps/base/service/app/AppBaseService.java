@@ -54,16 +54,6 @@ public interface AppBaseService extends AppService {
   public ZonedDateTime getTodayDateTime(Company company);
 
   /**
-   * This method is deprecated. Please use the
-   * com.axelor.apps.base.service.app.AppBaseService#getTodayDate(com.axelor.apps.base.db.Company)
-   * method instead.
-   *
-   * @return
-   */
-  @Deprecated
-  public LocalDate getTodayDate();
-
-  /**
    * Retrieve the current date according to the timezone entered in the given company. Returns the
    * current date set in the user if it exists, otherwise retrieves the one from the general
    * administration, otherwise the current date.
@@ -101,4 +91,10 @@ public interface AppBaseService extends AppService {
   void setManageMultiBanks(boolean manageMultiBanks);
 
   String getCustomStyle();
+
+  /**
+   * Get process timeout value. If the value is inferior or equal to 0, we return the default value
+   * (10 seconds).
+   */
+  int getProcessTimeout();
 }

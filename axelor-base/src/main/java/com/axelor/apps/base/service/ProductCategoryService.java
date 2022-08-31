@@ -59,4 +59,13 @@ public interface ProductCategoryService {
    */
   List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException;
+
+  /**
+   * Get the growth coefficient of product category. If the coeff is equal to the default value (1),
+   * the method will get growth coeff of parentProductCategory.
+   *
+   * @param productCategory
+   * @return growth coefficient
+   */
+  BigDecimal getGrowthCoeff(ProductCategory productCategory);
 }

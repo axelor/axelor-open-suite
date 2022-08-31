@@ -27,8 +27,7 @@
     <integer name="sequence" title="Seq."/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
-    <string name="productName" title="Displayed Product name" required="true"
-      translatable="true"/>
+    <string name="productName" title="Displayed Product name" required="true"/>
     <string name="productCode" title="Supplier code"/>
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
@@ -63,6 +62,11 @@
     <boolean name="isTitleLine" title="Title Line"/>
 
     <boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
+
+    <track>
+      <field name="desiredDelivDate"/>
+      <field name="estimatedDelivDate"/>
+    </track>
 
   </entity>
 

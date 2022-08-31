@@ -64,6 +64,15 @@
     </panel>
     <panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
       <panel name="informationsPanel" title="Information">
+        <field name="$partnerLanguage" hidden="true"/>
+        <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+          showTitle="false">
+          <viewer depends="$partnerLanguage">
+            <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
+              ]]>
+          </viewer>
+        </field>
         <panel name="customerInvoicePanel" colSpan="12">
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
@@ -123,7 +132,8 @@
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
-          canEdit="false" onChange="action-attrs-account-invoice-line-account-onchange"/>
+          canEdit="false"
+          onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange"/>
         <panel name="assetsPanel" colSpan="3" itemSpan="12">
           <field name="fixedAssets" showTitle="false" showIf="$readonly()">
             <viewer depends="fixedAssets">
@@ -276,7 +286,7 @@
 
   <action-attrs name="action-invoice-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1 || !account?.analyticDistributionAuthorized"/>
+      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1 || !account?.analyticDistributionAuthorized"/>
   </action-attrs>
 
   <action-attrs
@@ -377,6 +387,7 @@
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -386,6 +397,7 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -396,6 +408,7 @@
     <action name="action-invoice-line-method-get-fixed-asset-category"
       if="__config__.app.isApp('account')"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-invoice-line-method-translate-product-description-and-name"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -535,7 +548,7 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
 
     <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
+      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
     <attribute name="hidden" for="customerInvoicePanel"
       expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3"/>
@@ -548,7 +561,7 @@
 
   <action-attrs name="action-attrs-account-invoice-line-account-onchange">
     <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
+      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
   </action-attrs>
 
@@ -600,4 +613,21 @@
     <field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
 
+  <action-method name="action-method-account-invoice-line-account-onchange">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="selectDefaultDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="translateProductDescriptionAndName"/>
+  </action-method>
+
+  <action-attrs name="action-invoice-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__.partner.language.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__.partner.language.code.toUpperCase()"/>
+  </action-attrs>
 </object-views>

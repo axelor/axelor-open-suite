@@ -23,10 +23,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayerQualityConfigLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -67,7 +68,7 @@ public class PayerQualityService {
         .filter(
             "(self.debtRecovery.accountingSituation.partner = ?1 OR self.debtRecovery.tradingNameAccountingSituation.partner = ?1) AND self.debtRecoveryDate > ?2",
             partner,
-            appAccountService.getTodayDate().minusYears(1))
+            appAccountService.getTodayDate(null).minusYears(1))
         .fetch();
   }
 
@@ -97,10 +98,11 @@ public class PayerQualityService {
     List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
     log.debug(
-        "Tiers {} : Nombre de relances concernées : {}",
+        "Partner {} : Number of recovery concerned : {}",
         partner.getName(),
         debtRecoveryHistoryList.size());
-    log.debug("Tiers {} : Nombre de rejets concernés : {}", partner.getName(), moveLineList.size());
+    log.debug(
+        "Partner {} : Number of rejection concerned : {}", partner.getName(), moveLineList.size());
 
     for (DebtRecoveryHistory debtRecoveryHistory : debtRecoveryHistoryList) {
       burden =
@@ -109,7 +111,7 @@ public class PayerQualityService {
     for (MoveLine moveLine : moveLineList) {
       burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
     }
-    log.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
+    log.debug("Partner {} : Payer quality : {}", partner.getName(), burden);
     return burden;
   }
 
@@ -165,8 +167,8 @@ public class PayerQualityService {
     if (payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYER_QUALITY_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.PAYER_QUALITY_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     List<Partner> partnerList = this.getPartnerList();
@@ -177,7 +179,7 @@ public class PayerQualityService {
         if (burden.compareTo(BigDecimal.ZERO) == 1) {
           partner.setPayerQuality(burden);
           partnerRepository.save(partner);
-          log.debug("Tiers payeur {} : Qualité payeur : {}", partner.getName(), burden);
+          log.debug("Partner payer {} : Payer quality : {}", partner.getName(), burden);
         }
       }
     }

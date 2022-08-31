@@ -56,6 +56,17 @@
       filter="self.partner = :partner AND self.isDefault = TRUE"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
 
+    <track>
+      <field name="partner" on="UPDATE"/>
+      <field name="ownerName" on="UPDATE"/>
+      <field name="label" on="UPDATE"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="iban" on="UPDATE"/>
+      <field name="bank" on="UPDATE"/>
+      <field name="bankAddress" on="UPDATE"/>
+      <field name="active" on="UPDATE"/>
+    </track>
+
     <entity-listener class="com.axelor.apps.base.db.repo.BankDetailsListener"/>
   </entity>
 

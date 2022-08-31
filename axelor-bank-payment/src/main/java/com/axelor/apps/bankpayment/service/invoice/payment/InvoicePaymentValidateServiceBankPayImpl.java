@@ -24,14 +24,17 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;
@@ -53,23 +56,28 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
       PaymentModeService paymentModeService,
-      MoveService moveService,
-      MoveLineService moveLineService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveToolService moveToolService,
+      MoveLineCreateService moveLineCreateService,
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
+      InvoicePaymentToolService invoicePaymentToolService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService) {
-
+      AppAccountService appAccountService) {
     super(
         paymentModeService,
-        moveService,
-        moveLineService,
+        moveCreateService,
+        moveValidateService,
+        moveToolService,
+        moveLineCreateService,
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
-        invoicePaymentToolService);
+        invoicePaymentToolService,
+        appAccountService);
 
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
@@ -82,7 +90,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (paymentMode == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
+          I18n.get(BankPaymentExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
           invoice.getInvoiceId());
     }
     int typeSelect = paymentMode.getTypeSelect();
@@ -90,7 +98,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if ((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
         || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
-                && inOutSelect == PaymentModeRepository.OUT)
+            && inOutSelect == PaymentModeRepository.OUT)
+        || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
+                && inOutSelect == PaymentModeRepository.IN)
             && paymentMode.getGenerateBankOrder()) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {

@@ -20,8 +20,10 @@ package com.axelor.apps.production.exceptions;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link ProductionExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Production order service */
@@ -43,7 +45,8 @@ public interface IExceptionMessage {
       "The production process and the bill of material must be applicable" /*)*/;
 
   /** Batch Compute work in progress valuation */
-  static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
+  static final String BATCH_COMPUTE_VALUATION = /*$$(*/
+      "* %s Computed work in progress valuation" /*)*/;
 
   static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
@@ -76,6 +79,8 @@ public interface IExceptionMessage {
       "You must configure a component default stock location for company %s." /*)*/;
   static final String PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ = /*$$(*/
       "You must configure a sequence for manufacturing order for company %s" /*)*/;
+  static final String PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING = /*$$(*/
+      "Your production virtual stock location is not an outsourcing location." /*)*/;
 
   /** Manuf Order Controller */
   static final String MANUF_ORDER_1 = /*$$(*/
@@ -144,6 +149,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
       "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
 
+  String CONFIGURATOR_BOM_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -204,4 +212,66 @@ public interface IExceptionMessage {
       "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+
+  // Configurator Prod Process Service
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA = /*$$(*/
+      "The formula script to fill the name returns null value. Please correct on prod process configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process to generate. Please correct on prod process configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_IS_CONS_PRO_ON_OPERATION_FORMULA = /*$$(*/
+      "The formula script to fill the checkbox manage consumed products on phases returns null value or is not consistent. Please correct on prod process configurator id : %s." /*)*/;
+
+  // Configurator Prod Process Line Service
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA = /*$$(*/
+      "The formula script to fill the name returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA = /*$$(*/
+      "The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER = /*$$(*/
+      "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER_GROUP = /*$$(*/
+      "Work center group cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  // Configurator Prod Product Service
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA = /*$$(*/
+      "The formula script to fill the product returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_PRODUCT = /*$$(*/
+      "Product cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_QTY_FORMULA = /*$$(*/
+      "The formula script to fill the qty returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_QTY = /*$$(*/
+      "Qty cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_UNIT_FORMULA = /*$$(*/
+      "The formula script to fill the unit returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_UNIT = /*$$(*/
+      "Unit cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the prod product returns null value or is not consistent. Please correct on prod product configurator id : %s." /*)*/;
+  static final String CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION = /*$$(*/
+      "The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula." /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_SOURCE_STOCK_LOCATION =
+      /*$$(*/
+      "The outsourcing receipt stock location is missing from the stock config" /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION =
+      /*$$(*/
+      "Stock location is missing from the prod process and in the component default stock location in stock configuration." /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
+      /*$$(*/
+      "The produced product stock location is missing in the prod process" /*)*/;
 }

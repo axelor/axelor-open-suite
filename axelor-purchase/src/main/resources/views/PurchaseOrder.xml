@@ -185,6 +185,14 @@
           <field name="createdByInterco" showIf="createdByInterco" readonly="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
+        <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
+          readonlyIf="statusSelect > 2"
+          onSelect="action-purchase-order-attrs-compute-tax-number-domain"
+          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"/>
+        <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
+          readonlyIf="statusSelect > 2"
+          onSelect="action-purchase-order-attrs-fiscal-position-domain"
+          onChange="action-purchase-order-method-fiscal-position-on-change,action-purchase-order-method-compute"/>
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12"
           showTitle="false"
           hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
@@ -288,7 +296,7 @@
 
     <panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
       <button name="draftBtn" title="Draft" showIf="statusSelect == 5"
-        onClick="action-purchase-order-record-draft,save"/>
+        onClick="save,action-purchase-order-method-draft,save"/>
       <button name="requestedBtn" title="Requested" showIf="statusSelect == 1"
         onClick="save,action-purchase-order-method-requested"/>
       <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
@@ -326,7 +334,7 @@
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
       <separator/>
       <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal,amountInvoiced">
+        <viewer depends="exTaxTotal,currency.symbol,taxTotal,amountInvoiced,advanceTotal">
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
@@ -337,6 +345,8 @@
                         <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt x-translate>Amount invoiced W.T.</dt>
                         <dd>{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
+                    	<dt x-translate>Advance payment A.T.I. total</dt>
+                        <dd>{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                     </dl>
                     ]]>
         </viewer>
@@ -547,7 +557,7 @@
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-in-ati"/>
     <action name="action-purchase-order-attrs-in-ati"/>
-    <action name="action-purchase-order-dispaly-price"/>
+    <action name="action-purchase-order-record-display-price"/>
     <action name="action-contract-purchase-order-record-new"
       if="__config__.app.isApp('contract')"/>
     <action name="action-purchase-order-record-payment-mode"/>
@@ -577,6 +587,7 @@
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-update-info-company"/>
+    <action name="action-purchase-order-record-display-price"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
@@ -603,6 +614,7 @@
     <action name="action-purchase-order-attrs-interco"/>
     <action name="action-purchase-order-record-interco"/>
     <action name="action-purchase-order-record-set-group-product-on-printing"/>
+    <action name="action-purchase-order-method-empty-fiscal-position-if-not-compatible"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-cancel">
@@ -655,7 +667,7 @@
       if="company"/>
   </action-record>
 
-  <action-record name="action-purchase-order-dispaly-price"
+  <action-record name="action-purchase-order-record-display-price"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="displayPriceOnQuotationRequest"
       expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"
@@ -695,6 +707,7 @@
   <action-record name="action-purchase-order-record-partner"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="currency" expr="eval: supplierPartner?.currency"/>
+    <field name="fiscalPosition" expr="eval: supplierPartner?.fiscalPosition"/>
     <field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"
       if="supplierPartner?.paymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
@@ -739,11 +752,6 @@
     <field name="validatedByUser" expr="eval:__user__"/>
   </action-record>
 
-  <action-record name="action-purchase-order-record-draft"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="statusSelect" expr="1"/>
-  </action-record>
-
   <action-record name="action-purchase-order-record-empty-freight-carrier-mode"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="freightCarrierMode" expr="eval:null"/>
@@ -754,11 +762,6 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="requestPurchaseOrder"/>
   </action-method>
-
-  <action-record name="action-purchase-order-record-cancel"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="statusSelect" expr="5"/>
-  </action-record>
 
   <action-record name="action-record-po-contact-partner-change"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -798,10 +801,20 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="cancel"/>
   </action-method>
 
+  <action-method name="action-purchase-order-method-draft">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="draftPurchaseOrder"/>
+  </action-method>
+
   <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
     <attribute name="hidden" for="contactPartner"
       expr="eval:supplierPartner != null &amp;&amp; supplierPartner.partnerTypeSelect == 2"/>
   </action-attrs>
+
+  <action-method name="action-purchase-order-method-fiscal-position-on-change">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="updateLinesAfterFiscalPositionChange"/>
+  </action-method>
 
   <action-view name="action-purchase-order-show-invoice" title="Supplier invoices"
     model="com.axelor.apps.account.db.Invoice">
@@ -840,7 +853,7 @@
     <view name="stock-move-form" type="form"/>
     <domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId
       = :purchaseOrder</domain>
-    <context name="purchaseOrder" expr="eval: __self__.id"/>
+    <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
   <action-validate name="action-purchase-order-validate-stock-location">
@@ -922,6 +935,12 @@
   <action-method name="action-purchase-order-method-fill-company-bank-details">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="fillCompanyBankDetails"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-method-empty-fiscal-position-if-not-compatible">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="emptyFiscalPositionIfNotCompatible"/>
   </action-method>
 
 
@@ -1018,5 +1037,18 @@
     <attribute name="domain" for="stockLocation"
       expr="eval: &quot;self.company = :company AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
       if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-attrs-compute-tax-number-domain">
+    <attribute name="domain" for="taxNumber"
+      expr="eval: company?.taxNumberList?.collect{it.id}?.size > 0 ? &quot;self.id IN (${company?.taxNumberList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
+      if="__config__.app.isApp('account')"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-attrs-fiscal-position-domain">
+    <attribute name="domain" for="fiscalPosition" if="taxNumber"
+      expr="eval: &quot;:taxNumber MEMBER OF self.taxNumberSet&quot;"/>
+    <attribute name="domain" for="fiscalPosition" if="!taxNumber"
+      expr="eval: &quot;'${supplierPartner?.fiscalPosition?.code}' = self.code&quot;"/>
   </action-attrs>
 </object-views>

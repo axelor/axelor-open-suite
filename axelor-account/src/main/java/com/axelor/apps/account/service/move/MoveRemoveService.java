@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -68,7 +68,7 @@ public class MoveRemoveService {
   }
 
   public void archiveDaybookMove(Move move) throws Exception {
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       this.checkDaybookMove(move);
       this.cleanMoveToArchived(move);
       move = this.updateMoveToArchived(move);
@@ -80,11 +80,11 @@ public class MoveRemoveService {
   @Transactional(rollbackOn = {Exception.class})
   protected Move updateMoveToArchived(Move move) throws AxelorException {
 
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_4));
     }
 
     move.setStatusSelect(MoveRepository.STATUS_CANCELED);
@@ -134,7 +134,7 @@ public class MoveRemoveService {
     if (moveModelError != null) {
       errorMessage +=
           String.format(
-              I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
               move.getReference(),
               moveModelError);
     }
@@ -157,7 +157,7 @@ public class MoveRemoveService {
       if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
         errorMessage +=
             String.format(
-                I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
                 moveLine.getName(),
                 modelName);
       }
@@ -182,9 +182,10 @@ public class MoveRemoveService {
     for (Move move : moveList) {
       try {
         move = moveRepo.find(move.getId());
-        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
-        } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+        } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
           this.archiveMove(move);

@@ -10,12 +10,11 @@
   </grid>
 
   <form name="account-config-form" title="Account configuration"
-    model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-record-default"
+    model="com.axelor.apps.account.db.AccountConfig"
+    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
+    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
     width="large">
-    <toolbar>
-      <button name="showInvoiceBtn" title="Invoices"
-        onClick="save,action-company-view-invoice"/>
-    </toolbar>
+
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
@@ -27,9 +26,9 @@
         onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="allowRemovalValidatedMove"/>
-      <field name="generateMoveForAdvancePayment"/>
-      <field name="accountingDaybook"/>
+      <field name="generateMoveForAdvancePayment" colSpan="4"/>
+      <field name="accountingDaybook" colSpan="4"/>
+      <field name="isActivateSimulatedMove" colSpan="4"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -38,16 +37,17 @@
           <field name="partnerAccountGenerationModeSelect" colSpan="12"/>
           <panel name="accountsCustomer" title="AccountConfig.Customers" colSpan="12">
             <field name="customerAccount"
-              domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+              domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
               grid-view="account-grid" form-view="account-form"
               help="Select the default customer account to be used in sales invoices. It will also be used as parent account if automatic account creation is enabled."/>
-            <field name="irrecoverableAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
+            <field name="irrecoverableAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
             <field name="doubtfulCustomerAccount"
-              domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+              domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
               grid-view="account-grid" form-view="account-form"/>
             <field name="advancePaymentAccount"
-              domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+              domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
               grid-view="account-grid" form-view="account-form"/>
             <field name="customerAccountPrefix"
               help="Prefix to be prepended on customer accounts' codes, the code will be [prefix]PARTNERNAME"
@@ -58,12 +58,18 @@
               canEdit="true" showIf="partnerAccountGenerationModeSelect == 2"
               requiredIf="partnerAccountGenerationModeSelect == 2"
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
+            <field name="billOfExchReceivAccount"
+              if=" eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
+              domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"/>
           </panel>
           <panel title="AccountConfig.Suppliers" colSpan="12">
             <field name="supplierAccount"
-              domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+              domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
               grid-view="account-grid" form-view="account-form"
               help="Select the default supplier account to be used in purchase invoices. It will also be used as parent account if automatic account creation is enabled."/>
+            <field name="supplierAdvancePaymentAccount"
+              domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+              grid-view="account-grid" form-view="account-form"/>
             <field name="supplierAccountPrefix"
               help="Prefix to be prepended on supplier accounts' codes, the code will be [prefix]PARTNERNAME"
               showIf="partnerAccountGenerationModeSelect == 1"
@@ -74,9 +80,22 @@
               requiredIf="partnerAccountGenerationModeSelect == 2"
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
           </panel>
+          <panel name="discountPanel" title="Discount Accounts" colSpan="12">
+            <field name="purchFinancialDiscountAccount"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"
+              domain="self.statusSelect = 1 AND self.company = :company"/>
+            <field name="saleFinancialDiscountAccount"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"
+              domain="self.statusSelect = 1 AND self.company = :company"/>
+            <field name="purchFinancialDiscountTax"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+            <field name="saleFinancialDiscountTax"
+              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+          </panel>
           <panel title="AccountConfig.Employees" colSpan="12">
-            <field name="employeeAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form"
+            <field name="employeeAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"
               help="Select the default employee account to be used in eg. expense payments. It will also be used as parent account if automatic account creation is enabled."/>
             <field name="employeeAccountPrefix"
               help="Prefix to be prepended on employee accounts' codes, the code will be [prefix]PARTNERNAME"
@@ -90,30 +109,42 @@
           </panel>
           <panel name="accountFactorPanel"
             if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
-            <field name="factorDebitAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
-            <field name="factorCreditAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
+            <field name="factorDebitAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="factorCreditAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
           </panel>
           <panel name="accountGeneralPanel" colSpan="12">
-            <field name="yearOpeningAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
-            <field name="yearClosureAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
-            <field name="forecastedInvCustAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain"
+            <field name="yearOpeningAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="yearClosureAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="forecastedInvCustAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')"/>
-            <field name="forecastedInvSuppAccount" domain="self.company = :company"
-              grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain"
+            <field name="forecastedInvSuppAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')"/>
           </panel>
 
 
         </panel>
+        <panel name="managePeriodPanel" title="Period closure" colSpan="12">
+          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+        </panel>
         <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
-          <field name="cashPositionVariationAccount" domain="self.company = :company"
-            grid-view="account-grid" form-view="account-form"/>
+          <field name="cashPositionVariationAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">
@@ -122,14 +153,14 @@
         </panel>
         <panel name="exportsPanel" title="Exports" colSpan="12">
           <field name="exportPath"/>
+          <field name="dasContactPartner"
+            domain="self.isEmployee = true AND :company member of self.companySet"
+            form-view="partner-form" grid-view="partner-grid"/>
           <!-- <field name="exportFileName"/> -->
         </panel>
         <panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">
           <field name="irrecoverableReasonPassage"/>
           <field name="irrecoverableStandardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-        </panel>
-        <panel name="taxPaymentPanel" title="Tax payment" colSpan="12">
-          <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
         </panel>
         <panel name="defaultPaymentModesPanel" title="Default Payment Modes" colSpan="12">
           <field name="inPaymentMode" grid-view="payment-mode-grid"
@@ -143,12 +174,16 @@
             form-view="payment-condition-form"/>
         </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
-          <field name="expenseTaxAccount" domain="self.company = :company"
+          <field name="expenseTaxAccount"
+            domain="self.statusSelect = 1 AND self.company = :company"
             if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"
             if="__config__.app.isApp('expense')"/>
         </panel>
         <panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
           <field name="lineMinBeforeLongReportGenerationMessageNumber"/>
+        </panel>
+        <panel name="moveLinesPanel" title="Move lines" colSpan="12">
+          <field name="isDescriptionRequired" widget="boolean-switch"/>
         </panel>
       </panel>
 
@@ -190,6 +225,7 @@
             form-view="product-form" grid-view="product-grid"/>
         </panel>
 
+
         <panel name="printingSettingsPanel" title="Printing settings" colSpan="12">
           <field name="displayDelAddrOnPrinting" widget="boolean-switch"/>
           <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
@@ -203,6 +239,8 @@
             if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
+          <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch" colSpan="12"
+            if="__config__.app.isApp('supplychain')"/>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
           <field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
@@ -298,6 +336,8 @@
         </panel>
       </panel>
       <panel name="receivablesRecoveryPanel" title="Receivables recovery">
+        <field name="hasLatePaymentAccountBlocking"/>
+        <field name="numberOfDaysBeforeAccountBlocking" showIf="hasLatePaymentAccountBlocking"/>
         <field name="factorPartner"
           domain="self.isFactor = TRUE AND :company member of self.companySet"
           if="__config__.app.getApp('account')?.manageFactors" form-view="partner-form"
@@ -313,8 +353,9 @@
           <field name="reimbursementExportFolderPathCFONB"/>
           <field name="lowerThresholdReimbursement"/>
           <field name="upperThresholdReimbursement"/>
-          <field name="reimbursementAccount" domain="self.company = :company"
-            grid-view="account-grid" form-view="account-form"/>
+          <field name="reimbursementAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
           <field name="reimbursementTemplate" form-view="template-form"
             grid-view="template-grid"/>
         </panel>
@@ -346,25 +387,29 @@
         </panel>
       </panel>
       <panel name="accClearancePanel" title="Acc. Clearance">
-        <field name="profitAccount" domain="self.company = :company" grid-view="account-grid"
-          form-view="account-form"/>
+        <field name="profitAccount" domain="self.statusSelect = 1 AND self.company = :company"
+          grid-view="account-grid" form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-        <field name="clearanceAccountSet"
+        <panel-related field="clearanceAccountSet"
           domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
-          grid-view="account-grid" form-view="account-form">
-          <!-- TODO:Check whether this Editor works or not -->
-          <editor x-show-titles="false" x-layout="table">
-            <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="12"/>
-            <field name="name" colSpan="6"/>
-            <field name="accountType" colSpan="6" form-view="account-type-form"
-              grid-view="account-type-grid"/>
-            <field name="reconcileOk" colSpan="6"/>
-            <field name="parentAccount" colSpan="6" grid-view="account-grid"
-              form-view="account-form"/>
-            <field name="company" canEdit="false" widget="SuggestBox" colSpan="6"
-              form-view="company-form" grid-view="company-grid"/>
-          </editor>
-        </field>
+          grid-view="account-grid" form-view="account-form"/>
+      </panel>
+      <panel name="analyticPanel"
+        if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
+        <field name="manageAnalyticAccounting"
+          onChange="action-attrs-account-config-set-is-can-new"/>
+        <field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting"
+          requiredIf="manageAnalyticAccounting"
+          onChange="action-attrs-account-config-set-is-can-new"/>
+        <field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
+        <field name="analyticJournal"
+          domain="self.company = :company AND self.statusSelect = 1"
+          showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
+        <field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew"
+          showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"
+          onChange="action-attrs-account-config-set-is-can-new"
+          form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+        <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
 
     </panel-tabs>
@@ -394,14 +439,6 @@
     <call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
   </action-method>
 
-  <action-view name="action-company-view-invoice" title="Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
-    <domain>self.company.id = :id</domain>
-    <context name="id" expr="eval: company.id"/>
-  </action-view>
-
   <action-view name="action-company-view-account-config"
     title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
     <view type="form" name="account-config-form"/>
@@ -409,4 +446,34 @@
     <context name="_company" expr="eval: __this__"/>
   </action-view>
 
+  <action-validate name="action-validate-account-config-on-save-analytic">
+    <error
+      if="manageAnalyticAccounting &amp;&amp; nbrOfAnalyticAxisSelect != analyticAxisByCompanyList.size"
+      message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
+  </action-validate>
+
+  <action-group name="action-account-config-group-on-save">
+    <action name="action-account-config-validate-is-activate-simulated-move"/>
+    <action name="action-account-config-method-deactivate-simulated-moves"/>
+    <action name="action-validate-account-config-on-save-analytic"/>
+  </action-group>
+
+  <action-validate name="action-account-config-validate-is-activate-simulated-move"
+    model="com.axelor.apps.account.db.AccountConfig">
+    <alert
+      message="By deactivating simulated moves, all moves (including move lines) in this status will be deleted for the company ${company.name}. Do you wish to continue ?"
+      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+  </action-validate>
+
+  <action-method name="action-account-config-method-deactivate-simulated-moves">
+    <call class="com.axelor.apps.account.web.AccountConfigController"
+      method="deactivateSimulatedMoves"
+      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-account-config-set-is-can-new">
+    <attribute name="value" for="$isCanNew"
+      expr="eval: analyticAxisByCompanyList.size() &lt; nbrOfAnalyticAxisSelect"
+      if="analyticAxisByCompanyList != null &amp;&amp; manageAnalyticAccounting"/>
+  </action-attrs>
 </object-views>

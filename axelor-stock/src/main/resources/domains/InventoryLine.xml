@@ -21,5 +21,7 @@
     <decimal name="gap" title="Gap" readonly="true"/>
     <decimal name="gapValue" title="Gap value" readonly="true"/>
     <decimal name="realValue" title="Real valuation" readonly="true"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
   </entity>
 </domain-models>

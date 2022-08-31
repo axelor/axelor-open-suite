@@ -18,10 +18,13 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
+import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -31,6 +34,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class MrpController {
@@ -55,10 +60,19 @@ public class MrpController {
     MrpService mrpService = Beans.get(MrpService.class);
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
-      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+      if (mrpService.isOnGoing(mrpRepository.find(mrp.getId()))) {
+        response.setFlash(I18n.get(SupplychainExceptionMessage.MRP_ALREADY_STARTED));
+        return;
+      }
+      mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
+
+      // Tool class that does not need to be injected
+      ControllerCallableTool<Mrp> mrpControllerCallableTool = new ControllerCallableTool<>();
+
+      mrpControllerCallableTool.runInSeparateThread(mrpService, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      mrpService.onError(mrpRepository.find(mrp.getId()), e);
+      mrpService.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);
     } finally {
       response.setReload(true);
     }
@@ -142,6 +156,22 @@ public class MrpController {
 
       response.setView(ActionView.define(name).add("html", fileLink).map());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSaleOrderLineSetDomain(ActionRequest request, ActionResponse response) {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+
+    try {
+      List<Long> idList =
+          Beans.get(MrpFilterSaleOrderLineService.class)
+              .getSaleOrderLinesComplyingToMrpLineTypes(mrp);
+
+      String idListStr = idList.stream().map(Object::toString).collect(Collectors.joining(","));
+
+      response.setAttr("saleOrderLineSet", "domain", "self.id IN (" + idListStr + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

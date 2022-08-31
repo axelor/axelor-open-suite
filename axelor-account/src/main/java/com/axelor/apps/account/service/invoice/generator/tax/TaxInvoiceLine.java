@@ -17,12 +17,18 @@
  */
 package com.axelor.apps.account.service.invoice.generator.tax;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,15 +56,16 @@ public class TaxInvoiceLine extends TaxGenerator {
    * factures
    *
    * @return La liste des lignes de TVA de la facture.
+   * @throws AxelorException
    */
   @Override
-  public List<InvoiceLineTax> creates() {
+  public List<InvoiceLineTax> creates() throws AxelorException {
 
     Map<TaxLine, InvoiceLineTax> map = new HashMap<>();
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de factures.");
+      LOG.debug("Creation of lines with taxes for the invoices lines");
 
       for (InvoiceLine invoiceLine : invoiceLines) {
         // map is updated with created invoice line taxes
@@ -65,8 +73,9 @@ public class TaxInvoiceLine extends TaxGenerator {
       }
     }
 
-    if (invoice.getPartner().getFiscalPosition() == null
-        || !invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+
+    if (fiscalPosition == null || !fiscalPosition.getCustomerSpecificNote()) {
       if (invoiceLines != null) {
         invoice.setSpecificNotes(
             invoiceLines.stream()
@@ -84,13 +93,27 @@ public class TaxInvoiceLine extends TaxGenerator {
     return finalizeInvoiceLineTaxes(map);
   }
 
-  protected void createInvoiceLineTaxes(InvoiceLine invoiceLine, Map<TaxLine, InvoiceLineTax> map) {
+  protected void createInvoiceLineTaxes(InvoiceLine invoiceLine, Map<TaxLine, InvoiceLineTax> map)
+      throws AxelorException {
     TaxLine taxLine = invoiceLine.getTaxLine();
     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
-    TaxLine taxLineRC =
-        (taxEquiv != null && taxEquiv.getReverseCharge() && taxEquiv.getReverseChargeTax() != null)
-            ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
-            : null;
+    TaxLine taxLineRC = null;
+
+    if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+      // We get active tax line if it exist, else we fetch one in taxLine list of reverse charge tax
+      taxLineRC =
+          Optional.ofNullable(taxEquiv.getReverseChargeTax())
+              .map(Tax::getActiveTaxLine)
+              .orElse(
+                  Beans.get(TaxService.class)
+                      .getTaxLine(
+                          taxEquiv.getReverseChargeTax(),
+                          Beans.get(AppBaseService.class)
+                              .getTodayDate(
+                                  Optional.ofNullable(invoiceLine.getInvoice())
+                                      .map(Invoice::getCompany)
+                                      .orElse(null))));
+    }
 
     if (taxLine != null) {
       createOrUpdateInvoiceLineTax(invoiceLine, taxLine, map);
@@ -103,7 +126,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
   protected void createOrUpdateInvoiceLineTax(
       InvoiceLine invoiceLine, TaxLine taxLine, Map<TaxLine, InvoiceLineTax> map) {
-    LOG.debug("TVA {}", taxLine);
+    LOG.debug("Tax {}", taxLine);
     InvoiceLineTax invoiceLineTax = map.get(taxLine);
     if (invoiceLineTax != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTax);
@@ -234,7 +257,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "Tax line : Tax total => {}, Total W.T. => {}",
           invoiceLineTax.getTaxTotal(),
           invoiceLineTax.getInTaxTotal());
     }

@@ -20,12 +20,13 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -35,6 +36,8 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -79,9 +82,7 @@ public class StockMoveController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -117,12 +118,8 @@ public class StockMoveController {
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
-      if (stockMove.getStatusSelect() == null
-          || stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_REALIZATION_WRONG_STATUS));
-      }
+      Optional<TraceBack> lastTracebackBeforeOptional =
+          traceBackService.findLastAlertTraceBack(stockMove);
       String newSeq = Beans.get(StockMoveService.class).realize(stockMove);
 
       response.setReload(true);
@@ -131,13 +128,13 @@ public class StockMoveController {
         if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
           response.setFlash(
               String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_INCOMING_PARTIAL_GENERATED), newSeq));
+                  I18n.get(StockExceptionMessage.STOCK_MOVE_INCOMING_PARTIAL_GENERATED), newSeq));
         } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
           response.setFlash(
               String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_OUTGOING_PARTIAL_GENERATED), newSeq));
+                  I18n.get(StockExceptionMessage.STOCK_MOVE_OUTGOING_PARTIAL_GENERATED), newSeq));
         } else {
-          response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
+          response.setFlash(String.format(I18n.get(StockExceptionMessage.STOCK_MOVE_9), newSeq));
         }
       }
       if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
@@ -147,13 +144,20 @@ public class StockMoveController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
+      Optional<TraceBack> lastTracebackAfterOptional =
+          traceBackService.findLastAlertTraceBack(stockMove);
+      if (lastTracebackAfterOptional.isPresent()) {
+        TraceBack lastTracebackAfter = lastTracebackAfterOptional.get();
+        if (!lastTracebackBeforeOptional.isPresent()
+            || !lastTracebackAfter.equals(lastTracebackBeforeOptional.get())) {
+          response.setFlash(lastTracebackAfter.getMessage());
+        }
+      }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -217,7 +221,7 @@ public class StockMoveController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -263,7 +267,7 @@ public class StockMoveController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
       }
       response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
@@ -310,7 +314,7 @@ public class StockMoveController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -341,7 +345,7 @@ public class StockMoveController {
           (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
       if (stockMoveLineContextList == null) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
+        response.setFlash(I18n.get(StockExceptionMessage.STOCK_MOVE_14));
         return;
       }
       List<StockMoveLine> stockMoveLineList = new ArrayList<>();
@@ -359,7 +363,7 @@ public class StockMoveController {
               .splitStockMoveLines(stockMove, stockMoveLineList, BigDecimal.ONE);
 
       if (!selected) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
+        response.setFlash(I18n.get(StockExceptionMessage.STOCK_MOVE_15));
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -375,7 +379,7 @@ public class StockMoveController {
       Map<String, Object> stockMoveMap =
           (Map<String, Object>) request.getContext().get("stockMove");
       if (selectedStockMoveLineMapList == null) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
+        response.setFlash(I18n.get(StockExceptionMessage.STOCK_MOVE_14));
         return;
       }
 
@@ -389,7 +393,7 @@ public class StockMoveController {
       }
 
       if (stockMoveLineList.isEmpty()) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
+        response.setFlash(I18n.get(StockExceptionMessage.STOCK_MOVE_15));
         return;
       }
 
@@ -398,7 +402,7 @@ public class StockMoveController {
         splitQty = new BigDecimal(request.getContext().get("splitQty").toString());
       }
       if (splitQty == null || splitQty.compareTo(BigDecimal.ZERO) < 1) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
+        response.setFlash(I18n.get(StockExceptionMessage.STOCK_MOVE_16));
         return;
       }
 
@@ -457,7 +461,7 @@ public class StockMoveController {
           Beans.get(StockMoveService.class).splitInto2(stockMove, modifiedStockMoveLineList);
 
       if (newStockMove == null) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
+        response.setFlash(I18n.get(StockExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
       } else {
         response.setCanClose(true);
 

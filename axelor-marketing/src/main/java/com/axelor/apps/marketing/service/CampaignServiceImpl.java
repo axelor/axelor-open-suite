@@ -23,9 +23,10 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
-import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -155,8 +156,8 @@ public class CampaignServiceImpl implements CampaignService {
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException, JSONException {
     Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
-    message.setRelatedTo1Select(Campaign.class.getCanonicalName());
-    message.setRelatedTo1SelectId(campaign.getId());
+    Beans.get(MessageService.class)
+        .addMessageRelatedTo(message, Campaign.class.getCanonicalName(), campaign.getId());
   }
 
   protected MetaFile generateLog(
@@ -168,7 +169,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     StringBuilder builder = new StringBuilder();
-    builder.append(I18n.get(IExceptionMessage.EMAIL_ERROR1));
+    builder.append(I18n.get(MarketingExceptionMessage.EMAIL_ERROR1));
     builder.append("\n");
     if (!errorPartners.isEmpty()) {
       builder.append(I18n.get("Partners") + ":\n");

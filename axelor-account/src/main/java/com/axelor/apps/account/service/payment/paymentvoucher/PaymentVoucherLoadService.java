@@ -30,9 +30,10 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -105,8 +106,8 @@ public class PaymentVoucherLoadService {
             query,
             paymentVoucher.getPartner(),
             paymentVoucher.getCompany(),
-            MoveRepository.STATUS_VALIDATED,
             MoveRepository.STATUS_ACCOUNTED,
+            MoveRepository.STATUS_DAYBOOK,
             InvoiceRepository.PFP_STATUS_LITIGATION,
             paymentVoucher.getTradingName())
         .fetch();
@@ -122,10 +123,12 @@ public class PaymentVoucherLoadService {
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
-
+    int sequence = 0;
     for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
 
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(moveLine);
+      payVoucherDueElement.setSequence(sequence++);
+      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
@@ -168,8 +171,8 @@ public class PaymentVoucherLoadService {
         throw new AxelorException(
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
       }
 
       this.completeElementToPay(paymentVoucher);
@@ -190,7 +193,11 @@ public class PaymentVoucherLoadService {
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-
+    paymentVoucher
+        .getPayVoucherDueElementList()
+        .sort(
+            (payVoucherDueElem1, payVoucherDueElem2) ->
+                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
     for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {

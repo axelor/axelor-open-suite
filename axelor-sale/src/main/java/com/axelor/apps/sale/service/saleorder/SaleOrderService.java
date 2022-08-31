@@ -22,6 +22,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface SaleOrderService {
@@ -29,11 +31,6 @@ public interface SaleOrderService {
   public String getFileName(SaleOrder saleOrder);
 
   public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
-
-  @Deprecated
-  public String getReportLink(
-      SaleOrder saleOrder, String name, String language, boolean proforma, String format)
-      throws AxelorException;
 
   /**
    * Fill {@link SaleOrder#mainInvoicingAddressStr} and {@link SaleOrder#deliveryAddressStr}
@@ -79,8 +76,9 @@ public interface SaleOrderService {
    * Convert PackLines of pack into SaleOrderLines.
    *
    * @param saleOrder
+   * @throws AxelorException
    */
-  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty);
+  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) throws AxelorException;
 
   /**
    * Handle the creation / updating of complementary products. Called onChange of saleOrderLineList.
@@ -116,4 +114,8 @@ public interface SaleOrderService {
    * @throws AxelorException
    */
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException;
+
+  SaleOrder seperateInNewQuotation(
+      SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
+      throws AxelorException;
 }

@@ -61,7 +61,6 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
    */
   @Override
   public Duration computeRealDuration(OperationOrder operationOrder) {
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()

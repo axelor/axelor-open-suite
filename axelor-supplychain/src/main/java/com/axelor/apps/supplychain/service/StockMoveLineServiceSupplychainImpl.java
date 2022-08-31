@@ -43,12 +43,11 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -158,7 +157,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       throws AxelorException {
 
     // the case when stockMove is null is made in super.
-    if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (stockMove == null || !appBaseService.isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
     }
 
@@ -186,7 +185,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
@@ -201,7 +200,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
@@ -250,7 +249,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return newStockMoveLine;
     }
     BigDecimal reservedQtyAfterSplit =
@@ -266,7 +265,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   @Override
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       super.updateAvailableQty(stockMoveLine, stockLocation);
       return;
     }
@@ -396,7 +395,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException {
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       super.setProductInfo(stockMove, stockMoveLine, company);
       return;
     }
@@ -457,10 +456,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       availableQty = stockMoveLine.getAvailableQtyForProduct();
     }
     BigDecimal realQty = stockMoveLine.getRealQty();
-    if (availableQty.compareTo(realQty) < 0) {
-      return false;
-    }
-    return true;
+    return availableQty.compareTo(realQty) >= 0;
   }
 
   @Override
@@ -468,7 +464,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLine.getQtyInvoiced().compareTo(BigDecimal.ZERO) == 0) {
       stockMoveLine.setAvailableStatus(I18n.get("Not invoiced"));
       stockMoveLine.setAvailableStatusSelect(3);
-    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == -1) {
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) < 0) {
       stockMoveLine.setAvailableStatus(I18n.get("Partially invoiced"));
       stockMoveLine.setAvailableStatusSelect(4);
     } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == 0) {

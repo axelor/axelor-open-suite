@@ -18,12 +18,14 @@
 package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.ContractLineServiceProjectImpl;
@@ -64,8 +66,10 @@ import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectI
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractServiceImpl;
+import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
@@ -82,9 +86,9 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.workflow.WorkflowValidationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
 public class BusinessProjectModule extends AxelorModule {
@@ -119,8 +123,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(WorkflowVentilationServiceSupplychainImpl.class)
         .to(WorkflowVentilationProjectServiceImpl.class);
     bind(TimesheetLineBusinessService.class).to(TimesheetLineProjectServiceImpl.class);
-    bind(WorkflowValidationServiceSupplychainImpl.class)
-        .to(WorkflowValidationServiceProjectImpl.class);
+    bind(WorkflowValidationServiceImpl.class).to(WorkflowValidationServiceProjectImpl.class);
     bind(WorkflowCancelServiceSupplychainImpl.class).to(WorkflowCancelServiceProjectImpl.class);
     bind(ProjectTaskHRRepository.class).to(ProjectTaskBusinessProjectRepository.class);
     bind(SaleOrderLineServiceSupplyChainImpl.class).to(SaleOrderLineProjectServiceImpl.class);
@@ -131,8 +134,11 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoicePaymentValidateServiceBankPayImpl.class)
         .to(InvoicePaymentValidateProjectServiceImpl.class);
     bind(ProjectFolderService.class).to(ProjectFolderServiceImpl.class);
+    bind(ProjectHRRepository.class).to(ProjectBusinessProjectRepository.class);
     bind(ProjectAnalyticMoveLineService.class).to(ProjectAnalyticMoveLineServiceImpl.class);
     bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
         .to(PurchaseOrderWorkflowServiceProjectImpl.class);
+    bind(InvoiceMergingServiceSupplychainImpl.class)
+        .to(InvoiceMergingServiceBusinessProjectImpl.class);
   }
 }

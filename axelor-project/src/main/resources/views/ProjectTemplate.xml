@@ -58,7 +58,6 @@
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
         <field name="isInvoicingExpenses" colSpan="4"/>
         <field name="isInvoicingPurchases" colSpan="4"/>
-        <field name="invoicingTypeSelect" colSpan="6"/>
         <field name="invoicingComment" colSpan="12"/>
       </panel>
 
@@ -73,7 +72,8 @@
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"/>
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
+        <field name="projectFolderSet" colSpan="12" widget="TagSelect"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
         <field name="excludePlanning" if-module="axelor-business-project"/>
@@ -89,7 +89,7 @@
 
     <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
       canCollapse="true">
-      <field name="assignedTo" title="Person In Charge" canNew="false" canView="false"
+      <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
         canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
         grid-view="user-grid"/>
     </panel>
@@ -132,7 +132,7 @@
   <action-attrs name="action-attrs-project-template-set-wizard-hidden">
     <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
     <attribute name="hidden"
-      expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
+      expr="eval:__config__.app.getApp('business-project')?.generateProjectSequence" for="code"/>
     <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
     <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
   </action-attrs>

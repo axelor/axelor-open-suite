@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -92,7 +92,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
               purchaseOrder.getPurchaseOrderSeq()),
           purchaseOrder);
     }
@@ -118,6 +118,8 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
         .addFormat(formatPdf);
   }
 
@@ -129,7 +131,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     }
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class)
+        + appBaseService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)

@@ -28,11 +28,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -53,6 +54,11 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected SaleOrderPurchaseService saleOrderPurchaseService;
   protected AppSupplychain appSupplychain;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected PartnerSupplychainService partnerSupplychainService;
+
+  protected SaleConfigService saleConfigService;
+
+  protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -65,7 +71,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      PartnerSupplychainService partnerSupplychainService,
+      SaleConfigService saleConfigService,
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
 
     super(
         sequenceService,
@@ -79,17 +88,33 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.partnerSupplychainService = partnerSupplychainService;
+    this.saleConfigService = saleConfigService;
+    this.saleOrderCheckAnalyticService = saleOrderCheckAnalyticService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-    super.confirmSaleOrder(saleOrder);
-
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.confirmSaleOrder(saleOrder);
       return;
     }
+
+    if (saleConfigService
+        .getSaleConfig(saleOrder.getCompany())
+        .getIsAnalyticDistributionRequired()) {
+      saleOrderCheckAnalyticService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
+    }
+
+    if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+    }
+
+    super.confirmSaleOrder(saleOrder);
 
     if (appSupplychain.getPurchaseOrderGenerationAuto()) {
       saleOrderPurchaseService.createPurchaseOrders(saleOrder);
@@ -97,10 +122,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
     }
-    int intercoSaleCreatingStatus =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getIntercoSaleCreatingStatusSelect();
+    int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
     if (saleOrder.getInterco()
         && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
@@ -108,9 +130,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
@@ -136,10 +159,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
     accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
     super.finalizeQuotation(saleOrder);
-    int intercoSaleCreatingStatus =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getIntercoSaleCreatingStatusSelect();
+    int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
     if (saleOrder.getInterco()
         && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
       Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
@@ -190,7 +210,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
             || statusSelect == StockMoveRepository.STATUS_PLANNED) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
         }
       }
     }

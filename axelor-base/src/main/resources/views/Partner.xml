@@ -19,7 +19,7 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -53,7 +53,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -89,7 +89,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -97,6 +97,7 @@
     <field name="registrationCode"/>
     <field name="mainAddress"/>
     <field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -114,8 +115,8 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
     <field name="jobTitleFunction"/>
@@ -131,8 +132,8 @@
     groupBy="user">
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
@@ -251,10 +252,10 @@
           onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
         <field name="isCustomer" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly() || isEmployee"
-          onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
+          onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
         <field name="isSupplier" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly() || isEmployee"
-          onChange="action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
+          onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
         <field name="isSubcontractor" colSpan="2" widget="InlineCheckbox" hideIf="$readonly()"
           if-module="axelor-production"
           if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
@@ -266,7 +267,7 @@
         <field name="isFactor" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly() || isEmployee"
           if="__config__.app.getApp('account')?.manageFactors"
-          onChange="action-partner-record-set-factor"/>
+          onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
           <viewer
@@ -277,14 +278,13 @@
 								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
 								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
 								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
 							</h4>
                         ]]>
           </viewer>
         </field>
-        <field name="$isSubcontractor" type="boolean" hidden="true" colSpan="12"/>
         <field name="isContact" hidden="true" colSpan="12"/>
         <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
@@ -307,6 +307,9 @@
                         ]]></viewer>
           </field>
         </panel>
+        <field name="$customerCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
+        <field name="$supplierCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
+        <field name="$factorCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
       </panel>
     </panel>
     <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
@@ -416,13 +419,10 @@
             colSpan="12"/>
         </panel>
         <panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
-          <field name="fixedPhone" colSpan="3" placeholder="+33100000000"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="fax" colSpan="3" placeholder="+33000000000"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"
-            placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            onChange="action-partner-method-normalize-mobilePhone"/>
+          <field name="fixedPhone" colSpan="3" widget="phone"
+            x-placeholder-number-type="FIXED_LINE"/>
+          <field name="fax" colSpan="3" widget="phone"/>
+          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false">
@@ -430,8 +430,8 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="webSite" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
         </panel>
 
         <panel name="employeePanel" hidden="true">
@@ -519,6 +519,11 @@
           form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid"
           if-module="axelor-sale"
           if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
+        <panel name="accountblockedPanel">
+          <field name="hasBlockedAccount"
+            onChange="action-attrs-update-manually-blocked-account"/>
+          <field name="hasManuallyBlockedAccount" hidden="true"/>
+        </panel>
         <panel name="saleOrderCommentsPanel" title="Comment to display on sale order"
           colSpan="12">
           <field name="saleOrderComments" widget="html" colSpan="12" showTitle="false"/>
@@ -677,10 +682,8 @@
         <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
         <field name="functionBusinessCard"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fixedPhone"/>
-        <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-mobilePhone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -689,8 +692,7 @@
               colSpan="12"/>
           </editor>
         </field>
-        <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fax"/>
+        <field name="fax" widget="phone"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid" colSpan="12"/>
         <field name="timeSlot" colSpan="12"/>
@@ -765,6 +767,13 @@
     <field name="registrationCode"/>
     <field name="companyStr"/>
     <field name="mainAddress"/>
+    <field name="isProspect"/>
+    <field name="isEmployee"/>
+    <field name="isCustomer"/>
+    <field name="isSupplier"/>
+    <field name="isSubcontractor"/>
+    <field name="isFactor"/>
+    <field name="isCarrier"/>
     <template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -788,6 +797,15 @@
 			    {{partnerCategory.name}}<br/>
 			    <strong><span x-translate>Companies</span></strong> : {{companyStr}}<br/>
 			    <strong><span x-translate>Fiscal position</span></strong> : {{fiscalPosition.code}}</span>
+			    <h4 style="text-align: right;">
+					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+				</h4>
 			  </div>
 			</div>
 		]]>
@@ -840,8 +858,8 @@
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>
     <field name="firstName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
 
@@ -900,10 +918,8 @@
       <panel name="contactDetailsPanel" title="Contact details">
         <field name="jobTitleFunction"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fixedPhone"/>
-        <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-mobilePhone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -911,8 +927,7 @@
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
           </editor>
         </field>
-        <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fax"/>
+        <field name="fax" widget="phone"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid"/>
       </panel>
@@ -963,8 +978,6 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
     <action name="action-partner-attrs-set-canselect"/>
-    <action name="action-partner-attrs-set-subcontactor"
-      if="__config__.app.isApp('production')"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -984,6 +997,117 @@
     <action name="action-partner-record-simple-and-full-name"/>
     <action name="action-partner-method-set-social-network-url"/>
   </action-group>
+
+  <action-group name="action-partner-group-check-can-change-factor"
+    if-module="axelor-account">
+    <action name="action-partner-record-factor-supplier-customer-no-error"/>
+    <action name="action-partner-method-check-company-account-config"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-partner-method-check-any-notification-attached"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-partner-validate-factor-supplier-customer-show-error"/>
+  </action-group>
+
+  <action-group name="action-partner-group-check-can-change-supplier">
+    <action name="action-partner-record-factor-supplier-customer-no-error"/>
+    <action name="action-partner-method-check-any-purchase-order-attached"
+      if="__config__.app.isApp('purchase')"/>
+    <action name="action-partner-method-check-any-invoice-supplier-purchase-attached"
+      if="__config__.app.isApp('invoice')"/>
+    <action name="action-partner-method-check-any-payable-move-line-attached"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-partner-validate-factor-supplier-customer-show-error"/>
+  </action-group>
+
+  <action-group name="action-partner-group-check-can-change-customer">
+    <action name="action-partner-record-factor-supplier-customer-no-error"/>
+    <action name="action-partner-method-check-any-sale-order-attached"
+      if="__config__.app.isApp('sale')"/>
+    <action name="action-partner-method-check-any-invoice-client-sale-attached"
+      if="__config__.app.isApp('invoice')"/>
+    <action name="action-partner-method-check-any-receivable-move-line-attached"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-partner-validate-factor-supplier-customer-show-error"/>
+  </action-group>
+
+  <action-record name="action-partner-record-factor-supplier-customer-no-error"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="customerCantBeRemoved" expr="eval:false"/>
+    <field name="supplierCantBeRemoved" expr="eval:false"/>
+    <field name="factorCantBeRemoved" expr="eval:false"/>
+  </action-record>
+
+  <action-validate
+    name="action-partner-validate-factor-supplier-customer-show-error">
+    <error
+      message="This partner is categorized as a customer due to existing records in the database. This category can't be removed."
+      action="action-partner-record-reset-customer-true" if="customerCantBeRemoved"/>
+    <error
+      message="This partner is categorized as a supplier due to existing records in the database. This category can't be removed."
+      action="action-partner-record-reset-supplier-true" if="supplierCantBeRemoved"/>
+    <error
+      message="This partner is categorized as a factor due to existing records in the database. This category can't be removed."
+      action="action-partner-record-reset-factor-true" if="factorCantBeRemoved"/>
+  </action-validate>
+
+  <action-record name="action-partner-record-reset-factor-true"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isFactor" expr="eval:true"/>
+    <field name="factorCantBeRemoved" expr="eval:false"/>
+  </action-record>
+
+  <action-record name="action-partner-record-reset-customer-true"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isCustomer" expr="eval:true"/>
+    <field name="customerCantBeRemoved" expr="eval:false"/>
+  </action-record>
+
+  <action-record name="action-partner-record-reset-supplier-true"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isSupplier" expr="eval:true"/>
+    <field name="supplierCantBeRemoved" expr="eval:false"/>
+  </action-record>
+
+  <action-method name="action-partner-method-check-company-account-config">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkAnyCompanyAccountConfigAttached"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-any-notification-attached">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkAnyNotificationAttached"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-any-payable-move-line-attached">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkAnyPayableMoveLineAttached"/>
+  </action-method>
+
+  <action-method
+    name="action-partner-method-check-any-invoice-supplier-purchase-attached">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkAnyInvoiceSupplierPurchaseAttached"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-any-purchase-order-attached">
+    <call class="com.axelor.apps.purchase.web.PartnerPurchaseController"
+      method="checkAnyPurchaseOrderAttached"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-any-sale-order-attached">
+    <call class="com.axelor.apps.sale.web.PartnerSaleController"
+      method="checkAnySaleOrderAttached"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-any-receivable-move-line-attached">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkAnyReceivableMoveLineAttached"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-any-invoice-client-sale-attached">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkAnyInvoiceClientSaleAttached"/>
+  </action-method>
 
   <action-method name="action-partner-method-check-name">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerName"/>
@@ -1203,18 +1327,6 @@
     <field name="supplierQualityRating" expr="eval: supplierQualityRatingSelect"/>
   </action-record>
 
-  <action-method name="action-partner-method-normalize-fixedPhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-partner-method-normalize-fax">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-partner-method-normalize-mobilePhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
   <action-record name="action-partner-record-empty-freight-carrier-mode"
     model="com.axelor.apps.base.db.Partner">
     <field name="freightCarrierMode" expr="eval:null"/>
@@ -1321,10 +1433,6 @@
       if="__config__.app.getApp('crm').assignableUsers == 1"/>
   </action-attrs>
 
-  <action-attrs name="action-partner-attrs-set-subcontactor">
-    <attribute name="value" for="$isSubcontractor"
-      expr="eval:__config__.app.getApp('production')?.getManageOutsourcing()"/>
-  </action-attrs>
 
   <action-view name="action-partner-view-subsidiary-partners" title="Subsidiaries"
     model="com.axelor.apps.base.db.Partner">
@@ -1414,6 +1522,8 @@
     </filter>
   </search-filters>
 
-
+  <action-attrs name="action-attrs-update-manually-blocked-account">
+    <attribute name="value" for="hasManuallyBlockedAccount" expr="eval: hasBlockedAccount"/>
+  </action-attrs>
 
 </object-views>

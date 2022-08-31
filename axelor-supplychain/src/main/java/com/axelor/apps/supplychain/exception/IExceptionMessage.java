@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.supplychain.exception;
 
-/** @author axelor */
+/**
+ * @author axelor *
+ * @deprecated Replaced by {@link SupplychainExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
   /** Purchase order Invoice Service and controller */
   static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
@@ -30,6 +34,14 @@ public interface IExceptionMessage {
 
   static final String PURCHASE_ORDER_2 = /*$$(*/
       "Error : you have exceeded the budget %s for this period" /*)*/;
+
+  static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
+      "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only return to validated from finished purchase order." /*)*/;
+
+  static final String PURCHASE_ORDER_TRADING_NAME_MISSING = /*$$(*/
+      "The purchase order trading name is missing." /*)*/;
 
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
@@ -47,6 +59,8 @@ public interface IExceptionMessage {
       "Please configure the advance payment product" /*)*/;
   static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
       "You must configure an advance payment account for the company %s" /*)*/;
+  static final String PO_INVOICE_MISSING_SUPPLIER_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
+      "You must configure an supplier advance payment account for the company %s" /*)*/;
   static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
   static final String SO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
@@ -77,6 +91,8 @@ public interface IExceptionMessage {
       "The trading name must be the same for all purchase orders." /*)*/;
   static final String STOCK_MOVE_MULTI_INVOICE_IN_ATI = /*$$(*/
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
+  static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders." /*)*/;
   static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/ "No invoice was generated" /*)*/;
   static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/
       "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
@@ -114,6 +130,11 @@ public interface IExceptionMessage {
   String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully," /*)*/;
   String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully," /*)*/;
 
+  /** Batch update stock history */
+  static final String BATCH_UPDATE_STOCK_HISTORY_1 = /*$$(*/ "Batch update stock history :" /*)*/;
+
+  static final String BATCH_UPDATE_STOCK_HISTORY_2 = /*$$(*/ "Stock history updated" /*)*/;
+
   /** Mrp Line Service */
   static final String MRP_LINE_1 = /*$$(*/
       "No default supplier is defined for the product %s" /*)*/;
@@ -125,8 +146,18 @@ public interface IExceptionMessage {
 
   static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
 
+  static final String MRP_NO_PRODUCT_ID = /*$$(*/
+      "The component %s - %s not referenced in the product list selected for the MRP or in the BOM route should be added on the MRP." /*)*/;
+
   static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
+  static final String MRP_ALREADY_STARTED = /*$$(*/ "Mrp calculation is already on going." /*)*/;
+
+  //  Mrp Forecast
+  static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only be confirmed from drafted forecast." /*)*/;
+  static final String MRP_FORECAST_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only be cancelled from drafted or confirmed forecast." /*)*/;
 
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
@@ -274,4 +305,32 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
       "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
+
+  static final String SALE_ORDER_BANK_DETAILS_MISSING = /*$$(*/
+      "%s : The advance payment generation failed. Please configure the bank details for the company %s and the associated payment mode %s either on the payment mode side or this Sale order %s record (hidden field)." /*)*/;
+
+  static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
+      "The customer account is blocked because he has late payments." /*)*/;
+
+  static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
+      "Can only go back to confirmed if completed." /*)*/;
+
+  /*
+   * MRP Service
+   */
+
+  String MRP_ERROR_WHILE_COMPUTATION = /*$$(*/ "Error during the computation of MRP %s" /*)*/;
+
+  String MRP_FINISHED_MESSAGE_SUBJECT = /*$$(*/ "MRP n°%s is now finished" /*)*/;
+  String MRP_FINISHED_MESSAGE_BODY = /*$$(*/
+      "The execution of MRP n°%s is now finished, you can click above to see the results." /*)*/;
+
+  static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
+      "Field fieldSelect is null for %s" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
 }

@@ -17,13 +17,29 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.AppStock;
+import com.axelor.apps.base.db.BarcodeTypeConfig;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationSaveService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class StockLocationStockRepository extends StockLocationRepository {
+
+  protected AppStockService appStockService;
+  protected BarcodeGeneratorService barcodeGeneratorService;
+
+  @Inject
+  public StockLocationStockRepository(
+      AppStockService appStockService, BarcodeGeneratorService barcodeGeneratorService) {
+    this.appStockService = appStockService;
+    this.barcodeGeneratorService = barcodeGeneratorService;
+  }
 
   /**
    * Override to remove incompatible stock locations in partners
@@ -32,9 +48,32 @@ public class StockLocationStockRepository extends StockLocationRepository {
    * @return
    */
   @Override
-  public StockLocation save(StockLocation entity) {
-    Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(entity);
-    return super.save(entity);
+  public StockLocation save(StockLocation stockLocation) {
+    Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(stockLocation);
+
+    // Barcode generation
+    AppStock appStock = appStockService.getAppStock();
+    if (appStock != null
+        && appStock.getActivateStockLocationBarCodeGeneration()
+        && stockLocation.getBarCode() == null) {
+      boolean addPadding = false;
+      BarcodeTypeConfig barcodeTypeConfig = stockLocation.getBarcodeTypeConfig();
+      if (!appStock.getEditStockLocationBarcodeType()) {
+        barcodeTypeConfig = appStock.getStockLocationBarcodeTypeConfig();
+      }
+      MetaFile barcodeFile =
+          barcodeGeneratorService.createBarCode(
+              stockLocation.getId(),
+              "StockLocationBarCode%d.png",
+              stockLocation.getSerialNumber(),
+              barcodeTypeConfig,
+              addPadding);
+      if (barcodeFile != null) {
+        stockLocation.setBarCode(barcodeFile);
+      }
+    }
+
+    return super.save(stockLocation);
   }
 
   @Override
@@ -42,7 +81,7 @@ public class StockLocationStockRepository extends StockLocationRepository {
     Long stocklocationId = (Long) json.get("id");
     StockLocation stockLocation = find(stocklocationId);
 
-    if (stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+    if (!stockLocation.getIsValued()) {
       return super.populate(json, context);
     }
 

@@ -20,8 +20,10 @@ package com.axelor.apps.businessproject.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BusinessProjectExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;
@@ -65,4 +67,7 @@ public interface IExceptionMessage {
   static final String BATCH_INVOICING_PROJECT_1 = /*$$(*/ "Project %s" /*)*/;
 
   static final String BATCH_INVOICING_PROJECT_2 = /*$$(*/ "Generated invoicing project" /*)*/;
+
+  static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for Project" /*)*/;
 }

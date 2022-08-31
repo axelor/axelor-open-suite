@@ -9,7 +9,11 @@
   <input file="account_fiscalPosition.csv" separator=";"
     type="com.axelor.apps.account.db.FiscalPosition"/>
 
-  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"/>
+  <input file="account_serviceType.csv" separator=";"
+    type="com.axelor.apps.account.db.ServiceType" search="self.importId = :importId"/>
+
+  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
+    search="self.importId = :importId"/>
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
@@ -46,22 +50,27 @@
   </input>
 
   <input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal"
-    search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType"/>
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType">
+    <bind column="validAccountTypes" to="validAccountTypeSet"
+      search="self.technicalTypeSelect in :validAccountTypes"
+      eval="validAccountTypes.split('\\|') as List"/>
+    <bind column="validAccounts" to="validAccountSet"
+      search="self.code in :validAccounts and self.company.importId = :company_importId"
+      eval="validAccounts.split('\\|') as List"/>
+    <bind to="company" search="self.importId = :company_importId"/>
+  </input>
 
   <input file="account_paymentMode.csv" separator=";"
-    type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId">
+    <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
+    <bind column="generateMoveAutoFromBankOrder" to="generateMoveAutoFromBankOrder"
+      adapter="Boolean"/>
+    <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
+      adapter="Boolean"/>
+  </input>
 
   <input file="account_paymentCondition.csv" separator=";"
     type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId"/>
-
-  <input file="account_analyticAxis.csv" separator=";"
-    type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId"/>
-
-  <input file="account_analyticJournal.csv" separator=";"
-    type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
-
-  <input file="account_analyticAccount.csv" separator=";"
-    type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId"/>
 
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
     search="self.importId = :importId" update="true"
@@ -124,9 +133,6 @@
     type="com.axelor.apps.account.db.DebtRecoveryMethodLine"/>
 
 
-  <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.apps.account.db.FixedAssetType"/>
-
   <input file="account_fixedAssetCategory.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetCategory">
     <bind to="computationMethodSelect" eval="'linear'"/>
@@ -151,6 +157,9 @@
 
   <input file="account_cfonbConfig.csv" separator=";"
     type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId"/>
+
+  <input file="account_analyticJournal.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
     type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
@@ -177,9 +186,8 @@
     type="com.axelor.apps.base.db.AppAccount"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
-    search="self.importId = :importId">
-    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
-      if="yearlyResetOk"/>
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind to="yearlyResetOk" column="yearlyResetOk" adapter="Boolean" if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
@@ -242,5 +250,39 @@
     <bind to="rule" column="rule"/>
     <bind to="reportType" search="self.importId = :reportTypeId"/>
   </input>
+
+  <input file="account_paymentDelayReason.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentDelayReason" search="self.importId = :importId"/>
+
+  <input file="account_analyticAxis.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId"/>
+
+  <input file="account_analyticGrouping.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticGrouping" search="self.importId = :importId"/>
+
+  <input file="account_analyticAxis.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" update="true"/>
+
+  <input file="account_analyticGroupingValue.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticGroupingValue" search="self.importId = :importId"/>
+
+  <input file="account_analyticAccount.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId"/>
+
+  <input file="account_analyticAxisByCompany.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAxisByCompany" search="self.importId = :importId"/>
+
+  <input file="account_analyticDistributionTemplate.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    search="self.importId = :importId"/>
+
+  <input file="account_analyticDistributionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticDistributionLine" search="self.importId = :importId"/>
+
+  <input file="account_das2Activity.csv" separator=";"
+    type="com.axelor.apps.account.db.Das2Activity" search="self.code = :code"/>
+
+  <input file="account_financialDiscount.csv" separator=";"
+    type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId"/>
 
 </csv-inputs>

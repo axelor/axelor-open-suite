@@ -18,8 +18,9 @@
 package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.AppBusinessProject;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -27,6 +28,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -63,6 +65,9 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
   @Override
   protected void process() {
+
+    this.updateTasks();
+
     Map<String, Object> contextValues = null;
     try {
       contextValues = ProjectInvoicingAssistantBatchService.createJsonContext(batch);
@@ -70,36 +75,59 @@ public class BatchUpdateTaskService extends AbstractBatch {
       TraceBackService.trace(e);
     }
 
-    this.updateTasks(contextValues);
-    this.updateTimesheetLines(contextValues);
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (!appBusinessProject.getAutomaticInvoicing()) {
+      this.updateTaskToInvoice(contextValues, appBusinessProject);
+      this.updateTimesheetLines(contextValues);
+    }
   }
 
-  private void updateTasks(Map<String, Object> contextValues) {
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    List<Object> updatedTaskList = new ArrayList<Object>();
+  private void updateTasks() {
+    QueryBuilder<ProjectTask> taskQueryBuilder =
+        projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
-    String filter =
-        !Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())
-            ? "self.id NOT IN (SELECT id FROM ProjectTask WHERE "
-                + appBusinessProject.getExculdeTaskInvoicing()
-                + ")"
-            : "self.id NOT IN (0)";
-
-    Query<ProjectTask> taskQuery =
-        projectTaskRepo
-            .all()
-            .filter(
-                filter
-                    + " AND self.project.isBusinessProject = :isBusinessProject "
-                    + " AND self.project.toInvoice = :invoiceable "
-                    + "AND self.toInvoice = :toInvoice")
-            .bind("isBusinessProject", true)
-            .bind("invoiceable", true)
-            .bind("toInvoice", false)
-            .order("id");
+    Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
 
     int offset = 0;
     List<ProjectTask> taskList;
+
+    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      findBatch();
+      for (ProjectTask projectTask : taskList) {
+        try {
+          projectTask = projectTaskBusinessProjectService.updateTaskFinancialInfo(projectTask);
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
+                      projectTask.getId()),
+                  e),
+              "task",
+              batch.getId());
+        }
+      }
+      offset += taskList.size();
+      JPA.clear();
+    }
+  }
+
+  private void updateTaskToInvoice(
+      Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
+
+    QueryBuilder<ProjectTask> taskQueryBuilder =
+        projectTaskBusinessProjectService.getTaskInvoicingFilter();
+
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+      taskQueryBuilder = taskQueryBuilder.add(filter);
+    }
+    Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
+
+    int offset = 0;
+    List<ProjectTask> taskList;
+    List<Object> updatedTaskList = new ArrayList<Object>();
 
     while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
@@ -107,10 +135,10 @@ public class BatchUpdateTaskService extends AbstractBatch {
       for (ProjectTask projectTask : taskList) {
         try {
           projectTask =
-              projectTaskBusinessProjectService.updateTask(projectTask, appBusinessProject);
+              projectTaskBusinessProjectService.updateTaskToInvoice(
+                  projectTask, appBusinessProject);
 
           if (projectTask.getToInvoice()) {
-            offset--;
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", projectTask.getId());
             updatedTaskList.add(map);
@@ -120,7 +148,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), projectTask.getId()),
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
+                      projectTask.getId()),
                   e),
               ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
@@ -137,22 +166,9 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 
-    Query<TimesheetLine> timesheetLineQuery =
-        timesheetLineRepo
-            .all()
-            .filter(
-                "((self.projectTask.parentTask.invoicingType = :_invoicingType "
-                    + "AND self.projectTask.parentTask.toInvoice = :_teamTaskToInvoice) "
-                    + " OR (self.projectTask.parentTask IS NULL "
-                    + "AND self.projectTask.invoicingType = :_invoicingType "
-                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice)) "
-                    + "AND self.projectTask.project.isBusinessProject = :_isBusinessProject "
-                    + "AND self.toInvoice = :_toInvoice")
-            .bind("_invoicingType", ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
-            .bind("_isBusinessProject", true)
-            .bind("_projectTaskToInvoice", true)
-            .bind("_toInvoice", false)
-            .order("id");
+    QueryBuilder<TimesheetLine> timesheetLineQueryBuilder =
+        timesheetLineBusinessService.getTimesheetLineInvoicingFilter();
+    Query<TimesheetLine> timesheetLineQuery = timesheetLineQueryBuilder.build().order("id");
 
     int offset = 0;
     List<TimesheetLine> timesheetLineList;
@@ -163,9 +179,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       for (TimesheetLine timesheetLine : timesheetLineList) {
         try {
           timesheetLine = timesheetLineBusinessService.updateTimesheetLines(timesheetLine);
-
           if (timesheetLine.getToInvoice()) {
-            offset--;
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", timesheetLine.getId());
             updatedTimesheetLineList.add(map);
@@ -175,7 +189,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
                       timesheetLine.getId()),
                   e),
               ExceptionOriginRepository.INVOICE_ORIGIN,
@@ -191,12 +205,11 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
   @Override
   protected void stop() {
-    String comment = I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_2);
+    String comment = I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_2);
 
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

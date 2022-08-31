@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -70,10 +70,16 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES:
         batch = realizeFixedAssetLines(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING:
+        batch = blockCustomersWithLatePayments(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS:
+        batch = closeAnnualAccounts(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             accountingBatch.getActionSelect(),
             accountingBatch.getCode());
     }
@@ -147,6 +153,11 @@ public class AccountingBatchService extends AbstractBatchService {
         I18n.get("This batch requires the bank payment module."));
   }
 
+  public Batch billOfExchange(AccountingBatch accountingBatch) {
+    throw new UnsupportedOperationException(
+        I18n.get("This batch requires the bank payment module."));
+  }
+
   public Batch realizeFixedAssetLines(AccountingBatch accountingBatch) {
 
     return Beans.get(BatchRealizeFixedAssetLine.class).run(accountingBatch);
@@ -155,5 +166,10 @@ public class AccountingBatchService extends AbstractBatchService {
   public Batch closeAnnualAccounts(AccountingBatch accountingBatch) {
 
     return Beans.get(BatchCloseAnnualAccounts.class).run(accountingBatch);
+  }
+
+  public Batch blockCustomersWithLatePayments(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchBlockCustomersWithLatePayments.class).run(accountingBatch);
   }
 }

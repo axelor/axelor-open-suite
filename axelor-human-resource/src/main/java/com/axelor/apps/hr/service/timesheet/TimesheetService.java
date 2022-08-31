@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
@@ -111,9 +113,10 @@ public interface TimesheetService {
 
   public Timesheet getCurrentTimesheet();
 
-  public Timesheet getCurrentOrCreateTimesheet();
+  public Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
 
-  public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
+  public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
@@ -121,7 +124,7 @@ public interface TimesheetService {
   public List<InvoiceLine> createInvoiceLine(
       Invoice invoice,
       Product product,
-      User user,
+      Employee employee,
       String date,
       BigDecimal hoursDuration,
       int priority,
@@ -167,4 +170,7 @@ public interface TimesheetService {
   public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
 
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
+
+  @CallMethod
+  public Set<Long> getContextProjectIds();
 }

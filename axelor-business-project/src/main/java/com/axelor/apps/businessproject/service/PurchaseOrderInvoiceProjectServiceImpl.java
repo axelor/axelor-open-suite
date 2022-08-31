@@ -17,45 +17,86 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoiceServiceImpl {
 
-  @Inject private PriceListService priceListService;
+  private PriceListService priceListService;
 
-  @Inject private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
+  private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
-  @Inject protected AppBusinessProjectService appBusinessProjectService;
+  protected AppBusinessProjectService appBusinessProjectService;
 
-  @Inject protected ProductCompanyService productCompanyService;
+  protected ProductCompanyService productCompanyService;
+
+  @Inject
+  public PurchaseOrderInvoiceProjectServiceImpl(
+      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceRepository invoiceRepo,
+      TimetableRepository timetableRepo,
+      AppSupplychainService appSupplychainService,
+      PriceListService priceListService,
+      PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl,
+      AppBusinessProjectService appBusinessProjectService,
+      ProductCompanyService productCompanyService,
+      AccountConfigService accountConfigService,
+      CommonInvoiceService commonInvoiceService,
+      AddressService addressService) {
+    super(
+        invoiceService,
+        invoiceRepo,
+        timetableRepo,
+        appSupplychainService,
+        accountConfigService,
+        commonInvoiceService,
+        addressService);
+    this.priceListService = priceListService;
+    this.purchaseOrderLineServiceImpl = purchaseOrderLineServiceImpl;
+    this.appBusinessProjectService = appBusinessProjectService;
+    this.productCompanyService = productCompanyService;
+  }
 
   @Override
   public void processPurchaseOrderLine(
@@ -63,7 +104,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
 
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+    if (appBusinessProjectService.isApp("business-project")) {
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
     }
   }
@@ -234,5 +275,47 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
     }
     invoice = Beans.get(InvoiceRepository.class).save(invoice);
     return invoice;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate,
+      PurchaseOrder purchaseOrder,
+      Project project)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        super.mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition,
+            tradingName,
+            fiscalPosition,
+            supplierInvoiceNb,
+            originDate,
+            purchaseOrder);
+    if (project != null
+        && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
+      invoiceMerged.setProject(project);
+      for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
+        invoiceLine.setProject(project);
+      }
+    }
+    return invoiceMerged;
   }
 }

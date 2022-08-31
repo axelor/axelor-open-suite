@@ -25,8 +25,8 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
@@ -54,7 +54,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveCreateService moveCreateService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
   protected MoveValidateService moveValidateService;
@@ -66,22 +66,22 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   @Inject
   public AccountingCloseAnnualServiceImpl(
       MoveCreateService moveCreateService,
-      MoveLineService moveLineService,
       AccountConfigService accountConfigService,
       MoveRepository moveRepository,
       MoveValidateService moveValidateService,
       ReconcileService reconcileService,
       AccountService accountService,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      MoveLineCreateService moveLineCreateService) {
 
     this.moveCreateService = moveCreateService;
-    this.moveLineService = moveLineService;
     this.accountConfigService = accountConfigService;
     this.moveRepository = moveRepository;
     this.moveValidateService = moveValidateService;
     this.reconcileService = reconcileService;
     this.accountService = accountService;
     this.accountRepository = accountRepository;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -186,12 +186,16 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             company.getCurrency(),
             partner,
             moveDate,
+            originDate,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,
             false,
             false,
-            !isReverse);
+            !isReverse,
+            origin,
+            moveDescription);
     counter = 0;
 
     this.generateCloseAnnualMoveLine(
@@ -206,7 +210,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;
@@ -236,7 +240,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     LocalDate moveDate = move.getDate();
 
     MoveLine moveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             move.getPartner(),
             account,
@@ -275,7 +279,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);
     q.setParameter(1, year);
     q.setParameter(2, account);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     if (partner != null) {
       q.setParameter(4, partner);
@@ -328,7 +332,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountIdList);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 
@@ -364,7 +368,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountId);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 

@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
@@ -47,20 +47,19 @@ import java.util.Set;
 
 public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeService {
 
-  @Inject private MailMessageRepository mailMessageRepo;
+  protected MailMessageRepository mailMessageRepo;
+
+  @Inject
+  public ObjectDataAnonymizeServiceImpl(MailMessageRepository mailMessageRepo) {
+    this.mailMessageRepo = mailMessageRepo;
+  }
 
   public void anonymize(ObjectDataConfig objectDataConfig, Long recordId) throws AxelorException {
 
     try {
-
       String rootModel = objectDataConfig.getModelSelect();
 
       for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
-        String path =
-            line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH
-                ? line.getMetaFieldPath().getName()
-                : line.getPath();
-
         Class<? extends Model> modelClass =
             ObjectDataCommonService.findModelClass(line.getMetaModel());
         Query<? extends Model> query =
@@ -71,6 +70,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
         int reset = line.getResetPathSelect();
         if (reset != DataConfigLineRepository.RESET_NONE
             && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
+
+          String path = getPath(line);
+
           if (reset == DataConfigLineRepository.RESET_DELETE) {
             deleteLink(mapper, path, data);
           } else {
@@ -84,6 +86,39 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+    }
+  }
+
+  private String getPath(DataConfigLine line) throws AxelorException {
+
+    String metaModelName = line.getMetaModel().getName();
+
+    switch (line.getTypeSelect()) {
+      case DataConfigLineRepository.TYPE_PATH:
+        MetaField metaFieldPath = line.getMetaFieldPath();
+        if (metaFieldPath == null) {
+          throw new AxelorException(
+              line,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AdminExceptionMessage.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
+              metaModelName);
+        }
+        return metaFieldPath.getName();
+
+      case DataConfigLineRepository.TYPE_QUERY:
+        String query = line.getPath();
+        if (query == null) {
+          throw new AxelorException(
+              line,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AdminExceptionMessage.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
+              metaModelName);
+        }
+        return query;
+
+      default:
+        throw new AxelorException(
+            line, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Unknown case");
     }
   }
 
@@ -118,7 +153,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     if (object == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessages.OBJECT_DATA_REPLACE_MISSING),
+          I18n.get(AdminExceptionMessage.OBJECT_DATA_REPLACE_MISSING),
           recordValue);
     }
     for (Model model : data) {

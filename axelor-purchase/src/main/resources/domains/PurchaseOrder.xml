@@ -40,8 +40,14 @@
     <string name="internalReference" title="Internal Ref."/>
     <integer name="receiptState" title="Receipt State"
       selection="purchase.order.receipt.state" readonly="true" default="1"/>
+    <decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20"
+      readonly="true"/>
 
-
+    <!-- Tax Number and FiscalPosition -->
+    <many-to-one name="taxNumber" title="Tax number"
+      ref="com.axelor.apps.account.db.TaxNumber"/>
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
 
     <!-- Ligne de TVA -->
     <one-to-many name="purchaseOrderLineTaxList"
@@ -64,6 +70,7 @@
     <!-- Notes -->
     <string name="notes" large="true" multiline="true" title="Description To Display"/>
     <string name="internalNote" large="true" multiline="true" title="Internal Note"/>
+    <string name="specificNotes" title="Specific notes" large="true"/>
 
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
 
@@ -112,6 +119,7 @@
       <field name="purchaseOrderSeq"/>
       <field name="supplierPartner"/>
       <field name="statusSelect" on="UPDATE"/>
+      <field name="deliveryDate"/>
       <message if="true" on="CREATE">Purchase order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="important">Requested</message>

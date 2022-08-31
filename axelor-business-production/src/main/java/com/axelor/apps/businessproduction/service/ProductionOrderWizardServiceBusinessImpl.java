@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
@@ -64,7 +64,6 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
   @SuppressWarnings("unchecked")
   public Long validate(Context context) throws AxelorException {
 
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
     if (!appProductionService.isApp("production")
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       return super.validate(context);
@@ -117,6 +116,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
             project,
             startDateT.toLocalDateTime(),
             endDateT != null ? endDateT.toLocalDateTime() : null,
+            null,
             null);
 
     if (productionOrder != null) {
@@ -124,7 +124,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_ORDER_2));
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_2));
     }
   }
 }

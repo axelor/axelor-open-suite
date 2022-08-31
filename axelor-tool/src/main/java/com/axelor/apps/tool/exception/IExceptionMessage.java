@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.tool.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link ToolExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Period service */
@@ -48,4 +52,7 @@ public interface IExceptionMessage {
 
   static final String ERROR_CONVERT_JSON_TYPE_TO_TYPE = /*$$(*/
       "Meta json field type %s could not be converted to a meta field type." /*)*/;
+
+  // Callable Tool
+  String PROCESS_BEING_COMPUTED = /*$$(*/ "Computation in progress..." /*)*/;
 }

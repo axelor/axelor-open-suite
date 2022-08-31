@@ -167,7 +167,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.partialFinish(manufOrder);
     } else {
-      Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+      manufOrderStockMoveService.partialFinish(manufOrder);
       return true;
     }
   }

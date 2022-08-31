@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -42,11 +43,13 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -55,13 +58,19 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +78,14 @@ import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
 
+  protected PurchaseConfigService purchaseConfigService;
+
   protected static int DEFAULT_INVOICE_COPY = 1;
+
+  @Inject
+  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+    this.purchaseConfigService = purchaseConfigService;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -91,6 +107,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
+            null,
+            null,
             null);
 
     // in ati
@@ -161,6 +179,10 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+    purchaseOrder.setDisplayPriceOnQuotationRequest(
+        purchaseConfigService
+            .getPurchaseConfig(intercoCompany)
+            .getDisplayPriceOnQuotationRequest());
 
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
@@ -262,9 +284,10 @@ public class IntercoServiceImpl implements IntercoService {
    * @param purchaseOrderLine the purchase order line needed to create the sale order line
    * @param saleOrder the sale order line belongs to this purchase order
    * @return the created purchase order line
+   * @throws AxelorException
    */
   protected SaleOrderLine createIntercoSaleLineFromPurchaseLine(
-      PurchaseOrderLine purchaseOrderLine, SaleOrder saleOrder) {
+      PurchaseOrderLine purchaseOrderLine, SaleOrder saleOrder) throws AxelorException {
     SaleOrderLine saleOrderLine = new SaleOrderLine();
 
     saleOrderLine.setSaleOrder(saleOrder);
@@ -339,7 +362,7 @@ public class IntercoServiceImpl implements IntercoService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_MISSING_TYPE),
+            I18n.get(SupplychainExceptionMessage.INVOICE_MISSING_TYPE),
             invoice);
     }
     Company intercoCompany = findIntercoCompany(invoice.getPartner());
@@ -379,6 +402,11 @@ public class IntercoServiceImpl implements IntercoService {
     intercoInvoice.setCreatedByInterco(true);
     intercoInvoice.setInterco(false);
 
+    if (isPurchase) {
+      intercoInvoice.setOriginDate(invoice.getInvoiceDate());
+      intercoInvoice.setSupplierInvoiceNb(invoice.getInvoiceId());
+    }
+
     intercoInvoice.setPrintingSettings(intercoCompany.getPrintingSettings());
 
     if (intercoInvoice.getInvoiceLineList() != null) {
@@ -391,13 +419,31 @@ public class IntercoServiceImpl implements IntercoService {
     invoiceService.compute(intercoInvoice);
     intercoInvoice.setExternalReference(invoice.getInvoiceId());
     intercoInvoice = invoiceRepository.save(intercoInvoice);
+
+    // the interco invoice needs to be saved before we can attach files to it
+    if (invoice.getPrintedPDF() != null) {
+      copyInvoicePdfToIntercoDMS(invoice.getPrintedPDF(), intercoInvoice);
+    }
     if (Beans.get(AppSupplychainService.class)
         .getAppSupplychain()
         .getIntercoInvoiceCreateValidated()) {
-      Beans.get(InvoiceService.class).validate(intercoInvoice);
+      invoiceService.validate(intercoInvoice);
     }
     invoice.setExternalReference(intercoInvoice.getInvoiceId());
     return intercoInvoice;
+  }
+
+  protected void copyInvoicePdfToIntercoDMS(MetaFile printedPdf, Invoice intercoInvoice)
+      throws AxelorException {
+    MetaFiles metaFiles = Beans.get(MetaFiles.class);
+    try {
+      String printedPdfPath = AppService.getFileUploadDir() + printedPdf.getFilePath();
+      MetaFile printedPdfCopy = metaFiles.upload(new File(printedPdfPath));
+      metaFiles.attach(printedPdfCopy, printedPdf.getFileName(), intercoInvoice);
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
+    }
   }
 
   protected InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
@@ -406,13 +452,14 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
-    Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
+      FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
+
       Account account =
           accountManagementAccountService.getProductAccount(
               invoiceLine.getProduct(),
               intercoInvoice.getCompany(),
-              partner.getFiscalPosition(),
+              fiscalPosition,
               isPurchase,
               false);
       invoiceLine.setAccount(account);
@@ -423,10 +470,7 @@ public class IntercoServiceImpl implements IntercoService {
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
       TaxEquiv taxEquiv =
           accountManagementAccountService.getProductTaxEquiv(
-              invoiceLine.getProduct(),
-              intercoInvoice.getCompany(),
-              intercoInvoice.getPartner().getFiscalPosition(),
-              isPurchase);
+              invoiceLine.getProduct(), intercoInvoice.getCompany(), fiscalPosition, isPurchase);
       invoiceLine.setTaxEquiv(taxEquiv);
       invoiceLine.setCompanyExTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));

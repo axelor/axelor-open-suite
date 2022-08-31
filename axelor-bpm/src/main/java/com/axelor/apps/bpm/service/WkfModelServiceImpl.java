@@ -26,6 +26,7 @@ import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
 import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
+import com.axelor.apps.bpm.service.deployment.BpmDeploymentService;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.apps.bpm.translation.ITranslation;
 import com.axelor.apps.tool.service.TranslationService;
@@ -228,7 +229,11 @@ public class WkfModelServiceImpl implements WkfModelService {
           public void imported(Integer imported, Integer total) {}
 
           @Override
-          public void imported(Model arg0) {}
+          public void imported(Model arg0) {
+            WkfModel wkfModel = (WkfModel) arg0;
+            Beans.get(BpmDeploymentService.class).deploy(wkfModel, null);
+            wkfModel.setStatusSelect(WkfModelRepository.STATUS_ON_GOING);
+          }
 
           @Override
           public void handle(Model arg0, Exception err) {

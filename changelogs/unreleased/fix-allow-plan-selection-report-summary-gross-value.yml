@@ -1,0 +1,5 @@
+---
+title: "AccountingReport : Allow plan selection on report 'Summary of gross values and depreciation'"
+type: fix
+description: |
+  Can now choose type in order to filter the report with the fixed asset lines corresponding to the selected type (it was only taking economics lines)

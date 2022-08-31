@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
@@ -77,7 +77,6 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   @Override
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
-    project.setIsProject(true);
     project.setIsBusinessProject(true);
     return project;
   }
@@ -153,7 +152,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     if (root == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+          I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
     }
     return ActionView.define("Tasks")
         .model(ProjectTask.class.getName())

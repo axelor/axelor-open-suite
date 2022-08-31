@@ -10,14 +10,14 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="cashAccount" form-view="account-form" grid-view="account-grid"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-      canEdit="false"/>
-    <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false"
-      domain="self.company = :company AND self.statusSelect = 1"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
       canEdit="false" onSelect="action-account-management-attrs-bank-details-domain"
       onChange="action-account-management-attrs-bank-details-on-change"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+      domain="self.company = :company AND self.statusSelect = 1"/>
+    <field name="cashAccount" form-view="account-form" grid-view="account-grid"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+      canEdit="false"/>
     <field name="sequence"
       domain="self.company = :company  AND self.codeSelect ='paymentVoucher'"
       form-view="sequence-form" grid-view="sequence-grid"/>
@@ -32,16 +32,31 @@
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
     <field name="purchFixedAssetsAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
     <field name="saleAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
+    <field name="financialDiscountAccount" if-module="axelor-account" form-view="account-form"
+      grid-view="account-grid"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      canEdit="false"/>
+  </grid>
+
+  <grid name="account-management-editable-grid" title="Account management list"
+    model="com.axelor.apps.account.db.AccountManagement" editable="true"
+    groupBy="company,bankDetails">
+    <field name="company"/>
+    <field name="bankDetails"/>
+    <field name="journal" domain="self.statusSelect = 1"/>
+    <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
+    <field name="paymentMode"/>
   </grid>
 
   <action-group name="action-group-account-account-management-onchange-common">

@@ -6,11 +6,23 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Wiki">
-    <string name="title"/>
-    <string name="content" large="true"/>
+    <string name="title" title="Title" namecolumn="true"/>
+    <string name="content" title="Content" large="true"/>
+    <integer name="sequence" title="Sequence"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="projectTemplate" ref="com.axelor.apps.project.db.ProjectTemplate"
       title="Project template"/>
+    <many-to-one name="folder" title="Folder"
+      ref="com.axelor.apps.project.db.WikiFolder"/>
+
+    <track>
+      <field name="title"/>
+      <field name="sequence"/>
+      <field name="project"/>
+      <field name="projectTemplate"/>
+      <field name="folder"/>
+    </track>
+
   </entity>
 
 </domain-models>

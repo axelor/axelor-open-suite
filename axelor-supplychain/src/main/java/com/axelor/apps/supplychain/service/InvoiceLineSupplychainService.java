@@ -23,8 +23,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -61,7 +62,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       PurchaseProductService purchaseProductService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountConfigService accountConfigService) {
     super(
         currencyService,
         priceListService,
@@ -70,7 +72,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         accountManagementAccountService,
         productCompanyService,
         invoiceLineRepo,
-        appBaseService);
+        appBaseService,
+        accountConfigService);
     this.purchaseProductService = purchaseProductService;
   }
 
@@ -131,12 +134,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         invoice.getCurrency(),
         invoice.getInvoiceDate(),
         invoice.getCompany());
-  }
-
-  @Override
-  public Map<String, Object> fillPriceAndAccount(
-      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
-    return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
   }
 
   @Override

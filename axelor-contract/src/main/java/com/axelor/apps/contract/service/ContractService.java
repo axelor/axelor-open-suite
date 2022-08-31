@@ -109,7 +109,7 @@ public interface ContractService {
       throws AxelorException;
 
   /** Closes the contract */
-  void close(Contract contract, LocalDate date);
+  void close(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * Invoicing the contract

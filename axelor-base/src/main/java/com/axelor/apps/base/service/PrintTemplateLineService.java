@@ -24,9 +24,7 @@ import java.io.IOException;
 
 public interface PrintTemplateLineService {
 
-  public void checkExpression(
+  public String checkExpression(
       Long objectId, MetaModel metaModel, PrintTemplateLine printTemplateLine)
       throws AxelorException, IOException, ClassNotFoundException;
-
-  public void addItemToReferenceSelection(MetaModel model);
 }

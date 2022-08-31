@@ -29,7 +29,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-supplychain-batch-record-reset-period"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -80,6 +80,13 @@
         <field name="ati" showIf="!recoveredTax"/>
         <field name="includeNotStockManagedProduct"/>
       </panel>
+      <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
+        showIf="actionSelect == 4" colSpan="12">
+        <field name="period"
+          domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
+        <field name="productCategorySet" colSpan="12" canNew="false" canEdit="false"
+          canSelect="true"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -93,24 +100,25 @@
         showIf="actionSelect == 1" onClick="save,action-supplychain-batch-group-accounting-cut-off"
         colSpan="12"/>
       <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves"
-        showIf="actionSelect == 2"
-        onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12"
-        if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+        showIf="actionSelect == 2" onClick="save,action-supplychain-batch-method-run-batch"
+        colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
       <button name="invoiceOrdersBatchBtn" title="Invoice orders" showIf="actionSelect == 3"
-        onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
+        onClick="save,action-supplychain-batch-method-run-batch" colSpan="12"/>
+      <button name="invoiceOrdersBatchBtn" title="Update stock history"
+        showIf="actionSelect == 4"
+        onClick="save,action-supplychain-batch-method-update-stock-history" colSpan="12"/>
     </panel>
   </form>
 
   <!-- ACTION GROUP -->
   <action-group name="action-supplychain-batch-group-accounting-cut-off">
     <action name="action-supplychain-batch-validate-twice-in-a-month"/>
-    <action name="action-supplychain-batch-method-accounting-cut-off"/>
+    <action name="action-supplychain-batch-method-run-batch"/>
   </action-group>
 
   <action-group name="action-group-supplychain-batch-group-onload">
     <action name="action-supplychain-batch-attrs-show-label"/>
   </action-group>
-
 
   <!-- ACTION ATTRS -->
   <action-attrs name="action-supplychain-batch-attrs-show-label">
@@ -129,11 +137,12 @@
   <!-- ACTION RECORD -->
   <action-record name="action-supplychain-batch-record-on-new"
     model="com.axelor.apps.base.db.MailBatch">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -142,21 +151,20 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
+  <action-record name="action-supplychain-batch-record-reset-period"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="period" expr="eval: null"/>
+  </action-record>
+
   <!-- ACTION METHOD -->
 
-  <action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="invoiceOutgoingStockMoves"/>
+  <action-method name="action-supplychain-batch-method-run-batch">
+    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="runBatch"/>
   </action-method>
 
-  <action-method name="action-supplychain-batch-method-invoice-orders">
+  <action-method name="action-supplychain-batch-method-update-stock-history">
     <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="invoiceOrders"/>
-  </action-method>
-
-  <action-method name="action-supplychain-batch-method-accounting-cut-off">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="accountingCutOff"/>
+      method="updateStockHistory"/>
   </action-method>
 
 
@@ -182,6 +190,13 @@
       expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
   </action-view>
 
+  <action-view name="action-batch-show-stock-history-lines" title="Stock history line"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
+    <view type="grid" name="stock-history-line-all-grid"/>
+    <view type="form" name="stock-history-line-form"/>
+    <domain>self.period = :period</domain>
+    <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
+  </action-view>
 
   <search-filters name="supplychain-batch-filters"
     model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">

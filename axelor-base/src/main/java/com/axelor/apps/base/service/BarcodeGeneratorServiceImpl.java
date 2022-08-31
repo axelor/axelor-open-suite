@@ -18,10 +18,14 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.BarcodeTypeConfig;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -36,6 +40,7 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +48,39 @@ import org.slf4j.LoggerFactory;
 public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected MetaFiles metaFiles;
+
+  @Inject
+  public BarcodeGeneratorServiceImpl(MetaFiles metaFiles) {
+    this.metaFiles = metaFiles;
+  }
+
+  @Override
+  public MetaFile createBarCode(
+      Long originId,
+      String fileNameFormat,
+      String serialno,
+      BarcodeTypeConfig barcodeTypeConfig,
+      boolean isPadding) {
+    if (barcodeTypeConfig != null && serialno != null) {
+      try {
+        InputStream inStream = createBarCode(serialno, barcodeTypeConfig, isPadding);
+        if (inStream != null) {
+          MetaFile barcodeFile =
+              metaFiles.upload(inStream, String.format(fileNameFormat, originId));
+          return barcodeFile;
+        }
+      } catch (IOException e) {
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
+      }
+    }
+    return null;
+  }
 
   @Override
   public InputStream createBarCode(
@@ -106,7 +144,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
         default:
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BARCODE_GENERATOR_9));
+              I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_9));
       }
       return generateBarcode(serialno, barcodeTypeConfig, barcodeFormat);
     }
@@ -151,7 +189,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_3),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_3),
         serialno,
         barcodeFormat,
         null);
@@ -167,7 +205,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_4),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_4),
         serialno,
         barcodeFormat,
         null);
@@ -187,7 +225,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_2),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_2),
         serialno,
         barcodeFormat,
         null);
@@ -207,7 +245,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BARCODE_GENERATOR_6),
+          I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_6),
           serialno,
           barcodeFormat);
     }
@@ -220,7 +258,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BARCODE_GENERATOR_8),
+          I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_8),
           serialno,
           barcodeFormat);
     } else if (serialno.length() > 3 && serialno.length() < 12) {
@@ -228,7 +266,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_5),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_5),
         serialno,
         barcodeFormat,
         3,
@@ -278,7 +316,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_1),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_1),
         serialno,
         barcodeFormat,
         barcodeLength);
@@ -333,7 +371,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_7),
         serialno,
         barcodeFormat,
         barcodeLength);
@@ -354,9 +392,65 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_7),
         serialno,
         barcodeFormat,
         barcodeLength);
+  }
+
+  @Override
+  public boolean checkSerialNumberConsistency(
+      String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
+      throws AxelorException {
+    if (serialno != null && barcodeTypeConfig != null) {
+      switch (barcodeTypeConfig.getName()) {
+        case "AZTEC":
+          break;
+
+        case "CODABAR":
+          checkTypeForCodabar(serialno, BarcodeFormat.CODABAR);
+          break;
+
+        case "CODE_39":
+          checkTypeForCode39(serialno, BarcodeFormat.CODE_39);
+          break;
+
+        case "CODE_128":
+          break;
+
+        case "DATA_MATRIX":
+          break;
+
+        case "EAN_8":
+          checkTypeForEan8(serialno, BarcodeFormat.EAN_8, isPadding);
+          break;
+
+        case "ITF":
+          checkTypeForItf(serialno, BarcodeFormat.ITF, isPadding);
+          break;
+
+        case "PDF_417":
+          checkTypeForPdf417(serialno, BarcodeFormat.PDF_417, isPadding);
+          break;
+
+        case "QR_CODE":
+          break;
+
+        case "UPC_A":
+          checkTypeForUpca(serialno, BarcodeFormat.UPC_A, isPadding);
+          break;
+
+        case "EAN_13":
+          checkTypeForEan13(serialno, BarcodeFormat.EAN_13, isPadding);
+          break;
+
+        default:
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_9));
+      }
+      return true;
+    }
+    return false;
   }
 }

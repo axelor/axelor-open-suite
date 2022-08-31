@@ -34,8 +34,10 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -44,7 +46,11 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -55,8 +61,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -129,6 +134,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     task.setTotalPlannedHrs(plannedHrs);
 
+    return task;
+  }
+
+  @Override
+  public ProjectTask create(String subject, Project project, User assignedTo) {
+    ProjectTask task = super.create(subject, project, assignedTo);
+    task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
 
@@ -275,49 +287,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
-  public ProjectTask updateTask(ProjectTask projectTask, AppBusinessProject appBusinessProject)
-      throws AxelorException {
-
-    projectTask = computeDefaultInformation(projectTask);
-
-    if (projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_PACKAGE
-        && !projectTask.getIsTaskRefused()) {
-
-      Pattern pattern = Pattern.compile(", ");
-
-      switch (projectTask.getProject().getInvoicingSequenceSelect()) {
-        case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-          projectTask.setToInvoice(
-              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
-                  && pattern
-                      .splitAsStream(appBusinessProject.getPreTaskStatusSet())
-                      .collect(Collectors.toList())
-                      .contains(projectTask.getStatus()));
-          break;
-
-        case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-          projectTask.setToInvoice(
-              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
-                  && pattern
-                      .splitAsStream(appBusinessProject.getPostTaskStatusSet())
-                      .collect(Collectors.toList())
-                      .contains(projectTask.getStatus()));
-          break;
-
-        default:
-          break;
-      }
-    } else {
-      projectTask.setToInvoice(
-          projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT);
-    }
-
-    return projectTaskRepo.save(projectTask);
-  }
-
-  @Override
-  public ProjectTask computeDefaultInformation(ProjectTask projectTask) throws AxelorException {
-
+  public ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
     if (product != null) {
       projectTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
@@ -354,7 +324,38 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             : projectTask.getBudgetedTime());
     projectTask = this.updateDiscount(projectTask);
     projectTask = this.compute(projectTask);
-    return projectTask;
+
+    return projectTaskRepo.save(projectTask);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Override
+  public ProjectTask updateTaskToInvoice(
+      ProjectTask projectTask, AppBusinessProject appBusinessProject) {
+
+    if (projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_PACKAGE
+        && !projectTask.getIsTaskRefused()) {
+
+      switch (projectTask.getProject().getInvoicingSequenceSelect()) {
+        case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
+          Set<ProjectStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
+          projectTask.setToInvoice(
+              ObjectUtils.notEmpty(preTaskStatusSet)
+                  && preTaskStatusSet.contains(projectTask.getStatus()));
+          break;
+
+        case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
+          Set<ProjectStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
+          projectTask.setToInvoice(
+              ObjectUtils.notEmpty(postTaskStatusSet)
+                  && postTaskStatusSet.contains(projectTask.getStatus()));
+          break;
+      }
+    } else {
+      projectTask.setToInvoice(
+          projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT);
+    }
+    return projectTaskRepo.save(projectTask);
   }
 
   private BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
@@ -397,5 +398,43 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setCurrency(null);
     projectTask.setExTaxTotal(null);
     return projectTask;
+  }
+
+  @Override
+  public QueryBuilder<ProjectTask> getTaskInvoicingFilter() {
+    QueryBuilder<ProjectTask> queryBuilder =
+        QueryBuilder.of(ProjectTask.class)
+            .add("self.project.isBusinessProject = :isBusinessProject")
+            .add("self.project.toInvoice = :invoiceable")
+            .add("self.toInvoice = :toInvoice")
+            .bind("isBusinessProject", true)
+            .bind("invoiceable", true)
+            .bind("toInvoice", false);
+
+    return queryBuilder;
+  }
+
+  @Override
+  public void taskInvoicing(Project project, AppBusinessProject appBusinessProject) {
+    QueryBuilder<ProjectTask> taskQueryBuilder = getTaskInvoicingFilter();
+    taskQueryBuilder =
+        taskQueryBuilder.add("self.project.id = :projectId").bind("projectId", project.getId());
+
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+      taskQueryBuilder = taskQueryBuilder.add(filter);
+    }
+    Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
+
+    int offset = 0;
+    List<ProjectTask> projectTaskList;
+
+    while (!(projectTaskList = taskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+      offset += projectTaskList.size();
+      for (ProjectTask projectTask : projectTaskList) {
+        updateTaskToInvoice(projectTask, appBusinessProject);
+      }
+      JPA.clear();
+    }
   }
 }

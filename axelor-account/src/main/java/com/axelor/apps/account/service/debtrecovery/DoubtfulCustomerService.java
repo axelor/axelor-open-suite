@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.debtrecovery;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -29,8 +30,10 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -51,9 +54,11 @@ public class DoubtfulCustomerService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
+  protected MoveToolService moveToolService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveLineRepository moveLineRepo;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
@@ -61,17 +66,21 @@ public class DoubtfulCustomerService {
 
   @Inject
   public DoubtfulCustomerService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveToolService moveToolService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveLineRepository moveLineRepo,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
+    this.moveToolService = moveToolService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveLineRepo = moveLineRepo;
     this.reconcileService = reconcileService;
     this.accountConfigService = accountConfigService;
@@ -133,16 +142,19 @@ public class DoubtfulCustomerService {
     Partner partner = move.getPartner();
     Invoice invoice = move.getInvoice();
     Move newMove =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                company.getAccountConfig().getAutoMiscOpeJournal(),
-                company,
-                invoice.getCurrency(),
-                partner,
-                move.getPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                move.getFunctionalOriginSelect());
+        moveCreateService.createMove(
+            company.getAccountConfig().getAutoMiscOpeJournal(),
+            company,
+            invoice.getCurrency(),
+            partner,
+            move.getPaymentMode(),
+            invoice != null
+                ? invoice.getFiscalPosition()
+                : (partner != null ? partner.getFiscalPosition() : null),
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            move.getFunctionalOriginSelect(),
+            move.getInvoice().getInvoiceId(),
+            debtPassReason);
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
@@ -165,7 +177,7 @@ public class DoubtfulCustomerService {
 
       // Debit move line on partner account
       creditMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               newMove,
               partner,
               invoicePartnerMoveLine.getAccount(),
@@ -182,7 +194,7 @@ public class DoubtfulCustomerService {
 
     // Credit move line on partner account
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             newMove,
             partner,
             doubtfulCustomerAccount,
@@ -195,7 +207,7 @@ public class DoubtfulCustomerService {
     newMove.getMoveLineList().add(debitMoveLine);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveService.getMoveValidateService().validate(newMove);
+    moveValidateService.accounting(newMove);
     moveRepo.save(newMove);
 
     if (creditMoveLine != null) {
@@ -234,28 +246,29 @@ public class DoubtfulCustomerService {
       MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {
 
-    log.debug("Ecriture concernée : {} ", moveLine.getName());
+    log.debug("Concerned move : {} ", moveLine.getName());
     Company company = moveLine.getMove().getCompany();
     Partner partner = moveLine.getPartner();
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
     Move newMove =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                company.getAccountConfig().getAutoMiscOpeJournal(),
-                company,
-                null,
-                partner,
-                moveLine.getMove().getPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect());
+        moveCreateService.createMove(
+            company.getAccountConfig().getAutoMiscOpeJournal(),
+            company,
+            null,
+            partner,
+            moveLine.getMove().getPaymentMode(),
+            partner != null ? partner.getFiscalPosition() : null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            moveLine.getMove().getFunctionalOriginSelect(),
+            moveLine.getName(),
+            debtPassReason);
 
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
     // Ecriture au crédit sur le 411
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             newMove,
             partner,
             moveLine.getAccount(),
@@ -275,7 +288,7 @@ public class DoubtfulCustomerService {
 
     // Ecriture au débit sur le 416 (client douteux)
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             newMove,
             newMove.getPartner(),
             doubtfulCustomerAccount,
@@ -290,7 +303,7 @@ public class DoubtfulCustomerService {
     debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveService.getMoveValidateService().validate(newMove);
+    moveValidateService.accounting(newMove);
     moveRepo.save(newMove);
 
     this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
@@ -341,16 +354,17 @@ public class DoubtfulCustomerService {
 
       invoice.setOldMove(invoice.getMove());
       invoice.setMove(move);
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+
       if (invoice.getPartner() != null) {
         doubtfulCustomerAccount =
             Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), doubtfulCustomerAccount);
+                .getAccount(fiscalPosition, doubtfulCustomerAccount);
       }
       invoice.setPartnerAccount(doubtfulCustomerAccount);
       invoice.setDoubtfulCustomerOk(true);
       // Recalcule du restant à payer de la facture
-      invoice.setCompanyInTaxTotalRemaining(
-          moveService.getMoveToolService().getInTaxTotalRemaining(invoice));
+      invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
     }
     return invoice;
   }
@@ -397,7 +411,7 @@ public class DoubtfulCustomerService {
         // Créance de + 6 mois
       case 0:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         break;
@@ -405,7 +419,7 @@ public class DoubtfulCustomerService {
         // Créance de + 3 mois
       case 1:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         break;
@@ -414,7 +428,7 @@ public class DoubtfulCustomerService {
         break;
     }
 
-    log.debug("Date de créance prise en compte : {} ", date);
+    log.debug("Debt date taken into account : {} ", date);
 
     String request =
         "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND m.company.id = "
@@ -427,7 +441,7 @@ public class DoubtfulCustomerService {
             + " AND m.invoice.operationTypeSelect = "
             + InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 
-    log.debug("Requete : {} ", request);
+    log.debug("Query : {} ", request);
 
     Query query = JPA.em().createQuery(request);
 
@@ -462,7 +476,7 @@ public class DoubtfulCustomerService {
         // Créance de + 6 mois
       case 0:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         moveLineList =
@@ -483,7 +497,7 @@ public class DoubtfulCustomerService {
         // Créance de + 3 mois
       case 1:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         moveLineList =
@@ -505,7 +519,7 @@ public class DoubtfulCustomerService {
         break;
     }
 
-    log.debug("Date de créance prise en compte : {} ", date);
+    log.debug("Debt date taken into account : {} ", date);
 
     return moveLineList;
   }

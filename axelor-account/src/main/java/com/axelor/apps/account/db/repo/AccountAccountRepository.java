@@ -61,4 +61,13 @@ public class AccountAccountRepository extends AccountRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
   }
+
+  @Override
+  public Account copy(Account entity, boolean deep) {
+    Account account = super.copy(entity, deep);
+    account.setCode(String.format("%s (copy)", account.getCode()));
+    account.setName(String.format("%s (copy)", account.getName()));
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
+    return account;
+  }
 }

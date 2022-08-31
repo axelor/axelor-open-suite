@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.currency;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -36,17 +36,19 @@ public class CurrencyConversionFactory {
   }
 
   public CurrencyConversionService getCurrencyConversionService() throws AxelorException {
-    try {
-      String currencyWsurl = appBaseService.getAppBase().getCurrencyWsURL();
 
-      if (Strings.isNullOrEmpty(currencyWsurl)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.CURRENCY_6));
-      }
-      return (CurrencyConversionService) Beans.get(Class.forName(currencyWsurl));
-    } catch (ClassNotFoundException | AxelorException e) {
+    String currencyWsurl = appBaseService.getAppBase().getCurrencyWsURL();
+
+    if (Strings.isNullOrEmpty(currencyWsurl)) {
       throw new AxelorException(
-          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getLocalizedMessage());
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.CURRENCY_8));
+    }
+    try {
+      return (CurrencyConversionService) Beans.get(Class.forName(currencyWsurl));
+    } catch (ClassNotFoundException | ClassCastException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.CURRENCY_9));
     }
   }
 }

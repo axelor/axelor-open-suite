@@ -25,9 +25,11 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -43,8 +45,8 @@ public class AccountConfigService {
     if (accountConfig == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -59,8 +61,8 @@ public class AccountConfigService {
         || accountConfig.getReimbursementExportFolderPathCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -72,8 +74,8 @@ public class AccountConfigService {
         || accountConfig.getPaymentScheduleExportFolderPathCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -85,8 +87,8 @@ public class AccountConfigService {
         || accountConfig.getReimbursementImportFolderPathCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_10),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_10),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -98,8 +100,8 @@ public class AccountConfigService {
         || accountConfig.getTempReimbImportFolderPathCFONB().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_11),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_11),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -110,8 +112,8 @@ public class AccountConfigService {
     if (accountConfig.getRejectJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_12),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_12),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getRejectJournal();
@@ -122,8 +124,8 @@ public class AccountConfigService {
     if (accountConfig.getIrrecoverableJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_13),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_13),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableJournal();
@@ -134,8 +136,8 @@ public class AccountConfigService {
     if (accountConfig.getSupplierPurchaseJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_14),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_14),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSupplierPurchaseJournal();
@@ -146,8 +148,8 @@ public class AccountConfigService {
     if (accountConfig.getSupplierCreditNoteJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_15),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_15),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSupplierCreditNoteJournal();
@@ -158,8 +160,8 @@ public class AccountConfigService {
     if (accountConfig.getCustomerSalesJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_16),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_16),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustomerSalesJournal();
@@ -170,8 +172,8 @@ public class AccountConfigService {
     if (accountConfig.getCustomerCreditNoteJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_17),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_17),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustomerCreditNoteJournal();
@@ -182,8 +184,8 @@ public class AccountConfigService {
     if (accountConfig.getAutoMiscOpeJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_18),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_18),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getAutoMiscOpeJournal();
@@ -194,8 +196,8 @@ public class AccountConfigService {
     if (accountConfig.getReimbursementJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_19),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_19),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReimbursementJournal();
@@ -206,8 +208,8 @@ public class AccountConfigService {
     if (accountConfig.getReportedBalanceJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_45),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_45),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReportedBalanceJournal();
@@ -219,8 +221,8 @@ public class AccountConfigService {
     if (accountConfig.getSaleJournalType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_20),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_20),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleJournalType();
@@ -231,8 +233,8 @@ public class AccountConfigService {
     if (accountConfig.getCreditNoteJournalType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_21),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_21),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCreditNoteJournalType();
@@ -243,8 +245,8 @@ public class AccountConfigService {
     if (accountConfig.getCashJournalType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_22),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_22),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCashJournalType();
@@ -255,8 +257,8 @@ public class AccountConfigService {
     if (accountConfig.getPurchaseJournalType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_23),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_23),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getPurchaseJournalType();
@@ -268,8 +270,8 @@ public class AccountConfigService {
     if (accountConfig.getIrrecoverableAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_24),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_24),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableAccount();
@@ -280,8 +282,8 @@ public class AccountConfigService {
     if (accountConfig.getCustomerAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_25),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_25),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustomerAccount();
@@ -292,8 +294,8 @@ public class AccountConfigService {
     if (accountConfig.getSupplierAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_26),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_26),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSupplierAccount();
@@ -304,8 +306,8 @@ public class AccountConfigService {
     if (accountConfig.getEmployeeAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_40),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_40),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getEmployeeAccount();
@@ -316,11 +318,24 @@ public class AccountConfigService {
     if (accountConfig.getAdvancePaymentAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_38),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_38),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getAdvancePaymentAccount();
+  }
+
+  public Account getSupplierAdvancePaymentAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getSupplierAdvancePaymentAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_46),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSupplierAdvancePaymentAccount();
   }
 
   public Account getCashPositionVariationAccount(AccountConfig accountConfig)
@@ -329,8 +344,8 @@ public class AccountConfigService {
     if (accountConfig.getCashPositionVariationAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_27),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_27),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCashPositionVariationAccount();
@@ -341,8 +356,8 @@ public class AccountConfigService {
     if (accountConfig.getReimbursementAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_28),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_28),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReimbursementAccount();
@@ -353,8 +368,8 @@ public class AccountConfigService {
     if (accountConfig.getDoubtfulCustomerAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_29),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_29),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getDoubtfulCustomerAccount();
@@ -365,8 +380,8 @@ public class AccountConfigService {
     if (accountConfig.getYearOpeningAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_43),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_43),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getYearOpeningAccount();
@@ -377,8 +392,8 @@ public class AccountConfigService {
     if (accountConfig.getYearClosureAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_44),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_44),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getYearClosureAccount();
@@ -390,8 +405,8 @@ public class AccountConfigService {
     if (accountConfig.getIrrecoverableStandardRateTax() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableStandardRateTax();
@@ -403,8 +418,8 @@ public class AccountConfigService {
     if (accountConfig.getDirectDebitPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_30),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_30),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getDirectDebitPaymentMode();
@@ -415,8 +430,8 @@ public class AccountConfigService {
     if (accountConfig.getRejectionPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_31),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_31),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getRejectionPaymentMode();
@@ -428,8 +443,8 @@ public class AccountConfigService {
     if (accountConfig.getIrrecoverableReasonPassage() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_32),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_32),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableReasonPassage();
@@ -441,8 +456,8 @@ public class AccountConfigService {
     if (accountConfig.getRejectPaymentScheduleTemplate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_34),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_34),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getRejectPaymentScheduleTemplate();
@@ -454,8 +469,8 @@ public class AccountConfigService {
     if (accountConfig.getReimbursementExportFolderPath() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n " + I18n.get(IExceptionMessage.REIMBURSEMENT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          "%s :\n " + I18n.get(AccountExceptionMessage.REIMBURSEMENT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReimbursementExportFolderPath();
@@ -467,8 +482,8 @@ public class AccountConfigService {
         || accountConfig.getSixMonthDebtPassReason().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_35),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_35),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSixMonthDebtPassReason();
@@ -480,8 +495,8 @@ public class AccountConfigService {
         || accountConfig.getThreeMonthDebtPassReason().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_36),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_36),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getThreeMonthDebtPassReason();
@@ -494,8 +509,8 @@ public class AccountConfigService {
         || accountConfig.getDebtRecoveryConfigLineList().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_37),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_37),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getDebtRecoveryConfigLineList();
@@ -507,8 +522,8 @@ public class AccountConfigService {
     if (accountConfig.getCustInvSequence() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustInvSequence();
@@ -519,8 +534,8 @@ public class AccountConfigService {
     if (accountConfig.getCustRefSequence() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustRefSequence();
@@ -531,8 +546,8 @@ public class AccountConfigService {
     if (accountConfig.getSuppInvSequence() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSuppInvSequence();
@@ -543,8 +558,8 @@ public class AccountConfigService {
     if (accountConfig.getSuppRefSequence() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSuppRefSequence();
@@ -566,8 +581,8 @@ public class AccountConfigService {
     if (accountConfig.getExportFileName() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_39),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_39),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getExportFileName();
@@ -578,8 +593,8 @@ public class AccountConfigService {
     if (accountConfig.getFactorCreditAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_41),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
 
@@ -591,11 +606,24 @@ public class AccountConfigService {
     if (accountConfig.getFactorDebitAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_42),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_42),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
 
     return accountConfig.getFactorDebitAccount();
+  }
+
+  public Partner getDasContactPartner(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getDasContactPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_42),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
+    return accountConfig.getDasContactPartner();
   }
 }

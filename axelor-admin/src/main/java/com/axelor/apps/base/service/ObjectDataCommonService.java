@@ -19,10 +19,13 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -32,6 +35,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ObjectDataCommonService {
+
+  private ObjectDataCommonService() {
+    throw new IllegalStateException("Utility class");
+  }
 
   public static ResourceBundle getResourceBundle(String language) {
 
@@ -64,16 +71,40 @@ public class ObjectDataCommonService {
   }
 
   public static Query<? extends Model> createQuery(
-      Long recordId, DataConfigLine line, Class<? extends Model> modelClass) {
+      Long recordId, DataConfigLine line, Class<? extends Model> modelClass)
+      throws AxelorException {
 
-    Query<? extends Model> query = JpaRepository.of(modelClass).all();
-    String filter =
-        line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH
-            ? createFilter(line.getMetaFieldPath().getName())
-            : line.getPath();
-    query.filter(filter, recordId);
+    String filter;
+    switch (line.getTypeSelect()) {
+      case DataConfigLineRepository.TYPE_PATH:
+        MetaField relationalField = line.getMetaFieldPath();
+        if (relationalField == null) {
+          throw new AxelorException(
+              line,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AdminExceptionMessage.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
+              line.getMetaModel().getName());
+        }
+        filter = createFilter(relationalField.getName());
+        break;
 
-    return query;
+      case DataConfigLineRepository.TYPE_QUERY:
+        filter = line.getPath();
+        if (filter == null) {
+          throw new AxelorException(
+              line,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AdminExceptionMessage.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
+              line.getMetaModel().getName());
+        }
+        break;
+
+      default:
+        throw new AxelorException(
+            line, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Unknown case");
+    }
+
+    return JpaRepository.of(modelClass).all().filter(filter, recordId);
   }
 
   public static String createFilter(String path) {

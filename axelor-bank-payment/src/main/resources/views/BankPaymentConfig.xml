@@ -21,10 +21,12 @@
         <field name="generateMoveOnBankOrderValidation"/>
         <field name="icsNumber"
           if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
-        <field name="internalBankToBankAccount" domain="self.company = :company"
-          grid-view="account-grid" form-view="account-form"/>
-        <field name="externalBankToBankAccount" domain="self.company = :company"
-          grid-view="account-grid" form-view="account-form"/>
+        <field name="internalBankToBankAccount"
+          domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+          form-view="account-form"/>
+        <field name="externalBankToBankAccount"
+          domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+          form-view="account-form"/>
       </panel>
       <panel name="creditTransferBankOrderSequencesPanel"
         title="Credit transfer bank orders sequences" colSpan="4"
@@ -33,6 +35,13 @@
           domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
           form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
         <field name="intCreditTransSequence" colSpan="12"
+          domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
+          form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+      </panel>
+      <panel name="billOfExchangeBankOrderSequencesPanel"
+        title="Bill of exchange bank orders sequences" colSpan="4"
+        if="eval: __config__.app.getApp('bank-payment').manageBillOfExchange">
+        <field name="billOfExchangeSequence" colSpan="12"
           domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
           form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
       </panel>
@@ -60,6 +69,12 @@
         <field name="otherBankOrderSequence" colSpan="12"
           domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
           form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+      </panel>
+      <panel name="bankStatementPanel" title="Bank statement" colSpan="12">
+        <field name="hasAutomaticReconciliation" widget="boolean-switch"/>
+        <field name="hasAutoMoveFromStatementRule" widget="boolean-switch"/>
+        <field name="bnkStmtAutoReconcileAmountMargin" requiredIf="hasAutomaticReconciliation"/>
+        <field name="bnkStmtAutoReconcileDateMargin" requiredIf="hasAutomaticReconciliation"/>
       </panel>
     </panel>
 

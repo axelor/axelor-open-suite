@@ -23,3 +23,8 @@
 22;"Export trésorerie -> Logiciel comptable";1008;2;1
 23;"Export achat -> Logiciel comptable";1009;2;1
 24;"Export balance générale -> Logiciel comptable";1010;2;1
+25;"Etat préparatoire DADS";19;1;1
+26;"Vérification déclaration DADS";20;1;1
+27;"Export N4DS";1011;2;1
+28;"Etat préparatoire DGI 2054";21;1;1
+29;"Etat préparatoire DGI 2055";22;1;1

@@ -94,7 +94,7 @@ public class ImportSupplyChain {
     return bean;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
 
     try {
@@ -120,7 +120,7 @@ public class ImportSupplyChain {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getDeliveryDate());
@@ -156,7 +156,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
@@ -191,7 +191,7 @@ public class ImportSupplyChain {
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);

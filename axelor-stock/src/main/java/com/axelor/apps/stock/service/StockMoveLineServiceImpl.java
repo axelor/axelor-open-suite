@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
@@ -41,10 +42,12 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.exception.AxelorAlertException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -283,7 +286,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
+          I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
@@ -304,7 +307,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
       }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
@@ -573,7 +576,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throw new AxelorException(
           stockMoveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
           product.getName());
     }
   }
@@ -607,13 +610,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throw new AxelorException(
           stockMove,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
           productsWithErrorStr);
     }
   }
 
   @Override
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+  public void checkExpirationDates(StockMove stockMove) {
     List<String> errorList = new ArrayList<>();
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
@@ -643,10 +646,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (!errorList.isEmpty()) {
       String errorStr = errorList.stream().collect(Collectors.joining(", "));
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
-          errorStr);
+      TraceBackService.trace(
+          new AxelorAlertException(
+              stockMove,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
+              errorStr));
     }
   }
 
@@ -680,7 +685,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String productWithErrorsStr = productsWithErrors.stream().collect(Collectors.joining(", "));
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
           productWithErrorsStr);
     }
   }
@@ -1035,7 +1040,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
+          I18n.get(StockExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
           product.getName());
     }
 
@@ -1113,7 +1118,32 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (trackingNumberItem.get("note") != null) {
           trackingNumber.setNote(trackingNumberItem.get("note").toString());
         }
+        if (trackingNumberItem.get("serialNbr") != null) {
+          trackingNumber.setSerialNumber(trackingNumberItem.get("serialNbr").toString());
+        }
         trackingNumber.setProduct(stockMoveLine.getProduct());
+
+        if (stockMoveLine.getProduct() != null) {
+          // In case of barcode generation, retrieve the one set on tracking number configuration
+          AppStock appStock = appStockService.getAppStock();
+          TrackingNumberConfiguration trackingNumberConfiguration =
+              stockMoveLine.getProduct().getTrackingNumberConfiguration();
+          if (appStock != null
+              && appStock.getActivateTrackingNumberBarCodeGeneration()
+              && trackingNumberConfiguration != null) {
+            if (appStock.getEditTrackingNumberBarcodeType()) {
+              trackingNumber.setBarcodeTypeConfig(
+                  trackingNumberConfiguration.getBarcodeTypeConfig());
+            } else {
+              trackingNumber.setBarcodeTypeConfig(appStock.getTrackingNumberBarcodeTypeConfig());
+            }
+            if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+              trackingNumber.setSerialNumber(trackingNumber.getTrackingNumberSeq());
+            }
+            // It will launch barcode generation
+            trackingNumberRepo.save(trackingNumber);
+          }
+        }
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);

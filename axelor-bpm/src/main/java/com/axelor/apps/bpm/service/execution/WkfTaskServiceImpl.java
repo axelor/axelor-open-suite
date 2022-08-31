@@ -49,6 +49,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.engine.variable.Variables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +95,9 @@ public class WkfTaskServiceImpl implements WkfTaskService {
 
     Map<String, Object> expressionVariables = null;
     Map<String, Object> ctxVariables = wkfService.createVariables(context);
+    if (signal != null) {
+      ctxVariables.put(signal, Variables.objectValue(true, true));
+    }
 
     for (Task task : tasks) {
 

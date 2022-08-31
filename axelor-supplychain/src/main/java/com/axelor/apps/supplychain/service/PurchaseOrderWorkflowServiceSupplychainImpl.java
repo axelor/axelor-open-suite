@@ -60,7 +60,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
 
@@ -74,9 +74,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
     }
     int intercoPurchaseCreatingStatus =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getIntercoPurchaseCreatingStatusSelect();
+        appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
         && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
@@ -87,11 +85,10 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
   @Override
   @Transactional
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
 
-    if (Beans.get(AppSupplychainService.class).isApp("supplychain")
-        && appAccountService.isApp("budget")) {
+    if (appSupplychainService.isApp("supplychain") && appAccountService.isApp("budget")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
 
       if (purchaseOrder.getPurchaseOrderLineList() != null) {

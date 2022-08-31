@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -31,6 +33,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.auth.AuthUtils;
@@ -84,10 +87,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
 
-    if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
+    if (!appSaleService.isApp("supplychain")) {
       return super.createSaleOrder(
           salespersonUser,
           company,
@@ -99,6 +104,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           priceList,
           clientPartner,
           team,
+          taxNumber,
+          fiscalPosition,
           tradingName);
     }
     return createSaleOrder(
@@ -113,7 +120,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         priceList,
         clientPartner,
         team,
-        tradingName);
+        taxNumber,
+        fiscalPosition,
+        tradingName,
+        null,
+        null,
+        null);
   }
 
   public SaleOrder createSaleOrder(
@@ -128,11 +140,52 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Partner clientPartner,
       Team team,
-      TradingName tradingName)
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+
+    return createSaleOrder(
+        salespersonUser,
+        company,
+        contactPartner,
+        currency,
+        deliveryDate,
+        internalReference,
+        externalReference,
+        stockLocation,
+        priceList,
+        clientPartner,
+        team,
+        taxNumber,
+        fiscalPosition,
+        null,
+        null,
+        null,
+        null);
+  }
+
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      StockLocation stockLocation,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
+      TradingName tradingName,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
       throws AxelorException {
 
     logger.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
+        "Creation of a sale order : Company = {},  External reference = {}, Customer = {}",
         company.getName(),
         externalReference,
         clientPartner.getFullName());
@@ -149,6 +202,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             priceList,
             clientPartner,
             team,
+            taxNumber,
+            fiscalPosition,
             tradingName);
 
     if (stockLocation == null) {
@@ -159,6 +214,9 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
     saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
+    saleOrder.setIncoterm(incoterm);
+    saleOrder.setInvoicedPartner(invoicedPartner);
+    saleOrder.setDeliveredPartner(deliveredPartner);
 
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(
@@ -185,21 +243,27 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       StockLocation stockLocation,
       Partner contactPartner,
       PriceList priceList,
-      Team team)
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
+    for (SaleOrder saleOrderLocal : saleOrderList) {
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
+      }
+      numSeq.append(saleOrderLocal.getSaleOrderSeq());
+
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
+        externalRef.append(saleOrderLocal.getExternalReference());
       }
     }
 
@@ -210,14 +274,18 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             contactPartner,
             currency,
             null,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             stockLocation,
             priceList,
             clientPartner,
             team,
-            null);
-
+            taxNumber,
+            fiscalPosition,
+            null,
+            incoterm,
+            invoicedPartner,
+            deliveredPartner);
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);

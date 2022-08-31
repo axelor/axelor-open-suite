@@ -19,7 +19,8 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.MailBatch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.MailBatchRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -41,10 +42,12 @@ public class MailBatchService extends AbstractBatchService {
     MailBatch mailBatch = (MailBatch) batchModel;
 
     switch (mailBatch.getActionSelect()) {
+      case MailBatchRepository.ACTION_TIMESHEET_VALIDATION_REMINDER:
+        return remindMail(mailBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             mailBatch.getActionSelect(),
             mailBatch.getCode());
     }

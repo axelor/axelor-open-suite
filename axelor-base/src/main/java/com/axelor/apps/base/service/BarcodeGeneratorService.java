@@ -19,10 +19,22 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 import java.io.InputStream;
 
 public interface BarcodeGeneratorService {
 
+  MetaFile createBarCode(
+      Long originId,
+      String fileNameFormat,
+      String serialno,
+      BarcodeTypeConfig barcodeTypeConfig,
+      boolean isPadding);
+
   InputStream createBarCode(String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
+      throws AxelorException;
+
+  boolean checkSerialNumberConsistency(
+      String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
       throws AxelorException;
 }

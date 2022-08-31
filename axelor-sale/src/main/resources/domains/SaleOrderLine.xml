@@ -30,11 +30,12 @@
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
     <boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
-    <string name="productName" title="Displayed Product name" required="true"
-      translatable="true"/>
+    <string name="productName" title="Displayed Product name" required="true"/>
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
     <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <string name="pricingScaleLogs" title="Price calculation details" large="true"
+      readonly="true"/>
 
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
@@ -57,6 +58,7 @@
 
     <!-- Complementary Products -->
     <boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
+    <boolean name="isComplementaryPartnerProductsHandled" hidden="true"/>
     <one-to-many name="selectedComplementaryProductList"
       ref="com.axelor.apps.sale.db.ComplementaryProductSelected" title="Complementary products"
       mappedBy="saleOrderLine"/>
@@ -90,6 +92,9 @@
     <boolean name="discountsNeedReview" readonly="true"/>
 
     <decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
+
+    <string name="lineProductionComment" title="Line production commentary" large="true"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>

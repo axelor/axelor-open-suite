@@ -21,7 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -95,7 +95,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             String.format(
-                I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
                 saleOrder.getSaleOrderSeq()),
             saleOrder);
       }
@@ -116,6 +116,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("ProformaInvoice", proforma)
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
         .addFormat(format);
   }
 

@@ -46,7 +46,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -58,10 +57,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class WkfModelController {
-
-  @Inject protected WkfModelRepository wkfModelRepository;
-
-  @Inject private WkfModelService wkfModelService;
 
   private static final String CHART_MONTH_STATUS = "chart.wkf.model.status.per.month";
 
@@ -88,7 +83,7 @@ public class WkfModelController {
       migrationMap = null;
     }
 
-    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
 
     Beans.get(BpmDeploymentService.class).deploy(wkfModel, migrationMap);
 
@@ -109,9 +104,9 @@ public class WkfModelController {
 
     WkfModel wkfModel = request.getContext().asType(WkfModel.class);
 
-    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
 
-    wkfModelService.start(wkfModel);
+    Beans.get(WkfModelService.class).start(wkfModel);
 
     response.setReload(true);
   }
@@ -120,9 +115,9 @@ public class WkfModelController {
 
     WkfModel wkfModel = request.getContext().asType(WkfModel.class);
 
-    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
 
-    wkfModelService.terminate(wkfModel);
+    Beans.get(WkfModelService.class).terminate(wkfModel);
 
     response.setReload(true);
   }
@@ -131,9 +126,9 @@ public class WkfModelController {
 
     WkfModel wkfModel = request.getContext().asType(WkfModel.class);
 
-    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
 
-    wkfModelService.backToDraft(wkfModel);
+    Beans.get(WkfModelService.class).backToDraft(wkfModel);
 
     response.setReload(true);
   }
@@ -142,9 +137,9 @@ public class WkfModelController {
 
     WkfModel wkfModel = request.getContext().asType(WkfModel.class);
 
-    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
 
-    wkfModel = wkfModelService.createNewVersion(wkfModel);
+    wkfModel = Beans.get(WkfModelService.class).createNewVersion(wkfModel);
 
     response.setValue("newVersionId", wkfModel.getId());
   }
@@ -156,8 +151,8 @@ public class WkfModelController {
     List<Long> versionIds = new ArrayList<Long>();
 
     if (wkfModel.getId() != null) {
-      wkfModel = wkfModelRepository.find(wkfModel.getId());
-      versionIds = wkfModelService.findVersions(wkfModel);
+      wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
+      versionIds = Beans.get(WkfModelService.class).findVersions(wkfModel);
     }
 
     versionIds.add(0l);
@@ -200,7 +195,8 @@ public class WkfModelController {
     MetaFile metaFile = Beans.get(MetaFileRepository.class).find(Long.parseLong(metaFileId));
 
     String logText =
-        wkfModelService.importWkfModels(metaFile, isTranslate, sourceLanguage, targetLanguage);
+        Beans.get(WkfModelService.class)
+            .importWkfModels(metaFile, isTranslate, sourceLanguage, targetLanguage);
     if (Strings.isNullOrEmpty(logText)) {
       response.setCanClose(true);
     } else {
@@ -210,7 +206,7 @@ public class WkfModelController {
 
   public void importStandardBPM(ActionRequest request, ActionResponse response) {
 
-    wkfModelService.importStandardBPM();
+    Beans.get(WkfModelService.class).importStandardBPM();
 
     response.setReload(true);
   }
@@ -219,7 +215,7 @@ public class WkfModelController {
 
     try {
       WkfModel wkfModel = request.getContext().asType(WkfModel.class);
-      wkfModel = wkfModelRepository.find(wkfModel.getId());
+      wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
       if (CollectionUtils.isEmpty(wkfModel.getWkfProcessList())) {
         return;
       }
@@ -257,7 +253,8 @@ public class WkfModelController {
 
       if (request.getContext().get("wkfId") != null) {
         wkfModel =
-            wkfModelRepository.find(Long.parseLong(request.getContext().get("wkfId").toString()));
+            Beans.get(WkfModelRepository.class)
+                .find(Long.parseLong(request.getContext().get("wkfId").toString()));
       }
 
       String process = (String) request.getContext().get("_process");
@@ -384,15 +381,19 @@ public class WkfModelController {
     if (tableName != null) {
       switch (_chart) {
         case CHART_MONTH_STATUS:
-          idList = wkfModelService.getStatusPerMonthRecord(tableName, status, month, jsonModel);
+          idList =
+              Beans.get(WkfModelService.class)
+                  .getStatusPerMonthRecord(tableName, status, month, jsonModel);
           break;
         case CHART_DAY_STATUS:
-          idList = wkfModelService.getStatusPerDayRecord(tableName, status, day, jsonModel);
+          idList =
+              Beans.get(WkfModelService.class)
+                  .getStatusPerDayRecord(tableName, status, day, jsonModel);
           break;
         case CHART_TIMESPENT_STATUS:
           idList =
-              wkfModelService.getTimespentPerStatusRecord(
-                  tableName, status, fromDate, toDate, jsonModel);
+              Beans.get(WkfModelService.class)
+                  .getTimespentPerStatusRecord(tableName, status, fromDate, toDate, jsonModel);
           break;
         default:
           break;
@@ -584,7 +585,7 @@ public class WkfModelController {
   public void changeAttrs(ActionRequest request, ActionResponse response) {
     try {
       WkfModel wkfModel = request.getContext().asType(WkfModel.class);
-      wkfModel = wkfModelRepository.find(wkfModel.getId());
+      wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
       User user = AuthUtils.getUser();
       boolean superUser = user.getCode().equals("admin");
       if (superUser) {

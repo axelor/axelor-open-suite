@@ -36,4 +36,14 @@ public class TimesheetLineBusinessController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setTimesheet(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      timesheetLine = Beans.get(TimesheetLineBusinessService.class).setTimesheet(timesheetLine);
+      response.setValues(timesheetLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

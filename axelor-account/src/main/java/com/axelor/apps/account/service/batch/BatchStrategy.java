@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
@@ -39,17 +39,16 @@ import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -69,8 +68,6 @@ public abstract class BatchStrategy extends AbstractBatch {
   @Inject protected BatchRepository batchRepo;
 
   @Inject protected CompanyRepository companyRepo;
-
-  @Inject protected MoveService moveService;
 
   @Inject protected MoveRepository moveRepo;
 
@@ -182,7 +179,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
   protected void updateAccountMove(Move move, boolean incrementDone) {
 
-    move.addBatchSetItem(Beans.get(BatchRepository.class).find(batch.getId()));
+    move.addBatchSetItem(batchRepo.find(batch.getId()));
 
     if (incrementDone) {
       incrementDone();
@@ -198,8 +195,8 @@ public abstract class BatchStrategy extends AbstractBatch {
       throw new AxelorException(
           accountingBatch,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BATCH_STRATEGY_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
 

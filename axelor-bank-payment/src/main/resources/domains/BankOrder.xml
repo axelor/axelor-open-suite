@@ -73,6 +73,7 @@
 		public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
 		public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
 		public static final int ORDER_TYPE_SEND_BANK_ORDER = 7;
+		public static final int ORDER_TYPE_BILL_OF_EXCHANGE = 8;
 
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

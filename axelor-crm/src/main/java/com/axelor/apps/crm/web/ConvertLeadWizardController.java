@@ -26,14 +26,16 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -71,7 +73,7 @@ public class ConvertLeadWizardController {
       if (lead.getPartner() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR));
+            I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
       }
 
       openPartner(response, lead);
@@ -94,7 +96,7 @@ public class ConvertLeadWizardController {
               || primaryAddress.getAddressL7Country() == null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.LEAD_PARTNER_MISSING_ADDRESS));
+            I18n.get(CrmExceptionMessage.LEAD_PARTNER_MISSING_ADDRESS));
       }
       partner =
           convertLeadWizardService.createPartner(
@@ -132,7 +134,7 @@ public class ConvertLeadWizardController {
               || primaryAddress.getAddressL7Country() == null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.LEAD_CONTACT_MISSING_ADDRESS));
+            I18n.get(CrmExceptionMessage.LEAD_CONTACT_MISSING_ADDRESS));
       }
 
       contactPartner =
@@ -162,10 +164,10 @@ public class ConvertLeadWizardController {
       grid = "partner-supplier-grid";
     }
 
-    response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
+    response.setFlash(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
     response.setCanClose(true);
     response.setView(
-        ActionView.define(I18n.get(IExceptionMessage.CONVERT_LEAD_1))
+        ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
             .model(Partner.class.getName())
             .add("form", form)
             .add("grid", grid)
@@ -241,20 +243,28 @@ public class ConvertLeadWizardController {
     }
   }
 
-  public void setContactDefaults(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setContactDefaults(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = findLead(request);
 
-    Lead lead = findLead(request);
-
-    response.setAttr("firstName", "value", lead.getFirstName());
-    response.setAttr("name", "value", lead.getName());
-    response.setAttr("titleSelect", "value", lead.getTitleSelect());
-    response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-    response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-    response.setAttr("user", "value", lead.getUser());
-    response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
+      if (lead.getPicture() != null) {
+        MetaFile picture =
+            Beans.get(ConvertBinaryToMetafileService.class)
+                .convertByteTabPictureInMetafile(lead.getPicture());
+        response.setAttr("picture", "value", picture);
+      }
+      response.setAttr("firstName", "value", lead.getFirstName());
+      response.setAttr("name", "value", lead.getName());
+      response.setAttr("titleSelect", "value", lead.getTitleSelect());
+      response.setAttr("emailAddress", "value", lead.getEmailAddress());
+      response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+      response.setAttr("fixedPhone", "value", lead.getFixedPhone());
+      response.setAttr("user", "value", lead.getUser());
+      response.setAttr("team", "value", lead.getTeam());
+      response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)
@@ -310,7 +320,8 @@ public class ConvertLeadWizardController {
 
     if (lead == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.CONVERT_LEAD_MISSING));
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(CrmExceptionMessage.CONVERT_LEAD_MISSING));
     }
 
     return lead;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -175,6 +175,20 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AddressPositionSelect" id="5847">
+            <property name="valueType">static</property>
+            <property name="dataType">integer</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">0</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -387,6 +401,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="columnName">specific_note_on_invoice</property>
+                    <property name="alias">specific_note_on_invoice</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">specific_note_on_invoice</text-property>
                     <text-property name="heading">specific_note_on_invoice</text-property>
@@ -554,6 +569,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="columnName">delivery_address_str</property>
+                    <property name="alias">delivery_address_str</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delivery_address_str</text-property>
                     <text-property name="heading">delivery_address_str</text-property>
@@ -581,15 +597,53 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="columnName">originalInvoice</property>
+                    <property name="alias">originalInvoice</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">originalInvoice</text-property>
                     <text-property name="heading">originalInvoice</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">originalInvoiceId</property>
+                    <property name="alias">originalInvoiceId</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">originalInvoiceId</text-property>
                     <text-property name="heading">originalInvoiceId</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">StockMoveRealDate</property>
+                    <property name="alias">StockMoveRealDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">StockMoveRealDate</text-property>
+                    <text-property name="heading">StockMoveRealDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">StockMoveSeq</property>
+                    <property name="alias">StockMoveSeq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">StockMoveSeq</text-property>
+                    <text-property name="heading">StockMoveSeq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">isAppSupplyChainActive</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isAppSupplyChainActive</text-property>
+                    <text-property name="heading">isAppSupplyChainActive</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">isStockMoveEmpty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isStockMoveEmpty</text-property>
+                    <text-property name="heading">isStockMoveEmpty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayStockMoveOnInvoicePrinting</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">legal_notice</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">legal_notice</text-property>
+                    <text-property name="heading">legal_notice</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -865,7 +919,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <structure>
                         <property name="position">52</property>
                         <property name="name">enablePackMangement</property>
-                        <property name="dataType">boolean</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">53</property>
@@ -880,6 +934,36 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <structure>
                         <property name="position">55</property>
                         <property name="name">originalInvoiceId</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">56</property>
+                        <property name="name">StockMoveRealDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">57</property>
+                        <property name="name">StockMoveSeq</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">58</property>
+                        <property name="name">isAppSupplyChainActive</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">59</property>
+                        <property name="name">isStockMoveEmpty</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">60</property>
+                        <property name="name">displayStockMoveOnInvoicePrinting</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">61</property>
+                        <property name="name">legal_notice</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -1247,7 +1331,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="position">52</property>
                     <property name="name">enablePackMangement</property>
                     <property name="nativeName">enablePackMangement</property>
-                    <property name="dataType">boolean</property>
+                    <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
@@ -1268,6 +1352,48 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="position">55</property>
                     <property name="name">originalInvoiceId</property>
                     <property name="nativeName">originalInvoiceId</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">56</property>
+                    <property name="name">StockMoveRealDate</property>
+                    <property name="nativeName">StockMoveRealDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">57</property>
+                    <property name="name">StockMoveSeq</property>
+                    <property name="nativeName">StockMoveSeq</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">58</property>
+                    <property name="name">isAppSupplyChainActive</property>
+                    <property name="nativeName">isAppSupplyChainActive</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">59</property>
+                    <property name="name">isStockMoveEmpty</property>
+                    <property name="nativeName">isStockMoveEmpty</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">60</property>
+                    <property name="name">displayStockMoveOnInvoicePrinting</property>
+                    <property name="nativeName">displayStockMoveOnInvoicePrinting</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">61</property>
+                    <property name="name">legal_notice</property>
+                    <property name="nativeName">legal_notice</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -1326,10 +1452,17 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
     AppSale.enable_pack_management as "enablePackMangement",
     ContactPartner.title_select as "contactPartnerTitleSelect",
     Invoice.original_invoice as "originalInvoice",
-    OriginalInvoice.invoice_id as "originalInvoiceId"
+    OriginalInvoice.invoice_id as "originalInvoiceId",
+    StockMove.real_date as "StockMoveRealDate",
+    StockMove.stock_move_seq as "StockMoveSeq",
+    AppSupplychain.active as "isAppSupplyChainActive",
+    InvoiceStockMove is not null as "isStockMoveEmpty",
+    Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
+	Invoice.legal_notice as "legal_notice"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
+left outer join base_app as AppSupplychain on AppSupplychain.code = 'supplychain'
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
@@ -1343,6 +1476,8 @@ left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
 left outer join base_trading_name as TradingName on (TradingName.id = Invoice.trading_name)
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
+left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
+left outer join stock_stock_move as StockMove on (StockMove.id = InvoiceStockMove.stock_move_set)
 where Invoice.id = ?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxDS" id="3422">
@@ -1642,6 +1777,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">ts_project_unit_id</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">parent_pack_price_select</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">pack_price_select</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_pack_line</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_sub_line</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">total_pack</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">productCode</property>
+                    <property name="analysis">dimension</property>
+                </structure>
             </list-property>
             <list-property name="filter">
                 <structure>
@@ -1699,6 +1858,36 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="position">9</property>
                         <property name="name">ts_project_unit_id</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">parent_pack_price_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">pack_price_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">is_pack_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">is_sub_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">total_pack</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">productCode</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1775,7 +1964,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_user.name AS ts_user, 
+            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_emp.name AS ts_user, 
 product.name AS ts_activity, 
 line.hours_duration AS ts_duration,
 product_unit.name AS ts_product_unit, 
@@ -1791,7 +1980,7 @@ FROM hr_timesheet_line line
 JOIN businessproject_invoicing_project_log_times_set logset ON logset.log_times_set = line.id
 JOIN businessproject_invoicing_project invproj ON invproj.id = logset.businessproject_invoicing_project
 JOIN project_project project ON project.id = invproj.project
-JOIN auth_user timesheet_user ON timesheet_user.id = line.user_id
+JOIN hr_employee timesheet_emp ON timesheet_emp.id = line.employee
 JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
@@ -3801,6 +3990,30 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["originalInvoiceId"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">enablePackMangement_1</property>
+                    <text-property name="displayName">enablePackMangement</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">displayStockMoveOnInvoicePrinting</property>
+                    <text-property name="displayName">displayStockMoveOnInvoicePrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayStockMoveOnInvoicePrinting"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">isAppSupplyChainActive</property>
+                    <text-property name="displayName">isAppSupplyChainActive</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["isAppSupplyChainActive"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">isStockMoveEmpty</property>
+                    <text-property name="displayName">isStockMoveEmpty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["isStockMoveEmpty"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -3897,6 +4110,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 <cell id="4465"/>
             </row>
             <row id="3363">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["AddressPositionSelect"].value == 1</expression>
+                    </structure>
+                </list-property>
                 <cell id="3364">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
@@ -3986,6 +4205,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 </cell>
             </row>
             <row id="3370">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["AddressPositionSelect"].value == 1</expression>
+                    </structure>
+                </list-property>
                 <cell id="3371">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">2</property>
@@ -4410,15 +4635,41 @@ else {
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginLeft">0pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["title_select"] == "1"){'M.'}
+else if(row["title_select"] == "2"){'Ms.'}
+else if(row["title_select"] == "3"){'Dr'}
+else if(row["title_select"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
-	if(row["title_select"] == "1"){"M."}
-	else if(row["title_select"]=="2"){"Mme"}
-	else if(row["title_select"]=="3"){"Mlle"}
-	else if(row["title_select"]=="4"){"Dr"}
-	else if(row["title_select"]=="5"){"Prof."}
-}</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["partnerName"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>if(row["partner_type_select"] != "1"){
-row["partnerFirstName"]
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
+			if(params["Locale"].value != 'en') {
+				row["translation"]
+			} else {
+				row["message_key"]
+			}
+}</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["partnerName"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>if(row._outer["partner_type_select"] != "1"){
+row._outer["partnerFirstName"]
 }</VALUE-OF><br>
 ]]></text-property>
                     </text>
@@ -4469,6 +4720,12 @@ row["message_key"]
                 </cell>
             </row>
             <row id="3377">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["AddressPositionSelect"].value == 1</expression>
+                    </structure>
+                </list-property>
                 <cell id="3380"/>
                 <cell id="3382">
                     <property name="colSpan">4</property>
@@ -4496,6 +4753,595 @@ row["message_key"]
                     <property name="borderRightStyle">none</property>
                     <property name="borderTopStyle">none</property>
                 </cell>
+            </row>
+            <row id="5781">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["AddressPositionSelect"].value == 0</expression>
+                    </structure>
+                </list-property>
+                <cell id="5782"/>
+                <cell id="5783"/>
+                <cell id="5784"/>
+                <cell id="5785">
+                    <property name="colSpan">5</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <text id="5811">
+                        <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if (row["status_select"] == "1") {
+	'Invoice.draftInvoiceNo'
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.invoiceAdvPaymentNo'
+	} else {
+		'Invoice.draftInvoiceNo'
+	}
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
+}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <structure name="toc"/>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["invoice_id"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5790"/>
+            </row>
+            <row id="5791">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["AddressPositionSelect"].value == 0</expression>
+                    </structure>
+                </list-property>
+                <cell id="5792">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5812">
+                        <property name="fontSize">12pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
+	if(row["title_select"] == "1"){"M."}
+	else if(row["title_select"]=="2"){"Mme"}
+	else if(row["title_select"]=="3"){"Mlle"}
+	else if(row["title_select"]=="4"){"Dr"}
+	else if(row["title_select"]=="5"){"Prof."}
+}</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["partnerName"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>if(row["partner_type_select"] != "1"){
+row["partnerFirstName"]
+}</VALUE-OF><br>
+]]></text-property>
+                    </text>
+                    <text id="5813">
+                        <property name="fontSize">12pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
+else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+row["translation"]
+} else {
+row["message_key"]
+}</VALUE-OF> 
+<VALUE-OF format="^">"  "</VALUE-OF>
+<VALUE-OF>row._outer["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["contactFirstName"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5794"/>
+                <cell id="5795">
+                    <property name="colSpan">5</property>
+                    <property name="rowSpan">2</property>
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <grid id="5815">
+                        <column id="5816"/>
+                        <row id="5817">
+                            <cell id="5818">
+                                <text id="5819">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.date'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                                </text>
+                                <data id="5820">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">invoice_date</property>
+                                </data>
+                            </cell>
+                        </row>
+                        <row id="5821">
+                            <cell id="5822">
+                                <text id="5823">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["paymentConditionName"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.paymentTerms'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                </text>
+                                <text id="5824">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'value:'+row["paymentConditionName"]</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["paymentConditionName"]
+}</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5825">
+                            <cell id="5826">
+                                <text id="5827">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["due_date"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.dueDate'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                                </text>
+                                <data id="5828">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">due_date</property>
+                                </data>
+                            </cell>
+                        </row>
+                        <row id="5829">
+                            <cell id="5830">
+                                <text id="5831">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["internal_reference"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.documentRef'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["internal_reference"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5832">
+                            <cell id="5833">
+                                <text id="5834">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["originalInvoice"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.originalInvoice'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["originalInvoiceId"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5835">
+                            <cell id="5836">
+                                <text id="5837">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["displayPartnerSeqOnPrinting"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
+'Invoice.supplierPartnerSeq'
+}
+else {
+'Invoice.customerPartnerSeq'
+}</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["partnerSeq"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5838">
+                            <cell id="5839">
+                                <text id="5840">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["external_reference"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
+'Invoice.supplyRef'
+}else{
+'Invoice.clientRef'
+}</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :  <VALUE-OF>row._outer["external_reference"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5841">
+                            <cell id="5842">
+                                <text id="5843">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["partner_tax_nbr"] == null || row._outer["operation_type_select"] == 1 || row._outer["operation_type_select"] == 2</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.customerTaxNumber'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["partner_tax_nbr"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5844">
+                            <cell id="5845">
+                                <text id="5846">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["displayHeadOfficeAddress"] != true || row._outer["head_office_address"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.headOfficeAddress'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["head_office_address"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
+                <cell id="5800"/>
+            </row>
+            <row id="5801">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["AddressPositionSelect"].value == 0</expression>
+                    </structure>
+                </list-property>
+                <cell id="5802">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5814">
+                        <property name="fontSize">11pt</property>
+                        <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["address_str"]==null</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["address_str"].replace(/\n/g, "<br>")</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5804"/>
+                <cell id="5810"/>
             </row>
             <row id="4517">
                 <cell id="4518"/>
@@ -4606,6 +5452,85 @@ row["message_key"]
                     </text>
                 </cell>
                 <cell id="4469"/>
+            </row>
+            <row id="5745">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!(row["displayStockMoveOnInvoicePrinting"] &amp;&amp; row["isAppSupplyChainActive"] &amp;&amp; row["isStockMoveEmpty"])</expression>
+                    </structure>
+                </list-property>
+                <cell id="5746">
+                    <text id="5764">
+                        <property name="marginTop">5pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">"Invoice.shippingDate"</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5747">
+                    <property name="colSpan">8</property>
+                    <property name="rowSpan">1</property>
+                    <table id="5765">
+                        <property name="dataSet">InvoiceDB</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">StockMoveRealDate</property>
+                                <text-property name="displayName">StockMoveRealDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">StockMoveSeq</property>
+                                <text-property name="displayName">StockMoveSeq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["StockMoveRealDate"]</expression>
+                                <property name="direction">desc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
+                        <column id="5769"/>
+                        <detail>
+                            <row id="5766">
+                                <cell id="5767">
+                                    <text id="5768">
+                                        <property name="marginTop">5pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="MM/dd/yyyy">if(params["Locale"].value == 'en')row["StockMoveRealDate"]</VALUE-OF><VALUE-OF format="dd/MM/yyyy">if(params["Locale"].value != 'en')row["StockMoveRealDate"]</VALUE-OF> - <VALUE-OF>row["StockMoveSeq"]</VALUE-OF>
+]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </detail>
+                    </table>
+                </cell>
             </row>
             <row id="5350">
                 <cell id="5351">
@@ -5333,7 +6258,7 @@ row["message_key"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF> row["translation"] != null ? row["translation"] : row._outer["product_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF> row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <data id="5384">
                                         <property name="fontSize">8pt</property>
@@ -7173,7 +8098,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="textAlign">right</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_total_discount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_sum_discount_line"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5682">
@@ -7960,6 +8885,27 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                             <column id="4985">
                                 <property name="width">0.3439583333333333cm</property>
                             </column>
+                            <row id="5770">
+                                <cell id="5771">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="5780">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="dataSet">InvoiceDB</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">legal_notice</property>
+                                                <text-property name="displayName">legal_notice</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["legal_notice"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["legal_notice"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5779"/>
+                            </row>
                             <row id="5054">
                                 <cell id="5055"/>
                                 <cell id="5056"/>

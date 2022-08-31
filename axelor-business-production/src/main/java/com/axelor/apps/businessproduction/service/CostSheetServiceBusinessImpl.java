@@ -30,7 +30,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -69,8 +68,6 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
     Employee employee = prodHumanResource.getEmployee();
 
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()
         && employee != null
@@ -107,7 +104,6 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate)
       throws AxelorException {
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
     if (!appProductionService.isApp("production")
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
