@@ -92,7 +92,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -126,7 +126,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -134,7 +134,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -265,5 +265,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+
+    return fixedAsset.getFirstDepreciationDateInitSelect();
   }
 }

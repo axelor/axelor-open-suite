@@ -38,9 +38,6 @@
             onChange="action-fixed-asset-attrs-set-degressive-coef" colspan="6"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"
             showIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
-          <field name="firstDepreciationDateInitSelect"
-            requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"
-            showIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
             validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
         </panel>

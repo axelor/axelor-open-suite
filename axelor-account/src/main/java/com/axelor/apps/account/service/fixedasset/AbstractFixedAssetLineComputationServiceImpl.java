@@ -5,6 +5,7 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.R
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -54,8 +55,6 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset);
 
-  protected abstract LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset);
-
   protected abstract Integer getPeriodicityInMonth(FixedAsset fixedAsset);
 
   protected abstract Integer getTypeSelect();
@@ -65,6 +64,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset);
 
   protected abstract LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset);
+
+  protected abstract int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset);
 
   @Inject
   public AbstractFixedAssetLineComputationServiceImpl(
@@ -499,5 +500,15 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return fixedAssetLine.getCorrectedAccountingValue().signum() != 0
         ? fixedAssetLine.getCorrectedAccountingValue()
         : fixedAssetLine.getAccountingValue();
+  }
+
+  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
+    if (getFirstDateDepreciationInitSelect(fixedAsset)
+            == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+        && fixedAsset.getFirstServiceDate() != null) {
+      return fixedAsset.getFirstServiceDate().withDayOfMonth(1);
+    } else {
+      return fixedAsset.getAcquisitionDate().withDayOfMonth(1);
+    }
   }
 }
