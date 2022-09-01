@@ -179,7 +179,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
             || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
             || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-            || accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+            || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
               move, map, newMap, moveLine, taxLine, accountType);

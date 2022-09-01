@@ -56,6 +56,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
@@ -219,10 +220,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
               pack, saleOrder, packQty, soLines, sequence);
     }
 
+    boolean doNotDisplayHeaderAndEndPack =
+        Boolean.TRUE.equals(pack.getDoNotDisplayHeaderAndEndPack());
     SaleOrderLine soLine;
     for (PackLine packLine : packLineList) {
-      if (packLine.getTypeSelect() != PackLineRepository.TYPE_NORMAL
-          && Boolean.TRUE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
+      if (doNotDisplayHeaderAndEndPack
+          && (Objects.equals(packLine.getTypeSelect(), PackLineRepository.TYPE_START_OF_PACK)
+              || Objects.equals(packLine.getTypeSelect(), PackLineRepository.TYPE_END_OF_PACK))) {
         continue;
       }
       soLine =

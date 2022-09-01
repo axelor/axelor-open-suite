@@ -158,6 +158,8 @@ import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentil
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveComputeServiceImpl;
+import com.axelor.apps.account.service.move.MoveControlService;
+import com.axelor.apps.account.service.move.MoveControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCounterPartServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
@@ -420,5 +422,7 @@ public class AccountModule extends AxelorModule {
         .to(AnalyticMoveLineGenerateRealServiceImpl.class);
 
     bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
+
+    bind(MoveControlService.class).to(MoveControlServiceImpl.class);
   }
 }
