@@ -518,7 +518,7 @@ public class ICalendarService {
       items.add(new Location(event.getLocation()));
     }
     if (StringUtils.notEmpty(event.getGeo()) && event.getGeo().contains(";")) {
-      // new Geo() object seperate the longitude and latitude using ; char
+      // new Geo() object separate the longitude and latitude using ; char
       items.add(new Geo(event.getGeo()));
     }
     if (event.getUid() == null) {
