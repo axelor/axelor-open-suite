@@ -68,11 +68,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     moveLine.clearInvoiceTermList();
 
-    Account holdbackAccount = this.getHoldbackAccount(moveLine, move);
-    boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     boolean containsHoldback =
         move.getPaymentCondition().getPaymentConditionLineList().stream()
             .anyMatch(PaymentConditionLine::getIsHoldback);
+    Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
+    boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
         invoiceTermService.getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback);
     MoveLine holdbackMoveLine = null;
@@ -286,6 +286,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected boolean isHoldbackAlreadyGenerated(Move move, Account holdbackAccount) {
+    if (holdbackAccount == null) {
+      return true;
+    }
+
     return move.getMoveLineList().stream()
         .anyMatch(
             it ->
