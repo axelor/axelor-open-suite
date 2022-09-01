@@ -19,11 +19,13 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import java.util.Set;
 import javax.persistence.PersistenceException;
 
@@ -32,6 +34,8 @@ public class AccountAccountRepository extends AccountRepository {
   @Override
   public Account save(Account account) {
     try {
+      Beans.get(AccountService.class).checkIfCodeAccountAlreadyExistForCompany(account);
+
       if (account.getId() == null) {
         return super.save(account);
       }

@@ -211,7 +211,7 @@ public class AccountService {
   }
 
   @Transactional
-  public void toggleStatusSelect(Account account) {
+  public void toggleStatusSelect(Account account) throws AxelorException {
     if (account != null) {
       if (account.getStatusSelect() == AccountRepository.STATUS_INACTIVE) {
         account = activate(account);
@@ -270,7 +270,8 @@ public class AccountService {
     return account;
   }
 
-  protected Account activate(Account account) {
+  protected Account activate(Account account) throws AxelorException {
+    this.checkIfCodeAccountAlreadyExistForCompany(account);
     account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
     return account;
   }
@@ -278,5 +279,24 @@ public class AccountService {
   protected Account desactivate(Account account) {
     account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
     return account;
+  }
+
+  public void checkIfCodeAccountAlreadyExistForCompany(Account account) throws AxelorException {
+    if (accountRepository
+            .all()
+            .filter(
+                "self.company = :company AND self.code = :code AND self.id != :id AND self.statusSelect = :activeStatus")
+            .bind("company", account.getCompany())
+            .bind("code", account.getCode())
+            .bind("id", account.getId() == null ? 0L : account.getId())
+            .bind("activeStatus", AccountRepository.STATUS_ACTIVE)
+            .count()
+        > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
+          account.getCode(),
+          account.getCompany().getName());
+    }
   }
 }

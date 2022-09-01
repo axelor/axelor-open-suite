@@ -55,8 +55,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="save,account-account-method-toggle-status-active,action-attrs-account-account-status-show-title"
-        colSpan="3"
+        onClick="action-account-group-activate-onclick" colSpan="3"
         readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
     </panel>
     <panel name="mainPanel">
@@ -305,6 +304,13 @@
   <action-group name="action-account-group-company-onChange">
     <action name="action-account-record-clean-analytic"/>
     <action name="action-account-validate"/>
+  </action-group>
+
+  <action-group name="action-account-group-activate-onclick">
+    <action name="action-account-group-onsave"/>
+    <action name="save"/>
+    <action name="account-account-method-toggle-status-active"/>
+    <action name="action-attrs-account-account-status-show-title"/>
   </action-group>
 
   <action-record name="action-account-record-new"
