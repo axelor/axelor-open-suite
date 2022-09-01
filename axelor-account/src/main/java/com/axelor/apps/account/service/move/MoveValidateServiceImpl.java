@@ -212,7 +212,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()
-        && move.getTechnicalOriginSelect() != MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC
+        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF
         && !moveToolService.checkMoveLinesCutOffDates(move)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
