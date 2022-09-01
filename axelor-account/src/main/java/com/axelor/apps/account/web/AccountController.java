@@ -79,7 +79,7 @@ public class AccountController {
           Beans.get(AccountRepository.class)
               .all()
               .filter(
-                  "self.company = :company AND self.code = :code AND self.id != :id AND self.status = :activeStatus")
+                  "self.company = :company AND self.code = :code AND self.id != :id AND self.statusSelect = :activeStatus")
               .bind("company", account.getCompany())
               .bind("code", account.getCode())
               .bind("id", accountId)

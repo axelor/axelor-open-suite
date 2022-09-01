@@ -48,7 +48,7 @@
 
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" width="large"
-    onNew="action-account-record-new,action-method-account-hide-analytic"
+    onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
     onLoad="action-group-account-account-onload" onSave="action-account-group-onsave"
     canDelete="!isRegulatoryAccount">
     <panel name="statusPanel">
@@ -102,7 +102,7 @@
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'"
-          readonlyIf="$isReadOnly || isRegulatoryAccount"/>
+          readonlyIf="isRegulatoryAccount"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
@@ -123,8 +123,7 @@
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
           hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"
-            readonlyIf="$isReadOnly"/>
+            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
@@ -193,6 +192,7 @@
   </form>
 
   <form name="account-info-form" title="Accounting.Account"
+    onLoad="action-attrs-account-account-readonly-if-account-in-move-line"
     model="com.axelor.apps.account.db.Account" width="large">
     <panel name="mainPanel" title="Account details" readonly="true">
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
@@ -274,6 +274,7 @@
 
   <action-group name="action-group-account-account-onload">
     <action name="action-account-method-compute-balance"/>
+    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
   </action-group>
