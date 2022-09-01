@@ -1,3 +1,17 @@
+## [6.1.19] (2022-09-01)
+
+#### Fixed
+
+* Ticket: fix ticket copy by resetting correctly fields that are not configured by the user.
+* Invoice: fixed an issue where invoice printing PDF file had a blank page at the end of the report.
+* Invoice: fixed discount display issue in the printing.
+* Fixed Asset: fixed error (JNPE) when we removed first depreciation date or acquisition date.
+* Purchase Order: fixed error when adding title line that prevented computation of totals.
+* Sale Order: fixed an issue preventing the addition of title lines when 'Do not display the header and end of pack' was checked.
+* Product: fixed an issue where product per company lines were not created on a new product.
+* Accounting report: fixed a blocking error preventing the generation of a Payment Difference report.
+* Move: fixed an issue where it was not possible to reverse a move linked to a notified invoice in an accounted subrogation release.
+
 ## [6.1.18] (2022-08-11)
 
 #### Fixed
@@ -728,6 +742,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.19]: https://github.com/axelor/axelor-open-suite/compare/v6.1.18...v6.1.19
 [6.1.18]: https://github.com/axelor/axelor-open-suite/compare/v6.1.17...v6.1.18
 [6.1.17]: https://github.com/axelor/axelor-open-suite/compare/v6.1.16...v6.1.17
 [6.1.16]: https://github.com/axelor/axelor-open-suite/compare/v6.1.15...v6.1.16
