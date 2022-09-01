@@ -1,3 +1,5 @@
 ---
-title : "Fix an inconsistency when creation sequence"
+title : "Sequence : fix an inconsistency for yearly reset sequence"
 type : fix
+description: |
+  Sequence version generated automatically now correctly have the correct end date
