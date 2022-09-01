@@ -979,4 +979,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY = /*$$(*/
       "Inconsistency detected as the company defined on the journal %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
+      "You must configure an account for cashier regulation." /*)*/;
 }
