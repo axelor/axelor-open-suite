@@ -315,6 +315,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     String origin = getOriginFromInvoicePayment(invoicePayment);
     boolean isFinancialDiscount = this.isFinancialDiscount(invoicePayment);
     int counter = 1;
+    boolean financialDiscountVat =
+        invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -342,6 +348,21 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               counter++,
               origin,
               invoicePayment.getDescription());
+
+      Tax financialDiscountTax = null;
+      if (financialDiscountVat) {
+        financialDiscountTax =
+            isPurchase
+                ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+                : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
+
+        if (financialDiscountTax.getActiveTaxLine() != null) {
+          financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+          financialDiscountMoveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+          financialDiscountMoveLine.setTaxCode(financialDiscountTax.getCode());
+        }
+      }
+
       move.addMoveLineListItem(financialDiscountMoveLine);
 
       paymentAmount =
@@ -369,19 +390,15 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (isFinancialDiscount
         && invoicePayment != null
         && invoicePayment.getFinancialDiscount() != null
-        && invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+        && financialDiscountVat
         && financialDiscountMoveLine != null) {
+      int vatSytem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
       Account financialDiscountVATAccount =
           this.getFinancialDiscountVATAccount(
-              invoice,
-              company,
-              move.getJournal(),
-              financialDiscountMoveLine.getAccount().getVatSystemSelect(),
-              move.getFunctionalOriginSelect());
+              invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
 
       if (financialDiscountVATAccount != null) {
-        move.addMoveLineListItem(
+        MoveLine financialDiscountVatMoveLine =
             moveLineCreateService.createMoveLine(
                 move,
                 partner,
@@ -392,7 +409,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                 null,
                 counter,
                 origin,
-                invoicePayment.getDescription()));
+                invoicePayment.getDescription());
+        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
+        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
+        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
+        financialDiscountVatMoveLine.setVatSystemSelect(vatSytem);
+        move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
     return move;
