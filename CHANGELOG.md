@@ -1,3 +1,13 @@
+## [5.4.23] (2022-09-01)
+
+#### Fixed
+
+* Ticket: fix ticket copy by resetting correctly fields that are not configured by the user.
+* Invoice: fixed an issue where invoice printing PDF file had a blank page at the end of the report.
+* Invoice: fixed discount display issue in the printing.
+* Fixed Asset: fixed error (JNPE) when we removed first depreciation date or acquisition date.
+* Move: fixed an issue where it was not possible to reverse a move linked to a notified invoice in an accounted subrogation release.
+
 ## [5.4.22] (2022-08-11)
 
 #### Fixed
@@ -665,6 +675,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.23]: https://github.com/axelor/axelor-open-suite/compare/v5.4.22...v5.4.23
 [5.4.22]: https://github.com/axelor/axelor-open-suite/compare/v5.4.21...v5.4.22
 [5.4.21]: https://github.com/axelor/axelor-open-suite/compare/v5.4.20...v5.4.21
 [5.4.20]: https://github.com/axelor/axelor-open-suite/compare/v5.4.19...v5.4.20
