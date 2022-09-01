@@ -30,6 +30,17 @@
         <button name="targetBatchBtn" title="Target batch"
           onClick="save,action-base-batch-method-action-target"/>
       </panel>
+      <panel name="passwordChangePanel" title="Password change" showIf="actionSelect == 3">
+        <field name="generateNewRandomPasswords"/>
+        <field name="updatePasswordNextLogin"/>
+        <field name="allUsers"
+          readonlyIf="(userSet != null &amp;&amp; userSet.length != 0) || (groupSet != null &amp;&amp; groupSet.length != 0)"/>
+        <field name="nbOfDaySinceLastUpdate"/>
+        <panel-related field="userSet" form-view="user-form" grid-view="user-grid"
+          colSpan="12" hideIf="allUsers"/>
+        <panel-related field="groupSet" form-view="group-form" grid-view="group-grid"
+          colSpan="12" hideIf="allUsers"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -38,9 +49,11 @@
           form-view="batch-form" grid-view="batch-grid"/>
       </panel>
     </panel-tabs>
-    <panel name="synchronizeBtnPanel" sidebar="true">
+    <panel name="buttonPanel" sidebar="true">
       <button name="synchronizeBtn" showIf="actionSelect == 2"
         title="Batch calendar synchronization" onClick="save,action-base-batch-method-run-batch"/>
+      <button name="passwordChangeBtn" title="Password change" showIf="actionSelect == 3"
+        onClick="save,action-base-batch-method-password-change"/>
     </panel>
   </form>
 
@@ -74,6 +87,10 @@
 
   <action-method name="action-base-batch-method-run-batch">
     <call class="com.axelor.apps.base.web.BaseBatchController" method="runBatch"/>
+  </action-method>
+
+  <action-method name="action-base-batch-method-password-change">
+    <call class="com.axelor.apps.base.web.BaseBatchController" method="actionPasswordChange"/>
   </action-method>
 
   <!-- ACTION ATTRS -->

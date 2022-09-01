@@ -68,4 +68,22 @@ public class BaseBatchController {
       response.setReload(true);
     }
   }
+
+  public void actionPasswordChange(ActionRequest request, ActionResponse response) {
+    try {
+      BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
+      baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());
+      BaseBatchService baseBatchService = Beans.get(BaseBatchService.class);
+      baseBatchService.setBatchModel(baseBatch);
+      ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
+      Batch batch = batchControllerCallableTool.runInSeparateThread(baseBatchService, response);
+      if (batch != null) {
+        response.setFlash(batch.getComments());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
 }

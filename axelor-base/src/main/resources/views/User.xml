@@ -4,10 +4,6 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
-    <toolbar>
-      <button name="generateRandomPasswordsBtn" title="Generate random passwords"
-        onClick="action-user-method-open-generate-random-passwords-wizard"/>
-    </toolbar>
     <field name="name"/>
     <field name="fullName"/>
     <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
@@ -361,15 +357,6 @@
 
   </form>
 
-  <form name="generate-random-passwords-wizard" title="Generate random passwords"
-    model="com.axelor.apps.base.db.Wizard">
-    <panel name="mainPanel">
-      <field name="currentUserPassword" title="Your Password" widget="password"/>
-      <button name="generateRandomPasswordsBtn" title="Generate random passwords"
-        readonlyIf="!currentUserPassword" onClick="action-user-method-generate-random-passwords"/>
-    </panel>
-  </form>
-
   <form model="com.axelor.apps.base.db.Wizard" title="Partner type selection"
     name="user-partner-type-wizard-form">
     <panel name="mainPanel">
@@ -499,15 +486,6 @@
     <check error="A user with this login already exists." field="code"
       if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
   </action-condition>
-
-  <action-method name="action-user-method-open-generate-random-passwords-wizard">
-    <call class="com.axelor.apps.base.web.UserController"
-      method="openGenerateRandomPasswordsWizard"/>
-  </action-method>
-
-  <action-method name="action-user-method-generate-random-passwords">
-    <call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
-  </action-method>
 
   <action-view name="action-user-view-show-all-permissions" title="All permissions"
     model="com.axelor.auth.db.Permission">

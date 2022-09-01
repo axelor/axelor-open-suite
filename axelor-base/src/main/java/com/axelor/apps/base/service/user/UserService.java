@@ -27,7 +27,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.MessagingException;
@@ -171,17 +170,6 @@ public interface UserService {
   String getPasswordPatternDescription();
 
   /**
-   * Verify current connected user's password
-   *
-   * @param password
-   * @return
-   */
-  boolean verifyCurrentUserPassword(String password);
-
-  @Transactional
-  public void generateRandomPasswordForUsers(List<Long> userIds);
-
-  /**
    * Setting user's partner
    *
    * @param partner
@@ -190,4 +178,6 @@ public interface UserService {
    */
   @Transactional
   public Partner setUserPartner(Partner partner, User user);
+
+  public void generateRandomPasswordForUser(User user);
 }
