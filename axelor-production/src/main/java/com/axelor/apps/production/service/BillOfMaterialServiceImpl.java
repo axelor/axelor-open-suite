@@ -50,6 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -430,5 +431,21 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     return billOfMaterial;
+  }
+
+  @Override
+  public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
+
+    if (companySet == null || companySet.isEmpty()) {
+      return Collections.emptyList();
+    }
+    String stringQuery =
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+    Query query = JPA.em().createQuery(stringQuery, Long.class);
+
+    query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));
+    List<Long> productIds = (List<Long>) query.getResultList();
+
+    return productIds;
   }
 }
