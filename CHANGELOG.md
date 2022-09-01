@@ -1,3 +1,13 @@
+## [6.0.30] (2022-09-01)
+
+#### Fixed
+
+* Ticket: fix ticket copy by resetting correctly fields that are not configured by the user.
+* Invoice: fixed an issue where invoice printing PDF file had a blank page at the end of the report.
+* Invoice: fixed discount display issue in the printing.
+* Fixed Asset: fixed error (JNPE) when we removed first depreciation date or acquisition date.
+* Move: fixed an issue where it was not possible to reverse a move linked to a notified invoice in an accounted subrogation release.
+
 ## [6.0.29] (2022-08-11)
 
 #### Fixed
@@ -907,6 +917,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.30]: https://github.com/axelor/axelor-open-suite/compare/v6.0.29...v6.0.30
 [6.0.29]: https://github.com/axelor/axelor-open-suite/compare/v6.0.28...v6.0.29
 [6.0.28]: https://github.com/axelor/axelor-open-suite/compare/v6.0.27...v6.0.28
 [6.0.27]: https://github.com/axelor/axelor-open-suite/compare/v6.0.26...v6.0.27
