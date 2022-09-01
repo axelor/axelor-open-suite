@@ -1,0 +1,3 @@
+---
+title: "Stock : Fix error when creating move stock if account module wasn't installed"
+type: fix

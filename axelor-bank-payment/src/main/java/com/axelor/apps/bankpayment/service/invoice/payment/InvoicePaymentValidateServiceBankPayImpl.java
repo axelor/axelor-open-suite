@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -35,7 +36,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;
@@ -71,6 +72,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoicePaymentToolService invoicePaymentToolService,
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService) {
     super(
@@ -82,7 +84,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
-        appAccountService);
+        appAccountService,
+        accountManagementAccountService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
     this.invoiceTermService = invoiceTermService;
@@ -96,7 +99,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (paymentMode == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
+          I18n.get(BankPaymentExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
           invoice.getInvoiceId());
     }
 

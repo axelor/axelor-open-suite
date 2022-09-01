@@ -86,8 +86,8 @@
     <option order="20" value="20">Fees declaration supporting file</option>
     <option order="21" value="21">Preparatory declaration DGI 2054</option>
     <option order="22" value="22">Preparatory declaration DGI 2055</option>
-    <option order="23" value="23">Personnalized report</option>
-    <option order="24" value="24">Personnalized report</option>
+    <option order="23" value="23">Invoices which are due and unpaid</option>
+    <option order="24" value="24">Invoices with payment delay</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
@@ -463,6 +463,7 @@
   </selection>
 
   <selection name="invoiceterm.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2" order="3">PFP validated</option>
     <option value="3" order="4">Litigation</option>

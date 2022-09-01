@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -131,7 +131,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
             if (Strings.isNullOrEmpty(message)) {
               message =
                   String.format(
-                      I18n.get(IExceptionMessage.SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT),
+                      I18n.get(
+                          SupplychainExceptionMessage.SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT),
                       partner.getFullName(),
                       saleOrder.getSaleOrderSeq());
             }

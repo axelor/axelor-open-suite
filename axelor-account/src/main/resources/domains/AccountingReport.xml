@@ -127,8 +127,8 @@
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
 		public static final int REPORT_FEES_DECLARATION_PREPARATORY_PROCESS = 19;
 		public static final int REPORT_FEES_DECLARATION_SUPPORT = 20;
-		public static final int REPORT_PERSONNALIZED_REPORT = 23;
-		public static final int REPORT_PERSONNALIZED_REPORT_PAYMENT_DELAY = 24;
+		public static final int REPORT_UNPAID_DUE_INVOICE = 23;
+		public static final int REPORT_INVOICE_WITH_PAYMENT_DELAY = 24;
 		public static final int REPORT_CUSTOM_STATE = 3000;
 
 		// EXPORT TYPE SELECT

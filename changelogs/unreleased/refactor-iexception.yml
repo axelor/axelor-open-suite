@@ -1,0 +1,5 @@
+---
+title: "Java service: rename IExceptionMessage"
+type: deprecate
+description: |
+  All IExceptionMessage service are now moved to `[Module name]ExceptionMessage`. All IExceptionMessage services are now deprecated. On any module using IExceptionMessage classes, the new classes must be used instead.

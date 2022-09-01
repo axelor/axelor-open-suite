@@ -22,7 +22,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
@@ -98,20 +98,20 @@ public class BankOrderController {
       EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
 
       if (ebicsUser == null) {
-        response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
+        response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_NAME));
       } else {
         if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
             == EbicsPartnerRepository.EBICS_TYPE_TS) {
           bankOrderService.validate(bankOrder);
         } else {
           if (context.get("password") == null) {
-            response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+            response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
           }
           if (context.get("password") != null) {
             String password = (String) context.get("password");
             if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
               response.setValue("password", "");
-              response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+              response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
             } else {
               bankOrderService.validate(bankOrder);
             }

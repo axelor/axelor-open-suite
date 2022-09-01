@@ -17,13 +17,15 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -46,16 +48,8 @@ public class InvoiceToolService {
   public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-      return invoiceDate;
-    }
-    if (invoice.getInvoiceTermList().size() == 1) {
-      return invoice.getInvoiceTermList().get(0).getDueDate();
-    }
-    return invoice.getInvoiceTermList().stream()
-        .map(invoiceTerm -> invoiceTerm.getDueDate())
-        .max(Comparator.comparing(LocalDate::toEpochDay))
-        .orElse(null);
+    return Beans.get(InvoiceTermService.class)
+        .getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
   @CallMethod
@@ -162,7 +156,7 @@ public class InvoiceToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
   }
@@ -196,7 +190,7 @@ public class InvoiceToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
 
@@ -271,7 +265,7 @@ public class InvoiceToolService {
    *
    * @param copy a copy of an invoice
    */
-  public static void resetInvoiceStatusOnCopy(Invoice copy) {
+  public static void resetInvoiceStatusOnCopy(Invoice copy) throws AxelorException {
     copy.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
     copy.setInvoiceId(null);
     copy.setInvoiceDate(null);
@@ -317,5 +311,43 @@ public class InvoiceToolService {
     copy.setFinancialDiscountRate(BigDecimal.ZERO);
     copy.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
     copy.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    copy.setOldMove(null);
+    copy.setBillOfExchangeBlockingOk(false);
+    copy.setBillOfExchangeBlockingReason(null);
+    copy.setBillOfExchangeBlockingToDate(null);
+    copy.setBillOfExchangeBlockingByUser(null);
+
+    InvoiceToolService.setPfpStatus(copy);
+  }
+
+  /**
+   * Returns the functional origin of the invoice
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  public static int getFunctionalOrigin(Invoice invoice) throws AxelorException {
+    int functionalOrigin = 0;
+    if (isPurchase(invoice)) {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+    } else {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
+    }
+    return functionalOrigin;
+  }
+
+  public static void setPfpStatus(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+
+    if (accountConfig.getIsManagePassedForPayment()
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                && accountConfig.getIsManagePFPInRefund()))) {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    } else {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);
+    }
   }
 }

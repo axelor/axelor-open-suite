@@ -70,7 +70,7 @@
     <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
       title="Bill of exchange receivable account"/>
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
-      selection="account.account.chart.code.nbr.char.select" required="true"/>
+      selection="account.account.chart.code.nbr.char.select"/>
 
 
     <!-- Automatic account creation for partners -->

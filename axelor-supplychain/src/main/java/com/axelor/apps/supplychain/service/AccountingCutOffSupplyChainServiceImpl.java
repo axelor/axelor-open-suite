@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -107,7 +108,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       StockMoveLineServiceSupplychain stockMoveLineService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      TaxAccountToolService taxAccountToolService) {
 
     super(
         moveCreateService,
@@ -126,7 +128,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         moveLineComputeAnalyticService,
         moveSimulateService,
         moveLineService,
-        currencyService);
+        currencyService,
+        taxAccountToolService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.saleOrderRepository = saleOrderRepository;
@@ -197,7 +200,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
     List<StockMoveLine> stockMoveLineSortedList = stockMove.getStockMoveLineList();
     stockMoveLineSortedList.sort(Comparator.comparing(StockMoveLine::getSequence));
-
     Move move =
         generateCutOffMoveFromStockMove(
             stockMove,
@@ -354,11 +356,13 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         includeNotStockManagedProduct);
 
     this.generatePartnerMoveLine(move, origin, partnerAccount, moveDescription, originDate);
+
     counter = 0;
     // Status
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
 
       move.setStockMove(stockMove);
+
       this.updateStatus(move, cutOffMoveStatusSelect);
 
     } else {
@@ -481,11 +485,11 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     getAndComputeAnalyticDistribution(product, move, moveLine);
 
     move.addMoveLineListItem(moveLine);
-
     if (recoveredTax) {
       TaxLine taxLine =
           accountManagementAccountService.getTaxLine(
               originDate, product, company, fiscalPosition, isPurchase);
+
       if (taxLine != null) {
         moveLine.setTaxLine(taxLine);
         moveLine.setTaxRate(taxLine.getValue());

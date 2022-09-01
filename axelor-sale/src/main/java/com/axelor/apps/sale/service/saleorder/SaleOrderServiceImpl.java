@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
@@ -34,8 +33,7 @@ import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -116,26 +114,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Deprecated
-  public String getReportLink(
-      SaleOrder saleOrder, String name, String language, boolean proforma, String format)
-      throws AxelorException {
-
-    return ReportFactory.createReport(IReport.SALES_ORDER, name + "-${date}")
-        .addParam("Locale", language)
-        .addParam(
-            "Timezone",
-            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
-        .addParam("SaleOrderId", saleOrder.getId())
-        .addParam("ProformaInvoice", proforma)
-        .addParam(
-            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(format)
-        .generate()
-        .getFileLink();
-  }
-
-  @Override
   public void computeAddressStr(SaleOrder saleOrder) {
     AddressService addressService = Beans.get(AddressService.class);
     saleOrder.setMainInvoicingAddressStr(
@@ -151,7 +129,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
+          I18n.get(SaleExceptionMessage.SALES_ORDER_COMPLETED));
     }
 
     saleOrder.setOrderBeingEdited(true);
@@ -343,7 +321,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+              I18n.get(SaleExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
         }
       }
     }

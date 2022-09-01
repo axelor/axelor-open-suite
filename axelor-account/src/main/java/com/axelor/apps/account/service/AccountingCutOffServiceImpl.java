@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -81,6 +82,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveSimulateService moveSimulateService;
   protected MoveLineService moveLineService;
   protected CurrencyService currencyService;
+  protected TaxAccountToolService taxAccountToolService;
   protected int counter = 0;
 
   @Inject
@@ -101,7 +103,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      TaxAccountToolService taxAccountToolService) {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
@@ -120,6 +123,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveSimulateService = moveSimulateService;
     this.moveLineService = moveLineService;
     this.currencyService = currencyService;
+    this.taxAccountToolService = taxAccountToolService;
   }
 
   @Override
@@ -131,13 +135,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     String queryStr =
         "((:researchJournal > 0 AND self.journal.id = :researchJournal) "
             + "  OR (:researchJournal = 0 AND self.journal.journalType.technicalTypeSelect = :journalType))"
-            + "AND YEAR(self.date) = :year "
+            + "AND self.date <= :date "
             + "AND self.statusSelect IN (2, 3, 5) "
             + "AND EXISTS(SELECT 1 FROM MoveLine ml "
             + " WHERE ml.move = self "
             + " AND ml.account.manageCutOffPeriod IS TRUE "
             + " AND ml.cutOffStartDate != null AND ml.cutOffEndDate != null "
-            + " AND YEAR(ml.cutOffEndDate) > :year)";
+            + " AND ml.cutOffEndDate > :date)";
 
     if (company != null) {
       queryStr += " AND self.company = :company";
@@ -154,7 +158,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                         == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES
                     ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
                     : JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)
-            .bind("year", moveDate.getYear());
+            .bind("date", moveDate);
 
     if (company != null) {
       moveQuery.bind("company", company.getId());
@@ -343,7 +347,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (moveLine.getAccount().getManageCutOffPeriod()
           && moveLine.getCutOffStartDate() != null
           && moveLine.getCutOffEndDate() != null
-          && (moveLine.getCutOffEndDate().getYear() > moveDate.getYear() || isReverse)) {
+          && (moveLine.getCutOffEndDate().isAfter(moveDate) || isReverse)) {
         moveLineAccount = moveLine.getAccount();
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
         BigDecimal convertedAmount =
@@ -507,22 +511,45 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal currencyTaxAmount =
         InvoiceLineManagement.computeAmount(
             productMoveLine.getCurrencyAmount(), taxLine.getValue());
-
-    MoveLine taxMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
+    Integer vatSystem =
+        taxAccountToolService.calculateVatSystem(
             move.getPartner(),
-            taxAccount,
-            currencyTaxAmount,
-            productMoveLine.getDebit().signum() > 0,
-            productMoveLine.getOriginDate(),
-            ++counter,
-            origin,
-            moveDescription);
-    taxMoveLine.setDate(move.getDate());
-    taxMoveLine.setDueDate(move.getDate());
+            move.getCompany(),
+            productMoveLine.getAccount(),
+            isPurchase,
+            !isPurchase);
 
-    move.addMoveLineListItem(taxMoveLine);
+    MoveLine moveLine = this.getMoveLineWithSameTax(move, taxAccount, taxLine, vatSystem);
+
+    if (moveLine != null && (moveLine.getDebit().compareTo(new BigDecimal(0)) > 0)) {
+      moveLine.setDebit(moveLine.getDebit().add(currencyTaxAmount));
+    } else if (moveLine != null) {
+      moveLine.setCredit(moveLine.getCredit().add(currencyTaxAmount));
+    } else {
+      MoveLine taxMoveLine =
+          moveLineCreateService.createMoveLine(
+              move,
+              move.getPartner(),
+              taxAccount,
+              currencyTaxAmount,
+              productMoveLine.getDebit().signum() > 0,
+              productMoveLine.getOriginDate(),
+              ++counter,
+              origin,
+              moveDescription);
+
+      if (taxLine != null) {
+        taxMoveLine.setTaxLine(taxLine);
+        taxMoveLine.setTaxRate(taxLine.getValue());
+        taxMoveLine.setTaxCode(taxLine.getTax().getCode());
+        taxMoveLine.setVatSystemSelect(vatSystem);
+      }
+
+      taxMoveLine.setDate(move.getDate());
+      taxMoveLine.setDueDate(move.getDate());
+
+      move.addMoveLineListItem(taxMoveLine);
+    }
   }
 
   protected MoveLine generatePartnerMoveLine(
@@ -597,5 +624,21 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
     }
+  }
+
+  protected MoveLine getMoveLineWithSameTax(
+      Move move, Account taxAccount, TaxLine taxLine, Integer vatSystem) {
+    if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+      for (MoveLine line : move.getMoveLineList()) {
+        if (line.getAccount().equals(taxAccount)
+            && line.getTaxLine() != null
+            && line.getTaxLine().equals(taxLine)
+            && line.getVatSystemSelect() != null
+            && line.getVatSystemSelect().equals(vatSystem)) {
+          return line;
+        }
+      }
+    }
+    return null;
   }
 }

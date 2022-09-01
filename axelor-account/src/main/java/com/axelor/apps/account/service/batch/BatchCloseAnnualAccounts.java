@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -109,15 +110,15 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
     if (accountingBatch.getYear() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
     if (accountingBatch.getSimulateGeneratedMoves() && accountingBatch.getCompany() != null) {
@@ -128,14 +129,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       if (journal == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_3),
+            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_3),
             I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             accountingBatch.getCode());
       }
       if (!journal.getAuthorizeSimulatedMove()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_4),
+            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_4),
             journal.getCode());
       }
     }
@@ -148,14 +149,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             || accountConfig.getYearOpeningAccount() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_6),
+              I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_6),
               accountingBatch.getCode());
         }
       } else if (accountConfig.getResultProfitAccount() == null
           || accountConfig.getYearOpeningAccount() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_5),
+            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_5),
             accountingBatch.getCode());
       }
     }
@@ -318,20 +319,21 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(IExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE)).append(" ");
+    sb.append(I18n.get(AccountExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE))
+        .append(" ");
     sb.append(
         String.format(
             I18n.get(
-                    IExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_SINGULAR,
-                    IExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL,
+                    AccountExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_SINGULAR,
+                    AccountExceptionMessage.BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL,
                     batch.getDone())
                 + " ",
             batch.getDone()));
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());

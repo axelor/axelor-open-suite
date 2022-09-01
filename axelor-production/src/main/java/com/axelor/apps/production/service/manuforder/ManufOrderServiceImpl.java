@@ -40,7 +40,7 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
@@ -288,7 +288,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       LocalDateTime plannedEndDateT)
       throws AxelorException {
 
-    logger.debug("Création d'un OF {}", priority);
+    logger.debug("Creation of a manufacturing order {}", priority);
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
 
@@ -393,7 +393,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MANUF_ORDER_SEQ));
+          I18n.get(ProductionExceptionMessage.MANUF_ORDER_SEQ));
     }
 
     return seq;
@@ -431,7 +431,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throw new AxelorException(
           product,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
           product.getName(),
           product.getCode());
     }
@@ -700,7 +700,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (!realizedProducedStockMoveLineList.equals(oldRealizedProducedStockMoveLineList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES));
+          I18n.get(ProductionExceptionMessage.CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES));
     }
   }
 
@@ -935,7 +935,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throw new AxelorException(
           ManufOrder.class,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
+          I18n.get(ProductionExceptionMessage.MANUF_ORDER_NO_GENERATION));
     }
     List<ManufOrder> manufOrderList =
         manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch();
@@ -1200,7 +1200,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (depth >= 25) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+          I18n.get(ProductionExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
     }
     depth++;
 

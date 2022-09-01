@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -507,7 +507,7 @@ public class InvoiceLineController {
             invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
         if (!analyticMoveLineService.validateAnalyticMoveLines(
             invoiceLine.getAnalyticMoveLineList())) {
-          response.setError(I18n.get(IExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
+          response.setError(I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
         }
         Beans.get(AnalyticDistributionTemplateService.class)
             .validateTemplatePercentages(invoiceLine.getAnalyticDistributionTemplate());
@@ -562,7 +562,7 @@ public class InvoiceLineController {
                   !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
               for (AnalyticAxisByCompany analyticAxisByCompany :
                   accountConfig.getAnalyticAxisByCompanyList()) {
-                if (analyticAxisByCompany.getOrderSelect() == i) {
+                if (analyticAxisByCompany.getSequence() + 1 == i) {
                   analyticAxis = analyticAxisByCompany.getAnalyticAxis();
                 }
               }

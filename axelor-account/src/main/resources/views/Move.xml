@@ -77,14 +77,17 @@
             onChange="action-move-group-journal-on-change" colSpan="3"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
-          <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
-            canView="false" readonly="true"/>
-          <field name="date"
-            readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-group-move-date-onchange" hideIf="statusSelect == 3" colSpan="3"/>
-          <field name="originDate" colSpan="3"
-            onChange="action-account-move-group-set-origin-date"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
+          <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
+            <field name="period" form-view="period-form" grid-view="period-grid"
+              canEdit="false" canView="false" readonly="true"/>
+            <field name="date"
+              readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+              onChange="action-group-move-date-onchange" hideIf="statusSelect == 3"/>
+            <field name="originDate" onChange="action-account-move-group-set-origin-date"
+              readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
+            <field name="$dueDate" type="date" title="Due date" hidden="true"
+              help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
+          </panel>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
@@ -100,18 +103,23 @@
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod" form-view="payment-mode-form"
-            grid-view="payment-mode-grid"/>
+            grid-view="payment-mode-grid" onChange="action-move-attrs-header-change"/>
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
-            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"/>
+            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"
+            onChange="action-move-group-payment-condition-onchange"/>
           <field name="partnerBankDetails" colSpan="3"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
             onSelect="action-move-attrs-bank-details-from-partner-domain"
-            form-view="bank-details-form" grid-view="bank-details-grid"/>
+            form-view="bank-details-form" grid-view="bank-details-grid"
+            onChange="action-move-attrs-header-change"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="paymentMode.typeSelect" hidden="true"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
+          <field name="$headerChange" type="boolean" hidden="true"/>
+          <field name="$paymentConditionChange" type="boolean" hidden="true"/>
+          <field name="$dateChange" type="boolean" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
@@ -195,7 +203,7 @@
           colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
-          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+          showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
@@ -211,14 +219,12 @@
         colSpan="12" height="6"
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="true" canRemove="true" grid-view="move-line-move-grid"
-        form-view="move-line-move-form"
-        onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
+        form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
         showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="false" canRemove="false" grid-view="move-line-move-grid"
-        form-view="move-line-move-form"
-        onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
+        form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
       <field name="$reconcileTags" colSpan="12" hidden="true" readonly="true"
         showTitle="false">
         <viewer depends="moveLineList">
@@ -433,12 +439,12 @@
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
         grid-view="move-line-move-simplifiee-grid" editable="true"
-        onChange="action-group-move-move-line-list-onchange" canNew="true" canRemove="true"/>
+        onChange="action-move-group-move-line-list-onchange" canNew="true" canRemove="true"/>
       <panel-related name="moveLineListPanel"
         showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
         grid-view="move-line-move-simplifiee-grid" editable="false"
-        onChange="action-group-move-move-line-list-onchange" canNew="false" canRemove="false"/>
+        onChange="action-move-group-move-line-list-onchange" canNew="false" canRemove="false"/>
       <field name="$reconcileTags" showTitle="false" hidden="true" readonly="true"
         colSpan="12">
         <viewer depends="moveLineList"><![CDATA[
@@ -586,15 +592,19 @@
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-record-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
     <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
     <action name="save"/>
+    <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
     <action name="action-move-method-update-in-day-book-mode"/>
+    <action name="action-move-method-update-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
@@ -627,6 +637,8 @@
     <action name="action-account-move-method-check-duplicated-move-origin"
       if="journal.hasDuplicateDetectionOnOrigin"/>
     <action name="action-move-method-set-moveline-origin-dates"/>
+    <action name="action-move-attrs-date-change"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
@@ -653,6 +665,8 @@
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
+    <action name="action-move-attrs-date-change"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
@@ -671,6 +685,18 @@
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
+  </action-group>
+
+  <action-group name="action-move-group-move-line-list-onchange">
+    <action name="action-account-move-method-compute-totals"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
+  </action-group>
+
+  <action-group name="action-move-group-payment-condition-onchange">
+    <action name="action-move-attrs-payment-condition-change"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
@@ -932,6 +958,14 @@
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
   </action-method>
 
+  <action-method name="action-move-method-display-and-compute-due-date">
+    <call class="com.axelor.apps.account.web.MoveController" method="displayAndComputeDueDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-due-date">
+    <call class="com.axelor.apps.account.web.MoveController" method="updateDueDate"/>
+  </action-method>
+
   <action-record name="action-record-initialize-permission-validation-move"
     model="com.axelor.apps.account.db.Move">
     <field name="$validatePeriod"
@@ -954,6 +988,10 @@
 
   <action-method name="action-account-move-method-exception-counterpart">
     <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-partner">
+    <call class="com.axelor.apps.account.web.MoveController" method="updatePartner"/>
   </action-method>
 
   <!-- ACTION VIEW -->
@@ -998,6 +1036,19 @@
     model="com.axelor.apps.account.db.Move">
     <attribute name="hidden" for="tradingName"
       expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-header-change">
+    <attribute name="value" for="$headerChange" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-payment-condition-change">
+    <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-date-change">
+    <attribute name="value" for="$dateChange" expr="eval: true"/>
+    <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
@@ -1057,5 +1108,9 @@
 
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveController" method="updateInvoiceTerms"/>
   </action-method>
 </object-views>

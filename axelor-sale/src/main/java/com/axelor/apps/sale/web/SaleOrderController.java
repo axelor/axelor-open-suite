@@ -39,7 +39,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -183,7 +183,7 @@ public class SaleOrderController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.SALE_ORDER_PRINT));
+            I18n.get(SaleExceptionMessage.SALE_ORDER_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -396,7 +396,7 @@ public class SaleOrderController {
           Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
       if (checkAvailabiltyRequest) {
-        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+        response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

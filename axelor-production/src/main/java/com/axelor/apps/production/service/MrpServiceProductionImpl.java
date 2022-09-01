@@ -31,7 +31,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
@@ -567,11 +567,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       if (billOfMaterial == null || billOfMaterial.getProduct() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
             billOfMaterial.getProduct().getFullName());
       }
     }

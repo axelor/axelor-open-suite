@@ -120,7 +120,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
       for (AnalyticAxisByCompany axis :
           accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        if (axis.getOrderSelect() == position) {
+        if (axis.getSequence() + 1 == position) {
           analyticAxis = axis.getAnalyticAxis();
         }
       }
@@ -205,31 +205,32 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
             analyticMoveLineList.add(analyticMoveLine);
           }
         }
-        if (analyticMoveLineList.isEmpty()) {
-          return line;
-        }
-        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-        if (analyticMoveLineList.size() == 1
-            && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
-          AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-          switch (analyticAxisByCompany.getOrderSelect()) {
-            case 1:
-              line.setAxis1AnalyticAccount(analyticAccount);
-              break;
-            case 2:
-              line.setAxis2AnalyticAccount(analyticAccount);
-              break;
-            case 3:
-              line.setAxis3AnalyticAccount(analyticAccount);
-              break;
-            case 4:
-              line.setAxis4AnalyticAccount(analyticAccount);
-              break;
-            case 5:
-              line.setAxis5AnalyticAccount(analyticAccount);
-              break;
-            default:
-              break;
+
+        if (!analyticMoveLineList.isEmpty()) {
+
+          AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+          if (analyticMoveLineList.size() == 1
+              && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
+            AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
+            switch (analyticAxisByCompany.getSequence()) {
+              case 0:
+                line.setAxis1AnalyticAccount(analyticAccount);
+                break;
+              case 1:
+                line.setAxis2AnalyticAccount(analyticAccount);
+                break;
+              case 2:
+                line.setAxis3AnalyticAccount(analyticAccount);
+                break;
+              case 3:
+                line.setAxis4AnalyticAccount(analyticAccount);
+                break;
+              case 4:
+                line.setAxis5AnalyticAccount(analyticAccount);
+                break;
+              default:
+                break;
+            }
           }
         }
         analyticMoveLineList.clear();

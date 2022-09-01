@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
@@ -39,7 +39,7 @@ public class PartnerHRRepository extends PartnerAccountRepository {
     if (partner.getEmployee() != null) {
       throw new PersistenceException(
           String.format(
-              I18n.get(IExceptionMessage.CONTACT_CANNOT_DELETE),
+              I18n.get(HumanResourceExceptionMessage.CONTACT_CANNOT_DELETE),
               partner.getPartnerSeq(),
               partner.getSimpleFullName()));
     }
