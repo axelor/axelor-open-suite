@@ -556,7 +556,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
       } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
         newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
-      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+      } else if (accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
         newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
       }
     }

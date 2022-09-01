@@ -6931,7 +6931,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
             <property name="marginLeft">0pt</property>
             <property name="marginBottom">0pt</property>
             <property name="marginRight">0pt</property>
-            <property name="pageBreakAfter">always</property>
+            <property name="pageBreakAfter">auto</property>
             <property name="pageBreakBefore">auto</property>
             <property name="pageBreakInside">auto</property>
             <property name="width">19.552708333333335cm</property>

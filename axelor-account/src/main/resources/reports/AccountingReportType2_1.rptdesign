@@ -2321,7 +2321,7 @@ else  {  0.00 }</expression>
                         <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
                         <column id="4147">
-                            <property name="width">0.5in</property>
+                            <property name="width">0.6in</property>
                         </column>
                         <column id="4090">
                             <property name="width">3.5in</property>
