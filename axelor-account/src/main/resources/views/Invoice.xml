@@ -757,7 +757,7 @@ InvoiceSet.length > 0))"
       <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
-        onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
+        onClick="action-invoice-group-validate-onclick"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
@@ -1493,6 +1493,15 @@ InvoiceSet.length > 0))"
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
+  <action-group name="action-invoice-group-validate-onclick">
+    <action name="action-invoice-validate-empty-invoice"/>
+    <action
+      name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
+    <action name="save"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-validate"/>
+  </action-group>
+
   <action-attrs name="action-invoice-attrs-in-ati">
     <attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     <attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
@@ -1842,6 +1851,12 @@ InvoiceSet.length > 0))"
     <error
       message="It is not possible to go back to validate status or cancel a ventilated invoice."
       if="statusSelect == 3"/>
+  </action-validate>
+
+  <action-validate name="action-invoice-validate-empty-invoice">
+    <error message="There are no invoice lines"
+      if="!invoiceLineList || invoiceLineList.isEmpty()"/>
+    <error message="Invoice amount is zero" if="inTaxTotal == 0"/>
   </action-validate>
 
   <!-- ACTION METHOD -->

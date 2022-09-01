@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix being able to validate an empty invoice"
+type: fix
