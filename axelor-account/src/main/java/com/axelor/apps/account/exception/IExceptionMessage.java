@@ -843,4 +843,7 @@ public interface IExceptionMessage {
 
   public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
       "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
+
+  static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
+      "You must configure an account for cashier regulation." /*)*/;
 }
