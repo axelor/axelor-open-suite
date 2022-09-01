@@ -1,0 +1,3 @@
+---
+title: "AccountingReport : Use TaxPaymentMoveLine.date instead of MoveLine.date in VAT report"
+type: change
