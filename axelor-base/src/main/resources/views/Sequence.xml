@@ -144,7 +144,7 @@
   </action-group>
 
   <action-group name="action-sequence-group-monthly-reset-on-change">
-    <action name="action-sequence-method-update-sequence-version"/>
+    <action name="action-sequence-method-update-sequence-version-monthly"/>
     <action name="action-sequence-monthly-reset"/>
   </action-group>
 
