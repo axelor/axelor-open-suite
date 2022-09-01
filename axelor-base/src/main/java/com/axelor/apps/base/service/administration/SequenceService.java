@@ -246,51 +246,18 @@ public class SequenceService {
 
     log.debug("Reference date : : : : {}", refDate);
 
-    if (sequence.getMonthlyResetOk()) {
-      return getVersionByMonth(sequence, refDate);
-    }
-    if (sequence.getYearlyResetOk()) {
-      return getVersionByYear(sequence, refDate);
-    }
-    return getVersionByDate(sequence, refDate);
-  }
-
-  protected SequenceVersion getVersionByDate(Sequence sequence, LocalDate refDate) {
-
     SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
     if (sequenceVersion == null) {
-      sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
-    }
-
-    return sequenceVersion;
-  }
-
-  protected SequenceVersion getVersionByMonth(Sequence sequence, LocalDate refDate) {
-
-    SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
-    if (sequenceVersion == null) {
-      sequenceVersion =
-          new SequenceVersion(
-              sequence,
-              refDate.withDayOfMonth(1),
-              refDate.withDayOfMonth(refDate.lengthOfMonth()),
-              1L);
-    }
-
-    return sequenceVersion;
-  }
-
-  protected SequenceVersion getVersionByYear(Sequence sequence, LocalDate refDate) {
-
-    SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
-
-    if (sequenceVersion == null) {
-      sequenceVersion =
-          new SequenceVersion(
-              sequence,
-              LocalDate.of(refDate.getYear(), 1, 1),
-              LocalDate.of(refDate.getYear(), 12, 31),
-              1L);
+      if (sequence.getYearlyResetOk() && !sequence.getMonthlyResetOk()) {
+        sequenceVersion =
+            new SequenceVersion(sequence, refDate, LocalDate.of(refDate.getYear(), 12, 31), 1L);
+      } else if (sequence.getYearlyResetOk() && sequence.getMonthlyResetOk()) {
+        sequenceVersion =
+            new SequenceVersion(
+                sequence, refDate, refDate.withDayOfMonth(refDate.lengthOfMonth()), 1L);
+      } else {
+        sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
+      }
     }
 
     return sequenceVersion;
@@ -390,11 +357,6 @@ public class SequenceService {
     List<SequenceVersion> sequenceVersionList = sequence.getSequenceVersionList();
     SequenceVersion lastSequenceVersion;
     lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
-
-    if (lastSequenceVersion == null) {
-      // Checking yearly to prevent an anomaly only fixed in 6.3
-      lastSequenceVersion = sequenceVersionRepository.findByYear(sequence, todayDate.getYear());
-    }
 
     SequenceVersion finalLastSequenceVersion = lastSequenceVersion;
     sequenceVersionList.stream()
