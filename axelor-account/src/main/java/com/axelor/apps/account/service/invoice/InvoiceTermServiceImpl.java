@@ -1428,7 +1428,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
             && moveLineIt.getAccount().getHasInvoiceTerm()
-            && (holdback || !moveLineIt.getAccount().equals(holdbackAccount))) {
+            && (holdback
+                || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
           total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
         }
       }
