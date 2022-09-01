@@ -160,7 +160,7 @@
         <field name="name" placeholder="user name" onChange="action-condition-user-validName"
           validIf="name.length >= 2"/>
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
-          validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
+          validIf="code.length >= 2"/>
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email" hidden="true"/>
         <field name="language"/>
