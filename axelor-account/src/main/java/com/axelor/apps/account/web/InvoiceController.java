@@ -1159,4 +1159,14 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateInvoiceTermPaymentMode(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice.getInvoiceTermList().forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
