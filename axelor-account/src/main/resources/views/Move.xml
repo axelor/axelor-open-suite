@@ -198,12 +198,12 @@
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="accountingBtn" title="Accounting.toAccount"
-          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
-          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
           showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
+        <button name="accountingBtn" title="Accounting.toAccount"
+          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
+          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
