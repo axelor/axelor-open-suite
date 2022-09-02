@@ -648,7 +648,8 @@ public class PaymentVoucherConfirmService {
               .findFirst()
               .orElse(null);
       if (accountManagement != null) {
-        move.addMoveLineListItem(
+        int vatSystem = financialDiscountAccount.getVatSystemSelect();
+        MoveLine financialDiscountVatMoveLine =
             moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
@@ -657,7 +658,7 @@ public class PaymentVoucherConfirmService {
                     financialDiscountTax,
                     company,
                     move.getJournal(),
-                    financialDiscountAccount.getVatSystemSelect(),
+                    vatSystem,
                     move.getFunctionalOriginSelect(),
                     false,
                     true),
@@ -667,7 +668,12 @@ public class PaymentVoucherConfirmService {
                 dueDate,
                 moveLineNo++,
                 invoiceName,
-                null));
+                null);
+        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
+        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
+        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
+        financialDiscountVatMoveLine.setVatSystemSelect(vatSystem);
+        move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
 

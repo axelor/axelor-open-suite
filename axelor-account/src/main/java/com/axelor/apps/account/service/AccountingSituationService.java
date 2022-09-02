@@ -91,4 +91,7 @@ public interface AccountingSituationService {
 
   void setHoldBackAccounts(AccountingSituation accountingSituation, Partner partner)
       throws AxelorException;
+
+  int determineVatSystemSelect(AccountingSituation accountingSituation, int vatSystem)
+      throws AxelorException;
 }

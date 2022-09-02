@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
@@ -82,6 +83,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineTaxService moveLineTaxService;
   protected AccountingSituationRepository accountingSituationRepository;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -96,7 +98,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLineConsolidateService moveLineConsolidateService,
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
-      AccountingSituationRepository accountingSituationRepository) {
+      AccountingSituationRepository accountingSituationRepository,
+      AccountingSituationService accountingSituationService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -109,6 +112,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.invoiceTermService = invoiceTermService;
     this.moveLineTaxService = moveLineTaxService;
     this.accountingSituationRepository = accountingSituationRepository;
+    this.accountingSituationService = accountingSituationService;
   }
 
   /**
@@ -475,16 +479,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         MoveLine moveLine;
         if (hasFixedAssets
             && invoiceLineTax.getCompanySubTotalOfFixedAssets().compareTo(BigDecimal.ZERO) != 0) {
-          int vatSystemSelect = 0;
-          if (accountingSituation != null) {
-            if (accountingSituation.getVatSystemSelect()
-                == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-              vatSystemSelect = invoiceLineTax.getVatSystemSelect();
-            } else if (accountingSituation.getVatSystemSelect()
-                == AccountingSituationRepository.VAT_DELIVERY) {
-              vatSystemSelect = 1;
-            }
-          }
+          int vatSystemSelect =
+              accountingSituationService.determineVatSystemSelect(
+                  accountingSituation, invoiceLineTax.getVatSystemSelect());
           account =
               taxAccountService.getAccount(
                   tax,
@@ -544,16 +541,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         if (hasOtherAssets
             && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO)
                 != 0) {
-          int vatSystemSelect = 0;
-          if (accountingSituation != null) {
-            if (accountingSituation.getVatSystemSelect()
-                == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-              vatSystemSelect = invoiceLineTax.getVatSystemSelect();
-            } else if (accountingSituation.getVatSystemSelect()
-                == AccountingSituationRepository.VAT_DELIVERY) {
-              vatSystemSelect = 1;
-            }
-          }
+          int vatSystemSelect =
+              accountingSituationService.determineVatSystemSelect(
+                  accountingSituation, invoiceLineTax.getVatSystemSelect());
           account =
               taxAccountService.getAccount(
                   tax,
@@ -837,16 +827,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, partner);
-      int vatSystemSelect = 0;
-      if (accountingSituation != null) {
-        if (accountingSituation.getVatSystemSelect()
-            == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-          vatSystemSelect = moveLine.getAccount().getVatSystemSelect();
-        } else if (accountingSituation.getVatSystemSelect()
-            == AccountingSituationRepository.VAT_DELIVERY) {
-          vatSystemSelect = 1;
-        }
-      }
+      int vatSystemSelect =
+          accountingSituationService.determineVatSystemSelect(
+              accountingSituation, moveLine.getAccount().getVatSystemSelect());
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
@@ -859,16 +842,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
-      int vatSystemSelect = 0;
-      if (accountingSituation != null) {
-        if (accountingSituation.getVatSystemSelect()
-            == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-          vatSystemSelect = moveLine.getAccount().getVatSystemSelect();
-        } else if (accountingSituation.getVatSystemSelect()
-            == AccountingSituationRepository.VAT_DELIVERY) {
-          vatSystemSelect = 1;
-        }
-      }
+      int vatSystemSelect =
+          accountingSituationService.determineVatSystemSelect(
+              accountingSituation, moveLine.getAccount().getVatSystemSelect());
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
@@ -881,16 +857,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, partner);
-      int vatSystemSelect = 0;
-      if (accountingSituation != null) {
-        if (accountingSituation.getVatSystemSelect()
-            == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-          vatSystemSelect = moveLine.getAccount().getVatSystemSelect();
-        } else if (accountingSituation.getVatSystemSelect()
-            == AccountingSituationRepository.VAT_DELIVERY) {
-          vatSystemSelect = 1;
-        }
-      }
+      int vatSystemSelect =
+          accountingSituationService.determineVatSystemSelect(
+              accountingSituation, moveLine.getAccount().getVatSystemSelect());
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),

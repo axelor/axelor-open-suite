@@ -1212,12 +1212,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
       "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
 
-  public static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing partner." /*)*/;
-
-  public static final String ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
-
   public static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
