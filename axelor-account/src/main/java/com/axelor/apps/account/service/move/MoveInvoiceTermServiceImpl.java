@@ -116,7 +116,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       List<MoveLine> moveLinesWithInvoiceTerms =
           move.getMoveLineList().stream()
-              .filter(it -> it.getAccount().getHasInvoiceTerm())
+              .filter(it -> it.getAccount() != null && it.getAccount().getHasInvoiceTerm())
               .collect(Collectors.toList());
 
       return moveLinesWithInvoiceTerms.size() <= 1
