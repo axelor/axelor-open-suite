@@ -1,3 +1,28 @@
+## [6.2.7] (2022-09-01)
+
+#### Fixed
+
+* Ticket: fix ticket copy by resetting correctly fields that are not configured by the user.
+* Invoice: fixed error when ventilating an invoice with analytic lines.
+* Invoice: fixed an issue where invoice printing PDF file had a blank page at the end of the report.
+* Invoice: fixed discount display issue in the printing.
+* Invoice: fixed an error that occured when supplier refund with PFP activated on refunds was created.
+* Accounting report: increase account code column size in general balance with comparative periods report.
+* Accounting report: fixed a blocking error preventing the generation of a Payment Difference report.
+* Move: in move form view, the journal is now readonly if the move has move lines.
+* Move: fixed an issue where simulate button was not displayed in move form.
+* Move: fixed an issue where tax asset move line was not generated.
+* Move: fixed an issue where it was not possible to reverse a move linked to a notified invoice in an accounted subrogation release.
+* Fixed Asset: fixed error (JNPE) when we removed first depreciation date or acquisition date.
+* Purchase Order: fixed error when adding title line that prevented computation of totals.
+* Sale Order: fixed an issue preventing the addition of title lines when 'Do not display the header and end of pack' was checked.
+* Cost calculation: fixed a bug where we could not select a product if the company of the default bom's product was different.
+* Product: fixed an issue where product per company lines were not created on a new product.
+* Stock move: fix stock move generation from demo data.
+* Move/Move line: added controls of consistency of the company used in a move and its move lines.
+* Sequence: update sequence version list when enabling yearly or monthly reset: the active sequence version will be updated if the end date is not correct.
+* Work center group: change "Work center model" title to "Model of work center group" for coherence.
+
 ## [6.2.6] (2022-08-11)
 
 #### Fixed
@@ -549,6 +574,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.7]: https://github.com/axelor/axelor-open-suite/compare/v6.2.6...v6.2.7
 [6.2.6]: https://github.com/axelor/axelor-open-suite/compare/v6.2.5...v6.2.6
 [6.2.5]: https://github.com/axelor/axelor-open-suite/compare/v6.2.4...v6.2.5
 [6.2.4]: https://github.com/axelor/axelor-open-suite/compare/v6.2.3...v6.2.4

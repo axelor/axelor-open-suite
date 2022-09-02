@@ -1882,7 +1882,7 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="pfpValidateStatusSelect" expr="eval: 1"
       if="company?.accountConfig?.isManagePassedForPayment
-          &amp;&amp; (operationTypeSelect == 1 || (operationTypeSelect == 2 &amp;&amp; company?.accountConfig?.isManagePfpInRefund))"/>
+          &amp;&amp; (operationTypeSelect == 1 || (operationTypeSelect == 2 &amp;&amp; company?.accountConfig?.isManagePFPInRefund))"/>
   </action-record>
 
   <action-record name="action-invoice-method-set-default-group-products-on-printings"

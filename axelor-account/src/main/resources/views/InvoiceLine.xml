@@ -64,6 +64,15 @@
     </panel>
     <panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
       <panel name="informationsPanel" title="Information">
+        <field name="$partnerLanguage" hidden="true"/>
+        <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+          showTitle="false">
+          <viewer depends="$partnerLanguage">
+            <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
+              ]]>
+          </viewer>
+        </field>
         <panel name="customerInvoicePanel" colSpan="12">
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
@@ -419,6 +428,7 @@
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
@@ -430,6 +440,7 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
@@ -444,6 +455,7 @@
     <action name="action-invoice-line-method-get-fixed-asset-category"
       if="__config__.app.isApp('account')"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-invoice-line-method-translate-product-description-and-name"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
@@ -731,4 +743,16 @@
       method="selectDefaultDistributionTemplate"/>
   </action-method>
 
+  <action-method
+    name="action-invoice-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="translateProductDescriptionAndName"/>
+  </action-method>
+
+  <action-attrs name="action-invoice-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__.partner.language.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__.partner.language.code.toUpperCase()"/>
+  </action-attrs>
 </object-views>

@@ -1402,4 +1402,17 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_SESSION_INVOICE_TERM_WITH_IN_ACTIVE_BANK_DETAILS = /*$$(*/
       "The payment session comprises at least one term associated to bank details which is inactive. Please unselect this/those term(s) from the session or set the following bankdetails record(s) as active to proceed : %s" /*)*/;
+
+  public static final String MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY = /*$$(*/
+      "Inconsistency detected as the company defined on the move %s is different from the company associated to the journal %s." /*)*/;
+
+  public static final String MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+      "Inconsistency detected as the company defined on the move %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  public static final String
+      MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+          "Inconsistency detected as the company defined on the journal %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
+      "You must configure an account for cashier regulation." /*)*/;
 }

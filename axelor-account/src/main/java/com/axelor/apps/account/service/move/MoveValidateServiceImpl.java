@@ -89,6 +89,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected FixedAssetGenerationService fixedAssetGenerationService;
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveControlService moveControlService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -105,7 +106,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       AppAccountService appAccountService,
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveControlService moveControlService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
@@ -121,6 +123,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveControlService = moveControlService;
   }
 
   /**
@@ -219,6 +222,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
     }
 
+    moveControlService.checkSameCompany(move);
+
     if (move.getMoveLineList().stream()
         .allMatch(
             moveLine ->
@@ -278,6 +283,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
 
         moveLineControlService.validateMoveLine(moveLine);
+        moveLineControlService.checkAccountCompany(moveLine);
+        moveLineControlService.checkJournalCompany(moveLine);
       }
 
       moveLineTaxService.checkTaxMoveLines(move);

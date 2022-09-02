@@ -18,10 +18,12 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -32,6 +34,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -397,6 +400,31 @@ public class SaleOrderLineController {
 
       response.setValues(saleOrderLine);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      Partner partner =
+          Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+      String partnerLanguage = partner.getLanguage().getCode();
+
+      if (saleOrderLine.getProduct() != null) {
+        response.setValue(
+            "description",
+            internationalService.translate(
+                saleOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+        response.setValue(
+            "productName",
+            internationalService.translate(
+                saleOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

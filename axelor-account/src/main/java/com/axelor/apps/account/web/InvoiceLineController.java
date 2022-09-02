@@ -43,7 +43,10 @@ import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.InternationalService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -527,6 +530,30 @@ public class InvoiceLineController {
               .printAnalyticAccount(invoiceLine, invoice.getCompany());
           response.setValues(invoiceLine);
         }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Partner partner = this.getInvoice(context).getPartner();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+      String partnerLanguage = partner.getLanguage().getCode();
+
+      if (invoiceLine.getProduct() != null) {
+        response.setValue(
+            "description",
+            internationalService.translate(
+                invoiceLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+        response.setValue(
+            "productName",
+            internationalService.translate(
+                invoiceLine.getProduct().getName(), userLanguage, partnerLanguage));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

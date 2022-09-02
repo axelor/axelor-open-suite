@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
@@ -39,6 +40,7 @@ import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
@@ -206,6 +208,41 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       }
     }
     return move;
+  }
+
+  @Override
+  public void checkAccountCompany(MoveLine moveLine) throws AxelorException {
+
+    Optional<Company> optMoveCompany =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getCompany);
+    Company accountCompany =
+        Optional.ofNullable(moveLine.getAccount()).map(Account::getCompany).orElse(null);
+
+    if (optMoveCompany.isPresent() && !optMoveCompany.get().equals(accountCompany)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY),
+          moveLine.getMove().getReference());
+    }
+  }
+
+  @Override
+  public void checkJournalCompany(MoveLine moveLine) throws AxelorException {
+    Optional<Company> optJournalCompany =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getJournal).map(Journal::getCompany);
+    Company accountCompany =
+        Optional.ofNullable(moveLine.getAccount()).map(Account::getCompany).orElse(null);
+
+    if (optJournalCompany.isPresent() && !optJournalCompany.get().equals(accountCompany)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY),
+          moveLine.getMove().getJournal().getName());
+    }
   }
 
   public boolean canReconcile(MoveLine moveLine) {

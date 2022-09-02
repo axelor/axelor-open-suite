@@ -270,11 +270,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      this.addParams(
-          "self.account = ?%d",
+      Account cashPositionVariationAccount =
           Beans.get((AccountConfigService.class))
               .getAccountConfig(accountingReport.getCompany())
-              .getCashPositionVariationAccount());
+              .getCashPositionVariationAccount();
+      if (cashPositionVariationAccount != null) {
+        this.addParams("self.account = ?%d", cashPositionVariationAccount);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT));
+      }
     }
 
     if (this.compareReportType(
@@ -374,7 +381,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     int accountingReportTypeSelect = accountingReport.getReportType().getTypeSelect();
 
-    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000) {
+    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000
+        || accountingReportTypeSelect == 3000) {
       String seq =
           sequenceService.getSequenceNumber(
               SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
@@ -406,18 +414,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT),
-            I18n.get(BaseExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    } else if (accountingReportTypeSelect == 3000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.CUSTOM_ACCOUNTING_REPORT, accountingReport.getCompany());
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_7),
             I18n.get(BaseExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }

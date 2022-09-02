@@ -595,77 +595,6 @@
     </panel-mail>
   </form>
 
-  <grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
-    <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-    <field name="mobilePhone" widget="phone"/>
-    <field name="emailAddress.address" title="Email"/>
-  </grid>
-
-  <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload" width="large">
-    <toolbar>
-      <button name="sendByEmailBtn" title="Send email"
-        onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
-    </toolbar>
-    <panel name="mainPanel">
-      <field name="picture" widget="Image" colSpan="4"/>
-      <panel name="generalInfoPanel" colSpan="8">
-        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
-        <spacer name="titleSelectSpacer"/>
-        <field name="name" css="highlight"
-          onChange="action-partner-record-simple-and-full-name"/>
-        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"
-          onChange="action-partner-record-simple-and-full-name"/>
-        <field name="partnerCategory" widget="SuggestBox"/>
-        <field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change"/>
-        <field name="isContact" hideIf="partnerTypeSelect != 2"/>
-        <spacer name="isContactSpacer"/>
-        <field name="mainPartner" hideIf="!isContact" form-view="partner-form"
-          grid-view="partner-grid"
-          domain="self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"/>
-      </panel>
-    </panel>
-    <panel-tabs name="mainPanelTab">
-      <panel name="informationPanel" title="Information">
-        <panel name="departmentPanel" title="Partner details" colSpan="12"
-          hideIf="partnerTypeSelect == 2">
-          <field name="department" form-view="department-form" grid-view="department-grid"/>
-          <field name="source" canEdit="false" hideIf="isContact" form-view="source-form"
-            grid-view="source-grid"/>
-        </panel>
-        <panel colSpan="12" name="postalAddressesPanel" title="Postal addresses"
-          hideIf="isContact">
-          <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
-          <field name="partnerAddressList" colSpan="12">
-            <editor layout="table" x-show-titles="false">
-              <field name="address" canNew="true"/>
-              <field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1"/>
-              <field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart"
-                colSpan="1"/>
-              <field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1"/>
-            </editor>
-          </field>
-        </panel>
-        <panel name="contactPanel" title="Contact" colSpan="12">
-          <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-            x-show-icons="false" placeholder="whatever@example.com"
-            pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$">
-            <editor x-show-titles="false">
-              <field name="address"/>
-            </editor>
-          </field>
-          <field name="fax" widget="phone"/>
-          <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-          <field name="mobilePhone" widget="phone"/>
-          <field name="webSite" placeholder="http://www.url.com" widget="url"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-        </panel>
-      </panel>
-    </panel-tabs>
-  </form>
-
-
   <form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
     onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable"
     onLoad="action-group-partner-contact-onload"
@@ -810,24 +739,6 @@
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
-  </form>
-
-  <form name="partner-contact-summary-form" title="Contact"
-    model="com.axelor.apps.base.db.Partner">
-    <panel name="mainPanel">
-      <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-        x-show-icons="false">
-        <editor>
-          <field name="address" placeholder="whatever@example.com"
-            pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
-        </editor>
-      </field>
-      <field name="fax" widget="phone"/>
-      <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-      <field name="mobilePhone" widget="phone"/>
-      <field name="webSite" placeholder="http://www.url.com" widget="url"
-        pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-    </panel>
   </form>
 
   <cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners"
