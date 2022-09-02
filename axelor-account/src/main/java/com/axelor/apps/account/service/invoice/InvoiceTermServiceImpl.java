@@ -1209,15 +1209,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
       throws AxelorException {
 
-    InvoicePayment invoicePayment =
-        invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-    invoicePayment.addReconcileListItem(reconcile);
+    if (invoiceTerm.getInvoice() != null) {
+      InvoicePayment invoicePayment =
+          invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+      invoicePayment.addReconcileListItem(reconcile);
 
-    List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 
-    invoiceTermList.add(invoiceTerm);
+      invoiceTermList.add(invoiceTerm);
 
-    reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+      reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+    } else {
+      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+    }
 
     invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm);
     return invoiceTerm;
