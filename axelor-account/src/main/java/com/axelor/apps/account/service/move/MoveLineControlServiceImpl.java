@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -38,6 +39,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -110,10 +112,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                   .map(
                       it ->
                           invoiceTermService.computeCustomizedPercentageUnscaled(
-                              it.getAmount(),
-                              invoiceAttached != null
-                                  ? invoiceAttached.getInTaxTotal()
-                                  : moveLine.getCredit().max(moveLine.getDebit())))
+                              it.getAmount(), invoiceAttached.getInTaxTotal()))
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
                   .compareTo(new BigDecimal(100))
               != 0) {
@@ -122,23 +121,24 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
             moveLine.getAccount().getCode());
-      } else if ((invoiceAttached == null
-              && invoiceTermList.stream()
-                      .map(InvoiceTerm::getAmount)
-                      .reduce(BigDecimal.ZERO, BigDecimal::add)
-                      .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
-                  != 0)
-          || (invoiceAttached != null
-              && invoiceTermList.stream()
-                      .map(InvoiceTerm::getAmount)
-                      .reduce(BigDecimal.ZERO, BigDecimal::add)
-                      .compareTo(invoiceAttached.getInTaxTotal())
-                  != 0)) {
-        throw new AxelorException(
-            moveLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
-            moveLine.getAccount().getCode());
+      } else {
+        BigDecimal total =
+            invoiceAttached == null
+                ? moveLine.getDebit().max(moveLine.getCredit())
+                : invoiceAttached.getInTaxTotal();
+        total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+        if (invoiceTermList.stream()
+                .map(InvoiceTerm::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .compareTo(total)
+            != 0) {
+          throw new AxelorException(
+              moveLine,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
+              moveLine.getAccount().getCode());
+        }
       }
     }
     controlAccountingAccount(moveLine);
