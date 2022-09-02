@@ -516,7 +516,7 @@ left outer join public.account_accounting_report_analytic_account_set as Analyti
 left outer join public.account_accounting_report_analytic_axis_set as AnalyticAxisSet on (AnalyticAxisSet.account_accounting_report = AccountingReport.id)
 
 where
-(Move.currency = AccountingReport.currency) AND
+(AccountingReport.currency IS NULL OR Move.currency = AccountingReport.currency) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.date_from IS NULL OR AnalyticMoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR AnalyticMoveLine.date_val <= AccountingReport.date_to) AND

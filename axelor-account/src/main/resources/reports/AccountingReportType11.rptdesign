@@ -384,7 +384,7 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
 
 where 
-(AccountingReport.currency = Move.currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND 

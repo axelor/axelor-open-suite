@@ -367,7 +367,7 @@ left outer join public.base_period as Period on (Move.period = Period.id)
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 
 where 
-(AccountingReport.currency = Move.currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 Account.use_for_partner_balance = true AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND

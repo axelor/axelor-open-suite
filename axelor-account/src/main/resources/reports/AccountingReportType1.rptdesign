@@ -518,7 +518,7 @@ AS Meta ON (Meta.select_value = Move.status_select)
 left outer join meta_translation as MetaTranslation
 ON MetaTranslation.message_key = Meta.select_title AND MetaTranslation.language = ?
 where 
-(AccountingReport.currency = Move.currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
