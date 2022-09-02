@@ -88,7 +88,6 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                 "Credit transfer batch for partner credit balance reimbursement: anomaly for partner %s",
                 partner.getName()));
       }
-      JPA.clear();
     }
   }
 
