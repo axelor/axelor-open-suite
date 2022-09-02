@@ -96,7 +96,7 @@ public class ManufOrderController {
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(message);
-        response.setFlash(message);
+        response.setInfo(message);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -199,7 +199,7 @@ public class ManufOrderController {
               Beans.get(ManufOrderRepository.class).find(manufOrder.getId()),
               manufOrder.getCancelReason(),
               manufOrder.getCancelReasonStr());
-      response.setFlash(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL));
+      response.setInfo(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -253,7 +253,7 @@ public class ManufOrderController {
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(message);
-        response.setFlash(message);
+        response.setInfo(message);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -313,7 +313,7 @@ public class ManufOrderController {
         LOG.debug("Printing {}", name);
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(ProductionExceptionMessage.MANUF_ORDER_1));
+        response.setInfo(I18n.get(ProductionExceptionMessage.MANUF_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

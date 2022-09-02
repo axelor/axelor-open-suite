@@ -92,7 +92,7 @@ public class PurchaseOrderController {
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .map());
         } else {
-          response.setFlash(
+          response.setInfo(
               I18n.get(SupplychainExceptionMessage.PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
@@ -250,7 +250,7 @@ public class PurchaseOrderController {
     }
 
     if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
+      response.setInfo(fieldErrors.toString());
       return;
     }
 
@@ -334,7 +334,7 @@ public class PurchaseOrderController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 
@@ -435,7 +435,7 @@ public class PurchaseOrderController {
       String message =
           Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
       if (message != null) {
-        response.setFlash(message);
+        response.setInfo(message);
       }
       response.setValues(purchaseOrder);
     } catch (Exception e) {

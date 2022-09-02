@@ -47,7 +47,7 @@ public class InvoiceController {
     try {
       List<Invoice> invoices =
           Beans.get(SubscriptionInvoiceService.class).generateSubscriptionInvoices();
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(SupplychainExceptionMessage.TOTAL_SUBSCRIPTION_INVOICE_GENERATED),
               invoices.size()));
@@ -56,7 +56,7 @@ public class InvoiceController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(SupplychainExceptionMessage.SUBSCRIPTION_INVOICE_GENERATION_ERROR),
               e.getMessage()));

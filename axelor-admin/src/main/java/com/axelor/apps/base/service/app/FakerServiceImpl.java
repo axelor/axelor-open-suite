@@ -23,10 +23,10 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.github.javafaker.Faker;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import net.datafaker.Faker;
 
 public class FakerServiceImpl implements FakerService {
   @Override

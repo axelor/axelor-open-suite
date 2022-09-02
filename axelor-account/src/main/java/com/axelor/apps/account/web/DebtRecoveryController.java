@@ -69,7 +69,7 @@ public class DebtRecoveryController {
       if (accountingBatch != null) {
         Batch batch =
             Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       } else {
         response.setError(
             I18n.get(AccountExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING));

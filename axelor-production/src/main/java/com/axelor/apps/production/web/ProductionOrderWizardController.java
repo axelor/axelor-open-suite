@@ -72,9 +72,9 @@ public class ProductionOrderWizardController {
 
     if (context.get("qty") == null
         || new BigDecimal((String) context.get("qty")).compareTo(BigDecimal.ZERO) <= 0) {
-      response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_3) + " !");
+      response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_3) + " !");
     } else if (context.get("billOfMaterial") == null) {
-      response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_4) + " !");
+      response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_4) + " !");
     } else {
       response.setView(
           ActionView.define(I18n.get("Production order generated"))

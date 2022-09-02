@@ -40,7 +40,7 @@ public class EbicsPartnerController {
           Beans.get(EbicsPartnerService.class)
               .getBankStatements(
                   Beans.get(EbicsPartnerRepository.class).find(ebicsPartner.getId()));
-      response.setFlash(
+      response.setInfo(
           String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -53,7 +53,7 @@ public class EbicsPartnerController {
     try {
       Beans.get(EbicsPartnerService.class).checkBankDetailsMissingCurrency(ebicsPartner);
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 }

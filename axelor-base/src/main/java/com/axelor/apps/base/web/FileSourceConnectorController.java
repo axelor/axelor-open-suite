@@ -38,11 +38,11 @@ public class FileSourceConnectorController {
       if (fileSourceConnector != null) {
 
         if (Beans.get(FileSourceConnectorService.class).isValid(fileSourceConnector)) {
-          response.setFlash(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_SUCCESS_CONNECTION));
+          response.setInfo(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_SUCCESS_CONNECTION));
           return;
         }
       }
-      response.setFlash(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_FAILED_CONNECTION));
+      response.setInfo(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_FAILED_CONNECTION));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

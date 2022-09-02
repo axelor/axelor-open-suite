@@ -45,7 +45,7 @@ public class MailAccountController {
       response.setValue("isValid", Boolean.TRUE);
       response.setValue("change", Boolean.FALSE);
       response.setValue("newPassword", null);
-      response.setFlash(I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_3));
+      response.setInfo(I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_3));
 
     } catch (Exception e) {
 
@@ -62,7 +62,7 @@ public class MailAccountController {
       Beans.get(MailAccountService.class).checkDefaultMailAccount(account);
     } catch (AxelorException e) {
       response.setAttr("isDefault", "value", false);
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -74,7 +74,7 @@ public class MailAccountController {
 
     int totalFetched = Beans.get(MailAccountService.class).fetchEmails(account, true);
 
-    response.setFlash(I18n.get(String.format("Total email fetched: %s", totalFetched)));
+    response.setInfo(I18n.get(String.format("Total email fetched: %s", totalFetched)));
   }
 
   public void validate(ActionRequest request, ActionResponse response) {

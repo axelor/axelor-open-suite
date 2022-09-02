@@ -226,7 +226,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     for (Lead lead : campaign.getLeadSet()) {
       Event event = new Event();
-      event.setLead(lead);
+      event.setEventLead(lead);
       event.setUser(
           campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
       event.setSubject(campaign.getSubject());

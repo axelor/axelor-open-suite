@@ -134,7 +134,7 @@ public class SaleOrderController {
                               I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
-          response.setFlash(
+          response.setInfo(
               I18n.get(SupplychainExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
@@ -192,7 +192,7 @@ public class SaleOrderController {
           }
 
           if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+            response.setInfo(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
                 ActionView.define("SaleOrder")
@@ -676,7 +676,7 @@ public class SaleOrderController {
       String message =
           Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
       if (message != null) {
-        response.setFlash(message);
+        response.setInfo(message);
       }
       response.setValues(saleOrder);
     } catch (Exception e) {

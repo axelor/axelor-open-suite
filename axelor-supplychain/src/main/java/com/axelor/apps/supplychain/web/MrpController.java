@@ -61,7 +61,7 @@ public class MrpController {
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
       if (mrpService.isOnGoing(mrpRepository.find(mrp.getId()))) {
-        response.setFlash(I18n.get(SupplychainExceptionMessage.MRP_ALREADY_STARTED));
+        response.setInfo(I18n.get(SupplychainExceptionMessage.MRP_ALREADY_STARTED));
         return;
       }
       mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
@@ -88,7 +88,7 @@ public class MrpController {
           .generateProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
-      response.setFlash(I18n.get("Proposals have been generated successfully."));
+      response.setInfo(I18n.get("Proposals have been generated successfully."));
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     } finally {

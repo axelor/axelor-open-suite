@@ -192,7 +192,7 @@ public class AccountingReportController {
       if (accountingReport.getExportTypeSelect() == null
           || accountingReport.getExportTypeSelect().isEmpty()
           || typeSelect == 0) {
-        response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_4));
+        response.setInfo(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_4));
         response.setReload(true);
         return;
       }

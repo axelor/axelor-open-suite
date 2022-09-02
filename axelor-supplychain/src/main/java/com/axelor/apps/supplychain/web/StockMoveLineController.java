@@ -242,7 +242,7 @@ public class StockMoveLineController {
             I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(StockMoveLineServiceSupplychain.class).validateCutOffBatch(ids, id);
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
 
       response.setReload(true);

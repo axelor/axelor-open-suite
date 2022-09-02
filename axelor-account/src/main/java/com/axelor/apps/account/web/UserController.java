@@ -50,7 +50,7 @@ public class UserController {
         Beans.get(UserServiceAccountImpl.class)
             .changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
     if (updateCount >= 1) {
-      response.setFlash(I18n.get(AccountExceptionMessage.USER_PFP_VALIDATOR_UPDATED));
+      response.setInfo(I18n.get(AccountExceptionMessage.USER_PFP_VALIDATOR_UPDATED));
       response.setCanClose(true);
     } else if (updateCount == 0) {
       response.setAlert(

@@ -50,7 +50,7 @@ public class CrmBatchController {
       Batch batch = controllerCallableTool.runInSeparateThread(crmBatchService, response);
 
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

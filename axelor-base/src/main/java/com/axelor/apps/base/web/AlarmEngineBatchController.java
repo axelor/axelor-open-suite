@@ -40,7 +40,7 @@ public class AlarmEngineBatchController {
     AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
     alarmEngineBatch = Beans.get(AlarmEngineBatchRepository.class).find(alarmEngineBatch.getId());
 
-    response.setFlash(Beans.get(AlarmEngineBatchService.class).run(alarmEngineBatch).getComments());
+    response.setInfo(Beans.get(AlarmEngineBatchService.class).run(alarmEngineBatch).getComments());
     response.setReload(true);
   }
 

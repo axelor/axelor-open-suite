@@ -129,7 +129,7 @@ public class StockLocationController {
         response.setView(ActionView.define(title).add("html", fileLink).map());
 
       } else {
-        response.setFlash(I18n.get(StockExceptionMessage.LOCATION_2));
+        response.setInfo(I18n.get(StockExceptionMessage.LOCATION_2));
       }
       response.setCanClose(true);
     } catch (Exception e) {

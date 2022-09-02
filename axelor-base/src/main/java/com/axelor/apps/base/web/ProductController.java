@@ -61,7 +61,7 @@ public class ProductController {
     if (product.getProductVariantConfig() != null) {
       Beans.get(ProductService.class).generateProductVariants(product);
 
-      response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_1));
+      response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_1));
       response.setReload(true);
     }
   }
@@ -101,7 +101,7 @@ public class ProductController {
 
     Beans.get(ProductService.class).updateProductPrice(product);
 
-    response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_2));
+    response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_2));
     response.setReload(true);
   }
 

@@ -158,7 +158,7 @@ public class InvoiceLineController {
         String errorMsg = (String) productInformation.get("error");
 
         if (!Strings.isNullOrEmpty(errorMsg)) {
-          response.setFlash(errorMsg);
+          response.setInfo(errorMsg);
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -207,7 +207,7 @@ public class InvoiceLineController {
       }
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -278,7 +278,7 @@ public class InvoiceLineController {
       response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -423,7 +423,7 @@ public class InvoiceLineController {
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParentContext() != null) {
+      if (request.getContext().getParent() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         invoiceLine =
             Beans.get(InvoiceLineAnalyticService.class).analyzeInvoiceLine(invoiceLine, invoice);
@@ -437,7 +437,7 @@ public class InvoiceLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParentContext() != null) {
+      if (request.getContext().getParent() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         List<Long> analyticAccountList = new ArrayList<Long>();
         AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
@@ -474,7 +474,7 @@ public class InvoiceLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParentContext() != null) {
+      if (request.getContext().getParent() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
@@ -523,7 +523,7 @@ public class InvoiceLineController {
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParentContext() != null) {
+      if (request.getContext().getParent() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         if (invoiceLine != null && invoice != null) {
           Beans.get(AnalyticLineService.class)

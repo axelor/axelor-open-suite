@@ -98,7 +98,7 @@ public class PaymentVoucherController {
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
 
       if (!generateAll) {
-        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

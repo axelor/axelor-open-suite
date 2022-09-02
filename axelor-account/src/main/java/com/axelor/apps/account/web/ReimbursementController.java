@@ -38,7 +38,7 @@ public class ReimbursementController {
     if (reimbursement.getBankDetails() != null) {
       response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
     } else {
-      response.setFlash(I18n.get(AccountExceptionMessage.REIMBURSEMENT_4));
+      response.setInfo(I18n.get(AccountExceptionMessage.REIMBURSEMENT_4));
     }
   }
 }

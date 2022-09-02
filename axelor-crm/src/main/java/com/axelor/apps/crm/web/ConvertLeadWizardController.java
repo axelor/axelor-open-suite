@@ -164,7 +164,7 @@ public class ConvertLeadWizardController {
       grid = "partner-supplier-grid";
     }
 
-    response.setFlash(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
+    response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
     response.setCanClose(true);
     response.setView(
         ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))

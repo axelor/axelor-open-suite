@@ -61,7 +61,7 @@ public class PurchaseOrderLineProjectController {
         (List<Map<String, Object>>) request.getContext().get("purchaseOrderLineSet");
 
     if (purchaseOrderLineSet == null || purchaseOrderLineSet.isEmpty()) {
-      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
+      response.setInfo(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           purchaseOrderLineSet.stream()

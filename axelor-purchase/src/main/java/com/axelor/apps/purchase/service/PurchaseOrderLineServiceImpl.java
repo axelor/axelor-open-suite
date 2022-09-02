@@ -638,7 +638,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           String.format(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
 
       if (request.getAction().endsWith("onchange")) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
 
       String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);

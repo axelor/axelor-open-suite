@@ -42,7 +42,7 @@ public class IndicatorGeneratorGroupingController {
               Beans.get(IndicatorGeneratorGroupingRepository.class)
                   .find(indicatorGeneratorGrouping.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
+      response.setInfo(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -59,7 +59,7 @@ public class IndicatorGeneratorGroupingController {
               Beans.get(IndicatorGeneratorGroupingRepository.class)
                   .find(indicatorGeneratorGrouping.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
+      response.setInfo(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

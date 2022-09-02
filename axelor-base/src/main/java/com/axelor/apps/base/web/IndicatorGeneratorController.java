@@ -41,7 +41,7 @@ public class IndicatorGeneratorController {
       Beans.get(IndicatorGeneratorService.class)
           .run(Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
+      response.setInfo(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

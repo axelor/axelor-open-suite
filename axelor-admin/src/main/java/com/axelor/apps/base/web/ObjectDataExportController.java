@@ -71,7 +71,7 @@ public class ObjectDataExportController {
 
     Beans.get(ObjectDataAnonymizeService.class).anonymize(objectDataConfig, recordId);
 
-    response.setFlash("Data anonymized successfully");
+    response.setInfo("Data anonymized successfully");
 
     response.setCanClose(true);
   }

@@ -42,7 +42,7 @@ public class SupplychainBatchController {
       Batch batch = controllerCallableTool.runInSeparateThread(supplychainBatchService, response);
 
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -56,7 +56,7 @@ public class SupplychainBatchController {
       SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
       supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
       Batch batch = Beans.get(SupplychainBatchService.class).updateStockHistory(supplychainBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

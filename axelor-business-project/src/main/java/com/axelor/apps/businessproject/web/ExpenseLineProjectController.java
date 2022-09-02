@@ -59,7 +59,7 @@ public class ExpenseLineProjectController {
         (List<Map<String, Object>>) request.getContext().get("expenseLineSet");
 
     if (expenseLineSet == null || expenseLineSet.isEmpty()) {
-      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
+      response.setInfo(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           expenseLineSet.stream()

@@ -39,7 +39,7 @@ public class PurchaseOrderController {
       Beans.get(PurchaseOrderSupplierService.class)
           .generateSuppliersPurchaseOrder(
               Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-      response.setFlash(I18n.get(SupplierManagementExceptionMessage.PURCHASE_ORDER_1));
+      response.setInfo(I18n.get(SupplierManagementExceptionMessage.PURCHASE_ORDER_1));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -54,7 +54,7 @@ public class PurchaseOrderController {
       Beans.get(PurchaseOrderSupplierService.class)
           .generateAllSuppliersRequests(
               Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-      response.setFlash(I18n.get(SupplierManagementExceptionMessage.PURCHASE_ORDER_2));
+      response.setInfo(I18n.get(SupplierManagementExceptionMessage.PURCHASE_ORDER_2));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

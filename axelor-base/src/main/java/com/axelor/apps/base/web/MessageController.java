@@ -63,7 +63,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
       response.setView(
           ActionView.define("Message " + message.getSubject()).add("html", pdfPath).map());
 
-    } else response.setFlash(I18n.get(BaseExceptionMessage.MESSAGE_1));
+    } else response.setInfo(I18n.get(BaseExceptionMessage.MESSAGE_1));
   }
 
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -108,7 +108,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } else {
-      response.setFlash(I18n.get(BaseExceptionMessage.MESSAGE_2));
+      response.setInfo(I18n.get(BaseExceptionMessage.MESSAGE_2));
     }
   }
 }

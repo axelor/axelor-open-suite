@@ -83,7 +83,7 @@ public class PurchaseRequestController {
                         "self.id in (%s)", StringTool.getIdListString(purchaseOrderList)));
         response.setView(actionViewBuilder.map());
       } catch (AxelorException e) {
-        response.setFlash(e.getMessage());
+        response.setInfo(e.getMessage());
       }
     }
   }

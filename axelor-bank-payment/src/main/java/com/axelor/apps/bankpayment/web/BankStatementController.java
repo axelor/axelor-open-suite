@@ -125,14 +125,14 @@ public class BankStatementController {
         } else {
           int errorNB = bankStatementRemoveService.deleteMultiple(statementIds);
           if (errorNB > 0) {
-            response.setFlash(
+            response.setInfo(
                 String.format(I18n.get(IExceptionMessage.STATEMENT_REMOVE_NOT_OK_NB), errorNB));
           } else {
-            response.setFlash(I18n.get(IExceptionMessage.STATEMENT_REMOVE_OK));
+            response.setInfo(I18n.get(IExceptionMessage.STATEMENT_REMOVE_OK));
             response.setReload(true);
           }
         }
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
+      } else response.setInfo(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(

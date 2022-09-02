@@ -55,7 +55,7 @@ public class ProductionBatchController {
       Batch batch = controllerCallableTool.runInSeparateThread(productionBatchService, response);
 
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -234,7 +234,7 @@ public class InvoiceController {
     }
 
     Beans.get(InvoiceService.class).cancel(invoice);
-    response.setFlash(I18n.get(AccountExceptionMessage.INVOICE_1));
+    response.setInfo(I18n.get(AccountExceptionMessage.INVOICE_1));
     response.setReload(true);
   }
 
@@ -385,7 +385,7 @@ public class InvoiceController {
     try {
       String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
       if (msg != null) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -400,7 +400,7 @@ public class InvoiceController {
     try {
       String msg = Beans.get(InvoiceService.class).checkNotLetteredAdvancePaymentMoveLines(invoice);
       if (msg != null) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -600,7 +600,7 @@ public class InvoiceController {
       Pair<Integer, Integer> massCount = function.apply(ids);
 
       String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
-      response.setFlash(message);
+      response.setInfo(message);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -969,7 +969,7 @@ public class InvoiceController {
 
           String errorMsg = (String) invoiceLineMap.get("error");
           if (!Strings.isNullOrEmpty(errorMsg)) {
-            response.setFlash(errorMsg);
+            response.setInfo(errorMsg);
           }
 
           for (Map.Entry<String, Object> entry : invoiceLineMap.entrySet()) {
@@ -999,7 +999,7 @@ public class InvoiceController {
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

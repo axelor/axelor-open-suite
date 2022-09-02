@@ -71,7 +71,7 @@ public class BankReconciliationController {
               .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList());
       if (bankReconciliationLines.isEmpty()) {
-        response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
+        response.setInfo(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
         Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
         response.setReload(true);

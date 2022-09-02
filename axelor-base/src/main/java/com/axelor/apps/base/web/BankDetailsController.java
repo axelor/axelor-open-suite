@@ -52,7 +52,7 @@ public class BankDetailsController {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
       } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
         if (request.getAction().endsWith("onchange")) {
-          response.setFlash(I18n.get(BaseExceptionMessage.BANK_DETAILS_1));
+          response.setInfo(I18n.get(BaseExceptionMessage.BANK_DETAILS_1));
         }
         response.setAttr("invalidIbanText", "hidden", false);
       } finally {

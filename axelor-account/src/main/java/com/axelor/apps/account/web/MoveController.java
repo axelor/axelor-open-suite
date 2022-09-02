@@ -207,15 +207,15 @@ public class MoveController {
       if (moveIds != null && !moveIds.isEmpty()) {
         String error = Beans.get(MoveValidateService.class).accountingMultiple(moveIds);
         if (error.length() > 0) {
-          response.setFlash(
+          response.setInfo(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
         } else {
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
+          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
         }
 
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -252,13 +252,13 @@ public class MoveController {
             }
           }
           Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_SIMULATION_OK));
+          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
         } else {
-          response.setFlash(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
+          response.setInfo(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
         }
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -294,13 +294,13 @@ public class MoveController {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
         || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
       moveRemoveService.deleteMove(move);
-      response.setFlash(I18n.get(AccountExceptionMessage.MOVE_REMOVED_OK));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_REMOVED_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       moveRemoveService.archiveDaybookMove(move);
-      response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
       moveRemoveService.archiveMove(move);
-      response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
     }
   }
 
@@ -335,7 +335,7 @@ public class MoveController {
         }
       }
 
-      response.setFlash(flashMessage);
+      response.setInfo(flashMessage);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -614,7 +614,7 @@ public class MoveController {
 
         response.setValue("moveLineList", move.getMoveLineList());
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -752,7 +752,7 @@ public class MoveController {
         boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
         if (!isAllUpdated) {
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
+          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
         }
       }
 

@@ -53,10 +53,10 @@ public class MetaGroupMenuAssistantController {
 
       response.setValue("log", errorLog);
       if (errorLog.isEmpty()) {
-        response.setFlash(I18n.get(IMessage.IMPORT_OK));
+        response.setInfo(I18n.get(IMessage.IMPORT_OK));
         response.setValue("importDate", LocalDateTime.now());
       } else {
-        response.setFlash(I18n.get(IMessage.ERR_IMPORT));
+        response.setInfo(I18n.get(IMessage.ERR_IMPORT));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

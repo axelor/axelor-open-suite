@@ -67,7 +67,7 @@ public class ProductionOrderSaleOrderController {
                 .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
                 .map());
       } else {
-        response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
+        response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
       }
 
     } catch (Exception e) {

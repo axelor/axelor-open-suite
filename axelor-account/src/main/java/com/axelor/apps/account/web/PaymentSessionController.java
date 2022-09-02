@@ -100,9 +100,9 @@ public class PaymentSessionController {
       response.setReload(true);
 
       if (emailCount == 0) {
-        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
       } else {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get(AccountExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
       }
@@ -158,7 +158,7 @@ public class PaymentSessionController {
       StringBuilder flashMessage =
           Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
       if (flashMessage.length() > 0) {
-        response.setFlash(flashMessage.toString());
+        response.setInfo(flashMessage.toString());
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -277,7 +277,7 @@ public class PaymentSessionController {
       int deletedSessions =
           Beans.get(PaymentSessionService.class).removeMultiplePaymentSessions(paymentSessionIds);
       if (paymentSessionIds.size() > deletedSessions) {
-        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

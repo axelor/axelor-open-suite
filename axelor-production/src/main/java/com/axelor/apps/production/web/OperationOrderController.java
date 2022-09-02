@@ -249,7 +249,7 @@ public class OperationOrderController {
 
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
+        response.setInfo(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

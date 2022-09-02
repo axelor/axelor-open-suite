@@ -44,15 +44,15 @@ public class CampaignController {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
       if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMPTY_TARGET));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMPTY_TARGET));
         return;
       }
       MetaFile logFile = Beans.get(CampaignService.class).sendEmail(campaign);
 
       if (logFile == null) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
       } else {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
       }
 
       response.setValue("emailLog", logFile);
@@ -69,16 +69,16 @@ public class CampaignController {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
       if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.REMINDER_EMAIL1));
+        response.setInfo(I18n.get(MarketingExceptionMessage.REMINDER_EMAIL1));
         return;
       }
 
       MetaFile logFile = Beans.get(CampaignService.class).sendReminderEmail(campaign);
 
       if (logFile == null) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
       } else {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
       }
 
       response.setValue("emailLog", logFile);

@@ -58,7 +58,7 @@ public class SaleBatchController {
       ControllerCallableTool<Batch> controllerCallableTool = new ControllerCallableTool<>();
       Batch batch = controllerCallableTool.runInSeparateThread(saleBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
