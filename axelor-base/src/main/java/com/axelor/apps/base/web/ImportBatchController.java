@@ -21,7 +21,7 @@ public class ImportBatchController {
       if (importBatch != null) {
         Batch batch = Beans.get(ImportBatchService.class).importData(importBatch);
         response.setReload(true);
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -36,7 +36,7 @@ public class ImportBatchController {
       if (importBatch != null) {
         Batch batch = Beans.get(ImportBatchService.class).advancedImportData(importBatch);
         response.setReload(true);
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

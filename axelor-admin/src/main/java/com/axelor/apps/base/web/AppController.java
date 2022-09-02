@@ -55,7 +55,7 @@ public class AppController {
     app = Beans.get(AppRepository.class).find(app.getId());
     Beans.get(AppService.class).importDataDemo(app);
 
-    response.setFlash(I18n.get(IExceptionMessages.DEMO_DATA_SUCCESS));
+    response.setInfo(I18n.get(IExceptionMessages.DEMO_DATA_SUCCESS));
 
     response.setReload(true);
   }
@@ -91,7 +91,7 @@ public class AppController {
     }
 
     if (formView == null) {
-      response.setFlash(I18n.get(IExceptionMessages.NO_CONFIG_REQUIRED));
+      response.setInfo(I18n.get(IExceptionMessages.NO_CONFIG_REQUIRED));
     } else {
       response.setView(
           ActionView.define(I18n.get("Configure") + ": " + context.get("name"))
@@ -137,7 +137,7 @@ public class AppController {
 
     Beans.get(AppService.class).bulkInstall(appList, importDemo, language);
 
-    response.setFlash(I18n.get(IExceptionMessages.BULK_INSTALL_SUCCESS));
+    response.setInfo(I18n.get(IExceptionMessages.BULK_INSTALL_SUCCESS));
     response.setSignal("refresh-app", true);
   }
 
@@ -184,7 +184,7 @@ public class AppController {
 
     Beans.get(AppService.class).importRoles(app);
     response.setReload(true);
-    response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
+    response.setInfo(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
   }
 
   public void importAllRoles(ActionRequest request, ActionResponse response)
@@ -192,7 +192,7 @@ public class AppController {
 
     Beans.get(AppService.class).importRoles();
 
-    response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
+    response.setInfo(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
     response.setReload(true);
   }
 
@@ -205,7 +205,7 @@ public class AppController {
       Long fileId = Long.parseLong(metaFileMap.get("id").toString());
       Beans.get(AccessConfigImportService.class)
           .importAccessConfig(Beans.get(MetaFileRepository.class).find(fileId));
-      response.setFlash(I18n.get(IExceptionMessages.ACCESS_CONFIG_IMPORTED));
+      response.setInfo(I18n.get(IExceptionMessages.ACCESS_CONFIG_IMPORTED));
       response.setCanClose(true);
     }
   }

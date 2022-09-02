@@ -112,7 +112,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -128,7 +128,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -146,7 +146,7 @@ public class EbicsController {
       confirmCertificates(ebicsUser, certificates, response);
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -180,7 +180,7 @@ public class EbicsController {
                   Beans.get(EbicsCertificateService.class).convertToPEMString(certificates[1]))
               .map());
     } catch (Exception e) {
-      response.setFlash("Error in certificate confirmation ");
+      response.setInfo("Error in certificate confirmation ");
     }
   }
 
@@ -194,7 +194,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -231,11 +231,11 @@ public class EbicsController {
                 bankOrderFileFormat,
                 testSignatureFile);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+        response.setInfo(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
 
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -261,11 +261,11 @@ public class EbicsController {
                 bankStatementFileFormat.getStatementFileFormatSelect());
         downloadFile(response, ebicsUser);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+        response.setInfo(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
 
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -281,7 +281,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendHTDRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -297,7 +297,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendPTKRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -313,7 +313,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendHPDRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);

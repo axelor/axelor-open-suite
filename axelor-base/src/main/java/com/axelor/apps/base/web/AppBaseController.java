@@ -42,7 +42,7 @@ public class AppBaseController {
   public void exportObjects(ActionRequest request, ActionResponse response) {
     MetaFile metaFile = Beans.get(ExportDbObjectService.class).exportObject();
     if (metaFile == null) {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_4));
+      response.setInfo(I18n.get(IExceptionMessage.GENERAL_4));
     } else {
       response.setView(
           ActionView.define(I18n.get(IExceptionMessage.GENERAL_5))
@@ -62,7 +62,7 @@ public class AppBaseController {
 
       if (apiType == 1) {
         Beans.get(MapService.class).testGMapService();
-        response.setFlash(IExceptionMessage.GENERAL_6);
+        response.setInfo(IExceptionMessage.GENERAL_6);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -123,7 +123,7 @@ public class AppBaseController {
 
   public void checkQuartzScheduler(ActionRequest request, ActionResponse response) {
     if (Beans.get(JobRunner.class).isEnabled()) {
-      response.setFlash(I18n.get(IExceptionMessage.QUARTZ_SCHEDULER_ENABLED));
+      response.setInfo(I18n.get(IExceptionMessage.QUARTZ_SCHEDULER_ENABLED));
     }
   }
 }

@@ -201,7 +201,7 @@ public class AccountController {
       } else {
         message = I18n.get(IExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
       }
-      response.setFlash(message);
+      response.setInfo(message);
       response.setCanClose(true);
 
     } catch (Exception e) {
@@ -231,7 +231,7 @@ public class AccountController {
         message = I18n.get(IExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
       }
 
-      response.setFlash(message);
+      response.setInfo(message);
       response.setCanClose(true);
 
     } catch (Exception e) {

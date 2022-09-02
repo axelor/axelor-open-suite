@@ -28,7 +28,7 @@ public class EventAttendeeService {
 
     EventAttendee eventAttendee = new EventAttendee();
     eventAttendee.setEvent(event);
-    eventAttendee.setLead(lead);
+    eventAttendee.setEventAttendeeLead(lead);
     eventAttendee.setContactPartner(contactPartner);
 
     eventAttendee.setName(this.getName(eventAttendee));
@@ -41,8 +41,8 @@ public class EventAttendeeService {
     if (eventAttendee.getContactPartner() != null) {
       return eventAttendee.getContactPartner().getFullName();
     }
-    if (eventAttendee.getLead() != null) {
-      return eventAttendee.getLead().getFullName();
+    if (eventAttendee.getEventAttendeeLead() != null) {
+      return eventAttendee.getEventAttendeeLead().getFullName();
     }
 
     return "";

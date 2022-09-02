@@ -52,10 +52,10 @@ public class AccountChartController {
 
     if (accountList.isEmpty()) {
       if (Beans.get(AccountChartService.class).installAccountChart(act, company, accountConfig))
-        response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
-      else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
+        response.setInfo(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
+      else response.setInfo(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
       response.setReload(true);
 
-    } else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
+    } else response.setInfo(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
   }
 }

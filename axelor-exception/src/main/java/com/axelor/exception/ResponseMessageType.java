@@ -21,7 +21,7 @@ import com.axelor.rpc.ActionResponse;
 import java.util.function.BiConsumer;
 
 public enum ResponseMessageType {
-  INFORMATION(ActionResponse::setFlash),
+  INFORMATION(ActionResponse::setInfo),
   WARNING(ActionResponse::setAlert),
   ERROR(ActionResponse::setError),
   NOTIFICATION(ActionResponse::setNotify);

@@ -40,8 +40,7 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       if (stockMove.getPickingIsEdited() && !stockMove.getAvailabilityRequest()) {
         response.setValue("availabilityRequest", true);
-        response.setFlash(
-            I18n.get(IExceptionMessage.STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE));
+        response.setInfo(I18n.get(IExceptionMessage.STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE));
         return;
       }
       Beans.get(StockMoveServiceSupplychain.class).verifyProductStock(stockMove);
@@ -88,7 +87,7 @@ public class StockMoveController {
         && Beans.get(StockMoveServiceSupplychain.class)
             .isAllocatedStockMoveLineRemoved(stockMove)) {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
-      response.setFlash(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
+      response.setInfo(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
     }
   }
 

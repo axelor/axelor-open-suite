@@ -40,7 +40,7 @@ public class ProductCategoryController {
       String discountsMessage =
           Beans.get(ProductCategoryService.class).computeDiscountMessage(productCategory);
       if (!"".equals(discountsMessage)) {
-        response.setFlash(discountsMessage);
+        response.setInfo(discountsMessage);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

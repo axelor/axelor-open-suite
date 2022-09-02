@@ -40,7 +40,7 @@ public class ContractBatchController {
       ControllerCallableTool<Batch> controllerCallableTool = new ControllerCallableTool<>();
       Batch batch = controllerCallableTool.runInSeparateThread(batchContractService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

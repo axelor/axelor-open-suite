@@ -41,7 +41,7 @@ public class SaleOrderLineController {
       if (copyBillOfMaterial != null) {
 
         response.setValue("billOfMaterial", copyBillOfMaterial);
-        response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
+        response.setInfo(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

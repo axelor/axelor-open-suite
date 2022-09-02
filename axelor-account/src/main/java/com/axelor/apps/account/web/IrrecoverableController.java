@@ -76,7 +76,7 @@ public class IrrecoverableController {
 
       response.setReload(true);
 
-      response.setFlash(
+      response.setInfo(
           I18n.get(IExceptionMessage.IRRECOVERABLE_5)
               + " - "
               + anomaly
@@ -93,7 +93,7 @@ public class IrrecoverableController {
     Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
 
     if (irrecoverable.getExportTypeSelect() == null) {
-      response.setFlash(I18n.get(IExceptionMessage.IRRECOVERABLE_7));
+      response.setInfo(I18n.get(IExceptionMessage.IRRECOVERABLE_7));
     } else {
 
       String name = I18n.get("Irrecoverable reporting") + " " + irrecoverable.getName();

@@ -355,7 +355,7 @@ public class EventServiceImpl implements EventService {
       child.setDescription(event.getDescription());
       child.setPartner(event.getPartner());
       child.setContactPartner(event.getContactPartner());
-      child.setLead(event.getLead());
+      child.setEventLead(event.getEventLead());
       child.setTypeSelect(event.getTypeSelect());
       child.setLocation(event.getLocation());
       eventRepo.save(child);
@@ -380,7 +380,7 @@ public class EventServiceImpl implements EventService {
       parent.setDescription(event.getDescription());
       parent.setPartner(event.getPartner());
       parent.setContactPartner(event.getContactPartner());
-      parent.setLead(event.getLead());
+      parent.setEventLead(event.getEventLead());
       parent.setTypeSelect(event.getTypeSelect());
       parent.setLocation(event.getLocation());
       eventRepo.save(parent);
@@ -647,9 +647,9 @@ public class EventServiceImpl implements EventService {
 
     } else if (event.getPartner() == null
         && event.getContactPartner() == null
-        && event.getLead() != null) {
+        && event.getEventLead() != null) {
 
-      Lead lead = leadRepo.find(event.getLead().getId());
+      Lead lead = leadRepo.find(event.getEventLead().getId());
       if (lead.getEmailAddress() != null)
         emailAddress = emailAddressRepo.find(lead.getEmailAddress().getId());
     }

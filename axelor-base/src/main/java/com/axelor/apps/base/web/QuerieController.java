@@ -34,7 +34,7 @@ public class QuerieController {
 
     try {
       Beans.get(QuerieService.class).checkQuerie(request.getContext().asType(Querie.class));
-      response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
+      response.setInfo(I18n.get(IExceptionMessage.QUERIE_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

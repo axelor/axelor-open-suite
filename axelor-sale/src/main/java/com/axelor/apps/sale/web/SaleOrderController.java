@@ -201,7 +201,7 @@ public class SaleOrderController {
               saleOrder.getCancelReason(),
               saleOrder.getCancelReasonStr());
 
-      response.setFlash(I18n.get("The sale order was canceled"));
+      response.setInfo(I18n.get("The sale order was canceled"));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

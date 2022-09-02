@@ -60,7 +60,7 @@ public class BaseBatchController {
       ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
       Batch batch = batchControllerCallableTool.runInSeparateThread(baseBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

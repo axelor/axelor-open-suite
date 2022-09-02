@@ -46,7 +46,7 @@ public class MailBatchController {
       Batch batch = batchControllerCallableTool.runInSeparateThread(mailBatchService, response);
 
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -69,7 +69,7 @@ public class MailBatchController {
         Batch batch = batchControllerCallableTool.runInSeparateThread(mailBatchService, response);
 
         if (batch != null) {
-          response.setFlash(batch.getComments());
+          response.setInfo(batch.getComments());
         }
       } else {
         throw new AxelorException(

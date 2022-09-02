@@ -118,7 +118,7 @@ public class AnalyticMoveLineQueryController {
                     .getAnalyticMoveLineQuery(analyticMoveLineQuery))
             .fetch();
 
-    response.setFlash(
+    response.setInfo(
         String.format(
             I18n.get(
                 "The analytic revision process has ended and generated %s reverse and %s revision analytic move lines."),

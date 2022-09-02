@@ -118,7 +118,7 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch = Beans.get(AccountingBatchService.class).billOfExchange(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -140,7 +140,7 @@ public class AccountingBatchController {
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -155,7 +155,7 @@ public class AccountingBatchController {
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch =
         Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -175,7 +175,7 @@ public class AccountingBatchController {
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
       response.setReload(true);
       if (batch != null) {

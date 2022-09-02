@@ -162,11 +162,11 @@ public class EventController {
           mapView.put("viewType", "html");
           response.setView(mapView);
         } else
-          response.setFlash(
+          response.setInfo(
               String.format(
                   I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),
                   event.getLocation()));
-      } else response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
+      } else response.setInfo(I18n.get(IExceptionMessage.EVENT_1));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

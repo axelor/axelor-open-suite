@@ -212,14 +212,14 @@ public class FixedAssetController {
                         .map(input -> Long.parseLong(input.toString()))
                         .collect(Collectors.toList()));
         int validatedFixedAssets = Beans.get(FixedAssetValidateService.class).massValidation(ids);
-        response.setFlash(
+        response.setInfo(
             validatedFixedAssets
                 + " "
                 + I18n.get(
                     "fixed asset validated", "fixed assets validated", validatedFixedAssets));
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get("Please select something to validate"));
+        response.setInfo(I18n.get("Please select something to validate"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -455,7 +455,7 @@ public class FixedAssetController {
       boolean showDepreciationMessage =
           Beans.get(FixedAssetService.class).checkDepreciationPlans(fixedAsset);
       if (showDepreciationMessage) {
-        response.setFlash(I18n.get(IExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
+        response.setInfo(I18n.get(IExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

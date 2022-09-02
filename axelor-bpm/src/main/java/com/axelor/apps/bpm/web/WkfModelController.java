@@ -414,7 +414,7 @@ public class WkfModelController {
       Beans.get(WkfInstanceService.class).restart(processInstanceId, activityId);
     }
 
-    response.setFlash(I18n.get("Instance Restarted"));
+    response.setInfo(I18n.get("Instance Restarted"));
   }
 
   public void cancelNode(ActionRequest request, ActionResponse response) {
@@ -428,7 +428,7 @@ public class WkfModelController {
       Beans.get(WkfInstanceService.class).cancelNode(processInstanceId, activityId);
     }
 
-    response.setFlash(I18n.get("Node cancelled"));
+    response.setInfo(I18n.get("Node cancelled"));
   }
 
   private List<Map<String, Object>> getDataList(ActionRequest request, String type) {

@@ -260,7 +260,7 @@ public class InvoicePaymentController {
         response.setValues(invoicePayment);
 
         if (amountError) {
-          response.setFlash(I18n.get(IExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
+          response.setInfo(I18n.get(IExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
         }
       }
     } catch (Exception e) {

@@ -116,7 +116,7 @@ public class SaleOrderLineController {
 
           if (defaultPricing.isPresent()
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
-            response.setFlash(
+            response.setInfo(
                 String.format(
                     I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
                     defaultPricing.get().getName()));
@@ -228,7 +228,7 @@ public class SaleOrderLineController {
       }
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -251,7 +251,7 @@ public class SaleOrderLineController {
           "price",
           Beans.get(SaleOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -274,7 +274,7 @@ public class SaleOrderLineController {
           "inTaxPrice",
           Beans.get(SaleOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -301,7 +301,7 @@ public class SaleOrderLineController {
       response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 

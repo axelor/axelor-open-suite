@@ -357,7 +357,7 @@ public class TimesheetController {
 
       Message message = Beans.get(TimesheetService.class).cancelAndSendCancellationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -404,7 +404,7 @@ public class TimesheetController {
           Beans.get(TimesheetService.class).confirmAndSendConfirmationEmail(timesheet);
 
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -457,7 +457,7 @@ public class TimesheetController {
 
       Message message = timesheetService.validateAndSendValidationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -494,7 +494,7 @@ public class TimesheetController {
 
       Message message = Beans.get(TimesheetService.class).refuseAndSendRefusalEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));

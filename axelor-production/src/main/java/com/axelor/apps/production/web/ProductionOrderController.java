@@ -50,9 +50,9 @@ public class ProductionOrderController {
 
     if (context.get("qty") == null
         || new BigDecimal(context.get("qty").toString()).compareTo(BigDecimal.ZERO) <= 0) {
-      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3) + "!");
+      response.setInfo(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3) + "!");
     } else if (context.get("billOfMaterial") == null) {
-      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4) + "!");
+      response.setInfo(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4) + "!");
     } else {
       Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
       BillOfMaterial billOfMaterial =

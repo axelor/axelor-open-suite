@@ -59,7 +59,7 @@ public class SaleOrderLineProjectController {
     List<Map<String, Object>> saleOrderLineSet =
         (List<Map<String, Object>>) request.getContext().get("salesOrderLineSet");
     if (saleOrderLineSet == null || saleOrderLineSet.isEmpty()) {
-      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setInfo(IExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           saleOrderLineSet.stream()

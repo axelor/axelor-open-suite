@@ -177,7 +177,7 @@ public class InvoiceTermController {
                     invoiceTermIds,
                     invoiceTerm.getReasonOfRefusalToPay(),
                     invoiceTerm.getReasonOfRefusalToPayStr());
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
                 recordsRefused,
@@ -256,7 +256,7 @@ public class InvoiceTermController {
       Integer recordsSelected = invoiceTermIds.size();
       Integer recordsUpdated =
           Beans.get(InvoiceTermPfpService.class).massValidatePfp(invoiceTermIds);
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
               recordsUpdated,
@@ -287,7 +287,7 @@ public class InvoiceTermController {
       BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
       if (grantedAmount.compareTo(invoiceAmount) >= 0) {
         response.setValue("$grantedAmount", originalInvoiceTerm.getAmountRemaining());
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
+        response.setInfo(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }
 

@@ -121,8 +121,7 @@ public class InventoryController {
               .find(request.getContext().asType(Inventory.class).getId());
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
-      response.setFlash(
-          String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
+      response.setInfo(String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
 
       response.setReload(true);
     } catch (Exception e) {
@@ -203,7 +202,7 @@ public class InventoryController {
         Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
         Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
         if (succeed == null) {
-          response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+          response.setInfo(I18n.get(IExceptionMessage.INVENTORY_9));
         } else {
           if (succeed) {
             response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
@@ -248,7 +247,7 @@ public class InventoryController {
               .add("form", "stock-move-form")
               .param("search-filters", "internal-stock-move-filters");
       if (stockMoveList.isEmpty()) {
-        response.setFlash(I18n.get("No stock moves found for this inventory."));
+        response.setInfo(I18n.get("No stock moves found for this inventory."));
       } else {
         builder
             .context("_showSingle", true)

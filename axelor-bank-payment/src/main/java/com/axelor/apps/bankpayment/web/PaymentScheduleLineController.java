@@ -121,7 +121,7 @@ public class PaymentScheduleLineController {
         }
       }
 
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(
                   "%d line successfully rejected", "%d lines successfully rejected", idMap.size()),

@@ -125,7 +125,7 @@ public class ActionScriptBuilderService {
       }
       if (!Strings.isNullOrEmpty(builder.getDisplayMsg())) {
         stb.append("\n");
-        stb.append(format("$response.setFlash('" + builder.getDisplayMsg() + "')", level));
+        stb.append(format("$response.setInfo('" + builder.getDisplayMsg() + "')", level));
       }
     } else {
       targetModel = builder.getModel();

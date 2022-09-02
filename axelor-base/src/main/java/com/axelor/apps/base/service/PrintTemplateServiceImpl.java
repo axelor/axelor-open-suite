@@ -243,7 +243,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           }
 
           PrintLine printLine = new PrintLine();
-          printLine.setRank(rank);
+          printLine.setPrintLineRank(rank);
           printLine.setSequence(seq);
           printLine.setTitle(title);
           printLine.setContent(content);

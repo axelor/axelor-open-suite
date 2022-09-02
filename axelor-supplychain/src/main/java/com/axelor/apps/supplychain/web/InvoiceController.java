@@ -46,7 +46,7 @@ public class InvoiceController {
     try {
       List<Invoice> invoices =
           Beans.get(SubscriptionInvoiceService.class).generateSubscriptionInvoices();
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(
                   com.axelor.apps.supplychain.exception.IExceptionMessage
@@ -57,7 +57,7 @@ public class InvoiceController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(
                   com.axelor.apps.supplychain.exception.IExceptionMessage

@@ -59,7 +59,7 @@ public class ControllerCallableTool<V> {
       result = future.get(processTimeout, TimeUnit.SECONDS);
     } catch (ExecutionException e) {
       // cause already traced in traceback
-      response.setFlash(e.getCause().getMessage());
+      response.setInfo(e.getCause().getMessage());
     } catch (TimeoutException e) {
       response.setNotify(I18n.get(IExceptionMessage.PROCESS_BEING_COMPUTED));
     } catch (InterruptedException e) {
