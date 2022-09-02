@@ -641,7 +641,8 @@ public class PaymentVoucherConfirmService {
 
     move.addMoveLineListItem(financialDiscountMoveLine);
 
-    if (financialDiscountVat) {
+    if (financialDiscountVat
+        && BigDecimal.ZERO.compareTo(payVoucherElementToPay.getFinancialDiscountTaxAmount()) != 0) {
       AccountManagement accountManagement =
           financialDiscountTax.getAccountManagementList().stream()
               .filter(it -> it.getCompany().equals(company))

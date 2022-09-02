@@ -391,7 +391,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && invoicePayment != null
         && invoicePayment.getFinancialDiscount() != null
         && financialDiscountVat
-        && financialDiscountMoveLine != null) {
+        && financialDiscountMoveLine != null
+        && BigDecimal.ZERO.compareTo(invoicePayment.getFinancialDiscountTaxAmount()) != 0) {
       int vatSytem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
       Account financialDiscountVATAccount =
           this.getFinancialDiscountVATAccount(
