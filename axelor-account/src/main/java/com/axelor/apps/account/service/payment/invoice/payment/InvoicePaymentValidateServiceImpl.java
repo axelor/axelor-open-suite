@@ -316,8 +316,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     boolean isFinancialDiscount = this.isFinancialDiscount(invoicePayment);
     int counter = 1;
     boolean financialDiscountVat =
-        invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+        invoicePayment.getFinancialDiscount() != null
+            && invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
