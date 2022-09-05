@@ -161,6 +161,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           && account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionRequiredOnMoveLines()
           && line.getAnalyticDistributionTemplate() == null
+          && CollectionUtils.isEmpty(line.getAnalyticMoveLineList())
           && (position <= nbrAxis);
     }
     return false;
