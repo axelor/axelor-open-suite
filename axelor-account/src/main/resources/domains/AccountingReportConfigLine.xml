@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReportConfigLine" lang="java">
+  <entity name="AccountingReportConfigLine">
 
     <string name="label" title="Label"/>
     <string name="code" title="Code"/>

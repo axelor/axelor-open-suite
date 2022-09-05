@@ -5,7 +5,7 @@
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="TrainingRegister" lang="java" cacheable="true">
+  <entity name="TrainingRegister" cacheable="true">
     <many-to-one name="trainingSession" ref="com.axelor.apps.talent.db.TrainingSession"
       title="Session"/>
     <many-to-one name="training" ref="com.axelor.apps.talent.db.Training"

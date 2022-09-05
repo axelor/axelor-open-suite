@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <integer name="chargeBackPurchaseSelect" title="Charging Back Purchases Type"
       selection="business.project.charging.back.purchases.select"/>

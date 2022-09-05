@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="MainActivity" lang="java">
+  <entity name="MainActivity">
 
     <string name="code" title="Code" required="true"/>
     <string name="shortName" title="Short name" required="true"/>

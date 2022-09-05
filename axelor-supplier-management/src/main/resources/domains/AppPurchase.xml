@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="AppPurchase" lang="java">
+  <entity name="AppPurchase">
     <boolean name="supplierRequestMgt" title="Manage supplier consultations"/>
 
     <track>

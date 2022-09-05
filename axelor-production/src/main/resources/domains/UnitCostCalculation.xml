@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="UnitCostCalculation" lang="java">
+  <entity name="UnitCostCalculation">
 
     <string name="unitCostCalcSeq" title="Calculation number"/>
     <integer name="statusSelect" selection="production.cost.calculations.status.select"/>

@@ -5,7 +5,7 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="ConfiguratorCreator" lang="java">
+  <entity name="ConfiguratorCreator">
 
     <string name="name" title="Name" required="true"/>
     <one-to-many name="attributes" ref="com.axelor.meta.db.MetaJsonField"

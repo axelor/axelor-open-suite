@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmploymentAmendmentType" lang="java">
+  <entity name="EmploymentAmendmentType">
     <integer name="typeSelect" title="Type"
       selection="employment.amendment.type.type.select"/>
     <string name="name" title="EmploymentAmendmentType.name"/>

@@ -5,7 +5,7 @@
 
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="VehicleFuelLog" lang="java" cacheable="true">
+  <entity name="VehicleFuelLog" cacheable="true">
     <many-to-one name="vehicle" ref="Vehicle"/>
     <decimal name="liter" title="Liter"/>
     <decimal name="pericePerLiter" title="Price per Liter"/>

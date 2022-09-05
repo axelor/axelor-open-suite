@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BarcodeTypeConfig" lang="java">
+  <entity name="BarcodeTypeConfig">
 
     <string name="name" title="Name" selection="base.barcode.select" required="true"/>
     <integer name="height" title="Height(px)" required="true"/>

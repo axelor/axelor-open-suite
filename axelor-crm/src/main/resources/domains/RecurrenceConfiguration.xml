@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="RecurrenceConfiguration" lang="java">
+  <entity name="RecurrenceConfiguration">
 
     <integer name="recurrenceType" title="Recurrence" selection="crm.event.recurrence.type"/>
     <integer name="periodicity" title="Repeat every"/>

@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Department" lang="java">
+  <entity name="Department">
 
     <string name="name" title="Department Name" required="true"/>
     <string name="code" title="DEPT" required="true"/>

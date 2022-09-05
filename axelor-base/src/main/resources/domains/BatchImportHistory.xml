@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BatchImportHistory" lang="java">
+  <entity name="BatchImportHistory">
 
     <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" initParam="true"
       column="user_id"/>

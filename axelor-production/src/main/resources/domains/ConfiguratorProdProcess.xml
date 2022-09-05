@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ConfiguratorProdProcess" lang="java">
+  <entity name="ConfiguratorProdProcess">
     <string name="name" title="Label"/>
     <string name="nameFormula" title="Label" large="true"/>
     <boolean name="defNameAsFormula" title="Define with a script" default="false"/>

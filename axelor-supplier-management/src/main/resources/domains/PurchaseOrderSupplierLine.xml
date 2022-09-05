@@ -5,7 +5,7 @@
 
   <module name="suppliermanagement" package="com.axelor.apps.suppliermanagement.db"/>
 
-  <entity name="PurchaseOrderSupplierLine" lang="java">
+  <entity name="PurchaseOrderSupplierLine">
 
     <many-to-one name="purchaseOrderLine"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order"

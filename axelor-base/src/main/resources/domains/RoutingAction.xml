@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="RoutingAction" lang="java">
+  <entity name="RoutingAction">
 
     <many-to-one name="routing" ref="com.axelor.apps.base.db.Routing" title="Routing"/>
 

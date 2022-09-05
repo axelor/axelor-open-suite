@@ -5,14 +5,14 @@
 
   <module name="dms" package="com.axelor.dms.db"/>
 
-  <entity name="DMSFile" lang="java">
+  <entity name="DMSFile">
     <boolean name="isLock" title="Lock"/>
     <many-to-one name="lockedBy" ref="com.axelor.auth.db.User" title="Locked by"/>
     <many-to-many name="favouriteUserSet" ref="com.axelor.auth.db.User"
       title="Favourite users"/>
   </entity>
 
-  <entity name="DMSFileTag" lang="java">
+  <entity name="DMSFileTag">
     <one-to-many name="tagList" title="Tags" ref="com.axelor.dms.db.DMSFileTag"/>
     <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
       title="Projects"/>

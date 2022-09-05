@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ProductVariantValue" lang="java">
+  <entity name="ProductVariantValue">
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity sequential="true" name="KilometricAllowanceRate" lang="java">
+  <entity sequential="true" name="KilometricAllowanceRate">
 
     <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HrConfig"/>
 

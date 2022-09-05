@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine">
 
     <decimal name="bankReconciledAmount" title="Bank reconciled amount"/>
 

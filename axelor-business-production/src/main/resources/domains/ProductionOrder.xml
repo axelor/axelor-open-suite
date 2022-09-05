@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProductionOrder" lang="java">
+  <entity name="ProductionOrder">
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 

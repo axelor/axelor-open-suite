@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankOrderLine" lang="java">
+  <entity name="BankOrderLine">
 
     <string name="sequence" title="Sequence" namecolumn="true" readonly="true"/>
     <integer name="counter" title="Counter"/>

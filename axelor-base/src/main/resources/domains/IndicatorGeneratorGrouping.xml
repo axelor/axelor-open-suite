@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="IndicatorGeneratorGrouping" lang="java">
+  <entity name="IndicatorGeneratorGrouping">
 
     <string name="code" title="Code" namecolumn="true" unique="true"/>
     <string name="name" title="Description"/>

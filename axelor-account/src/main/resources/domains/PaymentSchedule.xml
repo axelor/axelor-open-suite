@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentSchedule" lang="java">
+  <entity name="PaymentSchedule">
 
     <integer name="typeSelect" title="Type"
       selection="iaccount.payment.schedule.type.select" default="1"/>

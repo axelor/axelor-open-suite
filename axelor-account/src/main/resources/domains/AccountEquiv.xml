@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountEquiv" lang="java">
+  <entity name="AccountEquiv">
 
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
       title="Fiscal position"/>

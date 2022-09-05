@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="MailTemplateAssociation" lang="java">
+  <entity name="MailTemplateAssociation">
 
     <many-to-one name="model" ref="com.axelor.meta.db.MetaModel" title="Object"
       required="true"/>

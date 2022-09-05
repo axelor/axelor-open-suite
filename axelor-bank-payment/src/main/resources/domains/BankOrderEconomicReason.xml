@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankOrderEconomicReason" lang="java">
+  <entity name="BankOrderEconomicReason">
 
     <string name="code" title="Code" min="3" max="3" required="true"/>
     <string name="label" title="Label"/>

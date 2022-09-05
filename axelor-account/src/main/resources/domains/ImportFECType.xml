@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ImportFECType" lang="java">
+  <entity name="ImportFECType">
 
     <string name="name" namecolumn="true" required="true"/>
     <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile"

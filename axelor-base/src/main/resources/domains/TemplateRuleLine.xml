@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="TemplateRuleLine" lang="java">
+  <entity name="TemplateRuleLine">
 
     <integer name="sequence" title="Sequence"/>
 

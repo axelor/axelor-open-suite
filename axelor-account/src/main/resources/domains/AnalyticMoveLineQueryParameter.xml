@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticMoveLineQueryParameter" lang="java">
+  <entity name="AnalyticMoveLineQueryParameter">
     <many-to-one name="analyticMoveLineSearch"
       ref="com.axelor.apps.account.db.AnalyticMoveLineQuery"
       title="Analytic move line search/reverse"/>

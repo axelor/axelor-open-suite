@@ -5,8 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatementLineAFB120" lang="java" extends="BankStatementLine"
-    persistable="true">
+  <entity name="BankStatementLineAFB120" extends="BankStatementLine" persistable="true">
 
     <integer name="unavailabilityIndexSelect" title="Unavailability index"
       selection="bankpayment.bank.statement.line.afb.120.unavailability.index.select"/>

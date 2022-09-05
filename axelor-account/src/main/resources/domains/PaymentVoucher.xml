@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentVoucher" sequential="true" lang="java">
+  <entity name="PaymentVoucher" sequential="true">
 
     <string name="ref" title="Reference" namecolumn="true" required="false"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"

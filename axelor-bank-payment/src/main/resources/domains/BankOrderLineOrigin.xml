@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankOrderLineOrigin" lang="java">
+  <entity name="BankOrderLineOrigin">
 
     <many-to-one name="bankOrderLine" ref="com.axelor.apps.bankpayment.db.BankOrderLine"
       title="Bank order line"/>

@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ServiceType" lang="java">
+  <entity name="ServiceType">
 
     <string name="code" title="Code"/>
     <string name="name" title="Name" namecolumn="true" required="true"/>

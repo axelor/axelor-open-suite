@@ -5,8 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" lang="java"
-    implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 

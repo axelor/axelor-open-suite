@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="KilometricLog" lang="java">
+  <entity name="KilometricLog">
 
     <decimal name="distanceTravelled" title="Distance travelled"/>
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>

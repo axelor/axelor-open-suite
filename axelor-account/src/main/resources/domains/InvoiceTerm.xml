@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceTerm" lang="java">
+  <entity name="InvoiceTerm">
 
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="sequence" title="Sequence"/>

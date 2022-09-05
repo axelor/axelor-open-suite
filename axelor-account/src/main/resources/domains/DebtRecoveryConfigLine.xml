@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="DebtRecoveryConfigLine" lang="java" cacheable="true">
+  <entity name="DebtRecoveryConfigLine" cacheable="true">
 
     <many-to-one name="partnerCategory" required="true"
       ref="com.axelor.apps.base.db.PartnerCategory" title="Partner category"/>

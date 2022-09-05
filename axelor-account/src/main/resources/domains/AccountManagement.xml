@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountManagement" lang="java">
+  <entity name="AccountManagement">
 
     <many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account"
       title="Purchase account"/>

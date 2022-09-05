@@ -5,7 +5,7 @@
 
   <module name="marketing" package="com.axelor.apps.base.db"/>
 
-  <entity name="Querie" lang="java">
+  <entity name="Querie">
 
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <integer name="type" title="Type" required="true" default="0"/>

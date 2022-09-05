@@ -5,7 +5,7 @@
 
   <module name="maintenance" package="com.axelor.apps.maintenance.db"/>
 
-  <entity name="MaintenanceRequest" lang="java">
+  <entity name="MaintenanceRequest">
     <many-to-one name="equipementMaintenance" ref="EquipementMaintenance"/>
     <integer name="statusSelect" title="State"
       selection="maintenance.maintenance.request.status.select"/>

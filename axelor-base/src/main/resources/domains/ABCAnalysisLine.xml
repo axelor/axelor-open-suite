@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ABCAnalysisLine" lang="java">
+  <entity name="ABCAnalysisLine">
 
     <many-to-one name="abcAnalysis" ref="com.axelor.apps.base.db.ABCAnalysis"
       title="ABC Analysis"/>

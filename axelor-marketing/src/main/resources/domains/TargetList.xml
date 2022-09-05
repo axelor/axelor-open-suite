@@ -5,7 +5,7 @@
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="TargetList" lang="java" sequential="true">
+  <entity name="TargetList" sequential="true">
 
     <string name="name" title="Name" required="true"/>
     <one-to-many name="partnerFilterList" ref="com.axelor.studio.db.Filter"

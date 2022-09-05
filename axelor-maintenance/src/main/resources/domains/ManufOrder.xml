@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ManufOrder" lang="java">
+  <entity name="ManufOrder">
 
     <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType"
       title="Machine type"/>

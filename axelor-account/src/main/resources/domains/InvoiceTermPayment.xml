@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceTermPayment" lang="java">
+  <entity name="InvoiceTermPayment">
 
     <many-to-one name="invoicePayment" ref="com.axelor.apps.account.db.InvoicePayment"
       title="Payment"/>

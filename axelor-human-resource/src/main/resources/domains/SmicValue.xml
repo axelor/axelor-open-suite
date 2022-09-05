@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="SmicValue" lang="java">
+  <entity name="SmicValue">
     <string name="name" title="SmicValue.name" namecolumn="true">
 			<![CDATA[
 			String name = "";

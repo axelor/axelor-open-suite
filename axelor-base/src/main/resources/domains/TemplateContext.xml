@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.message.db"/>
 
-  <entity name="TemplateContext" lang="java">
+  <entity name="TemplateContext">
 
     <many-to-one name="printTemplateLine"
       ref="com.axelor.apps.base.db.PrintTemplateLine"/>

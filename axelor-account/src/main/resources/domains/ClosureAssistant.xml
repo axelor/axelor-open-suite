@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ClosureAssistant" lang="java">
+  <entity name="ClosureAssistant">
 
     <many-to-one ref="com.axelor.apps.base.db.Year" name="fiscalYear"
       title="Fiscal Year" required="true"/>

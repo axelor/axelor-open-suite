@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Bank" lang="java">
+  <entity name="Bank">
 
     <string name="fullName" title="Name" search="code,bankName"/>
 

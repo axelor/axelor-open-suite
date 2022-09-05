@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
-  <entity name="EmailAccount" lang="java">
+  <entity name="EmailAccount">
 
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <integer name="serverTypeSelect" title="Server Type" required="true"

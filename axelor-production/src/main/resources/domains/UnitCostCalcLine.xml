@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="UnitCostCalcLine" lang="java">
+  <entity name="UnitCostCalcLine">
 
     <many-to-one name="unitCostCalculation"
       ref="com.axelor.apps.production.db.UnitCostCalculation" title="Cost price calculation"/>

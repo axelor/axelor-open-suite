@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
-  <entity name="Template" lang="java">
+  <entity name="Template">
 
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <string name="content" large="true" multiline="true" title="Content"/>

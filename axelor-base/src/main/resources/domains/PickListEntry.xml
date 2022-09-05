@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PickListEntry" lang="java">
+  <entity name="PickListEntry">
 
     <string name="picklist" title="Picklist QAS"/>
     <string name="l2" title="Complement"/>

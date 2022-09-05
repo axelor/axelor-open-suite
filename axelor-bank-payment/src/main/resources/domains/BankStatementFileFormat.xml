@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatementFileFormat" lang="java" sequential="true">
+  <entity name="BankStatementFileFormat" sequential="true">
 
     <string name="statementFileFormatSelect" title="File format"
       selection="bankpayment.bank.statement.file.format.statement.file.format.select"/>

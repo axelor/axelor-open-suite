@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="CurrencyConversionLine" lang="java">
+  <entity name="CurrencyConversionLine">
 
     <many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase"
       title="Administration"/>

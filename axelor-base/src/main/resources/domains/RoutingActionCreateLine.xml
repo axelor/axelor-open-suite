@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="RoutingActionCreateLine" lang="java">
+  <entity name="RoutingActionCreateLine">
 
     <many-to-one name="routingActionCreate"
       ref="com.axelor.apps.base.db.RoutingActionCreate"/>

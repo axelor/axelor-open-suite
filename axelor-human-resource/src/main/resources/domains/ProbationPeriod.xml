@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="ProbationPeriod" lang="java" cacheable="true">
+  <entity name="ProbationPeriod" cacheable="true">
     <many-to-many name="collectiveAgreementSet" title="Collective agreements"
       ref="com.axelor.apps.hr.db.CollectiveAgreement"/>
     <many-to-one name="contractType" title="Contract type"

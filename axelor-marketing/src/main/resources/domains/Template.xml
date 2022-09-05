@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
-  <entity name="Template" lang="java">
+  <entity name="Template">
 
     <extra-code><![CDATA[
 

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="CollectiveAgreement" lang="java" cacheable="true">
+  <entity name="CollectiveAgreement" cacheable="true">
     <string name="code"/>
     <string name="name" translatable="true"/>
     <string name="fullName" namecolumn="true">

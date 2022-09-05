@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="MpsCharge" lang="java" cacheable="true">
+  <entity name="MpsCharge" cacheable="true">
     <date name="startMonthDate" title="Start Month"/>
     <date name="endMonthDate" title="End Month"/>
   </entity>

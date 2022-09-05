@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PricingRule" lang="java">
+  <entity name="PricingRule">
 
     <string name="name" title="Name"/>
     <many-to-one name="concernedModel" ref="com.axelor.meta.db.MetaModel"

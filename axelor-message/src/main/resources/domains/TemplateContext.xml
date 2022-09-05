@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.message.db"/>
 
-  <entity name="TemplateContext" lang="java">
+  <entity name="TemplateContext">
 
     <string name="name" title="Name"/>
     <string name="value" title="Expr. value" large="true"/>

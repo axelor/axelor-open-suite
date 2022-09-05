@@ -5,7 +5,7 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockLocationLine" lang="java">
+  <entity name="StockLocationLine">
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location" readonly="true"/>

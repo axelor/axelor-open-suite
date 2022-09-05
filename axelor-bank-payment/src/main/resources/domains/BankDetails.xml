@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BankDetails" lang="java">
+  <entity name="BankDetails">
     <decimal name="balance" title="Balance"/>
     <date name="balanceUpdatedDate" title="Balance updated date"/>
   </entity>

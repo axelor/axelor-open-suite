@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAssetLine" lang="java" cacheable="true">
+  <entity name="FixedAssetLine" cacheable="true">
 
     <many-to-one name="fixedAsset" ref="com.axelor.apps.account.db.FixedAsset"
       title="Fixed asset"/>

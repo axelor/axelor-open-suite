@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmployeeBonusType" lang="java">
+  <entity name="EmployeeBonusType">
 
     <string name="code" title="Code"/>
     <string name="label" title="Label" namecolumn="true"/>

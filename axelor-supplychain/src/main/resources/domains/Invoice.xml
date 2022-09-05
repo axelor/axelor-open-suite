@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Invoice" lang="java">
+  <entity sequential="true" name="Invoice">
 
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale order"/>

@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BankAddress" lang="java">
+  <entity name="BankAddress">
     <string name="code" title="Code"/>
     <string name="address" title="SWIFT address" max="255" nullable="false"/>
     <string name="label" title="Label"/>

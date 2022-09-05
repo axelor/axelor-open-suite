@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticLevel" lang="java">
+  <entity name="AnalyticLevel">
     <string name="name" title="Name" namecolumn="true" unique="true">
 	   	<![CDATA[
 	   	if (nbr == null){

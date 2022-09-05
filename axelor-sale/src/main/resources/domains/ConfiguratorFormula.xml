@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
   <module name="sale" package="com.axelor.apps.sale.db"/>
-  <entity name="ConfiguratorFormula" lang="java" strategy="JOINED">
+  <entity name="ConfiguratorFormula" strategy="JOINED">
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"/>
     <string name="formula" title="Formula" large="true"/>
     <boolean name="showOnConfigurator" title="Show on configurator"/>

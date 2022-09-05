@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="MrpForecast" lang="java">
+  <entity name="MrpForecast">
 
     <date name="forecastDate" title="Forecast date" required="true"/>
     <decimal name="qty" title="Qty" precision="20" scale="10"/>

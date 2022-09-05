@@ -5,7 +5,7 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" lang="java">
+  <entity name="SaleOrderLine">
 
     <integer name="saleSupplySelect" title="Supply method"
       selection="product.sale.supply.select"/>

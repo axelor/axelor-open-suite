@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ABCAnalysisClass" lang="java">
+  <entity name="ABCAnalysisClass">
 
     <string name="name" title="Name"/>
     <decimal name="qty" title="Qty (%)"/>

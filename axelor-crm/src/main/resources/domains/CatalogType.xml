@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="CatalogType" lang="java">
+  <entity name="CatalogType">
 
     <string name="name" title="Name" namecolumn="true" required="true"/>
 

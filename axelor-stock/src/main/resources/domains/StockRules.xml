@@ -5,7 +5,7 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockRules" lang="java">
+  <entity name="StockRules">
 
     <string name="name" title="Name"/>
 

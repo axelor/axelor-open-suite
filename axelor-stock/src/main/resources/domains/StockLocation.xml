@@ -5,7 +5,7 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockLocation" lang="java">
+  <entity name="StockLocation">
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="parentStockLocation" ref="com.axelor.apps.stock.db.StockLocation"

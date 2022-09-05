@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="Machine" lang="java">
+  <entity name="Machine">
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Image"
       index="false"/>
     <string name="name" title="Name" required="true"/>

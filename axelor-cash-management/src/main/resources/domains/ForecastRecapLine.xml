@@ -5,7 +5,7 @@
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="ForecastRecapLine" lang="java">
+  <entity name="ForecastRecapLine">
 
     <integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"
       required="true"/>

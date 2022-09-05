@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="SupplyChainConfig" lang="java">
+  <entity name="SupplyChainConfig">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 

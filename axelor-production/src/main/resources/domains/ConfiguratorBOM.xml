@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ConfiguratorBOM" lang="java">
+  <entity name="ConfiguratorBOM">
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
 
     <string name="name" title="Label"/>

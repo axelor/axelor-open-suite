@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ProductVariant" lang="java">
+  <entity name="ProductVariant">
 
     <many-to-one name="productVariantAttr1"
       ref="com.axelor.apps.base.db.ProductVariantAttr"/>

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Employment" lang="java">
+  <entity name="Employment">
     <string name="name" title="Employment.name"/>
     <many-to-one name="collectiveAgreement" title="Collective agreement"
       ref="com.axelor.apps.hr.db.CollectiveAgreement"/>
