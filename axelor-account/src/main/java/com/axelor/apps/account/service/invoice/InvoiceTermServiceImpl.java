@@ -250,7 +250,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
-  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
+  @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
         invoice.getInTaxTotal(),

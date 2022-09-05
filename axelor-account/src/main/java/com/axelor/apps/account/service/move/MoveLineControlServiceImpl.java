@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -50,12 +51,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected MoveLineToolService moveLineToolService;
+  protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveLineControlServiceImpl(
-      MoveLineToolService moveLineToolService, InvoiceTermService invoiceTermService) {
+      MoveLineToolService moveLineToolService,
+      MoveLineService moveLineService,
+      InvoiceTermService invoiceTermService) {
     this.moveLineToolService = moveLineToolService;
+    this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -134,6 +139,13 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
         if (invoiceTermTotal.compareTo(total) != 0) {
           invoiceTermTotal = invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total);
+
+          if (invoiceAttached == null) {
+            moveLineService.computeFinancialDiscount(moveLine);
+          } else {
+            invoiceTermList.forEach(
+                it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+          }
 
           if (invoiceTermTotal.compareTo(total) != 0) {
             throw new AxelorException(
