@@ -143,7 +143,7 @@ public class ConvertLeadWizardService {
   public EmailAddress createEmailAddress(String address, Lead lead, Partner partner) {
     EmailAddress emailAddress = new EmailAddress();
     emailAddress.setAddress(address);
-    emailAddress.setEmailAddresslead(lead);
+    emailAddress.setEmailAddressLead(lead);
     emailAddress.setPartner(partner);
 
     return emailAddress;
