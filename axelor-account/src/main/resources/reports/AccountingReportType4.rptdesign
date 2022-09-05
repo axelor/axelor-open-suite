@@ -161,7 +161,7 @@ row["invoice_reconciled_date"]
 
 }
 else  {
-row["MoveLineDate"]
+row["due_date"]
 }</expression>
                     <property name="dataType">date</property>
                 </structure>
@@ -279,6 +279,12 @@ row["MoveLineDate"]
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineDate</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">due_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">due_date</text-property>
+                    <text-property name="heading">due_date</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -377,21 +383,26 @@ row["MoveLineDate"]
                     </structure>
                     <structure>
                         <property name="position">17</property>
+                        <property name="name">due_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">credit_to_use</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">excess_payment</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">21</property>
                         <property name="name">date</property>
                         <property name="dataType">date</property>
                     </structure>
@@ -512,13 +523,20 @@ row["MoveLineDate"]
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">due_date</property>
+                    <property name="nativeName">due_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineID", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq,
 AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", InvoiceReconciled.invoice_date as "invoice_reconciled_date", 
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
 AccountingReport.date_to as "report_date", Reconcile.amount as amountReconciled, MoveLine.amount_remaining, count(Reconcile.id) as countMoveLine,    
-MoveLine.date_val as "MoveLineDate"  
+MoveLine.date_val as "MoveLineDate", Invoice.due_date 
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -556,7 +574,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 group by MoveLine.name,MoveLine.partner_full_name,partner_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,
-Invoice.invoice_id,invoice_name,InvoiceReconciled.invoice_id,InvoiceReconciled.invoice_date,ReportedBalanceLine.amount,YYear.reported_balance_date,
+Invoice.id,invoice_name,InvoiceReconciled.invoice_id,InvoiceReconciled.invoice_date,ReportedBalanceLine.amount,YYear.reported_balance_date,
 AccountingReport.date_to,Reconcile.amount,MoveLine.amount_remaining,MoveLine.date_val]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
