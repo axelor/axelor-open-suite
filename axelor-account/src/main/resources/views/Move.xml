@@ -778,8 +778,8 @@
   <action-record name="action-move-record-set-bank-details"
     model="com.axelor.apps.account.db.Move">
     <field name="partnerBankDetails" expr="eval: null"/>
-    <field name="partnerBankDetails"
-      expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault }" if="partner"/>
+    <field name="partnerBankDetails" if="partner"
+      expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault &amp;&amp; it.active }"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
