@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.apps.tool.net.URLService;
@@ -493,14 +492,14 @@ public class ImportCityServiceImpl implements ImportCityService {
       case DUMP:
         downloadUrl = appBase.getGeoNamesDumpUrl();
         if (StringUtils.isEmpty(downloadUrl)) {
-          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_DUMP_URL_NOT_SPECIFIED) + "\n");
+          printWriter.append(I18n.get(BaseExceptionMessage.GEONAMES_DUMP_URL_NOT_SPECIFIED) + "\n");
         }
         break;
 
       case ZIP:
         downloadUrl = appBase.getGeoNamesZipUrl();
         if (StringUtils.isEmpty(downloadUrl)) {
-          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_ZIP_URL_NOT_SPECIFIED) + "\n");
+          printWriter.append(I18n.get(BaseExceptionMessage.GEONAMES_ZIP_URL_NOT_SPECIFIED) + "\n");
         }
         break;
 
@@ -570,7 +569,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           }
           importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
         } else {
-          printWriter.append(I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
+          printWriter.append(I18n.get(BaseExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
         }
       }
     } catch (Exception e) {

@@ -32,7 +32,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -214,6 +214,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected String getProcessedMessage() {
-    return I18n.get(IExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
+    return I18n.get(SupplychainExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
   }
 }

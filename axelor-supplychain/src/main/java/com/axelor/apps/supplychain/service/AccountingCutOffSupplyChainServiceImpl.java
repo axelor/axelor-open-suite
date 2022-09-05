@@ -60,7 +60,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -305,7 +305,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       if (partnerAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
+            I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
       }
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
@@ -320,7 +320,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       if (partnerAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT));
+            I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT));
       }
     }
 

@@ -5,7 +5,7 @@ import com.axelor.apps.base.db.ImportBatch;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.BatchImportHistoryRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.auth.db.repo.UserRepository;
@@ -60,7 +60,7 @@ public class BatchAdvancedImportData extends AbstractImportBatch {
     if (advancedImport.getStatusSelect() != AdvancedImportRepository.STATUS_SELECT_VALIDATED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NOT_VALIDATED));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NOT_VALIDATED));
     }
     ImportHistory importHistory = dataImportService.importData(advancedImport);
     createBatchHistory(

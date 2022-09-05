@@ -450,6 +450,10 @@ public final class BaseExceptionMessage {
   public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
   public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
+  public static final String GEONAMES_DUMP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
+  public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
@@ -476,4 +480,28 @@ public final class BaseExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_TYPE_NULL = /*$$(*/
+      "You must select a connection type in order to create a session" /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS = /*$$(*/
+      "File source connector is missing mandatory field(s) in order to create a session." /*)*/;
+
+  public static final String FILE_TRANSFERT_SESSION_NOT_STARTED = /*$$(*/
+      "The file transfert session is not started" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_NOT_CONFIGURED = /*$$(*/
+      "The file transfert session is not configured" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED = /*$$(*/
+      "Download failed: %s" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_UPLOAD_FAILED = /*$$(*/
+      "Upload failed: %s" /*)*/;
+
+  public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
+      "Advanced import is not validated" /*)*/;
+  public static final String BATCH_ADVANCED_IMPORT_FILE_NOT_IMPORTED = /*$$(*/
+      "File %s could not be imported" /*)*/;
+  public static final String META_JSON_TYPE_NO_MATCH_OBJECT_VALUE = /*$$(*/
+      "Error: The type of the field %s does not match the type of the value %s" /*)*/;
+  public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
+      "Error: The type of the field %s is not managed by the adapter" /*)*/;
 }

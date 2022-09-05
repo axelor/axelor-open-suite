@@ -41,6 +41,11 @@ public final class StockExceptionMessage {
       "Can only cancel a validated inventory." /*)*/;
   public static final String INVENTORY_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft if cancelled." /*)*/;
+  public static final String INVENTORY_VALIDATE_INVENTORY_LINE_LIST = /*$$(*/
+      "Please fill all inventory lines" /*)*/;
+
+  public static final String INVENTORY_LINE_STOCK_LOCATION_MISSING = /*$$(*/
+      "Stock location is missing for these lines : %s" /*)*/;
 
   /** Stock Location Line Service Impl */
   public static final String LOCATION_LINE_1 = /*$$(*/
@@ -71,7 +76,7 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_6 = /*$$(*/
       "There's no destination stock location selected for the stock's movement %s" /*)*/;
   public static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
-  public static final String STOCK_MOVE_8 = /*$$(*/ "Reverse stock move (From" /*)*/;
+  public static final String STOCK_MOVE_8 = /*$$(*/ "%s Reverse stock move (From %s)" /*)*/;
   public static final String STOCK_MOVE_9 = /*$$(*/
       "A partial stock move has been generated (%s)" /*)*/;
   public static final String STOCK_MOVE_10 = /*$$(*/

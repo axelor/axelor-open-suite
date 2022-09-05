@@ -38,7 +38,6 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.StringHTMLListBuilder;
@@ -932,7 +931,7 @@ public class InventoryService {
         .anyMatch(inventoryLine -> inventoryLine.getRealQty() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.INVENTORY_VALIDATE_INVENTORY_LINE_LIST));
+          I18n.get(StockExceptionMessage.INVENTORY_VALIDATE_INVENTORY_LINE_LIST));
     }
   }
 
@@ -969,7 +968,7 @@ public class InventoryService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           String.format(
-              I18n.get(IExceptionMessage.INVENTORY_LINE_STOCK_LOCATION_MISSING),
+              I18n.get(StockExceptionMessage.INVENTORY_LINE_STOCK_LOCATION_MISSING),
               stringHTMLListInventoryLine));
     }
   }

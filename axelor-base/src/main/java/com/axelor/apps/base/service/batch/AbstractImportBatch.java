@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.BatchImportHistory;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.db.repo.BatchImportHistoryRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.models.FileTransfertSession;
@@ -52,8 +53,7 @@ public abstract class AbstractImportBatch extends AbstractBatch {
     comment.append(
         "\t"
             + String.format(
-                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-                batch.getAnomaly()));
+                I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly()));
     addComment(comment.toString());
     super.stop();
   }

@@ -24,7 +24,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
@@ -340,7 +340,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     if (paymentSession.getBankOrder() != null) {
       flashMessage.append(
           String.format(
-              I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_BANK_ORDER),
+              I18n.get(BankPaymentExceptionMessage.PAYMENT_SESSION_GENERATED_BANK_ORDER),
               paymentSession.getBankOrder().getBankOrderSeq()));
     }
 

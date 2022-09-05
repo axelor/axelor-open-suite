@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.web;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
@@ -126,13 +126,14 @@ public class BankStatementController {
           int errorNB = bankStatementRemoveService.deleteMultiple(statementIds);
           if (errorNB > 0) {
             response.setFlash(
-                String.format(I18n.get(IExceptionMessage.STATEMENT_REMOVE_NOT_OK_NB), errorNB));
+                String.format(
+                    I18n.get(BankPaymentExceptionMessage.STATEMENT_REMOVE_NOT_OK_NB), errorNB));
           } else {
-            response.setFlash(I18n.get(IExceptionMessage.STATEMENT_REMOVE_OK));
+            response.setFlash(I18n.get(BankPaymentExceptionMessage.STATEMENT_REMOVE_OK));
             response.setReload(true);
           }
         }
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
+      } else response.setFlash(I18n.get(BankPaymentExceptionMessage.NO_STATEMENT_TO_REMOVE));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(

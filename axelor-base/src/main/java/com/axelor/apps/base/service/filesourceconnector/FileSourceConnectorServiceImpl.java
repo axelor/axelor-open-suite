@@ -2,7 +2,7 @@ package com.axelor.apps.base.service.filesourceconnector;
 
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.filesourceconnector.factory.FileTransfertSessionFactory;
 import com.axelor.apps.base.service.filesourceconnector.models.FileTransfertSession;
 import com.axelor.exception.AxelorException;
@@ -40,7 +40,7 @@ public class FileSourceConnectorServiceImpl implements FileSourceConnectorServic
     if (fileSourceConnector.getConnectionType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_TYPE_NULL));
+          I18n.get(BaseExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_TYPE_NULL));
     }
 
     FileTransfertSession session =

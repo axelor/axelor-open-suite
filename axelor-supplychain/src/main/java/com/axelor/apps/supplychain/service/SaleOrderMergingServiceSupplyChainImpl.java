@@ -7,6 +7,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.MapTools;
 import com.axelor.exception.AxelorException;
@@ -204,22 +205,15 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
 
     if (appSaleService.isApp("supplychain")) {
       if (getChecks(result).isExistIncotermDiff()) {
-        fieldErrors.add(
-            I18n.get(
-                com.axelor.apps.supplychain.exception.IExceptionMessage
-                    .SALE_ORDER_MERGE_ERROR_INCOTERM));
+        fieldErrors.add(I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_INCOTERM));
       }
       if (getChecks(result).isExistInvoicedPartnerDiff()) {
         fieldErrors.add(
-            I18n.get(
-                com.axelor.apps.supplychain.exception.IExceptionMessage
-                    .SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER));
       }
       if (getChecks(result).isExistDeliveredPartnerDiff()) {
         fieldErrors.add(
-            I18n.get(
-                com.axelor.apps.supplychain.exception.IExceptionMessage
-                    .SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER));
       }
     }
   }

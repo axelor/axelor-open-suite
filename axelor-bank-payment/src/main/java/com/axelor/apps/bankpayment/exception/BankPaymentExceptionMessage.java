@@ -265,4 +265,30 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
       "Email adress is missing for partner %s" /*)*/;
+
+  public static final String PAYMENT_SESSION_GENERATED_BANK_ORDER = /*$$(*/
+      "The bank order %s has been generated successfully." /*)*/;
+
+  public static final String
+      BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE = /*$$(*/
+          "Move line's query formula has not been evaluated to a Move line" /*)*/;
+  public static final String BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER = /*$$(*/
+      "Partner's query formula has not been evaluated to a Partner" /*)*/;
+
+  public static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  public static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
+
+  public static final String STATEMENT_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d bank statement couldn't be deleted, please check the logs." /*)*/;
+
+  public static final String STATEMENT_REMOVE_OK = /*$$(*/
+      "Bank statement(s) has been removed successfully" /*)*/;
+
+  public static final String STATEMENT_REMOVE_NOT_OK = /*$$(*/
+      "Error in statement deleting, please check the log" /*)*/;
+
+  public static final String NO_STATEMENT_TO_REMOVE = /*$$(*/ "Please select statements" /*)*/;
 }

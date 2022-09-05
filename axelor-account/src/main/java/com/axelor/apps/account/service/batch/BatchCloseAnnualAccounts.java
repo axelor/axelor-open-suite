@@ -130,7 +130,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_3),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             accountingBatch.getCode());
       }
       if (!journal.getAuthorizeSimulatedMove()) {

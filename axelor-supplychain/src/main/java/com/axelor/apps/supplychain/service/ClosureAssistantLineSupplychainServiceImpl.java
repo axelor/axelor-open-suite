@@ -7,7 +7,7 @@ import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
 import com.axelor.apps.account.service.ClosureAssistantService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
@@ -70,7 +70,7 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
           == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+            I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
       }
       SupplychainBatch supplychainBatch =
           supplychainBatchService.createNewSupplychainBatch(

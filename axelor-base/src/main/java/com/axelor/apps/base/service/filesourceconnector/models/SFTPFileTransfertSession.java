@@ -2,7 +2,7 @@ package com.axelor.apps.base.service.filesourceconnector.models;
 
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.SFTPUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -46,7 +46,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (this.session == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
     }
 
     try {
@@ -71,7 +71,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_UPLOAD_FAILED),
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_UPLOAD_FAILED),
           e.getMessage());
     }
   }
@@ -83,7 +83,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (this.session == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
     }
     try {
       final ChannelSftp channel = SFTPUtils.openSftpChannel(this.session);
@@ -119,7 +119,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED),
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED),
           e.getMessage());
     }
   }
@@ -166,7 +166,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (fileSourceConnector.getHost() == null || fileSourceConnector.getPort() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS));
+          I18n.get(BaseExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS));
     }
 
     String privateKeyFileName = null;
@@ -218,7 +218,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (this.session == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_NOT_CONFIGURED));
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_NOT_CONFIGURED));
     }
     try {
       this.session.connect();
