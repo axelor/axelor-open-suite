@@ -458,13 +458,12 @@ public class PurchaseOrderController {
   public void manageCancelPurchaseOrder(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_VALIDATED) {
-        response.setAttr(
-            "cancelBtn",
-            "hidden",
-            Beans.get(PurchaseOrderInvoiceService.class)
-                .containsRelatedVentilatedInvoice(purchaseOrder));
-      }
+      response.setAttr(
+          "cancelBtn",
+          "hidden",
+          purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_VALIDATED
+              || Beans.get(PurchaseOrderInvoiceService.class)
+                  .containsRelatedVentilatedInvoice(purchaseOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -323,7 +323,7 @@
         onClick="save,action-purchase-order-method-finish-purchase-order"
         if-module="axelor-supplychain"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times"
-        showIf="statusSelect &lt;= 3" onClick="save,action-group-purchase-order-cancel"/>
+        hiddenIf="statusSelect != 3" onClick="save,action-group-purchase-order-cancel"/>
       <button name="backToValidatedBtn" title="Back to validated order"
         showIf="statusSelect == 4" if-module="axelor-supplychain"
         onClick="save,action-purchase-order-method-set-status-to-validated"
