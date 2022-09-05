@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -133,5 +134,12 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       return true;
     }
     return false;
+  }
+
+  @Override
+  public boolean isClosedPeriod(Period period) throws AxelorException {
+    User user = AuthUtils.getUser();
+
+    return super.isClosedPeriod(period) && !this.isAuthorizedToAccountOnPeriod(period, user);
   }
 }
