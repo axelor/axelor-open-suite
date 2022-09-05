@@ -415,9 +415,9 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       Partner partner = this.getPurchaseOrder(context).getSupplierPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
 
-      if (purchaseOrderLine.getProduct() != null) {
+      if (purchaseOrderLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
         response.setValue(
             "description",
             internationalService.translate(
