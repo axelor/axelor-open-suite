@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -15,5 +17,6 @@ axelor {
 dependencies {
 	api project(":modules:axelor-exception")
 	api project(":modules:axelor-tool")
-	implementation("com.github.javafaker:javafaker:1.0.2")
+	implementation 'net.datafaker:datafaker:1.5.0'
+	api libs.opencsv
 }

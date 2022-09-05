@@ -56,3 +56,9 @@ libs.google_api_services_people = dependencies.create('com.google.apis:google-ap
 libs.mockito = 'org.mockito:mockito-core:3.3.3'
 
 libs.pac4j_core = "org.pac4j:pac4j-core:3.8.3"
+
+libs.opencsv = 'com.opencsv:opencsv:4.6'
+
+libs.wslite = 'com.github.groovy-wslite:groovy-wslite:1.1.3'
+
+libs.tika = 'org.apache'

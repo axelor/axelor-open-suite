@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -38,4 +40,6 @@ dependencies {
 
 	implementation libs.pac4j_core
 	testImplementation libs.mockito
+
+	api 'org.apache.tika:tika-core:2.3.0'
 }
