@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Notification" lang="java">
+  <entity name="Notification">
 
     <integer name="statusSelect" title="Status"
       selection="account.notification.status.select" readonly="true" default="1"/>

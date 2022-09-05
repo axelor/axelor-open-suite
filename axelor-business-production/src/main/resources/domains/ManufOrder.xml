@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ManufOrder" lang="java">
+  <entity name="ManufOrder">
 
     <boolean name="invoiced" readonly="true"/>
     <boolean name="isToInvoice" title="To Invoice"/>

@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdProcessLine" lang="java">
+  <entity name="ProdProcessLine">
 
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
       title="Production process"/>

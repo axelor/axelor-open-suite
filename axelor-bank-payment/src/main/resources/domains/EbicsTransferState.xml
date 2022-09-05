@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="EbicsTransferState" lang="java">
+  <entity name="EbicsTransferState">
 
     <binary name="transactionId" title="Transaction id"/>
     <integer name="segmentNumber" title="Segment number"/>

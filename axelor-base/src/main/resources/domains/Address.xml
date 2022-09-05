@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Address" lang="java">
+  <entity name="Address">
 
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions"/>

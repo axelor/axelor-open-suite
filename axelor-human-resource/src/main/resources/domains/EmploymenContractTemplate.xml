@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmploymentContractTemplate" lang="java">
+  <entity name="EmploymentContractTemplate">
 
     <string name="name" title="Name" unique="true" required="true"/>
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="Template"

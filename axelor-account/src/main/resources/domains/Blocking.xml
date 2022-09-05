@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Blocking" lang="java">
+  <entity name="Blocking">
     <string name="blockingComment" title="Comment" large="true"/>
     <extra-code>
             <![CDATA[

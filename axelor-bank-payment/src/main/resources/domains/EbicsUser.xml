@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="EbicsUser" lang="java">
+  <entity name="EbicsUser">
 
     <string name="securityMedium" title="Security medium" default="0000"/>
     <string name="name" title="Name" required="true"/>

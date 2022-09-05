@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
-  <entity name="Message" lang="java">
+  <entity name="Message">
 
     <integer name="typeSelect" title="Type" selection="message.type.select" readonly="true"
       default="2" initParam="true"/>

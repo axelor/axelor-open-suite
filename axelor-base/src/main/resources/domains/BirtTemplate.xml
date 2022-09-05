@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BirtTemplate" lang="java">
+  <entity name="BirtTemplate">
 
     <string name="name" title="Name" required="true"/>
     <string name="templateLink" title="Template file name"/>

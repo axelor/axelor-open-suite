@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="EbicsCertificate" lang="java">
+  <entity name="EbicsCertificate">
 
     <many-to-one name="ebicsBank" ref="EbicsBank" title="Bank"/>
     <string name="typeSelect" title="Type"

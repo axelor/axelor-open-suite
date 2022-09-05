@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity sequential="true" name="PurchaseOrderLineTax" lang="java">
+  <entity sequential="true" name="PurchaseOrderLineTax">
 
     <many-to-one name="purchaseOrder" ref="PurchaseOrder" title="Purchase order"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>

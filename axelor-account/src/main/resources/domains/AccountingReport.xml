@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReport" lang="java">
+  <entity name="AccountingReport">
 
     <string name="ref" title="Ref." namecolumn="true"/>
     <date name="dateFrom" title="From"/>

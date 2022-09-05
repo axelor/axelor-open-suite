@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankReconciliationLine" lang="java">
+  <entity name="BankReconciliationLine">
 
     <string name="name" title="Label" namecolumn="true" large="true" multiline="true"/>
     <many-to-one name="bankReconciliation"

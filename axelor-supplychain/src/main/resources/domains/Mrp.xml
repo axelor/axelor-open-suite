@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="Mrp" lang="java">
+  <entity name="Mrp">
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location" required="true"/>

@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="MrpLineOrigin" lang="java">
+  <entity name="MrpLineOrigin">
     <extra-code>
             <![CDATA[
 

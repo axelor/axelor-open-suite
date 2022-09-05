@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PartnerAddress" lang="java">
+  <entity name="PartnerAddress">
     <boolean name="isInvoicingAddr" title="Invoicing address"/>
     <boolean name="isDeliveryAddr" title="Delivery address"/>
     <boolean name="isDefaultAddr" title="Default address"/>

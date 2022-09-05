@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="WorkCenter" lang="java">
+  <entity name="WorkCenter">
 
     <string name="name" title="Label" required="true"/>
     <string name="code" title="Code"/>

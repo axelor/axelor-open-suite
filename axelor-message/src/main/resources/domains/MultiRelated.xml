@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.message.db"/>
 
-  <entity name="MultiRelated" lang="java">
+  <entity name="MultiRelated">
     <string name="relatedToSelect" title="Related to" selection="message.related.to.select"/>
     <long name="relatedToSelectId"/>
     <many-to-one name="message" ref="com.axelor.apps.message.db.Message"/>

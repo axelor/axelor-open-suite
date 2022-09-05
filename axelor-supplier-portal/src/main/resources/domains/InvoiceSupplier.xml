@@ -5,7 +5,7 @@
 
   <module name="supplierportal" package="com.axelor.apps.supplierportal.db"/>
 
-  <entity name="InvoiceSupplier" lang="java">
+  <entity name="InvoiceSupplier">
 
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <date name="invoiceDate" title="Invoice date"/>

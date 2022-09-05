@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ImportExportInterface" lang="java">
+  <entity name="ImportExportInterface">
 
     <integer name="interfaceSelect" title="Interface" selection="import.export.interface"
       required="true"/>

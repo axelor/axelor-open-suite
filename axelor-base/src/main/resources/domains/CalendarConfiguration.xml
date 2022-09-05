@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="CalendarConfiguration" lang="java">
+  <entity name="CalendarConfiguration">
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Action"/>

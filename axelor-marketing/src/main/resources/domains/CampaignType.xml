@@ -5,7 +5,7 @@
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="CampaignType" lang="java" sequential="true">
+  <entity name="CampaignType" sequential="true">
 
     <string name="name" title="Name" required="true"/>
 

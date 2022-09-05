@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FiscalPosition" lang="java">
+  <entity name="FiscalPosition">
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>

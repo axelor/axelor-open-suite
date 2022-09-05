@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Lead" lang="java">
+  <entity name="Lead">
 
     <string name="titleSelect" title="Title" selection="partner.title.type.select"/>
     <string name="name" required="true" title="Last name"/>

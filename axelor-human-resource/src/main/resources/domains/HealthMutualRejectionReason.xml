@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="HealthMutualRejectionReason" lang="java" cacheable="true">
+  <entity name="HealthMutualRejectionReason" cacheable="true">
     <string name="code" title="Code"/>
     <string name="oldCode" title="Old code"/>
     <string name="name" title="RejectionReason.name" namecolumn="true"/>

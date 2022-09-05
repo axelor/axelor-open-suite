@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="DebtRecoveryHistory" lang="java">
+  <entity name="DebtRecoveryHistory">
 
     <many-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery"
       title="Debt recovery"/>

@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="PartnerSupplychainLink" lang="java">
+  <entity name="PartnerSupplychainLink">
 
     <many-to-one name="partner1" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="partner2" ref="com.axelor.apps.base.db.Partner" title="Partner"/>

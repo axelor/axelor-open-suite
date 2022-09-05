@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ImportHistory" lang="java">
+  <entity name="ImportHistory">
 
     <many-to-one name="importConfiguration"
       ref="com.axelor.apps.base.db.ImportConfiguration"/>

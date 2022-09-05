@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Opportunity" lang="java">
+  <entity name="Opportunity">
 
     <one-to-many name="saleOrderList" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale orders" mappedBy="opportunity"/>

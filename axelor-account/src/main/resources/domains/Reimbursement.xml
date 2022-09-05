@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Reimbursement" sequential="true" lang="java">
+  <entity name="Reimbursement" sequential="true">
 
     <string name="ref" title="Ref." namecolumn="true" readonly="true"/>
     <integer name="statusSelect" title="Status"

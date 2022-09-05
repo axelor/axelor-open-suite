@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Region" lang="java">
+  <entity name="Region">
 
     <string name="name" title="Region name" required="true"/>
     <string name="code" title="Region code" required="true"/>

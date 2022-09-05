@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Batch" lang="java" sequential="true">
+  <entity name="Batch" sequential="true">
 
     <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder"/>
 

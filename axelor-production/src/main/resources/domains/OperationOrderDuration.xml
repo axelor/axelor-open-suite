@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="OperationOrderDuration" lang="java">
+  <entity name="OperationOrderDuration">
     <many-to-one name="operationOrder"
       ref="com.axelor.apps.production.db.OperationOrder" title="Operation Order"/>
 

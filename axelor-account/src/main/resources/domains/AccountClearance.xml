@@ -5,7 +5,7 @@
 
   <module name="Account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountClearance" lang="java">
+  <entity name="AccountClearance">
 
     <string name="name" title="Reference" readonly="true"/>
     <datetime name="dateTime" title="Account clearance date" tz="true" readonly="true"/>

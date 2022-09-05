@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrderLine" lang="java">
+  <entity name="PurchaseOrderLine">
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <boolean name="toInvoice" title="To invoice with project"/>

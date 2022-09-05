@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Journal" lang="java" cacheable="true">
+  <entity name="Journal" cacheable="true">
 
     <string name="code" title="Code"/>
     <string name="name" title="Name" required="true"/>

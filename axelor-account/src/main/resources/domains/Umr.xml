@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Umr" lang="java">
+  <entity name="Umr">
 
     <string name="umrNumber" title="UMR N°" namecolumn="true" initParam="true"/>
     <string name="debtorName" title="Debtor Name" initParam="true"/>

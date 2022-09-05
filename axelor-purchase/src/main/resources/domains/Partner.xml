@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
     <string name="purchaseOrderInformation" multiline="true" large="true"/>
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
     <one-to-many name="supplierCatalogList"

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmploymentContract" lang="java">
+  <entity name="EmploymentContract">
 
     <string name="ref" title="Ref."/>
 

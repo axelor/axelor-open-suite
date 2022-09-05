@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingSituation" lang="java">
+  <entity name="AccountingSituation">
     <!-- Customer Credit -->
     <decimal name="acceptedCredit" title="Accepted Credit" precision="20" scale="2"/>
     <decimal name="usedCredit" title="Used Credit" precision="20" scale="2" readonly="true"/>

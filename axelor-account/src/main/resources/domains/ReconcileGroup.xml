@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ReconcileGroup" lang="java">
+  <entity name="ReconcileGroup">
 
     <string name="code" title="Reference" readonly="true" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"

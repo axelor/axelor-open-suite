@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetLine" lang="java">
+  <entity name="TimesheetLine">
 
     <many-to-one name="operationOrder"
       ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>

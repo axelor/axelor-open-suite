@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="EbicsPartner" lang="java">
+  <entity name="EbicsPartner">
 
     <integer name="ebicsTypeSelect" title="Mode"
       selection="bankpayment.ebics.partner.ebics.type.select"/>

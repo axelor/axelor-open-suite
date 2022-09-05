@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="Sop" lang="java">
+  <entity name="Sop">
 
     <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
       title="Category"/>

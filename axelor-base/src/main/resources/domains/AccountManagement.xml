@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountManagement" lang="java">
+  <entity name="AccountManagement">
 
     <integer name="typeSelect" title="Type" required="true"
       selection="account.management.type.select"/>

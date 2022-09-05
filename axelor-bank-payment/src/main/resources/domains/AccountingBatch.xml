@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingBatch" lang="java">
+  <entity name="AccountingBatch">
 
     <!-- DIRECT DEBIT -->
     <integer name="directDebitDataTypeSelect" title="Direct debit data type"

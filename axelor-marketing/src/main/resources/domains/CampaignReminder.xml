@@ -5,7 +5,7 @@
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="CampaignReminder" lang="java">
+  <entity name="CampaignReminder">
 
     <many-to-one name="campaign" title="Campaign"
       ref="com.axelor.apps.marketing.db.Campaign"/>

@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
-  <entity name="EmailAddress" lang="java">
+  <entity name="EmailAddress">
 
     <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact"
       mappedBy="emailAddress"/>

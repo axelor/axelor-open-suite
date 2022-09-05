@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Street" lang="java">
+  <entity name="Street">
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="city" title="City" ref="com.axelor.apps.base.db.City"

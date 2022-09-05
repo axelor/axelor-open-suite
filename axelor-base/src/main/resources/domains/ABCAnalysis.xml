@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ABCAnalysis" lang="java">
+  <entity name="ABCAnalysis">
 
     <string name="name" title="Name"/>
     <string name="abcAnalysisSeq" namecolumn="true" title="ABC Analysis N°" readonly="true"/>

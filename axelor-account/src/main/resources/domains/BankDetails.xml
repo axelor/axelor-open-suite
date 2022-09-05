@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BankDetails" lang="java">
+  <entity name="BankDetails">
 
     <string name="specificNoteOnInvoice" title="Specific note on invoice" large="true"/>
     <many-to-one name="bankAccount" ref="com.axelor.apps.account.db.Account"

@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="EventAttendee" lang="java">
+  <entity name="EventAttendee">
 
     <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
 

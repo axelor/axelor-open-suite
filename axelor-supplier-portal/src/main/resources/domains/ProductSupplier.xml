@@ -5,7 +5,7 @@
 
   <module name="supplierportal" package="com.axelor.apps.supplierportal.db"/>
 
-  <entity name="ProductSupplier" lang="java">
+  <entity name="ProductSupplier">
     <string name="productCode" title="Code" unique="true"/>
     <string name="productName" title="Name"/>
     <many-to-one name="imgProduct" ref="com.axelor.meta.db.MetaFile" title="Picture"/>

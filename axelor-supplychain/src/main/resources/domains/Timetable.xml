@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="Timetable" lang="java">
+  <entity name="Timetable">
 
     <string name="title" namecolumn="true"/>
     <decimal name="amount" title="Amount" min="0"/>

@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ModelEmailLink" lang="java">
+  <entity name="ModelEmailLink">
 
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"/>
     <string name="emailField"/>

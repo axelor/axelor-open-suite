@@ -5,7 +5,7 @@
 
   <module name="Account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InterbankCodeLine" lang="java" cacheable="true">
+  <entity name="InterbankCodeLine" cacheable="true">
 
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Standard label" required="true"/>

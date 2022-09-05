@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="NoteBills" lang="java">
+  <entity sequential="true" name="NoteBills">
 
 
     <many-to-one ref="com.axelor.apps.base.db.Batch" name="batch" title="Batch"/>

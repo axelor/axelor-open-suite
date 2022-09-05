@@ -5,7 +5,7 @@
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="Campaign" lang="java" sequential="true">
+  <entity name="Campaign" sequential="true">
 
     <string name="name" title="Name" required="true"/>
     <integer name="stageSelect" title="Stage" selection="campaign.stage.select"/>

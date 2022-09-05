@@ -5,7 +5,7 @@
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankOrderFileFormatCountry" lang="java" sequential="true">
+  <entity name="BankOrderFileFormatCountry" sequential="true">
 
     <many-to-one name="bankOrderFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="Bank order file format"/>

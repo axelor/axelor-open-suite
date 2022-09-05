@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="AddressExport" lang="java">
+  <entity name="AddressExport">
 
     <datetime name="date" column="date_val" title="Export Date" tz="true"/>
     <string name="path" title="Path to export file" namecolumn="true"/>

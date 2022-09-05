@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Participant" lang="java">
+  <entity name="Participant">
 
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <boolean name="isComing" title="Present"/>

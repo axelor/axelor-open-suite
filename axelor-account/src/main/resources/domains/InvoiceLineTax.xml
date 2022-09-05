@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLineTax" lang="java">
+  <entity name="InvoiceLineTax">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
     <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>

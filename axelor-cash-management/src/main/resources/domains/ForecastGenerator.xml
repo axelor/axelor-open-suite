@@ -5,7 +5,7 @@
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="ForecastGenerator" lang="java">
+  <entity name="ForecastGenerator">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>

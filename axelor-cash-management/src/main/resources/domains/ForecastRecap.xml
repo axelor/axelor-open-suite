@@ -5,7 +5,7 @@
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="ForecastRecap" lang="java">
+  <entity name="ForecastRecap">
 
     <string name="forecastRecapSeq" readonly="true" title="Seq."/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"

@@ -5,7 +5,7 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMoveLine" lang="java">
+  <entity name="StockMoveLine">
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sales order line"/>

@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="TimetableTemplate" lang="java">
+  <entity name="TimetableTemplate">
 
     <string name="code" required="true"/>
     <string name="name" namecolumn="true" required="true"/>

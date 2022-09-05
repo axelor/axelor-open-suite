@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReportMoveLine" lang="java">
+  <entity name="AccountingReportMoveLine">
     <many-to-one ref="PaymentMoveLineDistribution" name="paymentMoveLineDistribution"
       initParam="true" title="Payment move line distribution"/>
     <boolean name="excludeFromDas2Report" title="Exclude from DAS2 report" default="false"/>

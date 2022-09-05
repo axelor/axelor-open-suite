@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmployeeBonusMgtLine" lang="java">
+  <entity name="EmployeeBonusMgtLine">
 
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
     <decimal name="amount" title="Amount"/>

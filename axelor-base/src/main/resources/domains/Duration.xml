@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Duration" lang="java">
+  <entity name="Duration">
 
     <integer name="typeSelect" title="Month/days" selection="base.duration.type.select"
       initParam="true"/>

@@ -5,7 +5,7 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="Configurator" lang="java">
+  <entity name="Configurator">
 
     <many-to-one name="configuratorCreator"
       ref="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator model" required="true"/>

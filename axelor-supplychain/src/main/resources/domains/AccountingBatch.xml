@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingBatch" lang="java">
+  <entity name="AccountingBatch">
 
     <many-to-one name="forecastedInvCustAccount"
       title="Forecasted invoice customer account" ref="com.axelor.apps.account.db.Account"/>

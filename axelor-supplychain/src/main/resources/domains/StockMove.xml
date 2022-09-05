@@ -5,7 +5,7 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMove" lang="java">
+  <entity name="StockMove">
 
     <!-- Onglet Configuration -->
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice"

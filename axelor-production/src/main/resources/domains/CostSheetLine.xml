@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="CostSheetLine" lang="java">
+  <entity name="CostSheetLine">
 
     <many-to-one name="costSheet" ref="com.axelor.apps.production.db.CostSheet"
       title="CostSheet"/>

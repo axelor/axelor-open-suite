@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticRules" lang="java">
+  <entity name="AnalyticRules">
     <string name="name" title="Name" required="true" unique="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="fromAccount" ref="com.axelor.apps.account.db.Account"

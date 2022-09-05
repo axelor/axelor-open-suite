@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Qualification" lang="java" cacheable="true">
+  <entity name="Qualification" cacheable="true">
     <string name="code"/>
     <string name="name"/>
     <string name="fullName" namecolumn="true">

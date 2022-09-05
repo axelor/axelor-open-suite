@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Alarm" lang="java">
+  <entity name="Alarm">
 
     <datetime name="date" column="date_val" title="Date" required="true" tz="true"/>
     <many-to-one name="alarmEngine" ref="com.axelor.apps.base.db.AlarmEngine"

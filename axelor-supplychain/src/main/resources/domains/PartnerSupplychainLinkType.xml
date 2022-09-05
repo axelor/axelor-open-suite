@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="PartnerSupplychainLinkType" lang="java">
+  <entity name="PartnerSupplychainLinkType">
 
     <string namecolumn="true" name="typeSelect" title="Type"
       selection="base.base.partner.supply.chain.link.type.select"/>

@@ -5,7 +5,7 @@
 
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="VehicleService" lang="java" cacheable="true">
+  <entity name="VehicleService" cacheable="true">
     <many-to-one name="serviceType" ref="VehicleServiceType" title="Service Type"/>
     <decimal name="cost" title="Cost"/>
   </entity>

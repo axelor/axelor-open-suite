@@ -5,7 +5,7 @@
 
   <module name="team" package="com.axelor.team.db"/>
 
-  <entity name="Team" lang="java">
+  <entity name="Team">
 
     <string name="code" title="Code"/>
     <string name="typeSelect" title="Type" selection="team.type.select"/>

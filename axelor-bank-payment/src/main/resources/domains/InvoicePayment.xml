@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoicePayment" lang="java">
+  <entity name="InvoicePayment">
 
     <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder"
       readonly="true" title="Bank Order"/>

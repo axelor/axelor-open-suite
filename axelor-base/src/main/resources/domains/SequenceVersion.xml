@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="SequenceVersion" lang="java">
+  <entity name="SequenceVersion">
 
     <many-to-one name="sequence" title="Sequence" ref="com.axelor.apps.base.db.Sequence"
       initParam="true"/>

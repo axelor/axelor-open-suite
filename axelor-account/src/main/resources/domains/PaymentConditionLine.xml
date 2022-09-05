@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentConditionLine" lang="java" cacheable="true">
+  <entity name="PaymentConditionLine" cacheable="true">
 
     <integer name="typeSelect" title="Type"
       selection="account.payment.condition.type.select"/>

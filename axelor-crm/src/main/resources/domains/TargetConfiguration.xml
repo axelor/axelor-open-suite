@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="TargetConfiguration" lang="java">
+  <entity name="TargetConfiguration">
 
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>

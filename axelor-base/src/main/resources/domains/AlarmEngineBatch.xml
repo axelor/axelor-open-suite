@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="AlarmEngineBatch" lang="java">
+  <entity name="AlarmEngineBatch">
 
     <!-- HEADER -->
     <string name="code" title="Code" required="true" unique="true"/>

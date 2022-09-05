@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Pricing" lang="java">
+  <entity name="Pricing">
 
     <string name="name" title="Name"/>
     <date name="startDate" title="Start date"/>

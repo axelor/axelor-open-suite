@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PfpPartialReason" lang="java">
+  <entity name="PfpPartialReason">
 
     <string name="name" title="Reason" required="true"/>
 

@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="IrrecoverablePaymentScheduleLineLine" lang="java">
+  <entity name="IrrecoverablePaymentScheduleLineLine">
 
     <many-to-one name="irrecoverableCustomerLine"
       ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer"

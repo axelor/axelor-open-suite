@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
-  <entity name="EmailAddress" lang="java">
+  <entity name="EmailAddress">
 
     <string name="address" title="Address" initParam="true" namecolumn="true"/>
     <finder-method name="findByAddress" using="address"/>

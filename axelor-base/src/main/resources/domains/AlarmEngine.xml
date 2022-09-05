@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="AlarmEngine" lang="java" cacheable="true">
+  <entity name="AlarmEngine" cacheable="true">
 
     <!-- HEADER -->
     <string name="code" title="Code" required="true"/>

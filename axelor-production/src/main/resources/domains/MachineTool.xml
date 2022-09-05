@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="MachineTool" lang="java">
+  <entity name="MachineTool">
     <string name="code" title="Code"/>
     <string name="name" title="Name"/>
     <string name="description" title="Description" large="true"/>

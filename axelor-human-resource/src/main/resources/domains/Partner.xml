@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
       mappedBy="contactPartner"/>

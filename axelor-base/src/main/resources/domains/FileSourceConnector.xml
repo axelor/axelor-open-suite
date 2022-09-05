@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="FileSourceConnector" lang="java">
+  <entity name="FileSourceConnector">
 
     <string name="name" title="name" required="true"/>
     <integer name="connectionType"

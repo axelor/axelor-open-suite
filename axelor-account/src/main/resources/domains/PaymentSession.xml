@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentSession" lang="java">
+  <entity name="PaymentSession">
     <string name="sequence" title="Sequence" readonly="true"/>
     <string name="name" title="Session name" namecolumn="true"/>
     <many-to-one name="company" title="Company" required="true"
