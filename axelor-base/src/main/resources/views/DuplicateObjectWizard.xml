@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
-  <form name="duplicate-object-wizard-form" title="Merge duplicated" cols="2"
+  <form name="duplicate-object-wizard-form" title="Merge duplicated"
     model="com.axelor.apps.base.db.Wizard" onNew="action-default-object-name">
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="2">
       <panel name="duplicateObjectsPanel">
         <field name="$duplicateObjects" title="Duplicate" type="one-to-many" canView="false"
           readonly="true" target="com.axelor.apps.base.db.Wizard" grid-view="duplicate-object-grid"

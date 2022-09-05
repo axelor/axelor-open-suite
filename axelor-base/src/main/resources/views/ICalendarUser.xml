@@ -11,8 +11,10 @@
 
   <form name="calendar-user-form" model="com.axelor.apps.base.db.ICalendarUser"
     title="Calendar User">
-    <field name="name"/>
-    <field name="email"/>
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="email"/>
+    </panel>
   </form>
 
 </object-views>

@@ -209,7 +209,9 @@
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.Expense">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"

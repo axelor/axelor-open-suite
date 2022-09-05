@@ -11,9 +11,9 @@
   </grid>
 
   <form name="timesheet-report-form" title="Timesheet report"
-    model="com.axelor.apps.hr.db.TimesheetReport" cols="12" width="large"
+    model="com.axelor.apps.hr.db.TimesheetReport" width="large"
     onNew="action-human-resource-record-timesheet-report-onnew">
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <field name="typeSelect"/>
       <spacer/>
       <field name="fromDate" onChange="action-human-resource-group-date"/>
