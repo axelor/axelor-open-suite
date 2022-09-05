@@ -152,16 +152,20 @@
 
   <form name="popup-leave-request-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.LeaveRequest">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-leave-request-form" title="Select the leave request you want to edit"
     model="com.axelor.apps.base.db.Wizard"
     onNew="action-leave-request-attrs-domain-leave-request-select">
-    <field name="$leaveSelect" title="Select Leave Request" type="many-to-one"
-      target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox"/>
-    <button name="editLeaveRequestSelectedBtn" title="Edit Leave Request Selected"
-      onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
+    <panel name="mainPanel">
+      <field name="$leaveSelect" title="Select Leave Request" type="many-to-one"
+        target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox"/>
+      <button name="editLeaveRequestSelectedBtn" title="Edit Leave Request Selected"
+        onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
+    </panel>
   </form>
 
   <action-group name="action-leave-request-group-send">

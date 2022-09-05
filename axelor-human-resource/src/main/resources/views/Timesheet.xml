@@ -88,9 +88,8 @@
   </grid>
 
   <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
-    cols="12" width="large" onNew="action-group-timesheet-onnew"
-    onLoad="action-timesheet-group-onload" canNew="false" onSave="action-timesheet-group-onsave"
-    canCopy="false">
+    width="large" onNew="action-group-timesheet-onnew" onLoad="action-timesheet-group-onload"
+    canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
       <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
         <item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
@@ -102,7 +101,7 @@
           action="save,action-timesheet-method-generate-lines-from-expected-planning"/>
       </menu>
     </menubar>
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <panel name="detailsPanel" colSpan="9">
         <panel name="headPanel" colSpan="12">
           <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"
@@ -249,15 +248,19 @@
 
   <form name="popup-timesheet-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-timesheet-form" title="Select the timesheet you want to edit"
     model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
-    <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
-      target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>
-    <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
-      onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
+    <panel name="mainPanel">
+      <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
+        target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>
+      <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
+        onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
+    </panel>
   </form>
 
   <action-group name="action-timesheet-group-employee-onchange">
