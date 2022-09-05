@@ -371,7 +371,7 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="form" name="opportunity-form"/>
     <context name="_customer" expr="eval: partner"/>
-    <context name="_leadName" expr="eval: lead"/>
+    <context name="_eventLeadName" expr="eval: eventLead"/>
   </action-view>
 
   <action-view name="action-event-view-create-event" title="Create event"
@@ -379,7 +379,7 @@
     <view type="form" name="event-form"/>
     <context name="_partner" expr="eval: partner"/>
     <context name="_contactPartner" expr="eval: contactPartner"/>
-    <context name="_eventLead" expr="eval: lead"/>
+    <context name="_eventLead" expr="eval: eventLead"/>
     <context name="_relatedToSelect" expr="eval: relatedToSelect"/>
     <context name="_calendar" expr="eval: calendar"/>
     <context name="_typeSelect" expr="eval: typeSelect"/>
@@ -495,15 +495,15 @@
 
   <action-record name="action-event-record-event-from-lead"
     model="com.axelor.apps.crm.db.Event">
-    <field name="eventLead" expr="eval: _lead"/>
-    <field name="user" expr="eval: _lead.user"/>
-    <field name="team" expr="eval: _lead.team"/>
-    <field name="partner" expr="eval: _lead.partner"/>
+    <field name="eventLead" expr="eval: _eventLead"/>
+    <field name="user" expr="eval: _eventLead.user"/>
+    <field name="team" expr="eval: _eventLead.team"/>
+    <field name="partner" expr="eval: _eventLead.partner"/>
   </action-record>
 
   <action-record name="action-event-record-event-from-opportunity"
     model="com.axelor.apps.crm.db.Event">
-    <field name="eventLead" expr="eval: _opportunity.lead"/>
+    <field name="eventLead" expr="eval: _opportunity.eventLead"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
     <field if="_opportunity.id != null" name="relatedToSelect"
       expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
@@ -551,7 +551,7 @@
   <action-record name="action-meeting-set-location-lead"
     model="com.axelor.apps.crm.db.Event">
     <field name="location"
-      expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
+      expr="eval:(eventLead?.primaryAddress != null ? eventLead.primaryAddress+', ' : '')+(eventLead?.primaryPostalCode != null ? eventLead.primaryPostalCode+' ' : '')+(eventLead?.primaryCity != null ? eventLead.primaryCity: '')"/>
   </action-record>
 
   <action-record name="action-event-record-compute-attendee-list"

@@ -360,7 +360,7 @@
   <action-record name="action-opportunity-record-default"
     model="com.axelor.apps.crm.db.Opportunity">
     <field name="partner" expr="eval: _customer"/>
-    <field name="opportunityLead" expr="eval: _leadName"/>
+    <field name="opportunityLead" expr="eval: _eventLeadName"/>
   </action-record>
 
   <action-record name="action-opportunity-record-from-partner"
