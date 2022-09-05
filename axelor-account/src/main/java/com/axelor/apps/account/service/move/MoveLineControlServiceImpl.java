@@ -127,17 +127,21 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                 ? moveLine.getDebit().max(moveLine.getCredit())
                 : invoiceAttached.getInTaxTotal();
         total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-        if (invoiceTermList.stream()
+        BigDecimal invoiceTermTotal =
+            invoiceTermList.stream()
                 .map(InvoiceTerm::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .compareTo(total)
-            != 0) {
-          throw new AxelorException(
-              moveLine,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
-              moveLine.getAccount().getCode());
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (invoiceTermTotal.compareTo(total) != 0) {
+          invoiceTermTotal = invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total);
+
+          if (invoiceTermTotal.compareTo(total) != 0) {
+            throw new AxelorException(
+                moveLine,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
+                moveLine.getAccount().getCode());
+          }
         }
       }
     }

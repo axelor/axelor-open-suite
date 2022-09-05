@@ -1476,4 +1476,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       toggle(invoiceTerm, value);
     }
   }
+
+  @Override
+  public BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    BigDecimal invoiceTermTotal =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal diff = total.subtract(invoiceTermTotal);
+
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.get(invoiceTermList.size() - 1);
+    lastInvoiceTerm.setAmount(lastInvoiceTerm.getAmount().add(diff));
+    lastInvoiceTerm.setAmountRemaining(lastInvoiceTerm.getAmountRemaining().add(diff));
+
+    return invoiceTermTotal.add(diff);
+  }
 }

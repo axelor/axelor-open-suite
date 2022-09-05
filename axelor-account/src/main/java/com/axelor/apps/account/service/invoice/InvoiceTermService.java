@@ -302,4 +302,6 @@ public interface InvoiceTermService {
   LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
 
   void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
+
+  BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }
