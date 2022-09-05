@@ -61,7 +61,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -121,6 +121,8 @@ public class MrpServiceImpl implements MrpService {
   protected UnitConversionService unitConversionService;
   protected ProductCategoryService productCategoryService;
   protected StockHistoryLineRepository stockHistoryLineRepository;
+  protected MrpLineTypeService mrpLineTypeService;
+  protected MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService;
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
@@ -151,7 +153,9 @@ public class MrpServiceImpl implements MrpService {
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       AppPurchaseService appPurchaseService,
-      StockHistoryLineRepository stockHistoryLineRepository) {
+      StockHistoryLineRepository stockHistoryLineRepository,
+      MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
+      MrpLineTypeService mrpLineTypeService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -172,6 +176,8 @@ public class MrpServiceImpl implements MrpService {
     this.appSaleService = appSaleService;
     this.appPurchaseService = appPurchaseService;
     this.stockHistoryLineRepository = stockHistoryLineRepository;
+    this.mrpLineTypeService = mrpLineTypeService;
+    this.mrpSaleOrderCheckLateSaleService = mrpSaleOrderCheckLateSaleService;
   }
 
   @Override
@@ -250,7 +256,7 @@ public class MrpServiceImpl implements MrpService {
       throw new AxelorException(
           Mrp.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
+          I18n.get(SupplychainExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
     }
     // Get the stock for each product on each stock location
     this.createAvailableStockMrpLines();
@@ -343,7 +349,7 @@ public class MrpServiceImpl implements MrpService {
     if (counter > MAX_ITERATION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MRP_TOO_MANY_ITERATIONS));
+          I18n.get(SupplychainExceptionMessage.MRP_TOO_MANY_ITERATIONS));
     }
 
     boolean doASecondPass = false;
@@ -387,8 +393,7 @@ public class MrpServiceImpl implements MrpService {
     BigDecimal cumulativeQty = mrpLine.getCumulativeQty();
 
     MrpLineType mrpLineType = mrpLine.getMrpLineType();
-    if (mrpLineType != null
-        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
         && mrpLine.getEstimatedDeliveryMrpLine() != null) {
       return false;
     }
@@ -563,7 +568,9 @@ public class MrpServiceImpl implements MrpService {
             getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
 
         MrpLineType mrpLineTypeEstimatedDelivery =
-            this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY);
+            mrpLineTypeService.getMrpLineType(
+                MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY,
+                mrp.getMrpTypeSelect());
         if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
             && mrpLineTypeEstimatedDelivery != null) {
           MrpLine createdEstimatedDeliveryMrpLine =
@@ -641,7 +648,8 @@ public class MrpServiceImpl implements MrpService {
   protected MrpLineType getMrpLineTypeForProposal(
       StockRules stockRules, Product product, Company company) throws AxelorException {
 
-    return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
+    return mrpLineTypeService.getMrpLineType(
+        MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL, mrp.getMrpTypeSelect());
   }
 
   protected void consolidateMrp() {
@@ -734,7 +742,8 @@ public class MrpServiceImpl implements MrpService {
 
   protected void createPurchaseMrpLines() throws AxelorException {
     MrpLineType purchaseOrderMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER, mrp.getMrpTypeSelect());
 
     if (purchaseOrderMrpLineType == null) {
       return;
@@ -819,7 +828,8 @@ public class MrpServiceImpl implements MrpService {
 
   protected void createSaleOrderMrpLines() throws AxelorException {
     List<MrpLineType> saleOrderMrpLineTypeList =
-        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
+        mrpLineTypeService.getMrpLineTypeList(
+            MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp.getMrpTypeSelect());
     if (saleOrderMrpLineTypeList == null || saleOrderMrpLineTypeList.isEmpty()) {
       return;
     }
@@ -864,16 +874,15 @@ public class MrpServiceImpl implements MrpService {
 
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-          if (saleOrderLine.getSaleOrder() != null) {
-            // Checking the late sales parameter
-            if (checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
-              this.createSaleOrderMrpLines(
-                  mrpRepository.find(mrp.getId()),
-                  saleOrderLineRepository.find(saleOrderLine.getId()),
-                  mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
-                  statusList);
-              JPA.clear();
-            }
+          if (saleOrderLine.getSaleOrder() != null
+              && mrpSaleOrderCheckLateSaleService.checkLateSalesParameter(
+                  saleOrderLine, saleOrderMrpLineType)) {
+            this.createSaleOrderMrpLines(
+                mrpRepository.find(mrp.getId()),
+                saleOrderLineRepository.find(saleOrderLine.getId()),
+                mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
+                statusList);
+            JPA.clear();
           }
         }
       }
@@ -905,7 +914,8 @@ public class MrpServiceImpl implements MrpService {
                       && Boolean.TRUE.equals(saleOrderLine.getSaleOrder().getOneoffSale()))) {
 
                 // Checking the late sales parameter
-                if (checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
+                if (mrpSaleOrderCheckLateSaleService.checkLateSalesParameter(
+                    saleOrderLine, saleOrderMrpLineType)) {
                   this.createSaleOrderMrpLines(
                       mrpRepository.find(mrp.getId()),
                       saleOrderLine,
@@ -919,41 +929,6 @@ public class MrpServiceImpl implements MrpService {
         }
       }
     }
-  }
-
-  /**
-   * Determine if the saleOrderLine should generate a SaleOrderMrpLine with regard to the late sales
-   * parameter of the mrpLineType
-   *
-   * @param saleOrderLine
-   * @param mrpLineType
-   * @return a boolean indicating if a line should be created
-   */
-  protected boolean checkLateSalesParameter(SaleOrderLine saleOrderLine, MrpLineType mrpLineType) {
-    boolean createLine = true;
-
-    // Determine deliveryDate
-    LocalDate deliveryDate = saleOrderLine.getEstimatedDelivDate();
-    if (deliveryDate == null) {
-      deliveryDate = saleOrderLine.getSaleOrder().getDeliveryDate();
-    }
-    if (deliveryDate == null) {
-      deliveryDate = saleOrderLine.getDesiredDelivDate();
-    }
-
-    // Determine if a line should be created
-    LocalDate todayDate = appBaseService.getTodayDate(saleOrderLine.getSaleOrder().getCompany());
-    if (mrpLineType.getLateSalesSelect() == MrpLineTypeRepository.LATE_SALES_EXCLUDED) {
-      if (deliveryDate != null && deliveryDate.isBefore(todayDate)) {
-        createLine = false;
-      }
-    } else if (mrpLineType.getLateSalesSelect() == MrpLineTypeRepository.LATE_SALES_ONLY) {
-      if (deliveryDate == null || !deliveryDate.isBefore(todayDate)) {
-        createLine = false;
-      }
-    }
-
-    return createLine;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1017,7 +992,8 @@ public class MrpServiceImpl implements MrpService {
   protected void createSaleForecastMrpLines() throws AxelorException {
 
     MrpLineType saleForecastMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_FORECAST);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_SALE_FORECAST, mrp.getMrpTypeSelect());
 
     if (saleForecastMrpLineType == null) {
       return;
@@ -1056,7 +1032,8 @@ public class MrpServiceImpl implements MrpService {
 
   protected void createStockHistoryMrpLines() throws AxelorException {
     MrpLineType stockHistoryMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_STOCK_HISTORY);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_STOCK_HISTORY, mrp.getMrpTypeSelect());
 
     if (stockHistoryMrpLineType == null) {
       return;
@@ -1221,7 +1198,7 @@ public class MrpServiceImpl implements MrpService {
     if (fieldName == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.MRP_STOCK_HISTORY_FIELD_SELECT_MISSING,
+          SupplychainExceptionMessage.MRP_STOCK_HISTORY_FIELD_SELECT_MISSING,
           mrpLineType.getName());
     }
 
@@ -1288,7 +1265,8 @@ public class MrpServiceImpl implements MrpService {
   protected void createAvailableStockMrpLines() throws AxelorException {
 
     MrpLineType availableStockMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK, mrp.getMrpTypeSelect());
 
     if (availableStockMrpLineType == null) {
       return;
@@ -1362,42 +1340,6 @@ public class MrpServiceImpl implements MrpService {
     return mrpLineRepository.save(
         this.createMrpLine(
             mrp, product, availableStockMrpLineType, qty, today, qty, stockLocation, null));
-  }
-
-  protected MrpLineType getMrpLineType(int elementSelect) {
-
-    int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
-    return mrpLineTypeRepository
-        .all()
-        .filter(
-            "self.elementSelect = ?1 and self.applicationFieldSelect LIKE ?2",
-            elementSelect,
-            "%" + applicationFieldSelect + "%")
-        .fetchOne();
-  }
-
-  protected List<MrpLineType> getMrpLineTypeList(int elementSelect) {
-
-    int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
-    return mrpLineTypeRepository
-        .all()
-        .filter(
-            "self.elementSelect = ?1 and self.applicationFieldSelect LIKE ?2",
-            elementSelect,
-            "%" + applicationFieldSelect + "%")
-        .fetch();
-  }
-
-  protected int getApplicationField(int mrpTypeSelect) {
-
-    switch (mrpTypeSelect) {
-      case MrpRepository.MRP_TYPE_MRP:
-        return MrpLineTypeRepository.APPLICATION_FIELD_MRP;
-      case MrpRepository.MRP_TYPE_MPS:
-        return MrpLineTypeRepository.APPLICATION_FIELD_MPS;
-      default:
-        return 0;
-    }
   }
 
   protected StockLocationLine getStockLocationLine(Product product, StockLocation stockLocation) {
@@ -1482,7 +1424,7 @@ public class MrpServiceImpl implements MrpService {
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MRP_NO_PRODUCT));
+          I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT));
     }
 
     return productSet;
@@ -1525,13 +1467,13 @@ public class MrpServiceImpl implements MrpService {
       if (product.getUnit() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_NO_PRODUCT_UNIT),
+            I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_UNIT),
             product.getFullName());
       }
       if (!this.productMap.containsKey(product.getId())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_NO_PRODUCT_ID),
+            I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_ID),
             product.getCode(),
             product.getName());
       }
@@ -1665,8 +1607,10 @@ public class MrpServiceImpl implements MrpService {
       this.runCalculation(mrp);
       mailMessageService.sendNotification(
           AuthUtils.getUser(),
-          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
-          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
+          String.format(
+              I18n.get(SupplychainExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
+          String.format(
+              I18n.get(SupplychainExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
           mrp.getId(),
           mrp.getClass());
     } catch (Exception e) {
@@ -1681,7 +1625,8 @@ public class MrpServiceImpl implements MrpService {
     TraceBackService.trace(e);
     mailMessageService.sendNotification(
         AuthUtils.getUser(),
-        String.format(I18n.get(IExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
+        String.format(
+            I18n.get(SupplychainExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
         e.getMessage(),
         mrp.getId(),
         mrp.getClass());

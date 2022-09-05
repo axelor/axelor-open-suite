@@ -4,7 +4,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -62,10 +62,14 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine previousRealizedLine,
       LocalDate disposalDate) {
+    LocalDate firstServiceDate =
+        fixedAsset.getFirstServiceDate() == null
+            ? fixedAsset.getAcquisitionDate()
+            : fixedAsset.getFirstServiceDate();
     LocalDate previousRealizedDate =
         previousRealizedLine != null
             ? previousRealizedLine.getDepreciationDate()
-            : fixedAsset.getFirstServiceDate();
+            : firstServiceDate;
     long monthsBetweenDates =
         ChronoUnit.MONTHS.between(
             previousRealizedDate.plusDays(1).withDayOfMonth(1), disposalDate.withDayOfMonth(1));
@@ -258,7 +262,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
           && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+            I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
       }
       if (correspondingFixedAssetLine != null) {
         computeDepreciationWithProrata(

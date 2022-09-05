@@ -96,6 +96,15 @@
     </panel>
 
     <panel name="mainPanel" hideIf="lineTypeSelect == 1">
+      <field name="$partnerLanguage" hidden="true"/>
+      <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+        showTitle="false">
+        <viewer depends="$partnerLanguage">
+          <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
+              ]]>
+        </viewer>
+      </field>
       <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
       <field name="availableStatus" readonly="true" hidden="true" colSpan="2">
         <viewer><![CDATA[
@@ -199,7 +208,9 @@
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
       <field name="$isReadOnly" hidden="true"/>
-      <field name="description" colSpan="12" widget="html"/>
+      <panel name="descriptionPanel" title="Description" colSpan="12">
+        <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
+      </panel>
       <field name="regime"/>
       <field name="natureOfTransaction"/>
       <field name="countryOfOrigin" hidden="true"/>
@@ -536,6 +547,7 @@
     <action name="action-stock-move-line-record-new"/>
     <action name="action-stock-move-line-record-filter-on-available-products"/>
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
+    <action name="action-stock-move-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-stock-move-line-group-onload">
@@ -549,6 +561,7 @@
     <action name="action-stock-move-line-attrs-set-readonly"/>
     <action name="action-stock-move-line-hide-reserved-qty-attrs"/>
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
+    <action name="action-stock-move-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-attrs name="action-stock-move-line-hide-reserved-qty-attrs">
@@ -572,6 +585,7 @@
       if="__parent__?.statusSelect &lt; 3"/>
     <action name="action-stock-move-line-method-set-available-status"/>
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
+    <action name="action-stock-move-line-method-translate-product-description-and-name"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -836,6 +850,19 @@
   <action-method name="action-stock-move-line-method-set-available-status">
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="setAvailableStatus"/>
   </action-method>
+
+  <action-method
+    name="action-stock-move-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController"
+      method="translateProductDescriptionAndName"/>
+  </action-method>
+
+  <action-attrs name="action-stock-move-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__.partner.language.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__.partner.language.code.toUpperCase()"/>
+  </action-attrs>
 
   <search-filters name="stock-move-line-filters"
     model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line filters">

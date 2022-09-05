@@ -99,6 +99,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
       }
     }
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+    fixedAsset.setInitialPeriodicityInMonth(fixedAsset.getPeriodicityInMonth());
     fixedAssetRepo.save(fixedAsset);
   }
 

@@ -87,9 +87,6 @@
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
 
-    <many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax"
-      title="Tax for management fee"/>
-
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Incoming Payment Mode"/>
@@ -358,8 +355,6 @@
 
       <field name="autoReconcileOnInvoice" on="UPDATE"/>
       <field name="autoReconcileOnPayment" on="UPDATE"/>
-
-      <field name="payingBackTax" on="UPDATE"/>
 
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>

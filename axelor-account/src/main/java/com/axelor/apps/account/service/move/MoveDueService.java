@@ -116,7 +116,7 @@ public class MoveDueService {
       debitMoveLines.addAll(othersDebitMoveLines);
     }
 
-    log.debug("Nombre de ligne à payer avec l'avoir récupéré : {}", debitMoveLines.size());
+    log.debug("Number of lines to pay with the credit note : {}", debitMoveLines.size());
 
     return debitMoveLines;
   }

@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -75,7 +75,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
       if (count > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+            I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
       }
     } else {
       super.checkDefaultMailAccount(mailAccount);

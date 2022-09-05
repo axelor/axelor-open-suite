@@ -377,7 +377,6 @@
     <option value="paymentVoucher">Payment voucher</option>
     <option value="debit">Direct debit</option>
     <option value="accountingReport">Accounting reports</option>
-    <option value="customAccountingReport">Custom accounting reports</option>
     <option value="reimbursement">Reimbursements</option>
     <option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
     <option value="accountClearance">Overpayment clearance</option>
@@ -457,6 +456,7 @@
     <option value="pdf">PDF</option>
   </selection>
   <selection name="invoice.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>

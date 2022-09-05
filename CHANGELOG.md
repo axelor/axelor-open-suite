@@ -1,3 +1,102 @@
+## [6.2.7] (2022-09-01)
+
+#### Fixed
+
+* Ticket: fix ticket copy by resetting correctly fields that are not configured by the user.
+* Invoice: fixed error when ventilating an invoice with analytic lines.
+* Invoice: fixed an issue where invoice printing PDF file had a blank page at the end of the report.
+* Invoice: fixed discount display issue in the printing.
+* Invoice: fixed an error that occured when supplier refund with PFP activated on refunds was created.
+* Accounting report: increase account code column size in general balance with comparative periods report.
+* Accounting report: fixed a blocking error preventing the generation of a Payment Difference report.
+* Move: in move form view, the journal is now readonly if the move has move lines.
+* Move: fixed an issue where simulate button was not displayed in move form.
+* Move: fixed an issue where tax asset move line was not generated.
+* Move: fixed an issue where it was not possible to reverse a move linked to a notified invoice in an accounted subrogation release.
+* Fixed Asset: fixed error (JNPE) when we removed first depreciation date or acquisition date.
+* Purchase Order: fixed error when adding title line that prevented computation of totals.
+* Sale Order: fixed an issue preventing the addition of title lines when 'Do not display the header and end of pack' was checked.
+* Cost calculation: fixed a bug where we could not select a product if the company of the default bom's product was different.
+* Product: fixed an issue where product per company lines were not created on a new product.
+* Stock move: fix stock move generation from demo data.
+* Move/Move line: added controls of consistency of the company used in a move and its move lines.
+* Sequence: update sequence version list when enabling yearly or monthly reset: the active sequence version will be updated if the end date is not correct.
+* Work center group: change "Work center model" title to "Model of work center group" for coherence.
+
+## [6.2.6] (2022-08-11)
+
+#### Fixed
+
+* Print Template: several UI improvements
+
+  - Illustrative sentence added to the top of the line template to explain the different possibilities.
+  - The help explanations of the 'content' 'conditions' & 'title' text areas have been modified.
+  - A new text area 'Notes' has been added to the line template to help distinguish lines the grid.
+  - The column 'conditions' is now displayed in the grid.
+
+* Product: fixed a bug where a opened product variant was marked as dirty.
+* Sale Order: fixed an error preventing sale order save when the 'Manage partner complementary product' option was activated.
+* Configurator creator: change title from Configurator type to Configurator model for uniformity.
+* Expense: fixed an issue where expense ventilation did not work after setting accounting analytic template to expense lines.
+* Lunch voucher: fix lunch voucher computation: half-day leaves now correctly reduce number of lunch vouchers by one.
+* MRP: reset date fields when copying an existing MRP.
+* App manufacturing: Use the same title for both app and view.
+* Manufacturing Order: fixed an issue preventing to finish a manufacturing order with a operation order on standby.
+* Analytic Accounting Template: fixed an issue where default analytic template was not retrieved correctly on move line.
+* Analytic Accounting Template: corrected analytic distribution template not resetting after company change in account.
+* Move: hide 'Generate counterpart' on validated accounting moves.
+* Move Line: corrected wrong description in invoice move lines and added missing origin in move description.
+* Move Line: display bank reconciliation information only for line with a cash account.
+* Accounting period: Fix variation(%) in general balance report.
+* Accounting period: fixed an error impacting the performance of the process to close a period.
+* Accounting: fixed the "Revenues vs Expenses" chart.
+* Account clearance: Fixed errors when fetching excess payments preventing the process from working correctly.
+
+## [6.2.5] (2022-07-29)
+
+#### Changes
+
+* Invoice / Stock move: Improve PFP status management.
+* Move Line: In the move line form view, bank reconciliation panel is now displayed as a panel-tab.
+
+#### Fixed
+
+* MAIL TEMPLATE ASSOCIATION: fix template keys issues when using custom template for mail notifications on comments
+
+In the custom mail template used for mail notifications sent when commenting on a form, following changes were made:
+
+    - Fix variable `$ccRecipients$` so it is filled with all followers.
+    - Add variable `$toRecipient$` which is currently the same as `$ccRecipients$`.
+    - Add variable `$commentCreator$` to only get the author of the comment.
+
+* Stock correction: it is now possible to apply a correction on any product even if the product is not available in the stock location.
+* Move Line: When using "multiple simulate" feature to simulate moves, fix move lines so they are correctly filled with partner and taxes during the status change.
+* Bank Statement Line: in the printing wizard, filter bank details so we cannot select bank details without company.
+* MRP: status of the mrp is now set to draft on copy.
+* MRP demo data: in MRP configuration, changed the statuses to correctly take into account ongoing manufacturing orders for the MRP computation.
+* Advanced export: fixed an error preventing the use of advanced export in partner grid view.
+* Purchase Order: remove error message when generating a purchase order with a shipment mode missing a shipping cost.
+* Manufacturing Order: pre-filling operations does not fill start and end date anymore, allowing them to be filled during the planification.
+* Invoice: fixed an issue preventing the user to fill the type of operation when creating a new invoice with customer/supplier info not set by default.
+* Product stock details: fixed an error occurring when opening stock history
+
+If a product was used in a stock move, and this stock move was not generated by a sale order,
+then an error would happen when opening the stock history of this product.
+
+* Configurator creator: fixed constraint issue error happening during copy or import.
+* Configurator creator: fixed a bug during import causing some fields to have an incorrect value.
+* Message email: when sending an email, the 'To' field will now be filled with the fullname and email address instead of the name and the email address.
+* Production: fixed sequence data-init.
+* Geonames: improve error messages when trying to run the import with missing configuration.
+* Contacts: checking duplicate and opening a contact form will not open a unusable form anymore.
+* Batches: Fixed "created on" value, before it was always set on midnight.
+* Stock location : fix field title for stock computation config
+
+Change 'Don't take in consideration for the stock calcul' 
+to 'Don't take in consideration for the stock computation'
+
+* Contract: fix typo in french translation in an error message (when closing contract).
+
 ## [6.2.4] (2022-07-07)
 
 #### Changes
@@ -475,6 +574,9 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.7]: https://github.com/axelor/axelor-open-suite/compare/v6.2.6...v6.2.7
+[6.2.6]: https://github.com/axelor/axelor-open-suite/compare/v6.2.5...v6.2.6
+[6.2.5]: https://github.com/axelor/axelor-open-suite/compare/v6.2.4...v6.2.5
 [6.2.4]: https://github.com/axelor/axelor-open-suite/compare/v6.2.3...v6.2.4
 [6.2.3]: https://github.com/axelor/axelor-open-suite/compare/v6.2.2...v6.2.3
 [6.2.2]: https://github.com/axelor/axelor-open-suite/compare/v6.2.1...v6.2.2
