@@ -26,7 +26,7 @@
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="lead" form-view="lead-form" grid-view="lead-grid"/>
+    <field name="opportunityLead" form-view="lead-form" grid-view="lead-grid"/>
     <field name="salesStageSelect"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
@@ -61,7 +61,7 @@
       if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="createdOn" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="lead" form-view="lead-form" grid-view="lead-grid"/>
+    <field name="opportunityLead" form-view="lead-form" grid-view="lead-grid"/>
     <field name="salesStageSelect"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
@@ -226,7 +226,7 @@
           domain="self.isContact = false AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid"
           onChange="action-opportunity-record-set-lead-onchange"/>
-        <field name="lead" canEdit="false"
+        <field name="opportunityLead" canEdit="false"
           readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form"
           grid-view="lead-grid" onChange="action-opportunity-record-set-partner-onchange"/>
       </panel>
@@ -360,7 +360,7 @@
   <action-record name="action-opportunity-record-default"
     model="com.axelor.apps.crm.db.Opportunity">
     <field name="partner" expr="eval: _customer"/>
-    <field name="lead" expr="eval: _leadName"/>
+    <field name="opportunityLead" expr="eval: _leadName"/>
   </action-record>
 
   <action-record name="action-opportunity-record-from-partner"
@@ -429,12 +429,12 @@
 
   <action-record name="action-opportunity-record-set-partner-onchange"
     model="com.axelor.apps.crm.db.Opportunity">
-    <field name="partner" expr="eval: null" if="lead"/>
+    <field name="partner" expr="eval: null" if="opportunityLead"/>
   </action-record>
 
   <action-record name="action-opportunity-record-set-lead-onchange"
     model="com.axelor.apps.crm.db.Opportunity">
-    <field name="lead" expr="eval: null" if="partner"/>
+    <field name="opportunityLead" expr="eval: null" if="partner"/>
   </action-record>
 
   <action-method name="action-show-opportunities-on-map-page">

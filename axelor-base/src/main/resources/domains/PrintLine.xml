@@ -10,7 +10,7 @@
     <string name="title" title="Title" namecolumn="true" large="true"/>
     <string name="content" title="Content" large="true"/>
     <many-to-one name="print" title="Print" ref="com.axelor.apps.base.db.Print"/>
-    <integer name="rank" title="Rank"/>
+    <integer name="printLineRank" title="Rank"/>
     <integer name="sequence" title="Seq."/>
     <boolean name="isEditable" title="Editable"/>
     <many-to-one name="parent" title="Parent" ref="com.axelor.apps.base.db.PrintLine"/>

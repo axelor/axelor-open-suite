@@ -118,7 +118,7 @@
     <panel name="followupPanel" title="Follow-up" sidebar="true" canCollapse="true">
       <field name="assignedToUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
       <field name="responsibleUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-      <field name="lead" colSpan="6" form-view="lead-form" grid-view="lead-grid"
+      <field name="ticketLead" colSpan="6" form-view="lead-form" grid-view="lead-grid"
         if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
     </panel>
     <panel name="datesPanel" title="Dates" sidebar="true" canCollapse="true">
@@ -335,6 +335,6 @@
       if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
     <field name="timerState" hidden="true"
       if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
-    <field name="lead" hidden="true" if="!__config__.app.isApp('crm')"/>
+    <field name="ticketLead" hidden="true" if="!__config__.app.isApp('crm')"/>
   </search-filters>
 </object-views>
