@@ -187,9 +187,7 @@
 238;1;3;"Production de l'exercice";"production-exercice";1;"rules[""701-702-703-ventes-produits""]+rules[""production-vendue""]+rules[""713-production-stockee""]+rules[""72-Production-immobilisee""]";;;100;15
 239;1;3;"Valeur ajoutée";"valeur-ajoutee";1;"rules[""marge-commerciale""]+rules[""production-exercice""]+rules[""achat-appro""]+rules[""autres-charges-externes""]";;;100;19
 240;1;3;"Excédent Brut d'Exploitation";"ebe";1;"rules[""valeur-ajoutee""]+rules[""74-subventions-exploitation""]+rules[""63-impots-taxes""]+rules[""64-charges-personnel""]";;;100;24
-241;1;3;"Résultat d'exploitation";"resultat-exploitation";1;"rules[""ebe""]+rules[""781-reprises-amort""]+rules[""681-dotations""]+rules[""75-autres-produits""]+rules[""65-autres-charges""]+rules[""791-transferts-charges""]
-
-";;;100;31
+241;1;3;"Résultat d'exploitation";"resultat-exploitation";1;"rules[""ebe""]+rules[""781-reprises-amort""]+rules[""681-dotations""]+rules[""75-autres-produits""]+rules[""65-autres-charges""]+rules[""791-transferts-charges""]";;;100;31
 242;1;3;"Résultat courant avant impôts";"resultat-courant-avant-impots";1;"rules[""resultat-exploitation""]+rules[""755-655-quotes-parts""]+rules[""76-786-796-produits-financiers""]+rules[""66-686-charges-financieres""]";;;100;36
 243;1;3;"Résultat exceptionnel";"resultat-exceptionnel";1;"rules[""resultat-courant-avant-impots""]+rules[""77-787-797-produits-exceptionnels""]+rules[""67-687-charges-exceptionnelles""]";;;100;40
 244;1;3;"Résultat net comptable";"resultat-net-comptable";1;"rules[""resultat-exceptionnel""]+rules[""participation-salaries""]+rules[""impots-benefices""]";;;100;44
