@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -39,8 +41,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,23 +179,18 @@ public class AccountService {
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
             List<Long> rulesAnalyticAccountList = getRulesIds(account);
-            if (rulesAnalyticAccountList != null && !rulesAnalyticAccountList.isEmpty()) {
-              List<Long> accountAnalyticAccountList = new ArrayList<Long>();
-              account
-                  .getAnalyticDistributionTemplate()
-                  .getAnalyticDistributionLineList()
-                  .forEach(
-                      analyticDistributionLine ->
-                          accountAnalyticAccountList.add(
-                              analyticDistributionLine.getAnalyticAccount().getId()));
-              for (Long analyticAccount : accountAnalyticAccountList) {
-                if (!rulesAnalyticAccountList.contains(analyticAccount)) {
-                  throw new AxelorException(
-                      TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                      I18n.get(
-                          "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
-                }
-              }
+
+            if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
+                && account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList()
+                    .stream()
+                    .map(AnalyticDistributionLine::getAnalyticAccount)
+                    .filter(Objects::nonNull)
+                    .map(AnalyticAccount::getId)
+                    .anyMatch(it -> !rulesAnalyticAccountList.contains(it))) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(
+                      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
             }
           }
         }
