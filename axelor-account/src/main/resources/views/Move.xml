@@ -52,7 +52,7 @@
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave" readonlyIf="$periodClosed">
+    onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
@@ -131,7 +131,7 @@
           <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" colSpan="12" title="Cut off" itemSpan="4"
-          if="__config__.app.getApp('account').manageCutOffPeriod">
+          hideIf="$periodClosed" if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="$cutOffStartDate" type="date" title="From date"
             validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
           <field name="$cutOffEndDate" type="date" title="To date"
@@ -198,12 +198,12 @@
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="accountingBtn" title="Accounting.toAccount"
-          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
-          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
           showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
+        <button name="accountingBtn" title="Accounting.toAccount"
+          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
+          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
@@ -329,6 +329,7 @@
         <field name="ignoreInDebtRecoveryOk"/>
         <field name="rejectOk" showIf="rejectOk" readonly="true"/>
         <field name="$periodClosed" hidden="true"/>
+        <field name="$simulatedPeriodClosed" hidden="true"/>
       </panel>
     </panel-tabs>
 
@@ -556,7 +557,6 @@
   <!-- ACTION GROUPs -->
   <action-group name="action-account-move-onnew-group">
     <action name="default-move-record"/>
-    <action name="action-move-method-check-period-permissions"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-record-journal"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
@@ -569,10 +569,10 @@
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-method-initialize-permission-validation-move"/>
-    <action name="action-move-method-check-period-permissions"/>
-    <action name="action-move-record-check-period-and-status"/>
+    <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-attrs-set-functional-origin-select"/>
+    <action name="action-move-method-check-period-permissions"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
@@ -590,7 +590,7 @@
     <action name="action-move-attrs-check-related-cut-off-moves"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
-    <action name="action-move-record-check-period-and-status"/>
+    <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
@@ -778,8 +778,8 @@
   <action-record name="action-move-record-set-bank-details"
     model="com.axelor.apps.account.db.Move">
     <field name="partnerBankDetails" expr="eval: null"/>
-    <field name="partnerBankDetails"
-      expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault }" if="partner"/>
+    <field name="partnerBankDetails" if="partner"
+      expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault &amp;&amp; it.active }"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -972,11 +972,13 @@
       expr="call:com.axelor.apps.account.service.PeriodServiceAccount:isAuthorizedToAccountOnPeriod(__this__.period,__user__)"/>
   </action-record>
 
-  <action-record name="action-move-record-check-period-and-status"
+  <action-attrs name="action-move-attrs-check-period-and-status"
     model="com.axelor.apps.account.db.Move">
-    <field name="$periodClosed"
+    <attribute name="value" for="$simulatedPeriodClosed"
       expr="call:com.axelor.apps.account.service.move.MoveToolService:isSimulatedMovePeriodClosed(__this__)"/>
-  </action-record>
+    <attribute name="value" for="$periodClosed"
+      expr="call: com.axelor.apps.base.service.PeriodService:isClosedPeriod(period)"/>
+  </action-attrs>
 
   <action-method name="action-method-initialize-permission-validation-move">
     <call class="com.axelor.apps.account.web.MoveController" method="isAuthorizedOnPeriod"/>

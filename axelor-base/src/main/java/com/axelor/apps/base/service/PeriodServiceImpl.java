@@ -218,18 +218,12 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   @Override
-  public void checkClosedPeriod(Period period, boolean isAuthorizedToAccountOnPeriod)
-      throws AxelorException {
+  public boolean isClosedPeriod(Period period) throws AxelorException {
     List<Integer> unauthorizedStatus = new ArrayList<>();
     unauthorizedStatus.add(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
     unauthorizedStatus.add(PeriodRepository.STATUS_CLOSED);
-    if (period != null
-        && !isAuthorizedToAccountOnPeriod
-        && unauthorizedStatus.contains(period.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
-    }
+
+    return period != null && unauthorizedStatus.contains(period.getStatusSelect());
   }
 
   @Override
