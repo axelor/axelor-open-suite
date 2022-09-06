@@ -815,10 +815,15 @@ public class MoveController {
       response.setAttr("$dueDate", "hidden", !displayDueDate);
 
       if (displayDueDate) {
-        if (request.getContext().get("dueDate") == null) {
+        boolean paymentConditionChange =
+            request.getContext().containsKey("paymentConditionChange")
+                && (boolean) request.getContext().get("paymentConditionChange");
+
+        if (request.getContext().get("dueDate") == null || paymentConditionChange) {
           boolean isDateChange =
-              request.getContext().containsKey("dateChange")
-                  && (boolean) request.getContext().get("dateChange");
+              (request.getContext().containsKey("dateChange")
+                      && (boolean) request.getContext().get("dateChange"))
+                  || paymentConditionChange;
 
           response.setAttr(
               "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));

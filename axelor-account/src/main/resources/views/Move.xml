@@ -83,9 +83,10 @@
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
               onChange="action-group-move-date-onchange" hideIf="statusSelect == 3"/>
-            <field name="originDate" onChange="action-account-move-group-set-origin-date"
+            <field name="originDate" onChange="action-move-group-origin-date-onchange"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
             <field name="$dueDate" type="date" title="Due date" hidden="true"
+              onChange="action-account-move-group-onsave"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
           <field name="tradingName"
@@ -603,12 +604,13 @@
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
-    <action name="action-move-method-update-in-day-book-mode"/>
     <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-update-in-day-book-mode"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-exception-counterpart"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-generate-counterpart"/>
@@ -616,7 +618,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-tax-lines">
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-compute-totals"/>
   </action-group>
@@ -624,21 +626,13 @@
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin-and-description-on-lines">
     <action name="action-account-move-method-origin-description-is-empty"/>
     <action name="action-account-move-method-set-origin-description-on-lines"/>
-  </action-group>
-
-  <action-group name="action-account-move-group-set-origin-date">
-    <action name="action-account-move-method-check-duplicated-move-origin"
-      if="journal.hasDuplicateDetectionOnOrigin"/>
-    <action name="action-move-method-set-moveline-origin-dates"/>
-    <action name="action-move-attrs-date-change"/>
-    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
@@ -649,7 +643,7 @@
 
 
   <action-group name="action-move-account-group-simulate">
-    <action name="save"/>
+    <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
@@ -667,6 +661,7 @@
     <action name="action-move-method-set-moveline-dates"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
@@ -696,7 +691,17 @@
 
   <action-group name="action-move-group-payment-condition-onchange">
     <action name="action-move-attrs-payment-condition-change"/>
+    <action name="action-account-move-group-onsave"/>
+  </action-group>
+
+  <action-group name="action-move-group-origin-date-onchange">
+    <action name="action-account-move-method-check-duplicated-move-origin"
+      if="journal.hasDuplicateDetectionOnOrigin"/>
+    <action name="action-move-method-set-moveline-origin-dates"/>
+    <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-payment-condition-change"/>
+    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
