@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -20,4 +21,6 @@ public interface PaymentSessionValidateService {
   public boolean checkIsHoldBackWithRefund(PaymentSession paymentSession) throws AxelorException;
 
   boolean isEmpty(PaymentSession paymentSession);
+
+  public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession);
 }

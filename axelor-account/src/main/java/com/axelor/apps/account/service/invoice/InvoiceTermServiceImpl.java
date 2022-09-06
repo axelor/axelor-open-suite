@@ -1209,15 +1209,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
       throws AxelorException {
 
-    InvoicePayment invoicePayment =
-        invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-    invoicePayment.addReconcileListItem(reconcile);
+    if (invoiceTerm.getInvoice() != null) {
+      InvoicePayment invoicePayment =
+          invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+      invoicePayment.addReconcileListItem(reconcile);
 
-    List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 
-    invoiceTermList.add(invoiceTerm);
+      invoiceTermList.add(invoiceTerm);
 
-    reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+      reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+    } else {
+      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+    }
 
     invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm);
     return invoiceTerm;
@@ -1428,7 +1432,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
             && moveLineIt.getAccount().getHasInvoiceTerm()
-            && (holdback || !moveLineIt.getAccount().equals(holdbackAccount))) {
+            && (holdback
+                || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
           total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
         }
       }

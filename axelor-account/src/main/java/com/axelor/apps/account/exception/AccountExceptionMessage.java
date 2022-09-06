@@ -1212,12 +1212,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
       "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
 
-  public static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing partner." /*)*/;
-
-  public static final String ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
-
   public static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
@@ -1347,6 +1341,41 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
 
+  public static final String ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "No account found for Tax: %s (company: %s)" /*)*/;
+
+  public static final String
+      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an allowed financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an allowed financial discount account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an obtained financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an obtained financial discount account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a sale account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a sale account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase fixed assets account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase fixed assets account on payments for Tax: %s (company: %s)" /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
 
@@ -1370,4 +1399,20 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
       "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
+
+  public static final String PAYMENT_SESSION_INVOICE_TERM_WITH_IN_ACTIVE_BANK_DETAILS = /*$$(*/
+      "The payment session comprises at least one term associated to bank details which is inactive. Please unselect this/those term(s) from the session or set the following bankdetails record(s) as active to proceed : %s" /*)*/;
+
+  public static final String MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY = /*$$(*/
+      "Inconsistency detected as the company defined on the move %s is different from the company associated to the journal %s." /*)*/;
+
+  public static final String MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+      "Inconsistency detected as the company defined on the move %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  public static final String
+      MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY = /*$$(*/
+          "Inconsistency detected as the company defined on the journal %s is different from the company associated to the accounts on the move line(s)." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
+      "You must configure an account for cashier regulation." /*)*/;
 }

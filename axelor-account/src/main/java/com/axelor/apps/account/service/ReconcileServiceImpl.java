@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -681,7 +682,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
-    if (invoice != null && invoice.getSubrogationRelease() != null) {
+    if (invoice != null
+        && invoice.getSubrogationRelease() != null
+        && invoice.getSubrogationRelease().getStatusSelect()
+            != SubrogationReleaseRepository.STATUS_ACCOUNTED) {
       subrogationReleaseWorkflowService.goBackToAccounted(invoice.getSubrogationRelease());
     }
     // Update reconcile group

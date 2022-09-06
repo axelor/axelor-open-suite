@@ -65,11 +65,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.ValidationException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -506,9 +508,16 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
     String domain = null;
+    String bomsProductsList = createBomProductList(unitCostCalculation, company);
     if (this.hasDefaultBOMSelected()) {
       if (company != null) {
-        domain = "self.defaultBillOfMaterial.company.id = " + company.getId().toString() + "";
+        domain =
+            "(self.id in ("
+                + bomsProductsList
+                + ")"
+                + " OR self.defaultBillOfMaterial.company.id = "
+                + company.getId().toString()
+                + ")";
       } else {
         domain = "self.defaultBillOfMaterial IS NOT NULL";
       }
@@ -528,16 +537,41 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
                 + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
                 + ")";
       }
+
+      domain +=
+          " AND self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
+              + unitCostCalculation.getProductSubTypeSelect()
+              + ")";
     } else {
       domain =
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
-              + ") AND self.defaultBillOfMaterial.company IN ("
+              + ") AND (self.defaultBillOfMaterial.company IN ("
               + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + ") OR self.id in ("
+              + bomsProductsList
+              + ")"
               + ") AND self.procurementMethodSelect IN ('produce', 'buyAndProduce') AND self.dtype = 'Product'";
     }
     log.debug("Product Domain: {}", domain);
     return domain;
+  }
+
+  protected String createBomProductList(UnitCostCalculation unitCostCalculation, Company company)
+      throws AxelorException {
+
+    Set<Company> companySet = new HashSet<>();
+
+    if (unitCostCalculation.getCompanySet() != null) {
+      companySet.addAll(unitCostCalculation.getCompanySet());
+    }
+    if (company != null) {
+      companySet.add(company);
+    }
+
+    return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
+        .map(id -> id.toString())
+        .collect(Collectors.joining(","));
   }
 
   @Override

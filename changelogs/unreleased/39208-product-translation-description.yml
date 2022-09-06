@@ -1,0 +1,6 @@
+---
+title: "Product : Alert the user if the partner language is different from the current language"
+type: feature
+description: |
+  When adding line to an invoice, sale order or purchase order, a message now appears to alert the user if
+  the partner language is different from the current language.

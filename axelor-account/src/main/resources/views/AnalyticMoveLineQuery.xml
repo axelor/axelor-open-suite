@@ -9,8 +9,6 @@
     <field name="tradingName"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <button name="filterAnalyticMoveLineBtn"
-      onClick="save,action-analytic-move-line-query-method-show-filtered-lines" icon="fa-search"/>
   </grid>
 
   <form name="analytic-move-line-query-form" title="Analytic review"

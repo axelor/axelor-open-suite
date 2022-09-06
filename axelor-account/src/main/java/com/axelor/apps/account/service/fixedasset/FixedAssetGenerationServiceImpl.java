@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -462,6 +463,22 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setComputationMethodSelect(computationMethodSelect);
     fixedAsset.setIfrsComputationMethodSelect(computationMethodSelect);
     fixedAsset.setFiscalComputationMethodSelect(computationMethodSelect);
+
+    if (computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+      fixedAsset.setFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+    } else {
+      fixedAsset.setFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+    }
 
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
     fixedAsset.setFiscalNumberOfDepreciation(numberOfDepreciation);

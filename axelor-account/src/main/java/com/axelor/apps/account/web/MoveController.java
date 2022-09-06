@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -615,13 +616,12 @@ public class MoveController {
       throws AxelorException {
     try {
       Move move = request.getContext().asType(Move.class);
-      PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
-      User user = AuthUtils.getUser();
-      Period period = move.getPeriod();
-      boolean isAuthorizedToAccountOnPeriod =
-          periodServiceAccount.isAuthorizedToAccountOnPeriod(period, user);
 
-      Beans.get(PeriodService.class).checkClosedPeriod(period, isAuthorizedToAccountOnPeriod);
+      if (Beans.get(PeriodService.class).isClosedPeriod(move.getPeriod())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

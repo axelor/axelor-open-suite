@@ -22,6 +22,7 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.R
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -57,9 +58,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset);
 
-  protected abstract Integer getNumberOfDepreciation(FixedAsset fixedAsset);
+  protected abstract BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset);
 
-  protected abstract Integer getNumberOfPastDepreciation(FixedAsset fixedAsset);
+  protected abstract BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset);
 
   protected abstract BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset);
 
@@ -71,8 +72,6 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset);
 
-  protected abstract LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset);
-
   protected abstract Integer getPeriodicityInMonth(FixedAsset fixedAsset);
 
   protected abstract Integer getTypeSelect();
@@ -82,6 +81,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset);
 
   protected abstract LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset);
+
+  protected abstract int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset);
 
   @Inject
   public AbstractFixedAssetLineComputationServiceImpl(
@@ -227,7 +228,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     // Theses cases is for when user want to depreciate in one year.
     // This case is if list is not empty when calling this method
     if (getFixedAssetLineList(fixedAsset) != null
-        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
+        && numberOfDepreciationDone(fixedAsset)
+            .equals(getNumberOfDepreciation(fixedAsset).subtract(BigDecimal.ONE))) {
       if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
           && getComputationMethodSelect(fixedAsset)
               .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
@@ -236,7 +238,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       return baseValue;
     }
     if (getFixedAssetLineList(fixedAsset) == null
-        && getNumberOfDepreciation(fixedAsset) - numberOfDepreciationDone(fixedAsset) == 1) {
+        && getNumberOfDepreciation(fixedAsset)
+            .subtract(numberOfDepreciationDone(fixedAsset))
+            .equals(BigDecimal.ONE)) {
       return baseValue.subtract(getAlreadyDepreciatedAmount(fixedAsset));
     }
     if (getComputationMethodSelect(fixedAsset) != null
@@ -256,16 +260,15 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected BigDecimal computeDepreciationNumerator(
-      BigDecimal baseValue, int numberOfDepreciation) {
+      BigDecimal baseValue, BigDecimal numberOfDepreciation) {
     BigDecimal depreciationRate = computeDepreciationRate(numberOfDepreciation);
     return baseValue.multiply(depreciationRate);
   }
 
-  protected BigDecimal computeDepreciationRate(int numberOfDepreciation) {
-    return numberOfDepreciation == 0
+  protected BigDecimal computeDepreciationRate(BigDecimal numberOfDepreciation) {
+    return numberOfDepreciation.signum() == 0
         ? BigDecimal.ZERO
-        : BigDecimal.ONE.divide(
-            BigDecimal.valueOf(numberOfDepreciation), CALCULATION_SCALE, RoundingMode.HALF_UP);
+        : BigDecimal.ONE.divide(numberOfDepreciation, CALCULATION_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeProrataTemporis(FixedAsset fixedAsset) {
@@ -332,12 +335,21 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
                     + (depreciationDay - acquisitionDay))
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod =
-        BigDecimal.valueOf(getPeriodicityInMonth(fixedAsset) * 30)
+        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     prorataTemporis =
         nbDaysBetweenAcqAndFirstDepDate.divide(
             nbDaysOfPeriod, CALCULATION_SCALE, RoundingMode.HALF_UP);
     return prorataTemporis;
+  }
+
+  /**
+   * Method only use in method computeProrataBetween
+   *
+   * @return
+   */
+  protected Integer getPeriodicityInMonthProrataTemporis(FixedAsset fixedAsset) {
+    return getPeriodicityInMonth(fixedAsset);
   }
 
   protected boolean isLastDayOfFebruary(int year, int day) {
@@ -393,28 +405,27 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal degressiveDepreciation =
         computeDegressiveDepreciation(previousAccountingValue, fixedAsset);
 
-    int remainingNumberOfDepreciation =
-        getNumberOfDepreciation(fixedAsset) - numberOfDepreciationDone(fixedAsset);
+    BigDecimal remainingNumberOfDepreciation =
+        getNumberOfDepreciation(fixedAsset).subtract(numberOfDepreciationDone(fixedAsset));
     BigDecimal linearDepreciation =
         previousAccountingValue.divide(
-            BigDecimal.valueOf(remainingNumberOfDepreciation),
-            RETURNED_SCALE,
-            RoundingMode.HALF_UP);
+            remainingNumberOfDepreciation, RETURNED_SCALE, RoundingMode.HALF_UP);
     return degressiveDepreciation.max(linearDepreciation);
   }
 
-  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
+  protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
     List<FixedAssetLine> fixedAssetLineList = getFixedAssetLineList(fixedAsset);
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       if (fixedAssetLineList == null) {
         return getNumberOfPastDepreciation(fixedAsset);
       }
-      return fixedAssetLineList.size() + getNumberOfPastDepreciation(fixedAsset);
+      return BigDecimal.valueOf(fixedAssetLineList.size())
+          .add(getNumberOfPastDepreciation(fixedAsset));
     }
     if (fixedAssetLineList == null) {
-      return 0;
+      return BigDecimal.ZERO;
     }
-    return fixedAssetLineList.size();
+    return BigDecimal.valueOf(fixedAssetLineList.size());
   }
 
   protected BigDecimal computeDegressiveDepreciation(BigDecimal baseValue, FixedAsset fixedAsset) {
@@ -440,7 +451,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     // This check if we are generating the additional line, and in this case, the depreciation date
     // is different.
     if (isProrataTemporis(fixedAsset)
-        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset)) {
+        && numberOfDepreciationDone(fixedAsset)
+            .equals(getNumberOfDepreciation(fixedAsset).setScale(0, RoundingMode.DOWN))) {
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
     } else {
       depreciationDate =
@@ -457,7 +469,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
     // If we are at the last line, we depreciate the remaining amount
     if (!isProrataTemporis(fixedAsset)
-        && getNumberOfDepreciation(fixedAsset) == numberOfDepreciationDone(fixedAsset) + 1) {
+        && getNumberOfDepreciation(fixedAsset)
+            .equals(numberOfDepreciationDone(fixedAsset).add(BigDecimal.ONE))) {
       return previousAccountingValue;
     }
     if (getComputationMethodSelect(fixedAsset)
@@ -504,5 +517,15 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return fixedAssetLine.getCorrectedAccountingValue().signum() != 0
         ? fixedAssetLine.getCorrectedAccountingValue()
         : fixedAssetLine.getAccountingValue();
+  }
+
+  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
+    if (getFirstDateDepreciationInitSelect(fixedAsset)
+            == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+        && fixedAsset.getFirstServiceDate() != null) {
+      return fixedAsset.getFirstServiceDate().withDayOfMonth(1);
+    } else {
+      return fixedAsset.getAcquisitionDate().withDayOfMonth(1);
+    }
   }
 }

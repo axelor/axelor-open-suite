@@ -788,4 +788,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         .bind("paymentSession", paymentSession).fetch().stream()
         .noneMatch(this::shouldBeProcessed);
   }
+
+  @Override
+  public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession) {
+    return invoiceTermRepo
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession = true AND self.bankDetails.active = false")
+        .bind("paymentSession", paymentSession)
+        .fetch();
+  }
 }

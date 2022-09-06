@@ -641,26 +641,40 @@ public class PaymentVoucherConfirmService {
 
     move.addMoveLineListItem(financialDiscountMoveLine);
 
-    if (financialDiscountVat) {
+    if (financialDiscountVat
+        && BigDecimal.ZERO.compareTo(payVoucherElementToPay.getFinancialDiscountTaxAmount()) != 0) {
       AccountManagement accountManagement =
           financialDiscountTax.getAccountManagementList().stream()
               .filter(it -> it.getCompany().equals(company))
               .findFirst()
               .orElse(null);
       if (accountManagement != null) {
-        move.addMoveLineListItem(
+        int vatSystem = financialDiscountAccount.getVatSystemSelect();
+        MoveLine financialDiscountVatMoveLine =
             moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
-                accountManagementAccountService.getFinancialDiscountAccount(
-                    accountManagement, financialDiscountTax, company),
+                accountManagementAccountService.getTaxAccount(
+                    accountManagement,
+                    financialDiscountTax,
+                    company,
+                    move.getJournal(),
+                    vatSystem,
+                    move.getFunctionalOriginSelect(),
+                    false,
+                    true),
                 payVoucherElementToPay.getFinancialDiscountTaxAmount(),
                 isDebitToPay,
                 paymentDate,
                 dueDate,
                 moveLineNo++,
                 invoiceName,
-                null));
+                null);
+        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
+        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
+        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
+        financialDiscountVatMoveLine.setVatSystemSelect(vatSystem);
+        move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
 

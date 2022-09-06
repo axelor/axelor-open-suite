@@ -219,7 +219,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     return accountType.equals(AccountTypeRepository.TYPE_DEBT)
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
         || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-        || accountType.equals(AccountTypeRepository.TYPE_ASSET);
+        || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
   }
 
   @Override
@@ -249,6 +249,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               .filter(
                   ml ->
                       moveLineToolService.isEqualTaxMoveLine(
+                          moveline.getAccount(),
                           moveline.getTaxLine(),
                           moveline.getVatSystemSelect(),
                           moveline.getId(),

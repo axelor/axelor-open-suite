@@ -594,7 +594,7 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
+  public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
@@ -613,7 +613,7 @@ public class SaleOrderController {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
-        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, SOLines);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
