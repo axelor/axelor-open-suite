@@ -21,6 +21,8 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
@@ -76,8 +78,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     BigDecimal total =
         invoiceTermService.getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback);
     MoveLine holdbackMoveLine = null;
+
     for (PaymentConditionLine paymentConditionLine :
-        move.getPaymentCondition().getPaymentConditionLineList()) {
+        move.getPaymentCondition().getPaymentConditionLineList().stream()
+            .sorted(Comparator.comparing(PaymentConditionLine::getSequence))
+            .collect(Collectors.toList())) {
       if (paymentConditionLine.getIsHoldback() == isHoldback) {
         this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
       } else if (paymentConditionLine.getIsHoldback()

@@ -635,14 +635,6 @@
     <action name="action-account-move-method-set-origin-description-on-lines"/>
   </action-group>
 
-  <action-group name="action-account-move-group-set-origin-date">
-    <action name="action-account-move-method-check-duplicated-move-origin"
-      if="journal.hasDuplicateDetectionOnOrigin"/>
-    <action name="action-move-method-set-moveline-origin-dates"/>
-    <action name="action-move-attrs-date-change"/>
-    <action name="action-move-method-display-and-compute-due-date"/>
-  </action-group>
-
   <action-group name="action-account-move-group-set-origin">
     <action name="action-account-move-method-check-duplicated-move-origin"
       if="journal.hasDuplicateDetectionOnOrigin"/>
@@ -703,7 +695,12 @@
   </action-group>
 
   <action-group name="action-move-group-origin-date-onchange">
-    <action name="action-account-move-group-set-origin-date"/>
+    <action name="action-account-move-method-check-duplicated-move-origin"
+      if="journal.hasDuplicateDetectionOnOrigin"/>
+    <action name="action-move-method-set-moveline-origin-dates"/>
+    <action name="action-move-attrs-date-change"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-account-move-group-onsave"/>
   </action-group>
 
