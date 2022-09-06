@@ -91,7 +91,7 @@
     search="self.app.code = :code"/>
 
   <input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"
-    search="self.importId = :importId">
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportStockMove:importStockMove">
     <bind to="company" search="self.importId = :company_importId"/>
     <bind to="toStockLocation" search="self.importId = :toStockLocation_importId"/>
     <bind to="fromStockLocation" search="self.importId = :fromStockLocation_importId"/>
