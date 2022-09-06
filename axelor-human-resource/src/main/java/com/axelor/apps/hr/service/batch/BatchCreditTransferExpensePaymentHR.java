@@ -19,14 +19,16 @@ package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -80,22 +82,20 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
+    sb.append(I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
     sb.append(
         String.format(
             I18n.get(
-                    com.axelor.apps.hr.exception.IExceptionMessage
-                        .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
-                    com.axelor.apps.hr.exception.IExceptionMessage
-                        .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
+                    HumanResourceExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
+                    HumanResourceExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
                     batch.getDone())
                 + " ",
             batch.getDone()));
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());
@@ -116,7 +116,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
         "self.ventilated = true "
             + "AND self.paymentStatusSelect = :paymentStatusSelect "
             + "AND self.company = :company "
-            + "AND self.user.partner.outPaymentMode = :paymentMode "
+            + "AND self.employee.contactPartner.outPaymentMode = :paymentMode "
             + "AND self.id NOT IN (:anomalyList)";
 
     if (manageMultiBanks) {

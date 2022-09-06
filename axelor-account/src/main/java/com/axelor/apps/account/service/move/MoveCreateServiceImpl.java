@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,10 +30,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -209,7 +209,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       if (move.getPeriod() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PERIOD_1),
+            I18n.get(ToolExceptionMessage.PERIOD_1),
             company.getName(),
             L10n.getInstance().format(date));
       }
@@ -225,7 +225,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     if (companyCurrency != null) {
       move.setCompanyCurrency(companyCurrency);
-      move.setCompanyCurrencyCode(companyCurrency.getCode());
+      move.setCompanyCurrencyCode(companyCurrency.getCodeISO());
     }
 
     if (currency == null) {
@@ -233,7 +233,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
     if (currency != null) {
       move.setCurrency(currency);
-      move.setCurrencyCode(currency.getCode());
+      move.setCurrencyCode(currency.getCodeISO());
     }
     move.setOrigin(origin);
     move.setDescription(description);

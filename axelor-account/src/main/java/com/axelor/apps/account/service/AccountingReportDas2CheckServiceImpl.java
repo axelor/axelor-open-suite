@@ -1,8 +1,25 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
@@ -53,25 +70,28 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
     List<String> errorList = new ArrayList<>();
 
     if (partner == null) {
-      errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_MISSING));
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_MISSING));
     } else {
       if (partner.getTitleSelect() == null) {
-        errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING));
+        errorList.add(
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING));
       }
       if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
           && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
-        errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE));
+        errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE));
       }
       if (partner.getFirstName() == null) {
         errorList.add(
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING));
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING));
       }
       if (partner.getEmailAddress() == null) {
-        errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
+        errorList.add(
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
       }
       if (Strings.isNullOrEmpty(partner.getFixedPhone())
           && Strings.isNullOrEmpty(partner.getMobilePhone())) {
-        errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
+        errorList.add(
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
       }
     }
     return errorList;
@@ -83,42 +103,44 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
     List<String> errorList = new ArrayList<>();
 
     if (companyPartner == null) {
-      errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER));
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER));
       return errorList;
     }
 
     if (companyPartner.getMainAddress() == null) {
-      errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS));
+      errorList.add(
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS));
     }
 
     if (companyPartner.getMainAddress() != null
         && companyPartner.getMainAddress().getAddressL7Country() == null) {
       errorList.add(
-          I18n.get(IExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7));
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7));
     }
 
     if (companyPartner.getMainAddress() != null
         && companyPartner.getMainAddress().getAddressL7Country() != null
         && companyPartner.getMainAddress().getAddressL7Country().getAlpha2Code() == null) {
       errorList.add(
-          I18n.get(IExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE));
+          I18n.get(
+              AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE));
     }
 
     if (companyPartner.getMainAddress() != null
         && companyPartner.getMainAddress().getCity() == null) {
       errorList.add(
-          I18n.get(IExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY));
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY));
     }
 
     if (Strings.isNullOrEmpty(appAccountService.getAppAccount().getDasActiveNorm())) {
-      errorList.add(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_ACTIVE_NORM));
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_ACTIVE_NORM));
     }
 
     if (Strings.isNullOrEmpty(companyPartner.getRegistrationCode())) {
       errorList.add(
           String.format(
               I18n.get(
-                  IExceptionMessage
+                  AccountExceptionMessage
                       .ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE),
               accountingExport.getCompany().getName()));
     }
@@ -126,14 +148,16 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
         || Strings.isNullOrEmpty(companyPartner.getMainActivity().getCode())) {
       errorList.add(
           String.format(
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF),
+              I18n.get(
+                  AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF),
               accountingExport.getCompany().getName()));
     }
 
     if (companyPartner.getMainAddress() == null) {
       errorList.add(
           String.format(
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS),
+              I18n.get(
+                  AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS),
               accountingExport.getCompany().getName()));
     }
     return errorList;
@@ -162,7 +186,8 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
       if (partner.getTitleSelect() == null) {
         errorList.add(
             String.format(
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING),
+                I18n.get(
+                    AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING),
                 partner.getPartnerSeq(),
                 partner.getSimpleFullName()));
       }
@@ -170,7 +195,8 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
           && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
         errorList.add(
             String.format(
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE),
+                I18n.get(
+                    AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE),
                 partner.getPartnerSeq(),
                 partner.getSimpleFullName()));
       }
@@ -178,7 +204,8 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
         errorList.add(
             String.format(
                 I18n.get(
-                    IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING),
+                    AccountExceptionMessage
+                        .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING),
                 partner.getPartnerSeq(),
                 partner.getSimpleFullName()));
       }
@@ -191,7 +218,8 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
     if (partner.getMainAddress() == null) {
       errorList.add(
           String.format(
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS),
+              I18n.get(
+                  AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS),
               partner.getPartnerSeq(),
               partner.getSimpleFullName()));
       return;
@@ -201,14 +229,15 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
       errorList.add(
           String.format(
               I18n.get(
-                  IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY),
+                  AccountExceptionMessage
+                      .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY),
               partner.getPartnerSeq(),
               partner.getSimpleFullName()));
     } else if (partner.getMainAddress().getCity().getZip() == null) {
       errorList.add(
           String.format(
               I18n.get(
-                  IExceptionMessage
+                  AccountExceptionMessage
                       .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP),
               partner.getPartnerSeq(),
               partner.getSimpleFullName()));
@@ -218,14 +247,15 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
       errorList.add(
           String.format(
               I18n.get(
-                  IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE),
+                  AccountExceptionMessage
+                      .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE),
               partner.getPartnerSeq(),
               partner.getSimpleFullName()));
     } else if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
       errorList.add(
           String.format(
               I18n.get(
-                  IExceptionMessage
+                  AccountExceptionMessage
                       .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE),
               partner.getPartnerSeq(),
               partner.getSimpleFullName()));

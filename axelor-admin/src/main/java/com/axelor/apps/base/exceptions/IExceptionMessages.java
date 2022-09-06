@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.exceptions;
 
+/** @deprecated Replaced by {@link AdminExceptionMessage} */
+@Deprecated
 public interface IExceptionMessages {
 
   public static final String NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;
@@ -51,4 +53,13 @@ public interface IExceptionMessages {
       "The 'Relational field' of the line '%s' cannot be empty." /*)*/;
   public static final String EMPTY_QUERY_IN_DATA_CONFIG_LINE = /*$$(*/
       "The 'Query' of the line '%s' cannot be empty." /*)*/;
+
+  public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
+      "The method '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_CLASS_DOES_NOT_EXIST = /*$$(*/
+      "The class '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_METHOD_ERROR = /*$$(*/
+      "An error occured while executing '%s'." /*)*/;
 }

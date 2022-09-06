@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Invoice;
@@ -11,6 +28,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -50,6 +68,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine generateTaxPaymentMoveLineList(
       MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException {
+
     BigDecimal paymentAmount = reconcile.getAmount();
     BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
@@ -73,6 +92,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               appBaseService.getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
+      taxPaymentMoveLine.setFunctionalOriginSelect(InvoiceToolService.getFunctionalOrigin(invoice));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
@@ -162,7 +182,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
             || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
             || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-            || accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+            || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
               move, map, newMap, moveLine, taxLine, accountType);

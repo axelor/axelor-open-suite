@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
@@ -5,7 +22,9 @@ import com.axelor.apps.base.db.PricingLine;
 import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -18,6 +37,7 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +47,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,42 +133,52 @@ public class PricingComputer extends AbstractObservablePricing {
     }
     if (pricing.getPreviousPricing() != null) {
       throw new IllegalStateException(
-          "This method call only be called with root pricing (pricing with not previous pricing)");
+          "This method can only be called with root pricing (pricing with not previous pricing)");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
+    notifyStarted();
     if (!applyPricing(this.pricing).isPresent()) {
+      notifyFinished();
       return;
     }
-    Pricing previousPricing = this.pricing;
+    Pricing currentPricing = this.pricing;
     LOG.debug("Treating pricing childs of {}", this.pricing);
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
-      List<Pricing> childPricings =
-          pricingService.getPricings(
-              this.pricing.getCompany(),
-              this.product,
-              this.product.getProductCategory(),
-              this.classModel.getSimpleName(),
-              previousPricing);
 
-      if (childPricings.isEmpty()) {
+      Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
+      if (optChildPricing.isPresent() && applyPricing(optChildPricing.get()).isPresent()) {
+        currentPricing = optChildPricing.get();
+      } else {
+        notifyFinished();
         return;
       }
-      if (childPricings.size() > 1) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(IExceptionMessage.PRICING_2),
-                this.product.getName() + "/" + this.product.getProductCategory().getName(),
-                pricing.getCompany().getName(),
-                classModel.getSimpleName()));
-      } else {
-        Pricing childPricing = childPricings.get(0);
-        if (!applyPricing(childPricing).isPresent()) {
-          return;
-        }
-        previousPricing = childPricing;
-      }
     }
+    notifyFinished();
+  }
+
+  protected Optional<Pricing> getNextPricing(Pricing pricing) throws AxelorException {
+    List<Pricing> childPricings =
+        pricingService.getPricings(
+            this.pricing.getCompany(),
+            this.product,
+            this.product.getProductCategory(),
+            this.classModel.getSimpleName(),
+            pricing);
+
+    if (childPricings.isEmpty()) {
+      return Optional.empty();
+    }
+    if (childPricings.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(BaseExceptionMessage.PRICING_2),
+              this.product.getName() + "/" + this.product.getProductCategory().getName(),
+              pricing.getCompany().getName(),
+              classModel.getSimpleName()));
+    }
+
+    return Optional.ofNullable(childPricings.get(0));
   }
 
   /**
@@ -155,8 +186,9 @@ public class PricingComputer extends AbstractObservablePricing {
    *
    * @param pricing
    * @return optional of the pricing line applied
+   * @throws AxelorException
    */
-  protected Optional<PricingLine> applyPricing(Pricing pricing) {
+  protected Optional<PricingLine> applyPricing(Pricing pricing) throws AxelorException {
     LOG.debug("Applying pricing {} with model {}", pricing, this.model);
     if (pricing.getClass1PricingRule() != null && pricing.getResult1PricingRule() != null) {
 
@@ -175,7 +207,8 @@ public class PricingComputer extends AbstractObservablePricing {
     return Optional.empty();
   }
 
-  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine) {
+  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine)
+      throws AxelorException {
     Objects.requireNonNull(pricingLine);
 
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(context);
@@ -186,18 +219,76 @@ public class PricingComputer extends AbstractObservablePricing {
     resultPricingRuleList.add(pricing.getResult3PricingRule());
     resultPricingRuleList.add(pricing.getResult4PricingRule());
 
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
-              if (fieldToPopulate != null) {
-                Object result = scriptHelper.eval(resultPricingRule.getFormula());
-                notifyResultPricingRule(resultPricingRule, result);
-                notifyFieldToPopulate(fieldToPopulate);
-                Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
-              }
-            });
+    for (PricingRule resultPricingRule : resultPricingRuleList) {
+      if (resultPricingRule != null) {
+        MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+        Object result = scriptHelper.eval(resultPricingRule.getFormula());
+        notifyResultPricingRule(resultPricingRule, result);
+        notifyFieldToPopulate(fieldToPopulate);
+        String typeName = getTypeNameFieldToPopulate(resultPricingRule);
+        if (fieldToPopulate != null) {
+          if (typeName.equals("BigDecimal")) {
+            result = setScale(result, resultPricingRule.getScale());
+          }
+          if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
+            String newMetaJsonAttrs = buildMetaJsonAttrs(resultPricingRule, result);
+            Mapper.of(classModel).set(model, fieldToPopulate.getName(), newMetaJsonAttrs);
+            notifyMetaJsonFieldToPopulate(resultPricingRule.getMetaJsonField());
+          } else {
+            Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+            putInContext(fieldToPopulate.getName(), result);
+          }
+        }
+        if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+          LOG.debug(
+              "Adding result temp variable {} in context", resultPricingRule.getTempVarName());
+          putInContext(resultPricingRule.getTempVarName(), result);
+        }
+      }
+    }
+  }
+
+  protected BigDecimal setScale(Object result, int scale) {
+    if (result instanceof BigDecimal) {
+      return ((BigDecimal) result).setScale(scale, RoundingMode.HALF_UP);
+    }
+    return null;
+  }
+
+  protected String getTypeNameFieldToPopulate(PricingRule resultPricingRule)
+      throws AxelorException {
+
+    MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+    if (fieldToPopulate != null) {
+      if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
+        return MetaTool.jsonTypeToType(resultPricingRule.getMetaJsonField().getType());
+      }
+      return fieldToPopulate.getTypeName();
+    }
+
+    return "";
+  }
+
+  protected String buildMetaJsonAttrs(PricingRule resultPricingRule, Object result)
+      throws AxelorException {
+    LOG.debug("Populating {} of {} with {}", resultPricingRule.getFieldToPopulate(), model, result);
+
+    Object attrsObject =
+        Mapper.of(classModel).get(model, resultPricingRule.getFieldToPopulate().getName());
+    String metaJsonAttrs;
+    if (attrsObject == null) {
+      metaJsonAttrs = "";
+    } else {
+      metaJsonAttrs = attrsObject.toString();
+    }
+
+    try {
+      return new MetaJsonAttrsBuilder(metaJsonAttrs)
+          .putValue(resultPricingRule.getMetaJsonField(), result)
+          .build();
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
   }
 
   /**
@@ -242,6 +333,9 @@ public class PricingComputer extends AbstractObservablePricing {
 
     if (classPricingRule != null) {
       Object result = scriptHelper.eval(classPricingRule.getFormula());
+      if (classPricingRule.getFieldTypeSelect() == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
+        result = ((BigDecimal) result).setScale(classPricingRule.getScale(), RoundingMode.HALF_UP);
+      }
       notifyClassificationPricingRule(classPricingRule, result);
       return result;
     }

@@ -18,7 +18,11 @@
 /** */
 package com.axelor.apps.stock.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link StockExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Inventory service and controller */
@@ -56,6 +60,11 @@ public interface IExceptionMessage {
       "Can only cancel a validated inventory." /*)*/;
   static final String INVENTORY_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft if cancelled." /*)*/;
+  static final String INVENTORY_VALIDATE_INVENTORY_LINE_LIST = /*$$(*/
+      "Please fill all inventory lines" /*)*/;
+
+  static final String INVENTORY_LINE_STOCK_LOCATION_MISSING = /*$$(*/
+      "Stock location is missing for these lines : %s" /*)*/;
 
   /** Stock Location Line Service Impl */
   static final String LOCATION_LINE_1 = /*$$(*/
@@ -86,7 +95,7 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_6 = /*$$(*/
       "There's no destination stock location selected for the stock's movement %s" /*)*/;
   static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
-  static final String STOCK_MOVE_8 = /*$$(*/ "Reverse stock move (From" /*)*/;
+  static final String STOCK_MOVE_8 = /*$$(*/ "%s Reverse stock move (From %s)" /*)*/;
   static final String STOCK_MOVE_9 = /*$$(*/ "A partial stock move has been generated (%s)" /*)*/;
   static final String STOCK_MOVE_10 = /*$$(*/ "Please select the StockMove(s) to print." /*)*/;
   static final String STOCK_MOVE_11 = /*$$(*/ "Company address is empty." /*)*/;

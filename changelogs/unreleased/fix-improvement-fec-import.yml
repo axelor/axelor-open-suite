@@ -1,6 +1,0 @@
----
-title: "FEC Import : Added somes improvements for fec import"
-type: change
-description: |
-  Can now set a move description, company in fec import and a option to validate  a move on import.
-  Also two panels have been added to see the generated move and generated anomalies.

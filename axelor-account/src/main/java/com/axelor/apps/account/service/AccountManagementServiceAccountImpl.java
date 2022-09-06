@@ -23,7 +23,8 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -94,7 +95,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
+        I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
         product != null ? product.getCode() : null,
         company.getName());
   }
@@ -243,10 +244,24 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (account == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_2),
           company.getName(),
           financialDiscountTax.getName());
     }
     return account;
+  }
+  @Override
+  public Account getCashAccount(AccountManagement accountManagement, PaymentMode paymentMode)
+      throws AxelorException {
+    if (accountManagement == null || paymentMode == null) {
+      return null;
+    }
+    if (accountManagement != null && accountManagement.getCashAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
+          paymentMode.getCode());
+    }
+    return accountManagement.getCashAccount();
   }
 }

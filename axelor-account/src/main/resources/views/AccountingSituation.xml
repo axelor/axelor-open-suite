@@ -34,7 +34,7 @@
     onNew="action-accounting-situation-group-form-onnew" width="large">
     <panel name="mainPanel">
       <field name="company" widget="SuggestBox" canEdit="false"
-        onChange="action-supplychain-method-compute-used-credit" form-view="company-form"
+        onChange="action-accounting-situation-group-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
       <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
@@ -44,33 +44,32 @@
         onSelect="action-account-accounting-situation-set-outbd-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="customerAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
         canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
         canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
       <field name="defaultIncomeAccount" canNew="true"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="defaultExpenseAccount" canNew="true"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
         canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
-        name="pfpValidatorUser" showIf="company.accountConfig.isManagePassedForPayment"
-        canEdit="false" domain=":company member of self.companySet and self.isPfpValidator = true"
-        required="true"/>
+        name="pfpValidatorUser" canEdit="false"
+        domain=":company member of self.companySet and self.isPfpValidator = true"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="company.accountConfig" hidden="true"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
-      <field name="balanceCustAccount"/>
-      <field name="balanceDueCustAccount"/>
-      <field name="balanceDueDebtRecoveryCustAccount"/>
+      <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueDebtRecoveryCustAccount" domain="self.statusSelect = 1"/>
     </panel>
     <panel name="automaticMailPanel" title="Automatic mail">
       <field name="invoiceAutomaticMailOnValidate"/>
@@ -137,13 +136,13 @@
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="customerAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
         form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
         form-view="supplier-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
@@ -154,9 +153,9 @@
     </panel>
 
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
-      <field name="balanceCustAccount"/>
-      <field name="balanceDueCustAccount"/>
-      <field name="balanceDueDebtRecoveryCustAccount"/>
+      <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueCustAccount" domain="self.statusSelect = 1"/>
+      <field name="balanceDueDebtRecoveryCustAccount" domain="self.statusSelect = 1"/>
     </panel>
     <panel name="debtRecoveryProcessPanel" title="Debt recovery process">
       <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
@@ -181,6 +180,7 @@
     <action name="action-account-accounting-situation-default-set"/>
     <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+    <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
   </action-group>
 
   <action-group name="action-accounting-situation-group-form-onload">
@@ -189,6 +189,11 @@
     <action name="action-accounting-situation-attrs-hide-employee-account"/>
     <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+  </action-group>
+
+  <action-group name="action-accounting-situation-group-company-onchange">
+    <action name="action-supplychain-method-compute-used-credit"/>
+    <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
   </action-group>
 
   <action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -204,7 +209,10 @@
   </action-attrs>
 
   <action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
-    <attribute name="hidden" for="pfpValidatorUser" expr="eval: !__parent__?.isSupplier"/>
+    <attribute name="hidden" for="pfpValidatorUser"
+      expr="eval: !__parent__?.isSupplier || !company?.accountConfig?.isManagePassedForPayment"/>
+    <attribute name="required" for="pfpValidatorUser"
+      expr="eval: __parent__?.isSupplier &amp;&amp; company?.accountConfig?.isManagePassedForPayment"/>
   </action-attrs>
 
 

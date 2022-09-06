@@ -1,5 +1,0 @@
----
-title: "Accounting Batch: merge existing batches annual accounting into one."
-type: change
-description: |
-  The batch to open annual accounts of the next year and the batch to close annual accounts of the last year are now replaced by a single batch that will do both.

@@ -20,8 +20,9 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.AbstractContractVersionRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -31,6 +32,8 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -61,6 +64,13 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   @Transactional(rollbackOn = {Exception.class})
   public void waiting(ContractVersion version, LocalDate date) throws AxelorException {
 
+    if (version.getStatusSelect() == null
+        || version.getStatusSelect() != AbstractContractVersionRepository.DRAFT_VERSION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ContractExceptionMessage.CONTRACT_WAITING_WRONG_STATUS));
+    }
+
     Contract contract =
         Stream.of(version.getContract(), version.getNextContract())
             .filter(Objects::nonNull)
@@ -69,14 +79,14 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
                 () ->
                     new AxelorException(
                         TraceBackRepository.CATEGORY_MISSING_FIELD,
-                        I18n.get(IExceptionMessage.CONTRACT_MISSING_FROM_VERSION)));
+                        I18n.get(ContractExceptionMessage.CONTRACT_MISSING_FROM_VERSION)));
 
     if (contract.getIsInvoicingManagement()
         && version.getIsPeriodicInvoicing()
         && (contract.getFirstPeriodEndDate() == null || version.getInvoicingDuration() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
+          I18n.get(ContractExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
     }
     version.setStatusSelect(WAITING_VERSION);
   }
@@ -96,6 +106,16 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void ongoing(ContractVersion version, LocalDate date) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(AbstractContractVersionRepository.WAITING_VERSION);
+    authorizedStatus.add(AbstractContractVersionRepository.DRAFT_VERSION);
+    if (version.getStatusSelect() == null
+        || !authorizedStatus.contains(version.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ContractExceptionMessage.CONTRACT_ONGOING_WRONG_STATUS));
+    }
+
     version.setActivationDate(date);
     version.setActivatedByUser(AuthUtils.getUser());
     version.setStatusSelect(ONGOING_VERSION);
@@ -122,7 +142,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  public void terminate(ContractVersion version) {
+  public void terminate(ContractVersion version) throws AxelorException {
     terminate(
         version,
         appBaseService.getTodayDate(
@@ -135,7 +155,15 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   @Override
   @Transactional
-  public void terminate(ContractVersion version, LocalDate date) {
+  public void terminate(ContractVersion version, LocalDate date) throws AxelorException {
+
+    if (version.getStatusSelect() == null
+        || version.getStatusSelect() != AbstractContractVersionRepository.ONGOING_VERSION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ContractExceptionMessage.CONTRACT_TERMINATE_WRONG_STATUS));
+    }
+
     version.setEndDate(date);
     version.setStatusSelect(TERMINATED_VERSION);
 

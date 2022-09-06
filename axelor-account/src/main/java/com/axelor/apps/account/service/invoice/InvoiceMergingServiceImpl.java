@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.FiscalPosition;
@@ -565,17 +582,20 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
     if (getCommonFields(result).getCommonCurrency() == null) {
       fieldErrors.add(
           I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+              com.axelor.apps.account.exception.AccountExceptionMessage
+                  .INVOICE_MERGE_ERROR_CURRENCY));
     }
     if (getCommonFields(result).getCommonCompany() == null) {
       fieldErrors.add(
           I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
+              com.axelor.apps.account.exception.AccountExceptionMessage
+                  .INVOICE_MERGE_ERROR_COMPANY));
     }
     if (getCommonFields(result).getCommonPartner() == null) {
       fieldErrors.add(
           I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
+              com.axelor.apps.account.exception.AccountExceptionMessage
+                  .INVOICE_MERGE_ERROR_PARTNER));
     }
   }
 

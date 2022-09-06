@@ -94,6 +94,10 @@
     <boolean name="exported" title="Exported" default="false"/>
     <boolean name="complementaryExport" title="Complementary export" default="false"/>
 
+    <!-- Report 17 -->
+    <integer name="fixedAssetLineTypeSelect" title="Type"
+      selection="account.fixed.asset.line.type.select" default="1"/>
+
     <unique-constraint columns="ref,company"/>
 
     <extra-code><![CDATA[

@@ -66,7 +66,6 @@
     model="com.axelor.apps.base.db.DataBackup">
     <view type="grid" name="data-create-backup-grid"/>
     <view type="form" name="data-create-backup-form"/>
-    <domain>self.backupDate != null</domain>
   </action-view>
 
   <menuitem name="admin-root-data-restore-backup" parent="admin-root-data-backup"
@@ -77,6 +76,18 @@
     <view type="grid" name="data-restore-backup-grid"/>
     <view type="form" name="data-restore-backup-form"/>
     <domain>self.restoreDate != null</domain>
+  </action-view>
+
+  <menuitem name="admin-root-data-backup-configuration" title="Configuration" order="50"
+    parent="admin-root-data-backup" icon="fa-cog"/>
+
+  <menuitem name="admin-root-faker-api-field" title="Faker API fields"
+    action="action.admin.root.view.faker.api.field" parent="admin-root-data-backup-configuration"/>
+
+  <action-view name="action.admin.root.view.faker.api.field" title="Faker API field"
+    model="com.axelor.apps.base.db.FakerApiField">
+    <view type="grid" name="faker-api-field-grid"/>
+    <view type="form" name="faker-api-field-form"/>
   </action-view>
 
 </object-views>

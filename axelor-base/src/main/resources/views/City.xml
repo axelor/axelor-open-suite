@@ -59,7 +59,7 @@
       <field name="autoImportTypeSelect" title="Auto import"
         selection="base.city.auto.import.type.select"
         showIf="importTypeSelect == 'auto' &amp;&amp; typeSelect=='geonames'"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         readonlyIf="(typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null"
         onClick="action-base-method-import-city"/>
       <field name="$importHistoryList" type="one-to-many"

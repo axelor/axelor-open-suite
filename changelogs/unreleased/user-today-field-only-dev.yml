@@ -1,4 +1,0 @@
-title: "USER : today"
-type: change
-description: 
-  Added an "if" condition for the "testingPanel" that contained "today" field so that it is not displayed in production mode

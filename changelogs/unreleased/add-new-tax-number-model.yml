@@ -1,6 +1,0 @@
----
-title: "Account module : Add new model Tax Number"
-type: feature
-description: |
-  Add new Tax Number model, form, menu entry.
-  Tax Number is used in Company, Fiscal Position and Sale Order models, updates have been made accordingly.

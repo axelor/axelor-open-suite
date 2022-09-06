@@ -1,7 +1,0 @@
----
-title: "Talent : Add new domain TrainingSkill"
-type: feature
-description: |
-  Add new domain TrainingSkill.
-  Add new fields duration & typeSelect in Skill domain.
-  Add list field in employee referencing to TrainingSkill and manage it on training completion.

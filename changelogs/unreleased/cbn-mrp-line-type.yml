@@ -1,0 +1,4 @@
+---
+title: "MRP : Made changes to mrp line types to allow several records linked to sale orders"
+type: change
+description: "When configuring the MRP with MRP line types, it is now possible to have several records linked to the sale order object. These records also now have an added option to include or exclude late sales. Late sales are sales that have not been delivered despite being past the delivery date of their order lines. The delivery date is by order of priority : the estimated delivery date of the sale order line, the estimated delivery date of the sale order or the desired delivery date of the sale order line."

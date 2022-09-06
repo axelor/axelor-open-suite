@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
@@ -8,12 +25,18 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -26,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,16 +61,20 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
+  protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
-      AccountConfigService accountConfigService) {
+      AccountCustomerService accountCustomerService,
+      AccountConfigService accountConfigService,
+      PeriodServiceAccount periodServiceAccount) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
+    this.periodServiceAccount = periodServiceAccount;
   }
 
   @Override
@@ -88,7 +117,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
 
@@ -393,8 +422,8 @@ public class MoveToolServiceImpl implements MoveToolService {
   public List<MoveLine> getToReconcileCreditMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
-        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+        || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
@@ -425,15 +454,39 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public void setOriginAndDescriptionOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setDescription(move.getDescription());
-      moveLine.setOrigin(move.getOrigin());
+      if (moveLine != null) {
+        moveLine.setDescription(move.getDescription());
+        moveLine.setOrigin(move.getOrigin());
+      }
     }
   }
 
   @Override
+  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
+    if (period != null
+        && period.getYear().getCompany() != null
+        && user.getGroup() != null
+        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+      Set<Role> roleSet =
+          accountConfigService
+              .getAccountConfig(period.getYear().getCompany())
+              .getClosureAuthorizedRoleList();
+      if (CollectionUtils.isEmpty(roleSet)) {
+        return false;
+      }
+      for (Role role : roleSet) {
+        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
-    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
@@ -459,7 +512,7 @@ public class MoveToolServiceImpl implements MoveToolService {
                 .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+          I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
     }
   }
 }

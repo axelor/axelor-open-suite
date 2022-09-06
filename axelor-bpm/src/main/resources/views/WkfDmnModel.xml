@@ -14,7 +14,7 @@
     <toolbar>
       <button name="exportBtn" title="Export"
         onClick="save,action-dmn-model-method-export-dmn-table"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         onClick="save,action-wkf-dmn-view-import-dmn-table-form"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
@@ -56,12 +56,12 @@
     </panel>
   </form>
 
-  <form name="wkf-dmn-table-import-form" title="Import"
+  <form name="wkf-dmn-table-import-form" title="import.name"
     model="com.axelor.apps.bpm.db.WkfDmnModel">
     <panel name="mainPanel">
       <field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile"
         widget="binary-link" title="Data file"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         onClick="action-dmn-model-method-import-dmn-table" showIf="dataFile != null" colSpan="4"/>
     </panel>
   </form>
@@ -88,7 +88,7 @@
     <context name="ctxJsonModel" expr="eval:jsonModel"/>
   </action-view>
 
-  <action-view name="action-wkf-dmn-view-import-dmn-table-form" title="Import"
+  <action-view name="action-wkf-dmn-view-import-dmn-table-form" title="import.name"
     model="com.axelor.apps.bpm.db.WkfDmnModel">
     <view type="form" name="wkf-dmn-table-import-form"/>
     <view-param name="popup" value="reload"/>

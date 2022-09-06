@@ -122,6 +122,7 @@
     <panel name="mainPanel">
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form"
+        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"
         onChange="action-attrs-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-attrs-domain-onselect-journal-analytic-move-line"
@@ -161,9 +162,9 @@
   </action-record>
 
   <action-attrs name="action-analytic-move-line-attrs-account-domain">
-    <attribute for="account" name="domain" expr="eval: null"/>
-    <attribute for="account" name="domain" expr="eval: 'self.accountType = :accountType'"
-      if="accountType"/>
+    <attribute for="account" name="domain" expr="eval: 'self.statusSelect = 1'"/>
+    <attribute for="account" name="domain"
+      expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'" if="accountType"/>
   </action-attrs>
 
   <action-attrs if-module="axelor-business-project"
@@ -237,7 +238,7 @@
 
   <action-attrs name="action-attrs-domain-onselect-journal-analytic-move-line">
     <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.company.id = ${analyticAxis.company.id} &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${analyticAxis.company.id} &quot;"
       if="analyticAxis &amp;&amp; analyticAxis?.company"/>
     <attribute name="domain" for="analyticJournal" expr="eval: null"
       if="!(analyticAxis &amp;&amp; analyticAxis?.company)"/>
@@ -245,7 +246,8 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.analyticAxis.id = ${analyticAxis.id} &quot;" if="analyticAxis"/>
+      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id} &quot;"
+      if="analyticAxis"/>
   </action-attrs>
 
   <action-record name="action-record-onchange-axis-analytic-move-line"

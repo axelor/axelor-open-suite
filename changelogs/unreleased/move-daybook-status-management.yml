@@ -1,0 +1,5 @@
+---
+title: "Move daybook status management"
+type: change
+description: |
+  Manage move if daybook is allowed (check configuration and management of cases where this status if forbidden even with configuration)

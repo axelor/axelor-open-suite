@@ -23,7 +23,7 @@ import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
@@ -71,7 +71,8 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
             confProdProcess,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA),
+                I18n.get(
+                    ProductionExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA),
                 confProdProcess.getId()));
       } else {
         name = String.valueOf(computedName);
@@ -83,7 +84,8 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
             confProdProcess,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME),
+                I18n.get(
+                    ProductionExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME),
                 confProdProcess.getId()));
       }
     }
@@ -95,10 +97,23 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       code = confProdProcess.getCode();
     }
     if (confProdProcess.getDefStockLocationAsFormula()) {
+
       stockLocation =
-          (StockLocation)
+          this.convertObjectTo(
               configuratorService.computeFormula(
-                  confProdProcess.getStockLocationFormula(), attributes);
+                  confProdProcess.getStockLocationFormula(), attributes),
+              StockLocation.class);
+      if (stockLocation == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(
+                    ProductionExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION),
+                "stockLocationFormula",
+                confProdProcess.getName()));
+      }
+
     } else {
       stockLocation = confProdProcess.getStockLocation();
     }
@@ -128,7 +143,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
                 I18n.get(
-                    IExceptionMessage
+                    ProductionExceptionMessage
                         .CONFIGURATOR_PROD_PROCESS_INCONSISTENT_IS_CONS_PRO_ON_OPERATION_FORMULA),
                 confProdProcess.getId()));
       } else {
@@ -167,6 +182,14 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     configuratorService.fixRelationalFields(prodProcess);
 
     return prodProcess;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T> T convertObjectTo(Object computeFormula, Class<T> targetClass) {
+    if (computeFormula == null || !targetClass.isInstance(computeFormula)) {
+      return null;
+    }
+    return (T) computeFormula;
   }
 
   /** Instantiate a new prod process and set the right attributes. */

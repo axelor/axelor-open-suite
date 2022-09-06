@@ -121,7 +121,7 @@ public class MoveAdjustementService {
     adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
     adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
 
-    moveValidateService.validate(adjustmentMove);
+    moveValidateService.accounting(adjustmentMove);
     moveRepository.save(adjustmentMove);
   }
 
@@ -184,7 +184,7 @@ public class MoveAdjustementService {
 
     adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
     adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
-    moveValidateService.validate(adjustmentMove);
+    moveValidateService.accounting(adjustmentMove);
     moveRepository.save(adjustmentMove);
 
     return creditAdjustmentMoveLine;
@@ -254,7 +254,7 @@ public class MoveAdjustementService {
     move.addMoveLineListItem(debitMoveLine);
     move.addMoveLineListItem(creditMoveLine);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     return move;
   }

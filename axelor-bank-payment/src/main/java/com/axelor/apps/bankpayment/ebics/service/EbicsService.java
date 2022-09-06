@@ -32,7 +32,7 @@ import com.axelor.apps.bankpayment.ebics.client.FileTransfer;
 import com.axelor.apps.bankpayment.ebics.client.KeyManagement;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -315,7 +315,7 @@ public class EbicsService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
+        I18n.get(BankPaymentExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
         ebicsPartner.getPartnerId(),
         format.getName());
   }

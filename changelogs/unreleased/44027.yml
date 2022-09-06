@@ -1,3 +1,0 @@
----
-title: "FISCAL POSITION : fiscal position on sale orders and invoices is now correctly impacting the taxes and prices of the sale order lines / invoice lines. Changing the fiscal position will also recompute the amounts of each line and the total amounts."
-type: feature

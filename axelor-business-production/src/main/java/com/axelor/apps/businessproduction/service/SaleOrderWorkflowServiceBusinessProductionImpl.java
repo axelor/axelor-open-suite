@@ -30,12 +30,15 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -59,7 +62,9 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      PartnerSupplychainService partnerSupplychainService) {
+      PartnerSupplychainService partnerSupplychainService,
+      SaleConfigService saleConfigService,
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
     super(
         sequenceService,
         partnerRepo,
@@ -73,14 +78,17 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         accountingSituationSupplychainService,
         productionOrderSaleOrderService,
         appProductionService,
-        partnerSupplychainService);
+        partnerSupplychainService,
+        saleConfigService,
+        saleOrderCheckAnalyticService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {

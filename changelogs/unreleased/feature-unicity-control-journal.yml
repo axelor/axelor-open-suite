@@ -1,0 +1,3 @@
+---
+title: "Journal: Changed unicity constraint to company,code and set readonly if linked to move"
+type: feature

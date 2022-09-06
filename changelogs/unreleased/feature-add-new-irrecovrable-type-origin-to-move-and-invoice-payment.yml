@@ -1,0 +1,6 @@
+---
+title: "INVOICE PAYMENT/MOVE: add new irrecoverable type/origin"
+type: feature
+description: |
+  Add new irrecoverable origin to move,
+  Add new irrecoverable type to  invoice payment.

@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingComputer;
+import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
@@ -48,6 +49,7 @@ import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -137,13 +139,26 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
 
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
-    if (pricing.isPresent()) {
+    if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
-          PricingComputer.of(
-                  pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+          getPricingComputer(pricing.get(), saleOrderLine)
               .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
+      pricingComputer.subscribe(getSaleOrderLinePricingObserver(saleOrderLine));
       pricingComputer.apply();
+    } else {
+      saleOrderLine.setPricingScaleLogs(I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_NO_PRICING));
     }
+  }
+
+  protected PricingObserver getSaleOrderLinePricingObserver(SaleOrderLine saleOrderLine) {
+    return new SaleOrderLinePricingObserver(saleOrderLine);
+  }
+
+  protected PricingComputer getPricingComputer(Pricing pricing, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    return PricingComputer.of(
+        pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class);
   }
 
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
@@ -152,7 +167,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return pricingService.getRandomPricing(
         saleOrder.getCompany(),
         saleOrderLine.getProduct(),
-        saleOrderLine.getProduct().getProductCategory(),
+        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
         SaleOrderLine.class.getSimpleName(),
         null);
   }
@@ -163,8 +178,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent()) {
-      return !PricingComputer.of(
-              pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+      return !getPricingComputer(pricing.get(), saleOrderLine)
           .putInContext("saleOrder", EntityHelper.getEntity(saleOrder))
           .getMatchedPricingLines()
           .isEmpty();
@@ -296,8 +310,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
-    line.setSelectedComplementaryProductList(null);
+    line.clearSelectedComplementaryProductList();
     return line;
+  }
+
+  @Override
+  public void resetPrice(SaleOrderLine line) {
+    if (!line.getEnableFreezeFields()) {
+      line.setPrice(null);
+      line.setInTaxPrice(null);
+    }
   }
 
   @Override
@@ -390,7 +412,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -1055,7 +1077,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       complementarySOLine = new SaleOrderLine();
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
-      saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+      complementarySOLine.setMainSaleOrderLine(saleOrderLine);
       newComplementarySOLines.add(complementarySOLine);
     }
     return complementarySOLine;

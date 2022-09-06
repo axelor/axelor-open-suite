@@ -224,8 +224,11 @@
 
   <action-attrs
     name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
-    <attribute name="value" for="$printingType" expr="1"/>
+    <attribute name="value" for="$printingType"
+      expr="eval: _stockLocation?.isValued ? '1' : '2'"/>
     <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
+    <attribute name="selection-in" for="$printingType" expr="eval:['2']"
+      if="!_stockLocation?.isValued"/>
   </action-attrs>
 
   <action-attrs name="action-stock-location-attrs-set-is-valued">

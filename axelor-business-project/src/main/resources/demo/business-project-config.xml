@@ -12,7 +12,6 @@
       search="self.importId in :postTaskStatusSetImportId"
       eval="postTaskStatusSetImportId.split('\\|') as List"/>
   </input>
-
   <input file="account_accountConfig.csv" separator=";"
     type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
 

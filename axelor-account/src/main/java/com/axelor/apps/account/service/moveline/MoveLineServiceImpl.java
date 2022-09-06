@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -39,6 +40,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -245,7 +247,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
-    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    if (moveLine.getIsSelectedBankReconciliation() != null) {
+      moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    } else {
+      moveLine.setIsSelectedBankReconciliation(true);
+    }
     return moveLineRepository.save(moveLine);
   }
 
@@ -266,5 +272,12 @@ public class MoveLineServiceImpl implements MoveLineService {
         && move.getCompany() != null
         && appAccountService.getAppAccount().getManageAnalyticAccounting()
         && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
+  }
+
+  @Override
+  public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
+    moveLineList.stream()
+        .filter(it -> Objects.equals(it.getPartner(), previousPartner))
+        .forEach(it -> it.setPartner(partner));
   }
 }

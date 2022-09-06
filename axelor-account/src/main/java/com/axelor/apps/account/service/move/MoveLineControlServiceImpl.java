@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
@@ -5,14 +22,16 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,7 +67,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         throw new AxelorException(
             line,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
             account.getCode(),
             line.getName(),
             journal.getCode());
@@ -64,7 +83,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_7),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_7),
           moveLine.getAccount().getCode());
     }
     controlAccountingAccount(moveLine);
@@ -89,5 +108,40 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       }
     }
     return move;
+  }
+
+  @Override
+  public void checkAccountCompany(MoveLine moveLine) throws AxelorException {
+
+    Optional<Company> optMoveCompany =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getCompany);
+    Company accountCompany =
+        Optional.ofNullable(moveLine.getAccount()).map(Account::getCompany).orElse(null);
+
+    if (optMoveCompany.isPresent() && !optMoveCompany.get().equals(accountCompany)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY),
+          moveLine.getMove().getReference());
+    }
+  }
+
+  @Override
+  public void checkJournalCompany(MoveLine moveLine) throws AxelorException {
+    Optional<Company> optJournalCompany =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getJournal).map(Journal::getCompany);
+    Company accountCompany =
+        Optional.ofNullable(moveLine.getAccount()).map(Account::getCompany).orElse(null);
+
+    if (optJournalCompany.isPresent() && !optJournalCompany.get().equals(accountCompany)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY),
+          moveLine.getMove().getJournal().getName());
+    }
   }
 }

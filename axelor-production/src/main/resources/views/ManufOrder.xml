@@ -252,9 +252,9 @@
       <panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3">
         <panel name="stockMoveListPanel" title="Moves In/Out" readonly="true" colSpan="12">
           <field name="inStockMoveList" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
+            grid-view="in-stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
           <field name="outStockMoveList" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" colSpan="12"/>
+            grid-view="out-stock-move-manuf-order-grid" colSpan="12"/>
         </panel>
         <panel name="productionWastePanel" title="Production waste" colSpan="12"
           showIf="statusSelect &gt;= 4">
@@ -262,7 +262,7 @@
             readonlyIf="wasteStockMove != null"
             onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
           <field name="wasteStockMove" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" readonly="true"/>
+            grid-view="out-stock-move-manuf-order-grid" readonly="true"/>
         </panel>
       </panel>
       <panel name="consumedProductsPanel" title="Consumed products"

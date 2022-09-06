@@ -23,11 +23,6 @@ import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PurchaseRequestService {
-
-  public void confirmCart();
-
-  public void acceptRequest(List<PurchaseRequest> purchaseRequests);
-
   public List<PurchaseOrder> generatePo(
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException;

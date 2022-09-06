@@ -1,5 +1,0 @@
----
-title: "Configurator: give access to parent sale order in configurator formuma"
-type: change
-description: |
-  In a configurator script to fill a product (or sale order line) field, the variable `parentSaleOrderLine` can now be used to get the id of the sale order being updated.

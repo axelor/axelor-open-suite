@@ -46,7 +46,7 @@ import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
@@ -115,6 +115,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
+
     ContractVersion currentVersion = contract.getCurrentContractVersion();
     versionService.waiting(currentVersion, date);
   }
@@ -122,6 +123,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
+
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     if (currentVersion.getSupposedActivationDate() != null) {
@@ -228,7 +230,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     if (!lineInvoiced.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
+          I18n.get(ContractExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
     }
   }
 
@@ -246,7 +248,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     if (!lineInvoiced.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
+          I18n.get(ContractExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
     }
   }
 
@@ -303,21 +305,21 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     if (contract.getTerminatedDate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
+          I18n.get(ContractExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
     }
     ContractVersion version = contract.getCurrentContractVersion();
 
     if (contract.getTerminatedDate().isBefore(version.getActivationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
+          I18n.get(ContractExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
     }
 
     if (version.getIsWithEngagement()) {
       if (contract.getEngagementStartDate() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
+            I18n.get(ContractExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
       }
       if (contract
           .getTerminatedDate()
@@ -326,7 +328,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                   version.getEngagementDuration(), contract.getEngagementStartDate()))) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
+            I18n.get(ContractExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
       }
     }
 
@@ -339,7 +341,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                     appBaseService.getTodayDate(contract.getCompany())))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
+          I18n.get(ContractExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
     }
   }
 
@@ -369,7 +371,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   @Override
   @Transactional
-  public void close(Contract contract, LocalDate terminationDate) {
+  public void close(Contract contract, LocalDate terminationDate) throws AxelorException {
     LocalDate today = appBaseService.getTodayDate(contract.getCompany());
 
     ContractVersion currentVersion = contract.getCurrentContractVersion();

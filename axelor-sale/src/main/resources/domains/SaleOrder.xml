@@ -5,7 +5,8 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" lang="java">
+  <entity name="SaleOrder" lang="java"
+    implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
@@ -125,7 +126,8 @@
 
     <boolean name="orderBeingEdited"/>
 
-    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"/>
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
+      copy="false"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>

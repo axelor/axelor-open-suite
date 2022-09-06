@@ -19,7 +19,15 @@ package com.axelor.apps.supplychain.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -328,7 +336,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       move.setStockMove(stockMove);
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;
@@ -465,8 +473,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             product, company, fiscalPosition, isPurchase, isFixedAssets);
 
     boolean isDebit = false;
-    if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == 1)
-        || !isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == -1) {
+    if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) > 0)
+        || !isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) < 0) {
       isDebit = true;
     }
     if (isReverse) {
@@ -535,7 +543,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             move.getPartner(),
             taxAccount,
             currencyTaxAmount,
-            productMoveLine.getDebit().compareTo(BigDecimal.ZERO) == 1,
+            productMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
             productMoveLine.getOriginDate(),
             ++counter,
             origin,
@@ -566,7 +574,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             currencyBalance.abs(),
             balance.abs(),
             null,
-            balance.compareTo(BigDecimal.ZERO) == -1,
+            balance.compareTo(BigDecimal.ZERO) < 0,
             moveDate,
             moveDate,
             originDate,

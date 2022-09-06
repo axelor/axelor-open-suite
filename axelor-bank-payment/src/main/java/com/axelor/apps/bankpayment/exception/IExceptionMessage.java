@@ -20,8 +20,10 @@ package com.axelor.apps.bankpayment.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BankPaymentExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Bank statement service */
@@ -53,6 +55,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the National Treasury Transfers and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_11 = /*$$(*/
       "%s : Please, configure a sequence for the Other Bank Orders and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_12 = /*$$(*/
+      "%s : Please, configure a sequence for the Bill of exchange and the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/
       "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
@@ -83,6 +87,10 @@ public interface IExceptionMessage {
       "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
   static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the detail record of the bank order line %s" /*)*/;
+  static final String BANK_ORDER_WRONG_ENDORSED_DETAIL_RECORD = /*$$(*/
+      "Anomaly has been detected during file generation for the endorsed detail record of the bank order line %s" /*)*/;
+  static final String BANK_ORDER_WRONG_ADDITIONAL_DETAIL_RECORD = /*$$(*/
+      "Anomaly has been detected during file generation for the additional detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/
@@ -110,9 +118,15 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_NO_SENDER_CURRENCY = /*$$(*/
       "Please set a currency in the sender bank details : %s." /*)*/;
 
-  String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
-  String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS = /*$$(*/
+      "Please fill the address in %s's partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ZIP = /*$$(*/
+      "Please fill the zip in %s's partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_CITY = /*$$(*/
+      "Please fill the city in %s's partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
       "Please fill the bank in the receiver bank details." /*)*/;
 
   /** BankOrder lines */
@@ -257,7 +271,23 @@ public interface IExceptionMessage {
       "Please select one move line" /*)*/;
   static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
       "Can't load while another reconciliation is open" /*)*/;
+  static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
+      "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
 
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
+
+  static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
+      "Email adress is missing for partner %s" /*)*/;
+
+  static final String BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE = /*$$(*/
+      "Move line's query formula has not been evaluated to a Move line" /*)*/;
+  static final String BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER = /*$$(*/
+      "Partner's query formula has not been evaluated to a Partner" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
 }
