@@ -364,9 +364,6 @@ public interface IExceptionMessage {
   static final String YEAR_1 = /*$$(*/
       "%s : You must configure a company for the fiscal year %s" /*)*/;
 
-  static final String YEAR_2 = /*$$(*/
-      "All previous fiscal years must be closed before closing %s." /*)*/;
-
   /** Batch Account customer */
   static final String BATCH_ACCOUNT_1 = /*$$(*/ "Accounting situation %s" /*)*/;
 

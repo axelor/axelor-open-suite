@@ -92,7 +92,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       throw new AxelorException(
           year,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.YEAR_2),
+          I18n.get(AccountExceptionMessage.YEAR_2),
           year.getName());
     }
 
