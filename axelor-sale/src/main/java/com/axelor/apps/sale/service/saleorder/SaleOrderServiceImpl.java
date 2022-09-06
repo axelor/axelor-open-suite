@@ -33,7 +33,7 @@ import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
@@ -129,7 +130,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
+          I18n.get(SaleExceptionMessage.SALES_ORDER_COMPLETED));
     }
 
     saleOrder.setOrderBeingEdited(true);
@@ -197,10 +198,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
               pack, saleOrder, packQty, soLines, sequence);
     }
 
+    boolean doNotDisplayHeaderAndEndPack =
+        Boolean.TRUE.equals(pack.getDoNotDisplayHeaderAndEndPack());
     SaleOrderLine soLine;
     for (PackLine packLine : packLineList) {
-      if (packLine.getTypeSelect() != PackLineRepository.TYPE_NORMAL
-          && Boolean.TRUE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
+      if (doNotDisplayHeaderAndEndPack
+          && (Objects.equals(packLine.getTypeSelect(), PackLineRepository.TYPE_START_OF_PACK)
+              || Objects.equals(packLine.getTypeSelect(), PackLineRepository.TYPE_END_OF_PACK))) {
         continue;
       }
       soLine =
@@ -321,7 +325,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+              I18n.get(SaleExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
         }
       }
     }
@@ -362,13 +366,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Transactional
-  public SaleOrder seperateInNewQuotation(
+  public SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {
 
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
-    List<SaleOrderLine> seperatedSOLines;
+    List<SaleOrderLine> separatedSOLines;
 
     SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
@@ -382,16 +386,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLine saleOrderLine =
           Beans.get(SaleOrderLineRepository.class)
               .find(Long.parseLong(soLine.get("id").toString()));
-      seperatedSOLines = new ArrayList<>();
-      seperatedSOLines.add(saleOrderLine);
-      seperatedSOLines.addAll(
+      separatedSOLines = new ArrayList<>();
+      separatedSOLines.add(saleOrderLine);
+      separatedSOLines.addAll(
           originalSOLines.stream()
               .filter(
                   soline ->
                       StringUtils.notBlank(saleOrderLine.getManualId())
                           && saleOrderLine.getManualId().equals(soline.getParentId()))
               .collect(Collectors.toList()));
-      manageSeperatedSOLines(seperatedSOLines, originalSOLines, copySaleOrder);
+      manageSeparatedSOLines(separatedSOLines, originalSOLines, copySaleOrder);
     }
 
     copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
@@ -402,12 +406,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return copySaleOrder;
   }
 
-  private void manageSeperatedSOLines(
-      List<SaleOrderLine> seperatedSOLines,
+  private void manageSeparatedSOLines(
+      List<SaleOrderLine> separatedSOLines,
       List<SaleOrderLine> originalSOLines,
       SaleOrder copySaleOrder) {
 
-    for (SaleOrderLine SSOLine : seperatedSOLines) {
+    for (SaleOrderLine SSOLine : separatedSOLines) {
       copySaleOrder.addSaleOrderLineListItem(SSOLine);
 
       List<SaleOrderLine> partnerComplementarySOLines =

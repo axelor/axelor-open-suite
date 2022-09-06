@@ -20,8 +20,10 @@ package com.axelor.apps.account.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link AccountExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String INVOICE_DUPLICATED_WITHIN_SAME_YEAR =
@@ -1098,10 +1100,4 @@ public interface IExceptionMessage {
 
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
-
-  static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
-      "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
-
-  static final String MOVE_14 = /*$$(*/
-      "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }

@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -135,7 +135,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       throw new AxelorException(
           Sequence.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
+          I18n.get(AccountExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
           subrogationRelease.getCompany().getName());
     }
     this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
@@ -168,7 +168,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       throw new AxelorException(
           SubrogationRelease.class,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
+          I18n.get(
+              AccountExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
           invoicesIDList);
     }
   }

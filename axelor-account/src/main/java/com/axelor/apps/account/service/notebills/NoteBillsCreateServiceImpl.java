@@ -3,11 +3,12 @@ package com.axelor.apps.account.service.notebills;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.NoteBills;
 import com.axelor.apps.account.db.repo.NoteBillsRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -57,8 +58,8 @@ public class NoteBillsCreateServiceImpl implements NoteBillsCreateService {
     if (!sequenceService.hasSequence(SequenceRepository.NOTE_BILLS, noteBills.getCompany())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           noteBills.getCompany().getName());
     }
     String seq =

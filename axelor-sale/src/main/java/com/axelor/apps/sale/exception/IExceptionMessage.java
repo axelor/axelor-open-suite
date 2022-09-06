@@ -20,8 +20,10 @@ package com.axelor.apps.sale.exception;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link SaleExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Sales Order Stock Move Service */

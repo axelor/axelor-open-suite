@@ -66,11 +66,11 @@
         <field name="reference" colSpan="12"/>
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-group-move-company-onchange" form-view="company-form"
             grid-view="company-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="3"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
@@ -171,7 +171,7 @@
           colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
-          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+          showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
@@ -641,6 +641,7 @@
     <field name="$journalTechnicalTypeSelect"
       expr="eval: journal?.journalType?.technicalTypeSelect"/>
   </action-record>
+
 
   <!-- ACTION ATTRS -->
   <action-attrs name="action-move-attrs-set-domain-payment-mode">
