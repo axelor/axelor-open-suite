@@ -92,9 +92,9 @@ public final class AccountExceptionMessage {
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
-  
+
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/
-	      "Account of financial discount is missing for company: %s (tax: %s)" /*)*/;
+      "Account of financial discount is missing for company: %s (tax: %s)" /*)*/;
 
   /** AccountingSituationService * */
   public static final String ACCOUNTING_SITUATION_1 = /*$$(*/
@@ -619,6 +619,14 @@ public final class AccountExceptionMessage {
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_46 = /*$$(*/
       "%s : You must configure an supplier advance payment account for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_47 = /*$$(*/
+      "%s : You must configure a purchase financial discount tax for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_48 = /*$$(*/
+      "%s : You must configure a sale financial discount tax for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_49 = /*$$(*/
+      "%s : You must configure a purchase financial discount account for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_50 = /*$$(*/
+      "%s : You must configure a sale financial discount account for the company %s" /*)*/;
 
   public static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;

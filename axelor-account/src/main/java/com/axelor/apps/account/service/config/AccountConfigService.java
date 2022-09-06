@@ -631,8 +631,8 @@ public class AccountConfigService {
     if (accountConfig.getPurchFinancialDiscountTax() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_47),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_47),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getPurchFinancialDiscountTax();
@@ -642,8 +642,8 @@ public class AccountConfigService {
     if (accountConfig.getSaleFinancialDiscountTax() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_48),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_48),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleFinancialDiscountTax();
@@ -654,8 +654,8 @@ public class AccountConfigService {
     if (accountConfig.getPurchFinancialDiscountAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_49),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_49),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getPurchFinancialDiscountAccount();
@@ -666,8 +666,8 @@ public class AccountConfigService {
     if (accountConfig.getSaleFinancialDiscountAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_50),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_50),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleFinancialDiscountAccount();

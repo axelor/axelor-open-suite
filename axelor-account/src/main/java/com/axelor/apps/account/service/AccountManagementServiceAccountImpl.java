@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
@@ -34,11 +33,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,28 +224,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     return fixedAssetCategory;
   }
 
-  public Account getFinancialDiscountAccount(Tax financialDiscountTax, Company company)
-      throws AxelorException {
-    List<AccountManagement> accountManagements = Lists.newArrayList();
-    List<AccountManagement> taxAccountManagements = financialDiscountTax.getAccountManagementList();
-    if (!CollectionUtils.isEmpty(taxAccountManagements)) {
-      accountManagements.addAll(taxAccountManagements);
-    }
-
-    AccountManagement accountManagement = getAccountManagement(accountManagements, company);
-    Account account = null;
-    if (accountManagement != null) {
-      account = accountManagement.getFinancialDiscountAccount();
-    }
-    if (account == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_2),
-          company.getName(),
-          financialDiscountTax.getName());
-    }
-    return account;
-  }
   @Override
   public Account getCashAccount(AccountManagement accountManagement, PaymentMode paymentMode)
       throws AxelorException {

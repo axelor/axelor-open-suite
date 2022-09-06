@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -71,9 +70,6 @@ public interface AccountManagementAccountService extends AccountManagementServic
    * @throws AxelorException
    */
   public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company);
-
-  public Account getFinancialDiscountAccount(Tax financialDiscountTax, Company company)
-	      throws AxelorException;
 
   public Account getCashAccount(AccountManagement accountManagement, PaymentMode paymentMode)
       throws AxelorException;

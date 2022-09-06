@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
@@ -32,7 +33,6 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -72,7 +72,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected AppAccountService appAccountService;
-  protected AccountManagementAccountService accountManagementService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -85,8 +84,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
-      AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementService) {
+      AppAccountService appAccountService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -98,7 +96,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.appAccountService = appAccountService;
-    this.accountManagementService = accountManagementService;
   }
 
   /**
@@ -377,10 +374,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   protected Account getFinancialDiscountAccount(Invoice invoice, Company company)
       throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (InvoiceToolService.isPurchase(invoice)) {
-      return accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount();
+      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
     } else {
-      return accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount();
+      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
     }
   }
 
@@ -389,8 +387,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Tax tax =
         InvoiceToolService.isPurchase(invoice)
-            ? accountConfig.getPurchFinancialDiscountTax()
-            : accountConfig.getSaleFinancialDiscountTax();
+            ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+            : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
 
     return tax.getAccountManagementList().stream()
         .filter(it -> it.getCompany().equals(company))
