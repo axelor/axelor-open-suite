@@ -8,6 +8,8 @@
   <entity name="PaymentSession" lang="java">
     <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder"
       title="Bank Order"/>
+
+    <finder-method name="findByBankOrder" using="bankOrder"/>
   </entity>
 
 </domain-models>
