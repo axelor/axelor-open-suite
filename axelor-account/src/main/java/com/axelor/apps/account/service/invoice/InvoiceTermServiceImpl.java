@@ -250,7 +250,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
-  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
+  @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
     this.computeFinancialDiscount(
         invoiceTerm,
         invoice.getInTaxTotal(),
@@ -1475,5 +1476,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       toggle(invoiceTerm, value);
     }
+  }
+
+  @Override
+  public BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    BigDecimal invoiceTermTotal =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal diff = total.subtract(invoiceTermTotal);
+
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.get(invoiceTermList.size() - 1);
+    lastInvoiceTerm.setAmount(lastInvoiceTerm.getAmount().add(diff));
+    lastInvoiceTerm.setAmountRemaining(lastInvoiceTerm.getAmountRemaining().add(diff));
+
+    return invoiceTermTotal.add(diff);
   }
 }
