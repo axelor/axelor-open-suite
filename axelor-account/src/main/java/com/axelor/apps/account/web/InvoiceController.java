@@ -1163,7 +1163,12 @@ public class InvoiceController {
   public void updateInvoiceTermPaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
-      invoice.getInvoiceTermList().forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+
+      invoice.getInvoiceTermList().stream()
+          .filter(invoiceTermService::isNotReadonly)
+          .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
+
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
