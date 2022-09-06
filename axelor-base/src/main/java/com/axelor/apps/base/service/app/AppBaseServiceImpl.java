@@ -18,35 +18,24 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
-import com.axelor.event.Observes;
-import com.axelor.events.StartupEvent;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
-import com.google.inject.servlet.RequestScoper;
-import com.google.inject.servlet.ServletScopes;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Singleton;
 
@@ -234,50 +223,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       return 10;
     } else {
       return processTimeout;
-    }
-  }
-
-  public void installAppsOnStartup(@Observes StartupEvent event) {
-
-    final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
-
-    try (RequestScoper.CloseableScope ignored = scope.open()) {
-
-      AppSettings appSettings = AppSettings.get();
-
-      String apps = appSettings.get("aos.apps.install-apps");
-      if (StringUtils.isBlank(apps)) {
-        return;
-      }
-
-      boolean importDemoData = appSettings.getBoolean("data.import.demo-data", false);
-      String lang = appSettings.get("application.locale", DEFAULT_LOCALE);
-
-      List<App> appList = new ArrayList<>();
-      AppRepository appRepo = Beans.get(AppRepository.class);
-
-      if (apps.equalsIgnoreCase("all")) {
-        appList = appRepo.all().filter("self.active IS NULL OR self.active = false").fetch();
-      } else {
-        String[] appCodes = apps.split(",");
-        for (String code : appCodes) {
-          App app = appRepo.findByCode(code.trim());
-          if (app != null) {
-            appList.add(app);
-          }
-        }
-      }
-
-      if (appList.size() == 0) {
-        return;
-      }
-
-      try {
-        Beans.get(AppService.class).bulkInstall(appList, importDemoData, lang);
-      } catch (AxelorException | IOException e) {
-        TraceBackService.trace(e);
-        e.printStackTrace();
-      }
     }
   }
 }
