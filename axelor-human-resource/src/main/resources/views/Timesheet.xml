@@ -640,12 +640,13 @@
   </action-method>
 
   <action-attrs name="action-hr-attrs-set-user-domain">
+    <attribute for="$configDate" name="value" expr="eval: __config__.date"/>
     <attribute for="user" name="domain"
       if="company &amp;&amp; __user__?.employee?.hrManager"
-      expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId AND self.status != 3').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
+      expr="eval: &quot; (self.employee.leavingDate is NULL OR self.employee.leavingDate &gt; :$configDate) AND self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId AND self.status != 3').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
     <attribute for="user" name="domain"
       if="company &amp;&amp; !__user__?.employee?.hrManager"
-      expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
+      expr="eval: &quot; (self.employee.leavingDate is NULL OR self.employee.leavingDate &gt; :$configDate) AND self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
     <attribute for="user" name="domain" if="!company"
       expr="eval: &quot; self.employee.id IN (0) &quot;"/>
   </action-attrs>
