@@ -511,8 +511,8 @@
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="paymentMode" colSpan="3" canEdit="false" widget="SuggestBox"
         onSelect="action-set-payment-mode-domain"
-        onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list"
-        form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+        onChange="action-invoice-group-payment-mode-onchange" form-view="payment-mode-form"
+        grid-view="payment-mode-grid"/>
       <field name="paymentCondition" colSpan="3" canEdit="false"
         readonlyIf="statusSelect == 3" widget="SuggestBox"
         onChange="action-invoice-group-payment-condition-onchange"
@@ -1706,6 +1706,13 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
+  <action-group name="action-invoice-group-payment-mode-onchange">
+    <action name="action-invoice-method-fill-company-bank-details"/>
+    <action name="action-invoice-method-check-partner-bank-details-list"/>
+    <action name="action-invoice-method-update-invoice-term-payment-mode"
+      if="invoiceTermList &amp;&amp; !invoiceTermList.isEmpty()"/>
+  </action-group>
+
   <action-attrs name="action-invoice-attrs-in-ati">
     <attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     <attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
@@ -2288,6 +2295,11 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-update-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController" method="updateInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-invoice-term-payment-mode">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateInvoiceTermPaymentMode"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
