@@ -87,6 +87,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -338,6 +339,21 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.VENTILATE_STATE_7));
       }
+    }
+
+    if (!Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
+        && invoice.getFinancialDiscount() != null) {
+      String message;
+
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE;
+      } else {
+        message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE;
+      }
+
+      throw new AxelorException(
+          invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
     }
 
     log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
