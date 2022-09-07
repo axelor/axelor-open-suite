@@ -51,8 +51,10 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
@@ -75,6 +77,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -91,6 +94,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected CurrencyService currencyService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -101,7 +105,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      CurrencyService currencyService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -110,6 +115,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -203,6 +209,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
+        this.computeCompanyAmounts(invoiceTerm);
         this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       } else {
         total = total.add(invoiceTerm.getAmount());
@@ -248,6 +255,32 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     return invoiceTerm;
+  }
+
+  protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) throws AxelorException {
+    BigDecimal companyAmount = invoiceTerm.getAmount();
+    BigDecimal companyAmountRemaining = invoiceTerm.getAmountRemaining();
+
+    if (this.isMultiCurrency(invoiceTerm)) {
+      Currency currency = this.getCurrency(invoiceTerm);
+      Currency companyCurrency = this.getCompanyCurrency(invoiceTerm);
+
+      if (currency != null && companyCurrency != null) {
+        companyAmount =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    currency, companyCurrency, companyAmount, LocalDate.now())
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        companyAmountRemaining =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    currency, companyCurrency, companyAmountRemaining, LocalDate.now())
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      }
+    }
+
+    invoiceTerm.setCompanyAmount(companyAmount);
+    invoiceTerm.setCompanyAmountRemaining(companyAmountRemaining);
   }
 
   @Override
@@ -316,7 +349,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
+  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm)
+      throws AxelorException {
 
     invoiceTerm.setInvoice(invoice);
     invoiceTerm.setIsCustomized(true);
@@ -340,6 +374,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
+    this.computeCompanyAmounts(invoiceTerm);
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
@@ -351,7 +386,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public InvoiceTerm initCustomizedInvoiceTerm(
-      MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) {
+      MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) throws AxelorException {
     if (move != null) {
       invoiceTerm.setInvoice(move.getInvoice());
       invoiceTerm.setPaymentMode(move.getPaymentMode());
@@ -384,6 +419,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
+    this.computeCompanyAmounts(invoiceTerm);
 
     if (move != null
         && move.getPaymentCondition() != null
@@ -1005,6 +1041,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.setPfpStatus(newInvoiceTerm);
+    this.computeCompanyAmounts(newInvoiceTerm);
 
     return newInvoiceTerm;
   }
@@ -1479,7 +1516,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+  public BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total)
+      throws AxelorException {
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmount)
@@ -1489,7 +1527,39 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     InvoiceTerm lastInvoiceTerm = invoiceTermList.get(invoiceTermList.size() - 1);
     lastInvoiceTerm.setAmount(lastInvoiceTerm.getAmount().add(diff));
     lastInvoiceTerm.setAmountRemaining(lastInvoiceTerm.getAmountRemaining().add(diff));
+    this.computeCompanyAmounts(lastInvoiceTerm);
 
     return invoiceTermTotal.add(diff);
+  }
+
+  protected Currency getCurrency(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null) {
+      return Optional.of(invoiceTerm.getInvoice()).map(Invoice::getCurrency).orElse(null);
+    } else {
+      return Optional.of(invoiceTerm.getMoveLine())
+          .map(MoveLine::getMove)
+          .map(Move::getCurrency)
+          .orElse(null);
+    }
+  }
+
+  protected Currency getCompanyCurrency(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null) {
+      return Optional.of(invoiceTerm.getInvoice())
+          .map(Invoice::getCompany)
+          .map(Company::getCurrency)
+          .orElse(null);
+    } else {
+      return Optional.of(invoiceTerm.getMoveLine())
+          .map(MoveLine::getMove)
+          .map(Move::getCompany)
+          .map(Company::getCurrency)
+          .orElse(null);
+    }
+  }
+
+  @Override
+  public boolean isMultiCurrency(InvoiceTerm invoiceTerm) {
+    return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
   }
 }

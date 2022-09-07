@@ -279,6 +279,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_LINE_INVOICE_TERM_SUM_AMOUNT = /*$$(*/
       "The sum of all invoice terms is not equal to the move line amount" /*)*/;
 
+  public static final String MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT = /*$$(*/
+      "The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
+
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
       "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
 
