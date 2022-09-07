@@ -13,7 +13,9 @@
     <date name="estimatedPaymentDate" title="Estimated payment date"/>
     <date name="originDate" title="Origin date"/>
     <decimal name="amount" title="Amount"/>
+    <decimal name="companyAmount" title="Amount (company currency)"/>
     <decimal name="amountRemaining" title="Amount remaining"/>
+    <decimal name="companyAmountRemaining" title="Amount remaining (company currency)"/>
     <decimal name="remainingPfpAmount" title="Remaining amount" scale="2" precision="20"
       help="This amount corresponds, in the event of a partial pass for payment, to the remaining amount which didn't get the consent to be paid. This amount corresponds to the amount of the invoice term which has been newly generated during the partial pass for payment process and which is linked to this term."/>
     <decimal name="initialPfpAmount" title="Initial amount" scale="2" precision="20"
