@@ -1,0 +1,3 @@
+---
+title : "ACCOUNT MOVE :  update sequence when we validate it only if previous is a draft sequence"
+type : fix
