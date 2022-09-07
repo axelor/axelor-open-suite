@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.bankorder;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -57,6 +58,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       ExpenseService expenseService,
       BankOrderMoveService bankOrderMoveService,
       AppBaseService appBaseService,
+      PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo) {
     super(
         bankOrderRepo,
@@ -69,6 +71,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         bankOrderLineOriginService,
         bankOrderMoveService,
         appBaseService,
+        paymentSessionCancelService,
         paymentSessionRepo);
     this.expenseService = expenseService;
   }
@@ -96,10 +99,11 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(BankOrder bankOrder) throws AxelorException {
-    super.cancelPayment(bankOrder);
+  public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
+    bankOrder = super.cancelPayment(bankOrder);
+
     if (!Beans.get(AppService.class).isApp("employee")) {
-      return;
+      return bankOrder;
     }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
@@ -112,5 +116,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         expenseService.cancelPayment(expense);
       }
     }
+
+    return bankOrder;
   }
 }
