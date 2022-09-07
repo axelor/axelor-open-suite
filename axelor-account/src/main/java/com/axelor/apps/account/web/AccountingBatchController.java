@@ -116,6 +116,29 @@ public class AccountingBatchController {
     runBatch(AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS, request, response);
   }
 
+  public void actionGenerateMoves(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch =
+        Beans.get(AccountingBatchRepository.class)
+            .find(request.getContext().asType(AccountingBatch.class).getId());
+    Batch batch = null;
+
+    try {
+      batch = Beans.get(AccountingBatchService.class).run(accountingBatch);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
+
+    response.setReload(true);
+    if (batch != null) {
+      response.setNotify(
+          "Traitement terminé : Réussi : "
+              + batch.getDone()
+              + " ; Nombre d'anomalie : "
+              + batch.getAnomaly());
+    }
+  }
+
   public void runBatch(Integer actionSelect, ActionRequest request, ActionResponse response) {
     try {
 

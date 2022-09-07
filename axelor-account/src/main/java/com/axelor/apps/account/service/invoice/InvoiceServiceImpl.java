@@ -55,6 +55,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
@@ -1344,5 +1345,38 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
 
     return deadlineDate.isBefore(invoice.getDueDate()) ? invoice.getDueDate() : deadlineDate;
+  }
+
+  @Override
+  public List<Invoice> getValidatedInvoiceListForFiscalPeriod(
+      TradingName tradingName, Period period, Company company) {
+    List<Invoice> invoiceList = new ArrayList<>();
+    if (tradingName != null) {
+      invoiceList =
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.tradingName = ? and self.company = ?",
+                  InvoiceRepository.STATUS_VALIDATED,
+                  InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                  period.getFromDate().getMonthValue(),
+                  period.getFromDate().getYear(),
+                  tradingName,
+                  company)
+              .fetch();
+    } else {
+      invoiceList =
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.statusSelect = ? AND self.operationTypeSelect = ? AND MONTH(self.invoiceDate) = ? AND YEAR(self.invoiceDate) = ? AND self.company = ?",
+                  InvoiceRepository.STATUS_VALIDATED,
+                  InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                  period.getFromDate().getMonthValue(),
+                  period.getFromDate().getYear(),
+                  company)
+              .fetch();
+    }
+    return invoiceList;
   }
 }

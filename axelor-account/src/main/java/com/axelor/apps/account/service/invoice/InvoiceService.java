@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.auth.db.User;
@@ -353,4 +354,7 @@ public interface InvoiceService {
 
   @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
+
+  List<Invoice> getValidatedInvoiceListForFiscalPeriod(
+      TradingName tradingName, Period period, Company company);
 }

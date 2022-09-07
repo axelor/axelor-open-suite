@@ -29,6 +29,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -40,6 +42,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,6 +55,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
+  protected SequenceService sequenceService;
   protected CompanyConfigService companyConfigService;
 
   protected AppAccountService appAccountService;
@@ -61,10 +65,12 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       AppAccountService appAccountService,
       PeriodService periodService,
       MoveRepository moveRepository,
+      SequenceService sequenceService,
       CompanyConfigService companyConfigService) {
 
     this.periodService = periodService;
     this.moveRepository = moveRepository;
+    this.sequenceService = sequenceService;
     this.companyConfigService = companyConfigService;
 
     this.appAccountService = appAccountService;
@@ -332,5 +338,39 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setInvoice(invoice);
     move.setPaymentVoucher(paymentVoucher);
     return move;
+  }
+
+  @Override
+  @Transactional
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Partner partner,
+      Currency currency,
+      Period period,
+      LocalDate date,
+      TradingName tradingName,
+      PaymentMode paymentMode,
+      int functionalOriginSelect,
+      String origin,
+      String description)
+      throws AxelorException {
+    Move move =
+        createMove(
+            journal,
+            company,
+            currency,
+            partner,
+            date,
+            null,
+            paymentMode,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            functionalOriginSelect,
+            origin,
+            description);
+    move.setPeriod(period);
+    move.setTradingName(tradingName);
+    return moveRepository.save(move);
   }
 }

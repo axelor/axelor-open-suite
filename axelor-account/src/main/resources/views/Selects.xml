@@ -206,6 +206,7 @@
     <option value="21">Close/Open the annual accounts</option>
     <option value="23">Block customer with late payment issues</option>
     <option value="24">Exchanges</option>
+    <option value="25">Generate moves</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">

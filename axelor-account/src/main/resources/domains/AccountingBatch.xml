@@ -80,6 +80,13 @@
     <many-to-one ref="com.axelor.apps.account.db.Journal" name="billOfExchangeJournal"
       title="Bill of exchange journal"/>
 
+    <!-- GENERATE MOVES -->
+    <string name="name" title="Nom"/>
+    <boolean name="isMoveGenerationByTradingName"
+      title="Manage move generation by trading name"
+      help="Enable move generation being handled by trading name. If enabled with no trading name selected, all trading names will be considered selected."/>
+    <boolean name="isMoveManagedByPartners" title="Manage move generation by partners"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
@@ -93,6 +100,7 @@
 		public static final int ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS = 21;
 		public static final int ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING = 23;
 		public static final int ACTION_BILL_OF_EXCHANGE = 24;
+		public static final int ACTION_GENERATE_MOVES = 25;
 
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;

@@ -17,14 +17,20 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -33,6 +39,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.shiro.util.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public class InvoiceToolService {
@@ -267,5 +277,67 @@ public class InvoiceToolService {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
     }
     return functionalOrigin;
+  }
+
+  public Map<Currency, List<Invoice>> getCurrencyMap(List<Invoice> invoiceList) {
+    return invoiceList.stream().collect(Collectors.groupingBy(Invoice::getCurrency));
+  }
+
+  public Map<Partner, List<Invoice>> getPartnerMap(List<Invoice> invoiceList) {
+    return invoiceList.stream().collect(Collectors.groupingBy(Invoice::getPartner));
+  }
+
+  public Map<Account, BigDecimal> getAmountMap(
+      Map<Account, BigDecimal> amountMap, List<InvoiceLine> invoiceLineList) {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      if (amountMap.containsKey(invoiceLine.getAccount())) {
+        amountMap.put(
+            invoiceLine.getAccount(),
+            amountMap.get(invoiceLine.getAccount()).add(invoiceLine.getExTaxTotal()));
+      } else {
+        amountMap.put(invoiceLine.getAccount(), invoiceLine.getExTaxTotal());
+      }
+    }
+    return amountMap;
+  }
+
+  public Map<Tax, BigDecimal> getTaxMap(
+      Map<Tax, BigDecimal> taxMap, List<InvoiceLineTax> invoiceLineTaxList) {
+    for (InvoiceLineTax tax : invoiceLineTaxList) {
+      if (taxMap.containsKey(tax.getTaxLine().getTax())) {
+        taxMap.put(
+            tax.getTaxLine().getTax(),
+            taxMap.get(tax.getTaxLine().getTax()).add(tax.getTaxTotal()));
+      } else {
+        taxMap.put(tax.getTaxLine().getTax(), tax.getTaxTotal());
+      }
+    }
+    return taxMap;
+  }
+
+  public Map<PaymentMode, BigDecimal> getPaymentMap(
+      Map<PaymentMode, BigDecimal> paymentMap,
+      List<InvoicePayment> invoicePaymentList,
+      Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoicePaymentList)) {
+      if (paymentMap.containsKey(invoice.getPaymentMode())) {
+        paymentMap.put(
+            invoice.getPaymentMode(),
+            paymentMap.get(invoice.getPaymentMode()).add(invoice.getInTaxTotal()));
+      } else {
+        paymentMap.put(invoice.getPaymentMode(), invoice.getInTaxTotal());
+      }
+    } else {
+      for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+        if (paymentMap.containsKey(invoicePayment.getPaymentMode())) {
+          paymentMap.put(
+              invoicePayment.getPaymentMode(),
+              paymentMap.get(invoicePayment.getPaymentMode()).add(invoicePayment.getAmount()));
+        } else {
+          paymentMap.put(invoicePayment.getPaymentMode(), invoicePayment.getAmount());
+        }
+      }
+    }
+    return paymentMap;
   }
 }
