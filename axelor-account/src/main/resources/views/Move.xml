@@ -632,8 +632,9 @@
 
   <action-record name="action-account-move-record-set-currency"
     model="com.axelor.apps.account.db.Move">
-    <field name="currency" expr="eval: partner?.currency"/>
-    <field name="currencyCode" expr="eval: partner?.currency?.codeISO"/>
+    <field name="currency" expr="eval: partner ? partner?.currency : company?.currency"/>
+    <field name="currencyCode"
+      expr="eval: partner ? partner?.currency?.codeISO : company?.currency?.codeISO"/>
   </action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
