@@ -85,7 +85,7 @@
     <many-to-one name="countryOfOrigin" ref="com.axelor.apps.base.db.Country"/>
 
     <!-- Specific to mobile application -->
-    <boolean name="isRealQtyModifyByUser"/>
+    <boolean name="isRealQtyModifiedByUser"/>
     <!-- Specific to mobile application -->
 
     <extra-code><![CDATA[
