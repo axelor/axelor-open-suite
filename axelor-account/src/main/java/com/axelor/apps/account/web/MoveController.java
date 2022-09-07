@@ -151,45 +151,18 @@ public class MoveController {
 
   @SuppressWarnings("unchecked")
   public void accountingMultipleMoves(ActionRequest request, ActionResponse response) {
-    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+    List<Integer> moveIds = (List<Integer>) request.getContext().get("_ids");
     try {
       if (moveIds != null && !moveIds.isEmpty()) {
-
-        List<? extends Move> moveList =
-            Beans.get(MoveRepository.class)
-                .all()
-                .filter(
-                    "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
-                    moveIds,
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_CANCELED)
-                .order("date")
-                .fetch();
-        if (CollectionUtils.isNotEmpty(moveList)) {
-          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
-          User user = AuthUtils.getUser();
-          for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
-            Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  String.format(
-                      I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
-                      move.getReference()));
-            }
-          }
-          String error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
-          if (error.length() > 0) {
-            response.setFlash(
-                String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
-          } else {
-            response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
-          }
-
-          response.setReload(true);
+        String error = Beans.get(MoveValidateService.class).accountingMultiple(moveIds);
+        if (error.length() > 0) {
+          response.setFlash(
+              String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
         } else {
-          response.setFlash(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED));
+          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
         }
+
+        response.setReload(true);
       } else {
         response.setFlash(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED));
       }

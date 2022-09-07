@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -504,23 +505,37 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   @Override
-  public String accountingMultiple(List<? extends Move> moveList) {
+  public String accountingMultiple(List<Integer> moveIds) {
     String errors = "";
-    if (moveList == null) {
+    if (moveIds == null) {
       return errors;
     }
-    for (Move move : moveList) {
-
+    User user = AuthUtils.getUser();
+    int i = 0;
+    for (Integer moveId : moveIds) {
+      Move move = moveRepository.find(moveId.longValue());
       try {
-        accounting(moveRepository.find(move.getId()));
-        JPA.clear();
+        if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              String.format(
+                  I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                  move.getReference()));
+        }
+        if (move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED
+            && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+          accounting(move);
+        }
       } catch (Exception e) {
         TraceBackService.trace(e);
         if (errors.length() > 0) {
           errors = errors.concat(", ");
         }
         errors = errors.concat(move.getReference());
-        JPA.clear();
+      } finally {
+        if (++i % 20 == 0) {
+          JPA.clear();
+        }
       }
     }
 
