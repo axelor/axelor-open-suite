@@ -191,7 +191,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   public static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
-
   public static final String ACCOUNTING_REPORT_9 = /*$$(*/
       "Error : Missing accounting report type for %s" /*)*/;
   public static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
@@ -1283,6 +1282,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
+  public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
+      "Please select a cash account in config of the payment mode %s" /*)*/;
+
   public static final String MASS_UPDATE_SUCCESSFUL =
       /*$$(*/ "Operation successful : %s record(s) updated." /*)*/;
 
@@ -1319,9 +1321,6 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND = /*$$(*/
       "Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue." /*)*/;
-
-  public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
-      "Please select a cash account in config of the payment mode %s" /*)*/;
 
   public static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;

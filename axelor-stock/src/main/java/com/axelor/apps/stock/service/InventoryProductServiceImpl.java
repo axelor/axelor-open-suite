@@ -18,7 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -44,7 +44,7 @@ public class InventoryProductServiceImpl implements InventoryProductService {
     if (duplicateCounter > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR));
+          I18n.get(StockExceptionMessage.INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR));
     }
   }
 }

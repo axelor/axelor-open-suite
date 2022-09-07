@@ -41,6 +41,11 @@ public final class StockExceptionMessage {
       "Can only cancel a validated inventory." /*)*/;
   public static final String INVENTORY_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft if cancelled." /*)*/;
+  public static final String INVENTORY_VALIDATE_INVENTORY_LINE_LIST = /*$$(*/
+      "Please fill all inventory lines" /*)*/;
+
+  public static final String INVENTORY_LINE_STOCK_LOCATION_MISSING = /*$$(*/
+      "Stock location is missing for these lines : %s" /*)*/;
 
   /** Stock Location Line Service Impl */
   public static final String LOCATION_LINE_1 = /*$$(*/
