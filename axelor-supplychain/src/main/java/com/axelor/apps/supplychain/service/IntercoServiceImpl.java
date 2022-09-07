@@ -483,7 +483,7 @@ public class IntercoServiceImpl implements IntercoService {
       if (invoiceLine.getAnalyticDistributionTemplate() != null) {
         invoiceLine.setAnalyticDistributionTemplate(
             accountManagementAccountService.getAnalyticDistributionTemplate(
-                invoiceLine.getProduct(), intercoInvoice.getCompany()));
+                invoiceLine.getProduct(), intercoInvoice.getCompany(), isPurchase));
         List<AnalyticMoveLine> analyticMoveLineList =
             invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
         analyticMoveLineList.forEach(

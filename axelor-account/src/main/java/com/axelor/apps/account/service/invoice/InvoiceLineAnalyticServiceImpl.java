@@ -65,8 +65,10 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            invoice.getPartner(), invoiceLine.getProduct(), invoice.getCompany());
-
+            invoice.getPartner(),
+            invoiceLine.getProduct(),
+            invoice.getCompany(),
+            InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
     if (invoiceLine.getAnalyticMoveLineList() != null) {

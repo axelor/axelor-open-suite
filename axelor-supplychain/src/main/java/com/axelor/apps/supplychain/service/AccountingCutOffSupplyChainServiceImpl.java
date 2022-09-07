@@ -482,7 +482,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     moveLine.setDate(moveDate);
     moveLine.setDueDate(moveDate);
 
-    getAndComputeAnalyticDistribution(product, move, moveLine);
+    getAndComputeAnalyticDistribution(product, move, moveLine, isPurchase);
 
     move.addMoveLineListItem(moveLine);
     if (recoveredTax) {

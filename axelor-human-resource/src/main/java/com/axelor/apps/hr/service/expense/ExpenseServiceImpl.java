@@ -19,7 +19,6 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -152,34 +151,6 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.periodRepository = periodRepository;
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.kilometricService = kilometricService;
-  }
-
-  @Override
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
-      throws AxelorException {
-
-    if (accountConfigService
-            .getAccountConfig(expense.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return expenseLine;
-    }
-
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        analyticMoveLineService.getAnalyticDistributionTemplate(
-            expenseLine.getEmployee().getContactPartner(),
-            expenseLine.getExpenseProduct(),
-            expense.getCompany());
-
-    expenseLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-
-    if (expenseLine.getAnalyticMoveLineList() != null) {
-      expenseLine.getAnalyticMoveLineList().clear();
-    }
-
-    this.computeAnalyticDistribution(expenseLine);
-
-    return expenseLine;
   }
 
   @Override

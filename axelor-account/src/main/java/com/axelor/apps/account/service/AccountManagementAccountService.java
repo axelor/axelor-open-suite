@@ -61,7 +61,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
    * @throws AxelorException
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Product product, Company company);
+      Product product, Company company, boolean isPurchase) throws AxelorException;
 
   /**
    * Get the product fixed asset category
