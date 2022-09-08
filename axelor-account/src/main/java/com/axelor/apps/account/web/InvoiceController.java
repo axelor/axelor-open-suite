@@ -75,7 +75,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -1180,11 +1179,9 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
 
-      if (invoice.getCurrency() != null
-          && invoice.getCompany() != null
-          && invoice.getPartner() != null
+      if (invoice.getPartner() != null
           && invoice.getPartner().getFinancialDiscount() != null
-          && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())) {
+          && InvoiceToolService.isMultiCurrency(invoice)) {
         String partnerType =
             InvoiceToolService.isPurchase(invoice) ? I18n.get("Supplier") : I18n.get("Customer");
 

@@ -87,7 +87,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -341,8 +340,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
-    if (!Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
-        && invoice.getFinancialDiscount() != null) {
+    if (invoice.getFinancialDiscount() != null && InvoiceToolService.isMultiCurrency(invoice)) {
       String message;
 
       if (InvoiceToolService.isPurchase(invoice)) {
