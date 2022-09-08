@@ -47,7 +47,9 @@ public interface MoveLineCreateService {
       LocalDate originDate,
       Integer counter,
       String origin,
-      String description)
+      String description,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate)
       throws AxelorException;
 
   MoveLine createMoveLine(
