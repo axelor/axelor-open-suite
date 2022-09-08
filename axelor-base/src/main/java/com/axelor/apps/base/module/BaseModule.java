@@ -117,6 +117,8 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
+import com.axelor.apps.base.service.administration.SequenceVersionGeneratorServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.ActionServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
@@ -257,5 +259,6 @@ public class BaseModule extends AxelorModule {
     bind(PricingService.class).to(PricingServiceImpl.class);
     bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
     bind(InternationalService.class).to(InternationalServiceImpl.class);
+    bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
   }
 }
