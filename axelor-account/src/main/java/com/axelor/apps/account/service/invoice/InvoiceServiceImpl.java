@@ -345,8 +345,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice.getFinancialDiscount() != null) {
       String message;
 
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      if (InvoiceToolService.isPurchase(invoice)) {
         message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE;
       } else {
         message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE;

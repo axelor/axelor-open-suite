@@ -75,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -1157,6 +1158,28 @@ public class InvoiceController {
       response.setValues(invoice);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkMultiCurrency(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (invoice.getCurrency() != null
+          && invoice.getCompany() != null
+          && invoice.getPartner() != null
+          && invoice.getPartner().getFinancialDiscount() != null
+          && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())) {
+        String partnerType =
+            InvoiceToolService.isPurchase(invoice) ? I18n.get("Supplier") : I18n.get("Customer");
+
+        response.setFlash(
+            String.format(
+                I18n.get(AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER),
+                partnerType.toLowerCase()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

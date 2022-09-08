@@ -791,6 +791,9 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE = /*$$(*/
       "This invoice/refund indicates that the customer is eligible to a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
 
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
+      "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
+
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
