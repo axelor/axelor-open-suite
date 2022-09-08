@@ -14,10 +14,8 @@ allprojects { p ->
   spotless {
     java {
       target fileTree(projectDir) {
-        include 'src/*/java/**/*.java'
-        if (p.file('src/main/resources/domains').exists()) {
-          include 'build/src-gen/java/**/*.java'
-        }
+        include '**/*.java'
+        exclude '**/build/**'
         exclude '**/bin/**'
         exclude '**/out/**'
       }
