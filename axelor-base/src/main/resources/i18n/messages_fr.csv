@@ -374,6 +374,7 @@
 "Center","Centre",,
 "Change password","Changer mot de passe",,
 "Change password?","Changer mot de passe ?",,
+"Changing manually the end date of a sequence which reset yearly or monthly could break the sequence system.","Changer manuellement la date de fin d'une séquence qui se réinitialise annuellement ou mensuellement peut causer des erreurs dans le système des séquences.",,
 "Chart","Graphique",,
 "Check","Vérifier",,
 "Check Duplicate","Vérifier doublons",,
