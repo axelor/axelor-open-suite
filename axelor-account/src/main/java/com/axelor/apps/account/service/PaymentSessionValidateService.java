@@ -7,7 +7,7 @@ import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PaymentSessionValidateService {
-  public int validateInvoiceTerms(PaymentSession paymentSession);
+  public int checkValidTerms(PaymentSession paymentSession);
 
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException;
 
@@ -19,6 +19,8 @@ public interface PaymentSessionValidateService {
   public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException;
 
   public boolean checkIsHoldBackWithRefund(PaymentSession paymentSession) throws AxelorException;
+
+  public StringBuilder processInvoiceTerms(PaymentSession paymentSession) throws AxelorException;
 
   boolean isEmpty(PaymentSession paymentSession);
 
