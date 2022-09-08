@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -300,6 +301,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   protected String getReference(InvoiceTerm invoiceTerm) {
+    if (StringUtils.isEmpty(invoiceTerm.getMoveLine().getOrigin())) {
+      return null;
+    }
     return String.format(
         "%s (%s)",
         invoiceTerm.getMoveLine().getOrigin(),

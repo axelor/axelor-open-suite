@@ -21,7 +21,9 @@
       <spacer/>
       <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
         grid-view="account-chart-grid" canNew="true" colSpan="3"/>
-      <field name="accountCodeNbrCharSelect" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
+        readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
         readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
@@ -116,14 +118,6 @@
             <field name="deferredIncomesAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
-            <field name="forecastedInvCustAccount"
-              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-              form-view="account-form" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')"/>
-            <field name="forecastedInvSuppAccount"
-              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-              form-view="account-form" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')"/>
           </panel>
           <panel name="accountFactorPanel" title="Factor"
             if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
@@ -183,9 +177,6 @@
         <panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">
           <field name="irrecoverableReasonPassage"/>
           <field name="irrecoverableStandardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-        </panel>
-        <panel name="taxPaymentPanel" title="Tax payment" colSpan="12">
-          <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
         </panel>
         <panel name="defaultPaymentModesPanel" title="Default Payment Modes" colSpan="12">
           <field name="inPaymentMode" grid-view="payment-mode-grid"

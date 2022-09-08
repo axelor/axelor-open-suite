@@ -3,8 +3,10 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,14 +14,18 @@ import org.apache.commons.collections.CollectionUtils;
 @RequestScoped
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
-  public InvoiceVisibilityServiceImpl(InvoiceService invoiceService) {
+  public InvoiceVisibilityServiceImpl(
+      InvoiceService invoiceService, AccountConfigService accountConfigService) {
     this.invoiceService = invoiceService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
-  public boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation) {
+  public boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation)
+      throws AxelorException {
     boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean validatorUserCondition = this._getUserCondition(invoice, user);
@@ -41,7 +47,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
-  public boolean isPaymentButtonVisible(Invoice invoice) {
+  public boolean isPaymentButtonVisible(Invoice invoice) throws AxelorException {
     boolean statusOperationSubTypeCondition = this._getStatusOperationSubTypeCondition(invoice);
 
     boolean operationTypeCondition = this._getOperationTypeCondition(invoice);
@@ -53,7 +59,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
-  public boolean isValidatorUserVisible(Invoice invoice) {
+  public boolean isValidatorUserVisible(Invoice invoice) throws AxelorException {
     boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
@@ -71,7 +77,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
-  public boolean isDecisionPfpVisible(Invoice invoice) {
+  public boolean isDecisionPfpVisible(Invoice invoice) throws AxelorException {
     boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
@@ -82,7 +88,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
-  public boolean isSendNotifyVisible(Invoice invoice) {
+  public boolean isSendNotifyVisible(Invoice invoice) throws AxelorException {
     boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
@@ -105,30 +111,37 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
-  public boolean getManagePfpCondition(Invoice invoice) {
+  public boolean getManagePfpCondition(Invoice invoice) throws AxelorException {
     return invoice.getCompany() != null
-        && invoice.getCompany().getAccountConfig().getIsManagePassedForPayment();
+        && accountConfigService
+            .getAccountConfig(invoice.getCompany())
+            .getIsManagePassedForPayment();
   }
 
   @Override
-  public boolean getOperationTypePurchaseCondition(Invoice invoice) {
+  public boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            && invoice.getCompany().getAccountConfig().getIsManagePFPInRefund());
+            && invoice.getCompany() != null
+            && accountConfigService
+                .getAccountConfig(invoice.getCompany())
+                .getIsManagePFPInRefund());
   }
 
   protected boolean _getUserCondition(Invoice invoice, User user) {
     return user.equals(invoice.getPfpValidatorUser()) || user.getIsSuperPfpUser();
   }
 
-  protected boolean _getOperationTypeCondition(Invoice invoice) {
+  protected boolean _getOperationTypeCondition(Invoice invoice) throws AxelorException {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
         || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
         || !this.getManagePfpCondition(invoice)
         || (this._getInvoiceTermsCondition2(invoice)
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                || !invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
+                || !accountConfigService
+                    .getAccountConfig(invoice.getCompany())
+                    .getIsManagePFPInRefund()
                 || invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
   }
@@ -166,7 +179,9 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
         || invoice.getInvoiceTermList().stream()
             .anyMatch(
                 it ->
-                    it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_VALIDATED
+                    it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_NO_PFP
+                        || it.getPfpValidateStatusSelect()
+                            == InvoiceTermRepository.PFP_STATUS_VALIDATED
                         || it.getPfpValidateStatusSelect()
                             == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
   }

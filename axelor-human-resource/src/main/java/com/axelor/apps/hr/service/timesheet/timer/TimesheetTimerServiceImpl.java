@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.tool.date.DurationTool;
@@ -61,7 +61,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.NO_TIMESHEET_CREATED),
+          I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_CREATED),
           timer);
     }
   }

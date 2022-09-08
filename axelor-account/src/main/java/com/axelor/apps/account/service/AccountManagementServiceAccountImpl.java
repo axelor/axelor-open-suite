@@ -22,9 +22,15 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -44,10 +50,15 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AccountConfigService accountConfigService;
+
   @Inject
   public AccountManagementServiceAccountImpl(
-      FiscalPositionService fiscalPositionService, TaxService taxService) {
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService,
+      AccountConfigService accountConfigService) {
     super(fiscalPositionService, taxService);
+    this.accountConfigService = accountConfigService;
   }
 
   /**
@@ -92,7 +103,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
+        I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
         product != null ? product.getCode() : null,
         company.getName());
   }
@@ -148,16 +159,16 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @throws AxelorException
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Product product, Company company) {
+      Product product, Company company, boolean isPurchase) throws AxelorException {
 
-    return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT);
+    return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT, isPurchase);
   }
 
   /**
    * Get the product analytic distribution template
    *
    * @param product
-   * @param compan
+   * @param company
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family
@@ -165,7 +176,8 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @throws AxelorException
    */
   protected AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Product product, Company company, int configObject) {
+      Product product, Company company, int configObject, boolean isPurchase)
+      throws AxelorException {
 
     AccountManagement accountManagement = this.getAccountManagement(product, company, configObject);
 
@@ -175,8 +187,23 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       analyticDistributionTemplate = accountManagement.getAnalyticDistributionTemplate();
     }
 
+    if (accountManagement != null && analyticDistributionTemplate == null) {
+      Account account =
+          isPurchase ? accountManagement.getPurchaseAccount() : accountManagement.getSaleAccount();
+
+      if (account != null
+          && account.getAnalyticDistributionAuthorized()
+          && accountConfigService
+                  .getAccountConfig(account.getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+        analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
+      }
+    }
+
     if (analyticDistributionTemplate == null && configObject == CONFIG_OBJECT_PRODUCT) {
-      return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT_FAMILY);
+      return getAnalyticDistributionTemplate(
+          product, company, CONFIG_OBJECT_PRODUCT_FAMILY, isPurchase);
     }
 
     return analyticDistributionTemplate;
@@ -234,7 +261,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getCashAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT),
           paymentMode.getCode());
     }
     return accountManagement.getCashAccount();
@@ -246,7 +273,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getPurchVatRegulationAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX),
           tax.getCode(),
           company.getCode());
     }
@@ -259,7 +286,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     if (accountManagement != null && accountManagement.getSaleVatRegulationAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX),
+          I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX),
           tax.getCode(),
           company.getCode());
     }
@@ -267,15 +294,131 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   }
 
   @Override
-  public Account getFinancialDiscountAccount(
-      AccountManagement accountManagement, Tax tax, Company company) throws AxelorException {
-    if (accountManagement != null && accountManagement.getFinancialDiscountAccount() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX),
-          tax.getCode(),
-          company.getCode());
+  public Account getTaxAccount(
+      AccountManagement accountManagement,
+      Tax tax,
+      Company company,
+      Journal journal,
+      int vatSystemSelect,
+      int functionalOrigin,
+      boolean isFixedAssets,
+      boolean isFinancialDiscount)
+      throws AxelorException {
+    if (accountManagement != null) {
+      Account account = null;
+      String error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX;
+      if (!isFixedAssets && !isFinancialDiscount) {
+        if (journal != null
+            && (journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
+                || journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                || journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER
+                || (journal.getJournalType().getTechnicalTypeSelect()
+                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+                    && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getSaleTaxVatSystem1Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+          }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getSaleTaxVatSystem2Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        } else if (journal != null
+                && journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || (journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+                && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getPurchaseTaxVatSystem1Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+          }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getPurchaseTaxVatSystem2Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        }
+
+        return account;
+
+      } else if (isFixedAssets) {
+        if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+          account = accountManagement.getPurchFixedAssetsTaxVatSystem1Account();
+          error =
+              AccountExceptionMessage
+                  .ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+        }
+        if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+          account = accountManagement.getPurchFixedAssetsTaxVatSystem2Account();
+          error =
+              AccountExceptionMessage
+                  .ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+        }
+      } else if (isFinancialDiscount) {
+        if (journal != null
+                && journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER
+            || (journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+                && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getAllowedFinDiscountTaxVatSystem1Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+          }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getAllowedFinDiscountTaxVatSystem2Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        } else if (journal != null
+                && journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || (journal.getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+                && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
+          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
+            account = accountManagement.getObtainedFinDiscountTaxVatSystem1Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
+          }
+          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+            account = accountManagement.getObtainedFinDiscountTaxVatSystem2Account();
+            error =
+                AccountExceptionMessage
+                    .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
+          }
+        }
+      }
+
+      if (account == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(error),
+            tax.getCode(),
+            company.getCode());
+      }
+
+      return account;
     }
-    return accountManagement.getFinancialDiscountAccount();
+    return null;
   }
 }

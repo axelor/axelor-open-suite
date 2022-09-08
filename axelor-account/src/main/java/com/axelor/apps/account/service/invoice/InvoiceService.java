@@ -339,7 +339,7 @@ public interface InvoiceService {
    * @param invoice
    * @return true if there would be at least one invoice term in the invoice payment
    */
-  boolean checkInvoiceTerms(Invoice invoice);
+  boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
 
   void updateInvoiceTermsParentFields(Invoice invoice);
 }

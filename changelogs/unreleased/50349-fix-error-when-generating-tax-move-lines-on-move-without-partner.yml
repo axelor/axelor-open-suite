@@ -1,0 +1,3 @@
+---
+title: "MOVE: corrected error when generating tax move lines on move without partner"
+type: fix

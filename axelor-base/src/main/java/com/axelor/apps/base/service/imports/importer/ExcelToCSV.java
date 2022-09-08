@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -88,7 +88,7 @@ public class ExcelToCSV {
                 || headerCell.getStringCellValue().isEmpty()) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_INCONSISTENCY,
-                  I18n.get(IExceptionMessage.INVALID_HEADER));
+                  I18n.get(BaseExceptionMessage.INVALID_HEADER));
             }
 
             String value = headerCell.getStringCellValue();

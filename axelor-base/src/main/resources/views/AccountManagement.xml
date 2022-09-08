@@ -137,29 +137,26 @@
 
       <!-- PAYMENT -->
       <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
-        <field name="paymentMode" hidden="true" form-view="payment-mode-form"
-          grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3" colSpan="12"
-          width="50%"/>
-        <field name="cashAccount"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
-        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
-          form-view="journal-form" grid-view="journal-grid" canEdit="false"
-          requiredIf="typeSelect == 3"/>
         <field if="__config__.app.isApp('account')" if-module="axelor-account"
           name="globalAccountingCashAccount" canEdit="false"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          showIf="paymentMode.accountingMethodSelect == 3"
-          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.accountingMethodSelect == 3 "
-          form-view="account-form" grid-view="account-grid"/>
+          requiredIf="typeSelect == 3" form-view="account-form" grid-view="account-grid"/>
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
           onSelect="action-account-management-attrs-bank-details-domain"
           onChange="action-account-management-attrs-bank-details-on-change"
           requiredIf="typeSelect == 3"/>
+        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
+          form-view="journal-form" grid-view="journal-grid" canEdit="false"
+          requiredIf="typeSelect == 3"/>
+        <field name="cashAccount"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
         <field name="sequence"
           domain="self.company = :company  AND self.codeSelect='paymentVoucher'" canNew="true"
           form-view="sequence-form" grid-view="sequence-grid" requiredIf="typeSelect == 3"/>
+        <field name="paymentMode" hidden="true" form-view="payment-mode-form"
+          grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3"/>
         <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"
           form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
         <field name="pmtNotificationTemplate" showIf="paymentMode"
@@ -178,11 +175,26 @@
       </panel>
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         showIf="typeSelect == 2">
-        <field name="financialDiscountAccount"
+        <field name="allowedFinDiscountTaxVatSystem1Account"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false"/>
+          canEdit="false" colSpan="6"/>
+        <field name="allowedFinDiscountTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+          canEdit="false" colSpan="6"/>
+        <field name="obtainedFinDiscountTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+          canEdit="false" colSpan="6"/>
+        <field name="obtainedFinDiscountTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+          canEdit="false" colSpan="6"/>
       </panel>
     </panel>
   </form>

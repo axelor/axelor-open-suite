@@ -48,6 +48,9 @@
 	  		if(expense != null && expense.getFullName() != null)  {
 				fullName += expense.getFullName();
 			}
+			if(id == null){
+			   return fullName;
+			}
 			if (!fullName.isEmpty()) {
 				fullName += "-" + id;
 			}

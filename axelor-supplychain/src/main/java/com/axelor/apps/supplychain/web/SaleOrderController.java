@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -32,7 +33,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
@@ -104,9 +105,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(
-                                  com.axelor.apps.message.exception.IExceptionMessage
-                                      .SEND_EMAIL_EXCEPTION),
+                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -132,12 +131,11 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(
-                                  com.axelor.apps.message.exception.IExceptionMessage
-                                      .SEND_EMAIL_EXCEPTION),
+                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
-          response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+          response.setFlash(
+              I18n.get(SupplychainExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
     } catch (Exception e) {
@@ -194,7 +192,7 @@ public class SaleOrderController {
           }
 
           if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
                 ActionView.define("SaleOrder")
@@ -271,7 +269,8 @@ public class SaleOrderController {
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
       if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+        throw new AxelorException(
+            3, I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {
       supplierPartner =
@@ -526,7 +525,7 @@ public class SaleOrderController {
     if (stockMove != null) {
       response.setNotify(
           String.format(
-              I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
               stockMove.getStockMoveSeq()));
     }
   }

@@ -70,7 +70,7 @@
     <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
       title="Bill of exchange receivable account"/>
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
-      selection="account.account.chart.code.nbr.char.select" required="true"/>
+      selection="account.account.chart.code.nbr.char.select"/>
 
 
     <!-- Automatic account creation for partners -->
@@ -88,9 +88,6 @@
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
-
-    <many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax"
-      title="Tax for management fee"/>
 
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -309,6 +306,9 @@
     <many-to-one ref="com.axelor.apps.account.db.Account" name="resultLossAccount"
       title="Result account (loss)"/>
 
+    <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
+      help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
@@ -372,8 +372,6 @@
 
       <field name="autoReconcileOnInvoice" on="UPDATE"/>
       <field name="autoReconcileOnPayment" on="UPDATE"/>
-
-      <field name="payingBackTax" on="UPDATE"/>
 
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>

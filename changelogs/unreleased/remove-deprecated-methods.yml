@@ -1,0 +1,15 @@
+---
+title: "Removed deprecated java methods"
+type: remove
+description: |
+  The following java methods were deprecated and are now removed:
+
+    * AppBaseService#getTodayDate() (replaced by getTodayDate(Company))
+    * In AxelorException.java, the constructors AxelorException() and AxelorException(String message, int category, Object... messageArgs)
+    * QueryBuilder#create() (need to call build() instead)
+    * YearServiceAccountImpl#computeReportedBalance2
+    * RefundInvoice#refundInvoiceLines
+    * SaleOrderService#getReportLink
+
+  If you had modules calling these methods, you will need to update them so they can be compatible with Axelor Open Suite v6.3.
+ 

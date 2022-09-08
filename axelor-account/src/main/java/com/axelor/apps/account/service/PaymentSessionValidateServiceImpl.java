@@ -13,7 +13,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -109,7 +109,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
-  public int validateInvoiceTerms(PaymentSession paymentSession) {
+  public int checkValidTerms(PaymentSession paymentSession) {
     LocalDate nextSessionDate;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
@@ -569,21 +569,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
-    Account cashAccount =
-        paymentModeService.getPaymentModeAccount(
-            paymentSession.getPaymentMode(),
-            paymentSession.getCompany(),
-            paymentSession.getBankDetails(),
-            isGlobal);
-
-    if (cashAccount == null && isGlobal) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT),
-          paymentSession.getPaymentMode().getName());
-    }
-
-    return cashAccount;
+    return paymentModeService.getPaymentModeAccount(
+        paymentSession.getPaymentMode(),
+        paymentSession.getCompany(),
+        paymentSession.getBankDetails(),
+        isGlobal);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -635,6 +625,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     if (daybook) {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+      moveValidateService.completeMoveLines(move);
+      moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
     } else {
       moveValidateService.accounting(move);
     }
@@ -708,7 +700,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     if (moveCount > 0) {
       flashMessage.append(
-          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+          String.format(
+              I18n.get(AccountExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
     }
 
     return flashMessage;
@@ -794,5 +787,22 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTermRepo.all().filter("self.paymentSession = :paymentSession")
         .bind("paymentSession", paymentSession).fetch().stream()
         .noneMatch(this::shouldBeProcessed);
+  }
+
+  @Override
+  public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession) {
+    return invoiceTermRepo
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession = true AND self.bankDetails.active = false")
+        .bind("paymentSession", paymentSession)
+        .fetch();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class})
+  public StringBuilder processInvoiceTerms(PaymentSession paymentSession) throws AxelorException {
+    reconciledInvoiceTermMoves(paymentSession);
+    return generateFlashMessage(paymentSession, processPaymentSession(paymentSession));
   }
 }

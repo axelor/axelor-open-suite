@@ -19,8 +19,9 @@ package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -101,7 +102,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), projectTask.getId()),
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
+                      projectTask.getId()),
                   e),
               "task",
               batch.getId());
@@ -147,7 +149,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), projectTask.getId()),
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
+                      projectTask.getId()),
                   e),
               ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
@@ -187,7 +190,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
                       timesheetLine.getId()),
                   e),
               ExceptionOriginRepository.INVOICE_ORIGIN,
@@ -203,12 +206,11 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
   @Override
   protected void stop() {
-    String comment = I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_2);
+    String comment = I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_2);
 
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

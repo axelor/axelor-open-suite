@@ -43,7 +43,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -53,6 +53,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -322,7 +323,7 @@ public class IrrecoverableService {
 
         i++;
         try {
-          log.debug("Partners : {}", payerPartner.getName());
+          log.debug("Partner : {}", payerPartner.getName());
           this.createIrrecoverableCustomerLine(
               irrecoverable,
               payerPartner,
@@ -392,7 +393,7 @@ public class IrrecoverableService {
   public void manageIrrecoverableInvoice(Irrecoverable irrecoverable, Invoice invoice)
       throws AxelorException {
 
-    log.debug("Facture : {}", invoice.getInvoiceId());
+    log.debug("Invoice : {}", invoice.getInvoiceId());
     irrecoverable = retrieveAndInit(irrecoverable);
     invoice = invoiceRepo.find(invoice.getId());
     this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
@@ -404,7 +405,7 @@ public class IrrecoverableService {
   public void manageIrrecoverablePaymentScheduleLine(
       Irrecoverable irrecoverable, PaymentScheduleLine paymentScheduleLine) throws AxelorException {
 
-    log.debug("Ligne d'échéancier : {}", paymentScheduleLine.getName());
+    log.debug("Payment schedule line : {}", paymentScheduleLine.getName());
     irrecoverable = retrieveAndInit(irrecoverable);
     paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
     this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
@@ -460,7 +461,7 @@ public class IrrecoverableService {
               new AxelorException(
                   e,
                   e.getCategory(),
-                  I18n.get(IExceptionMessage.IRRECOVERABLE_1),
+                  I18n.get(AccountExceptionMessage.IRRECOVERABLE_1),
                   paymentScheduleLine.getName()),
               ExceptionOriginRepository.IRRECOVERABLE,
               irrecoverable.getId());
@@ -471,7 +472,8 @@ public class IrrecoverableService {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()),
+                      I18n.get(AccountExceptionMessage.IRRECOVERABLE_1),
+                      paymentScheduleLine.getName()),
                   e),
               ExceptionOriginRepository.IRRECOVERABLE,
               irrecoverable.getId());
@@ -508,8 +510,8 @@ public class IrrecoverableService {
       throw new AxelorException(
           irrecoverable,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
@@ -537,8 +539,8 @@ public class IrrecoverableService {
       throw new AxelorException(
           irrecoverable,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
 
@@ -656,7 +658,7 @@ public class IrrecoverableService {
     ipsll.setIrrecoverableReportLineList(
         this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, tax));
 
-    log.debug("Rejected payment schedule line : {}", ipsll);
+    log.debug("Irrecoverable payment schedule line : {}", ipsll);
 
     return ipsll;
   }
@@ -783,7 +785,7 @@ public class IrrecoverableService {
     irl.setValue(value);
     irl.setIrrecoverableInvoiceLine(iil);
 
-    log.debug("Reporting line : {}", irl);
+    log.debug("Irrecoverable report line : {}", irl);
 
     return irl;
   }
@@ -805,7 +807,7 @@ public class IrrecoverableService {
     irl.setValue(value);
     irl.setIrrecoverablePaymentScheduleLineLine(ipsll);
 
-    log.debug("Reporting line : {}", irl);
+    log.debug("Irrecoverable report line : {}", irl);
 
     return irl;
   }
@@ -830,7 +832,7 @@ public class IrrecoverableService {
               .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     }
 
-    log.debug("Invoice unpaid rate {} : {}", invoice.getInvoiceId(), prorataRate);
+    log.debug("Prorata rate for the invoice {} : {}", invoice.getInvoiceId(), prorataRate);
 
     return prorataRate;
   }
@@ -929,7 +931,12 @@ public class IrrecoverableService {
                   move,
                   payerPartner,
                   taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(), company, false, false),
+                      invoiceMoveLine.getTaxLine().getTax(),
+                      company,
+                      move.getJournal(),
+                      invoiceMoveLine.getAccount().getVatSystemSelect(),
+                      false,
+                      move.getFunctionalOriginSelect()),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
@@ -1058,7 +1065,14 @@ public class IrrecoverableService {
     move.getMoveLineList().add(creditMoveLine1);
 
     // Debit MoveLine 445 (Tax account)
-    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
+    Account taxAccount =
+        taxAccountService.getAccount(
+            tax,
+            company,
+            move.getJournal(),
+            moveLine.getAccount().getVatSystemSelect(),
+            false,
+            move.getFunctionalOriginSelect());
     BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
     MoveLine creditMoveLine2 =
         moveLineCreateService.createMoveLine(
@@ -1119,8 +1133,8 @@ public class IrrecoverableService {
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -1154,8 +1168,8 @@ public class IrrecoverableService {
       if (moveLine == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.IRRECOVERABLE_3),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             invoice.getInvoiceId());
       }
 
@@ -1184,8 +1198,8 @@ public class IrrecoverableService {
     if (moveLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           invoice.getInvoiceId());
     }
 

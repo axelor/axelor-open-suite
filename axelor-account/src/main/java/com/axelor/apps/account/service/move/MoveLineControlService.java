@@ -42,5 +42,21 @@ public interface MoveLineControlService {
 
   Move setMoveLineOriginDates(Move move) throws AxelorException;
 
+  /**
+   * Method that controls if moveLine.account.company is the same moveLine.move.company
+   *
+   * @param moveLine
+   * @throws AxelorException
+   */
+  void checkAccountCompany(MoveLine moveLine) throws AxelorException;
+
+  /**
+   * Method that controls if moveLine.account.company is the same as moveLine.move.company
+   *
+   * @param moveLine
+   * @throws AxelorException
+   */
+  void checkJournalCompany(MoveLine moveLine) throws AxelorException;
+
   boolean canReconcile(MoveLine moveLine);
 }

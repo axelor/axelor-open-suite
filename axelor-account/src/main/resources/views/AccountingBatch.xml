@@ -163,7 +163,7 @@
         <field name="moveDescription" requiredIf="actionSelect == 26"/>
         <panel colSpan="6" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 26"
-            validIf="$moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
+            validIf="actionSelect != 26 || $moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
             help="Please, enter only dates with the last day of month"
             onChange="action-accounting-batch-group-move-date-onchange"/>
           <label name="adviseUser"
@@ -296,11 +296,12 @@
   <!-- ACTION RECORD -->
   <action-record name="action-accounting-batch-record-on-new"
     model="com.axelor.apps.account.db.AccountingBatch">
-    <field name="createdOn" expr="__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"
+    <field name="createdOn" expr="__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval: __config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -506,18 +507,15 @@
       :_researchJournal)
       OR (:_researchJournal = 0 AND
       self.move.journal.journalType.technicalTypeSelect = :_journalType))
-      AND
-      YEAR(self.move.date) =
-      :_year
+      AND DATE(:_moveDate) >=
+      self.move.date
       AND self.move.statusSelect IN (2, 3, 5)
-      AND YEAR(self.cutOffEndDate) > :_year
-      AND
-      self.move.company.id = :_company
+      AND self.cutOffEndDate > DATE(:_moveDate)
+      AND self.move.company.id = :_company
     </domain>
     <context name="_researchJournal"
       expr="eval: researchJournal != null ? researchJournal.id : 0"/>
     <context name="_journalType" expr="eval: accountingCutOffTypeSelect == 3 ? 1 : 2"/>
-    <context name="_year" expr="eval: moveDate.getYear()"/>
     <context name="_moveDate" expr="eval: moveDate"/>
     <context name="_company" expr="eval: company.id"/>
     <context name="_cutOffPreview" expr="eval: true"/>

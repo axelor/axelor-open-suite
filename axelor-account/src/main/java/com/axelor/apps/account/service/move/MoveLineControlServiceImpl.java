@@ -26,10 +26,13 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -37,8 +40,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
@@ -46,12 +51,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected MoveLineToolService moveLineToolService;
+  protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveLineControlServiceImpl(
-      MoveLineToolService moveLineToolService, InvoiceTermService invoiceTermService) {
+      MoveLineToolService moveLineToolService,
+      MoveLineService moveLineService,
+      InvoiceTermService invoiceTermService) {
     this.moveLineToolService = moveLineToolService;
+    this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -77,7 +86,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         throw new AxelorException(
             line,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
             account.getCode(),
             line.getName(),
             journal.getCode());
@@ -93,7 +102,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_7),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_7),
           moveLine.getAccount().getCode());
     }
 
@@ -108,35 +117,44 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                   .map(
                       it ->
                           invoiceTermService.computeCustomizedPercentageUnscaled(
-                              it.getAmount(),
-                              invoiceAttached != null
-                                  ? invoiceAttached.getInTaxTotal()
-                                  : moveLine.getCredit().max(moveLine.getDebit())))
+                              it.getAmount(), invoiceAttached.getInTaxTotal()))
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
                   .compareTo(new BigDecimal(100))
               != 0) {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
             moveLine.getAccount().getCode());
-      } else if ((invoiceAttached == null
-              && invoiceTermList.stream()
-                      .map(InvoiceTerm::getAmount)
-                      .reduce(BigDecimal.ZERO, BigDecimal::add)
-                      .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
-                  != 0)
-          || (invoiceAttached != null
-              && invoiceTermList.stream()
-                      .map(InvoiceTerm::getAmount)
-                      .reduce(BigDecimal.ZERO, BigDecimal::add)
-                      .compareTo(invoiceAttached.getInTaxTotal())
-                  != 0)) {
-        throw new AxelorException(
-            moveLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
-            moveLine.getAccount().getCode());
+      } else {
+        BigDecimal total =
+            invoiceAttached == null
+                ? moveLine.getDebit().max(moveLine.getCredit())
+                : invoiceAttached.getInTaxTotal();
+        total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        BigDecimal invoiceTermTotal =
+            invoiceTermList.stream()
+                .map(InvoiceTerm::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (invoiceTermTotal.compareTo(total) != 0) {
+          invoiceTermTotal = invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total);
+
+          if (invoiceAttached == null) {
+            moveLineService.computeFinancialDiscount(moveLine);
+          } else {
+            invoiceTermList.forEach(
+                it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+          }
+
+          if (invoiceTermTotal.compareTo(total) != 0) {
+            throw new AxelorException(
+                moveLine,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
+                moveLine.getAccount().getCode());
+          }
+        }
       }
     }
     controlAccountingAccount(moveLine);
@@ -206,6 +224,41 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       }
     }
     return move;
+  }
+
+  @Override
+  public void checkAccountCompany(MoveLine moveLine) throws AxelorException {
+
+    Optional<Company> optMoveCompany =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getCompany);
+    Company accountCompany =
+        Optional.ofNullable(moveLine.getAccount()).map(Account::getCompany).orElse(null);
+
+    if (optMoveCompany.isPresent() && !optMoveCompany.get().equals(accountCompany)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .MOVE_LINE_INCONSISTENCY_DETECTED_MOVE_COMPANY_ACCOUNT_COMPANY),
+          moveLine.getMove().getReference());
+    }
+  }
+
+  @Override
+  public void checkJournalCompany(MoveLine moveLine) throws AxelorException {
+    Optional<Company> optJournalCompany =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getJournal).map(Journal::getCompany);
+    Company accountCompany =
+        Optional.ofNullable(moveLine.getAccount()).map(Account::getCompany).orElse(null);
+
+    if (optJournalCompany.isPresent() && !optJournalCompany.get().equals(accountCompany)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY),
+          moveLine.getMove().getJournal().getName());
+    }
   }
 
   public boolean canReconcile(MoveLine moveLine) {

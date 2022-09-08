@@ -55,7 +55,8 @@
 					]]>
         </viewer>
       </field>
-      <field name="accountCode" showTitle="false" showIf="ruleTypeSelect == 2" colSpan="12"/>
+      <field name="accountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
+      <field name="analyticAccountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
       <field name="$helpRule" title="Rule" readonly="true" showIf="ruleTypeSelect == 3"
         colSpan="12">
         <viewer depends="ruleTypeSelect">
@@ -77,6 +78,10 @@
     <panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet"
       colSpan="12" form-view="account-form" grid-view="account-grid" showIf="ruleTypeSelect == 2"
       onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
+    <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
+      field="analyticAccountSet" colSpan="12" form-view="account-form" grid-view="account-grid"
+      showIf="ruleTypeSelect == 2"/>
+
   </form>
 
   <action-record name="action-accounting-report-config-line-record-default-on-new"

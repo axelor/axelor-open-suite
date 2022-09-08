@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -60,7 +60,7 @@ public class PaymentSessionAccountRepository extends PaymentSessionRepository {
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_SEQ),
+          I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NO_SEQ),
           company.getName());
     }
     return seq;

@@ -110,7 +110,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException {
+      Partner partner, Product product, Company company, boolean isPurchase)
+      throws AxelorException {
 
     if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
@@ -120,7 +121,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     } else if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
         && company != null) {
-      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
+      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
+          product, company, isPurchase);
     }
     return null;
   }

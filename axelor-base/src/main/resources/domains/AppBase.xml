@@ -9,7 +9,7 @@
 
     <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
-    <datetime name="today" title="Today date" tz="true"/>
+    <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
       title="Default Partner language"/>
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
@@ -168,7 +168,7 @@
     </extra-code>
 
     <track>
-      <field name="today" on="UPDATE"/>
+      <field name="todayDateT" on="UPDATE"/>
       <field name="defaultPartnerLanguage" on="UPDATE"/>
       <field name="emailAccountByUser" on="UPDATE"/>
 

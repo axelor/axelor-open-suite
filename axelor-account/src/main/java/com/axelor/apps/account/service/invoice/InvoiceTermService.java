@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -53,6 +54,8 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
+
   void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
       BigDecimal totalAmount,
@@ -84,7 +87,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice);
+  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException;
 
   /**
    * Method that filters invoiceTerm List and returns only invoice terms with holdback status same
@@ -102,7 +105,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice);
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException;
 
   /**
    * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
@@ -213,6 +216,8 @@ public interface InvoiceTermService {
 
   InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm, Move move);
 
+  LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine);
+
   /**
    * return existing moveLine related to invoiceTerm with isHoldBack = false
    *
@@ -227,7 +232,9 @@ public interface InvoiceTermService {
       User pfpUser,
       PaymentMode paymentMode,
       LocalDate date,
-      BigDecimal amount);
+      BigDecimal amount,
+      int sequence)
+      throws AxelorException;
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
@@ -239,7 +246,11 @@ public interface InvoiceTermService {
       LocalDate estimatedPaymentDate,
       BigDecimal amount,
       BigDecimal percentage,
-      boolean isHoldBack);
+      int sequence,
+      boolean isHoldBack)
+      throws AxelorException;
+
+  void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException;
 
   void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
 
@@ -278,4 +289,21 @@ public interface InvoiceTermService {
   public User getPfpValidatorUser(Partner partner, Company company);
 
   public String getPfpValidatorUserDomain(Partner partner, Company company);
+
+  public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);
+
+  BigDecimal getTotalInvoiceTermsAmount(
+      MoveLine moveLine, Account holdbackAccount, boolean holdback);
+
+  void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
+
+  boolean isNotReadonly(InvoiceTerm invoiceTerm);
+
+  boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
+
+  LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
+
+  void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
+
+  BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }

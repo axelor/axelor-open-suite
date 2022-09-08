@@ -151,10 +151,22 @@
     <bind search="self.importId = :company_id" to="company" update="true"/>
     <bind search="self.code = :cashAccount_code and self.company.importId = :company_id"
       to="cashAccount" update="true" if="cashAccount_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
     <bind search="self.code = :saleAccount_code and self.company.importId = :company_id"
       to="saleAccount" update="true" if="saleAccount_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
     <bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id"
       to="purchaseAccount" update="true" if="purchaseAccount_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
     <bind
       search="self.code = :purchVatRegulationAccount_code and self.company.importId = :company_id"
       to="purchVatRegulationAccount" update="true" if="purchVatRegulationAccount_code"/>
@@ -170,6 +182,42 @@
     <bind
       search="self.code = :globalAccountingCashAccount_code and self.company.importId = :company_id"
       to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
+    <bind
+      search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="allowedFinDiscountTaxVatSystem1Account" update="true"
+      if="allowedFinDiscountTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :allowedFinDiscountTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="allowedFinDiscountTaxVatSystem2Account" update="true"
+      if="allowedFinDiscountTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :obtainedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="obtainedFinDiscountTaxVatSystem1Account" update="true"
+      if="obtainedFinDiscountTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :obtainedFinDiscountTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="obtainedFinDiscountTaxVatSystem2Account" update="true"
+      if="obtainedFinDiscountTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchFixedAssetsTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchFixedAssetsTaxVatSystem1Account" update="true"
+      if="purchFixedAssetsTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchFixedAssetsTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchFixedAssetsTaxVatSystem2Account" update="true"
+      if="purchFixedAssetsTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
   </input>
 
   <input file="account_cfonbConfig.csv" separator=";"

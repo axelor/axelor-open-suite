@@ -184,7 +184,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             dateOfReversion,
             originMoveLine.getCounter(),
             originMoveLine.getName(),
-            null);
+            null,
+            originMoveLine.getCutOffStartDate(),
+            originMoveLine.getCutOffEndDate());
     reverseMoveLine.setVatSystemSelect(originMoveLine.getVatSystemSelect());
 
     return reverseMoveLine;
