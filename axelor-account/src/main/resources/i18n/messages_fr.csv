@@ -3216,7 +3216,7 @@
 "You have to select a sequence for automatic customer account creation in accounting application parameters of company %s","Vous devez sélectionner une séquence pour la création automatique de compte client dans les paramètres comptables de la société %s",,
 "You have to select a sequence for automatic employee account creation in accounting application parameters of company %s","Vous devez sélectionner une séquence pour la création automatique de compte salarié dans les paramètres comptables de la société %s",,
 "You have to select a sequence for automatic supplier account creation in accounting application parameters of company %s","Vous devez sélectionner une séquence pour la création automatique de compte fournisseur dans les paramètres comptables de la société %s",,
-"You must configure a %scash account for the company %s and the payment mode %s","Veuillez configurer un compte de paiement %spour la société %s et le mode de paiement %s.",,
+"You must configure a %s cash account for the company %s and the payment mode %s","Veuillez configurer un compte de paiement %s pour la société %s et le mode de paiement %s.",,
 "You must configure a RIB for the reimbursement","Veuillez configurer un RIB pour le remboursement",,
 "You must configure a RIB.","Vous devez configurer un RIB.",,
 "You must configure a timetable sequence for the company %s","Veuillez configurer une séquence Echéancier pour la société %s",,

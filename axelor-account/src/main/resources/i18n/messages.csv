@@ -3215,7 +3215,7 @@
 "You have to select a sequence for automatic customer account creation in accounting application parameters of company %s",,,
 "You have to select a sequence for automatic employee account creation in accounting application parameters of company %s",,,
 "You have to select a sequence for automatic supplier account creation in accounting application parameters of company %s",,,
-"You must configure a %scash account for the company %s and the payment mode %s",,,
+"You must configure a %s cash account for the company %s and the payment mode %s",,,
 "You must configure a RIB for the reimbursement",,,
 "You must configure a RIB.",,,
 "You must configure a timetable sequence for the company %s",,,

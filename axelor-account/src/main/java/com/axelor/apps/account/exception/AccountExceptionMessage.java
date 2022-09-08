@@ -888,7 +888,7 @@ public final class AccountExceptionMessage {
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
 
   public static final String PAYMENT_MODE_CASH_ACCOUNT = /*$$(*/
-      "You must configure a %scash account for the company %s and the payment mode %s" /*)*/;
+      "You must configure a %s cash account for the company %s and the payment mode %s" /*)*/;
 
   /** Payment voucher control service */
   public static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
