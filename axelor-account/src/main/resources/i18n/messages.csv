@@ -628,6 +628,7 @@
 "AccountingReportType4.fullName",,,
 "AccountingReportType4.invoice",,,
 "AccountingReportType4.invoiceRemainingAmount",,,
+"AccountingReportType4.nonDue",,,
 "AccountingReportType4.period",,,
 "AccountingReportType4.periodTotal",,,
 "AccountingReportType4.reference",,,
