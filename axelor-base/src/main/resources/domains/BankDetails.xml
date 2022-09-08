@@ -23,28 +23,39 @@
     <string name="ibanBic" title="IBAN / BBAN + BIC" max="255"/>
     <string name="label" title="Label"/>
     <boolean name="isDefault" title="Default"/>
-    <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
+    <string name="fullName" title="Bank Details" search="code,label" namecolumn="true">
         <![CDATA[
             String str = "";
-            if (!(ownerName == null || ownerName.isEmpty())) {
-                str = ownerName;
-                if (!(ibanBic == null || ibanBic.isEmpty())) {
-                    str = str.concat(" - ").concat(ibanBic);
-                } else if (!(iban == null || iban.isEmpty())) {
-                    str = str.concat(" - ").concat(iban);
-                } else if (!(bankCode == null || bankCode.isEmpty())
-                        && !(sortCode == null || sortCode.isEmpty())
-                        && !(accountNbr == null || accountNbr.isEmpty())
-                        && !(bbanKey == null || bbanKey.isEmpty())) {
-                    str = str.concat(" - ").concat(bankCode)
-                                           .concat(sortCode)
-                                           .concat(accountNbr)
-                                           .concat(bbanKey);
-                }
-                if (!(code == null || code.isEmpty())) {
-                    str = str.concat(" - ").concat(code);
+            if (!(code == null || code.isEmpty())) {
+                str = code;
+            }
+
+            if (!(label == null || label.isEmpty())) {
+                if(!(str == null ||str.isEmpty())) {
+                    str = str.concat(" - ").concat(label);
+                }else {
+                    str = label;
                 }
             }
+
+            if(!(str == null ||str.isEmpty())) {
+                str = str.concat(" - ");
+            }
+
+            if (!(ibanBic == null || ibanBic.isEmpty())) {
+                str = str.concat(ibanBic);
+            } else if (!(iban == null || iban.isEmpty())) {
+                str = str.concat(" - ").concat(iban);
+            } else if (!(bankCode == null || bankCode.isEmpty())
+                    && !(sortCode == null || sortCode.isEmpty())
+                    && !(accountNbr == null || accountNbr.isEmpty())
+                    && !(bbanKey == null || bbanKey.isEmpty())) {
+                str = str.concat(" - ").concat(bankCode)
+                        .concat(sortCode)
+                        .concat(accountNbr)
+                        .concat(bbanKey);
+            }
+
             return str;
         ]]>
     </string>
