@@ -912,7 +912,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       LocalDate originDate,
       Integer counter,
       String origin,
-      String description)
+      String description,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate)
       throws AxelorException {
     MoveLine moveLine =
         createMoveLine(
@@ -930,6 +932,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             origin,
             description);
     moveLine.setTaxLine(taxLine);
+    moveLine.setCutOffStartDate(cutOffStartDate);
+    moveLine.setCutOffEndDate(cutOffEndDate);
     return moveLine;
   }
 
