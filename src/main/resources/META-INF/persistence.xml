@@ -8,14 +8,17 @@
     <properties>
       <!-- <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <property
         name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/axelor-app" /> -->
-      <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
+      <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:test"/>
+
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.password" value=""/>
+
       <!-- value="create" to build a new database on each run; value="update" to modify an existing database;
         value="create-drop" means the same as "create" but also drops tables when Hibernate closes; value="validate"
         makes no changes to the database -->
       <property name="hibernate.hbm2ddl.auto" value="update"/>
+
     </properties>
   </persistence-unit>
 </persistence>

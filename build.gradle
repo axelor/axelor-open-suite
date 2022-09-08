@@ -1,61 +1,40 @@
 import com.axelor.gradle.tasks.GenerateAosChangelog
 import com.axelor.gradle.tasks.CheckEOLCharsInCsv
 
-buildscript {
-  ext.repos = {
-    mavenCentral() {
-      content {
-        excludeGroup 'com.axelor'
-      }
-    }
-    maven {
-      url 'https://plugins.gradle.org/m2/'
-      content {
-        excludeGroup 'com.axelor'
-      }
-    }
-    maven { url 'https://repository.axelor.com/nexus/public/' }
-  }
-  ext.openPlatformVersion = '5.4.+'
-  ext.appVersion = '6.4.0'
-  repositories repos
-  dependencies {
-    classpath "com.axelor:axelor-gradle:${openPlatformVersion}"
-  }
-}
-
-allprojects { repositories repos }
-
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: "com.axelor.app"
-
-apply from: './gradle/style.gradle'
-
-allprojects {
-
-  configurations {
-    runtimeClasspath.exclude group: "org.eclipse.birt.runtime.3_7_1", module: "org.apache.commons.codec"
-  }
-
-  apply plugin: 'idea'
-  apply plugin: 'eclipse'
-
-  group = "com.axelor"
-  version = "${appVersion}"
-
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
-
-}
-
-subprojects {
-  group = "com.axelor.apps"
+plugins {
+  id 'com.axelor.app'
 }
 
 axelor {
   title "Axelor ERP"
   description "Axelor Entreprise Application"
+}
+
+allprojects {
+  apply plugin: 'idea'
+  apply plugin: 'eclipse'
+
+  group = 'com.axelor.apps'
+  version = '7.0.0'
+
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(11)
+    }
+  }
+
+  afterEvaluate {
+    test {
+      useJUnitPlatform()
+      beforeTest { descriptor ->
+        logger.lifecycle('Running: ' + descriptor)
+      }
+    }
+  }
+
+  configurations {
+    runtimeClasspath.exclude group: "org.eclipse.birt.runtime.3_7_1", module: "org.apache.commons.codec"
+  }
 }
 
 dependencies {
@@ -64,8 +43,14 @@ dependencies {
   }
 }
 
+war {
+  archiveFileName = 'axelor-erp-7.0.0.war'
+}
+
+apply from: 'gradle/style.gradle'
+
 task("dataImport", type: JavaExec) {
-  main = "com.axelor.apps.erp.Main"
+  mainClass = "com.axelor.apps.erp.Main"
   classpath = sourceSets.main.runtimeClasspath
   if (System.getProperty("exec.args") != null) {
     args System.getProperty("exec.args").split()
@@ -87,7 +72,7 @@ task archiveReports(type: Zip) {
 }
 
 
-task generateChangeLog(type: GenerateAosChangelog) {
+task generateChangelog(type: GenerateAosChangelog) {
   group "Axelor application"
   description "Generate change logs from unreleased entries."
   files = fileTree(projectDir) {

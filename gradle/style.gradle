@@ -1,39 +1,52 @@
 buildscript {
-  repositories repos
+  repositories {
+    gradlePluginPortal()
+  }
   dependencies {
-    classpath "com.diffplug.spotless:spotless-plugin-gradle:3.27.1"
+    classpath "com.diffplug.spotless:spotless-plugin-gradle:4.5.1"
   }
 }
+File spotlessXmlFile = file("${projectDir}/gradle/spotless.xml.prefs")
+allprojects { p ->
 
-apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
+  apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
 
-spotless {
-  java {
-    target fileTree(projectDir) {
-      include '**/*.java'
-      exclude '**/build/**'
-      exclude '**/bin/**'
-      exclude '**/out/**'
+  spotless {
+    java {
+      target fileTree(projectDir) {
+        include 'src/*/java/**/*.java'
+        if (p.file('src/main/resources/domains').exists()) {
+          include 'build/src-gen/java/**/*.java'
+        }
+        exclude '**/bin/**'
+        exclude '**/out/**'
+      }
+      googleJavaFormat()
     }
-    googleJavaFormat()
-  }
-  xml {
-    target fileTree(projectDir) {
-      include '**/*.xml'
-      exclude '**/build/**'
-      exclude '**/bin/**'
-      exclude '**/.project/**'
-      exclude '**/.classpath/**'
-      exclude '**/.settings/**'
-      exclude '**/.metadata/**'
-      exclude '**/out/**'
-      exclude '**/.idea/**'
+    xml {
+      target fileTree(projectDir) {
+        include '**/*.xml'
+        exclude '**/build/**'
+        exclude '**/bin/**'
+        exclude '**/.project/**'
+        exclude '**/.classpath/**'
+        exclude '**/.settings/**'
+        exclude '**/.metadata/**'
+        exclude '**/out/**'
+        exclude '**/.idea/**'
+      }
+      eclipseWtp('xml').configFile(spotlessXmlFile)
+      trimTrailingWhitespace()
     }
-    eclipseWtp('xml').configFile("${projectDir}/gradle/spotless.xml.prefs")
-    trimTrailingWhitespace()
   }
+
+  if (p.file('src/main/resources/domains').exists()) {
+    p.afterEvaluate {
+      p.spotlessJava.dependsOn(p.generateCode)
+    }
+  }
+
+  build.dependsOn 'spotlessApply'
 }
 
 task formatCode(dependsOn: ['licenseFormat', 'spotlessApply'])
-
-build.dependsOn 'spotlessApply'

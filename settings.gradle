@@ -1,3 +1,47 @@
+pluginManagement {
+  repositories {
+    mavenCentral() {
+      content {
+        excludeGroup 'com.axelor'
+      }
+    }
+    maven {
+      url 'https://repository.axelor.com/nexus/repository/maven-public/'
+    }
+  }
+  plugins {
+    id 'com.axelor.app' version '6.0.+'
+  }
+}
+
+
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral() {
+      content {
+        excludeGroup 'com.axelor'
+      }
+    }
+    maven {
+      url 'https://repository.axelor.com/nexus/repository/maven-public/'
+    }
+    // Declare the Node.js download repository
+    ivy {
+      name = "Node.js"
+      setUrl("https://nodejs.org/dist/")
+      patternLayout {
+        artifact("v[revision]/[artifact](-v[revision]-[classifier]).[ext]")
+      }
+      metadataSources {
+        artifact()
+      }
+      content {
+        includeModule("org.nodejs", "node")
+      }
+    }
+  }
+}
+
 //Include all modules
 rootProject.name = "axelor-erp"
 

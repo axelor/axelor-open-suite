@@ -1,10 +1,16 @@
 def repos = {
-    jcenter()
-    mavenCentral()
-    mavenLocal()
-
-    maven { url 'https://plugins.gradle.org/m2/' }
-    maven { url 'https://repository.axelor.com/nexus/repository/maven-public/' }
+    mavenCentral() {
+        content {
+            excludeGroup 'com.axelor'
+        }
+    }
+    maven {
+        url 'https://plugins.gradle.org/m2/'
+        content {
+            excludeGroup 'com.axelor'
+        }
+    }
+    maven { url 'https://repository.axelor.com/nexus/public/' }
 }
 
 ext.repos = repos
@@ -12,5 +18,5 @@ ext.repos = repos
 repositories repos
 buildscript.repositories repos
 dependencies {
-    implementation 'org.yaml:snakeyaml:1.25'
+    implementation 'org.yaml:snakeyaml:1.30'
 }
