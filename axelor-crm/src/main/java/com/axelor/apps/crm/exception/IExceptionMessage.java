@@ -107,4 +107,15 @@ public interface IExceptionMessage {
       "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
+
+  public static final String CRM_BATCH_OPRPHAN_CFT_FOUND = /*$$(*/
+      "The following %s call for tenders match the alert parameters but does not have any salesman configured : %s"; /*)*/
+  public static final String CRM_BATCH_RECIPIENT_EMAIL_NOT_CONFIGURED = /*$$(*/
+      "Mail couldn't be send to the user : (%s). Please configure an email for this user."; /*)*/
+  public static final String CRM_BATCH_MONTH_NOT_POSITIVE = /*$$(*/
+      "'Month limit before end date' must be greater than 0"; /*)*/
+  public static final String CRM_BATCH_IMPROPER_TEMPLATE = /*$$(*/
+      "The body of the template must contain '_callForTendersList' at the place to diplay the call for tenders list."; /*)*/
+  public static final String CRM_BATCH_SENDER_EMAIL_NOT_CONFIGURED = /*$$(*/
+      "Please configure the sender email"; /*)*/
 }

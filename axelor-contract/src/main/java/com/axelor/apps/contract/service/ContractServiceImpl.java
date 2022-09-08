@@ -32,10 +32,12 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.AppContract;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
@@ -48,10 +50,15 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.HashMultimap;
@@ -85,6 +92,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
 
+  protected TemplateMessageService templateMessageService;
+  protected MessageService messageService;
+  protected AppService appService;
+
   @Inject
   public ContractServiceImpl(
       AppBaseService appBaseService,
@@ -93,7 +104,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
-      ContractRepository contractRepository) {
+      ContractRepository contractRepository,
+      TemplateMessageService templateMessageService,
+      MessageService messageService,
+      AppService appService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -101,6 +115,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.contractLineRepo = contractLineRepo;
     this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
+    this.templateMessageService = templateMessageService;
+    this.messageService = messageService;
+    this.appService = appService;
   }
 
   @Override
@@ -467,6 +484,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     // Increase invoice period date
     increaseInvoiceDates(contract);
+    sendInvoicingMail(contract);
 
     return invoiceRepository.save(invoice);
   }
@@ -732,6 +750,22 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       return ContractService.super.getVersions(contract);
     } else {
       return Collections.singletonList(contract.getCurrentContractVersion());
+    }
+  }
+
+  public void sendInvoicingMail(Contract contract) throws AxelorException {
+    AppContract contractApp = (AppContract) appService.getApp("contract");
+    Template template = contractApp.getContractInvoicingReminderTemplate();
+    if (template != null) {
+      String model = template.getMetaModel().getFullName();
+      String tag = template.getMetaModel().getName();
+      try {
+        Message message =
+            templateMessageService.generateMessage(contract.getId(), model, tag, template);
+        messageService.sendByEmail(message);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
     }
   }
 }

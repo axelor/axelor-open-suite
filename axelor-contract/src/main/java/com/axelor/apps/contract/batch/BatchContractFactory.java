@@ -25,6 +25,8 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.io.IOException;
+import javax.mail.MessagingException;
 
 abstract class BatchContractFactory {
   ContractRepository repository;
@@ -41,5 +43,7 @@ abstract class BatchContractFactory {
 
   abstract Query<Contract> prepare(Batch batch);
 
-  abstract void process(Contract contract) throws AxelorException;
+  abstract void process(Contract contract)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException, MessagingException;
 }

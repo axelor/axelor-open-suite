@@ -59,6 +59,24 @@ public class CrmBatchController {
     }
   }
 
+  public void actionCallForTendersReminder(ActionRequest request, ActionResponse response) {
+
+    CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
+
+    Batch batch = null;
+    try {
+      batch =
+          Beans.get(CrmBatchService.class)
+              .callForTendersReminder(Beans.get(CrmBatchRepository.class).find(crmBatch.getId()));
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
+
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
   // WS
 
   /**

@@ -1,0 +1,6 @@
+---
+title: "Contract batches : end of contract reminder and invoicing"
+type: feature
+description: |
+  This feature adds a new contract batch (End of contract reminder) which sends an alert for every contract whose end date is before a given duration of time.
+  The contract invoicing batch now also sends an alert when invoicing a contract if the corresponding template is configured.

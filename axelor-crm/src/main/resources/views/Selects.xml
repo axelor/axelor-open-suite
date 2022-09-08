@@ -85,6 +85,7 @@
   <selection name="icrm.batch.action.select">
     <option value="21">Event reminder</option>
     <option value='22'>Target</option>
+    <option value="23">Call for tenders reminder</option>
   </selection>
 
   <selection name="crm.target.configuration.period.type.select">
@@ -167,6 +168,12 @@
     <option value="10">October</option>
     <option value="11">November</option>
     <option value="12">December</option>
+  </selection>
+
+  <selection name="crm.call.for.tenders.status.select">
+    <option value="0">In progress</option>
+    <option value="1">Won</option>
+    <option value="2">Lost</option>
   </selection>
 
 </object-views>
