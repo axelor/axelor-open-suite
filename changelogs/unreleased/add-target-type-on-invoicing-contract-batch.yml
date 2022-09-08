@@ -2,4 +2,4 @@
 title: "Contract batch : Add type for invoicing contract batch"
 type: feature
 description: |
-Added a selection field to be able to run the contract invoicing batch for supplier or customer contracts only
+  Added a selection field to be able to run the contract invoicing batch for supplier or customer contracts only
