@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.batch;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.i18n.I18n;
 
@@ -38,8 +39,7 @@ public class BatchReminderMail extends AbstractBatch {
     String comment = String.format("\t* %s Emails sent \n", batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

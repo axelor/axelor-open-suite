@@ -16,7 +16,7 @@
     <view type="calendar" name="maintenance-request-calendar-per-user"/>
     <view type="form" name="maintenance-request-form"/>
     <domain>self.equipementMaintenance.machine.id = :id</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
 </object-views>

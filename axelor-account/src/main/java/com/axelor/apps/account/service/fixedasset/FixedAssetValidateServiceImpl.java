@@ -2,7 +2,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -50,7 +50,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
     if (fixedAsset.getGrossValue().signum() <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0),
           fixedAsset.getReference());
     }
 
@@ -99,6 +99,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
       }
     }
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+    fixedAsset.setInitialPeriodicityInMonth(fixedAsset.getPeriodicityInMonth());
     fixedAssetRepo.save(fixedAsset);
   }
 

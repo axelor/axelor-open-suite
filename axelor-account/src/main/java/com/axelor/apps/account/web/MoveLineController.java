@@ -21,13 +21,14 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
@@ -214,7 +215,7 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
+        response.setAlert(I18n.get(AccountExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -317,6 +318,12 @@ public class MoveLineController {
             if (!accountingAccount.getUseForPartnerBalance()) {
               response.setValue("partner", null);
             }
+            AnalyticDistributionTemplate analyticDistributionTemplate =
+                accountingAccount.getAnalyticDistributionTemplate();
+            if (accountingAccount.getAnalyticDistributionAuthorized()
+                && analyticDistributionTemplate != null) {
+              response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+            }
           }
 
           TaxLine taxLine =
@@ -336,13 +343,10 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
-        }
-
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
+
         response.setValue("taxLine", taxLine);
       }
 

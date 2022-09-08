@@ -1,0 +1,3 @@
+title: "Typo in the word separate"
+type: fix
+description: "Project wide we had the word `separate` written as `seperate`"

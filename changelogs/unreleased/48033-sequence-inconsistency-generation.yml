@@ -1,0 +1,5 @@
+---
+title : "Sequence : fix an inconsistency for yearly reset sequence"
+type : fix
+description: |
+  Sequence version with yearly reset are automatically generated with the correct end date

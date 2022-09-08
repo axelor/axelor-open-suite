@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -287,7 +287,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (companyCurrency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),
+          I18n.get(AccountExceptionMessage.INVOICE_LINE_GENERATOR_2),
           company.getName());
     }
 
@@ -313,7 +313,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    */
   protected InvoiceLine refundInvoiceLine(InvoiceLine invoiceLine, boolean daysQty) {
 
-    LOG.debug("Remboursement d'une ligne de facture (quantité = nb jour ? {}).", daysQty);
+    LOG.debug("Reimbursement of an invoice line (quantity = number of day ? {}).", daysQty);
 
     InvoiceLine refundInvoiceLine = JPA.copy(invoiceLine, true);
 
@@ -323,13 +323,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     refundInvoiceLine.setQty(quantity.negate());
 
-    LOG.debug("Quantité remboursée : {}", refundInvoiceLine.getQty());
+    LOG.debug("Quantity reimbursed : {}", refundInvoiceLine.getQty());
 
     refundInvoiceLine.setExTaxTotal(
         computeAmount(refundInvoiceLine.getQty(), refundInvoiceLine.getPrice()));
 
     LOG.debug(
-        "Remboursement de la ligne de facture {} => montant HT: {}",
+        "Reimbursement of the invoice line {} => amount W.T : {}",
         new Object[] {invoiceLine.getId(), refundInvoiceLine.getExTaxTotal()});
 
     return refundInvoiceLine;
@@ -342,7 +342,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     substract.setQty(invoiceLine1.getQty().add(invoiceLine2.getQty()));
     substract.setExTaxTotal(computeAmount(substract.getQty(), substract.getPrice()));
 
-    LOG.debug("Soustraction de deux lignes de factures: {}", substract);
+    LOG.debug("Subtraction of two invoice lines: {}", substract);
 
     return substract;
   }
@@ -360,7 +360,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     BigDecimal convertPrice = convert(startUnit, endUnit, price);
 
     LOG.debug(
-        "Conversion du prix {} {} : {} {}", new Object[] {price, startUnit, convertPrice, endUnit});
+        "Price conversion {} {} : {} {}", new Object[] {price, startUnit, convertPrice, endUnit});
 
     return convertPrice;
   }
@@ -381,8 +381,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     LOG.debug(
-        "Obtention de l'unité : Unité {}, Unité affichée {} : {}",
-        new Object[] {unit, displayUnit, resUnit});
+        "Get unit : Unit {}, Unit displayed {} : {}", new Object[] {unit, displayUnit, resUnit});
 
     return resUnit;
   }

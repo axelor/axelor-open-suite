@@ -38,7 +38,7 @@ import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -338,7 +338,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       if (productCompanyService.get(product, "purchaseCurrency", company) == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
+            I18n.get(ProductionExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
             product.getFullName());
       }
 

@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -50,7 +51,6 @@ import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -62,7 +62,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -125,7 +124,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
+                                com.axelor.apps.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -160,7 +159,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
+                                com.axelor.apps.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -194,7 +193,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
+                                com.axelor.apps.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -220,13 +219,13 @@ public class InvoiceController {
         && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
       response.setError(
           I18n.get(
-              IExceptionMessage
+              AccountExceptionMessage
                   .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
       return;
     }
 
     Beans.get(InvoiceService.class).cancel(invoice);
-    response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
+    response.setFlash(I18n.get(AccountExceptionMessage.INVOICE_1));
     response.setReload(true);
   }
 
@@ -295,11 +294,12 @@ public class InvoiceController {
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       Invoice refund = Beans.get(InvoiceService.class).createRefund(invoice);
       response.setReload(true);
-      response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
+      response.setNotify(I18n.get(AccountExceptionMessage.INVOICE_2));
 
       response.setView(
           ActionView.define(
-                  String.format(I18n.get(IExceptionMessage.INVOICE_4), invoice.getInvoiceId()))
+                  String.format(
+                      I18n.get(AccountExceptionMessage.INVOICE_4), invoice.getInvoiceId()))
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .add("grid", "invoice-grid")
@@ -403,7 +403,8 @@ public class InvoiceController {
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(AccountExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -439,16 +440,16 @@ public class InvoiceController {
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
                 doneCount),
             doneCount));
     sb.append(" ");
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 errorCount),
             errorCount));
     return sb.toString();
@@ -464,8 +465,7 @@ public class InvoiceController {
       List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
       if (ObjectUtils.isEmpty(ids)) {
-        response.setError(
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
+        response.setError(BaseExceptionMessage.RECORD_NONE_SELECTED);
         return;
       }
 
@@ -714,7 +714,7 @@ public class InvoiceController {
             Beans.get(InvoicePaymentCreateService.class).getInvoiceIdsToPay(invoiceIdList);
 
         if (invoiceToPay.isEmpty()) {
-          response.setError(I18n.get(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY));
+          response.setError(I18n.get(AccountExceptionMessage.INVOICE_NO_INVOICE_TO_PAY));
         }
 
         response.setView(
@@ -833,21 +833,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
         InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-        Mapper mapper = Mapper.of(InvoiceLine.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          Map<String, Object> invoiceLineMap =
-              invoiceLineService.fillProductInformation(invoice, invoiceLine);
-
-          String errorMsg = (String) invoiceLineMap.get("error");
-          if (!Strings.isNullOrEmpty(errorMsg)) {
-            response.setFlash(errorMsg);
-          }
-
-          for (Map.Entry<String, Object> entry : invoiceLineMap.entrySet()) {
-            mapper.set(invoiceLine, entry.getKey(), entry.getValue());
-          }
-
-          invoiceLineService.compute(invoice, invoiceLine);
+          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }

@@ -244,7 +244,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
   private Product getProductVariant(ProductVariant parentProductVariant, Product productSearched) {
 
     LOG.debug(
-        "Recherche d'un variant du produit {} ayant des attributs communs avec {}",
+        "Variant research of the product {} which has shared attributes as {}",
         productSearched.getCode(),
         parentProductVariant.getName());
 
@@ -257,7 +257,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     if (productVariantValue1 != null) {
 
       LOG.debug(
-          "Recherche d'un variant de produit ayant au moins comme attributs {} : {}",
+          "Searching for a variant product which has at least attributes {} : {}",
           productVariantValue1.getProductVariantAttr().getCode(),
           productVariantValue1.getCode());
 
@@ -300,7 +300,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue5)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (5) en commun",
+                "Variant product found directly : {} with the set of shared attributes (5)",
                 product.getCode());
             return product;
           }
@@ -528,7 +528,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue4)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (4) en commun",
+                "Variant product found directly : {} with the set of shared attributes (4)",
                 product.getCode());
             return product;
           }
@@ -642,7 +642,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue3)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (3) en commun",
+                "Variant product found directly : {} with the set of shared attributes (3)",
                 product.getCode());
             return product;
           }
@@ -696,7 +696,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue2)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (2) en commun",
+                "Variant product found directly : {} with the set of shared attributes (2)",
                 product.getCode());
             return product;
           }
@@ -721,7 +721,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
           if (this.containsProductVariantValue(product, productVariantValue1)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (1) en commun",
+                "Variant product found directly : {} with the set of shared attributes (1)",
                 product.getCode());
             return product;
           }
@@ -730,9 +730,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
       if (productFind != null) {
         LOG.debug(
-            "Variant de produit trouvé : {} avec {} attributs en commun",
-            productFind.getCode(),
-            nbAttr);
+            "Variant product found : {} with {} shared attribute", productFind.getCode(), nbAttr);
         return productFind;
       }
     }

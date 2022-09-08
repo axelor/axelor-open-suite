@@ -88,8 +88,7 @@ public class MoveExcessPaymentService {
                   invoice.getPartner())
               .fetch();
 
-      log.debug(
-          "Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
+      log.debug("Number of overpayment to attribute to the invoice : {}", creditMoveLines.size());
       advancePaymentMoveLines.addAll(creditMoveLines);
     }
     // remove duplicates

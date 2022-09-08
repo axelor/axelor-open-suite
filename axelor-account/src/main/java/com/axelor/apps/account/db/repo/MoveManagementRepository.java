@@ -20,7 +20,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
@@ -106,11 +106,13 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {
-        move.setCurrencyCode(move.getCurrency().getCode());
+        move.setCurrencyCode(move.getCurrency().getCodeISO());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
@@ -141,7 +143,7 @@ public class MoveManagementRepository extends MoveRepository {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
+            I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e.getMessage(), e);

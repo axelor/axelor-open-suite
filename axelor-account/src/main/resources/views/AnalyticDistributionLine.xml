@@ -89,7 +89,7 @@
 
   <action-attrs name="action-attrs-domain-axis-distribution-line">
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} &quot;"
       if="__parent__ &amp;&amp; __parent__.company"/>
     <attribute name="domain" for="analyticAxis" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>

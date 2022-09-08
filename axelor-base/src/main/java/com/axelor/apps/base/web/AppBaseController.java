@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
@@ -42,10 +42,10 @@ public class AppBaseController {
   public void exportObjects(ActionRequest request, ActionResponse response) {
     MetaFile metaFile = Beans.get(ExportDbObjectService.class).exportObject();
     if (metaFile == null) {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_4));
+      response.setFlash(I18n.get(BaseExceptionMessage.GENERAL_4));
     } else {
       response.setView(
-          ActionView.define(I18n.get(IExceptionMessage.GENERAL_5))
+          ActionView.define(I18n.get(BaseExceptionMessage.GENERAL_5))
               .model("com.axelor.meta.db.MetaFile")
               .add("form", "meta-files-form")
               .add("grid", "meta-files-grid")
@@ -62,7 +62,7 @@ public class AppBaseController {
 
       if (apiType == 1) {
         Beans.get(MapService.class).testGMapService();
-        response.setFlash(IExceptionMessage.GENERAL_6);
+        response.setFlash(BaseExceptionMessage.GENERAL_6);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -123,7 +123,7 @@ public class AppBaseController {
 
   public void checkQuartzScheduler(ActionRequest request, ActionResponse response) {
     if (Beans.get(JobRunner.class).isEnabled()) {
-      response.setFlash(I18n.get(IExceptionMessage.QUARTZ_SCHEDULER_ENABLED));
+      response.setFlash(I18n.get(BaseExceptionMessage.QUARTZ_SCHEDULER_ENABLED));
     }
   }
 }

@@ -310,7 +310,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
-    line.setSelectedComplementaryProductList(null);
+    line.clearSelectedComplementaryProductList();
     return line;
   }
 
@@ -412,7 +412,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -1077,7 +1077,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       complementarySOLine = new SaleOrderLine();
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
-      saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+      complementarySOLine.setMainSaleOrderLine(saleOrderLine);
       newComplementarySOLines.add(complementarySOLine);
     }
     return complementarySOLine;
