@@ -1,0 +1,6 @@
+---
+title : "ACCOUNT MOVE :  update sequence when we validate it only if previous is a draft sequence"
+type : fix
+description: |
+  The main goal is to be able to import some account moves from the FEC import feature and keep the original move reference.
+  Second is to be sure that we never have two definitive reference for the same move.
