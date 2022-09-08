@@ -35,6 +35,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -223,12 +224,29 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
-    invoiceTermPayment.setPaidAmount(paidAmount);
+    invoiceTermPayment.setPaidAmount(this.computePaidAmount(invoicePayment).orElse(paidAmount));
+    invoiceTermPayment.setCompanyPaidAmount(paidAmount);
 
     manageInvoiceTermFinancialDiscount(
         invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
     return invoiceTermPayment;
+  }
+
+  protected Optional<BigDecimal> computePaidAmount(InvoicePayment invoicePayment) {
+    if (invoicePayment == null || invoicePayment.getMove() == null) {
+      return Optional.empty();
+    }
+
+    return invoicePayment.getMove().getMoveLineList().stream()
+        .map(
+            it ->
+                it.getCurrencyAmount()
+                    .divide(
+                        BigDecimal.valueOf(2),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP))
+        .reduce(BigDecimal::add);
   }
 
   @Override
