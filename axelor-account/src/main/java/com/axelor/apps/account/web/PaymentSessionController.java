@@ -77,55 +77,6 @@ public class PaymentSessionController {
     }
   }
 
-  public void validateInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      response.setValue("hasReleasePopup", false);
-
-      int errorCode =
-          Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
-      if (errorCode == 1) {
-        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
-      } else if (errorCode == 2) {
-        ActionView.ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get("Invoice terms"))
-                .model(PaymentSession.class.getName())
-                .add("form", "payment-session-validate-confirm-wizard")
-                .param("popup", "true")
-                .param("popup-save", "false")
-                .context("_showRecord", paymentSession.getId());
-
-        response.setValue("hasReleasePopup", true);
-        response.setView(actionViewBuilder.map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validatePaymentSession(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      PaymentSessionValidateService paymentSessionValidateService =
-          Beans.get(PaymentSessionValidateService.class);
-
-      int moveCount = paymentSessionValidateService.processPaymentSession(paymentSession);
-
-      response.setReload(true);
-
-      StringBuilder flashMessage =
-          paymentSessionValidateService.generateFlashMessage(paymentSession, moveCount);
-
-      if (flashMessage.length() > 0) {
-        response.setFlash(flashMessage.toString());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
@@ -171,12 +122,45 @@ public class PaymentSessionController {
     }
   }
 
-  public void reconciledInvoiceTermMoves(ActionRequest request, ActionResponse response) {
+  public void checkAndProcessInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(PaymentSessionValidateService.class).reconciledInvoiceTermMoves(paymentSession);
 
+      int errorCode =
+          Beans.get(PaymentSessionValidateService.class).checkValidTerms(paymentSession);
+
+      if (errorCode == 1) {
+        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+      } else if (errorCode == 2) {
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Invoice terms"))
+                .model(PaymentSession.class.getName())
+                .add("form", "payment-session-validate-confirm-wizard")
+                .param("popup", "reload")
+                .param("popup-save", "false")
+                .param("show-toolbar", "false")
+                .context("_showRecord", paymentSession.getId());
+
+        response.setView(actionViewBuilder.map());
+      } else {
+        processInvoiceTerms(request, response);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void processInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      StringBuilder flashMessage =
+          Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
+      if (flashMessage.length() > 0) {
+        response.setFlash(flashMessage.toString());
+      }
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -15,12 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.translation;
+package com.axelor.apps.bpm.service.dashboard;
 
-public interface ITranslation {
+import com.axelor.apps.bpm.db.WkfModel;
+import java.util.List;
+import java.util.Map;
 
-  public static final String CONTRACT_APP_NAME = /*$$(*/ "value:Contract"; /*)*/
+public interface BpmManagerDashboardService {
 
-  public static final String CONTRACT_BATCH_EXECUTION_RESULT = /*$$(*/
-      "%d contract(s) treated and %d anomaly(ies) reported !"; /*)*/
+  public Map<String, Object> showProcess(int offset);
+
+  public List<Map<String, Object>> getChartData(
+      WkfModel wkfModel, String type, String taskByProcessType);
 }
