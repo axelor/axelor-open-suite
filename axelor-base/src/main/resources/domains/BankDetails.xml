@@ -28,18 +28,14 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
     <string name="fullName" title="Bank Details" search="code,label" namecolumn="true">
       <![CDATA[
-            return computeBankDetailsFullName(code, label, ibanBic, iban, bankCode, sortCode, accountNbr, bbanKey);
+            return com.axelor.apps.base.service.BankDetailsServiceImpl.computeBankDetailsFullName
+            (code, label, ibanBic, iban, bankCode, sortCode, accountNbr, bbanKey);
         ]]>
     </string>
 
     <finder-method name="findDefaultByPartner" using="partner"
       filter="self.partner = :partner AND self.isDefault = TRUE"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
-
-    <extra-imports>
-      import static
-      com.axelor.apps.base.service.BankDetailsServiceImpl.computeBankDetailsFullName;
-    </extra-imports>
 
     <track>
       <field name="partner" on="UPDATE"/>
