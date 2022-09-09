@@ -1,0 +1,5 @@
+---
+title: "Webapp : Add aos.apps.install-apps property in application.properties file"
+type: feature
+description: |
+  aos.apps.install-apps property can now be used to install AOS modules by default.
