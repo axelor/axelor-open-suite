@@ -17,9 +17,6 @@
     <boolean name="isTaskAppEnable" default="true" title="Task"/>
     <boolean name="isQualityAppEnable" default="true" title="Quality"/>
 
-    <boolean name="isProductionAppEnable" default="true" title="Production"
-      help="A new version of this application will be available in future releases, this application will no longer be maintained"/>
-
     <decimal name="offlineRecordLimit" title="Offline record limit"/>
 
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"
@@ -33,8 +30,6 @@
 
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Products"/>
-
-    <string name="mOFilterOnStockDetailStatusSelect" title="Statuses to take into account"/>
 
     <track>
       <field name="isSaleAppEnable" on="UPDATE"/>
