@@ -314,9 +314,9 @@ public class PartnerController {
 
       Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
 
-      response.setAlert(
+      response.setError(
           String.format(
-              IExceptionMessage.BANK_DETAILS_2,
+              I18n.get(IExceptionMessage.BANK_DETAILS_2),
               "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
     }
   }
