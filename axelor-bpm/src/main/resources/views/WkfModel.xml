@@ -10,7 +10,7 @@
         prompt="Are you sure wants to terminate all process ?"
         onClick="com.axelor.apps.bpm.web.WkfModelController:terminateAll"/>
       <button name="exportBtn" title="Export" onClick="action-wkf-model-export-wkf-models"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         onClick="action-wkf-model-view-import-wkf-model-form"/>
       <button name="importStandardBpmBtn" title="Import standard BPM"
         onClick="action-wkf-model-method-import-standard-wkf-model"/>
@@ -109,7 +109,7 @@
       <field name="targetLanguageSelect" type="string" selection="select.language"
         title="Target language" selection-in="['en','fr']" requiredIf="isTranslate"
         showIf="isTranslate"/>
-      <button name="importUsersBtn" title="Import"
+      <button name="importUsersBtn" title="import.verb"
         onClick="action-wkf-model-method-import-wkf-model"
         showIf="(dataFile != null &amp;&amp; !isTranslate) || (dataFile != null &amp;&amp; isTranslate &amp;&amp; sourceLanguageSelect != null &amp;&amp; targetLanguageSelect != null)"
         colSpan="4"/>
@@ -222,7 +222,7 @@
   </action-record>
 
   <action-view name="action-wkf-view-open-editor" title="BPM Studio">
-    <view type="html" name="wkf-editor?id={{_id}}&amp;timerTask={{_timerTask}}"/>
+    <view type="html" name="wkf-editor/index.html?id={{_id}}&amp;timerTask={{_timerTask}}"/>
     <context name="_timerTask"
       expr="eval: !com.axelor.app.AppSettings.get().getBoolean('application.multi_tenancy', false)"/>
   </action-view>
@@ -292,7 +292,7 @@
   </action-method>
 
   <action-method name="action-wkf-model-method-show-dashboard">
-    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showDashboard"/>
+    <call class="com.axelor.apps.bpm.web.WkfDashboardController" method="showDashboard"/>
   </action-method>
 
   <action-method name="action-wkf-model-method-status-per-view">

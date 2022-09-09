@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
@@ -33,4 +34,13 @@ public interface UnitCostCalculationService {
   public void runUnitCostCalc(UnitCostCalculation unitCostCalculation) throws AxelorException;
 
   public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException;
+
+  public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
+      throws AxelorException;
+
+  public void fillCompanySet(UnitCostCalculation unitCostCalculation, Company company);
+
+  public Boolean hasDefaultBOMSelected();
+
+  public Company getSingleCompany(UnitCostCalculation unitCostCalculation);
 }

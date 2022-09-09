@@ -49,9 +49,12 @@
     <integer name="statusSelect" title="Status" selection="ianalytic.account.status.select"
       default="0"/>
 
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
     <unique-constraint columns="code,name,analyticAxis"/>
 
     <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+    <finder-method name="findByParent" using="parent" all="true"/>
 
     <extra-code>
       	<![CDATA[

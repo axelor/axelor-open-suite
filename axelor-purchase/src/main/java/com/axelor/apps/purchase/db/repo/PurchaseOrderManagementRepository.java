@@ -55,7 +55,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
       return purchaseOrder;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

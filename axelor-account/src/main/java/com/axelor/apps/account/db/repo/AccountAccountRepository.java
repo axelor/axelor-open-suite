@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -62,7 +62,7 @@ public class AccountAccountRepository extends AccountRepository {
       return super.save(account);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -71,6 +71,7 @@ public class AccountAccountRepository extends AccountRepository {
     Account account = super.copy(entity, deep);
     account.setCode(String.format("%s (copy)", account.getCode()));
     account.setName(String.format("%s (copy)", account.getName()));
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
     return account;
   }
 
@@ -80,7 +81,7 @@ public class AccountAccountRepository extends AccountRepository {
       Exception e =
           new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.ACCOUNT_REGULATORY_REMOVE));
+              I18n.get(AccountExceptionMessage.ACCOUNT_REGULATORY_REMOVE));
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }

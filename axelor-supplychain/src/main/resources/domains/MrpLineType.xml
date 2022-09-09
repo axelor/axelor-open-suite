@@ -17,7 +17,6 @@
     <integer name="sequence" title="Sequence to order MRP results"/>
 
     <string name="statusSelect" title="Statuses to take into account"/>
-
     <boolean name="includeElementWithoutDate" title="Include element without date"
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
     <boolean name="ignoreEndDate" title="Ignore end date"
@@ -56,7 +55,7 @@
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL = 8;  // Manufacturing proposal
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL_NEED = 9;  // Need manufacturing proposal
 		public static final int ELEMENT_STOCK_HISTORY = 10; //Stock history
-
+		public static final int ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY = 11;
 
 		// TYPE SELECT
 		public static final int TYPE_IN = 1;  // Entry of stock

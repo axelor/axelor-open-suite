@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.supplierportal.db.ProductSupplier;
 import com.axelor.apps.supplierportal.db.repo.ProductSupplierRepository;
-import com.axelor.apps.supplierportal.exceptions.IExceptionMessage;
+import com.axelor.apps.supplierportal.exceptions.SupplierPortalExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,20 +38,20 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
       throw new AxelorException(
           productSupplier,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.PRODUCT_SUPPLIER_NO_CODE));
+          I18n.get(SupplierPortalExceptionMessage.PRODUCT_SUPPLIER_NO_CODE));
     }
     if (productSupplier.getProductName() == null) {
       throw new AxelorException(
           productSupplier,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.PRODUCT_SUPPLIER_NO_NAME),
+          I18n.get(SupplierPortalExceptionMessage.PRODUCT_SUPPLIER_NO_NAME),
           productSupplier.getProductCode());
     }
     if (productRepo.findByCode(productSupplier.getProductCode()) != null) {
       throw new AxelorException(
           productSupplier,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCT_SUPPLIER_SAME_CODE));
+          I18n.get(SupplierPortalExceptionMessage.PRODUCT_SUPPLIER_SAME_CODE));
     }
     Product productCreated = createProductFromProductSupplier(productSupplier);
     productSupplier.setProductCreated(productCreated);

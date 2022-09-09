@@ -19,8 +19,10 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.exception.AxelorException;
@@ -50,7 +52,25 @@ public interface InvoicePaymentCreateService {
    * @param companyBankDetails
    * @return
    */
-  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails);
+  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+      throws AxelorException;
+
+  InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber);
+
+  InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      PaymentSession paymentSession);
 
   /**
    * Create an invoice payment for each invoice
@@ -70,4 +90,8 @@ public interface InvoicePaymentCreateService {
       throws AxelorException;
 
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException;
+
+  InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException;
 }

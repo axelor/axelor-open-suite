@@ -1,5 +1,0 @@
----
-title: "Invoice: fill more fields on supplier invoice generated from interco feature"
-type: change
-description: |
-  When generating a supplier invoice from a customer invoice with interco feature, we now automatically fill origin date and supplier invoice number, and we copy the customer invoice printed PDF into supplier invoice files.

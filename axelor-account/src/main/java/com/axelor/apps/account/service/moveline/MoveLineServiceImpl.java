@@ -17,19 +17,25 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -43,7 +49,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +68,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -70,7 +78,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceTermService invoiceTermService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -78,6 +87,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -251,7 +261,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
-    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    if (moveLine.getIsSelectedBankReconciliation() != null) {
+      moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    } else {
+      moveLine.setIsSelectedBankReconciliation(true);
+    }
     return moveLineRepository.save(moveLine);
   }
 
@@ -264,30 +278,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     posted = String.join(",", postedNbrs);
     moveLine.setPostedNbr(posted);
     return moveLine;
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
 
   @Override
@@ -314,5 +304,87 @@ public class MoveLineServiceImpl implements MoveLineService {
     BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public boolean checkManageAnalytic(Move move) throws AxelorException {
+    return move != null
+        && move.getCompany() != null
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
+  }
+
+  @Override
+  public LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine) {
+    if (moveLine == null) {
+      return null;
+    }
+
+    int discountDelay =
+        Optional.of(moveLine)
+            .map(MoveLine::getFinancialDiscount)
+            .map(FinancialDiscount::getDiscountDelay)
+            .orElse(0);
+
+    LocalDate deadlineDate = moveLine.getDueDate().minusDays(discountDelay);
+
+    return deadlineDate.isBefore(moveLine.getDate()) ? moveLine.getDate() : deadlineDate;
+  }
+
+  @Override
+  public void computeFinancialDiscount(MoveLine moveLine) {
+    if (moveLine.getAccount() != null
+        && moveLine.getAccount().getHasInvoiceTerm()
+        && moveLine.getFinancialDiscount() != null) {
+      FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
+      BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
+
+      moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
+      moveLine.setFinancialDiscountTotalAmount(
+          amount.multiply(
+              financialDiscount
+                  .getDiscountRate()
+                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+      moveLine.setRemainingAmountAfterFinDiscount(
+          amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
+    } else {
+      moveLine.setFinancialDiscount(null);
+      moveLine.setFinancialDiscountRate(BigDecimal.ZERO);
+      moveLine.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+      moveLine.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    }
+
+    this.computeInvoiceTermsFinancialDiscount(moveLine);
+  }
+
+  @Override
+  public void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().stream()
+          .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
+          .forEach(
+              it ->
+                  invoiceTermService.computeFinancialDiscount(
+                      it,
+                      moveLine.getCredit().max(moveLine.getDebit()),
+                      moveLine.getFinancialDiscount(),
+                      moveLine.getFinancialDiscountTotalAmount(),
+                      moveLine.getRemainingAmountAfterFinDiscount()));
+    }
+  }
+
+  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
+    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
+
+    batchAccountingCutOff.recordIdList = recordIdList;
+    batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
+
+    return batchAccountingCutOff.getBatch();
+  }
+
+  public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
+    moveLineList.stream()
+        .filter(it -> Objects.equals(it.getPartner(), previousPartner))
+        .forEach(it -> it.setPartner(partner));
   }
 }

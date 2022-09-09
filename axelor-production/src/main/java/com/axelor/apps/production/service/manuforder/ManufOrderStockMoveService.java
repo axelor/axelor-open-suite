@@ -27,7 +27,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -41,6 +41,7 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -142,6 +143,29 @@ public class ManufOrderStockMoveService {
             ? company.getStockConfig().getOutsourcingReceiptStockLocation()
             : getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
+    if (fromStockLocation == null) {
+      if (manufOrder.getOutsourcing()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                ProductionExceptionMessage
+                    .MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_SOURCE_STOCK_LOCATION));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                ProductionExceptionMessage.MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION));
+      }
+    }
+
+    if (virtualStockLocation == null && manufOrder.getOutsourcing()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              ProductionExceptionMessage
+                  .MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION));
+    }
+
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
@@ -176,7 +200,8 @@ public class ManufOrderStockMoveService {
   public StockLocation getDefaultStockLocation(ManufOrder manufOrder, Company company, int inOrOut)
       throws AxelorException {
     if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+      throw new IllegalArgumentException(
+          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -184,8 +209,10 @@ public class ManufOrderStockMoveService {
     if (stockLocation == null) {
       stockLocation =
           inOrOut == STOCK_LOCATION_IN
-              ? stockConfigService.getComponentDefaultStockLocation(stockConfig)
-              : stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+              ? stockConfigService.getComponentDefaultStockLocation(
+                  manufOrder.getWorkshopStockLocation(), stockConfig)
+              : stockConfigService.getFinishedProductsDefaultStockLocation(
+                  manufOrder.getWorkshopStockLocation(), stockConfig);
     }
     return stockLocation;
   }
@@ -201,7 +228,8 @@ public class ManufOrderStockMoveService {
    */
   protected StockLocation getDefaultStockLocation(ProdProcess prodProcess, int inOrOut) {
     if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+      throw new IllegalArgumentException(
+          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
     if (prodProcess == null) {
       return null;
@@ -281,7 +309,8 @@ public class ManufOrderStockMoveService {
         manufOrder.getProdProcess().getProducedProductStockLocation();
     if (producedProductStockLocation == null) {
       producedProductStockLocation =
-          stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+          stockConfigService.getFinishedProductsDefaultStockLocation(
+              manufOrder.getWorkshopStockLocation(), stockConfig);
     }
 
     StockMove stockMove =
@@ -421,7 +450,8 @@ public class ManufOrderStockMoveService {
   protected void partialFinish(ManufOrder manufOrder, int inOrOut) throws AxelorException {
 
     if (inOrOut != PART_FINISH_IN && inOrOut != PART_FINISH_OUT) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+      throw new IllegalArgumentException(
+          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
 
     Company company = manufOrder.getCompany();
@@ -615,6 +645,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 
@@ -661,6 +692,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);
     }
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 

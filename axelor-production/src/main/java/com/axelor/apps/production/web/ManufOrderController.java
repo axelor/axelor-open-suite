@@ -19,15 +19,17 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProductProductionRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -39,7 +41,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -50,6 +51,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -59,6 +61,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -140,7 +143,7 @@ public class ManufOrderController {
       long tracebackCount = traceBackService.countMessageTraceBack(manufOrder);
 
       if (!Beans.get(ManufOrderWorkflowService.class).finish(manufOrder)) {
-        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+        response.setNotify(I18n.get(ProductionExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
       } else if (traceBackService.countMessageTraceBack(manufOrder) > tracebackCount) {
         traceBackService
             .findLastMessageTraceBack(manufOrder)
@@ -148,9 +151,7 @@ public class ManufOrderController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
 
@@ -170,7 +171,7 @@ public class ManufOrderController {
       long tracebackCount = traceBackService.countMessageTraceBack(manufOrder);
 
       if (!Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder)) {
-        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+        response.setNotify(I18n.get(ProductionExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
       } else if (traceBackService.countMessageTraceBack(manufOrder) > tracebackCount) {
         traceBackService
             .findLastMessageTraceBack(manufOrder)
@@ -178,9 +179,7 @@ public class ManufOrderController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
       response.setReload(true);
@@ -200,7 +199,7 @@ public class ManufOrderController {
               Beans.get(ManufOrderRepository.class).find(manufOrder.getId()),
               manufOrder.getCancelReason(),
               manufOrder.getCancelReasonStr());
-      response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL));
+      response.setFlash(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -314,7 +313,7 @@ public class ManufOrderController {
         LOG.debug("Printing {}", name);
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
+        response.setFlash(I18n.get(ProductionExceptionMessage.MANUF_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -545,28 +544,29 @@ public class ManufOrderController {
   public void checkMergeValues(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().get("id") != null) {
-        response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
+        response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
       } else {
         Object _ids = request.getContext().get("_ids");
         if (!ObjectUtils.isEmpty(_ids)) {
           List<Long> ids = (List<Long>) _ids;
           if (ids.size() < 2) {
-            response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
+            response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
           } else {
             boolean canMerge = Beans.get(ManufOrderService.class).canMerge(ids);
             if (canMerge) {
-              response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
+              response.setAlert(I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
               if (Beans.get(AppProductionService.class).getAppProduction().getManageWorkshop()) {
-                response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+                response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_ERROR));
               } else {
                 response.setError(
-                    I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE));
+                    I18n.get(
+                        ProductionExceptionMessage.MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE));
               }
             }
           }
         } else {
-          response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_ONE_SELECTED));
+          response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_NO_ONE_SELECTED));
         }
       }
 
@@ -644,7 +644,7 @@ public class ManufOrderController {
       if (prodProductList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.NO_PRODUCT_SELECTED));
+            I18n.get(ProductionExceptionMessage.NO_PRODUCT_SELECTED));
       }
 
       List<Product> selectedProductList = new ArrayList<>();
@@ -653,7 +653,7 @@ public class ManufOrderController {
         if (selectedProductList.contains(prod.getProduct())) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.DUPLICATE_PRODUCT_SELECTED));
+              I18n.get(ProductionExceptionMessage.DUPLICATE_PRODUCT_SELECTED));
         }
         selectedProductList.add(prod.getProduct());
       }
@@ -664,14 +664,13 @@ public class ManufOrderController {
       response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Manufacturing orders"))
-              .model(ManufOrder.class.getName())
-              .add("grid", "generated-manuf-order-grid")
-              .add("form", "manuf-order-form")
+              .model(Wizard.class.getName())
+              .add("form", "multi-level-generated-draft-manuf-order-wizard-form")
               .param("popup", "true")
               .param("popup-save", "false")
               .param("show-toolbar", "false")
               .param("show-confirm", "false")
-              .domain("self.id in (" + StringTool.getIdListString(moList) + ")")
+              .context("_moList", moList)
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -746,6 +745,32 @@ public class ManufOrderController {
       Beans.get(ManufOrderReservedQtyService.class).cancelReservation(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removeUnselectedMOs(ActionRequest request, ActionResponse response) {
+    try {
+      Object object = request.getContext().get("draftManufOrderList");
+      if (object == null) {
+        return;
+      }
+      List<Map<String, Object>> manufOrders = (List<Map<String, Object>>) object;
+      List<Long> ids =
+          Beans.get(ManufOrderService.class).planSelectedOrdersAndDiscardOthers(manufOrders);
+      if (ObjectUtils.isEmpty(ids)) {
+        ids.add(0L);
+      }
+      response.setView(
+          ActionView.define(I18n.get("Manufacturing orders"))
+              .model(ManufOrder.class.getName())
+              .add("grid", "generated-manuf-order-grid")
+              .add("form", "manuf-order-form")
+              .domain("self.id in (" + Joiner.on(",").join(ids) + ")")
+              .map());
+
+    } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
   }

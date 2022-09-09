@@ -17,13 +17,26 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseHRRepository extends ExpenseRepository {
+
+  protected ExpenseFetchPeriodService expenseFetchPeriodService;
+
+  @Inject
+  public ExpenseHRRepository(ExpenseFetchPeriodService expenseFetchPeriodService) {
+    this.expenseFetchPeriodService = expenseFetchPeriodService;
+  }
+
   @Override
   public Expense save(Expense expense) {
     try {
@@ -36,7 +49,32 @@ public class ExpenseHRRepository extends ExpenseRepository {
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Expense copy(Expense entity, boolean deep) {
+    Expense expense = super.copy(entity, deep);
+    expense.setStatusSelect(STATUS_DRAFT);
+    if (CollectionUtils.isNotEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        expenseLine.setExpenseDate(null);
+        expenseLine.setJustificationMetaFile(null);
+      }
+    }
+    if (CollectionUtils.isNotEmpty(expense.getKilometricExpenseLineList())) {
+      expense.getKilometricExpenseLineList().forEach(line -> line.setExpenseDate(null));
+    }
+    expense.setSentDate(null);
+    expense.setValidatedBy(null);
+    expense.setValidationDate(null);
+    expense.setPeriod(expenseFetchPeriodService.getPeriod(expense));
+    expense.setExpenseSeq(null);
+    expense.setMove(null);
+    expense.setMoveDate(null);
+    expense.setVentilated(false);
+    expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
+    return expense;
   }
 }

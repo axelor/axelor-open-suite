@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.project.db.Project;
@@ -51,14 +51,14 @@ public class ProjectBusinessProjectRepository extends ProjectHRRepository {
           throw new AxelorException(
               company,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PROJECT_SEQUENCE_ERROR),
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_SEQUENCE_ERROR),
               company.getName());
         }
 
         project.setCode(seq);
       }
     } catch (AxelorException e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(project);
   }

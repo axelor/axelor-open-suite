@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.bankorder;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -28,10 +29,8 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -61,7 +60,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
   public BankOrder createBankOrder(Expense expense, BankDetails bankDetails)
       throws AxelorException {
     Company company = expense.getCompany();
-    Partner partner = expense.getUser().getPartner();
+    Partner partner = expense.getEmployee().getContactPartner();
     PaymentMode paymentMode = expense.getPaymentMode();
     BigDecimal amount =
         expense
@@ -70,7 +69,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
     Currency currency = company.getCurrency();
-    LocalDate paymentDate = Beans.get(AppBaseService.class).getTodayDate(company);
+    LocalDate paymentDate = expense.getPaymentDate();
 
     BankOrder bankOrder =
         super.createBankOrder(
@@ -82,7 +81,9 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             currency,
             expense.getFullName(),
             expense.getFullName(),
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE,
+            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(

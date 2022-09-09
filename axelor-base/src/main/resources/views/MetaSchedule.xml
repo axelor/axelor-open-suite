@@ -22,7 +22,7 @@
       <insert position="after">
         <panel name="batchPanel" title="Batch"
           showIf="job == 'com.axelor.apps.base.job.BatchJob'">
-          <field name="batchServiceSelect" title="Service"/>
+          <field name="batchServiceSelect"/>
           <field name="batchCode" title="Code"/>
         </panel>
       </insert>

@@ -1,7 +1,0 @@
----
-title: "Partner : unblock customer account when he pays his late payments."
-type: feature
-description: |
-  - When a partner pays every late payments he has it will unblock his account if it had not been manually blocked
-  - New field for partner 'Account manually blocked' that prevents the automatic unblocking of his account
-  - If a parent partner of a customer is blocked, the partner will be counted as blocked for sale order and stock move processes

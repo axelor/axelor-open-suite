@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -122,12 +122,21 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
   @Override
   public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
+    checkOnGoing(abcAnalysis);
     reset(abcAnalysis);
     start(abcAnalysis);
     getAbcAnalysisClassList(abcAnalysis);
     createAllABCAnalysisLine(abcAnalysis);
     doAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
     finish(abcAnalysisRepository.find(abcAnalysis.getId()));
+  }
+
+  protected void checkOnGoing(ABCAnalysis abcAnalysis) throws AxelorException {
+    if (abcAnalysis.getStatusSelect() == ABCAnalysisRepository.STATUS_ANALYZING) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.ABC_ANALYSIS_ALREADY_STARTED));
+    }
   }
 
   @Transactional
@@ -365,7 +374,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
       throw new AxelorException(
           abcAnalysis,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
+          I18n.get(BaseExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
     }
 
     String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSeq();
@@ -396,7 +405,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         throw new AxelorException(
             abcAnalysis,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH));
+            I18n.get(BaseExceptionMessage.ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH));
       }
 
       totalQty = totalQty.add(classQty);
@@ -407,7 +416,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
       throw new AxelorException(
           abcAnalysis,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ABC_CLASSES_INVALID_QTY_OR_WORTH));
+          I18n.get(BaseExceptionMessage.ABC_CLASSES_INVALID_QTY_OR_WORTH));
     }
   }
 }

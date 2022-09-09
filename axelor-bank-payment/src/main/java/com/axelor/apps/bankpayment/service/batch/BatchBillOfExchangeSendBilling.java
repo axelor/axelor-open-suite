@@ -5,16 +5,19 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.NoteBills;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.NoteBillsRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.message.db.Message;
@@ -83,9 +86,8 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(
-                  com.axelor.apps.account.exception.IExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
-              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              I18n.get(AccountExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
+              I18n.get(BaseExceptionMessage.EXCEPTION),
               batch.getAccountingBatch().getCompany().getName()),
           "Batch bill of exchange send billing",
           batch.getId());
@@ -154,7 +156,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
           || StringUtils.isEmpty(partner.getEmailAddress().getAddress())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            IExceptionMessage.BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING,
+            BankPaymentExceptionMessage.BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING,
             partner.getName());
       }
       NoteBills noteBills =
@@ -283,24 +285,27 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT))
-        .append(" ");
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
     sb.append(
         String.format(
             I18n.get(
-                    com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                    com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                    BaseExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                    BaseExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
                     batch.getDone())
                 + " ",
             batch.getDone()));
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());
     super.stop();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }
 }

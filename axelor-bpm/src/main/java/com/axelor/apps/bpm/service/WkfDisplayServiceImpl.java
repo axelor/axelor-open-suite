@@ -77,7 +77,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
       String processInstanceId = wkfInstance.getInstanceId();
       List<String> activeIds = getActivityIds(processInstanceId);
 
-      Map<String, Integer> activityCountMap = new HashMap<String, Integer>();
+      Map<String, Integer> activityCountMap = new HashMap<>();
       getActivityPassCount(wkfInstance.getInstanceId(), activityCountMap);
 
       WkfProcess wkfProcess = wkfInstance.getWkfProcess();
@@ -136,7 +136,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     query.processInstanceId(instanceId);
     query.completed();
 
-    List<String> activityIds = new ArrayList<String>();
+    List<String> activityIds = new ArrayList<>();
 
     for (HistoricProcessInstance instance : query.list()) {
       activityIds.add(instance.getEndActivityId());
@@ -161,15 +161,14 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
   private void getActivityPassCount(String instanceId, Map<String, Integer> activityCountMap) {
 
     HistoryService historyService = engineService.getEngine().getHistoryService();
-    List<HistoricActivityInstance> activityInstances = new ArrayList<HistoricActivityInstance>();
-
     if (instanceId == null) {
       return;
     }
-    activityInstances =
+
+    List<HistoricActivityInstance> activityInstances =
         historyService.createHistoricActivityInstanceQuery().processInstanceId(instanceId).list();
 
-    Set<String> multiInstanceIds = new HashSet<String>();
+    Set<String> multiInstanceIds = new HashSet<>();
     for (HistoricActivityInstance historicActivityInstance : activityInstances) {
 
       int count = 0;
@@ -198,7 +197,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
 
     try {
 
-      Map<String, Integer> activityCountMap = new HashMap<String, Integer>();
+      Map<String, Integer> activityCountMap = new HashMap<>();
 
       List<WkfInstance> instances =
           Beans.get(WkfInstanceRepository.class)
@@ -235,7 +234,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
   @Override
   public List<Map<String, Object>> getWkfStatus(Class<?> klass, Long id) {
 
-    List<Map<String, Object>> statusList = new ArrayList<Map<String, Object>>();
+    List<Map<String, Object>> statusList = new ArrayList<>();
 
     if (klass == null || id == null) {
       return statusList;
@@ -347,7 +346,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
         color = "green";
       }
 
-      Map<String, Object> statusMap = new HashMap<String, Object>();
+      Map<String, Object> statusMap = new HashMap<>();
       statusMap.put("name", node.getActivityId());
       statusMap.put("title", title);
       statusMap.put("color", color);
@@ -371,7 +370,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
   private boolean isValidNode(String activityId, WkfProcess wkfProcess, String klassName) {
 
     WkfTaskConfig wkfTaskConfig =
-        Beans.get(WkfTaskConfigRepository.class)
+        wkfTaskConfigRepository
             .all()
             .filter("self.processId = ?1 and self.name = ?2", wkfProcess.getProcessId(), activityId)
             .fetchOne();

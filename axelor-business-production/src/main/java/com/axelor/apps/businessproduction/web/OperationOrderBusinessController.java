@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproduction.web;
 
-import com.axelor.apps.businessproduction.exception.IExceptionMessage;
+import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -42,7 +42,9 @@ public class OperationOrderBusinessController {
       if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
           && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder)
               > 0) {
-        response.setAlert(I18n.get(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
+        response.setAlert(
+            I18n.get(
+                BusinessProductionExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

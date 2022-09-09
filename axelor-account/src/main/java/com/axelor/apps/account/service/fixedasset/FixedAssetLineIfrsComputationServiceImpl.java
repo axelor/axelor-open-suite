@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,8 +32,9 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Inject
   public FixedAssetLineIfrsComputationServiceImpl(
-      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
-    super(fixedAssetFailOverControlService);
+      FixedAssetFailOverControlService fixedAssetFailOverControlService,
+      AppBaseService appBaseService) {
+    super(fixedAssetFailOverControlService, appBaseService);
   }
 
   @Override
@@ -40,7 +42,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return fixedAsset.getFailoverDate();
     }
-    return fixedAsset.getFirstDepreciationDate();
+    return fixedAsset.getIfrsFirstDepreciationDate();
   }
 
   @Override
@@ -62,12 +64,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
-    return fixedAsset.getFirstDepreciationDate();
-  }
-
-  @Override
-  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    return fixedAsset.getAcquisitionDate();
+    return fixedAsset.getIfrsFirstDepreciationDate();
   }
 
   @Override
@@ -76,8 +73,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsNumberOfDepreciation();
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getIfrsNumberOfDepreciation());
   }
 
   @Override
@@ -122,8 +119,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getIfrsNbrOfPastDepreciations());
   }
 
   @Override
@@ -134,5 +131,20 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected Integer getDurationInMonth(FixedAsset fixedAsset) {
     return fixedAsset.getIfrsDurationInMonth();
+  }
+
+  @Override
+  protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsDepreciatedAmountCurrentYear();
+  }
+
+  @Override
+  protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsFirstDepreciationDateInitSelect();
   }
 }

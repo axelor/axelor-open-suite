@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,6 @@ import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.db.repo.MetaPermissionRuleRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVReader;
@@ -53,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -113,14 +113,12 @@ public class PermissionAssistantService {
 
     String userCode = assistant.getCreatedBy().getCode();
     String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-    String fileName = userCode + "-" + dateString + ".csv";
-
-    return fileName;
+    return userCode + "-" + dateString + ".csv";
   }
 
-  public void createFile(PermissionAssistant assistant) {
+  public void createFile(PermissionAssistant assistant) throws IOException {
 
-    File permFile = new File(Files.createTempDir(), getFileName(assistant));
+    File permFile = new File(Files.createTempDirectory(null).toFile(), getFileName(assistant));
 
     try {
 
@@ -157,7 +155,7 @@ public class PermissionAssistantService {
     Integer count = header.size();
     ResourceBundle bundle = I18n.getBundle(new Locale(assistant.getLanguage()));
 
-    List<String> headerRow = new ArrayList<String>();
+    List<String> headerRow = new ArrayList<>();
     headerRow.addAll(getTranslatedStrings(header, bundle));
     if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
       groupRow = new String[header.size() + (assistant.getGroupSet().size() * groupHeader.size())];
@@ -184,13 +182,8 @@ public class PermissionAssistantService {
   }
 
   public Comparator<Object> compareField() {
-
-    return new Comparator<Object>() {
-      @Override
-      public int compare(Object field1, Object field2) {
-        return ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
-      }
-    };
+    return (field1, field2) ->
+        ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
   }
 
   private void writeObject(
@@ -288,11 +281,11 @@ public class PermissionAssistantService {
                 field.getName())
             .fetchOne();
     if (rule != null) {
-      row[colIndex++] = rule.getCanRead() == false ? "" : "x";
-      row[colIndex++] = rule.getCanWrite() == false ? "" : "x";
+      row[colIndex++] = !rule.getCanRead() ? "" : "x";
+      row[colIndex++] = !rule.getCanWrite() ? "" : "x";
       row[colIndex++] = "";
       row[colIndex++] = "";
-      row[colIndex++] = rule.getCanExport() == false ? "" : "x";
+      row[colIndex++] = !rule.getCanExport() ? "" : "x";
       row[colIndex++] = "";
       row[colIndex++] = "";
       row[colIndex++] =
@@ -309,11 +302,11 @@ public class PermissionAssistantService {
     Permission perm = permissionRepository.findByName(permName);
 
     if (perm != null && perm.getObject().equals(object.getFullName())) {
-      row[colIndex++] = perm.getCanRead() == false ? "" : "x";
-      row[colIndex++] = perm.getCanWrite() == false ? "" : "x";
-      row[colIndex++] = perm.getCanCreate() == false ? "" : "x";
-      row[colIndex++] = perm.getCanRemove() == false ? "" : "x";
-      row[colIndex++] = perm.getCanExport() == false ? "" : "x";
+      row[colIndex++] = !perm.getCanRead() ? "" : "x";
+      row[colIndex++] = !perm.getCanWrite() ? "" : "x";
+      row[colIndex++] = !perm.getCanCreate() ? "" : "x";
+      row[colIndex++] = !perm.getCanRemove() ? "" : "x";
+      row[colIndex++] = !perm.getCanExport() ? "" : "x";
       row[colIndex++] = Strings.isNullOrEmpty(perm.getCondition()) ? "" : perm.getCondition();
       row[colIndex++] =
           Strings.isNullOrEmpty(perm.getConditionParams()) ? "" : perm.getConditionParams();
@@ -478,8 +471,8 @@ public class PermissionAssistantService {
 
   private Map<String, Group> checkBadGroups(String[] groupRow) {
 
-    List<String> badGroups = new ArrayList<String>();
-    Map<String, Group> groupMap = new HashMap<String, Group>();
+    List<String> badGroups = new ArrayList<>();
+    Map<String, Group> groupMap = new HashMap<>();
 
     for (Integer glen = header.size() + 1; glen < groupRow.length; glen += groupHeader.size()) {
 
@@ -501,8 +494,8 @@ public class PermissionAssistantService {
 
   private Map<String, Role> checkBadRoles(String[] roleRow) {
 
-    List<String> badroles = new ArrayList<String>();
-    Map<String, Role> roleMap = new HashMap<String, Role>();
+    List<String> badroles = new ArrayList<>();
+    Map<String, Role> roleMap = new HashMap<>();
 
     for (Integer len = header.size() + 1; len < roleRow.length; len += groupHeader.size()) {
 
@@ -542,7 +535,7 @@ public class PermissionAssistantService {
       Boolean fieldBoolean)
       throws IOException {
 
-    Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
+    Map<String, MetaPermission> metaPermDict = new HashMap<>();
     String objectName = null;
 
     String[] row = csvReader.readNext();
@@ -584,7 +577,7 @@ public class PermissionAssistantService {
       Boolean fieldPermission)
       throws IOException {
 
-    Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
+    Map<String, MetaPermission> metaPermDict = new HashMap<>();
     String objectName = null;
 
     String[] row = csvReader.readNext();

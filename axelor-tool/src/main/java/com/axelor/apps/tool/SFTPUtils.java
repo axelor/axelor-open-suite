@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,12 +42,17 @@ public class SFTPUtils {
    *     is not right.
    */
   public static Session createSession(
-      String host, int port, String username, String password, String privateKey, String passphrase)
+      String host,
+      int port,
+      String username,
+      String password,
+      String privateKeyFileName,
+      String passphrase)
       throws JSchException {
     JSch jsch = new JSch();
 
-    if (privateKey != null) {
-      jsch.addIdentity(privateKey, passphrase);
+    if (privateKeyFileName != null) {
+      jsch.addIdentity(privateKeyFileName, passphrase);
     }
 
     Session session = jsch.getSession(username, host, port);
@@ -111,10 +117,27 @@ public class SFTPUtils {
     return channel.get(absoluteFilePath);
   }
 
+  /**
+   * Returns an {@link InputStream} corresponding to given {@code absoluteFilePath} in remote
+   * server.
+   */
+  public static InputStream get(
+      ChannelSftp channel, String absoluteFilePath, SftpProgressMonitor monitor)
+      throws SftpException {
+    return channel.get(absoluteFilePath, monitor);
+  }
+
   /** Sends given {@code file} to given {@code absoluteFilePath} in remote server. */
   public static void put(ChannelSftp channel, InputStream file, String absoluteFilePath)
       throws SftpException {
     channel.put(file, absoluteFilePath);
+  }
+
+  /** Sends given {@code file} to given {@code absoluteFilePath} in remote server. */
+  public static void put(
+      ChannelSftp channel, InputStream file, String absoluteFilePath, SftpProgressMonitor monitor)
+      throws SftpException {
+    channel.put(file, absoluteFilePath, monitor);
   }
 
   /** Moves given {@code src} file to given {@code dst} file, in remote server. */

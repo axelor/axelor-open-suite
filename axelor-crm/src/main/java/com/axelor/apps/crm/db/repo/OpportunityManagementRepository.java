@@ -42,7 +42,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
       return super.save(opportunity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

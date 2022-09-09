@@ -4,6 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="journalType"/>
@@ -14,23 +18,25 @@
   </grid>
 
   <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"
-    onNew="account-journal-record-default,action-method-account-journal-readonly-if-journal-in-move"
-    width="large" onLoad="action-journal-group-on-load-actions">
+    onNew="action-journal-group-on-new-actions" width="large"
+    onLoad="action-journal-group-on-load-actions">
     <panel name="statusPanel" title="Status">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="save,account-journal-method-status-active,action-method-account-journal-readonly-if-journal-in-move,action-attrs-account-journal-status-show-title"
-        colSpan="2"/>
+        onClick="action-journal-group-on-click-active-status-actions" colSpan="2"/>
     </panel>
     <panel name="mainPanel">
-      <field name="name"/>
-      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="name" readonlyIf="$isReadOnly"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="$isReadOnly"/>
       <field name="company" canEdit="false"
-        readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form"
-        grid-view="company-grid"/>
+        readonlyIf="statusSelect == 1 || statusSelect == 2 || $isReadOnly" form-view="company-form"
+        grid-view="company-grid"
+        onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+      <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
+      <field name="$isReadOnly" readonly="true" hidden="true"/>
     </panel>
     <panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
       <field name="$totalDebit" title="Total Debit" type="decimal" colSpan="4" readonly="true">
@@ -73,6 +79,11 @@
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <panel name="originControlSettings" showTitle="false" colSpan="12">
+            <field name="hasDuplicateDetectionOnOrigin"/>
+            <field name="hasRequiredOrigin"/>
+          </panel>
+          <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
@@ -121,7 +132,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-method name="account-journal-method-status-active">
@@ -140,9 +151,28 @@
     <field name="exportCode" expr="eval:null" if="notExportOk"/>
   </action-record>
 
+  <action-record name="action-journal-record-reset-valid-account-set"
+    model="com.axelor.apps.account.db.Journal">
+    <field name="validAccountSet" expr="eval: null"/>
+  </action-record>
+
   <action-group name="action-journal-group-on-load-actions">
     <action name="action-journal-method-set-totals"
-      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+      if="journalType != null &amp;&amp; journalType?.isDisplayBalances"/>
+    <action name="action-method-account-journal-readonly-if-journal-in-move"/>
+    <action name="action-attrs-account-journal-status-show-title"/>
+    <action name="action-attrs-account-journal-readonly-if-account-in-move-line"/>
+  </action-group>
+
+  <action-group name="action-journal-group-on-new-actions">
+    <action name="account-journal-record-default"/>
+    <action name="action-method-account-journal-readonly-if-journal-in-move"/>
+    <action name="action-attrs-account-journal-readonly-if-account-in-move-line"/>
+  </action-group>
+
+  <action-group name="action-journal-group-on-click-active-status-actions">
+    <action name="save"/>
+    <action name="account-journal-method-status-active"/>
     <action name="action-method-account-journal-readonly-if-journal-in-move"/>
     <action name="action-attrs-account-journal-status-show-title"/>
   </action-group>
@@ -154,5 +184,18 @@
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
   </action-method>
+
+  <action-record name="action-journal-record-change-config-values"
+    model="com.axelor.apps.account.db.Journal">
+    <field name="authorizeSimulatedMove"
+      expr="eval: company?.accountConfig?.isActivateSimulatedMove"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: company?.accountConfig?.accountingDaybook"/>
+  </action-record>
+
+  <action-attrs name="action-attrs-account-journal-readonly-if-account-in-move-line">
+    <attribute name="value" for="$isReadOnly"
+      expr="eval: __repo__(MoveLine).all().filter('self.move.journal = ?', __this__).count() > 0"/>
+  </action-attrs>
 
 </object-views>

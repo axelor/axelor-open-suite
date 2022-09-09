@@ -25,10 +25,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.repo.AppBuilderRepository;
+import java.io.IOException;
 
 public class AppBuilderController {
 
-  public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void installApp(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);
     appBuilder = Beans.get(AppBuilderRepository.class).find(appBuilder.getId());

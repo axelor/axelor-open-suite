@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -99,7 +99,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     if (!isBatch && !isPreviousLineRealized(fixedAssetDerogatoryLine, fixedAsset)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
     }
 
     BigDecimal derogatoryAmount = fixedAssetDerogatoryLine.getDerogatoryAmount();
@@ -237,8 +237,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       if (creditLineAccount == null || debitLineAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+            I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
       }
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(

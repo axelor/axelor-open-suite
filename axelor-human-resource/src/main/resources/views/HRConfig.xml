@@ -149,7 +149,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="_company == null &amp;&amp; __user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-view name="action-company-view-hr-config"

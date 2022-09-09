@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public final class StringTool {
   private static final String[] FILENAME_SEARCH_LIST =
@@ -268,19 +269,21 @@ public final class StringTool {
    * @return
    */
   public static String getIdListString(Collection<? extends Model> collection) {
-    List<Long> idList = new ArrayList<>();
-    String idString;
     if (CollectionUtils.isEmpty(collection)) {
-      idString = "0";
-    } else {
-      for (Model item : collection) {
-        if (item != null) {
-          idList.add(item.getId());
-        }
-      }
-      idString = idList.stream().map(l -> l.toString()).collect(Collectors.joining(","));
+      return "0";
     }
-    return idString;
+    StringBuilder idStringBuilder = new StringBuilder();
+    for (Model item : collection) {
+      if (item != null && item.getId() != null) {
+        idStringBuilder.append(String.valueOf(item.getId()));
+        idStringBuilder.append(",");
+      }
+    }
+    int length = idStringBuilder.length();
+    if (length != 0) {
+      idStringBuilder.deleteCharAt(length - 1);
+    }
+    return idStringBuilder.toString();
   }
 
   public static String getFilename(String name) {
@@ -315,5 +318,15 @@ public final class StringTool {
     } else {
       return str;
     }
+  }
+
+  /**
+   * Escapes the characters in a string using HTML entities.
+   *
+   * @param string
+   * @return
+   */
+  public static String escapeHtml(String string) {
+    return StringEscapeUtils.escapeHtml4(string);
   }
 }

@@ -39,7 +39,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -109,7 +109,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
           }
           stockMovesInError.append(
               String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_GENERATE_INVOICE),
+                  I18n.get(SupplychainExceptionMessage.STOCK_MOVE_GENERATE_INVOICE),
                   stockMove.getName(),
                   e.getLocalizedMessage()));
           break;
@@ -177,21 +177,21 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
           && !firstDummyInvoice.getCurrency().equals(dummyInvoice.getCurrency())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CURRENCY));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CURRENCY));
       }
 
       if (firstDummyInvoice.getPartner() != null
           && !firstDummyInvoice.getPartner().equals(dummyInvoice.getPartner())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER));
       }
 
       if (firstDummyInvoice.getCompany() != null
           && !firstDummyInvoice.getCompany().equals(dummyInvoice.getCompany())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_SO));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_SO));
       }
 
       if ((firstDummyInvoice.getTradingName() != null
@@ -200,14 +200,21 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
               && dummyInvoice.getTradingName() != null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_SO));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_SO));
       }
 
       if (firstDummyInvoice.getInAti() != null
           && !firstDummyInvoice.getInAti().equals(dummyInvoice.getInAti())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
+      }
+
+      if (firstDummyInvoice.getIncoterm() != null
+          && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
     }
   }
@@ -268,21 +275,21 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
           && !firstDummyInvoice.getCurrency().equals(dummyInvoice.getCurrency())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CURRENCY));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CURRENCY));
       }
 
       if (firstDummyInvoice.getPartner() != null
           && !firstDummyInvoice.getPartner().equals(dummyInvoice.getPartner())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER));
       }
 
       if (firstDummyInvoice.getCompany() != null
           && !firstDummyInvoice.getCompany().equals(dummyInvoice.getCompany())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_PO));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_PO));
       }
 
       if ((firstDummyInvoice.getTradingName() != null
@@ -291,14 +298,20 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
               && dummyInvoice.getTradingName() != null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_PO));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_PO));
       }
 
       if (firstDummyInvoice.getInAti() != null
           && !firstDummyInvoice.getInAti().equals(dummyInvoice.getInAti())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
+      }
+      if (firstDummyInvoice.getIncoterm() != null
+          && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
     }
   }
@@ -380,6 +393,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
+    invoice.setIncoterm(dummyInvoice.getIncoterm());
 
     StringBuilder deliveryAddressStr = new StringBuilder();
     AddressService addressService = Beans.get(AddressService.class);
@@ -491,6 +505,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
+    invoice.setIncoterm(dummyInvoice.getIncoterm());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -600,6 +615,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
       dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
+      dummyInvoice.setIncoterm(saleOrder.getIncoterm());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -608,6 +624,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setAddress(stockMove.getToAddress());
       dummyInvoice.setAddressStr(stockMove.getToAddressStr());
       dummyInvoice.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
+      dummyInvoice.setIncoterm(stockMove.getIncoterm());
     }
     return dummyInvoice;
   }
@@ -634,12 +651,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(purchaseOrder.getPriceList());
       dummyInvoice.setInAti(purchaseOrder.getInAti());
     } else {
+      if (stockMove.getOriginId() != null
+          && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+        dummyInvoice.setIncoterm(saleOrderRepository.find(stockMove.getOriginId()).getIncoterm());
+      }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getFromAddress());
       dummyInvoice.setAddressStr(stockMove.getFromAddressStr());
+      dummyInvoice.setIncoterm(stockMove.getIncoterm());
     }
     return dummyInvoice;
   }
@@ -676,9 +698,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-        templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
+        templateMessage = SupplychainExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
       } else {
-        templateMessage = IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS;
+        templateMessage = SupplychainExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS;
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

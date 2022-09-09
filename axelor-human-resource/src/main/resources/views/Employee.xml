@@ -32,8 +32,9 @@
   </grid>
 
   <form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
-    width="large" onLoad="action-employee-method-set-social-network-url"
-    onNew="action-employee-record-default">
+    width="large"
+    onLoad="action-employee-method-set-social-network-url,action-attrs-employee-step-by-step-select-selection-in"
+    onNew="action-employee-record-default,action-attrs-employee-step-by-step-select-selection-in">
 
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
@@ -50,10 +51,11 @@
       <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true"
         showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
       <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right"
-        readonlyIf="stepByStepSelect &gt; 3"
+        readonlyIf="(user &amp;&amp; stepByStepSelect &gt;= 3) || (user == null &amp;&amp; stepByStepSelect &gt; 3) "
         onClick="validate,action-employee-record-next-step,save"/>
       <button name="finishBtn" colSpan="1" title="Finish"
-        onClick="validate,action-employee-record-finish-sbs,save" showIf="stepByStepSelect == 4"/>
+        onClick="validate,action-employee-record-finish-sbs,save"
+        showIf="stepByStepSelect == 4 || (user &amp;&amp; stepByStepSelect == 3)"/>
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
@@ -73,7 +75,8 @@
 
             <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
               canSelect="false"/>
-            <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
             <field name="fixedPhone" widget="phone" colSpan="4"
               x-placeholder-number-type="FIXED_LINE"/>
@@ -259,7 +262,8 @@
 
               <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
                 canSelect="false"/>
-              <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+              <field name="webSite" placeholder="http://www.url.com" widget="url"
+                pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
               <field name="fixedPhone" widget="phone" colSpan="4"
                 x-placeholder-number-type="FIXED_LINE"/>
@@ -553,7 +557,8 @@
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.picture"/>
-    <field name="contactPartner.fullName"/>
+    <field name="contactPartner.firstName"/>
+    <field name="contactPartner.name"/>
     <field name="contactPartner.fixedPhone"/>
     <field name="contactPartner.mobilePhone"/>
     <field name="mainEmploymentContract.payCompany"/>
@@ -562,25 +567,65 @@
     <field name="leavingDate"/>
     <field name="hrManager"/>
     <template><![CDATA[
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-			    <img ng-src="{{$image('contactPartner.picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
-			  </div>
-			  <div class="span8">
-			  	<span>
-				   <strong>{{contactPartner.fullName}}</strong><br/>
-			       <span ng-if="contactPartner.fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/> {{ contactPartner.fixedPhone}}<br/></span>
-	               <span ng-if="contactPartner.mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{contactPartner.mobilePhone}}<br/></span>
-	               <span  ng-if="mainEmploymentContract.payCompany.name"><strong><span x-translate>Company</span></strong> : {{mainEmploymentContract.payCompany.name}}<br/></span>
-                   <span  ng-if="mainEmploymentContract.companyDepartment.name"><strong><span x-translate>Department</span></strong> : {{mainEmploymentContract.companyDepartment.name}}<br/></span>
-			    </span>
-			  </div>
-			  <div class="span12" style="margin-left:30px;">
-			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
-			   <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>New employee</span>
-         <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
-			  </div>
-			</div>
+		<div style="margin: -16px; height: 180px;display: flex;">
+    		<div class="span4 card-image" style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+		        <img ng-src="{{$image('contactPartner.picture', 'content')}}" style="width: 128px; height: 64px; object-fit: contain;" />
+		        <strong>{{contactPartner.firstName}} {{contactPartner.name}}</strong>
+    		</div>
+    		<div class="span8" style="padding-left: 40px;display: flex;flex-direction: column;justify-content: center;position: relative;">
+        		<div style="position: absolute;height: calc(100% + 16px);display: flex;align-items: center;left: 0;transform: skew(-20deg, 0deg);border-left: 2px solid #ddd;">
+            		<div ng-style="hrManager && {'background-color': '#d9534f', 'color': '#fff'} || record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days') && {'background-color': '#20BCB5', 'color': '#fff'} || record.leavingDate != null && $moment(record.leavingDate) < $moment()  && {'background-color': '#BC2026', 'color': '#fff'}"
+                	style="width: 30px;height: 60%;background: #ddd; color: #000; display: flex;flex-direction: column;justify-content: center;align-items: center;box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px">
+                		<span ng-if="contactPartner.fixedPhone">
+                    		<i class="fa fa-phone fa-flip-horizontal" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+                		</span>
+                		<span ng-if="contactPartner.mobilePhone">
+                    		<i class="fa fa-mobile" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+                		</span>
+		                <span ng-if="mainEmploymentContract.payCompany.name">
+		                    <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+		                </span>
+		                <span ng-if="mainEmploymentContract.companyDepartment.name">
+		                    <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+		                </span>
+            		</div>
+        		</div>
+        		<span>
+		            <span style="margin-left: 2rem" ng-if="contactPartner.fixedPhone">
+		                {{ contactPartner.fixedPhone}}
+		                <br/>
+		            </span>
+		            <span style="margin-left: 1.5rem"  ng-if="contactPartner.mobilePhone">
+		                {{contactPartner.mobilePhone}}
+		                <br/>
+		            </span>
+		            <span style="margin-left: 1rem" ng-if="mainEmploymentContract.payCompany.name">
+		                <strong>
+		                    <span x-translate>Company</span>
+		                </strong>
+		                : {{mainEmploymentContract.payCompany.name}}
+		                <br/>
+		            </span>
+		            <span style="margin-left: 0.5rem" ng-if="mainEmploymentContract.companyDepartment.name">
+                		<strong>
+		                    <span x-translate>Department</span>
+		                </strong>
+		                : {{mainEmploymentContract.companyDepartment.name}}<br/>
+		            </span>
+		        </span>
+    		</div>
+    		<div style="display: flex;justify-content: flex-end;position: absolute;bottom: 3px;right: 6px;">
+		        <span class="label label-important" ng-show="hrManager" style="margin: 5px 0 5px 0; display: inline-table; line-height: initial;" line-height: initial;" x-translate>
+		            HR manager
+		        </span>
+		        <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>
+		            New employee
+		        </span>
+		        <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>
+		            Former employee
+		        </span>
+    		</div>
+		</div>
 		]]>
     </template>
   </cards>
@@ -601,6 +646,12 @@
     model="com.axelor.apps.hr.db.Employee">
     <field name="companyCbDetails" expr="eval: ''"/>
   </action-record>
+
+  <action-attrs name="action-attrs-employee-step-by-step-select-selection-in">
+    <attribute name="selection-in" for="stepByStepSelect" expr="eval: [1, 2, 3, 4]"
+      if="user == null"/>
+    <attribute name="selection-in" for="stepByStepSelect" expr="eval: [1, 2, 3]" if="user"/>
+  </action-attrs>
 
   <action-view name="action-employee-user-show-employee" title="Employee"
     model="com.axelor.apps.hr.db.Employee">
@@ -639,7 +690,7 @@
     model="com.axelor.apps.hr.db.Timesheet">
     <view type="grid" name="my-timesheets-grid"/>
     <view type="form" name="timesheet-form"/>
-    <domain>self.user.employee = :id</domain>
+    <domain>self.employee = :id</domain>
   </action-view>
 
   <action-method name="action-employee-method-show-annual-report">

@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 public interface FixedAssetService {
   /**
@@ -48,23 +47,6 @@ public interface FixedAssetService {
 
   void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
 
-  /**
-   * Validate fixedAsset
-   *
-   * @param fixedAsset
-   * @throws AxelorException
-   */
-  void validate(FixedAsset fixedAsset) throws AxelorException;
-
-  int massValidation(List<Long> fixedAssetIds) throws AxelorException;
-
-  /**
-   * Compute first depreciation date of fixedAsset
-   *
-   * @param fixedAsset
-   */
-  void computeFirstDepreciationDate(FixedAsset fixedAsset);
-
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**
@@ -75,28 +57,46 @@ public interface FixedAssetService {
    * the quantity. (DisposalQty / fixedAsset.qty)
    *
    * @param fixedAsset
-   * @param disposalQty
+   * @param splitType
+   * @param amount
    * @return The new fixed asset created from split.
    * @throws AxelorException
    */
   FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate disposalDate, String comments)
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate disposalDate,
+      String comments)
       throws AxelorException;
+
   /**
    * Call splitFixedAsset and save both fixed asset. (Original and created)
    *
    * @param fixedAsset
-   * @param disposalQty
+   * @param splitType
+   * @param amount
    * @param splittingDate
    * @param comments
    * @return
    * @throws AxelorException
    */
   FixedAsset splitAndSaveFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate splittingDate,
+      String comments)
       throws AxelorException;
 
-  int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
+  void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
+      throws AxelorException;
+
+  int computeTransferredReason(
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect,
+      BigDecimal disposalQty,
+      FixedAsset fixedAsset);
 
   /**
    * Filter lines from fixedAssetLineList / fiscalAssetLineList / fixedAssetDerogatoryLineList with
@@ -139,5 +139,10 @@ public interface FixedAssetService {
    */
   void multiplyLinesBy(FixedAsset newFixedAsset, BigDecimal prorata) throws AxelorException;
 
-  void onChangeDepreciationPlan(FixedAsset fixedAsset);
+  void onChangeDepreciationPlan(FixedAsset fixedAsset) throws AxelorException;
+
+  void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
+      throws AxelorException;
+
+  public boolean checkDepreciationPlans(FixedAsset fixedAsset);
 }

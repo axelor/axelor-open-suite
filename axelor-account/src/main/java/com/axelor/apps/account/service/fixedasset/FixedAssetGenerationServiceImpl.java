@@ -26,17 +26,20 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -60,19 +63,24 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetValidateService fixedAssetValidateService;
+  protected FixedAssetDateService fixedAssetDateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetValidateService fixedAssetValidateService) {
+    this.fixedAssetDateService = fixedAssetDateService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
@@ -80,6 +88,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
+    this.fixedAssetValidateService = fixedAssetValidateService;
   }
 
   @Override
@@ -241,6 +250,31 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAsset is null
+   */
+  @Override
+  public void generateAndComputeFixedAssetLinesStartingWith(
+      FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAsset);
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      FixedAssetLineComputationService fixedAssetLineComputationService =
+          Beans.get(FixedAssetLineEconomicRecomputationServiceImpl.class);
+      if (fixedAssetLine != null) {
+        generateComputedPlannedFixedAssetLines(
+            fixedAsset,
+            fixedAssetLine,
+            fixedAsset.getFixedAssetLineList(),
+            fixedAssetLineComputationService);
+      }
+    }
+  }
+
   private List<FixedAssetLine> generateComputedPlannedFixedAssetLines(
       FixedAsset fixedAsset,
       FixedAssetLine initialFixedAssetLine,
@@ -282,7 +316,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         throw new AxelorException(
             invoiceLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
+            I18n.get(AccountExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
             invoiceLine.getProductName());
       }
 
@@ -296,16 +330,13 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         fixedAsset.setDepreciationPlanSelect(
             fixedAsset.getFixedAssetCategory().getDepreciationPlanSelect());
       }
-      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
-        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-      } else {
-        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
-      }
+
       fixedAsset.setQty(invoiceLine.getQty());
       fixedAsset.setAcquisitionDate(invoice.getOriginDate());
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
+      fixedAsset.setResidualValue(BigDecimal.ZERO);
       if (invoiceLine.getQty() != null) {
         fixedAsset.setName(
             invoiceLine.getProductName()
@@ -323,8 +354,16 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setPartner(invoice.getPartner());
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);
+      fixedAsset.setPurchaseAccountMove(invoice.getMove());
+      fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+      fixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_INVOICE);
 
-      this.generateAndComputeLines(fixedAsset);
+      fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
+      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
+        fixedAssetValidateService.validate(fixedAsset);
+      } else {
+        this.generateAndComputeLines(fixedAsset);
+      }
 
       fixedAssetList.add(fixedAssetRepo.save(fixedAsset));
     }
@@ -337,8 +376,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     if (!sequenceService.hasSequence(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           fixedAsset.getCompany().getName());
     }
     String seq =
@@ -347,8 +386,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   }
 
   @Override
-  public FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty)
-      throws AxelorException {
+  public FixedAsset copyFixedAsset(FixedAsset fixedAsset) throws AxelorException {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because copy does not copy list
     fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);
@@ -378,7 +416,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     if (moveLine.getDescription() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
           moveLine.getName());
     }
     fixedAsset.setName(moveLine.getDescription());
@@ -425,6 +463,22 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setComputationMethodSelect(computationMethodSelect);
     fixedAsset.setIfrsComputationMethodSelect(computationMethodSelect);
     fixedAsset.setFiscalComputationMethodSelect(computationMethodSelect);
+
+    if (computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+      fixedAsset.setFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+    } else {
+      fixedAsset.setFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+    }
 
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
     fixedAsset.setFiscalNumberOfDepreciation(numberOfDepreciation);

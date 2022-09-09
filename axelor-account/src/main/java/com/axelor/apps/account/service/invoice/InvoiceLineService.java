@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -32,15 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface InvoiceLineService {
-
-  public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
-      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
-
-  List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine)
-      throws AxelorException;
-
-  List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
-      throws AxelorException;
 
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
@@ -111,9 +101,6 @@ public interface InvoiceLineService {
    */
   public InvoiceLine updateProductQty(
       InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty)
-      throws AxelorException;
-
-  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException;
 
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)

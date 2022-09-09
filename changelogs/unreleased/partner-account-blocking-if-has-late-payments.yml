@@ -1,9 +1,0 @@
----
-title: "Partner : new batch to block customer partner if they have late payments."
-type: feature
-description: |
-  - New field for partner 'Account blocked' that block any confirmation on sale orders or realization on stock moves
-  - New fields on account configuration by company, 'Late payment account blocking' and 'Number of days before account blocking'
-  - New accounting batch that update hasAccountBlocked to true if partner has late payments
-  - The batch blocks partner that have customer invoice with company with 'Late payment account blocking' to true and 
-  today date is after due date of the invoice + 'Number of days before account blocking' configuration

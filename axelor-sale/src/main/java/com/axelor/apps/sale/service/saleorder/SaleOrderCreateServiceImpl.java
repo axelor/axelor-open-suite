@@ -104,7 +104,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       throws AxelorException {
 
     logger.debug(
-        "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
+        "Creation of a sale order: Company = {},  External reference = {}, Supplier partner = {}",
         company,
         externalReference,
         clientPartner.getFullName());
@@ -261,6 +261,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
+          saleOrderLineService.resetPrice(saleOrderLine);
           saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
           saleOrderLineService.computeValues(saleOrder, saleOrderLine);
         }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -35,13 +36,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -61,7 +62,9 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       AppBusinessProjectService appBusinessProjectService,
       StockMoveRepository stockMoveRepository,
       SaleOrderLineService saleOrderLineService,
-      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
+      SaleOrderWorkflowService saleOrderWorkflowService,
+      InvoiceTermService invoiceTermService,
+      CommonInvoiceService commonInvoiceService) {
     super(
         appBaseService,
         appSupplychainService,
@@ -70,7 +73,9 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         invoiceService,
         saleOrderLineService,
         stockMoveRepository,
-        saleOrderWorkflowServiceImpl);
+        invoiceTermService,
+        saleOrderWorkflowService,
+        commonInvoiceService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
@@ -118,7 +123,7 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       throws AxelorException {
     List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, saleOrderLine, qtyToInvoice);
 
-    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+    if (!appBusinessProjectService.isApp("business-project")) {
       return invoiceLines;
     }
 

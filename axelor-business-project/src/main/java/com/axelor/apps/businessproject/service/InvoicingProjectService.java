@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,7 +38,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -104,9 +104,13 @@ public class InvoicingProjectService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
-    Project project = invoicingProject.getProject();
-    Partner customer = project.getClientPartner();
-    Partner customerContact = project.getContactPartner();
+    if (invoicingProject.getProject() == null) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT));
+    }
+
     if (invoicingProject.getSaleOrderLineSet().isEmpty()
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
@@ -115,20 +119,20 @@ public class InvoicingProjectService {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY));
+          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_EMPTY));
     }
-    if (invoicingProject.getProject() == null) {
-      throw new AxelorException(
-          invoicingProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
-    }
+
     if (invoicingProject.getProject().getClientPartner() == null) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
+          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
     }
+
+    Project project = invoicingProject.getProject();
+    Partner customer = project.getClientPartner();
+    Partner customerContact = project.getContactPartner();
+
     if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
       customerContact = customer.getContactPartnerSet().iterator().next();
     }
@@ -137,7 +141,7 @@ public class InvoicingProjectService {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_COMPANY));
+          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT_COMPANY));
     }
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(

@@ -84,10 +84,10 @@
         grid-view="management-object-grid"/>
       <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
         onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"
-        colSpan="6"/>
+        colSpan="6" showIf="irrecoverableStatusSelect == 0"/>
       <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
         onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"
-        colSpan="6"/>
+        colSpan="6" showIf="irrecoverableStatusSelect == 1"/>
     </panel>
 
   </form>
@@ -126,7 +126,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 

@@ -240,7 +240,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
-    if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+    if (appBaseService.getAppBase().getActivateSendingEmail()) {
       message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       return super.sendByEmail(message);
     }
@@ -251,7 +251,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   @Transactional(rollbackOn = {Exception.class})
   public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
 
-    if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+    if (appBaseService.getAppBase().getActivateSendingEmail()) {
       return super.sendSMS(message);
     }
     return message;
@@ -292,7 +292,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
       partnerName =
-          new String(emailAddress.getPartner().getName().getBytes(), StandardCharsets.ISO_8859_1);
+          new String(
+              emailAddress.getPartner().getSimpleFullName().getBytes(),
+              StandardCharsets.ISO_8859_1);
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";

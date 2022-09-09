@@ -40,4 +40,15 @@
 
   </input>
 
+  <input file="menu-builder.xml" root="menu-builders">
+
+    <bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder"
+      search="self.xmlId = :xmlId" create="false" update="true"
+      call="com.axelor.studio.service.ImportService:importMenuBuilder">
+      <bind node="xmlId" to="xmlId"/>
+      <bind node="parentMenu" to="parentMenu" search="self.name = :parentMenu"/>
+    </bind>
+
+  </input>
+
 </xml-inputs>

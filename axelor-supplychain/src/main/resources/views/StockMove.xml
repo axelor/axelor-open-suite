@@ -3,25 +3,36 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="stock-move-manuf-order-grid" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+  <grid name="in-stock-move-manuf-order-grid" title="Stock moves"
+    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" edit-icon="true">
     <field name="stockMoveSeq"/>
     <field name="fromStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="estimatedDate"/>
     <field name="realDate"/>
-    <field name="fromAddressStr" hidden="true"/>
-    <field name="toAddressStr"/>
-    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
-    <field name="typeSelect" hidden="true"/>
-    <button name="printStockMoveBtn" title="Print" icon="fa-print"
-      onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
-      onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
-      readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+    <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
+      icon="fa-print" onClick="action-print-stock-move"/>
+    <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
+      width="32" icon="fa-location-arrow"
+      onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
+  </grid>
+
+  <grid name="out-stock-move-manuf-order-grid" title="Stock moves"
+    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" edit-icon="true">
+    <field name="stockMoveSeq"/>
+    <field name="toStockLocation" form-view="stock-location-form"
+      grid-view="stock-location-grid"/>
+    <field name="estimatedDate"/>
+    <field name="realDate"/>
+    <field name="availableStatusSelect"/>
+    <field name="statusSelect"/>
+    <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
+      icon="fa-print" onClick="action-print-stock-move"/>
+    <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
+      width="32" icon="fa-location-arrow"
+      onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
   </grid>
 
   <grid name="stock-move-sale-order-grid" title="Stock moves"
@@ -50,6 +61,27 @@
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
+
+  <form id="supplychain-stock-move-form" name="stock-move-form" title="Stock move"
+    model="com.axelor.apps.stock.db.StockMove" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-stock-stockmove-onnew, action-stock-move-attrs-fill-ctx"/>
+      <attribute name="onLoad"
+        value="action-group-stock-stockmove-onload, action-stock-move-attrs-fill-ctx"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']">
+      <insert position="after">
+        <panel name="hiddenPanel" hidden="true">
+          <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-stock-move-attrs-fill-ctx">
+    <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
+  </action-attrs>
 
   <form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove"
     title="Mass Cust. Stock Move Invoicing">

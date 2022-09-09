@@ -264,9 +264,13 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             .getDerogatoryBalanceAmount()
             .subtract(lastDerogatoryBalanceAmount)
             .abs();
+    if (amount.signum() == 0) {
+      return;
+    }
     firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
         fixedAssetDerogatoryLineMoveService.generateMove(
             firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false));
+    firstPlannedDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
   }
 
   protected Account computeCessionDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {

@@ -19,9 +19,10 @@ package com.axelor.apps.account.service.invoice.generator.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -68,8 +69,8 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
     if (refund.getPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.REFUND_INVOICE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.REFUND_INVOICE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     return refund;
@@ -79,21 +80,5 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
   public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 
     super.populate(invoice, invoiceLines);
-  }
-
-  /**
-   * Mets à jour les lignes de facture en appliquant la négation aux prix unitaires et au total hors
-   * taxe.
-   *
-   * @param invoiceLines
-   */
-  @Deprecated
-  protected void refundInvoiceLines(List<InvoiceLine> invoiceLines) {
-
-    for (InvoiceLine invoiceLine : invoiceLines) {
-
-      invoiceLine.setQty(invoiceLine.getQty().negate());
-      invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
-    }
   }
 }

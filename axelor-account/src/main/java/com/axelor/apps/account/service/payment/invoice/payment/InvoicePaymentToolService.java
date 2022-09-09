@@ -19,11 +19,14 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoicePaymentToolService {
@@ -32,6 +35,8 @@ public interface InvoicePaymentToolService {
   public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
   void updateHasPendingPayments(Invoice invoice);
+
+  public void updatePaymentProgress(Invoice invoice);
 
   /**
    * @param company company from the invoice
@@ -43,7 +48,26 @@ public interface InvoicePaymentToolService {
 
   List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
 
-  List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
+  /**
+   * Method to get move lines from payment. The move lines are either credit or debit depending on
+   * the value of getCreditLine
+   *
+   * @param payments
+   * @param getCreditLine
+   * @return
+   */
+  List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLine);
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+
+  BigDecimal getPayableAmount(
+      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange);
+
+  void computeFinancialDiscount(InvoicePayment invoicePayment);
+
+  BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
+
+  boolean applyFinancialDiscount(InvoicePayment invoicePayment);
+
+  void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
 }

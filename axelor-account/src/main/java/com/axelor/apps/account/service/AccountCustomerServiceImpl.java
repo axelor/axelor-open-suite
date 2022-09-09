@@ -7,10 +7,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -119,22 +120,31 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     Query query =
         JPA.em()
             .createNativeQuery(
-                "SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "
-                    + "FROM public.account_move_line AS ml  "
+                "SELECT SUM( COALESCE(t1.term_amountRemaining,0) - COALESCE(t2.term_amountRemaining,0) ) "
+                    + "FROM public.account_move_line AS ml "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.debit > 0 "
-                    + "AND ((moveline.due_date IS NULL AND moveline.date_val <= :todayDate) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= :todayDate)) "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.credit > 0 "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
+                    + "LEFT OUTER JOIN ( "
+                    + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
+                    + "FROM public.account_invoice_term AS term "
+                    + "WHERE (term.due_date IS NOT NULL AND term.due_date <= :todayDate)"
+                    + "GROUP BY term.move_line, term.amount_remaining ) AS t1 ON (t1.term_ml = m1.moveline_id) "
+                    + "LEFT OUTER JOIN ( "
+                    + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
+                    + "FROM public.account_invoice_term AS term "
+                    + "WHERE (term.due_date IS NOT NULL AND term.due_date <= :todayDate)"
+                    + "GROUP BY term.move_line, term.amount_remaining ) AS t2 ON (t2.term_ml = m2.moveline_id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company AND move.ignore_in_debt_recovery_ok IN ('false', null) "
+                    + "WHERE ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 ")
@@ -155,7 +165,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);
     }
-
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
     if (balance == null) {
@@ -202,28 +211,42 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     Query query =
         JPA.em()
             .createNativeQuery(
-                "SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "
+                "SELECT SUM( COALESCE(t1.term_amountRemaining,0) - COALESCE(t2.term_amountRemaining,0) ) "
                     + "FROM public.account_move_line as ml  "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.debit > 0 AND (( moveline.date_val = moveline.due_date AND (moveline.due_date + :mailTransitTime ) < :todayDate ) "
-                    + "OR (moveline.due_date IS NOT NULL AND moveline.date_val != moveline.due_date AND moveline.due_date < :todayDate)"
-                    + "OR (moveline.due_date IS NULL AND moveline.date_val < :todayDate)) "
-                    + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "
+                    + "WHERE moveline.debit > 0 "
+                    + "GROUP BY moveline.id, moveline.amount_remaining "
+                    + ") AS m1 ON (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.credit > 0 "
-                    + "GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
+                    + "GROUP BY moveline.id, moveline.amount_remaining "
+                    + ") AS m2 ON (m2.moveline_id = ml.id) "
+                    + "LEFT OUTER JOIN ( "
+                    + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
+                    + "FROM public.account_invoice_term AS term "
+                    + "WHERE (term.due_date IS NOT NULL AND term.due_date <= :todayDate)"
+                    + "GROUP BY term.move_line, term.amount_remaining "
+                    + ") AS t1 ON (t1.term_ml = m1.moveline_id) "
+                    + "LEFT OUTER JOIN ( "
+                    + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
+                    + "FROM public.account_invoice_term AS term "
+                    + "JOIN public.account_move_line AS TermMoveLine ON (TermMoveLine.id = term.move_line) "
+                    + "JOIN public.account_move AS TermMove ON (TermMove.id = TermMoveLine.move) "
+                    + "WHERE (TermMove.date_val IS NOT NULL AND (TermMove.date_val + :mailTransitTime ) <= :todayDate ) "
+                    + "GROUP BY term.move_line, term.amount_remaining "
+                    + ") AS t2 ON (t2.term_ml = m2.moveline_id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company AND move.ignore_in_debt_recovery_ok in ('false', null) "
+                    + "WHERE ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 "
-                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok = FALSE) ")
+                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN ('false', null)) ")
             .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(
                 "todayDate",
@@ -242,7 +265,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);
     }
-
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
     if (balance == null) {
@@ -368,8 +390,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
       throw new AxelorException(
           partner,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CUSTOMER_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -383,8 +405,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
       throw new AxelorException(
           partner,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CUSTOMER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 

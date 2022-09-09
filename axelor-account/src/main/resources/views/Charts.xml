@@ -507,16 +507,24 @@
 
   <action-record name="action.account.active.fiscal.year"
     model="com.axelor.apps.account.db.Move">
+    <field name="period"
+      expr="eval: __repo__(Period).all().filter('self.year.company=?1 AND ?2 BETWEEN self.year.fromDate AND self.year.toDate AND self.statusSelect = 1 AND  self.year.typeSelect = 1',active_company,todayDate).fetchOne()"/>
     <field name="year"
-      expr="eval:__repo__(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()"/>
+      expr="eval: __repo__(Year).all().filter('self.id IN (select period.year from Period period where period.year.company=?1 AND ?2 BETWEEN period.year.fromDate AND period.year.toDate AND period.statusSelect = 1 AND  period.year.typeSelect = 1)',active_company,todayDate).fetchOne()"/>
   </action-record>
+
+  <action-attrs
+    name="action-acount-attrs-moveLines-revenues-expenses-chart-year-onchange">
+    <attribute name="value" for="period" expr="eval: null"/>
+  </action-attrs>
 
   <chart onInit="action.account.active.fiscal.year"
     name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
 
     <search-fields>
       <field name="year" type="reference" target="com.axelor.apps.base.db.Year"
-        widget="many-to-one" title="Year" x-required="true"/>
+        onChange="action-acount-attrs-moveLines-revenues-expenses-chart-year-onchange"
+        domain="self.typeSelect=1" widget="many-to-one" title="Year" x-required="true"/>
       <field name="period" type="reference" target="com.axelor.apps.base.db.Period"
         widget="many-to-one" title="Period" domain="self.year=:year" x-required="true"/>
     </search-fields>
@@ -532,17 +540,22 @@
       self.debit
       END)
       ) AS _amount,
-      item.title AS _label
-
+      (CASE
+      WHEN
+      (translation.message IS NULL OR translation.message = '')
+      THEN item.title
+      ELSE
+      translation.message
+      END) AS _label
       FROM
       MoveLine self,
       MetaSelect meta,
-      MetaSelectItem item
-
+      MetaSelectItem item,
+      MetaTranslation translation
       WHERE
-      meta.name = 'account.account.type.select'
-      AND item.select = meta
-      AND
+      meta.name =
+      'account.account.technical.type.select'
+      AND item.select = meta AND
       self.account.accountType.technicalTypeSelect = item.value
       AND (self.move.statusSelect = 2 OR
       self.move.statusSelect = 3)
@@ -551,9 +564,14 @@
       :period IS NULL)
       AND self.move.company = :active_company
       AND item.value IN ('income','charge')
+      AND translation.key = item.title
+      AND translation.language = :_language
       GROUP BY
-      item.title
-
+      (CASE WHEN
+      (translation.message IS NULL OR translation.message = '') THEN item.title
+      ELSE
+      translation.message
+      END)
     </dataset>
     <category key="_label" type="text"/>
     <series key="_amount" type="bar" title="Amount"/>
@@ -1042,4 +1060,26 @@
     <category key="_situation" type="text" title="Situation"/>
     <series key="_amount" type="bar" title="Amount"/>
   </chart>
+
+  <custom name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"
+    title="Custom">
+    <dataset type="jpql"><![CDATA[
+
+	 select CONCAT(round(sum(self.amountPaid),2), ' €') as Amount, _partner.name as Supplier, _bankDetails.fullName as BankDetails
+	 from InvoiceTerm as self
+	 left join self.moveLine.partner as _partner
+	 left join self.bankDetails as _bankDetails
+	 where self.isSelectedOnPaymentSession = true and self.paymentSession.id = :_id
+	 group by _partner.id,_bankDetails.id
+	 order by _partner.name
+	 ]]></dataset>
+    <template><![CDATA[
+
+	<report-table data='data' columns='Supplier,BankDetails,Amount'></report-table>
+
+
+	 ]]></template>
+  </custom>
+
+
 </object-views>

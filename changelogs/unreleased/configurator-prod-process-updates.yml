@@ -1,8 +1,0 @@
----
-title: Configurator - Add new def with formula on several fields and display updates on Configurator Prod Process and Configurator Prod Process Line
-type: feature
-description: |
-  Allow to define name with a formula on Configurator Prod Process,
-  Add a use condition field on Configurator Prod Process Line,
-  Allow to define name, priority and stock location with a formula on Configurator Prod Process Line,
-  Display outsourcing field only if manage outsourcing is checked on App Production config.

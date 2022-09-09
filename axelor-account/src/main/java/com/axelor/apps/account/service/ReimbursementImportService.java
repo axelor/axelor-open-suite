@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -113,7 +113,8 @@ public class ReimbursementImportService {
             moveLineCreateService.createMoveLine(
                 move,
                 null,
-                company.getAccountConfig().getReimbursementAccount(),
+                accountConfigService.getReimbursementAccount(
+                    accountConfigService.getAccountConfig(company)),
                 this.getTotalAmount(move),
                 true,
                 rejectDate,
@@ -144,7 +145,7 @@ public class ReimbursementImportService {
     if (reimbursement == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.REIMBURSEMENT_3),
+          I18n.get(AccountExceptionMessage.REIMBURSEMENT_3),
           refReject,
           company.getName());
     }
@@ -157,7 +158,7 @@ public class ReimbursementImportService {
         moveLineCreateService.createMoveLine(
             move,
             partner,
-            company.getAccountConfig().getCustomerAccount(),
+            accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company)),
             amount,
             false,
             rejectDate,
@@ -216,7 +217,8 @@ public class ReimbursementImportService {
         moveLineCreateService.createMoveLine(
             move,
             null,
-            move.getCompany().getAccountConfig().getReimbursementAccount(),
+            accountConfigService.getReimbursementAccount(
+                accountConfigService.getAccountConfig(move.getCompany())),
             this.getTotalAmount(move),
             true,
             rejectDate,
@@ -247,7 +249,7 @@ public class ReimbursementImportService {
    * @throws AxelorException
    */
   public void testCompanyField(Company company) throws AxelorException {
-    log.debug("Test de la société {}", company.getName());
+    log.debug("Test of the company {}", company.getName());
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 

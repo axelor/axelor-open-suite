@@ -7,13 +7,11 @@
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name="supplychain.batch.action.select">
-    <option value="1">Accounting cut-off</option>
     <option value="3">Invoice orders</option>
     <option value="4">Update stock history</option>
   </selection>
 
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
-    <option value="1">Accounting cut-off</option>
     <option value="2">Invoice outgoing stock moves</option>
     <option value="3">Invoice orders</option>
     <option value="4">Update stock history</option>
@@ -32,6 +30,7 @@
     <option value="4">Sales forecast</option>
     <option value="5">Purchase proposal</option>
     <option value="10">Stock history</option>
+    <option value="11">Purchase proposal / Estimated delivery</option>
   </selection>
 
   <selection name="supplychain.mrp.line.type.select">
@@ -39,6 +38,10 @@
     <option value="2">Out of stock</option>
   </selection>
 
+  <selection name="supplychain.purchase.order.invoicing.wizard.select">
+    <option value="1">Invoice all</option>
+    <option value="2">Invoice an advance payment</option>
+  </selection>
 
   <selection name="supplychain.mrp.line.related.to.select">
     <option value="com.axelor.apps.sale.db.SaleOrderLine">Sale order line</option>
@@ -91,11 +94,10 @@
     <option value="6">Subscription</option>
   </selection>
 
-  <selection name="supplychain.supplychain.batch.accounting.cut.off.type.select">
+  <selection name="accounting.batch.accounting.cut.off.type.select"
+    id="supplychain.accounting.batch.accounting.cut.off.type.select">
     <option value="1">Forecasted supplier invoices</option>
     <option value="2">Forecasted customer invoices</option>
-    <option value="3">Prepaid expenses</option>
-    <option value="4">Deferred incomes</option>
   </selection>
 
   <selection name="supplychain.mrp.forecast.status.select">
@@ -169,6 +171,15 @@
     <option value="0">Include late sales</option>
     <option value="1">Exclude late sales</option>
     <option value="2">Consider only late sales</option>
+  </selection>
+
+  <selection id="supplychain.account.closure.assistant.line.action.select"
+    name="account.closure.assistant.line.action.select">
+    <option value="1">Cut off generation</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="supplychain.batch.batch.type.select">
+    <option value="900">Supplychain batch</option>
   </selection>
 
 </object-views>

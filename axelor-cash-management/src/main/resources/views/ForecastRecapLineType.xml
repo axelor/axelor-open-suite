@@ -33,6 +33,8 @@
         selection="purchase.purchase.order.status.select" selection-in="[1,2,3,4]"/>
       <field name="statusSelect" showIf="elementSelect == 6"
         selection="crm.opportunity.sales.stage.select" widget="MultiSelect"/>
+      <field name="statusSelect" showIf="elementSelect == 8" widget="MultiSelect"
+        selection="iaccount.move.status.select" selection-in="[1,2,3,5]"/>
       <field name="payDaySelect" showIf="elementSelect == 7"/>
       <field name="estimatedDuration" showIf="elementSelect == 2 || elementSelect == 3"/>
     </panel>

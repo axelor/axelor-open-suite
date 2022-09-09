@@ -19,16 +19,20 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveToolService {
 
@@ -54,6 +58,24 @@ public interface MoveToolService {
    * @throws AxelorException
    */
   MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException;
+
+  /**
+   * Method that returns all move lines of an invoice payment that are not completely lettered
+   *
+   * @param invoicePayment Invoice payment
+   * @return
+   * @throws AxelorException
+   */
+  List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment) throws AxelorException;
+
+  /**
+   * Method that returns all the move lines of an invoice that are not completely lettered
+   *
+   * @param invoice Invoice
+   * @return
+   * @throws AxelorException
+   */
+  List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException;
 
   /**
    * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte
@@ -155,14 +177,26 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
 
   @CallMethod
-  boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+  boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
+      throws AxelorException;
 
   boolean getEditAuthorization(Move move) throws AxelorException;
 
   boolean checkMoveLinesCutOffDates(Move move);
+
+  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
+
+  List<Move> findDaybookByYear(Set<Year> yearList);
+
+  @CallMethod
+  boolean isSimulatedMovePeriodClosed(Move move);
+
+  void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 }

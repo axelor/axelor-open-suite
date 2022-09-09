@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -33,8 +35,10 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -42,25 +46,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
+  protected AppBaseService appBaseService;
+  private final int RETURN_SCALE = 2;
+  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
+      AnalyticMoveLineRepository analyticMoveLineRepository,
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      AppBaseService appBaseService) {
 
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
+    this.appBaseService = appBaseService;
+  }
+
+  public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
+    return this.analyticMoveLineRepository;
   }
 
   @Override
@@ -93,7 +110,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException {
+      Partner partner, Product product, Company company, boolean isPurchase)
+      throws AxelorException {
 
     if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
@@ -103,7 +121,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     } else if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
         && company != null) {
-      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
+      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
+          product, company, isPurchase);
     }
     return null;
   }
@@ -192,6 +211,38 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(moveLine.getDate());
+    if (moveLine.getAccount() != null) {
+      analyticMoveLine.setAccount(moveLine.getAccount());
+      analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+    }
+    if (moveLine.getCredit().signum() > 0) {
+      analyticMoveLine.setAmount(moveLine.getCredit());
+    } else if (moveLine.getDebit().signum() > 0) {
+      analyticMoveLine.setAmount(moveLine.getDebit());
+    }
+    return analyticMoveLine;
+  }
+
+  @Override
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(invoice.getOriginDate());
+    if (invoiceLine.getAccount() != null) {
+      analyticMoveLine.setAccount(invoiceLine.getAccount());
+      analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
+    }
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+    return analyticMoveLine;
+  }
+
+  public AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
 
     if (company != null) {
@@ -201,23 +252,78 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         analyticMoveLine.setAnalyticJournal(analyticJournal);
       }
     }
-    analyticMoveLine.setDate(moveLine.getDate());
     analyticMoveLine.setPercentage(new BigDecimal(100));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-    if (moveLine.getAccount() != null) {
-      analyticMoveLine.setAccount(moveLine.getAccount());
-      analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-    }
 
     if (analyticAccount != null) {
       analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
       analyticMoveLine.setAnalyticAccount(analyticAccount);
     }
-    if (moveLine.getCredit().signum() > 0) {
-      analyticMoveLine.setAmount(moveLine.getCredit());
-    } else if (moveLine.getDebit().signum() > 0) {
-      analyticMoveLine.setAmount(moveLine.getDebit());
-    }
     return analyticMoveLine;
+  }
+
+  protected BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
+    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(moveLine.getCredit())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(moveLine.getDebit())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal getAnalyticAmount(
+      InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
+    if (invoiceLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(invoiceLine.getCompanyExTaxTotal())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  @Override
+  public AnalyticMoveLine reverse(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+
+    MoveLine moveLine = analyticMoveLine.getMoveLine();
+    AnalyticMoveLine reverse = analyticMoveLineRepository.copy(analyticMoveLine, false);
+    reverse.setOriginAnalyticMoveLine(analyticMoveLine);
+    moveLine.addAnalyticMoveLineListItem(reverse);
+    reverse.setAmount(analyticMoveLine.getAmount().negate());
+    reverse.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVERSE);
+
+    return reverse;
+  }
+
+  @Override
+  @Transactional
+  public AnalyticMoveLine reverseAndPersist(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+    return analyticMoveLineRepository.save(reverse(analyticMoveLine, analyticAccount));
+  }
+
+  @Override
+  @Transactional
+  public AnalyticMoveLine generateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+
+    AnalyticMoveLine newAnalyticmoveLine = analyticMoveLineRepository.copy(analyticMoveLine, false);
+
+    MoveLine moveLine = analyticMoveLine.getMoveLine();
+    newAnalyticmoveLine.setOriginAnalyticMoveLine(analyticMoveLine);
+    moveLine.addAnalyticMoveLineListItem(newAnalyticmoveLine);
+    newAnalyticmoveLine.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVISION);
+    if (Objects.nonNull(analyticAccount)) {
+      newAnalyticmoveLine.setAnalyticAccount(analyticAccount);
+    }
+
+    return analyticMoveLineRepository.save(newAnalyticmoveLine);
   }
 }

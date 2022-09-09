@@ -39,7 +39,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -121,8 +121,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
-    costSheet.setCalculationDate(
-        Beans.get(AppBaseService.class).getTodayDate(billOfMaterial.getCompany()));
+    costSheet.setCalculationDate(appBaseService.getTodayDate(billOfMaterial.getCompany()));
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -172,7 +171,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     costSheet.setCalculationDate(
         calculationDate != null
             ? calculationDate
-            : Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+            : appBaseService.getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
         computeTotalProducedQty(
@@ -446,7 +445,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
           prodProcessLine.getProdProcess() != null
               ? prodProcessLine.getProdProcess().getCode()
               : "null",

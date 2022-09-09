@@ -36,14 +36,15 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
     copy.setPurchaseOrder(null);
     copy.setStockMoveSet(null);
 
-    for (InvoiceLine line : copy.getInvoiceLineList()) {
-      line.setSaleOrderLine(null);
-      line.setPurchaseOrderLine(null);
-      line.setStockMoveLine(null);
-      line.setOutgoingStockMove(null);
-      line.setIncomingStockMove(null);
+    if (copy.getInvoiceLineList() != null && !copy.getInvoiceLineList().isEmpty()) {
+      for (InvoiceLine line : copy.getInvoiceLineList()) {
+        line.setSaleOrderLine(null);
+        line.setPurchaseOrderLine(null);
+        line.setStockMoveLine(null);
+        line.setOutgoingStockMove(null);
+        line.setIncomingStockMove(null);
+      }
     }
-
     return copy;
   }
 
@@ -63,7 +64,7 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       return super.save(invoice);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

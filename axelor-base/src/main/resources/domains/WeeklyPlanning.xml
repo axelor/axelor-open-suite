@@ -8,13 +8,13 @@
   <entity name="WeeklyPlanning" cacheable="true">
     <string name="name" required="true" namecolumn="true"/>
     <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning"
-      mappedBy="weeklyPlann"/>
+      mappedBy="weeklyPlanning"/>
     <decimal name="bonusCoef" title="Coefficient for bonus"/>
     <decimal name="leaveCoef" title="Coefficient for leave" default="1"/>
   </entity>
 
   <entity name="DayPlanning">
-    <many-to-one name="weeklyPlann" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
+    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
     <string name="name" required="true" namecolumn="true" title="Day"
       selection="hrs.weekly.day.select"/>
     <time name="morningFrom" title="1st Period From"/>

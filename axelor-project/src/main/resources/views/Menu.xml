@@ -97,9 +97,8 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <view-param name="search-filters" value="project-task-filters"/>
-    <domain>self.status IN (:_statusClosed,:_statusCanceled)</domain>
-    <context name="_statusClosed" expr="eval: __repo__(ProjectTask).STATUS_CLOSED"/>
-    <context name="_statusCanceled" expr="eval: __repo__(ProjectTask).STATUS_CANCELED"/>
+    <domain>self.status.isCompleted = true</domain>
+
   </action-view>
 
   <menuitem name="project-reporting" parent="menu-project-root" order="50"

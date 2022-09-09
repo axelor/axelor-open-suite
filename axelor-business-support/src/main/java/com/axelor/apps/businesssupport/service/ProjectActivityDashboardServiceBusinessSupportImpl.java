@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,18 +54,19 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
 
   @Override
   protected Project getActivityProject(
-      Project contextProject, MailMessage message, Set<Long> contextProjectIdsSet) {
+      Project project, MailMessage message, Set<Long> projectIdSet) {
     if (ProjectAnnouncement.class.getName().equals(message.getRelatedModel())) {
       ProjectAnnouncement announcement = projectAnnouncementRepo.find(message.getRelatedId());
       if (announcement != null) {
-        Project project = announcement.getProject();
-        if (contextProject == null
-            || (project != null && contextProjectIdsSet.contains(project.getId()))) {
-          return project;
+        Project announcementproject = announcement.getProject();
+        if (project == null
+            || (announcementproject != null
+                && projectIdSet.contains(announcementproject.getId()))) {
+          return announcementproject;
         }
       }
     }
-    return super.getActivityProject(contextProject, message, contextProjectIdsSet);
+    return super.getActivityProject(project, message, projectIdSet);
   }
 
   @Override

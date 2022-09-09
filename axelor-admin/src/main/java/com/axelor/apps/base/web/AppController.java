@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.apps.base.service.app.AccessConfigImportService;
 import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AppService;
@@ -49,18 +49,19 @@ import java.util.Set;
 public class AppController {
 
   public void importDataDemo(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
     app = Beans.get(AppRepository.class).find(app.getId());
     Beans.get(AppService.class).importDataDemo(app);
 
-    response.setFlash(I18n.get(IExceptionMessages.DEMO_DATA_SUCCESS));
+    response.setFlash(I18n.get(AdminExceptionMessage.DEMO_DATA_SUCCESS));
 
     response.setReload(true);
   }
 
-  public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void installApp(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
     app = Beans.get(AppRepository.class).find(app.getId());
@@ -90,7 +91,7 @@ public class AppController {
     }
 
     if (formView == null) {
-      response.setFlash(I18n.get(IExceptionMessages.NO_CONFIG_REQUIRED));
+      response.setFlash(I18n.get(AdminExceptionMessage.NO_CONFIG_REQUIRED));
     } else {
       response.setView(
           ActionView.define(I18n.get("Configure") + ": " + context.get("name"))
@@ -112,11 +113,12 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
-  public void bulkInstall(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void bulkInstall(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     Context context = request.getContext();
 
-    Set<Map<String, Object>> apps = new HashSet<Map<String, Object>>();
+    Set<Map<String, Object>> apps = new HashSet<>();
     Collection<Map<String, Object>> appsSet =
         (Collection<Map<String, Object>>) context.get("appsSet");
     if (appsSet != null) {
@@ -135,7 +137,7 @@ public class AppController {
 
     Beans.get(AppService.class).bulkInstall(appList, importDemo, language);
 
-    response.setFlash(I18n.get(IExceptionMessages.BULK_INSTALL_SUCCESS));
+    response.setFlash(I18n.get(AdminExceptionMessage.BULK_INSTALL_SUCCESS));
     response.setSignal("refresh-app", true);
   }
 
@@ -143,11 +145,11 @@ public class AppController {
 
     try {
       Beans.get(AppService.class).refreshApp();
-      response.setNotify(I18n.get(IExceptionMessages.REFRESH_APP_SUCCESS));
+      response.setNotify(I18n.get(AdminExceptionMessage.REFRESH_APP_SUCCESS));
       response.setReload(true);
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
-      response.setNotify(I18n.get(IExceptionMessages.REFRESH_APP_ERROR));
+      response.setNotify(I18n.get(AdminExceptionMessage.REFRESH_APP_ERROR));
     }
   }
 
@@ -173,7 +175,8 @@ public class AppController {
             .map());
   }
 
-  public void importRoles(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void importRoles(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
 
@@ -181,15 +184,15 @@ public class AppController {
 
     Beans.get(AppService.class).importRoles(app);
     response.setReload(true);
-    response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
+    response.setFlash(I18n.get(AdminExceptionMessage.ROLE_IMPORT_SUCCESS));
   }
 
   public void importAllRoles(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     Beans.get(AppService.class).importRoles();
 
-    response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
+    response.setFlash(I18n.get(AdminExceptionMessage.ROLE_IMPORT_SUCCESS));
     response.setReload(true);
   }
 
@@ -202,7 +205,7 @@ public class AppController {
       Long fileId = Long.parseLong(metaFileMap.get("id").toString());
       Beans.get(AccessConfigImportService.class)
           .importAccessConfig(Beans.get(MetaFileRepository.class).find(fileId));
-      response.setFlash(I18n.get(IExceptionMessages.ACCESS_CONFIG_IMPORTED));
+      response.setFlash(I18n.get(AdminExceptionMessage.ACCESS_CONFIG_IMPORTED));
       response.setCanClose(true);
     }
   }

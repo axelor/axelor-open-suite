@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -55,5 +56,8 @@ public interface MoveLineToolService {
 
   boolean checkCutOffDates(MoveLine moveLine);
 
-  boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
+  boolean isEqualTaxMoveLine(
+      Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
+
+  void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 }

@@ -150,7 +150,7 @@
           icon="fa-plus" onClick="save,action-project-add-ticket"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-project-view-show-related-tasks"/>
+          icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           colSpan="12" action="action-view-show-project-task-tree"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
@@ -467,9 +467,9 @@
         <field name="projectFolderSet" colSpan="12" widget="TagSelect"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="excludeTimesheetEditor" if-module="axelor-human-resource"/>
+        <field name="excludePlanning" if-module="axelor-business-project"/>
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
-        <field name="excludePlanning" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
@@ -500,7 +500,8 @@
           <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
             showIf="isShowSection"/>
           <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
-          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"/>
+          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
+            showIf="isShowSection"/>
           <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
         </panel>
       </panel>
@@ -521,9 +522,9 @@
         <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
           form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
       </panel>
-      <panel title="Activities" name="activityPanel">
-        <panel-dashlet action="action-project-dashlet-activity" title="Activity"
-          colSpan="12"/>
+      <panel title="Activities" name="activityPanel"
+        onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
+        <panel-include view="project-activity-dashboard-form"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -763,14 +764,6 @@
     <domain>self.project.id = :id</domain>
   </action-view>
 
-  <action-view name="action-project-view-show-related-tasks" title="Related tasks"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="kanban" name="project-task-kanban"/>
-    <view type="grid" name="project-task-grid"/>
-    <view type="form" name="project-task-form"/>
-    <domain>(self.project.id = :_id OR self.project.parentProject.id = :_id)</domain>
-  </action-view>
-
   <action-view name="action-project-view-create-team" model="com.axelor.team.db.Team"
     title="Team">
     <view name="team-grid" type="grid"/>
@@ -944,7 +937,8 @@
     title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
     <view type="form" name="contract-form"/>
     <context name="_xTargetType" expr="eval:1"/>
-    <context name="_project" expr="eval:__self__"/>
+    <context name="_project" expr="eval: __self__"/>
+    <context name="_clientPartner" expr="eval: __self__.clientPartner"/>
   </action-view>
 
   <action-view name="action-project-view-create-new-supplier-contract"
@@ -1033,6 +1027,11 @@
     <call class="com.axelor.apps.project.web.ProjectController" method="checkIfResourceBooked"/>
   </action-method>
 
+  <action-method name="action-project-view-show-related-tasks">
+    <call class="com.axelor.apps.project.web.ProjectMenuController"
+      method="allProjectRelatedTasks"/>
+  </action-method>
+
   <action-record name="action-project-record-status-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowKanbanPerStatus,isShowCalendarPerStatus, isShowCalendarPerSection"
@@ -1053,6 +1052,7 @@
   <action-record name="action-project-record-section-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowKanbanPerSection" expr="eval: false" if="!isShowSection"/>
+    <field name="isShowCalendarPerSection" expr="eval: false" if="!isShowSection"/>
   </action-record>
 
   <action-record name="action-project-record-is-show-timespent-reset-values"

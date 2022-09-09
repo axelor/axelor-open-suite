@@ -1,3 +1,0 @@
----
-title: "AnalyticMoveLine : Fix analytic move line percentages being able to be lower than 100% on one axis."
-type: fix

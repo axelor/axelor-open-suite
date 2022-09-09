@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,15 +35,15 @@ public class ObjectDataExportController {
 
   public void export(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    ObjectDataConfigExport objDataConfigExport =
+    ObjectDataConfigExport objectDataConfigExport =
         request.getContext().asType(ObjectDataConfigExport.class);
 
-    Long objectDataconfigId = objDataConfigExport.getObjectDataConfig().getId();
+    Long objectDataConfigId = objectDataConfigExport.getObjectDataConfig().getId();
 
     ObjectDataConfig objectDataConfig =
-        Beans.get(ObjectDataConfigRepository.class).find(objectDataconfigId);
+        Beans.get(ObjectDataConfigRepository.class).find(objectDataConfigId);
     MetaFile dataFile =
-        Beans.get(ObjectDataExportService.class).export(objectDataConfig, objDataConfigExport);
+        Beans.get(ObjectDataExportService.class).export(objectDataConfig, objectDataConfigExport);
 
     if (dataFile != null) {
       response.setView(

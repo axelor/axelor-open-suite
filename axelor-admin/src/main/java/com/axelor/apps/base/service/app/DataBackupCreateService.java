@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,9 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.base.db.DataBackupConfigAnonymizeLine;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
+import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
@@ -33,6 +35,8 @@ import com.axelor.db.Query;
 import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -43,7 +47,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
@@ -54,6 +57,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -65,6 +69,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,10 +91,12 @@ public class DataBackupCreateService {
 
   @Inject protected MetaModelRepository metaModelRepo;
   @Inject private MetaFiles metaFiles;
+  @Inject private AnonymizeService anonymizeService;
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
-  protected boolean notNullReferenceFlag, referenceFlag;
+  protected boolean notNullReferenceFlag;
+  protected boolean referenceFlag;
   protected boolean byteArrFieldFlag = false;
 
   protected static Set<String> exceptColumnNameList =
@@ -124,19 +131,20 @@ public class DataBackupCreateService {
   StringBuilder sb = new StringBuilder();
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public DataBackup create(DataBackup dataBackup) throws InterruptedException {
-    File tempDir = Files.createTempDir();
+  public DataBackup create(DataBackup dataBackup) throws IOException {
+    File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
     int errorsCount = 0;
+    boolean anonymizeData = dataBackup.getAnonymizeData();
 
     fileNameList = new ArrayList<>();
-    List<MetaModel> metaModelList = getMetaModels();
+    List<MetaModel> metaModelList = getMetaModels(anonymizeData);
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
-    Map<String, List<String>> subClassesMap = getSubClassesMap();
+    Map<String, List<String>> subClassesMap = getSubClassesMap(anonymizeData);
 
     if (dataBackup.getCheckAllErrorFirst()) {
       dataBackup.setFetchLimit(1);
@@ -199,7 +207,7 @@ public class DataBackupCreateService {
           }
 
           fileNameList.add(metaModel.getName() + ".csv");
-        } catch (ClassNotFoundException | IOException | InterruptedException e) {
+        } catch (ClassNotFoundException | IOException e) {
           TraceBackService.trace(e, DataBackupService.class.getName());
         } catch (Exception e) {
           JPA.em().getTransaction().rollback();
@@ -270,17 +278,24 @@ public class DataBackupCreateService {
   }
 
   /* Get All MetaModels */
-  protected List<MetaModel> getMetaModels() {
-    String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+  protected List<MetaModel> getMetaModels(boolean anonymizeData) {
+    String filterStr = "";
+    if (anonymizeData) {
+      filterStr =
+          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
+    } else {
+      filterStr =
+          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+    }
+
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
   }
 
-  protected Map<String, List<String>> getSubClassesMap() {
-    List<MetaModel> metaModels = getMetaModels();
+  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData) {
+    List<MetaModel> metaModels = getMetaModels(anonymizeData);
     List<String> subClasses;
     Map<String, List<String>> subClassMap = new HashMap<>();
     for (MetaModel metaModel : metaModels) {
@@ -321,7 +336,7 @@ public class DataBackupCreateService {
   }
 
   protected long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
-      throws InterruptedException, ClassNotFoundException {
+      throws ClassNotFoundException {
     Query<Model> query = getQuery(metaModel, subClasses);
     long count = 0;
     if (query != null) {
@@ -333,7 +348,7 @@ public class DataBackupCreateService {
   protected Query<Model> getQuery(MetaModel metaModel, List<String> subClasses)
       throws ClassNotFoundException {
     StringBuilder whereStr = new StringBuilder();
-    if (subClasses != null && subClasses.size() > 0) {
+    if (subClasses != null && !subClasses.isEmpty()) {
       for (String subClassName : subClasses) {
         whereStr.append(whereStr.length() > 0 ? " AND " : "");
         whereStr.append("id NOT IN (select id from ").append(subClassName).append(")");
@@ -397,7 +412,8 @@ public class DataBackupCreateService {
       DataBackup dataBackup,
       long totalRecord,
       List<String> subClasses,
-      String dirPath) {
+      String dirPath)
+      throws AxelorException {
 
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
@@ -411,6 +427,7 @@ public class DataBackupCreateService {
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
+      boolean anonymizeData = dataBackup.getAnonymizeData();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
@@ -421,7 +438,7 @@ public class DataBackupCreateService {
 
           dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
-          if (dataList != null && dataList.size() > 0) {
+          if (dataList != null && !dataList.isEmpty()) {
             for (Object dataObject : dataList) {
               dataArr = new ArrayList<>();
 
@@ -439,10 +456,11 @@ public class DataBackupCreateService {
                           dataObject,
                           dirPath,
                           isRelativeDate,
-                          updateImportId));
+                          updateImportId,
+                          anonymizeData,
+                          dataBackup.getDataBackupConfigAnonymizeLineList()));
                 }
               }
-
               if (headerFlag) {
                 if (byteArrFieldFlag) {
                   csvInput.setCallable(
@@ -452,6 +470,11 @@ public class DataBackupCreateService {
                 csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
                 headerFlag = false;
               }
+
+              if ("Partner".equals(metaModel.getName()) && dataBackup.getAnonymizeData()) {
+                dataArr = csvComputeAnonymizedFullname(dataArr, headerArr);
+              }
+
               csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
             }
           }
@@ -480,8 +503,53 @@ public class DataBackupCreateService {
         csvInput.setSearch("self.importId = :importId");
       }
     } catch (ClassNotFoundException e) {
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return csvInput;
+  }
+
+  protected List<String> csvComputeAnonymizedFullname(
+      List<String> dataArr, List<String> headerArr) {
+
+    if (headerArr.indexOf("simpleFullName") < 0
+        || headerArr.indexOf("fullName") < 0
+        || headerArr.indexOf("firstName") < 0
+        || headerArr.indexOf("name") < 0
+        || headerArr.indexOf("importId") < 0) {
+      return dataArr;
+    }
+
+    List<Integer> headersIndex = new ArrayList<>();
+    int headerMax;
+
+    headersIndex.add(headerArr.indexOf("simpleFullName"));
+    headersIndex.add(headerArr.indexOf("fullName"));
+    headersIndex.add(headerArr.indexOf("firstName"));
+    headersIndex.add(headerArr.indexOf("name"));
+    headersIndex.add(headerArr.indexOf("importId"));
+
+    headerMax = Collections.max(headersIndex);
+
+    if (dataArr.size() < headerMax) {
+      return dataArr;
+    }
+
+    dataArr.set(
+        headerArr.indexOf("simpleFullName"),
+        ComputeNameTool.computeSimpleFullName(
+            dataArr.get(headerArr.indexOf("firstName")),
+            dataArr.get(headerArr.indexOf("name")),
+            dataArr.get(headerArr.indexOf("importId"))));
+    dataArr.set(
+        headerArr.indexOf("fullName"),
+        ComputeNameTool.computeFullName(
+            dataArr.get(headerArr.indexOf("firstName")),
+            dataArr.get(headerArr.indexOf("name")),
+            dataArr.get(headerArr.indexOf("partnerSeq")),
+            dataArr.get(headerArr.indexOf("importId"))));
+
+    return dataArr;
   }
 
   protected boolean isPropertyExportable(Property property) {
@@ -584,14 +652,33 @@ public class DataBackupCreateService {
       Object dataObject,
       String dirPath,
       boolean isRelativeDate,
-      boolean updateImportId) {
-
+      boolean updateImportId,
+      boolean anonymizeData,
+      List<DataBackupConfigAnonymizeLine> dataBackupConfigAnonymizeLineList)
+      throws AxelorException {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
     if (value == null) {
       return "";
     }
     String propertyTypeStr = property.getType().toString();
+
+    if (anonymizeData) {
+      for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
+          dataBackupConfigAnonymizeLineList) {
+        if (metaModelName.equals(dataBackupConfigAnonymizeLine.getMetaModel().getName())
+            && dataBackupConfigAnonymizeLine.getMetaField() != null
+            && property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
+          return anonymizeService
+              .anonymizeValue(
+                  value,
+                  property,
+                  dataBackupConfigAnonymizeLine.getUseFakeData(),
+                  dataBackupConfigAnonymizeLine.getFakerApiField())
+              .toString();
+        }
+      }
+    }
 
     switch (propertyTypeStr) {
       case "LONG":
@@ -756,13 +843,11 @@ public class DataBackupCreateService {
             bin.read(data, 0, data.length);
             out.write(data, 0, data.length);
           }
-          bin.close();
           out.closeEntry();
 
           file.delete();
         }
       }
-      out.close();
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }

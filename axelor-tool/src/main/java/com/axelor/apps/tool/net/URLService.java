@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool.net;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -48,7 +48,7 @@ public final class URLService {
   public static String notExist(String url) {
 
     if (Strings.isNullOrEmpty(url)) {
-      return I18n.get(IExceptionMessage.URL_SERVICE_1);
+      return I18n.get(ToolExceptionMessage.URL_SERVICE_1);
     }
 
     try {
@@ -57,10 +57,10 @@ public final class URLService {
       return null;
     } catch (java.net.MalformedURLException ex) {
       ex.printStackTrace();
-      return String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url);
+      return String.format(I18n.get(ToolExceptionMessage.URL_SERVICE_2), url);
     } catch (java.io.IOException ex) {
       ex.printStackTrace();
-      return String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url);
+      return String.format(I18n.get(ToolExceptionMessage.URL_SERVICE_3), url);
     }
   }
 

@@ -21,7 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -151,7 +151,9 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_PRINTING_IO_ERROR) + " " + e.getLocalizedMessage());
+          I18n.get(AccountExceptionMessage.INVOICE_PRINTING_IO_ERROR)
+              + " "
+              + e.getLocalizedMessage());
     }
   }
 
@@ -163,7 +165,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (invalidPrintSettingsInvoiceIds.size() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
+          I18n.get(AccountExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
           invalidPrintSettingsInvoiceIds.toString());
     }
 
@@ -181,7 +183,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     String fileName =
         I18n.get("Invoices")
             + " - "
-            + Beans.get(AppBaseService.class)
+            + appBaseService
                 .getTodayDate(
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)
@@ -211,7 +213,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+              I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
               invoice.getInvoiceId()),
           invoice);
     }

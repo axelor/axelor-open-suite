@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -61,7 +61,7 @@ public class PurchaseOrderLineProjectController {
         (List<Map<String, Object>>) request.getContext().get("purchaseOrderLineSet");
 
     if (purchaseOrderLineSet == null || purchaseOrderLineSet.isEmpty()) {
-      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           purchaseOrderLineSet.stream()

@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -39,14 +41,23 @@ public interface MoveLineService {
 
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
 
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
-
-  public boolean checkManageAnalytic(Move move) throws AxelorException;
-
   boolean checkManageCutOffDates(MoveLine moveLine);
 
   void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
+  public boolean checkManageAnalytic(Move move) throws AxelorException;
+
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
+
+  void computeFinancialDiscount(MoveLine moveLine);
+
+  void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
+
+  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+
+  void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 }

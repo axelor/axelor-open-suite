@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -79,29 +79,27 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine previousRealizedLine,
       LocalDate disposalDate) {
+    LocalDate firstServiceDate =
+        fixedAsset.getFirstServiceDate() == null
+            ? fixedAsset.getAcquisitionDate()
+            : fixedAsset.getFirstServiceDate();
     LocalDate previousRealizedDate =
         previousRealizedLine != null
             ? previousRealizedLine.getDepreciationDate()
-            : fixedAsset.getFirstServiceDate();
+            : firstServiceDate;
     long monthsBetweenDates =
         ChronoUnit.MONTHS.between(
-            previousRealizedDate.withDayOfMonth(1), disposalDate.withDayOfMonth(1));
-
+            previousRealizedDate.plusDays(1).withDayOfMonth(1), disposalDate.withDayOfMonth(1));
     BigDecimal prorataTemporis =
         BigDecimal.valueOf(monthsBetweenDates)
             .divide(
                 BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()),
                 FixedAssetServiceImpl.CALCULATION_SCALE,
                 RoundingMode.HALF_UP);
-
-    int numberOfDepreciation =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            ? fixedAsset.getNumberOfDepreciation() - 1
-            : fixedAsset.getNumberOfDepreciation();
     BigDecimal depreciationRate =
         BigDecimal.valueOf(100)
             .divide(
-                BigDecimal.valueOf(numberOfDepreciation),
+                BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
                 FixedAssetServiceImpl.CALCULATION_SCALE,
                 RoundingMode.HALF_UP);
     BigDecimal ddRate = BigDecimal.ONE;
@@ -274,14 +272,14 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     } else {
       correspondingFixedAssetLine = getExistingLine(fixedAsset, disposalDate);
       FixedAssetLine previousRealizedLine =
-          findOldestFixedAssetLine(
+          findNewestFixedAssetLine(
                   fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
               .orElse(null);
       if (previousRealizedLine != null
           && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+            I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
       }
       if (correspondingFixedAssetLine != null) {
         computeDepreciationWithProrata(

@@ -32,7 +32,7 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
 
   @Override
   public boolean checkCompanyOnMoveLine(AnalyticAxis analyticAxis) {
-    if (analyticAxis != null && analyticAxis.getCompany() != null) {
+    if (analyticAxis != null && analyticAxis.getId() != null && analyticAxis.getCompany() != null) {
       return !ObjectUtils.isEmpty(
           analyticAxisFetchService.findByAnalyticAxisAndAnotherCompany(
               analyticAxis, analyticAxis.getCompany()));

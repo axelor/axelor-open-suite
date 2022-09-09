@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,16 +38,18 @@ import org.junit.Test;
 public class TestFixedAssetLineComputationService {
 
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
-  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDateService fixedAssetDateService;
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
+  protected AppBaseService appBaseService;
 
   @Before
   public void prepare() {
-    analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
+    fixedAssetDateService = mock(FixedAssetDateService.class);
+    appBaseService = mock(AppBaseService.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            analyticFixedAssetService, fixedAssetFailOverControlService);
+            fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
   }
 
   @Test
@@ -61,8 +63,8 @@ public class TestFixedAssetLineComputationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(false),
             new BigDecimal("500.00"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
@@ -88,8 +90,8 @@ public class TestFixedAssetLineComputationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true),
             new BigDecimal("500.00"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
@@ -98,9 +100,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("23.89"),
-            new BigDecimal("23.89"),
-            new BigDecimal("476.11")),
+            new BigDecimal("25.00"),
+            new BigDecimal("25.00"),
+            new BigDecimal("475.00")),
         fixedAssetLine.get());
   }
 
@@ -152,9 +154,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("23.89"),
-            new BigDecimal("23.89"),
-            new BigDecimal("476.11"));
+            new BigDecimal("25.00"),
+            new BigDecimal("25.00"),
+            new BigDecimal("475.00"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
             fixedAsset, firstFixedAssetLine);
@@ -164,8 +166,8 @@ public class TestFixedAssetLineComputationService {
             LocalDate.of(2021, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("123.89"),
-            new BigDecimal("376.11")),
+            new BigDecimal("125.00"),
+            new BigDecimal("375.00")),
         fixedAssetLine);
   }
 
@@ -277,8 +279,8 @@ public class TestFixedAssetLineComputationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("20000.00"));
-    when(analyticFixedAssetService.computeFirstDepreciationDate(
-            fixedAsset, fixedAsset.getFirstServiceDate()))
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
@@ -287,9 +289,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("20000.00"),
-            new BigDecimal("5250.00"),
-            new BigDecimal("5250.00"),
-            new BigDecimal("14750.00")),
+            new BigDecimal("5852.78"),
+            new BigDecimal("5852.78"),
+            new BigDecimal("14147.22")),
         fixedAssetLine.get());
   }
 

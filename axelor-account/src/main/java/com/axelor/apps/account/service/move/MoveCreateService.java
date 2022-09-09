@@ -17,7 +17,13 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -45,6 +51,22 @@ public interface MoveCreateService {
       Partner partner,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      String origin,
+      String description)
+      throws AxelorException;
+
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      LocalDate originDate,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -103,6 +125,7 @@ public interface MoveCreateService {
       LocalDate originDate,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,

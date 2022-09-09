@@ -9,9 +9,7 @@
 
     <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
-    <datetime name="today" title="Today date" tz="true"/>
-    <many-to-one name="defaultProjectUnit" title="Default Project unit"
-      ref="com.axelor.apps.base.db.Unit"/>
+    <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
       title="Default Partner language"/>
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
@@ -22,7 +20,7 @@
 
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
-      selection="base.app.base.map.api.select" default="1"/>
+      selection="base.app.base.map.api.select" default="2"/>
 
     <!-- Routing service API for Open Street Map> -->
     <integer name="osmRoutingServiceApiSelect"
@@ -170,8 +168,7 @@
     </extra-code>
 
     <track>
-      <field name="today" on="UPDATE"/>
-      <field name="defaultProjectUnit" on="UPDATE"/>
+      <field name="todayDateT" on="UPDATE"/>
       <field name="defaultPartnerLanguage" on="UPDATE"/>
       <field name="emailAccountByUser" on="UPDATE"/>
 

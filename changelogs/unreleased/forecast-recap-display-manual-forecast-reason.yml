@@ -1,7 +1,0 @@
----
-title: "Forecast Recap: display manual forecast reason on recap lines."
-type: change
-description: |
-  "Forecast reason was replaced by Forecast recap line type: The name of the
-  forecast line type is now the reason. This way, the type displayed in recap
-  will be equal to the reason for manual forecasts."

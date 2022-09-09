@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReconcileGroup;
@@ -30,13 +30,14 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -47,6 +48,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -61,6 +63,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,8 +223,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -236,8 +239,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -252,8 +255,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -268,798 +271,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
     return exportNumber;
-  }
-
-  /**
-   * Méthode réalisant l'export SI - pour les journaux de type vente
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  public void exportMoveLineTypeSelect1006(AccountingReport mlr, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In Export type service : ");
-
-    String fileName =
-        "detail"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "ventes.dat";
-    this.exportMoveLineTypeSelect1006FILE1(mlr, replay);
-    this.exportMoveLineAllTypeSelectFILE2(mlr, fileName);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type vente
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {Exception.class})
-  public void exportMoveLineTypeSelect1006FILE1(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In export service Type 1006 FILE 1 :");
-
-    Company company = accountingReport.getCompany();
-
-    String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
-    JournalType journalType = accountingReportService.getJournalType(accountingReport);
-    if (accountingReport.getJournal() != null) {
-      dateQueryStr +=
-          String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
-    } else {
-      dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (replay) {
-      dateQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      dateQueryStr += " AND self.accountingOk = false ";
-    }
-    dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr +=
-        String.format(
-            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
-    Query dateQuery =
-        JPA.em()
-            .createQuery(
-                "SELECT self.date from Move self"
-                    + dateQueryStr
-                    + "group by self.date order by self.date");
-
-    List<LocalDate> allDates = dateQuery.getResultList();
-
-    log.debug("allDates : {}", allDates);
-
-    List<String[]> allMoveData = new ArrayList<>();
-    String companyCode = "";
-
-    String reference = "";
-    String moveQueryStr = "";
-    String moveLineQueryStr = "";
-    if (accountingReport.getRef() != null) {
-      reference = accountingReport.getRef();
-    }
-    if (company != null) {
-      companyCode = company.getCode();
-      moveQueryStr += String.format(" AND self.company = %s", company.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      moveQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (accountingReport.getDateFrom() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
-    }
-    if (accountingReport.getDateTo() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
-    }
-    if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
-    }
-    if (replay) {
-      moveQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      moveQueryStr += " AND self.accountingOk = false ";
-    }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
-
-    LocalDate interfaceDate = accountingReport.getDate();
-
-    for (LocalDate dt : allDates) {
-
-      List<Journal> journalList =
-          journalRepo
-              .all()
-              .filter("self.journalType = ?1 AND self.notExportOk = false", journalType)
-              .fetch();
-
-      if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<>();
-        journalList.add(accountingReport.getJournal());
-      }
-
-      for (Journal journal : journalList) {
-
-        List<? extends Move> moveList =
-            moveRepo
-                .all()
-                .filter(
-                    "self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2"
-                        + moveQueryStr,
-                    dt,
-                    journal)
-                .fetch();
-
-        String journalCode = journal.getExportCode();
-
-        if (!moveList.isEmpty()) {
-
-          BigDecimal sumDebit =
-              this.getSumDebit(
-                  "self.account.useForPartnerBalance = true AND self.debit != 0.00 AND self.move in ?1 "
-                      + moveLineQueryStr,
-                  moveList);
-
-          if (sumDebit.compareTo(BigDecimal.ZERO) > 0) {
-
-            String exportNumber = this.getSaleExportNumber(company);
-
-            Move firstMove = moveList.get(0);
-            String periodCode =
-                firstMove.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("yyyyMM"));
-
-            this.updateMoveList(
-                (List<Move>) moveList, accountingReport, interfaceDate, exportNumber);
-
-            String items[] = new String[8];
-            items[0] = companyCode;
-            items[1] = journalCode;
-            items[2] = exportNumber;
-            items[3] = interfaceDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            items[4] = sumDebit.toString();
-            items[5] = reference;
-            items[6] = dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            items[7] = periodCode;
-            allMoveData.add(items);
-          }
-        }
-      }
-    }
-
-    String fileName =
-        "entete"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "ventes.dat";
-    writeMoveLineToCsvFile(
-        company,
-        fileName,
-        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
-        allMoveData,
-        accountingReport);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - pour les journaux de type avoir
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  public void exportMoveLineTypeSelect1007(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In Export type 1007 service : ");
-
-    String fileName =
-        "detail"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "avoirs.dat";
-    this.exportMoveLineTypeSelect1007FILE1(accountingReport, replay);
-    this.exportMoveLineAllTypeSelectFILE2(accountingReport, fileName);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type avoir
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {Exception.class})
-  public void exportMoveLineTypeSelect1007FILE1(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In export service 1007 FILE 1:");
-
-    Company company = accountingReport.getCompany();
-
-    String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
-    JournalType journalType = accountingReportService.getJournalType(accountingReport);
-    if (accountingReport.getJournal() != null) {
-      dateQueryStr +=
-          String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
-    } else {
-      dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (replay) {
-      dateQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      dateQueryStr += " AND self.accountingOk = false ";
-    }
-    dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr +=
-        String.format(
-            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
-    Query dateQuery =
-        JPA.em()
-            .createQuery(
-                "SELECT self.date from Move self"
-                    + dateQueryStr
-                    + "group by self.date order by self.date");
-
-    List<LocalDate> allDates = dateQuery.getResultList();
-
-    log.debug("allDates : {}", allDates);
-
-    List<String[]> allMoveData = new ArrayList<>();
-    String companyCode = "";
-
-    String reference = "";
-    String moveQueryStr = "";
-    String moveLineQueryStr = "";
-    if (accountingReport.getRef() != null) {
-      reference = accountingReport.getRef();
-    }
-    if (accountingReport.getCompany() != null) {
-      companyCode = accountingReport.getCompany().getCode();
-      moveQueryStr +=
-          String.format(" AND self.company = %s", accountingReport.getCompany().getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      moveQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (accountingReport.getDateFrom() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
-    }
-    if (accountingReport.getDateTo() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
-    }
-    if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
-    }
-    if (replay) {
-      moveQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      moveQueryStr += " AND self.accountingOk = false ";
-    }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
-
-    LocalDate interfaceDate = accountingReport.getDate();
-
-    for (LocalDate dt : allDates) {
-
-      List<Journal> journalList =
-          journalRepo
-              .all()
-              .filter("self.journalType = ?1 AND self.notExportOk = false", journalType)
-              .fetch();
-
-      if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<>();
-        journalList.add(accountingReport.getJournal());
-      }
-
-      for (Journal journal : journalList) {
-
-        List<Move> moveList =
-            moveRepo
-                .all()
-                .filter(
-                    "self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2"
-                        + moveQueryStr,
-                    dt,
-                    journal)
-                .fetch();
-
-        String journalCode = journal.getExportCode();
-
-        if (!moveList.isEmpty()) {
-
-          BigDecimal sumCredit =
-              this.getSumCredit(
-                  "self.account.useForPartnerBalance = true AND self.credit != 0.00 AND self.move in ?1 "
-                      + moveLineQueryStr,
-                  moveList);
-
-          if (sumCredit.compareTo(BigDecimal.ZERO) > 0) {
-
-            String exportNumber = this.getRefundExportNumber(company);
-
-            Move firstMove = moveList.get(0);
-            String periodCode =
-                firstMove.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("yyyyMM"));
-
-            this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
-
-            String items[] = new String[8];
-            items[0] = companyCode;
-            items[1] = journalCode;
-            items[2] = exportNumber;
-            items[3] = interfaceDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            items[4] = sumCredit.toString();
-            items[5] = reference;
-            items[6] = dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            items[7] = periodCode;
-            allMoveData.add(items);
-          }
-        }
-      }
-    }
-
-    String fileName =
-        "entete"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "avoirs.dat";
-    writeMoveLineToCsvFile(
-        company,
-        fileName,
-        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
-        allMoveData,
-        accountingReport);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - pour les journaux de type trésorerie
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  public void exportMoveLineTypeSelect1008(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In Export type 1008 service : ");
-
-    String fileName =
-        "detail"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "tresorerie.dat";
-    this.exportMoveLineTypeSelect1008FILE1(accountingReport, replay);
-    this.exportMoveLineAllTypeSelectFILE2(accountingReport, fileName);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type trésorerie
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {Exception.class})
-  public void exportMoveLineTypeSelect1008FILE1(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In export service 1008 FILE 1:");
-
-    Company company = accountingReport.getCompany();
-
-    String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
-    JournalType journalType = accountingReportService.getJournalType(accountingReport);
-    if (accountingReport.getJournal() != null) {
-      dateQueryStr +=
-          String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
-    } else {
-      dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (replay) {
-      dateQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      dateQueryStr += " AND self.accountingOk = false ";
-    }
-    dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr +=
-        String.format(
-            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
-    Query dateQuery =
-        JPA.em()
-            .createQuery(
-                "SELECT self.date from Move self"
-                    + dateQueryStr
-                    + "group by self.date order by self.date");
-
-    List<LocalDate> allDates = dateQuery.getResultList();
-
-    log.debug("allDates : {}", allDates);
-
-    List<String[]> allMoveData = new ArrayList<>();
-    String companyCode = "";
-
-    String reference = "";
-    String moveQueryStr = "";
-    String moveLineQueryStr = "";
-    if (accountingReport.getRef() != null) {
-      reference = accountingReport.getRef();
-    }
-    if (company != null) {
-      companyCode = accountingReport.getCompany().getCode();
-      moveQueryStr += String.format(" AND self.company = %s", company.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      moveQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (accountingReport.getDateFrom() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
-    }
-    if (accountingReport.getDateTo() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
-    }
-    if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
-    }
-    if (replay) {
-      moveQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      moveQueryStr += " AND self.accountingOk = false ";
-    }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
-
-    LocalDate interfaceDate = accountingReport.getDate();
-
-    for (LocalDate dt : allDates) {
-
-      List<Journal> journalList =
-          journalRepo
-              .all()
-              .filter("self.journalType = ?1 AND self.notExportOk = false", journalType)
-              .fetch();
-
-      if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<>();
-        journalList.add(accountingReport.getJournal());
-      }
-
-      for (Journal journal : journalList) {
-
-        List<Move> moveList =
-            moveRepo
-                .all()
-                .filter(
-                    "self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2"
-                        + moveQueryStr,
-                    dt,
-                    journal)
-                .fetch();
-
-        String journalCode = journal.getExportCode();
-
-        if (!moveList.isEmpty()) {
-
-          long moveLineListSize =
-              moveLineRepo
-                  .all()
-                  .filter(
-                      "self.move in ?1 AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr,
-                      moveList)
-                  .count();
-
-          if (moveLineListSize > 0) {
-
-            String exportNumber = this.getTreasuryExportNumber(company);
-
-            Move firstMove = moveList.get(0);
-            String periodCode =
-                firstMove.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("yyyyMM"));
-
-            this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
-
-            String items[] = new String[8];
-            items[0] = companyCode;
-            items[1] = journalCode;
-            items[2] = exportNumber;
-            items[3] = interfaceDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            items[4] = "0";
-            items[5] = reference;
-            items[6] = dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            items[7] = periodCode;
-            allMoveData.add(items);
-          }
-        }
-      }
-    }
-
-    String fileName =
-        "entete"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "tresorerie.dat";
-    writeMoveLineToCsvFile(
-        company,
-        fileName,
-        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
-        allMoveData,
-        accountingReport);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - pour les journaux de type achat
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  public void exportMoveLineTypeSelect1009(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In Export type 1009 service : ");
-    String fileName =
-        "detail"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "achats.dat";
-    this.exportMoveLineTypeSelect1009FILE1(accountingReport, replay);
-    this.exportMoveLineAllTypeSelectFILE2(accountingReport, fileName);
-  }
-
-  /**
-   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type achat
-   *
-   * @param mlr
-   * @param replay
-   * @throws AxelorException
-   * @throws IOException
-   */
-  @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {Exception.class})
-  public void exportMoveLineTypeSelect1009FILE1(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException {
-
-    log.info("In export service 1009 FILE 1:");
-
-    Company company = accountingReport.getCompany();
-    String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
-    JournalType journalType = accountingReportService.getJournalType(accountingReport);
-    if (accountingReport.getJournal() != null) {
-      dateQueryStr +=
-          String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
-    } else {
-      dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (replay) {
-      dateQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      dateQueryStr += " AND self.accountingOk = false ";
-    }
-    dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr +=
-        String.format(
-            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
-    Query dateQuery =
-        JPA.em()
-            .createQuery(
-                "SELECT self.date from Move self"
-                    + dateQueryStr
-                    + "group by self.date order by self.date");
-
-    List<LocalDate> allDates = dateQuery.getResultList();
-
-    log.debug("allDates : {}", allDates);
-
-    List<String[]> allMoveData = new ArrayList<>();
-    String companyCode = "";
-
-    String reference = "";
-    String moveQueryStr = "";
-    String moveLineQueryStr = "";
-    if (accountingReport.getRef() != null) {
-      reference = accountingReport.getRef();
-    }
-    if (company != null) {
-      companyCode = company.getCode();
-      moveQueryStr += String.format(" AND self.company = %s", company.getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      moveQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (accountingReport.getDateFrom() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
-    }
-    if (accountingReport.getDateTo() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
-    }
-    if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
-    }
-    if (replay) {
-      moveQueryStr +=
-          String.format(
-              " AND self.accountingOk = true AND self.accountingReport = %s",
-              accountingReport.getId());
-    } else {
-      moveQueryStr += " AND self.accountingOk = false ";
-    }
-    moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_ACCOUNTED);
-
-    LocalDate interfaceDate = accountingReport.getDate();
-
-    for (LocalDate dt : allDates) {
-
-      List<Journal> journalList =
-          journalRepo
-              .all()
-              .filter("self.journalType = ?1 AND self.notExportOk = false", journalType)
-              .fetch();
-
-      if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<>();
-        journalList.add(accountingReport.getJournal());
-      }
-
-      for (Journal journal : journalList) {
-
-        List<Move> moveList =
-            moveRepo
-                .all()
-                .filter(
-                    "self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2"
-                        + moveQueryStr,
-                    dt,
-                    journal)
-                .fetch();
-
-        String journalCode = journal.getExportCode();
-
-        int moveListSize = moveList.size();
-
-        if (moveListSize > 0) {
-
-          int i = 0;
-
-          for (Move move : moveList) {
-
-            List<MoveLine> moveLineList =
-                moveLineRepo
-                    .all()
-                    .filter(
-                        "self.account.useForPartnerBalance = true AND self.credit != 0.00 AND self.move in ?1"
-                            + moveLineQueryStr,
-                        moveList)
-                    .fetch();
-
-            if (!moveLineList.isEmpty()) {
-
-              String exportNumber = this.getPurchaseExportNumber(company);
-
-              String periodCode =
-                  move.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("yyyyMM"));
-
-              BigDecimal totalCredit = this.getSumCredit(moveLineList);
-              String invoiceId = "";
-              String dueDate = "";
-              if (move.getInvoice() != null) {
-                invoiceId = move.getInvoice().getInvoiceId();
-                dueDate = move.getInvoice().getDueDate().toString();
-              }
-
-              MoveLine firstMoveLine = moveLineList.get(0);
-              String items[] = new String[11];
-              items[0] = companyCode;
-              items[1] = journalCode;
-              items[2] = exportNumber;
-              items[3] = interfaceDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-              items[4] = invoiceId;
-              items[5] = dueDate;
-              items[6] = firstMoveLine.getAccount().getCode();
-              items[7] = totalCredit.toString();
-              items[8] = reference;
-              items[9] = dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-              items[10] = periodCode;
-              allMoveData.add(items);
-
-              this.updateMove(move, accountingReport, interfaceDate, exportNumber);
-
-              if (i % 10 == 0) {
-                JPA.clear();
-              }
-              if (i++ % 100 == 0) {
-                log.debug("Process : {} / {}", i, moveListSize);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    String fileName =
-        "entete"
-            + appAccountService
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
-            + "achats.dat";
-    writeMoveLineToCsvFile(
-        company,
-        fileName,
-        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
-        allMoveData,
-        accountingReport);
   }
 
   @Override
@@ -1244,7 +461,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         }
 
         if (move.getCurrency() != null) {
-          items[17] = move.getCurrency().getCode();
+          items[17] = move.getCurrency().getCodeISO();
         }
         allMoveLineData.add(items);
       }
@@ -1291,13 +508,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     if (accountingReport.getJournal() != null) {
       moveLineQueryStr +=
           String.format(" AND self.move.journal = %s", accountingReport.getJournal().getId());
-    } else {
-      moveLineQueryStr +=
-          String.format(
-              " AND self.move.journal.journalType = %s",
-              accountingReportService.getJournalType(accountingReport).getId());
     }
-
     if (accountingReport.getPeriod() != null) {
       moveLineQueryStr +=
           String.format(" AND self.move.period = %s", accountingReport.getPeriod().getId());
@@ -1462,11 +673,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
 
     writeMoveLineToCsvFile(
-        company,
-        fileName,
-        this.createHeaderForDetailFile(typeSelect),
-        allMoveLineData,
-        accountingReport);
+        company, fileName, this.createHeaderForDetailFile(), allMoveLineData, accountingReport);
   }
 
   protected MetaFile writeMoveLineToCsvFile(
@@ -1523,8 +730,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public String[] createHeaderForJournalEntry() {
-    String header =
-        "JournalCode;"
+    return ("JournalCode;"
             + "JournalLib;"
             + "EcritureNum;"
             + "EcritureDate;"
@@ -1541,101 +747,24 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             + "DateLet;"
             + "ValidDate;"
             + "Montantdevise;"
-            + "Idevise;";
-    return header.split(";");
+            + "Idevise;")
+        .split(";");
   }
 
-  public String[] createHeaderForHeaderFile(int typeSelect) {
-    String header = null;
-    switch (typeSelect) {
-      case AccountingReportRepository.EXPORT_SALES:
-        header =
-            "Société;"
-                + "Journal de Vente;"
-                + "Numéro d'écriture;"
-                + "Date de l'interface;"
-                + "Montant de l'écriture;"
-                + "Réf. de l'écriture;"
-                + "Date de l'écriture;"
-                + "Période de l'écriture;";
-        return header.split(";");
-      case AccountingReportRepository.EXPORT_REFUNDS:
-        header =
-            "Société;"
-                + "Journal d'Avoir;"
-                + "Numéro d'écriture;"
-                + "Date de l'interface;"
-                + "Montant de l'écriture;"
-                + "Réf. de l'écriture;"
-                + "Date de l'écriture;"
-                + "Période de l'écriture;";
-        return header.split(";");
-      case AccountingReportRepository.EXPORT_TREASURY:
-        header =
-            "Société;"
-                + "Journal de Trésorerie;"
-                + "Numéro d'écriture;"
-                + "Date de l'interface;"
-                + "Montant de l'écriture;"
-                + "Réf. de l'écriture;"
-                + "Date de l'écriture;"
-                + "Période de l'écriture;";
-        return header.split(";");
-      case AccountingReportRepository.EXPORT_PURCHASES:
-        header =
-            "Société;"
-                + "Journal d'Achat;"
-                + "Numéro d'écriture;"
-                + "Date de l'interface;"
-                + "Code fournisseur;"
-                + "Date de la facture;"
-                + "Date d'exigibilité;"
-                + "Numéro de compte de contrepartie;"
-                + "Montant de l'écriture;"
-                + "Réf. de l'écriture;"
-                + "Date de l'écriture;"
-                + "Période de l'écriture;";
-        return header.split(";");
-      default:
-        return new String[0];
-    }
-  }
-
-  public String[] createHeaderForDetailFile(int typeSelect) {
-    String header = "";
-
-    if (typeSelect == AccountingReportRepository.EXPORT_PURCHASES) {
-      header =
-          "Société;"
-              + "Journal;"
-              + "Numéro d'écriture;"
-              + "Num. ligne d'écriture;"
-              + "Numéro de compte;"
-              + "Sens de l'écriture;"
-              + "Montant de la ligne;"
-              + "Code TVA;"
-              + "CRB;"
-              + "Site;"
-              + "Métier;"
-              + "Activité;"
-              + "Nom;";
-    } else {
-      header =
-          "Société;"
-              + "Journal;"
-              + "Numéro d'écriture;"
-              + "Num. ligne d'écriture;"
-              + "Numéro de compte;"
-              + "Sens de l'écriture;"
-              + "Montant de la ligne;"
-              + "CRB;"
-              + "Site;"
-              + "Métier;"
-              + "Activité;"
-              + "Nom;";
-    }
-
-    return header.split(";");
+  public String[] createHeaderForDetailFile() {
+    return ("Société;"
+            + "Journal;"
+            + "Numéro d'écriture;"
+            + "Num. ligne d'écriture;"
+            + "Numéro de compte;"
+            + "Sens de l'écriture;"
+            + "Montant de la ligne;"
+            + "CRB;"
+            + "Site;"
+            + "Métier;"
+            + "Activité;"
+            + "Nom;")
+        .split(";");
   }
 
   public MetaFile exportMoveLine(AccountingReport accountingReport)
@@ -1644,22 +773,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReportService.setStatus(accountingReport);
 
     switch (accountingReport.getReportType().getTypeSelect()) {
-      case AccountingReportRepository.EXPORT_SALES:
-        this.exportMoveLineTypeSelect1006(accountingReport, false);
-        break;
-
-      case AccountingReportRepository.EXPORT_REFUNDS:
-        this.exportMoveLineTypeSelect1007(accountingReport, false);
-        break;
-
-      case AccountingReportRepository.EXPORT_TREASURY:
-        this.exportMoveLineTypeSelect1008(accountingReport, false);
-        break;
-
-      case AccountingReportRepository.EXPORT_PURCHASES:
-        this.exportMoveLineTypeSelect1009(accountingReport, false);
-        break;
-
       case AccountingReportRepository.EXPORT_GENERAL_BALANCE:
         exportMoveLineTypeSelect1010(accountingReport);
         break;
@@ -1679,24 +792,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   public void replayExportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
-    switch (accountingReport.getReportType().getTypeSelect()) {
-      case AccountingReportRepository.EXPORT_SALES:
-        this.exportMoveLineTypeSelect1006(accountingReport, true);
-        break;
-      case AccountingReportRepository.EXPORT_REFUNDS:
-        this.exportMoveLineTypeSelect1007(accountingReport, true);
-        break;
-      case AccountingReportRepository.EXPORT_TREASURY:
-        this.exportMoveLineTypeSelect1008(accountingReport, true);
-        break;
-      case AccountingReportRepository.EXPORT_PURCHASES:
-        this.exportMoveLineTypeSelect1009(accountingReport, true);
-        break;
-      case AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
-        this.exportMoveLineTypeSelect1000(accountingReport, false, true);
-        break;
-      default:
-        break;
+    if (accountingReport.getReportType().getTypeSelect()
+        == AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+      this.exportMoveLineTypeSelect1000(accountingReport, false, true);
     }
   }
 
@@ -1705,9 +803,18 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
       throws AxelorException {
 
+    Optional<AccountingReportType> optionalAccountingReportType =
+        getAccountingReportType(company, exportTypeSelect);
+    if (!optionalAccountingReportType.isPresent()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          AccountExceptionMessage.ACCOUNTING_REPORT_9,
+          exportTypeSelect);
+    }
+
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(company);
-    accountingReport.getReportType().setTypeSelect(exportTypeSelect);
+    accountingReport.setReportType(optionalAccountingReportType.get());
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
@@ -1726,6 +833,20 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReportRepo.save(accountingReport);
 
     return accountingReport;
+  }
+
+  protected Optional<AccountingReportType> getAccountingReportType(
+      Company company, int exportTypeSelect) {
+
+    ImmutableMap<String, Object> params =
+        ImmutableMap.of(
+            "company", company, "reportExportTypeSelect", 2, "typeSelect", exportTypeSelect);
+    return Optional.ofNullable(
+        com.axelor.db.Query.of(AccountingReportType.class)
+            .filter(
+                "self.company = :company and self.reportExportTypeSelect = :reportExportTypeSelect and self.typeSelect = :typeSelect")
+            .bind(params)
+            .fetchOne());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1755,7 +876,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL));
+          I18n.get(AccountExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL));
     }
     fileName += ".csv";
 

@@ -5,11 +5,16 @@
 
   <grid name="analytic-account-grid" title="Analytic Accounts"
     model="com.axelor.apps.account.db.AnalyticAccount">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
     <field name="statusSelect"/>
+    <field name="company"/>
   </grid>
 
   <tree name="analytic-account-tree" title="Analytic accounting account">
@@ -31,7 +36,8 @@
 
   <form name="analytic-account-form" title="Analytic Account"
     model="com.axelor.apps.account.db.AnalyticAccount"
-    onLoad="action-attrs-analytic-account-change-axis,action-attrs-account-analytic-account-status-show-title">
+    onLoad="action-attrs-analytic-account-change-axis,action-attrs-account-analytic-account-status-show-title"
+    onSave="action-method-analytic-account-check-children-company">
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
@@ -43,12 +49,15 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        required="true"
-        onChange="action-record-analytic-account-set-values,action-attrs-analytic-account-change-axis"/>
+        required="true" onChange="action-group-analytic-account-onchange-axis"/>
       <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"
-        onSelect="action-method-set-domain-parent-level-analytic-account"/>
+        onSelect="action-method-set-domain-parent-level-analytic-account"
+        readonlyIf="!analyticLevel" onChange="action-method-set-company-change-parent"/>
+      <field name="company" onChange="action-method-analytic-account-check-children-company"
+        readonlyIf="(analyticAxis != null &amp;&amp; analyticAxis.company != null) || (parent != null &amp;&amp; parent.company != null)"/>
       <field name="analyticLevel" form-view="analytic-level-form"
         grid-view="analytic-level-grid" required="true"/>
+      <field name="analyticAxis.company" hidden="true"/>
     </panel>
     <panel name="groupingValuePanel" hidden="true">
       <field name="analyticGroupingValue1" hidden="true"/>
@@ -120,6 +129,12 @@
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+
+  <action-group name="action-group-analytic-account-onchange-axis">
+    <action name="action-record-analytic-account-set-values"/>
+    <action name="action-attrs-analytic-account-change-axis"/>
+    <action name="action-method-set-company-change-axis"/>
+  </action-group>
 
   <action-method name="action-method-set-domain-parent-level-analytic-account">
     <call class="com.axelor.apps.account.web.AnalyticAccountController"
@@ -200,6 +215,16 @@
       expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
   </action-attrs>
 
+  <action-method name="action-method-set-company-change-axis">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="setCompanyOnAxisChange"/>
+  </action-method>
+
+  <action-method name="action-method-set-company-change-parent">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="setCompanyOnParentChange"/>
+  </action-method>
+
   <action-record name="action-record-analytic-account-set-values"
     model="com.axelor.apps.account.db.AnalyticAccount">
     <field name="analyticGroupingValue1" expr="eval: null"
@@ -230,6 +255,9 @@
     <call class="com.axelor.apps.account.web.AnalyticAccountController" method="toggleStatus"/>
   </action-method>
 
-
+  <action-method name="action-method-analytic-account-check-children-company">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="checkChildrenCompany"/>
+  </action-method>
 
 </object-views>

@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.script;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.google.inject.Inject;
 import java.util.Map;
@@ -39,6 +40,8 @@ public class ImportPurchaseOrder {
     if (purchaseOrder.getStatusSelect() == 1) {
       purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
     } else {
+      // Setting the status to draft or else we can't request it
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
       purchaseOrderService.requestPurchaseOrder(purchaseOrder);
     }
 

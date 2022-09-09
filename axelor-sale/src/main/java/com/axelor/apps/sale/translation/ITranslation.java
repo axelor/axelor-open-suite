@@ -25,4 +25,21 @@ public interface ITranslation {
   public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
   public static final String SALE_ORDER_LINE_END_OF_PACK = /*$$(*/ "SaleOrderLine.endOfPack"; /*)*/
   public static final String SALE_ORDER_LINE_TOTAL = /*$$(*/ "SaleOrderLine.total"; /*)*/
+
+  public static final String SALE_ORDER_LINE_OBSERVER_NO_PRICING = /*$$(*/
+      "No pricing scale used for this product"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_IDENTIFIED_PRICING = /*$$(*/
+      "Identified pricing scale: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_IDENTIFIED_CR = /*$$(*/
+      "Classification rule used: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_RESULT_CR = /*$$(*/
+      "Result of the classification rule evaluation: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_IDENTIFIED_RR = /*$$(*/
+      "Evaluation of result rule: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_RESULT_RR = /*$$(*/
+      "Result of the evaluation of the result rule: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_POPULATED_FIELD = /*$$(*/
+      "Populated field: %s"; /*)*/
+  public static final String SALE_ORDER_LINE_OBSERVER_POPULATED_CUSTOM_FIELD = /*$$(*/
+      "Populated custom field: %s"; /*)*/
 }

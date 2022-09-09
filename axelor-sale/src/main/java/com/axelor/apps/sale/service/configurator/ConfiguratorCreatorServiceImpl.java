@@ -131,6 +131,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
     }
     for (MetaJsonField indicatorToRemove : fieldsToRemove) {
+      if (indicatorToRemove.getName() != null) {
+        // This is needed as there is a constraint issue
+        indicatorToRemove.setName(indicatorToRemove.getName() + "$AXELORTMP" + creator.getId());
+      }
       indicatorToRemove.setHidden(
           true); // Adding this line to fix field still showing even when removed indictor
       creator.removeIndicator(indicatorToRemove);
@@ -505,7 +509,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   @Override
   @Transactional
   public void init(ConfiguratorCreator creator) {
-    creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    } else {
+      creator.addAuthorizedUserSetItem(AuthUtils.getUser("admin"));
+    }
     addRequiredFormulas(creator);
   }
 
@@ -605,5 +614,22 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     field.setContextFieldTargetName(targetName);
     field.setContextFieldValue(creator.getId().toString());
     field.setContextFieldTitle(creator.getName());
+  }
+
+  @Override
+  public void removeTemporalAttributesAndIndicators(ConfiguratorCreator creator) {
+
+    List<MetaJsonField> metaJsonFields = new ArrayList<>();
+    metaJsonFields.addAll(
+        Optional.ofNullable(creator.getAttributes()).orElse(Collections.emptyList()));
+    metaJsonFields.addAll(
+        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList()));
+    for (MetaJsonField metaJsonField : metaJsonFields) {
+      String name = metaJsonField.getName();
+      if (name != null) {
+        // FIX FOR CONSTRAINT ISSUE
+        metaJsonField.setName(name.replace("$AXELORTMP", ""));
+      }
+    }
   }
 }

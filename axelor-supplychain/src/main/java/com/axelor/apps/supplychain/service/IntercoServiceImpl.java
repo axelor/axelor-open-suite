@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -49,6 +50,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -57,7 +59,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -66,6 +68,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +79,14 @@ import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
 
+  protected PurchaseConfigService purchaseConfigService;
+
   protected static int DEFAULT_INVOICE_COPY = 1;
+
+  @Inject
+  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+    this.purchaseConfigService = purchaseConfigService;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -170,6 +180,10 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+    purchaseOrder.setDisplayPriceOnQuotationRequest(
+        purchaseConfigService
+            .getPurchaseConfig(intercoCompany)
+            .getDisplayPriceOnQuotationRequest());
 
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
@@ -349,7 +363,7 @@ public class IntercoServiceImpl implements IntercoService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_MISSING_TYPE),
+            I18n.get(SupplychainExceptionMessage.INVOICE_MISSING_TYPE),
             invoice);
     }
     Company intercoCompany = findIntercoCompany(invoice.getPartner());
@@ -438,6 +452,8 @@ public class IntercoServiceImpl implements IntercoService {
     AccountManagementAccountService accountManagementAccountService =
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
     if (intercoInvoice.getCompany() != null) {
       FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
@@ -467,9 +483,9 @@ public class IntercoServiceImpl implements IntercoService {
       if (invoiceLine.getAnalyticDistributionTemplate() != null) {
         invoiceLine.setAnalyticDistributionTemplate(
             accountManagementAccountService.getAnalyticDistributionTemplate(
-                invoiceLine.getProduct(), intercoInvoice.getCompany()));
+                invoiceLine.getProduct(), intercoInvoice.getCompany(), isPurchase));
         List<AnalyticMoveLine> analyticMoveLineList =
-            invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+            invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
         analyticMoveLineList.forEach(
             analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);

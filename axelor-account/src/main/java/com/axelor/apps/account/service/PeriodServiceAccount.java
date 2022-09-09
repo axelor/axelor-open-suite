@@ -26,11 +26,14 @@ import com.axelor.meta.CallMethod;
 
 public interface PeriodServiceAccount {
 
-  public Query<Move> getMoveListToValidateQuery(Period period);
+  public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status);
 
   @CallMethod
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException;
 
   @CallMethod
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+
+  @CallMethod
+  public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException;
 }

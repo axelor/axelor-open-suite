@@ -5,6 +5,10 @@
 
   <grid name="analytic-journal-grid" title="Analytic Journal"
     model="com.axelor.apps.account.db.AnalyticJournal">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="name"/>
     <field name="type" form-view="analytic-journal-type-form"
       grid-view="analytic-journal-type-grid"/>
@@ -40,7 +44,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <search-filters name="analytic-journal-filters"

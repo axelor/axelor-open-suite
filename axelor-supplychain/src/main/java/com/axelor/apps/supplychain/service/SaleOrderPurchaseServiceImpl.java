@@ -30,7 +30,7 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -40,6 +40,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +95,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
           throw new AxelorException(
               saleOrderLine,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.SO_PURCHASE_1),
+              I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
               saleOrderLine.getProductName());
         }
 
@@ -114,9 +116,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {
 
-    LOG.debug(
-        "Création d'une commande fournisseur pour le devis client : {}",
-        saleOrder.getSaleOrderSeq());
+    LOG.debug("Creation of a purchase order for the sale order : {}", saleOrder.getSaleOrderSeq());
 
     PurchaseOrder purchaseOrder =
         purchaseOrderSupplychainService.createPurchaseOrder(
@@ -153,12 +153,11 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.setInAti(false);
     }
 
+    Collections.sort(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      if (saleOrderLine.getProduct() != null) {
-        purchaseOrder.addPurchaseOrderLineListItem(
-            purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
-                purchaseOrder, saleOrderLine));
-      }
+      purchaseOrder.addPurchaseOrderLineListItem(
+          purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
+              purchaseOrder, saleOrderLine));
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

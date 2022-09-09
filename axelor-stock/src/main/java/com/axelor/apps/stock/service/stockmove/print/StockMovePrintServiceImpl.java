@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -32,7 +32,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
     String fileName =
         I18n.get("Stock moves")
             + " - "
-            + Beans.get(AppBaseService.class)
+            + appBaseService
                 .getTodayDate(
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)
@@ -83,7 +82,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
+              I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
               stockMove.getStockMoveSeq()),
           stockMove);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.projectdms.exception.IExceptionMessage;
+import com.axelor.apps.projectdms.exception.ProjectDmsExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
@@ -108,7 +108,7 @@ public class DMSFileServiceImpl implements DMSFileService {
     if (emailAddress == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCKED_BY_USER_EMAIL_NOT_CONFIGURED),
+          I18n.get(ProjectDmsExceptionMessage.LOCKED_BY_USER_EMAIL_NOT_CONFIGURED),
           user.getCode());
     }
 

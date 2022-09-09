@@ -121,7 +121,7 @@
       <field name="$dates" showTitle="false" colSpan="12" readonly="true">
         <viewer>
 			<![CDATA[
-			 <div><i><span x-translate>From</span> {{record.$fromDate}} <span x-translate>to</span> {{record.$toDate}}</i></div>
+			 <div><i><span x-translate>From</span> {{record.$startDate}} <span x-translate>to</span> {{record.$endDate}}</i></div>
 			]]>
         </viewer>
       </field>
@@ -164,12 +164,12 @@
         </viewer>
       </field>
       <button name="previousBtn" title="&lt;&lt; Previous"
-        onClick="action-project-activity-dashboard-method-previous-on-click" colSpan="2"/>
+        onClick="action-project-activity-dashboard-method-previous-on-click" colSpan="4"/>
       <button name="nextBtn" title="Next &gt;&gt;"
-        onClick="action-project-activity-dashboard-method-next-on-click" colSpan="2"
-        hideIf="$moment($toDate).diff(todayDate,'days') == 0"/>
-      <field name="$fromDate" hidden="true"/>
-      <field name="$toDate" hidden="true"/>
+        onClick="action-project-activity-dashboard-method-next-on-click" colSpan="4"
+        hideIf="$moment($endDate).diff(todayDate,'days') == 0"/>
+      <field name="$startDate" hidden="true"/>
+      <field name="$endDate" hidden="true"/>
     </panel>
   </form>
 
@@ -197,14 +197,17 @@
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date = :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.date = :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
   <action-view name="action-project-db-my-upcomming-planning"
     title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.date &gt; :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
+
   </action-view>
 
   <action-view name="action-project-dashboard-view-open-gantt" title="Gantt"

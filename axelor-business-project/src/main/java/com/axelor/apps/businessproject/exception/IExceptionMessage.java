@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,10 @@ package com.axelor.apps.businessproject.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BusinessProjectExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;

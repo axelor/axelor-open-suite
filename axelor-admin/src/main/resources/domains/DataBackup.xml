@@ -11,6 +11,9 @@
     <integer name="statusSelect" selection="data.backup.status.select" title="Status"
       default="0"/>
     <many-to-one name="logMetaFile" ref="com.axelor.meta.db.MetaFile" title="Log"/>
+    <one-to-many name="dataBackupConfigAnonymizeLineList"
+      ref="com.axelor.apps.base.db.DataBackupConfigAnonymizeLine" title="Models to anonymize"
+      mappedBy="dataBackup"/>
     <datetime name="backupDate" title="Backup On"/>
     <datetime name="restoreDate" title="Restored On"/>
     <integer name="fetchLimit" title="CSV Backup Fetch Limit"/>
@@ -18,6 +21,7 @@
     <boolean name="updateImportId" title="Update Import Id"/>
     <boolean name="checkAllErrorFirst" title="Check all error first"/>
     <boolean name="isProcessEmptyTable" title="Generate csv file for empty tables"/>
+    <boolean name="anonymizeData" title="Anonymize"/>
     <extra-code>
 	   		<![CDATA[
 				// DATABACKUP STATUS

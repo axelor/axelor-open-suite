@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine" lang="java"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -38,7 +39,7 @@
 
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"
       selection="move.line.reimbursement.status.select"/>
-    <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
+    <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
@@ -101,6 +102,9 @@
 
     <date name="originDate" title="Origin date" initParam="true"/>
 
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="moveLine" title="Invoice terms"/>
+
     <!-- DAS2 -->
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       readonly="true"/>
@@ -121,12 +125,22 @@
     </string>
     <decimal name="amountRemaining" title="To pay / To use">
     	<![CDATA[
-    	if (account != null && account.getReconcileOk()){
-		    if (credit.compareTo(BigDecimal.ZERO) == 1) return credit.subtract(amountPaid);
-		    else if (debit.compareTo(BigDecimal.ZERO) == 1) return debit.subtract(amountPaid);
-		    else return BigDecimal.ZERO;
-	    }
-		else return BigDecimal.ZERO;
+        if (account != null && account.getReconcileOk()) {
+          if (credit.signum() > 0) return credit.subtract(amountPaid);
+          else if (debit.signum() > 0) return debit.subtract(amountPaid);
+        }
+        return BigDecimal.ZERO;
+	   ]]>
+    </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
 	    ]]>
     </decimal>
 
@@ -143,6 +157,14 @@
 
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.moveline.select" default="0"/>
+
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

@@ -100,7 +100,7 @@
 99;2;2;"Subventions d'exploitation";"subdex";1;;;740000;26;
 100;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc";1;;;"781000|791000";26;
 101;2;2;"Autres produits";"autpro";1;;;"750|751000|751100|751600|751800|752000|753000|754000|758000";26;
-102;1;3;"Produits d'explotation";"prodex";;"rules['vdem'] + rules['proven'] + rules['prosto'] + rules['proimo'] + rules['subdex'] + rules['rdpatc'] + rules['autpro']";;;26;
+102;1;3;"Produits d'exploitation";"prodex";;"rules['vdem'] + rules['proven'] + rules['prosto'] + rules['proimo'] + rules['subdex'] + rules['rdpatc'] + rules['autpro']";;;26;
 103;3;1;;;;;;;26;
 104;2;2;"Achats de marchandises";"acdem";1;;;"607000|608700|609700";26;
 105;2;2;"Variation de stocks de marchandises";"vdsdm";1;;;603700;26;

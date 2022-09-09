@@ -25,7 +25,6 @@ import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class ProductServicePurchaseImpl extends ProductServiceImpl {
@@ -51,7 +50,7 @@ public class ProductServicePurchaseImpl extends ProductServiceImpl {
   public void copyProduct(Product product, Product copy) {
     super.copyProduct(product, copy);
 
-    if (Beans.get(AppBaseService.class).isApp("purchase-request")) {
+    if (appBaseService.isApp("purchase-request")) {
       copy.setSupplierCatalogList(null);
     }
   }

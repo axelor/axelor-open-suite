@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
@@ -52,7 +52,7 @@ public class PurchaseOrderSupplierLineService {
         != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SUPPLIER_BLOCKED),
+          I18n.get(PurchaseExceptionMessage.SUPPLIER_BLOCKED),
           supplierPartner);
     }
     purchaseOrderLine.setSupplierPartner(supplierPartner);

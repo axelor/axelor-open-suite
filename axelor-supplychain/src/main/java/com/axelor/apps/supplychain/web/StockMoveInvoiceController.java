@@ -21,12 +21,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -79,9 +80,9 @@ public class StockMoveInvoiceController {
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
+                  .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
                   .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
+                  .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
@@ -91,7 +92,7 @@ public class StockMoveInvoiceController {
                   .map());
           response.setCanClose(true);
         } else {
-          response.setError(I18n.get(IExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
+          response.setError(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
         }
       }
     } catch (Exception e) {
@@ -169,13 +170,14 @@ public class StockMoveInvoiceController {
             Beans.get(StockMoveMultiInvoiceService.class)
                 .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
         invoice.ifPresent(
-            inv ->
+            inv -> {
+              try {
                 response.setView(
                     ActionView.define("Invoice")
                         .model(Invoice.class.getName())
-                        .add("grid", "invoice-grid")
+                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
-                        .param("search-filters", "customer-invoices-filters")
+                        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                         .param("forceEdit", "true")
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
                         .context(
@@ -183,7 +185,11 @@ public class StockMoveInvoiceController {
                             Beans.get(AppSupplychainService.class)
                                 .getTodayDate(stockMove.getCompany()))
                         .context("_showRecord", String.valueOf(inv.getId()))
-                        .map()));
+                        .map());
+              } catch (Exception e) {
+                TraceBackService.trace(response, e);
+              }
+            });
       }
 
     } catch (Exception e) {
@@ -244,20 +250,25 @@ public class StockMoveInvoiceController {
               .createInvoiceFromMultiOutgoingStockMove(
                   stockMoveList, paymentCondition, paymentMode, contactPartner);
       invoice.ifPresent(
-          inv ->
+          inv -> {
+            try {
               response.setView(
                   ActionView.define("Invoice")
                       .model(Invoice.class.getName())
-                      .add("grid", "invoice-grid")
+                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
-                      .param("search-filters", "customer-invoices-filters")
+                      .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
                       .context(
                           "todayDate",
                           Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
-                      .map()));
+                      .map());
+            } catch (Exception e) {
+              TraceBackService.trace(response, e);
+            }
+          });
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -332,20 +343,25 @@ public class StockMoveInvoiceController {
             Beans.get(StockMoveMultiInvoiceService.class)
                 .createInvoiceFromMultiIncomingStockMove(stockMoveList);
         invoice.ifPresent(
-            inv ->
+            inv -> {
+              try {
                 response.setView(
                     ActionView.define("Invoice")
                         .model(Invoice.class.getName())
-                        .add("grid", "invoice-grid")
+                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
-                        .param("search-filters", "customer-invoices-filters")
+                        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                         .param("forceEdit", "true")
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
                         .context(
                             "todayDate",
                             Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
-                        .map()));
+                        .map());
+              } catch (Exception e) {
+                TraceBackService.trace(response, e);
+              }
+            });
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -402,20 +418,25 @@ public class StockMoveInvoiceController {
               .createInvoiceFromMultiIncomingStockMove(
                   stockMoveList, paymentCondition, paymentMode, contactPartner);
       invoice.ifPresent(
-          inv ->
+          inv -> {
+            try {
               response.setView(
                   ActionView.define("Invoice")
                       .model(Invoice.class.getName())
-                      .add("grid", "invoice-grid")
+                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
-                      .param("search-filters", "customer-invoices-filters")
+                      .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
                       .context(
                           "todayDate",
                           Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
-                      .map()));
+                      .map());
+            } catch (Exception e) {
+              TraceBackService.trace(response, e);
+            }
+          });
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -499,9 +520,9 @@ public class StockMoveInvoiceController {
 
         viewBuilder
             .model(Invoice.class.getName())
-            .add("grid", "invoice-grid")
+            .add("grid", "invoice-supplier-grid")
             .add("form", "invoice-form")
-            .param("search-filters", "customer-invoices-filters")
+            .param("search-filters", "supplier-invoices-filters")
             .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
             .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
             .context(
@@ -581,9 +602,9 @@ public class StockMoveInvoiceController {
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
+                  .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
                   .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
+                  .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
@@ -592,7 +613,7 @@ public class StockMoveInvoiceController {
                   .map());
         }
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
+        response.setAlert(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

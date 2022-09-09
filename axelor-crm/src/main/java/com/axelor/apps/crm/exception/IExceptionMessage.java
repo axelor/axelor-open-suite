@@ -18,7 +18,11 @@
 /** */
 package com.axelor.apps.crm.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link CrmExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Target service */
@@ -63,6 +67,15 @@ public interface IExceptionMessage {
 
   static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
   static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
+  static final String LEAD_START_WRONG_STATUS = /*$$(*/
+      "Can only start new or assigned lead." /*)*/;
+  static final String LEAD_RECYCLE_WRONG_STATUS = /*$$(*/ "Can only recycle a lost lead." /*)*/;
+  static final String LEAD_CONVERT_WRONG_STATUS = /*$$(*/
+      "Can only convert new, assigned or in process lead." /*)*/;
+  static final String LEAD_ASSIGN_TO_ME_WRONG_STATUS = /*$$(*/
+      "Can only assign to yourself new, assigned or in process lead." /*)*/;
+  static final String LEAD_LOSE_WRONG_STATUS = /*$$(*/
+      "Can not mark as lost an already lost lead." /*)*/;
 
   /** Opportunity */
   static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;

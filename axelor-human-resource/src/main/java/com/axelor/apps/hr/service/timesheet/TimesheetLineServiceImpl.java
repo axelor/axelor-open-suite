@@ -24,11 +24,10 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -86,12 +85,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         timesheet == null ? "null" : timesheet.getFullName());
 
     if (timesheet != null) {
-      User user = timesheet.getUser();
+      Employee employee = timesheet.getEmployee();
 
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (user.getEmployee() != null) {
-        Employee employee = employeeRepository.find(user.getEmployee().getId());
+      if (employee != null) {
+        employee = employeeRepository.find(employee.getId());
 
         log.debug("Employee: {}", employee);
 
@@ -134,7 +133,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
         return duration.multiply(dailyWorkHrs);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
@@ -151,7 +150,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
         return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
@@ -165,7 +164,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   public TimesheetLine createTimesheetLine(
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
@@ -177,7 +176,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setComments(comments);
     timesheetLine.setProduct(product);
     timesheetLine.setProject(project);
-    timesheetLine.setUser(user);
+    timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
@@ -192,8 +191,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public TimesheetLine createTimesheetLine(
-      User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, user, date, timesheet, hours, comments);
+      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
+    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
   }
 
   @Override
@@ -201,7 +200,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetLine timesheetLine,
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
@@ -211,7 +210,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setComments(comments);
     timesheetLine.setProduct(product);
     timesheetLine.setProject(project);
-    timesheetLine.setUser(user);
+    timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));

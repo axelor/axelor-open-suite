@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -137,6 +137,26 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .param(
                 "kanban-hide-columns",
                 getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_PROJECT));
+
+    return builder.map();
+  }
+
+  @Override
+  public Map<String, Object> getAllProjectRelatedTasks(Project project) {
+    ActionViewBuilder builder =
+        ActionView.define(I18n.get("Related Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("kanban", "project-task-kanban")
+            .add("grid", "project-task-grid")
+            .add("form", "project-task-form")
+            .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
+            .context("_id", project.getId())
+            .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .param("search-filters", "project-task-filters")
+            .param(
+                "kanban-hide-columns",
+                getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_PROJECT));
+
     return builder.map();
   }
 }

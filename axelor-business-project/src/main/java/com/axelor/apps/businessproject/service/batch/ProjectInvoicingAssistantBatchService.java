@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
@@ -63,7 +63,7 @@ public class ProjectInvoicingAssistantBatchService extends AbstractBatchService 
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             projectInvoicingAssistantBatch.getActionSelect(),
             projectInvoicingAssistantBatch.getCode());
     }

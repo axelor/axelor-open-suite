@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.exception.service.TraceBackService;
@@ -72,16 +72,18 @@ public class StockMoveManagementRepository extends StockMoveRepository {
       return stockMove;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
   @Override
   public void remove(StockMove entity) {
     if (entity.getStatusSelect() == STATUS_PLANNED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
+      throw new PersistenceException(
+          I18n.get(StockExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
     } else if (entity.getStatusSelect() == STATUS_REALIZED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
+      throw new PersistenceException(
+          I18n.get(StockExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
     } else {
       if (entity.getStockMoveOrigin() != null) {
         entity.getStockMoveOrigin().setBackorderId(null);

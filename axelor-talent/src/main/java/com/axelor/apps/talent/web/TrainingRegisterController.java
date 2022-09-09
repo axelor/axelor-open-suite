@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
-import com.axelor.apps.talent.exception.IExceptionMessage;
+import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -168,7 +168,7 @@ public class TrainingRegisterController {
               .domain("self.id in " + eventList)
               .map());
     } else {
-      response.setAlert(IExceptionMessage.NO_EVENT_GENERATED);
+      response.setAlert(TalentExceptionMessage.NO_EVENT_GENERATED);
     }
   }
 }

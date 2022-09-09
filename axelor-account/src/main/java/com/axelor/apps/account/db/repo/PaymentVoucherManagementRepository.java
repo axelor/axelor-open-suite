@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -63,7 +63,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
       return super.save(paymentVoucher);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -73,9 +73,9 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_REMOVE_NOT_OK));
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_REMOVE_NOT_OK));
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     }
     super.remove(entity);

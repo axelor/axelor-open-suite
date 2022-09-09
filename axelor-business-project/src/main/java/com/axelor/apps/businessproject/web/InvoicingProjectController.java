@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
@@ -51,7 +51,7 @@ public class InvoicingProjectController {
     if (project == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
+          I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT));
     }
     invoicingProjectService.clearLines(invoicingProject);
     invoicingProjectService.setLines(invoicingProject, project, 0);
@@ -79,7 +79,7 @@ public class InvoicingProjectController {
           invoicingProjectRepository.find(
               request.getContext().asType(InvoicingProject.class).getId()));
     } else {
-      response.setError(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setError(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
       return;
     }
     if (projects.size() > 0) {

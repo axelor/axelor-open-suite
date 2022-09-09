@@ -25,7 +25,8 @@
     <!-- /Studio changes -->
 
     <panel title="Overview">
-      <field name="name" readonlyIf="id" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
+      <field name="name" readonlyIf="id"
+        onChange="action-studio-meta-json-model-name-onchange-record,action-studio-meta-json-model-record-name"/>
       <field name="title"/>
       <field name="onNew"/>
       <field name="onSave"/>
@@ -74,4 +75,16 @@
     <action if="id != null &amp;&amp; menuBuilder != null"
       name="action-studio-json-model-method-isgeneratemenu-onchange"/>
   </action-group>
+
+  <action-record name="action-studio-meta-json-model-record-name"
+    model="com.axelor.meta.db.MetaJsonModel">
+    <field name="name"
+      expr="call:com.axelor.studio.service.JsonFieldService:checkName(name, false)"/>
+  </action-record>
+
+  <action-condition name="action-studio-meta-json-model-name-onchange-record">
+    <check error="First Letter of the name should always be alphabet" field="name"
+      if="name!=null &amp;&amp; !(name.matches(&quot;^[a-zA-Z].*&quot;))"/>
+  </action-condition>
+
 </object-views>

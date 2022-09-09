@@ -35,6 +35,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -79,12 +80,13 @@ public class FECImporter extends Importer {
           @Override
           public void handle(Model bean, Exception e) {
             if (fecImport != null) {
+              Throwable rootCause = Throwables.getRootCause(e);
               TraceBackService.trace(
                   new AxelorException(
-                      e,
+                      rootCause,
                       fecImport,
                       TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                      e.getMessage()));
+                      rootCause.getMessage()));
             }
             super.handle(bean, e);
           }

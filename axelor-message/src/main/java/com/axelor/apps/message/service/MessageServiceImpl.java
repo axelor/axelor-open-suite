@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.message.db.MultiRelated;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -302,7 +302,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_EMAIL) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.TEMPORARY_EMAIL_MEDIA_TYPE_ERROR));
+            I18n.get(MessageExceptionMessage.TEMPORARY_EMAIL_MEDIA_TYPE_ERROR));
       }
       message = sendByEmail(message, isTemporaryEmail);
     }
@@ -373,7 +373,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       throw new AxelorException(
           message,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MESSAGE_6));
+          I18n.get(MessageExceptionMessage.MESSAGE_6));
     }
 
     MailSender sender = new MailSender(account);
@@ -395,7 +395,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
           throw new AxelorException(
               message,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              IExceptionMessage.MESSAGE_5);
+              MessageExceptionMessage.MESSAGE_5);
         }
       }
       mailBuilder.from(fromAddress);
@@ -457,7 +457,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       throw new AxelorException(
           message,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          IExceptionMessage.SMS_ERROR_MISSING_MOBILE_NUMBER);
+          MessageExceptionMessage.SMS_ERROR_MISSING_MOBILE_NUMBER);
     }
 
     OkHttpClient.Builder builder = new OkHttpClient.Builder();

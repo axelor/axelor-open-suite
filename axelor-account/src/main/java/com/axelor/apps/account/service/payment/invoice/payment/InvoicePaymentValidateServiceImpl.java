@@ -27,15 +27,19 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -50,13 +54,17 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
 
   protected PaymentModeService paymentModeService;
@@ -67,8 +75,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected ReconcileService reconcileService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
   protected AppAccountService appAccountService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -80,8 +88,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
-      InvoicePaymentToolService invoicePaymentToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -91,8 +99,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.reconcileService = reconcileService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
     this.appAccountService = appAccountService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   /**
@@ -114,6 +122,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     Invoice invoice = invoicePayment.getInvoice();
     validatePartnerAccount(invoice);
+    invoice.setNextDueDate(Beans.get(InvoiceToolService.class).getNextDueDate(invoice));
 
     if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
       return;
@@ -122,7 +131,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
 
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -136,9 +144,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage
-                  .ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
+          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
     }
   }
 
@@ -199,19 +205,25 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Journal journal =
         paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 
-    MoveLine invoiceMoveLine = moveToolService.getInvoiceCustomerMoveLineByLoop(invoice);
+    List<MoveLine> invoiceMoveLines = moveToolService.getInvoiceCustomerMoveLines(invoicePayment);
 
     if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
 
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-      customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      if (InvoiceToolService.isPurchase(invoice)) {
+        customerAccount = accountConfigService.getSupplierAdvancePaymentAccount(accountConfig);
+      } else {
+        customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      }
+
     } else {
-      if (invoiceMoveLine == null) {
+      if (CollectionUtils.isEmpty(invoiceMoveLines)) {
         return null;
       }
-      customerAccount = invoiceMoveLine.getAccount();
+      customerAccount = invoiceMoveLines.get(0).getAccount();
     }
+
     Move move =
         moveCreateService.createMove(
             journal,
@@ -222,6 +234,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             paymentMode,
             invoice.getFiscalPosition(),
+            invoice.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             getOriginFromInvoicePayment(invoicePayment),
@@ -230,15 +243,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
 
-    if (invoicePayment.getApplyFinancialDiscount()
-        && invoicePayment.getFinancialDiscount() != null
-        && appAccountService.getAppAccount().getManageFinancialDiscount()) {
-
-      move = fillMoveWithFinancialDiscount(invoicePayment, move, customerAccount);
-    } else {
-      move = fillMoveWithoutFinancialDiscount(invoicePayment, move, customerAccount);
-    }
-
+    move = this.fillMove(invoicePayment, move, customerAccount);
     moveValidateService.accounting(move);
 
     for (MoveLine moveline : move.getMoveLineList()) {
@@ -246,15 +251,31 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         customerMoveLine = moveline;
       }
     }
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      Reconcile reconcile =
-          reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
 
-      invoicePayment.setReconcile(reconcile);
-    }
     invoicePayment.setMove(move);
+    if (customerMoveLine != null
+        && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      for (MoveLine invoiceMoveLine : invoiceMoveLines) {
+        Reconcile reconcile =
+            reconcileService.reconcile(
+                invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
 
-    return invoicePaymentRepository.save(invoicePayment);
+        if (reconcile == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
+              invoiceMoveLine.getName(),
+              invoiceMoveLine.getAccount().getCode(),
+              customerMoveLine.getName(),
+              customerMoveLine.getAccount().getCode());
+        }
+
+        invoicePayment.addReconcileListItem(reconcile);
+      }
+    }
+
+    invoicePaymentRepository.save(invoicePayment);
+    return invoicePayment;
   }
 
   public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
@@ -280,8 +301,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move fillMoveWithoutFinancialDiscount(
-      InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
+  public Move fillMove(InvoicePayment invoicePayment, Move move, Account customerAccount)
+      throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
@@ -292,168 +313,144 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
     boolean isDebitInvoice = moveToolService.isDebitCustomer(invoice, true);
     String origin = getOriginFromInvoicePayment(invoicePayment);
+    boolean isFinancialDiscount = this.isFinancialDiscount(invoicePayment);
+    int counter = 1;
+    boolean financialDiscountVat =
+        invoicePayment.getFinancialDiscount() != null
+            && invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
-    move.addMoveLineListItem(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
-            paymentAmount,
-            isDebitInvoice,
-            paymentDate,
-            null,
-            1,
-            origin,
-            move.getDescription()));
-
-    move.addMoveLineListItem(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            customerAccount,
-            paymentAmount,
-            !isDebitInvoice,
-            paymentDate,
-            null,
-            2,
-            origin,
-            move.getDescription()));
-
-    return move;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public Move fillMoveWithFinancialDiscount(
-      InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
-
-    Invoice invoice = invoicePayment.getInvoice();
-    Company company = invoice.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-
-      Account purchAccount = new Account();
-
-      for (AccountManagement accountManagement :
-          accountConfig.getPurchFinancialDiscountTax().getAccountManagementList()) {
-        if (accountManagement.getCompany().equals(company)) {
-          purchAccount = accountManagement.getFinancialDiscountAccount();
-        }
-      }
-
-      move =
-          fillMoveLinesWithFinancialDiscount(
-              invoicePayment,
-              move,
-              customerAccount,
-              purchAccount,
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount());
-
-    } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
-
-      Account saleAccount = new Account();
-      for (AccountManagement accountManagement :
-          accountConfig.getSaleFinancialDiscountTax().getAccountManagementList()) {
-        if (accountManagement.getCompany().equals(company)) {
-          saleAccount = accountManagement.getFinancialDiscountAccount();
-        }
-      }
-
-      move =
-          fillMoveLinesWithFinancialDiscount(
-              invoicePayment,
-              move,
-              customerAccount,
-              saleAccount,
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount());
-    }
-
-    return move;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public Move fillMoveLinesWithFinancialDiscount(
-      InvoicePayment invoicePayment,
-      Move move,
-      Account customerAccount,
-      Account account,
-      Account configAccount)
-      throws AxelorException {
-    Invoice invoice = invoicePayment.getInvoice();
-    Company company = invoice.getCompany();
-    PaymentMode paymentMode = invoicePayment.getPaymentMode();
-    Partner partner = invoice.getPartner();
-    LocalDate paymentDate = invoicePayment.getPaymentDate();
-    BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
-    boolean isDebitInvoice = moveToolService.isDebitCustomer(invoice, true);
-    String origin = getOriginFromInvoicePayment(invoicePayment);
-    BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-
-    BigDecimal paymentAmount =
-        invoicePayment
-            .getAmount()
-            .add(
-                invoicePayment
-                    .getFinancialDiscountAmount()
-                    .add(invoicePayment.getFinancialDiscountTaxAmount()));
-
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
-            paymentAmountWithoutDiscount,
-            isDebitInvoice,
-            paymentDate,
-            null,
-            1,
-            move.getOrigin(),
-            move.getDescription()));
-
-    move.addMoveLineListItem(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            configAccount,
-            invoicePayment.getFinancialDiscountAmount(),
-            isDebitInvoice,
-            paymentDate,
-            null,
-            2,
-            origin,
-            invoicePayment.getDescription()));
-
-    move.addMoveLineListItem(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            customerAccount,
             paymentAmount,
-            !isDebitInvoice,
+            isDebitInvoice,
             paymentDate,
             null,
-            3,
-            move.getOrigin(),
+            counter++,
+            origin,
             move.getDescription()));
-
-    if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-        && account != null) {
-
-      move.addMoveLineListItem(
+    MoveLine financialDiscountMoveLine = null;
+    if (isFinancialDiscount) {
+      financialDiscountMoveLine =
           moveLineCreateService.createMoveLine(
               move,
               partner,
-              account,
-              invoicePayment.getFinancialDiscountTaxAmount(),
+              this.getFinancialDiscountAccount(invoice, company),
+              invoicePayment.getFinancialDiscountAmount(),
               isDebitInvoice,
               paymentDate,
               null,
-              4,
+              counter++,
               origin,
-              invoicePayment.getDescription()));
+              invoicePayment.getDescription());
+
+      Tax financialDiscountTax = null;
+      if (financialDiscountVat) {
+        financialDiscountTax =
+            isPurchase
+                ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+                : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
+
+        if (financialDiscountTax.getActiveTaxLine() != null) {
+          financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+          financialDiscountMoveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+          financialDiscountMoveLine.setTaxCode(financialDiscountTax.getCode());
+        }
+      }
+
+      move.addMoveLineListItem(financialDiscountMoveLine);
+
+      paymentAmount =
+          invoicePayment
+              .getAmount()
+              .add(
+                  invoicePayment
+                      .getFinancialDiscountAmount()
+                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
     }
 
+    move.addMoveLineListItem(
+        moveLineCreateService.createMoveLine(
+            move,
+            partner,
+            customerAccount,
+            paymentAmount,
+            !isDebitInvoice,
+            paymentDate,
+            null,
+            counter++,
+            origin,
+            move.getDescription()));
+
+    if (isFinancialDiscount
+        && invoicePayment != null
+        && invoicePayment.getFinancialDiscount() != null
+        && financialDiscountVat
+        && financialDiscountMoveLine != null
+        && BigDecimal.ZERO.compareTo(invoicePayment.getFinancialDiscountTaxAmount()) != 0) {
+      int vatSytem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
+      Account financialDiscountVATAccount =
+          this.getFinancialDiscountVATAccount(
+              invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
+
+      if (financialDiscountVATAccount != null) {
+        MoveLine financialDiscountVatMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                financialDiscountVATAccount,
+                invoicePayment.getFinancialDiscountTaxAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                counter,
+                origin,
+                invoicePayment.getDescription());
+        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
+        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
+        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
+        financialDiscountVatMoveLine.setVatSystemSelect(vatSytem);
+        move.addMoveLineListItem(financialDiscountVatMoveLine);
+      }
+    }
     return move;
+  }
+
+  protected boolean isFinancialDiscount(InvoicePayment invoicePayment) {
+    return invoicePayment.getApplyFinancialDiscount()
+        && invoicePayment.getFinancialDiscount() != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount();
+  }
+
+  protected Account getFinancialDiscountAccount(Invoice invoice, Company company)
+      throws AxelorException {
+    if (InvoiceToolService.isPurchase(invoice)) {
+      return accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount();
+    } else {
+      return accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount();
+    }
+  }
+
+  protected Account getFinancialDiscountVATAccount(
+      Invoice invoice, Company company, Journal journal, int vatSystemSelect, int functionalOrigin)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Tax tax =
+        InvoiceToolService.isPurchase(invoice)
+            ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
+            : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
+    AccountManagement accountManagement =
+        tax.getAccountManagementList().stream()
+            .filter(it -> it.getCompany().equals(company))
+            .findFirst()
+            .orElse(null);
+    return accountManagementAccountService.getTaxAccount(
+        accountManagement, tax, company, journal, vatSystemSelect, functionalOrigin, false, true);
   }
 }

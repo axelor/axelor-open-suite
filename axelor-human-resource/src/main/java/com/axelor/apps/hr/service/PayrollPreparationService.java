@@ -41,7 +41,7 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -133,7 +133,7 @@ public class PayrollPreparationService {
       throw new AxelorException(
           payrollPreparation,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
 
@@ -141,7 +141,7 @@ public class PayrollPreparationService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = ?4 AND self.user.employee = ?3 AND ((self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.fromDateT AND self.toDateT OR ?2 BETWEEN self.fromDateT AND self.toDateT))",
+                "self.statusSelect = ?4 AND self.employee = ?3 AND ((self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.fromDateT AND self.toDateT OR ?2 BETWEEN self.fromDateT AND self.toDateT))",
                 toDate,
                 fromDate,
                 employee,
@@ -206,7 +206,7 @@ public class PayrollPreparationService {
         Beans.get(ExtraHoursLineRepository.class)
             .all()
             .filter(
-                "self.user.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?4)",
+                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?4)",
                 payrollPreparation.getEmployee(),
                 fromDate,
                 toDate,
@@ -224,7 +224,7 @@ public class PayrollPreparationService {
         Beans.get(ExpenseRepository.class)
             .all()
             .filter(
-                "self.user.employee = ?1 "
+                "self.employee = ?1 "
                     + "AND self.statusSelect = ?2 "
                     + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
                     + "AND self.companyCbSelect = ?4 "
@@ -320,8 +320,7 @@ public class PayrollPreparationService {
     }
 
     payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(
-        Beans.get(AppBaseService.class).getTodayDate(payrollPreparation.getCompany()));
+    payrollPreparation.setExportDate(appBaseService.getTodayDate(payrollPreparation.getCompany()));
     payrollPreparationRepo.save(payrollPreparation);
 
     return file.getPath();
@@ -424,7 +423,7 @@ public class PayrollPreparationService {
   public String getPayrollPreparationExportName() {
     return I18n.get("Payroll preparation")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString();
+        + appBaseService.getTodayDateTime().toLocalDateTime().toString();
   }
 
   public String[] getPayrollPreparationExportHeader() {
@@ -461,7 +460,7 @@ public class PayrollPreparationService {
     Period payPeriod = payrollPreparation.getPeriod();
 
     long nbNotExportedPayroll =
-        Beans.get(PayrollPreparationRepository.class)
+        payrollPreparationRepo
             .all()
             .filter(
                 "self.company = :_company AND self.exported = false "
@@ -472,8 +471,7 @@ public class PayrollPreparationService {
 
     if (nbNotExportedPayroll == 0) {
       payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-      payPeriod.setClosureDateTime(
-          Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+      payPeriod.setClosureDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     }
     Beans.get(PeriodRepository.class).save(payPeriod);
   }

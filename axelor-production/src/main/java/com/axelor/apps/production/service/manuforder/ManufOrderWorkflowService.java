@@ -47,7 +47,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -128,12 +128,13 @@ public class ManufOrderWorkflowService {
         throw new AxelorException(
             manufOrder,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
+            I18n.get(ProductionExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
       }
 
       if (sequenceService.isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
         manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
       }
+      manufOrderService.createBarcode(manufOrder);
       if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
         manufOrderService.preFillOperations(manufOrder);
       } else {
@@ -205,7 +206,7 @@ public class ManufOrderWorkflowService {
       throw new AxelorException(
           manufOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
+          I18n.get(ProductionExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
     }
 
     manufOrder.setRealStartDateT(
@@ -358,7 +359,7 @@ public class ManufOrderWorkflowService {
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
-    Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    manufOrderStockMoveService.partialFinish(manufOrder);
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -377,7 +378,7 @@ public class ManufOrderWorkflowService {
         && manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_PLANNED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
+          I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
     }
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -533,7 +534,7 @@ public class ManufOrderWorkflowService {
       TraceBackService.trace(
           new AxelorMessageException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE)));
+              I18n.get(ProductionExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE)));
     }
     if (Beans.get(EmailAccountRepository.class)
             .all()

@@ -25,7 +25,7 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
@@ -81,7 +81,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
+              I18n.get(HumanResourceExceptionMessage.BATCH_MISSING_FIELD)),
           ExceptionOriginRepository.LEAVE_MANAGEMENT,
           batch.getId());
     }
@@ -138,12 +138,13 @@ public class BatchLeaveManagement extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      employee = employeeRepository.find(employee.getId());
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
 
       try {
-        createLeaveManagement(employeeRepository.find(employee.getId()));
+        createLeaveManagement(employee);
       } catch (AxelorException e) {
         TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
@@ -204,7 +205,7 @@ public class BatchLeaveManagement extends BatchStrategy {
         throw new AxelorException(
             employee,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
+            I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
             limit.longValue());
       }
 
@@ -224,20 +225,28 @@ public class BatchLeaveManagement extends BatchStrategy {
   protected void stop() {
 
     String comment =
-        String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0), total) + '\n';
+        String.format(
+                I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0), total)
+            + '\n';
 
     comment +=
-        String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1), batch.getDone())
+        String.format(
+                I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1),
+                batch.getDone())
             + '\n';
 
     if (confAnomaly > 0) {
       comment +=
-          String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2), confAnomaly)
+          String.format(
+                  I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2),
+                  confAnomaly)
               + '\n';
     }
     if (noValueAnomaly > 0) {
       comment +=
-          String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3), noValueAnomaly)
+          String.format(
+                  I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3),
+                  noValueAnomaly)
               + '\n';
     }
 

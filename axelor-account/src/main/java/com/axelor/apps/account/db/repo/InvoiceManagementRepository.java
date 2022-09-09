@@ -33,11 +33,15 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
+    try {
+      Invoice copy = super.copy(entity, deep);
 
-    Invoice copy = super.copy(entity, deep);
+      InvoiceToolService.resetInvoiceStatusOnCopy(copy);
 
-    InvoiceToolService.resetInvoiceStatusOnCopy(copy);
-    return copy;
+      return copy;
+    } catch (Exception e) {
+      throw new PersistenceException(e);
+    }
   }
 
   @Override
@@ -64,7 +68,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
       return invoice;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

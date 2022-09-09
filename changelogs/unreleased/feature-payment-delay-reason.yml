@@ -1,7 +1,0 @@
----
-title: Accounting - new Payment delay reason model
-type: feature
-description: |
-  Add new Payment delay reason model and views,
-  Add payment delay reason, delay reason comments and next action date fields on Invoice.
-  Update Debt recovery form invoice related grids to match with new invoice with payment delay grid.

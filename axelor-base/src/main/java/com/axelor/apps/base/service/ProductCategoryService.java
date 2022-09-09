@@ -46,7 +46,7 @@ public interface ProductCategoryService {
    * Find child of given category, and recursively children of found children.
    *
    * @param productCategory a product category
-   * @return all parents of the category
+   * @return all children of the category
    */
   List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
       throws AxelorException;

@@ -79,7 +79,9 @@ public class BankOrderCreateService {
       Currency currency,
       String senderReference,
       String senderLabel,
-      int technicalOriginSelect)
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      int accountingTriggerSelect)
       throws AxelorException {
 
     BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
@@ -116,9 +118,11 @@ public class BankOrderCreateService {
 
     bankOrder.setSenderReference(senderReference);
     bankOrder.setSenderLabel(senderLabel);
-    bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
+    bankOrder.setBankOrderLineList(new ArrayList<>());
     bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
     bankOrder.setTechnicalOriginSelect(technicalOriginSelect);
+    bankOrder.setFunctionalOriginSelect(functionalOriginSelect);
+    bankOrder.setAccountingTriggerSelect(accountingTriggerSelect);
     return bankOrder;
   }
 
@@ -156,7 +160,9 @@ public class BankOrderCreateService {
             currency,
             reference,
             null,
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT,
+            paymentMode.getAccountingTriggerSelect());
 
     BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
     BankOrderLine bankOrderLine =

@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
@@ -66,12 +65,12 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     if ("dev".equals(applicationMode)) {
       User user = AuthUtils.getUser();
-      if (user != null && user.getToday() != null) {
-        todayDateTime = user.getToday();
+      if (user != null && user.getTodayDateT() != null) {
+        todayDateTime = user.getTodayDateT();
       } else {
         AppBase appBase = getAppBase();
-        if (appBase != null && appBase.getToday() != null) {
-          return appBase.getToday();
+        if (appBase != null && appBase.getTodayDateT() != null) {
+          return appBase.getTodayDateT();
         }
       }
     }
@@ -80,27 +79,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public LocalDate getTodayDate() {
-
-    return getTodayDateTime().toLocalDate();
-  }
-
-  @Override
   public LocalDate getTodayDate(Company company) {
 
     return getTodayDateTime(company).toLocalDate();
-  }
-
-  @Override
-  public Unit getUnit() {
-
-    AppBase appBase = getAppBase();
-
-    if (appBase != null) {
-      return appBase.getDefaultProjectUnit();
-    }
-
-    return null;
   }
 
   @Override

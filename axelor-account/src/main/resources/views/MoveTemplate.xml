@@ -118,7 +118,8 @@
       <panel-related name="dataInputListPanel" field="dataInputList"
         type="one-to-many" showIf="moveTemplateType.typeSelect == 1"
         target="com.axelor.apps.base.db.Wizard" title="Move Lines data input"
-        grid-view="wizard-custom-in-percentage-grid" colSpan="12"/>
+        grid-view="wizard-custom-in-percentage-grid" form-view="wizard-custom-in-percentage-form"
+        colSpan="12"/>
       <panel-related name="moveTemplateSetPanel" field="moveTemplateSet"
         type="many-to-many" showIf="moveTemplateType.typeSelect == 2"
         target="com.axelor.apps.account.db.MoveTemplate" title="Move templates"
@@ -151,6 +152,26 @@
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
   </grid>
 
+  <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
+    model="com.axelor.apps.base.db.Wizard"
+    onLoad="action-move-template-wizard-line-set-move-template"
+    onNew="action-move-template-wizard-line-set-move-template">
+    <panel name="mainPanel">
+      <field name="date" type="date" title="Date" required="true"
+        onChange="action-move-template-wizard-check-value"/>
+      <field name="moveBalance" type="decimal" precision="20" scale="2" min="0"
+        required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+      <field name="debitPartner" target-name="fullName" title="Partner to Debit"
+        onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"/>
+      <field name="creditPartner" target-name="fullName" title="Partner to Credit"
+        onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"/>
+      <field name="moveTemplate" type="many-to-one"
+        target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+    </panel>
+  </form>
+
   <action-group name="action-move-template-group-line-list-onchange">
     <action name="action-move-template-method-set-is-valid"/>
     <action name="action-move-template-method-compute-totals"/>
@@ -180,7 +201,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-attrs name="action-move-template-wizard-attrs-company-onchange">

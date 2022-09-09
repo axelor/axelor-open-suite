@@ -19,7 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -113,7 +113,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
           || parentProductCategory.equals(productCategory)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRODUCT_CATEGORY_PARENTS_CIRCULAR_DEPENDENCY),
+            I18n.get(BaseExceptionMessage.PRODUCT_CATEGORY_PARENTS_CIRCULAR_DEPENDENCY),
             parentProductCategory.getCode());
       }
       parentProductCategoryList.add(parentProductCategory);
@@ -141,7 +141,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             || childProductCategory.equals(productCategory)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY),
+              I18n.get(BaseExceptionMessage.PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY),
               childProductCategory.getCode());
         }
         descendantsProductCategoryList.add(childProductCategory);
@@ -174,7 +174,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
    * discount.
    *
    * @param productCategory a product category
-   * @return filtered parents of the category
+   * @return filtered children of the category
    */
   protected List<ProductCategory> fetchChildrenCategoryListWithMaxDiscount(
       ProductCategory productCategory) throws AxelorException {

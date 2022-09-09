@@ -48,7 +48,7 @@ public class InventoryManagementRepository extends InventoryRepository {
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     entity.setInventoryTitle(Beans.get(InventoryService.class).computeTitle(entity));

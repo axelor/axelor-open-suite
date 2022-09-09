@@ -24,21 +24,19 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.PricingLine;
-import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PricingRepository;
-import com.axelor.apps.base.db.repo.PricingRuleRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.PricingService;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pricing.PricingComputer;
+import com.axelor.apps.base.service.pricing.PricingObserver;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
@@ -51,36 +49,27 @@ import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.db.Query;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.script.GroovyScriptHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +86,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected AccountManagementService accountManagementService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderService saleOrderService;
+  protected PricingService pricingService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -107,7 +97,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
       SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      PricingService pricingService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -116,12 +107,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.accountManagementService = accountManagementService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderService = saleOrderService;
+    this.pricingService = pricingService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
   @Inject protected PricingRepository pricingRepository;
   @Inject protected ProductCompanyService productCompanyService;
-  @Inject protected PricingService pricingService;
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -144,11 +135,64 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
+  public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
+    if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
+      PricingComputer pricingComputer =
+          getPricingComputer(pricing.get(), saleOrderLine)
+              .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
+      pricingComputer.subscribe(getSaleOrderLinePricingObserver(saleOrderLine));
+      pricingComputer.apply();
+    } else {
+      saleOrderLine.setPricingScaleLogs(I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_NO_PRICING));
+    }
+  }
+
+  protected PricingObserver getSaleOrderLinePricingObserver(SaleOrderLine saleOrderLine) {
+    return new SaleOrderLinePricingObserver(saleOrderLine);
+  }
+
+  protected PricingComputer getPricingComputer(Pricing pricing, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    return PricingComputer.of(
+        pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class);
+  }
+
+  protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    // It is supposed that only one pricing match those criteria (because of the configuration)
+    // Having more than one pricing matched may result on a unexpected result
+    return pricingService.getRandomPricing(
+        saleOrder.getCompany(),
+        saleOrderLine.getProduct(),
+        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
+        SaleOrderLine.class.getSimpleName(),
+        null);
+  }
+
+  @Override
+  public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
+    if (pricing.isPresent()) {
+      return !getPricingComputer(pricing.get(), saleOrderLine)
+          .putInContext("saleOrder", EntityHelper.getEntity(saleOrder))
+          .getMatchedPricingLines()
+          .isEmpty();
+    }
+
+    return false;
+  }
+
+  @Override
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     // Populate fields from pricing scale before starting process of fillPrice
     if (appSaleService.getAppSale().getEnablePricingScale()) {
-      computePricingScale(saleOrder, saleOrderLine);
+      computePricingScale(saleOrderLine, saleOrder);
     }
 
     fillTaxInformation(saleOrderLine, saleOrder);
@@ -266,8 +310,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
-    line.setSelectedComplementaryProductList(null);
+    line.clearSelectedComplementaryProductList();
     return line;
+  }
+
+  @Override
+  public void resetPrice(SaleOrderLine line) {
+    if (!line.getEnableFreezeFields()) {
+      line.setPrice(null);
+      line.setInTaxPrice(null);
+    }
   }
 
   @Override
@@ -360,7 +412,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -422,13 +474,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    return Beans.get(AccountManagementService.class)
-        .getTaxLine(
-            saleOrder.getCreationDate(),
-            saleOrderLine.getProduct(),
-            saleOrder.getCompany(),
-            saleOrder.getFiscalPosition(),
-            false);
+    return accountManagementService.getTaxLine(
+        saleOrder.getCreationDate(),
+        saleOrderLine.getProduct(),
+        saleOrder.getCompany(),
+        saleOrder.getFiscalPosition(),
+        false);
   }
 
   @Override
@@ -1026,456 +1077,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       complementarySOLine = new SaleOrderLine();
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
-      saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+      complementarySOLine.setMainSaleOrderLine(saleOrderLine);
       newComplementarySOLines.add(complementarySOLine);
     }
     return complementarySOLine;
-  }
-
-  @Override
-  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
-      throws AxelorException {
-    if (orderLine.getProduct() == null) {
-      return;
-    }
-
-    // (1) Get the Pricing
-    Pricing defaultPricing =
-        pricingService
-            .getPricing(
-                orderLine.getProduct(),
-                orderLine.getProduct().getProductCategory(),
-                saleOrder.getCompany(),
-                SaleOrderLine.class.getSimpleName(),
-                null)
-            .fetchOne();
-
-    if (defaultPricing == null) {
-      return;
-    }
-
-    Context scripContext = null;
-    try {
-      scripContext =
-          new Context(
-              Mapper.toMap(orderLine),
-              Class.forName(defaultPricing.getConcernedModel().getFullName()));
-    } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);
-    }
-
-    this.computePricing(defaultPricing, saleOrder, orderLine, scripContext, 0);
-  }
-
-  private PricingLine computePricing(
-      Pricing pricing,
-      SaleOrder saleOrder,
-      SaleOrderLine orderLine,
-      Context scriptContext,
-      int count)
-      throws AxelorException {
-
-    if (pricing == null
-        || pricing.getClass1PricingRule() == null
-        || pricing.getResult1PricingRule() == null
-        || count == 100) {
-      orderLine.setPricingScaleLogs(I18n.get("No pricing scale used for this product"));
-      return null;
-    }
-    Product product = orderLine.getProduct();
-
-    String pricingScaleLogs = count > 0 ? orderLine.getPricingScaleLogs() + "\n" : "";
-    pricingScaleLogs += I18n.get("Identified pricing scale: ") + pricing.getName();
-
-    // (2) Compute the classification formulas
-    // (3) Search the Pricing Line
-    try {
-      scriptContext =
-          new Context(scriptContext, Class.forName(pricing.getConcernedModel().getFullName()));
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-
-    scriptContext.put("saleOrder", EntityHelper.getEntity(saleOrder));
-    GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-
-    List<String> logClassPricingRuleList = new ArrayList<>();
-    Object[] classifications =
-        computeClassificationFormula(scriptHelper, pricing, orderLine, logClassPricingRuleList);
-
-    PricingLine pricingLine = searchPricingLine(pricing, classifications);
-
-    if (pricingLine == null) {
-      return null;
-    }
-
-    // (4) Compute the result formulas
-    // (6) Apply the results
-    scriptContext.put("pricingLine", EntityHelper.getEntity(pricingLine));
-
-    List<String> logResultPricingRuleList = new ArrayList<>();
-
-    computeResultFormulaAndApply(scriptContext, pricing, orderLine, logResultPricingRuleList);
-
-    for (int i = 0; i < logClassPricingRuleList.size(); i++) {
-      pricingScaleLogs += logClassPricingRuleList.get(i);
-    }
-    for (int i = 0; i < logResultPricingRuleList.size(); i++) {
-      pricingScaleLogs += logResultPricingRuleList.get(i);
-    }
-
-    Query<Pricing> childPricingQry =
-        pricingService.getPricing(
-            product,
-            product.getProductCategory(),
-            saleOrder.getCompany(),
-            SaleOrderLine.class.getSimpleName(),
-            pricing);
-
-    long totalChildPricing = childPricingQry.count();
-
-    if (totalChildPricing == 0) {
-      orderLine.setPricingScaleLogs(pricingScaleLogs);
-      return pricingLine;
-    } else if (totalChildPricing > 1) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(IExceptionMessage.PRICING_2),
-              product.getName() + "/" + product.getProductCategory().getName(),
-              saleOrder.getCompany().getName(),
-              SaleOrderLine.class.getSimpleName()));
-
-    } else {
-      orderLine.setPricingScaleLogs(pricingScaleLogs + "\n");
-      Pricing childPricing = childPricingQry.fetchOne();
-      return computePricing(childPricing, saleOrder, orderLine, scriptContext, ++count);
-    }
-  }
-
-  public Object[] computeClassificationFormula(
-      GroovyScriptHelper scriptHelper,
-      Pricing pricing,
-      SaleOrderLine orderLine,
-      List<String> logs) {
-
-    List<Object> classificationsList = new ArrayList<>();
-
-    List<PricingRule> classPricingRuleList = new ArrayList<>();
-    classPricingRuleList.add(pricing.getClass1PricingRule());
-    classPricingRuleList.add(pricing.getClass2PricingRule());
-    classPricingRuleList.add(pricing.getClass3PricingRule());
-    classPricingRuleList.add(pricing.getClass4PricingRule());
-
-    classPricingRuleList.stream()
-        .forEach(
-            classPricingRule -> {
-              if (classPricingRule != null) {
-                Object computedFormula = scriptHelper.eval(classPricingRule.getFormula());
-                classificationsList.add(computedFormula);
-                if (computedFormula != null)
-                  logs.add(
-                      "\n"
-                          + I18n.get("Classification rule used: ")
-                          + classPricingRule.getName()
-                          + "\n"
-                          + I18n.get("Evaluation of the classification rule: ")
-                          + computedFormula.toString());
-              } else {
-                classificationsList.add(null);
-              }
-            });
-
-    return classificationsList.toArray();
-  }
-
-  private List<Integer[]> getFieldTypeAndOperator(Pricing pricing) {
-    PricingRule class1PricingRule = pricing.getClass1PricingRule();
-    PricingRule class2PricingRule = pricing.getClass2PricingRule();
-    PricingRule class3PricingRule = pricing.getClass3PricingRule();
-    PricingRule class4PricingRule = pricing.getClass4PricingRule();
-
-    return Arrays.asList(
-        new Integer[] {
-          class1PricingRule != null ? class1PricingRule.getFieldTypeSelect() : 0,
-          class1PricingRule != null ? class1PricingRule.getOperatorSelect() : 0
-        },
-        new Integer[] {
-          class2PricingRule != null ? class2PricingRule.getFieldTypeSelect() : 0,
-          class2PricingRule != null ? class2PricingRule.getOperatorSelect() : 0
-        },
-        new Integer[] {
-          class3PricingRule != null ? class3PricingRule.getFieldTypeSelect() : 0,
-          class3PricingRule != null ? class3PricingRule.getOperatorSelect() : 0
-        },
-        new Integer[] {
-          class4PricingRule != null ? class4PricingRule.getFieldTypeSelect() : 0,
-          class4PricingRule != null ? class4PricingRule.getOperatorSelect() : 0
-        });
-  }
-
-  public PricingLine searchPricingLine(Pricing pricing, Object[] ruleValues) {
-    Object ruleValue1 = ruleValues[0];
-    Object ruleValue2 = ruleValues[1];
-    Object ruleValue3 = ruleValues[2];
-    Object ruleValue4 = ruleValues[3];
-
-    List<Integer[]> fieldTypeAndOpList = getFieldTypeAndOperator(pricing);
-
-    List<PricingLine> pricingLines = pricing.getPricingLineList();
-    if (CollectionUtils.isEmpty(pricingLines)) {
-      return null;
-    }
-
-    if (ruleValue4 != null) {
-      pricingLines =
-          checkClassificationRule1(
-              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      pricingLines =
-          checkClassificationRule2(
-              pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-      pricingLines =
-          checkClassificationRule3(
-              pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
-      pricingLines =
-          checkClassificationRule4(
-              pricingLines, fieldTypeAndOpList.get(3)[0], fieldTypeAndOpList.get(3)[1], ruleValue4);
-
-    } else if (ruleValue3 != null) {
-      pricingLines =
-          checkClassificationRule1(
-              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      pricingLines =
-          checkClassificationRule2(
-              pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-      pricingLines =
-          checkClassificationRule3(
-              pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
-
-    } else if (ruleValue2 != null) {
-      pricingLines =
-          checkClassificationRule1(
-              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      pricingLines =
-          checkClassificationRule2(
-              pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-
-    } else if (ruleValue1 != null) {
-      pricingLines =
-          checkClassificationRule1(
-              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-    }
-
-    Optional<PricingLine> pricingLineValue = pricingLines.stream().findFirst();
-    return pricingLineValue.isPresent() ? pricingLineValue.get() : null;
-  }
-
-  private List<PricingLine> checkClassificationRule1(
-      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
-
-    pricingLines =
-        this.sortPricingLines(
-            pricingLines,
-            fieldTypeSelect,
-            operatorSelect,
-            Comparator.comparing(PricingLine::getClassificationIntParam1),
-            Comparator.comparing(PricingLine::getClassificationDecParam1));
-
-    return pricingLines.stream()
-        .filter(
-            pricingLine ->
-                checkClassificationParam(
-                    fieldTypeSelect,
-                    operatorSelect,
-                    pricingLine.getClassificationIntParam1(),
-                    pricingLine.getClassificationDecParam1(),
-                    pricingLine.getClassificationParam1(),
-                    ruleValue))
-        .collect(Collectors.toList());
-  }
-
-  private List<PricingLine> checkClassificationRule2(
-      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
-
-    pricingLines =
-        this.sortPricingLines(
-            pricingLines,
-            fieldTypeSelect,
-            operatorSelect,
-            Comparator.comparing(PricingLine::getClassificationIntParam2),
-            Comparator.comparing(PricingLine::getClassificationDecParam2));
-
-    return pricingLines.stream()
-        .filter(
-            pricingLine ->
-                checkClassificationParam(
-                    fieldTypeSelect,
-                    operatorSelect,
-                    pricingLine.getClassificationIntParam2(),
-                    pricingLine.getClassificationDecParam2(),
-                    pricingLine.getClassificationParam2(),
-                    ruleValue))
-        .collect(Collectors.toList());
-  }
-
-  private List<PricingLine> checkClassificationRule3(
-      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
-
-    pricingLines =
-        this.sortPricingLines(
-            pricingLines,
-            fieldTypeSelect,
-            operatorSelect,
-            Comparator.comparing(PricingLine::getClassificationIntParam3),
-            Comparator.comparing(PricingLine::getClassificationDecParam3));
-
-    return pricingLines.stream()
-        .filter(
-            pricingLine ->
-                checkClassificationParam(
-                    fieldTypeSelect,
-                    operatorSelect,
-                    pricingLine.getClassificationIntParam3(),
-                    pricingLine.getClassificationDecParam3(),
-                    pricingLine.getClassificationParam3(),
-                    ruleValue))
-        .collect(Collectors.toList());
-  }
-
-  private List<PricingLine> checkClassificationRule4(
-      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
-
-    pricingLines =
-        this.sortPricingLines(
-            pricingLines,
-            fieldTypeSelect,
-            operatorSelect,
-            Comparator.comparing(PricingLine::getClassificationIntParam4),
-            Comparator.comparing(PricingLine::getClassificationDecParam4));
-
-    return pricingLines.stream()
-        .filter(
-            pricingLine ->
-                checkClassificationParam(
-                    fieldTypeSelect,
-                    operatorSelect,
-                    pricingLine.getClassificationIntParam4(),
-                    pricingLine.getClassificationDecParam4(),
-                    pricingLine.getClassificationParam4(),
-                    ruleValue))
-        .collect(Collectors.toList());
-  }
-
-  private List<PricingLine> sortPricingLines(
-      List<PricingLine> pricingLines,
-      int fieldTypeSelect,
-      int operatorSelect,
-      Comparator<? super PricingLine> intComp,
-      Comparator<? super PricingLine> decComp) {
-
-    if (operatorSelect == PricingRuleRepository.OPERATOR_LESS_THAN) {
-      return this.sortPricingLineOnField(
-          pricingLines, fieldTypeSelect, intComp.reversed(), decComp.reversed());
-
-    } else if (operatorSelect == PricingRuleRepository.OPERATOR_GREATER_THAN) {
-      return this.sortPricingLineOnField(pricingLines, fieldTypeSelect, intComp, decComp);
-
-    } else {
-      return pricingLines;
-    }
-  }
-
-  private List<PricingLine> sortPricingLineOnField(
-      List<PricingLine> pricingLines,
-      int fieldTypeSelect,
-      Comparator<? super PricingLine> intComp,
-      Comparator<? super PricingLine> decComp) {
-
-    if (fieldTypeSelect == PricingRuleRepository.FIELD_TYPE_INTEGER) {
-      return pricingLines.stream().sorted(intComp).collect(Collectors.toList());
-
-    } else if (fieldTypeSelect == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
-      return pricingLines.stream().sorted(decComp).collect(Collectors.toList());
-    }
-    return pricingLines;
-  }
-
-  private boolean checkClassificationParam(
-      int classRuleFieldType,
-      int classRuleOperator,
-      int intParam,
-      BigDecimal decParam,
-      String strParam,
-      Object value) {
-
-    switch (classRuleFieldType) {
-      case PricingRuleRepository.FIELD_TYPE_INTEGER:
-        return checkRuleOperator(classRuleOperator, intParam, value);
-
-      case PricingRuleRepository.FIELD_TYPE_DECIMAL:
-        return checkRuleOperator(classRuleOperator, decParam, value);
-
-      default:
-        String strVal = value != null ? value.toString() : null;
-        return strParam.equals(strVal);
-    }
-  }
-
-  private boolean checkRuleOperator(int classRuleOperator, Object param, Object value) {
-    switch (classRuleOperator) {
-      case PricingRuleRepository.OPERATOR_LESS_THAN:
-        return param instanceof Integer
-            ? ((int) param) < (new BigDecimal(value.toString())).intValue()
-            : ((BigDecimal) param).compareTo((BigDecimal) value) < 0;
-
-      case PricingRuleRepository.OPERATOR_GREATER_THAN:
-        return param instanceof Integer
-            ? ((int) param) > (new BigDecimal(value.toString())).intValue()
-            : ((BigDecimal) param).compareTo((BigDecimal) value) > 0;
-
-      default:
-        return param instanceof Integer
-            ? ((int) param) == (new BigDecimal(value.toString())).intValue()
-            : ((BigDecimal) param).compareTo((BigDecimal) value) == 0;
-    }
-  }
-
-  public void computeResultFormulaAndApply(
-      Context scriptContext, Pricing pricing, SaleOrderLine orderLine, List<String> logs) {
-
-    GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-
-    List<PricingRule> resultPricingRuleList = new ArrayList<>();
-    resultPricingRuleList.add(pricing.getResult1PricingRule());
-    resultPricingRuleList.add(pricing.getResult2PricingRule());
-    resultPricingRuleList.add(pricing.getResult3PricingRule());
-    resultPricingRuleList.add(pricing.getResult4PricingRule());
-
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              Object result = scriptHelper.eval(resultPricingRule.getFormula());
-              String fieldToPopulate = "";
-              if (resultPricingRule.getFieldToPopulate() != null) {
-                fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
-
-                if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
-                  scriptContext.put(resultPricingRule.getTempVarName(), result);
-                }
-                Mapper.of(SaleOrderLine.class).set(orderLine, fieldToPopulate, result);
-              }
-              logs.add(
-                  "\n"
-                      + I18n.get("Result rule used: ")
-                      + resultPricingRule.getName()
-                      + "\n"
-                      + I18n.get("Evaluation of the result rule: ")
-                      + result.toString()
-                      + "\n"
-                      + I18n.get("Populated field: ")
-                      + fieldToPopulate);
-            });
   }
 
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)

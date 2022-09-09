@@ -37,7 +37,7 @@ public class UnitCostCalculationManagementRepository extends UnitCostCalculation
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     return super.save(entity);

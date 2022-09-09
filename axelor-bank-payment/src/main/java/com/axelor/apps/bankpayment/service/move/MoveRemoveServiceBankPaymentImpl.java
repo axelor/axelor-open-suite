@@ -23,8 +23,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.move.MoveRemoveService;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.tool.service.ArchivingToolService;
 import com.axelor.exception.AxelorException;
@@ -33,7 +33,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
-public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
+public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
   @Inject
   public MoveRemoveServiceBankPaymentImpl(
@@ -61,7 +61,8 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
       errorMessage +=
           String.format(
               I18n.get(
-                  IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_BANK_RECONCILIATION_AMOUNT),
+                  BankPaymentExceptionMessage
+                      .MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_BANK_RECONCILIATION_AMOUNT),
               moveLine.getName());
     }
     return errorMessage;

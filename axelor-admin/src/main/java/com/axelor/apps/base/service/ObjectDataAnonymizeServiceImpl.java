@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
@@ -42,24 +42,24 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeService {
 
-  @Inject private MailMessageRepository mailMessageRepo;
+  protected MailMessageRepository mailMessageRepo;
+
+  @Inject
+  public ObjectDataAnonymizeServiceImpl(MailMessageRepository mailMessageRepo) {
+    this.mailMessageRepo = mailMessageRepo;
+  }
 
   public void anonymize(ObjectDataConfig objectDataConfig, Long recordId) throws AxelorException {
 
     try {
-
       String rootModel = objectDataConfig.getModelSelect();
 
       for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
-        String path =
-            line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH
-                ? line.getMetaFieldPath().getName()
-                : line.getPath();
-
         Class<? extends Model> modelClass =
             ObjectDataCommonService.findModelClass(line.getMetaModel());
         Query<? extends Model> query =
@@ -70,6 +70,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
         int reset = line.getResetPathSelect();
         if (reset != DataConfigLineRepository.RESET_NONE
             && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
+
+          String path = getPath(line);
+
           if (reset == DataConfigLineRepository.RESET_DELETE) {
             deleteLink(mapper, path, data);
           } else {
@@ -86,6 +89,39 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     }
   }
 
+  private String getPath(DataConfigLine line) throws AxelorException {
+
+    String metaModelName = line.getMetaModel().getName();
+
+    switch (line.getTypeSelect()) {
+      case DataConfigLineRepository.TYPE_PATH:
+        MetaField metaFieldPath = line.getMetaFieldPath();
+        if (metaFieldPath == null) {
+          throw new AxelorException(
+              line,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AdminExceptionMessage.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
+              metaModelName);
+        }
+        return metaFieldPath.getName();
+
+      case DataConfigLineRepository.TYPE_QUERY:
+        String query = line.getPath();
+        if (query == null) {
+          throw new AxelorException(
+              line,
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AdminExceptionMessage.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
+              metaModelName);
+        }
+        return query;
+
+      default:
+        throw new AxelorException(
+            line, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Unknown case");
+    }
+  }
+
   @Transactional
   public void deleteLink(Mapper mapper, String path, List<? extends Model> data) {
 
@@ -94,9 +130,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     if (property == null || property.isRequired()) {
       return;
     }
-    for (Model record : data) {
-      mapper.set(record, path, null);
-      JPA.save(record);
+    for (Model model : data) {
+      mapper.set(model, path, null);
+      JPA.save(model);
     }
   }
 
@@ -117,12 +153,12 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     if (object == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessages.OBJECT_DATA_REPLACE_MISSING),
+          I18n.get(AdminExceptionMessage.OBJECT_DATA_REPLACE_MISSING),
           recordValue);
     }
-    for (Model record : data) {
-      mapper.set(record, path, object);
-      JPA.save(record);
+    for (Model model : data) {
+      mapper.set(model, path, object);
+      JPA.save(model);
     }
   }
 
@@ -135,18 +171,17 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
 
     Map<String, Object> defaultValues = getDefaultValues(mapper, fields);
 
-    for (Model record : data) {
-      for (String field : defaultValues.keySet()) {
-        Object object = defaultValues.get(field);
-        mapper.set(record, field, object);
+    for (Model model : data) {
+      for (Entry<String, Object> fieldEntry : defaultValues.entrySet()) {
+        mapper.set(model, fieldEntry.getKey(), fieldEntry.getValue());
       }
-      JPA.save(record);
+      JPA.save(model);
 
       mailMessageRepo
           .all()
           .filter(
               "self.relatedId = ?1 AND self.relatedModel = ?2",
-              record.getId(),
+              model.getId(),
               mapper.getBeanClass().getName())
           .delete();
     }
@@ -184,7 +219,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           }
         case "Integer":
           {
-            defaultValues.put(name, new Integer(0));
+            defaultValues.put(name, Integer.valueOf(0));
             break;
           }
         case "Boolean":
@@ -194,7 +229,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           }
         case "Long":
           {
-            defaultValues.put(name, new Long(0));
+            defaultValues.put(name, Long.valueOf(0));
             break;
           }
         case "LocalTime":

@@ -45,7 +45,7 @@
     search="self.importId = :importId"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
-    search="self.importId = :importId">
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
       if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -164,6 +164,10 @@
   <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"
     search="self.importId = :importId"/>
 
+  <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportYear:importYear"
+    update="true"/>
+
   <input file="base_currencyConversionLine.csv" separator=";"
     type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId">
     <bind to="appBase" column="appBase" search="self.app.code = :appBase" update="true"/>
@@ -193,10 +197,9 @@
       column="startDate"/>
     <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
       column="startDate"/>
-    <bind to="netMass" eval="1" if="productTypeSelect == 'storable'"/>
-    <bind to="grossMass" eval="1" if="productTypeSelect == 'storable'"/>
-    <bind to="massUnit" search="self.labelToPrinting = 'kg'"
-      if="productTypeSelect == 'storable'"/>
+    <bind to="netMass" eval="1" if="productTypeSelect == 'storable' &amp;&amp; netMass == null"/>
+    <bind to="grossMass" eval="1"
+      if="productTypeSelect == 'storable' &amp;&amp; grossMass == null"/>
     <bind to="isShippingCostsProduct" column="isShippingCostsProduct"
       eval="isShippingCostsProduct ? isShippingCostsProduct : 'false'"/>
   </input>
@@ -267,7 +270,6 @@
       eval="companySpecificFieldName.split('\\|') as List"/>
   </input>
 
-  <input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period"/>
 
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
     search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>
