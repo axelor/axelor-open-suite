@@ -113,7 +113,7 @@ public class PurchaseOrderController {
     }
   }
 
-  public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancelReceipt(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());

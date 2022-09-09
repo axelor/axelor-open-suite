@@ -59,7 +59,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
@@ -87,7 +87,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     purchaseOrderInvoiceService.checkRelatedVentilatedInvoice(purchaseOrder);
 

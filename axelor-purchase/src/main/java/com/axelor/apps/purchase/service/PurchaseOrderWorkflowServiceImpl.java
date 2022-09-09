@@ -62,7 +62,7 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
     if (purchaseOrder.getStatusSelect() == null
