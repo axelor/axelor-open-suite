@@ -1,0 +1,3 @@
+---
+title: "Deprecate old API calls in contact, base, crm and sale modules. There use is currently discouraged, they will be replaced in a future version implementing a new API for AOS modules."
+type: deprecate
