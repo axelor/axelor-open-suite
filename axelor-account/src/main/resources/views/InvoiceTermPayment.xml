@@ -23,7 +23,7 @@
         if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="financialDiscountAmount" showIf="financialDiscount"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-      <field name="$isMultiCurrency" type="boolean" hidden="false"/>
+      <field name="$isMultiCurrency" type="boolean" hidden="true"/>
     </panel>
   </form>
 

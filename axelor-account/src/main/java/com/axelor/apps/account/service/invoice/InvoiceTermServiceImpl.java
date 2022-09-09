@@ -659,6 +659,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
+      BigDecimal companyAmountRemaining =
+          invoiceTerm
+              .getCompanyAmountRemaining()
+              .subtract(invoiceTermPayment.getCompanyPaidAmount());
       invoiceTerm.setPaymentMode(paymentMode);
 
       if (amountRemaining.signum() <= 0) {
@@ -669,7 +673,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
       }
+
       invoiceTerm.setAmountRemaining(amountRemaining);
+      invoiceTerm.setCompanyAmountRemaining(companyAmountRemaining);
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
     }
   }
@@ -1488,7 +1494,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal getTotalInvoiceTermsAmount(
       MoveLine moveLine, Account holdbackAccount, boolean holdback) {
     Move move = moveLine.getMove();
-    BigDecimal total = moveLine.getDebit().max(moveLine.getCredit());
+    BigDecimal total = moveLine.getCurrencyAmount();
+
     if (move != null && move.getMoveLineList() != null) {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
         if (!moveLineIt.equals(moveLine)
@@ -1497,7 +1504,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && moveLineIt.getAccount().getHasInvoiceTerm()
             && (holdback
                 || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
-          total = total.add(moveLineIt.getDebit().max(moveLineIt.getCredit()));
+          total = total.add(moveLineIt.getCurrencyAmount());
         }
       }
     }
@@ -1547,7 +1554,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    BigDecimal diff = total.subtract(invoiceTermTotal);
+    BigDecimal diff =
+        BigDecimal.valueOf(0.01)
+            .multiply(BigDecimal.valueOf(total.subtract(invoiceTermTotal).signum()));
 
     InvoiceTerm lastInvoiceTerm = invoiceTermList.get(invoiceTermList.size() - 1);
     lastInvoiceTerm.setAmount(lastInvoiceTerm.getAmount().add(diff));

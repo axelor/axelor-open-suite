@@ -145,13 +145,11 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (isCompanyAmount) {
       total =
           invoiceAttached == null
-              ? moveLine.getCurrencyAmount()
+              ? moveLine.getDebit().max(moveLine.getCredit())
               : invoiceAttached.getCompanyInTaxTotal();
     } else {
       total =
-          invoiceAttached == null
-              ? moveLine.getDebit().max(moveLine.getCredit())
-              : invoiceAttached.getInTaxTotal();
+          invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
     }
 
     total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
