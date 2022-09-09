@@ -3,13 +3,13 @@ title: "PAYMENT SESSION : improved the grid view"
 type: change
 description: |
   Added a sort on records per paymentDate DESC, sequence DESC
-  Added the following columns :
+  Added the following columns ::
   - sequence
   - paymentMode
   - partnerTypeSelect
   - paymentDate
   - currency
- Removed the following columns :
+  Removed the following columns ::
   - name
   - createdOn
   - assignedToUser
