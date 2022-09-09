@@ -27,9 +27,6 @@
   <menuitem title="LCR" name="account-root-bank-order-lcr"
     parent="account-root-bank-orders"
     if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"/>
-  <menuitem title="BOR" name="account-root-bank-order-bor"
-    parent="account-root-bank-orders"
-    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"/>
 
   <menuitem title="LCR bank orders" name="account-root-bank-order-lcr-bank-orders"
     parent="account-root-bank-order-lcr"

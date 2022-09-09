@@ -58,6 +58,11 @@ public class MoveSequenceService {
           I18n.get(AccountExceptionMessage.MOVE_5),
           journal.getName());
     }
+
+    if (!sequenceService.isEmptyOrDraftSequenceNumber(move.getReference())) {
+      return;
+    }
+
     move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), move.getDate()));
   }
 }

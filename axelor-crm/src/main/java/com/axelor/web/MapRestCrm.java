@@ -43,6 +43,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/map")
+@Deprecated
 public class MapRestCrm {
 
   @Inject private MapRestService mapRestService;
@@ -56,6 +57,7 @@ public class MapRestCrm {
   @Path("/lead")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getLeads() {
     ObjectNode mainNode = factory.objectNode();
 
@@ -127,6 +129,7 @@ public class MapRestCrm {
   @Path("/opportunity")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getOpportunities() {
     ObjectNode mainNode = factory.objectNode();
 

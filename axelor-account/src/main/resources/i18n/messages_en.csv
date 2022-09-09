@@ -332,6 +332,7 @@
 "AccountingReportType1.currencyCode","Code",,
 "AccountingReportType1.currencyCredit","Credit",,
 "AccountingReportType1.currencyDebit","Debit",,
+"AccountingReportType1.currencyRate","Rate",,
 "AccountingReportType1.date","Date",,
 "AccountingReportType1.debit","Debit",,
 "AccountingReportType1.description","Description",,

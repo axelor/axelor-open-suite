@@ -97,8 +97,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="fiscalPanel" title="Fiscal information" readonlyIf="statusSelect > 1"
-        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"
-        hidden="true">
+        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))">
         <field name="fiscalFirstDepreciationDate"
           onChange="action-fixed-asset-validate-check-fiscal-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"/>
@@ -134,7 +133,7 @@
       </panel>
       <panel name="depreciationInfo" title="Depreciation information"
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
-        readonlyIf="statusSelect > 1" hidden="true">
+        readonlyIf="statusSelect > 1">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
           onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="firstDepreciationDate"
@@ -170,16 +169,14 @@
           grid-view="fixed-asset-line-grid" canNew="false"/>
       </panel>
       <panel name="derogatoryPanel" title="Derogatory"
-        showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)"
-        hidden="true">
+        showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
         <panel-related name="fixedAssetDerogatoryLineListPanel"
           readonlyIf="statusSelect > 1" field="fixedAssetDerogatoryLineList" colSpan="12"
           form-view="fixed-asset-derogatory-line-form" grid-view="fixed-asset-derogatory-line-grid"
           canNew="false"/>
       </panel>
       <panel name="ifrsPanel" title="IFRS" readonlyIf="statusSelect > 1"
-        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))"
-        hidden="true">
+        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))">
         <field name="isIfrsEqualToFiscalDepreciation" colSpan="12" widget="boolean"
           onChange="action-attrs-fixed-asset-ifrs-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
         <field name="ifrsFirstDepreciationDate"
@@ -213,8 +210,7 @@
           readonlyIf="statusSelect > 1" colSpan="12" field="ifrsFixedAssetLineList"
           form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
       </panel>
-      <panel name="associatedFixedAssets" title="Associated Fixed Assets" hidden="true"
-        showIf="id">
+      <panel name="associatedFixedAssets" title="Associated Fixed Assets">
         <field name="associatedFixedAssetsSet" colSpan="12" widget="many-to-many"
           canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid"
           domain="self.company = :company and (:id = null or self.id != :id)"/>
@@ -227,7 +223,7 @@
         <field if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
           name="barcode" showTitle="false" colSpan="12" widget="image"/>
       </panel>
-      <panel name="commentsPanel" title="Commentary" hidden="true" showIf="id">
+      <panel name="commentsPanel" title="Commentary">
         <field name="originSelect" readonly="true"/>
         <field name="comments" colSpan="12" widget="html" x-lite="true"/>
       </panel>

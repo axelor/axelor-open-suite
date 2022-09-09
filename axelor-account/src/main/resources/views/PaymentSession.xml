@@ -4,17 +4,19 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
-    model="com.axelor.apps.account.db.PaymentSession">
+    model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
     <toolbar>
       <button name="removePaymentSessionBtn" title="Delete" icon="fa-trash"
         onClick="action-payment-session-validate-remove-multiple-payment-session,action-payment-session-method-remove-multiple-payment-session"/>
     </toolbar>
-    <field name="name"/>
-    <field name="createdOn"/>
+    <field name="sequence"/>
     <field name="company"/>
+    <field name="paymentMode"/>
+    <field name="partnerTypeSelect"/>
+    <field name="paymentDate"/>
     <field name="sessionTotalAmount"/>
+    <field name="currency"/>
     <field name="statusSelect"/>
-    <field name="assignedToUser" hidden="true"/>
   </grid>
 
   <grid name="my-payment-session-dashlet-grid" title="My payment sessions"

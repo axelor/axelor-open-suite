@@ -117,7 +117,10 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
+    if (period != null
+        && period.getYear().getCompany() != null
+        && user != null
+        && user.getGroup() != null) {
       if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
         return false;
       }

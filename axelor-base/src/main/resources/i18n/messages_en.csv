@@ -378,6 +378,7 @@
 "Center",,,
 "Change password",,,
 "Change password?",,,
+"Changing manually the end date of a sequence which reset yearly or monthly could break the sequence system.",,,
 "Chart",,,
 "Check",,,
 "Check Duplicate",,,
