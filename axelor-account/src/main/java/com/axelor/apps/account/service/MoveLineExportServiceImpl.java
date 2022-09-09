@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -1715,7 +1714,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     if (!optionalAccountingReportType.isPresent()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.ACCOUNTING_REPORT_9,
+          AccountExceptionMessage.ACCOUNTING_REPORT_9,
           exportTypeSelect);
     }
 

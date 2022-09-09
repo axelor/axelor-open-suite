@@ -70,6 +70,8 @@ public class SequenceService {
 
   protected final SequenceVersionRepository sequenceVersionRepository;
 
+  protected final SequenceVersionGeneratorService sequenceVersionGeneratorService;
+
   protected final AppBaseService appBaseService;
 
   protected final SequenceRepository sequenceRepo;
@@ -78,11 +80,13 @@ public class SequenceService {
   public SequenceService(
       SequenceVersionRepository sequenceVersionRepository,
       AppBaseService appBaseService,
-      SequenceRepository sequenceRepo) {
+      SequenceRepository sequenceRepo,
+      SequenceVersionGeneratorService sequenceVersionGeneratorService) {
 
     this.sequenceVersionRepository = sequenceVersionRepository;
     this.appBaseService = appBaseService;
     this.sequenceRepo = sequenceRepo;
+    this.sequenceVersionGeneratorService = sequenceVersionGeneratorService;
   }
 
   public static boolean isYearValid(Sequence sequence) {
@@ -248,16 +252,7 @@ public class SequenceService {
 
     SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
     if (sequenceVersion == null) {
-      if (sequence.getYearlyResetOk() && !sequence.getMonthlyResetOk()) {
-        sequenceVersion =
-            new SequenceVersion(sequence, refDate, LocalDate.of(refDate.getYear(), 12, 31), 1L);
-      } else if (sequence.getYearlyResetOk() && sequence.getMonthlyResetOk()) {
-        sequenceVersion =
-            new SequenceVersion(
-                sequence, refDate, refDate.withDayOfMonth(refDate.lengthOfMonth()), 1L);
-      } else {
-        sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
-      }
+      sequenceVersion = sequenceVersionGeneratorService.createNewSequenceVersion(sequence, refDate);
     }
 
     return sequenceVersion;

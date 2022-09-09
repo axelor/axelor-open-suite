@@ -7,7 +7,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.tool.MapTools;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -308,7 +308,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     if (saleOrdersToMerge.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_MERGE_LIST_EMPTY));
+          I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_LIST_EMPTY));
     }
 
     SaleOrder firstSaleOrder = saleOrdersToMerge.get(0);
@@ -352,23 +352,23 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   protected void checkErrors(StringJoiner fieldErrors, SaleOrderMergingResult result) {
     if (getChecks(result).isExistCurrencyDiff()
         || getCommonFields(result).getCommonCurrency() == null) {
-      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
+      fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
     }
     if (getChecks(result).isExistClientPartnerDiff()
         || getCommonFields(result).getCommonClientPartner() == null) {
-      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
+      fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
     }
     if (getChecks(result).isExistCompanyDiff()
         || getCommonFields(result).getCommonCompany() == null) {
-      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+      fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
     }
     // TaxNumber can be null
     if (getChecks(result).isExistTaxNumberDiff()) {
-      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+      fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
     }
     // FiscalPosition can be null
     if (getChecks(result).isExistFiscalPositionDiff()) {
-      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
+      fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
   }
 

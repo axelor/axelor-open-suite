@@ -63,7 +63,7 @@ public interface MoveValidateService {
    */
   List<Partner> getPartnerOfMoveBeforeUpdate(Move move);
 
-  String accountingMultiple(List<? extends Move> moveList);
+  String accountingMultiple(List<Integer> moveIds);
 
   void freezeAccountAndPartnerFieldsOnMoveLines(Move move);
 

@@ -1,0 +1,7 @@
+---
+title: "Sequence : fix sequence generation"
+type: fix
+description: |
+  New sequence version with monthly reset will create a sequence version 
+  with start date at the beginning of the month and the end date at the end of the month.
+  Same changes with sequence with yearly reset but with beginning and ending of the year

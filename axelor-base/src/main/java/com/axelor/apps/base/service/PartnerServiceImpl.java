@@ -275,8 +275,8 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeFullName(Partner partner) {
     return ComputeNameTool.computeFullName(
-        partner.getName(),
         partner.getFirstName(),
+        partner.getName(),
         partner.getPartnerSeq(),
         String.valueOf(partner.getId()));
   }
@@ -284,7 +284,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeSimpleFullName(Partner partner) {
     return ComputeNameTool.computeSimpleFullName(
-        partner.getName(), partner.getFirstName(), String.valueOf(partner.getId()));
+        partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
   @Override
