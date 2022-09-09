@@ -18,8 +18,6 @@
         if="__config__.app.isApp('project')"/>
       <field name="isQualityAppEnable" widget="boolean-switch"
         if="__config__.app.isApp('quality')"/>
-      <field name="isStockAppEnable" widget="boolean-switch"
-        if="__config__.app.isApp('stock')"/>
       <field name="isProductionAppEnable" widget="boolean-switch"
         if-module="axelor-production" if="__config__.app.isApp('production')"/>
       <field name="offlineRecordLimit"/>
@@ -43,11 +41,6 @@
         if-module="axelor-production" if="__config__.app.isApp('production')">
         <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect"
           selection="production.manuf.order.status.select"/>
-      </panel>
-      <panel if="__config__.app.isApp('stock')" if-module="axelor-stock" name="stockPanel"
-        title="Stock" showIf="isStockAppEnable">
-        <field name="inventoryStatusSelect" widget="MultiSelect"
-          selection="inventory.status.select"/>
       </panel>
     </panel-tabs>
 

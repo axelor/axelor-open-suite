@@ -12,7 +12,6 @@
     <option value="task">Task</option>
     <option value="quality">Quality</option>
     <option value="production">Production</option>
-    <option value="Stock">Stock</option>
   </selection>
 
 </object-views>
