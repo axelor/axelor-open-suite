@@ -164,6 +164,8 @@ public interface ITranslation {
       "AccountingReportType1.currencyCredit"; /*)*/
   public static final String ACCOUNTING_REPORT_1_CURRENCY = /*$$(*/
       "AccountingReportType1.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_RATE = /*$$(*/
+      "AccountingReportType1.currencyRate"; /*)*/
   public static final String ACCOUNTING_REPORT_1_CURRENCY_CODE = /*$$(*/
       "AccountingReportType1.currencyCode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/
