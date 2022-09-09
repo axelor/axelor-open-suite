@@ -60,7 +60,8 @@
         onClick="save,action-move-view-open-generate-reverse-wizard"
         showIf="id != null &amp;&amp; statusSelect != 5"/>
       <button name="deleteMoveBtn" title="delete" icon="fa-trash"
-        onClick="action-move-method-delete-move" showIf="id != null"/>
+        onClick="action-move-method-delete-move"
+        showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
 
     <panel name="mainPanel" colSpan="12">
