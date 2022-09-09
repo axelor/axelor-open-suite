@@ -190,4 +190,57 @@ public class BankDetailsServiceImpl implements BankDetailsService {
       IbanUtil.validate(iban);
     }
   }
+
+  public String computeBankDetailsFullName(BankDetails bankDetails) {
+    return computeBankDetailsFullName(
+        bankDetails.getCode(),
+        bankDetails.getLabel(),
+        bankDetails.getIbanBic(),
+        bankDetails.getIban(),
+        bankDetails.getBankCode(),
+        bankDetails.getSortCode(),
+        bankDetails.getAccountNbr(),
+        bankDetails.getBbanKey());
+  }
+
+  public static String computeBankDetailsFullName(
+      String code,
+      String label,
+      String ibanBic,
+      String iban,
+      String bankCode,
+      String sortCode,
+      String accountNbr,
+      String bbanKey) {
+    StringBuilder stringBuilder = new StringBuilder();
+
+    if (code != null && !code.isEmpty()) {
+      stringBuilder.append(code);
+    }
+
+    if (label != null && !label.isEmpty()) {
+      if (stringBuilder.toString().isEmpty() || stringBuilder == null) {
+        stringBuilder.append(label);
+      } else {
+        stringBuilder.append(" - " + label);
+      }
+    }
+
+    if (!stringBuilder.toString().isEmpty() && stringBuilder != null) {
+      stringBuilder.append(" - ");
+    }
+
+    if (ibanBic != null && !ibanBic.isEmpty()) {
+      stringBuilder.append(ibanBic);
+    } else if (iban != null && !iban.isEmpty()) {
+      stringBuilder.append(iban);
+    } else if ((bankCode != null && !bankCode.isEmpty())
+        && (sortCode != null
+            && !sortCode.isEmpty()
+            && (accountNbr != null && !accountNbr.isEmpty()))
+        && (bbanKey != null && !bbanKey.isEmpty())) {
+      stringBuilder.append(bankCode + sortCode + accountNbr + bbanKey);
+    }
+    return stringBuilder.toString();
+  }
 }
