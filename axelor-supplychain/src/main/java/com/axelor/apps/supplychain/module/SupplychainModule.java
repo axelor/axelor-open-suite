@@ -57,6 +57,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
+import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
@@ -84,6 +85,7 @@ import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
+import com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChain;
 import com.axelor.apps.supplychain.service.AccountingBatchSupplyChainService;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
@@ -301,5 +303,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderCheckAnalyticService.class).to(SaleOrderCheckAnalyticServiceImpl.class);
     bind(BatchAccountingCutOff.class).to(BatchAccountingCutOffSupplyChain.class);
     bind(AccountingBatchBankPaymentService.class).to(AccountingBatchSupplyChainService.class);
+    bind(StockProductRestServiceImpl.class).to(StockProductRestServiceSupplychainImpl.class);
   }
 }

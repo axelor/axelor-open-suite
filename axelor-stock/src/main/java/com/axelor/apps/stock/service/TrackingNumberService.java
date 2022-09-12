@@ -153,4 +153,16 @@ public class TrackingNumberService {
 
     return trackingNumber;
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public TrackingNumber generateTrackingNumber(
+      Product product, Company company, LocalDate date, String origin, String notes)
+      throws AxelorException {
+
+    TrackingNumber trackingNumber = this.createTrackingNumber(product, company, date, origin);
+    trackingNumber.setOrigin(origin);
+    trackingNumber.setNote(notes);
+    trackingNumberRepo.save(trackingNumber);
+    return trackingNumber;
+  }
 }
