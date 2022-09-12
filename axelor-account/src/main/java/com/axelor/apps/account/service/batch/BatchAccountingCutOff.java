@@ -98,7 +98,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
       for (Move move : moveList) {
         ++offset;
 
-        if (this._processMove(move, accountingBatch)) {
+        if (this._processMove(
+            moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()))) {
           break;
         }
       }
@@ -117,7 +118,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
             .collect(Collectors.toList());
 
     for (Move move : moveList) {
-      this._processMove(move, accountingBatch);
+      this._processMove(
+          moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()));
     }
   }
 

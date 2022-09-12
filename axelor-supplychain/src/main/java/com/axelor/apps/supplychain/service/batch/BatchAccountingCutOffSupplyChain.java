@@ -116,7 +116,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       for (StockMove stockMove : stockMoveList) {
         ++offset;
 
-        if (this._processStockMove(stockMove, accountingBatch)) {
+        if (this._processStockMove(
+            stockMoveRepository.find(stockMove.getId()),
+            accountingBatchRepository.find(accountingBatch.getId()))) {
           break;
         }
       }
@@ -135,7 +137,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
             .collect(Collectors.toList());
 
     for (StockMove stockMove : stockMoveList) {
-      this._processStockMove(stockMove, accountingBatch);
+      this._processStockMove(
+          stockMoveRepository.find(stockMove.getId()),
+          accountingBatchRepository.find(accountingBatch.getId()));
     }
   }
 
