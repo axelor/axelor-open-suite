@@ -637,7 +637,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
-      BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue());
+      BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue().divide(new BigDecimal(100)));
       BigDecimal creditAmountOne =
           disposalAmount.divide(
               denominator, FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
@@ -655,7 +655,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
       BigDecimal creditAmountTwo =
           creditAmountOne
-              .multiply(taxLine.getValue())
+              .multiply(taxLine.getValue().divide(new BigDecimal(100)))
               .setScale(FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
       creditAmountOne =
           creditAmountOne.setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);

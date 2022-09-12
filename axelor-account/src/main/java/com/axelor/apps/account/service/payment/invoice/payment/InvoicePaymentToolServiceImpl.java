@@ -412,7 +412,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoicePayment.setFinancialDiscountTaxAmount(
         invoicePayment
             .getFinancialDiscountTotalAmount()
-            .multiply(taxRate)
+            .multiply(taxRate.divide(new BigDecimal(100)))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     invoicePayment.setFinancialDiscountAmount(
         invoicePayment

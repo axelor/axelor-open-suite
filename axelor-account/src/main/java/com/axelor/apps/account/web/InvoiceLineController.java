@@ -273,7 +273,9 @@ public class InvoiceLineController {
 
     try {
       BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 

@@ -88,7 +88,7 @@
     <long name="partnerId"/>
     <long name="accountId"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
 
     <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
