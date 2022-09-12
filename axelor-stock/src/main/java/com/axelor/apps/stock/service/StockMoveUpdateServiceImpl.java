@@ -80,7 +80,10 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
       }
     } else {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, "Unsupported value for status %d", status);
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          "Cannot update stock move from status %d to %d",
+          currentStatus,
+          status);
     }
   }
 
