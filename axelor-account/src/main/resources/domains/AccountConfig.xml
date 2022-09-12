@@ -268,7 +268,7 @@
       title="Main partner DAS"
       help="Field to store the main contact used in DAS declaration export. Also make sure this contact has a valid email address, otherwise it will be impossible to generate the declaration file. If this field is empty, it will be impossible to generate the file, an alert will be generated."/>
     <many-to-one ref="com.axelor.apps.account.db.JournalType"
-      name="dasReportJournalType" title="DAS2 report journal type"></many-to-one>
+      name="dasReportJournalType" title="DAS2 report journal type"/>
 
     <many-to-one name="purchFinancialDiscountAccount"
       ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account"/>
