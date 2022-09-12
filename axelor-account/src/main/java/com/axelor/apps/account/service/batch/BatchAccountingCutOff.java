@@ -91,7 +91,9 @@ public class BatchAccountingCutOff extends BatchStrategy {
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
-      accountingBatchRepository.find(accountingBatch.getId());
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+      company = accountingBatch.getCompany();
+      researchJournal = accountingBatch.getResearchJournal();
 
       for (Move move : moveList) {
         ++offset;

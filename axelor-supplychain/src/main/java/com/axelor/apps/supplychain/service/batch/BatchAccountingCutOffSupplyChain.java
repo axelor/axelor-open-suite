@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
@@ -32,7 +41,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -43,13 +52,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
@@ -58,7 +60,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   protected StockMoveRepository stockMoveRepository;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AccountingCutOffSupplyChainService cutOffSupplyChainService;
-  public List<Long> recordIdList;
 
   @Inject
   public BatchAccountingCutOffSupplyChain(
@@ -111,7 +112,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
-      accountingBatchRepository.find(accountingBatch.getId());
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+      company = accountingBatch.getCompany();
 
       for (StockMove stockMove : stockMoveList) {
         ++offset;
@@ -214,6 +216,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected String getProcessedMessage() {
-    return I18n.get(IExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
+    return I18n.get(SupplychainExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
   }
 }
