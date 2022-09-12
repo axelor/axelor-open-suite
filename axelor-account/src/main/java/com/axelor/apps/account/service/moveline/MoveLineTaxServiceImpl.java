@@ -95,7 +95,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
         BigDecimal baseAmount =
             (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
-                .divide(vatRate, 2, BigDecimal.ROUND_HALF_UP);
+                .divide(vatRate.divide(new BigDecimal(100)), 2, BigDecimal.ROUND_HALF_UP);
 
         BigDecimal detailPaymentAmount =
             baseAmount

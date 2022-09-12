@@ -343,7 +343,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (saleOrderLine.getTaxLine() != null) {
-      taxRate = saleOrderLine.getTaxLine().getValue();
+      taxRate = saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
     if (!saleOrder.getInAti()) {
@@ -536,9 +536,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
     } else {
-      price = price.add(price.multiply(taxLine.getValue()));
+      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }
     return price;
   }
@@ -1106,10 +1110,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setInTaxTotal(
             saleOrderLine
                 .getExTaxTotal()
-                .multiply(saleOrderLine.getTaxLine().getValue())
+                .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100)))
                 .setScale(2, RoundingMode.HALF_UP));
         saleOrderLine.setCompanyInTaxTotal(
-            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+            saleOrderLine
+                .getCompanyExTaxTotal()
+                .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
       }
     }
     return saleOrderLineList;
