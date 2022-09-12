@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
@@ -52,6 +43,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
