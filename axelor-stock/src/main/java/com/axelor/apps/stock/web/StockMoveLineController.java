@@ -303,9 +303,9 @@ public class StockMoveLineController {
               : stockMoveLine.getStockMove();
       Partner partner = stockMove.getPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
 
-      if (stockMoveLine.getProduct() != null) {
+      if (stockMoveLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
         response.setValue(
             "description",
             internationalService.translate(

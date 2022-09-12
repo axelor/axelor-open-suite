@@ -91,7 +91,7 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
       if (Strings.isNullOrEmpty(partner.getFixedPhone())
           && Strings.isNullOrEmpty(partner.getMobilePhone())) {
         errorList.add(
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING));
       }
     }
     return errorList;
