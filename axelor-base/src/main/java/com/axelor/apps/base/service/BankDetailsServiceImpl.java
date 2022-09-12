@@ -192,26 +192,20 @@ public class BankDetailsServiceImpl implements BankDetailsService {
   }
 
   public String computeBankDetailsFullName(BankDetails bankDetails) {
-    return computeBankDetailsFullName(
-        bankDetails.getCode(),
-        bankDetails.getLabel(),
-        bankDetails.getIbanBic(),
-        bankDetails.getIban(),
-        bankDetails.getBankCode(),
-        bankDetails.getSortCode(),
-        bankDetails.getAccountNbr(),
-        bankDetails.getBbanKey());
+    if (bankDetails.getBank() != null) {
+      return computeBankDetailsFullName(
+          bankDetails.getCode(),
+          bankDetails.getLabel(),
+          bankDetails.getIban(),
+          bankDetails.getBank().getFullName());
+    } else {
+      return computeBankDetailsFullName(
+          bankDetails.getCode(), bankDetails.getLabel(), bankDetails.getIban(), null);
+    }
   }
 
   public static String computeBankDetailsFullName(
-      String code,
-      String label,
-      String ibanBic,
-      String iban,
-      String bankCode,
-      String sortCode,
-      String accountNbr,
-      String bbanKey) {
+      String code, String label, String iban, String bankFullName) {
     StringBuilder stringBuilder = new StringBuilder();
 
     if (code != null && !code.isEmpty()) {
@@ -230,17 +224,14 @@ public class BankDetailsServiceImpl implements BankDetailsService {
       stringBuilder.append(" - ");
     }
 
-    if (ibanBic != null && !ibanBic.isEmpty()) {
-      stringBuilder.append(ibanBic);
-    } else if (iban != null && !iban.isEmpty()) {
+    if (iban != null && !iban.isEmpty()) {
       stringBuilder.append(iban);
-    } else if ((bankCode != null && !bankCode.isEmpty())
-        && (sortCode != null
-            && !sortCode.isEmpty()
-            && (accountNbr != null && !accountNbr.isEmpty()))
-        && (bbanKey != null && !bbanKey.isEmpty())) {
-      stringBuilder.append(bankCode + sortCode + accountNbr + bbanKey);
     }
+
+    if (bankFullName != null && !bankFullName.isEmpty()) {
+      stringBuilder.append(" - " + bankFullName);
+    }
+
     return stringBuilder.toString();
   }
 }
