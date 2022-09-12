@@ -135,16 +135,16 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN reconcile.debitMoveLine dMoveLine "
             + "LEFT OUTER JOIN dMoveLine.move dMove "
             + "LEFT OUTER JOIN moveLine.account account "
-            + "WHERE reconcile.statusSelect IN (:statusConfirmed, :statusCanceled)  " 
-            + "AND dMove.statusSelect = :statusValidated " 
-            + "AND move.statusSelect = :statusValidated " 
-            + "AND pmvld.operationDate >= :dateFrom " 
-            + "AND pmvld.operationDate <= :dateTo " 
+            + "WHERE reconcile.statusSelect IN (:statusConfirmed, :statusCanceled)  "
+            + "AND dMove.statusSelect = :statusValidated "
+            + "AND move.statusSelect = :statusValidated "
+            + "AND pmvld.operationDate >= :dateFrom "
+            + "AND pmvld.operationDate <= :dateTo "
             + "AND account.serviceType IS NOT NULL  "
             + "AND partner.das2Activity IS NOT NULL  "
             + "AND account.serviceType.isDas2Declarable IS TRUE "
-            + "AND journalType = :journalType " 
-            + "AND company = :company " 
+            + "AND journalType = :journalType "
+            + "AND company = :company "
             + "AND currency = :currency "
             + "AND move.ignoreInAccountingOk != true "
             + "AND pmvld NOT IN (SELECT pmvld "
@@ -152,8 +152,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN history.paymentMoveLineDistribution pmvld "
             + "LEFT OUTER JOIN history.accountingReport report "
             + "LEFT OUTER JOIN report.reportType reportType "
-            + "WHERE report != :accountingReport " 
-            + "AND reportType.typeSelect = :reportType " 
+            + "WHERE report != :accountingReport "
+            + "AND reportType.typeSelect = :reportType "
             + "AND (history.excludeFromDas2Report != true OR history.exported != true) ) ";
 
     String partnerQueryStr =
@@ -197,14 +197,14 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN dMoveLine1.move dMove1 "
             + "LEFT OUTER JOIN moveLine1.account account1 "
             + "WHERE reconcile1.statusSelect IN (:statusConfirmed, :statusCanceled)  "
-            + "AND dMove1.statusSelect = :statusValidated " 
-            + "AND move1.statusSelect = :statusValidated " 
-            + "AND pmvld1.operationDate >= :dateFrom " 
-            + "AND pmvld1.operationDate <= :dateTo " 
+            + "AND dMove1.statusSelect = :statusValidated "
+            + "AND move1.statusSelect = :statusValidated "
+            + "AND pmvld1.operationDate >= :dateFrom "
+            + "AND pmvld1.operationDate <= :dateTo "
             + "AND (account1.serviceType IS NULL OR partner1.das2Activity IS NULL) "
-            + "AND journalType1 = :journalType " 
-            + "AND company1 = :company " 
-            + "AND currency1 = :currency " 
+            + "AND journalType1 = :journalType "
+            + "AND company1 = :company "
+            + "AND currency1 = :currency "
             + "AND move1.ignoreInAccountingOk != true "
             + "AND move = move1 " // Check on the same move
             + "AND pmvld1 NOT IN (SELECT pmvld2 "
@@ -212,12 +212,15 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN history1.paymentMoveLineDistribution pmvld2 "
             + "LEFT OUTER JOIN history1.accountingReport report1 "
             + "LEFT OUTER JOIN report1.reportType reportType1 "
-            + "WHERE report1 != :accountingReport " 
-            + "AND reportType1.typeSelect = :reportType " 
+            + "WHERE report1 != :accountingReport "
+            + "AND reportType1.typeSelect = :reportType "
             + "AND (history1.excludeFromDas2Report != true OR history1.exported != true) ) ) ";
 
     String pmvldQueryStr =
-        "SELECT pmvld.id AS paymentMvld " + sameQuery + "AND partner.id IN :partnerIds " + exclusionQuery;
+        "SELECT pmvld.id AS paymentMvld "
+            + sameQuery
+            + "AND partner.id IN :partnerIds "
+            + exclusionQuery;
 
     Query query =
         JPA.em()
@@ -233,7 +236,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter("accountingReport", accountingReport)
             .setParameter("reportType", accountingReport.getReportType().getTypeSelect())
             .setParameter("partnerIds", partnerIds);
-    
+
     return query.getResultList();
   }
 

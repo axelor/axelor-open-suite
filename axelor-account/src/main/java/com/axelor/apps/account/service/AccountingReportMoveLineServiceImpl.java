@@ -485,7 +485,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN address.city city "
             + "LEFT OUTER JOIN moveLine.account account "
             + "LEFT OUTER JOIN account.serviceType serviceType "
-            + "WHERE history.accountingExport =  :accountingExport " 
+            + "WHERE history.accountingExport =  :accountingExport "
             + "AND history.excludeFromDas2Report != true  "
             + "AND serviceType.isDas2Declarable = true  "
             + "AND serviceType.n4dsCode IS NOT NULL "
