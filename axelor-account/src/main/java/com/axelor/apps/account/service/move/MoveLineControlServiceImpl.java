@@ -159,7 +159,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     if (invoiceTermTotal.compareTo(total) != 0) {
-      invoiceTermTotal = invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total);
+      invoiceTermTotal =
+          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
 
       if (!isCompanyAmount) {
         if (invoiceAttached == null) {

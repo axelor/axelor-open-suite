@@ -257,55 +257,31 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
-  protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) throws AxelorException {
+  protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) {
     BigDecimal companyAmount = invoiceTerm.getAmount();
     BigDecimal companyAmountRemaining = invoiceTerm.getAmountRemaining();
 
     if (this.isMultiCurrency(invoiceTerm)) {
-      Currency currency = this.getCurrency(invoiceTerm);
-      Currency companyCurrency = this.getCompanyCurrency(invoiceTerm);
-      LocalDate conversionDate = this.getConversionDate(invoiceTerm);
+      BigDecimal companyTotal =
+          invoiceTerm.getInvoice() != null
+              ? invoiceTerm.getInvoice().getCompanyInTaxTotal()
+              : invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+      BigDecimal ratioPaid =
+          invoiceTerm
+              .getAmountRemaining()
+              .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
 
-      if (currency != null && companyCurrency != null) {
-        companyAmount =
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    currency, companyCurrency, companyAmount, conversionDate)
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        companyAmountRemaining =
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    currency, companyCurrency, companyAmountRemaining, conversionDate)
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-      }
+      companyAmount = companyTotal.multiply(invoiceTerm.getPercentage());
+      companyAmountRemaining =
+          companyAmount
+              .multiply(ratioPaid)
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      companyAmount =
+          companyTotal.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
     invoiceTerm.setCompanyAmountRemaining(companyAmountRemaining);
-  }
-
-  protected LocalDate getConversionDate(InvoiceTerm invoiceTerm) {
-    Invoice invoice = invoiceTerm.getInvoice();
-
-    if (invoice != null) {
-      if (invoice.getVentilatedDate() != null) {
-        return invoice.getVentilatedDate();
-      } else if (invoice.getValidatedDate() != null) {
-        return invoice.getValidatedDate();
-      } else {
-        return invoice.getInvoiceDate();
-      }
-    } else {
-      Move move = invoiceTerm.getMoveLine().getMove();
-
-      if (move.getAccountingDate() != null) {
-        return move.getAccountingDate();
-      } else if (move.getOriginDate() != null) {
-        return move.getOriginDate();
-      } else {
-        return move.getDate();
-      }
-    }
   }
 
   @Override
@@ -1004,7 +980,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal) {
     BigDecimal percentage = BigDecimal.ZERO;
     if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      percentage = amount.multiply(new BigDecimal(100)).divide(inTaxTotal, 7, RoundingMode.HALF_UP);
+      percentage =
+          amount
+              .multiply(new BigDecimal(100))
+              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
     return percentage;
   }
@@ -1548,11 +1527,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total)
+  public BigDecimal roundUpLastInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total, boolean isCompanyAmount)
       throws AxelorException {
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
-            .map(InvoiceTerm::getAmount)
+            .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     BigDecimal diff =
         BigDecimal.valueOf(0.01)

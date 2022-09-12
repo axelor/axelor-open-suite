@@ -45,7 +45,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -635,13 +634,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 partner,
                 account,
                 invoiceTerm.getAmount(),
-                currencyService
-                    .getAmountCurrencyConvertedAtDate(
-                        invoice.getCurrency(),
-                        companyCurrency,
-                        invoiceTerm.getAmount(),
-                        invoice.getInvoiceDate())
-                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                invoiceTerm.getCompanyAmount(),
                 currencyRate,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
@@ -660,13 +653,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   partner,
                   account,
                   invoiceTerm.getAmount(),
-                  currencyService
-                      .getAmountCurrencyConvertedAtDate(
-                          invoice.getCurrency(),
-                          companyCurrency,
-                          invoiceTerm.getAmount(),
-                          invoice.getInvoiceDate())
-                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                  invoiceTerm.getCompanyAmount(),
                   currencyRate,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -678,26 +665,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
-            moveLine.setDebit(
-                moveLine
-                    .getDebit()
-                    .add(
-                        currencyService.getAmountCurrencyConvertedAtDate(
-                            invoice.getCurrency(),
-                            companyCurrency,
-                            invoiceTerm.getAmount(),
-                            invoice.getInvoiceDate())));
+            moveLine.setDebit(moveLine.getDebit().add(invoiceTerm.getCompanyAmount()));
           } else {
             // Credit
-            moveLine.setCredit(
-                moveLine
-                    .getCredit()
-                    .add(
-                        currencyService.getAmountCurrencyConvertedAtDate(
-                            invoice.getCurrency(),
-                            companyCurrency,
-                            invoiceTerm.getAmount(),
-                            invoice.getInvoiceDate())));
+            moveLine.setCredit(moveLine.getCredit().add(invoiceTerm.getCompanyAmount()));
           }
           moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }

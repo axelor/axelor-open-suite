@@ -393,6 +393,8 @@ public final class AccountExceptionMessage {
   public static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
       "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
 
+  public static final String RECONCILE_WRONG_CURRENCY = /*$$(*/ "Erreur currency" /*)*/;
+
   /** Reimbursement service and controller */
   public static final String REIMBURSEMENT_1 = /*$$(*/
       "%s : You must configure a reimbursement sequence for the company %s" /*)*/;

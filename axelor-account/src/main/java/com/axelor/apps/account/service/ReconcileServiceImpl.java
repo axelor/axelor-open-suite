@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -67,6 +68,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -405,6 +407,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
     BigDecimal amount = reconcile.getAmount();
 
+    this.checkCurrencies(debitMoveLine, creditMoveLine);
+
     this.updatePayment(
         reconcile, debitMoveLine, debitInvoice, debitMove, creditMove, amount, updateInvoiceTerms);
     this.updatePayment(
@@ -417,6 +421,21 @@ public class ReconcileServiceImpl implements ReconcileService {
         updateInvoiceTerms);
   }
 
+  protected void checkCurrencies(MoveLine debitMoveLine, MoveLine creditMoveLine)
+      throws AxelorException {
+    Currency debitCurrency = debitMoveLine.getMove().getCurrency();
+    Currency creditCurrency = creditMoveLine.getMove().getCurrency();
+    Currency companyCurrency = debitMoveLine.getMove().getCompanyCurrency();
+
+    if (!Objects.equals(debitCurrency, creditCurrency)
+        && (!Objects.equals(debitCurrency, companyCurrency)
+            || !Objects.equals(creditCurrency, companyCurrency))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.RECONCILE_WRONG_CURRENCY);
+    }
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   protected void updatePayment(
       Reconcile reconcile,
@@ -427,6 +446,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
+    amount = this.getTotal(moveLine, amount);
+
     InvoicePayment invoicePayment = null;
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
@@ -457,6 +478,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     } else if (!ObjectUtils.isEmpty(invoiceTermPaymentList)) {
       invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
     }
+  }
+
+  protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount) {
+    return amount.divide(
+        moveLine.getCurrencyRate(), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   @Override

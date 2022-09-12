@@ -308,7 +308,8 @@ public interface InvoiceTermService {
 
   void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
 
-  BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total)
+  BigDecimal roundUpLastInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total, boolean isCompanyAmount)
       throws AxelorException;
 
   @CallMethod
