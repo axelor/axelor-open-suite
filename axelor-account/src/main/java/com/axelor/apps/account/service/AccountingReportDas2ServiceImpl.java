@@ -135,47 +135,47 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN reconcile.debitMoveLine dMoveLine "
             + "LEFT OUTER JOIN dMoveLine.move dMove "
             + "LEFT OUTER JOIN moveLine.account account "
-            + "WHERE reconcile.statusSelect IN (?1, ?2)  " // (STATUS_CONFIRMED, STATUS_CANCELED)
-            + "AND dMove.statusSelect = ?3 " // STATUS_VALIDATED
-            + "AND move.statusSelect = ?3 " // STATUS_VALIDATED
-            + "AND pmvld.operationDate >= ?4 " //  accountingReport.getDateFrom()
-            + "AND pmvld.operationDate <= ?5 " // accountingReport.getDateTo()
+            + "WHERE reconcile.statusSelect IN (:statusConfirmed, :statusCanceled)  " 
+            + "AND dMove.statusSelect = :statusValidated " 
+            + "AND move.statusSelect = :statusValidated " 
+            + "AND pmvld.operationDate >= :dateFrom " 
+            + "AND pmvld.operationDate <= :dateTo " 
             + "AND account.serviceType IS NOT NULL  "
             + "AND partner.das2Activity IS NOT NULL  "
             + "AND account.serviceType.isDas2Declarable IS TRUE "
-            + "AND journalType = ?6 " // ACH
-            + "AND company = ?7 " // accountingReport.getCompany()
-            + "AND currency = ?8 " // accountingReport.getCurrency()
+            + "AND journalType = :journalType " 
+            + "AND company = :company " 
+            + "AND currency = :currency "
             + "AND move.ignoreInAccountingOk != true "
             + "AND pmvld NOT IN (SELECT pmvld "
             + "FROM AccountingReportMoveLine history "
             + "LEFT OUTER JOIN history.paymentMoveLineDistribution pmvld "
             + "LEFT OUTER JOIN history.accountingReport report "
             + "LEFT OUTER JOIN report.reportType reportType "
-            + "WHERE report != ?9 " // accountingReport
-            + "AND reportType.typeSelect = ?10 " // accountingReport.getReportType().getTypeSelect()
+            + "WHERE report != :accountingReport " 
+            + "AND reportType.typeSelect = :reportType " 
             + "AND (history.excludeFromDas2Report != true OR history.exported != true) ) ";
 
     String partnerQueryStr =
         "SELECT DISTINCT partner.id AS id "
             + sameQuery
             + "GROUP BY partner.id "
-            + "HAVING SUM(pmvld.inTaxProratedAmount) >= ?11 "; // accountingReport.getMinAmountExcl()
+            + "HAVING SUM(pmvld.inTaxProratedAmount) >= :inAmountExcl ";
 
     Query partnerQuery =
         JPA.em()
             .createQuery(partnerQueryStr)
-            .setParameter(1, ReconcileRepository.STATUS_CONFIRMED)
-            .setParameter(2, ReconcileRepository.STATUS_CANCELED)
-            .setParameter(3, MoveRepository.STATUS_VALIDATED)
-            .setParameter(4, accountingReport.getDateFrom())
-            .setParameter(5, accountingReport.getDateTo())
-            .setParameter(6, journalType)
-            .setParameter(7, accountingReport.getCompany())
-            .setParameter(8, accountingReport.getCurrency())
-            .setParameter(9, accountingReport)
-            .setParameter(10, accountingReport.getReportType().getTypeSelect())
-            .setParameter(11, accountingReport.getMinAmountExcl());
+            .setParameter("statusConfirmed", ReconcileRepository.STATUS_CONFIRMED)
+            .setParameter("statusCanceled", ReconcileRepository.STATUS_CANCELED)
+            .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
+            .setParameter("dateFrom", accountingReport.getDateFrom())
+            .setParameter("dateTo", accountingReport.getDateTo())
+            .setParameter("journalType", journalType)
+            .setParameter("company", accountingReport.getCompany())
+            .setParameter("currency", accountingReport.getCurrency())
+            .setParameter("accountingReport", accountingReport)
+            .setParameter("reportType", accountingReport.getReportType().getTypeSelect())
+            .setParameter("inAmountExcl", accountingReport.getMinAmountExcl());
     partnerIds = partnerQuery.getResultList();
     if (CollectionUtils.isEmpty(partnerIds)) {
       return new ArrayList<Long>();
@@ -196,15 +196,15 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN reconcile1.debitMoveLine dMoveLine1 "
             + "LEFT OUTER JOIN dMoveLine1.move dMove1 "
             + "LEFT OUTER JOIN moveLine1.account account1 "
-            + "WHERE reconcile1.statusSelect IN (?1, ?2)  " // (STATUS_CONFIRMED, STATUS_CANCELED)
-            + "AND dMove1.statusSelect = ?3 " // STATUS_VALIDATED
-            + "AND move1.statusSelect = ?3 " // STATUS_VALIDATED
-            + "AND pmvld1.operationDate >= ?4 " //  accountingReport.getDateFrom()
-            + "AND pmvld1.operationDate <= ?5 " // accountingReport.getDateTo()
+            + "WHERE reconcile1.statusSelect IN (:statusConfirmed, :statusCanceled)  "
+            + "AND dMove1.statusSelect = :statusValidated " 
+            + "AND move1.statusSelect = :statusValidated " 
+            + "AND pmvld1.operationDate >= :dateFrom " 
+            + "AND pmvld1.operationDate <= :dateTo " 
             + "AND (account1.serviceType IS NULL OR partner1.das2Activity IS NULL) "
-            + "AND journalType1 = ?6 " // ACH
-            + "AND company1 = ?7 " // accountingReport.getCompany()
-            + "AND currency1 = ?8 " // accountingReport.getCurrency()
+            + "AND journalType1 = :journalType " 
+            + "AND company1 = :company " 
+            + "AND currency1 = :currency " 
             + "AND move1.ignoreInAccountingOk != true "
             + "AND move = move1 " // Check on the same move
             + "AND pmvld1 NOT IN (SELECT pmvld2 "
@@ -212,27 +212,28 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN history1.paymentMoveLineDistribution pmvld2 "
             + "LEFT OUTER JOIN history1.accountingReport report1 "
             + "LEFT OUTER JOIN report1.reportType reportType1 "
-            + "WHERE report1 != ?9 " // accountingReport
-            + "AND reportType1.typeSelect = ?10 " // accountingReport.getReportType().getTypeSelect()
+            + "WHERE report1 != :accountingReport " 
+            + "AND reportType1.typeSelect = :reportType " 
             + "AND (history1.excludeFromDas2Report != true OR history1.exported != true) ) ) ";
 
     String pmvldQueryStr =
-        "SELECT pmvld.id AS paymentMvld " + sameQuery + "AND partner.id IN ?11 " + exclusionQuery;
+        "SELECT pmvld.id AS paymentMvld " + sameQuery + "AND partner.id IN :partnerIds " + exclusionQuery;
 
     Query query =
         JPA.em()
             .createQuery(pmvldQueryStr)
-            .setParameter(1, ReconcileRepository.STATUS_CONFIRMED)
-            .setParameter(2, ReconcileRepository.STATUS_CANCELED)
-            .setParameter(3, MoveRepository.STATUS_VALIDATED)
-            .setParameter(4, accountingReport.getDateFrom())
-            .setParameter(5, accountingReport.getDateTo())
-            .setParameter(6, journalType)
-            .setParameter(7, accountingReport.getCompany())
-            .setParameter(8, accountingReport.getCurrency())
-            .setParameter(9, accountingReport)
-            .setParameter(10, accountingReport.getReportType().getTypeSelect())
-            .setParameter(11, partnerIds);
+            .setParameter("statusConfirmed", ReconcileRepository.STATUS_CONFIRMED)
+            .setParameter("statusCanceled", ReconcileRepository.STATUS_CANCELED)
+            .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
+            .setParameter("dateFrom", accountingReport.getDateFrom())
+            .setParameter("dateTo", accountingReport.getDateTo())
+            .setParameter("journalType", journalType)
+            .setParameter("company", accountingReport.getCompany())
+            .setParameter("currency", accountingReport.getCurrency())
+            .setParameter("accountingReport", accountingReport)
+            .setParameter("reportType", accountingReport.getReportType().getTypeSelect())
+            .setParameter("partnerIds", partnerIds);
+    
     return query.getResultList();
   }
 

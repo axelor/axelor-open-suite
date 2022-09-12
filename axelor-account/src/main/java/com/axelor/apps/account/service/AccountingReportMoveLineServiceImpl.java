@@ -485,14 +485,16 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN address.city city "
             + "LEFT OUTER JOIN moveLine.account account "
             + "LEFT OUTER JOIN account.serviceType serviceType "
-            + "WHERE history.accountingExport =  ?1 " // accountingExport
+            + "WHERE history.accountingExport =  :accountingExport " 
             + "AND history.excludeFromDas2Report != true  "
             + "AND serviceType.isDas2Declarable = true  "
             + "AND serviceType.n4dsCode IS NOT NULL "
-            + "GROUP BY partner.partnerTypeSelect,partner.das2Activity.name,partner.name,partner.firstName,partner.registrationCode, "
-            + "address.addressL2,address.addressL3,address.addressL4,city.zip,city.name,country.alpha2Code,serviceType.n4dsCode";
+            + "GROUP BY partner.partnerTypeSelect,partner.das2Activity.name,"
+            + "partner.name,partner.firstName,partner.registrationCode, "
+            + "address.addressL2,address.addressL3,address.addressL4,"
+            + "city.zip,city.name,country.alpha2Code,serviceType.n4dsCode";
 
-    Query query = JPA.em().createQuery(queryStr).setParameter(1, accountingExport);
+    Query query = JPA.em().createQuery(queryStr).setParameter("accountingExport", accountingExport);
     return query.getResultList();
   }
 
