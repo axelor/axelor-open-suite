@@ -135,7 +135,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       } else {
         invoiceTermPayment =
             createInvoiceTermPayment(invoicePayment, invoiceTermToPay, invoiceTermAmount);
-        availableAmount = availableAmount.subtract(invoiceTermToPay.getCompanyAmountRemaining());
+        availableAmount = availableAmount.subtract(invoiceTermAmount);
       }
 
       invoiceTermPaymentList.add(invoiceTermPayment);

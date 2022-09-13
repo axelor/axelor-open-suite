@@ -271,13 +271,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .getAmountRemaining()
               .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
 
-      companyAmount = companyTotal.multiply(invoiceTerm.getPercentage());
+      companyAmount =
+          companyTotal
+              .multiply(invoiceTerm.getPercentage())
+              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
       companyAmountRemaining =
           companyAmount
               .multiply(ratioPaid)
               .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       companyAmount =
-          companyTotal.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          companyAmount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
