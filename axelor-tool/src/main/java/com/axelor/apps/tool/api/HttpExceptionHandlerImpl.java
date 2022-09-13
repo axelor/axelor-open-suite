@@ -1,6 +1,9 @@
 package com.axelor.apps.tool.api;
 
+import com.axelor.app.AppSettings;
+import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
@@ -14,7 +17,11 @@ public class HttpExceptionHandlerImpl implements MethodInterceptor {
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
     try {
-      return invocation.proceed();
+      if (Boolean.parseBoolean(AppSettings.get().get("aos.api.enable"))) {
+        return invocation.proceed();
+      } else {
+        throw new ForbiddenException(I18n.get(IExceptionMessage.API_DISABLED));
+      }
     } catch (BadRequestException e) {
       return ResponseConstructor.build(Response.Status.BAD_REQUEST, e.getMessage());
     } catch (ForbiddenException e) {
