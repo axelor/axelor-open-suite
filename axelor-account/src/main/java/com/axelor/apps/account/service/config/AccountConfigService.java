@@ -626,4 +626,50 @@ public class AccountConfigService {
 
     return accountConfig.getDasContactPartner();
   }
+
+  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getPurchFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_47),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getPurchFinancialDiscountTax();
+  }
+
+  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getSaleFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_48),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSaleFinancialDiscountTax();
+  }
+
+  public Account getPurchFinancialDiscountAccount(AccountConfig accountConfig)
+      throws AxelorException {
+    if (accountConfig.getPurchFinancialDiscountAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_49),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getPurchFinancialDiscountAccount();
+  }
+
+  public Account getSaleFinancialDiscountAccount(AccountConfig accountConfig)
+      throws AxelorException {
+    if (accountConfig.getSaleFinancialDiscountAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_50),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSaleFinancialDiscountAccount();
+  }
 }
