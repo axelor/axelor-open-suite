@@ -1667,6 +1667,7 @@
 "Is already reverse",,,
 "Is other currency",,,
 "Is updating",,,
+"It cannot be reimbursed, as the amount reimbursed is lower than the amount to reimburse.",,,
 "It is not possible to edit the amount of a reconciled and/or lettered accounting move line.",,,
 "It is not possible to go back to validate status or cancel a ventilated invoice.",,,
 "Journal",,,

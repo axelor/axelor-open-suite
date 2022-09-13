@@ -1667,6 +1667,7 @@
 "Is already reverse","A déjà été extourné(e)",,
 "Is other currency",,,
 "Is updating","Est mis à jour",,
+"It cannot be reimbursed, as the amount reimbursed is lower than the amount to reimburse.","Il ne peut pas être remboursé, comme le montant remboursé est inférieur au montant à rembourser.",,
 "It is not possible to edit the amount of a reconciled and/or lettered accounting move line.","Il n'est pas possible de modifier le montant d'une ligne d'écriture lettrée et/ou rapprochée.",,
 "It is not possible to go back to validate status or cancel a ventilated invoice.","Il n'est pas possible de retourner au statut validé ou d'annuler une facture ventilée.",,
 "Journal","Journal",,
