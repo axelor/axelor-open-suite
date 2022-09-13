@@ -509,7 +509,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq,
             externalRef,
             null,
-            company.getDefaultBankDetails(),
+            null,
             null) {
 
           @Override
