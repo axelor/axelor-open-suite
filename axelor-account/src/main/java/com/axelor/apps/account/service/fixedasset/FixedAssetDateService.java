@@ -8,6 +8,15 @@ public interface FixedAssetDateService {
   /** Compute first depreciation date of economic, fiscal and ifrs plan */
   void computeFirstDepreciationDate(FixedAsset fixedAsset);
 
+  /** Compute first depreciation date of fiscal */
+  void computeFiscalFirstDepreciationDate(FixedAsset fixedAsset);
+
+  /** Compute first depreciation date of economic */
+  void computeEconomicFirstDepreciationDate(FixedAsset fixedAsset);
+
+  /** Compute first depreciation date of ifrs plan */
+  void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset);
+
   /**
    * Compute and return the last day of the month/year depending on the periodicity type.
    *

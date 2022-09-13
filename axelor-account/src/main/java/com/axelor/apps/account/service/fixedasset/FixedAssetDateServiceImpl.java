@@ -26,21 +26,28 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
 
   @Override
   public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
+    computeEconomicFirstDepreciationDate(fixedAsset);
+    computeFiscalFirstDepreciationDate(fixedAsset);
+    computeIfrsFirstDepreciationDate(fixedAsset);
+  }
 
-    LocalDate economicDate =
-        fixedAsset.getFirstDepreciationDateInitSelect()
-                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-                && fixedAsset.getFirstServiceDate() != null
-            ? fixedAsset.getFirstServiceDate()
-            : fixedAsset.getAcquisitionDate();
+  @Override
+  public void computeFiscalFirstDepreciationDate(FixedAsset fixedAsset) {
     LocalDate fiscalDate =
         fixedAsset.getFiscalFirstDepreciationDateInitSelect()
                     == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
             : fixedAsset.getAcquisitionDate();
-    LocalDate ifrsDate =
-        fixedAsset.getIfrsFirstDepreciationDateInitSelect()
+    fixedAsset.setFiscalFirstDepreciationDate(
+        computeFirstDepreciationDate(
+            fixedAsset.getCompany(), fiscalDate, fixedAsset.getFiscalPeriodicityTypeSelect()));
+  }
+
+  @Override
+  public void computeEconomicFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate economicDate =
+        fixedAsset.getFirstDepreciationDateInitSelect()
                     == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
@@ -49,9 +56,17 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
     fixedAsset.setFirstDepreciationDate(
         computeFirstDepreciationDate(
             fixedAsset.getCompany(), economicDate, fixedAsset.getPeriodicityTypeSelect()));
-    fixedAsset.setFiscalFirstDepreciationDate(
-        computeFirstDepreciationDate(
-            fixedAsset.getCompany(), fiscalDate, fixedAsset.getFiscalPeriodicityTypeSelect()));
+  }
+
+  @Override
+  public void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate ifrsDate =
+        fixedAsset.getIfrsFirstDepreciationDateInitSelect()
+                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                && fixedAsset.getFirstServiceDate() != null
+            ? fixedAsset.getFirstServiceDate()
+            : fixedAsset.getAcquisitionDate();
+
     fixedAsset.setIfrsFirstDepreciationDate(
         computeFirstDepreciationDate(
             fixedAsset.getCompany(), ifrsDate, fixedAsset.getIfrsPeriodicityTypeSelect()));

@@ -270,6 +270,45 @@ public class FixedAssetController {
     }
   }
 
+  public void computeFiscalFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetDateService.class).computeFiscalFirstDepreciationDate(fixedAsset);
+
+      response.setValue("fiscalFirstDepreciationDate", fixedAsset.getFiscalFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeEconomicFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetDateService.class).computeEconomicFirstDepreciationDate(fixedAsset);
+
+      response.setValue("firstDepreciationDate", fixedAsset.getFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeIfrsFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetDateService.class).computeIfrsFirstDepreciationDate(fixedAsset);
+
+      response.setValue("ifrsFirstDepreciationDate", fixedAsset.getIfrsFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void updateDepreciation(ActionRequest request, ActionResponse response) {
     try {
       FixedAsset fixedAsset =
