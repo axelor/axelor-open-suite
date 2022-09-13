@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -57,6 +58,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -323,15 +325,27 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
+    BigDecimal companyPaymentAmount =
+        invoicePayment.getInvoiceTermPaymentList().stream()
+            .map(InvoiceTermPayment::getCompanyPaidAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    BigDecimal currencyRate =
+        companyPaymentAmount.divide(
+            paymentAmount, AppAccountService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
             paymentAmount,
+            companyPaymentAmount,
+            currencyRate,
             isDebitInvoice,
             paymentDate,
             null,
+            paymentDate,
             counter++,
             origin,
             move.getDescription()));
@@ -373,6 +387,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                   invoicePayment
                       .getFinancialDiscountAmount()
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
+      companyPaymentAmount = paymentAmount;
     }
 
     move.addMoveLineListItem(
@@ -381,9 +396,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             partner,
             customerAccount,
             paymentAmount,
+            companyPaymentAmount,
+            currencyRate,
             !isDebitInvoice,
             paymentDate,
             null,
+            paymentDate,
             counter++,
             origin,
             move.getDescription()));

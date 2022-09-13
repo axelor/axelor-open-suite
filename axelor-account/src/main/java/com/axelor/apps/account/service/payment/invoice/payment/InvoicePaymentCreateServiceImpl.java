@@ -122,9 +122,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       throws AxelorException {
 
     LocalDate paymentDate = paymentMove.getDate();
-    BigDecimal amountConverted =
-        currencyService.getAmountCurrencyConvertedAtDate(
-            paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
 
     Currency currency = paymentMove.getCurrency();
@@ -142,7 +139,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     invoicePayment =
         this.createInvoicePayment(
-            invoice, amountConverted, paymentDate, currency, paymentMode, typePaymentMove);
+            invoice, amount, paymentDate, currency, paymentMode, typePaymentMove);
 
     invoicePayment.setMove(paymentMove);
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
