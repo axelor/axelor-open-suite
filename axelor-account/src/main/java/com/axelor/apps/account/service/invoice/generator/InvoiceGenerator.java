@@ -272,30 +272,8 @@ public abstract class InvoiceGenerator {
     } else {
       invoice.setInAti(false);
     }
-
-    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
-      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-      companyBankDetails =
-          bankDetailsList.stream()
-              .filter(bankDetails -> bankDetails.getIsDefault())
-              .findFirst()
-              .orElse(null);
-    } else if (accountingSituation != null) {
-      if (paymentMode != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
-      }
-    }
     if (companyBankDetails == null) {
-      companyBankDetails = company.getDefaultBankDetails();
-      List<BankDetails> allowedBDs =
-          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-      if (!allowedBDs.contains(companyBankDetails)) {
-        companyBankDetails = null;
-      }
+      fillCompanyBankDetails(accountingSituation, accountConfig);
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
@@ -316,6 +294,35 @@ public abstract class InvoiceGenerator {
     initCollections(invoice);
 
     return invoice;
+  }
+
+  protected void fillCompanyBankDetails(
+      AccountingSituation accountingSituation, AccountConfig accountConfig) {
+    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
+      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+      companyBankDetails =
+          bankDetailsList.stream()
+              .filter(bankDetails -> bankDetails.getIsDefault())
+              .findFirst()
+              .orElse(null);
+    } else if (accountingSituation != null) {
+      if (paymentMode != null) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyInBankDetails();
+        }
+      }
+    }
+    // If it is still null
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
+      }
+    }
   }
 
   public int getInvoiceCopy() {
