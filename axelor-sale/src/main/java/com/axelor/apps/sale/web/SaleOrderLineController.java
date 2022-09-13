@@ -413,9 +413,9 @@ public class SaleOrderLineController {
       Partner partner =
           Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
 
-      if (saleOrderLine.getProduct() != null) {
+      if (saleOrderLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
         response.setValue(
             "description",
             internationalService.translate(

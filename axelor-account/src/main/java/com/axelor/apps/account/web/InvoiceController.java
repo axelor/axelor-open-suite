@@ -55,7 +55,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -67,7 +66,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
@@ -962,21 +960,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
         InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-        Mapper mapper = Mapper.of(InvoiceLine.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          Map<String, Object> invoiceLineMap =
-              invoiceLineService.fillProductInformation(invoice, invoiceLine);
-
-          String errorMsg = (String) invoiceLineMap.get("error");
-          if (!Strings.isNullOrEmpty(errorMsg)) {
-            response.setFlash(errorMsg);
-          }
-
-          for (Map.Entry<String, Object> entry : invoiceLineMap.entrySet()) {
-            mapper.set(invoiceLine, entry.getKey(), entry.getValue());
-          }
-
-          invoiceLineService.compute(invoice, invoiceLine);
+          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }

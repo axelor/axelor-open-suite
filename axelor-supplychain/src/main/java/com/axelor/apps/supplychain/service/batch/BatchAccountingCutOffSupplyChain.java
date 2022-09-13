@@ -32,7 +32,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -58,7 +58,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   protected StockMoveRepository stockMoveRepository;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AccountingCutOffSupplyChainService cutOffSupplyChainService;
-  public List<Long> recordIdList;
 
   @Inject
   public BatchAccountingCutOffSupplyChain(
@@ -111,12 +110,15 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
-      accountingBatchRepository.find(accountingBatch.getId());
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+      company = accountingBatch.getCompany();
 
       for (StockMove stockMove : stockMoveList) {
         ++offset;
 
-        if (this._processStockMove(stockMove, accountingBatch)) {
+        if (this._processStockMove(
+            stockMoveRepository.find(stockMove.getId()),
+            accountingBatchRepository.find(accountingBatch.getId()))) {
           break;
         }
       }
@@ -135,7 +137,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
             .collect(Collectors.toList());
 
     for (StockMove stockMove : stockMoveList) {
-      this._processStockMove(stockMove, accountingBatch);
+      this._processStockMove(
+          stockMoveRepository.find(stockMove.getId()),
+          accountingBatchRepository.find(accountingBatch.getId()));
     }
   }
 
@@ -214,6 +218,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected String getProcessedMessage() {
-    return I18n.get(IExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
+    return I18n.get(SupplychainExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
   }
 }
