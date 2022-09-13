@@ -89,6 +89,36 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     return result;
   }
 
+  public void getAllConsumedProductResponsesOfProduct(
+      ManufOrder manufOrder,
+      Product product,
+      List<StockMoveLine> productLines,
+      List<ConsumedProductResponse> productResponses)
+      throws AxelorException {
+    BigDecimal consumedQty = BigDecimal.ZERO;
+
+    int lastIndex = productLines.size() - 1;
+    StockMoveLine lastProductLine = productLines.get(lastIndex);
+    List<StockMoveLine> productLinesSubList = productLines.subList(0, lastIndex);
+
+    for (StockMoveLine currentLine : productLinesSubList) {
+      productResponses.add(
+          createConsumedProductResponse(
+              manufOrder,
+              currentLine,
+              currentLine
+                  .getQty()
+                  .min(getGlobalConsumedPlannedQty(product, manufOrder).subtract(consumedQty))));
+      consumedQty = consumedQty.add(currentLine.getQty());
+    }
+
+    productResponses.add(
+        createConsumedProductResponse(
+            manufOrder,
+            lastProductLine,
+            getGlobalConsumedPlannedQty(product, manufOrder).subtract(consumedQty)));
+  }
+
   public List<ConsumedProductResponse> getPlannedConsumedProductList(
       ManufOrder manufOrder, List<Product> checkProducts) throws AxelorException {
     List<ConsumedProductResponse> result = new ArrayList<>();
@@ -103,27 +133,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
           result.add(
               createConsumedProductResponse(manufOrder, productLines.get(0), prodProduct.getQty()));
         } else {
-          BigDecimal consumedQty = BigDecimal.ZERO;
-
-          for (int index = 0; index < productLines.size() - 1; index++) {
-            StockMoveLine currentLine = productLines.get(index);
-            result.add(
-                createConsumedProductResponse(
-                    manufOrder,
-                    currentLine,
-                    currentLine
-                        .getQty()
-                        .min(
-                            getGlobalConsumedPlannedQty(product, manufOrder)
-                                .subtract(consumedQty))));
-            consumedQty = consumedQty.add(currentLine.getQty());
-          }
-
-          result.add(
-              createConsumedProductResponse(
-                  manufOrder,
-                  productLines.get(productLines.size() - 1),
-                  getGlobalConsumedPlannedQty(product, manufOrder).subtract(consumedQty)));
+          getAllConsumedProductResponsesOfProduct(manufOrder, product, productLines, result);
         }
         checkProducts.add(product);
       }
