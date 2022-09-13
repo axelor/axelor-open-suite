@@ -262,7 +262,24 @@ public abstract class InvoiceGenerator {
     } else {
       invoice.setInAti(false);
     }
+    if (companyBankDetails == null) {
+      fillCompanyBankDetails(accountingSituation, accountConfig);
+    }
+    invoice.setCompanyBankDetails(companyBankDetails);
 
+    if (partner != null && !Strings.isNullOrEmpty(partner.getInvoiceComments())) {
+      invoice.setNote(partner.getInvoiceComments());
+    }
+
+    invoice.setInvoicesCopySelect(getInvoiceCopy());
+
+    initCollections(invoice);
+
+    return invoice;
+  }
+
+  protected void fillCompanyBankDetails(
+      AccountingSituation accountingSituation, AccountConfig accountConfig) {
     if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
       companyBankDetails =
@@ -279,6 +296,7 @@ public abstract class InvoiceGenerator {
         }
       }
     }
+    // If it is still null
     if (companyBankDetails == null) {
       companyBankDetails = company.getDefaultBankDetails();
       List<BankDetails> allowedBDs =
@@ -287,17 +305,6 @@ public abstract class InvoiceGenerator {
         companyBankDetails = null;
       }
     }
-    invoice.setCompanyBankDetails(companyBankDetails);
-
-    if (partner != null && !Strings.isNullOrEmpty(partner.getInvoiceComments())) {
-      invoice.setNote(partner.getInvoiceComments());
-    }
-
-    invoice.setInvoicesCopySelect(getInvoiceCopy());
-
-    initCollections(invoice);
-
-    return invoice;
   }
 
   public int getInvoiceCopy() {
