@@ -55,20 +55,19 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
 
   @Override
   public BankOrderLineOrigin getAwaitingBankOrderLineOrigin(InvoiceTerm invoiceTerm) {
-    return bankOrderLineOriginRepository.all().fetch().stream()
+    return bankOrderLineOriginRepository.all()
         .filter(
-            origin ->
-                BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM.equals(
-                        origin.getRelatedToSelect())
-                    && origin.getRelatedToSelectId() == invoiceTerm.getId()
-                    && origin.getBankOrderLine() != null
-                    && origin.getBankOrderLine().getBankOrder() != null
-                    && origin.getBankOrderLine().getBankOrder().getStatusSelect()
-                        == BankOrderRepository.STATUS_AWAITING_SIGNATURE
-                    && origin.getBankOrderLine().getBankOrder().getOrderTypeSelect()
-                        != BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT
-                    && origin.getBankOrderLine().getBankOrder().getOrderTypeSelect()
-                        != BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)
+            "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2 "
+                + "AND self.bankOrderLine.bankOrder IS NOT NULL "
+                + "AND self.bankOrderLine.bankOrder.statusSelect = ?3 "
+                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?4 "
+                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?5",
+            BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM,
+            invoiceTerm.getId(),
+            BankOrderRepository.STATUS_AWAITING_SIGNATURE,
+            BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT,
+            BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)
+        .fetch().stream()
         .findAny()
         .orElse(null);
   }
