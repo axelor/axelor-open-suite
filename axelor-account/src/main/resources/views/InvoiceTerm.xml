@@ -1006,7 +1006,7 @@
 
   <action-attrs name="action-invoice-term-attrs-is-multi-currency">
     <attribute name="value" for="$isMultiCurrency"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceTermService:isMultiCurrency"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceTermService:isMultiCurrency(__this__)"/>
     <attribute name="title" for="amount"
       expr="eval: com.axelor.i18n.I18n.get('Amount in currency')"
       if="invoice != null &amp;&amp; invoice.currency?.code != invoice.company?.currency?.code"/>
