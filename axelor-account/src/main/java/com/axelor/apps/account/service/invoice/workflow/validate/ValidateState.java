@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -47,6 +48,7 @@ public class ValidateState extends WorkflowInvoice {
   protected InvoiceService invoiceService;
   protected AppAccountService appAccountService;
   protected BudgetService budgetService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public ValidateState(
@@ -56,7 +58,8 @@ public class ValidateState extends WorkflowInvoice {
       AppBaseService appBaseService,
       InvoiceService invoiceService,
       AppAccountService appAccountService,
-      BudgetService budgetService) {
+      BudgetService budgetService,
+      AccountingSituationService accountingSituationService) {
     this.userService = userService;
     this.blockingService = blockingService;
     this.workflowValidationService = workflowValidationService;
@@ -64,6 +67,7 @@ public class ValidateState extends WorkflowInvoice {
     this.invoiceService = invoiceService;
     this.appAccountService = appAccountService;
     this.budgetService = budgetService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   public void init(Invoice invoice) {
@@ -106,7 +110,7 @@ public class ValidateState extends WorkflowInvoice {
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate(invoice.getCompany()));
     if (invoice.getPartnerAccount() == null) {
-      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice, false));
+      invoice.setPartnerAccount(accountingSituationService.getPartnerAccount(invoice, false));
     }
     if (invoice.getJournal() == null) {
       invoice.setJournal(invoiceService.getJournal(invoice));
