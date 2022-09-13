@@ -115,17 +115,6 @@ public interface FixedAssetLineService {
       throws AxelorException;
 
   /**
-   * This method will return any line that have the same year as disposalDate.
-   *
-   * @param fixedAsset
-   * @param disposalDate
-   * @param lineStatus
-   * @return {@link FixedAssetLine} or null if there is no line with same year.
-   */
-  FixedAssetLine getExistingLineWithSameYear(
-      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus);
-
-  /**
    * Get Fixed asset of fixedAssetLine.
    *
    * @param line
