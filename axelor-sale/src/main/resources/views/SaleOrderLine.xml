@@ -633,7 +633,11 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
-    <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"
+      if="__parent__"/>
+    <action
+      name="action-sale-order-line-attrs-display-different-language-message-edit-window-blank"
+      if="saleOrder"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -1018,9 +1022,17 @@
 
   <action-attrs name="action-sale-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__.clientPartner.language.code.equals(__user__.getLanguage())"/>
+      expr="eval: __parent__?.clientPartner?.language?.code.equals(__user__.getLanguage())"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__.clientPartner.language.code.toUpperCase()"/>
+      expr="eval: __parent__?.clientPartner?.language?.code.toUpperCase()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-sale-order-line-attrs-display-different-language-message-edit-window-blank">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: saleOrder?.clientPartner?.language?.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: saleOrder?.clientPartner?.language?.code.toUpperCase()"/>
   </action-attrs>
 
   <!-- ACTION VIEW -->

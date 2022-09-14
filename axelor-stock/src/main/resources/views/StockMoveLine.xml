@@ -561,7 +561,11 @@
     <action name="action-stock-move-line-attrs-set-readonly"/>
     <action name="action-stock-move-line-hide-reserved-qty-attrs"/>
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
-    <action name="action-stock-move-line-attrs-display-different-language-message"/>
+    <action name="action-stock-move-line-attrs-display-different-language-message"
+      if="__parent__ &amp;&amp; __parent__.partner"/>
+    <action
+      name="action-stock-move-line-attrs-display-different-language-message-edit-window-blank"
+      if="stockMove &amp;&amp; stockMove.partner"/>
   </action-group>
 
   <action-attrs name="action-stock-move-line-hide-reserved-qty-attrs">
@@ -859,9 +863,17 @@
 
   <action-attrs name="action-stock-move-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__.partner.language.code.equals(__user__.getLanguage())"/>
+      expr="eval: __parent__?.partner?.language?.code.equals(__user__.getLanguage())"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__.partner.language.code.toUpperCase()"/>
+      expr="eval: __parent__?.partner?.language?.code.toUpperCase()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-stock-move-line-attrs-display-different-language-message-edit-window-blank">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: stockMove?.partner?.language?.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: stockMove?.partner?.language?.code.toUpperCase()"/>
   </action-attrs>
 
   <search-filters name="stock-move-line-filters"

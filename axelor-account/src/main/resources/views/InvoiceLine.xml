@@ -387,7 +387,11 @@
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
-    <action name="action-invoice-line-attrs-display-different-language-message"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"
+      if="__parent__"/>
+    <action
+      name="action-invoice-line-attrs-display-different-language-message-edit-window-blank"
+      if="invoice"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -397,7 +401,11 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
-    <action name="action-invoice-line-attrs-display-different-language-message"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"
+      if="__parent__"/>
+    <action
+      name="action-invoice-line-attrs-display-different-language-message-edit-window-blank"
+      if="invoice"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -626,8 +634,16 @@
 
   <action-attrs name="action-invoice-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__.partner.language.code.equals(__user__.getLanguage())"/>
+      expr="eval: __parent__?.partner?.language?.code.equals(__user__.getLanguage())"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__.partner.language.code.toUpperCase()"/>
+      expr="eval: __parent__?.partner?.language?.code.toUpperCase()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-invoice-line-attrs-display-different-language-message-edit-window-blank">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: invoice?.partner?.language?.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: invoice?.partner?.language?.code.toUpperCase()"/>
   </action-attrs>
 </object-views>
