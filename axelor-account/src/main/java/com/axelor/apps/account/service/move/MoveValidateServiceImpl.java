@@ -491,7 +491,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
       if (partner != null) {
         moveLine.setPartnerId(partner.getId());
-        moveLine.setPartnerFullName(partner.getFullName());
+        moveLine.setPartnerFullName(partner.getSimpleFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
         moveLine.setDas2Activity(partner.getDas2Activity());
         moveLine.setDas2ActivityName(
