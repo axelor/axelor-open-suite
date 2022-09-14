@@ -205,7 +205,7 @@ public class IndicatorGeneratorService {
       for (Map<String, Object> row : requestResultList) {
         List<String> tempList =
             row.values().stream()
-                .map(x -> x != null ? x.toString().replaceAll("(\\t|\\r?\\n)+", " ") : "null")
+                .map(x -> x != null ? x.toString().replaceAll("[\\t\\r?\\n]+", " ") : "null")
                 .collect(Collectors.toList());
         queryResultData.add(tempList.toArray(new String[0]));
       }
