@@ -144,8 +144,8 @@
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="sequence" groupBy="moveLine.partner"
-    edit-icon="true">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="moveLine.partner.name,dueDate"
+    groupBy="moveLine.partner" edit-icon="true">
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
     <field name="moveLine.partner"/>

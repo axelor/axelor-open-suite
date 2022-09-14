@@ -139,7 +139,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
       baseAmount =
           (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
-              .divide(vatRate, 2, BigDecimal.ROUND_HALF_UP);
+              .divide(vatRate.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
     } else {
       baseAmount = invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit());
     }

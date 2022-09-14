@@ -155,7 +155,11 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
-      if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
+      if (!modelName.equals("Move")
+          && !modelName.equals("Reconcile")
+          && !modelName.equals("InvoiceTerm")
+          && !modelName.equals("AnalyticMoveLine")
+          && !modelName.equals("TaxPaymentMoveLine")) {
         errorMessage +=
             String.format(
                 I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
