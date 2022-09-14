@@ -1,3 +1,0 @@
----
-title: "Invoice/Sale Order/Purchase Order : Fix NPE on changing fiscal position when product is not filled in invoice line/sale order line/purchase order line."
-type: fix
