@@ -397,6 +397,8 @@
 "AccountingReportType15.vatOnDebit",,,
 "AccountingReportType15.vatTotal",,,
 "AccountingReportType15.year",,,
+"AccountingReportType15.noAdvancePaymentFound",,,
+"AccountingReportType15.noPaymentFound",,,
 "AccountingReportType16.account_name",,,
 "AccountingReportType16.acquisition_date",,,
 "AccountingReportType16.asset_name",,,
