@@ -48,7 +48,7 @@ public class SelectionBuilderService {
     List<String> valuesWithTitles = new ArrayList<String>();
 
     if (CollectionUtils.isEmpty(options)) {
-      return Joiner.on("\n").join(allSame ? values : valuesWithTitles);
+      return Joiner.on("\n").join(values);
     }
 
     for (Option option : options) {
