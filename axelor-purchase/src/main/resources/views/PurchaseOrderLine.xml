@@ -341,11 +341,7 @@
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
-    <action name="action-purchase-order-line-attrs-display-different-language-message"
-      if="__parent__"/>
-    <action
-      name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank"
-      if="purchaseOrder"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -359,11 +355,7 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
-    <action name="action-purchase-order-line-attrs-display-different-language-message"
-      if="__parent__"/>
-    <action
-      name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank"
-      if="purchaseOrder"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -602,9 +594,16 @@
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.supplierPartner?.language?.code.equals(__user__.getLanguage())"/>
+      expr="eval: __parent__?.supplierPartner?.language?.code.equals(__user__.getLanguage())"
+      if="__parent__"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.supplierPartner?.language?.code.toUpperCase()"/>
+      expr="eval: __parent__?.supplierPartner?.language?.code.toUpperCase()" if="__parent__"/>
+
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code.equals(__user__.getLanguage())"
+      if="purchaseOrder"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code.toUpperCase()" if="purchaseOrder"/>
   </action-attrs>
 
   <action-attrs
