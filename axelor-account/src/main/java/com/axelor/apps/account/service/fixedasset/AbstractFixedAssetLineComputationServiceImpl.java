@@ -503,12 +503,19 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
+    LocalDate date;
     if (getFirstDateDepreciationInitSelect(fixedAsset)
             == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
         && fixedAsset.getFirstServiceDate() != null) {
-      return fixedAsset.getFirstServiceDate().withDayOfMonth(1);
+      date = fixedAsset.getFirstServiceDate();
     } else {
-      return fixedAsset.getAcquisitionDate().withDayOfMonth(1);
+      date = fixedAsset.getAcquisitionDate();
     }
+
+    if (getComputationMethodSelect(fixedAsset)
+        .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+      return date.withDayOfMonth(1);
+    }
+    return date;
   }
 }
