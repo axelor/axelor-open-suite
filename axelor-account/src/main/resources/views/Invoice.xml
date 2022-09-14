@@ -1624,6 +1624,8 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-group-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
@@ -1637,6 +1639,10 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
     <action name="action-invoice-method-validate"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-group-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
