@@ -259,6 +259,10 @@
         form-view="user-form" grid-view="user-grid"/>
       <field name="team" canEdit="false" colSpan="6" form-view="team-form"
         grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+      <field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"
+        if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
+        if="__config__.app.getApp('base').getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
       <field name="lastEventDate" readonly="true"/>
       <field name="nextScheduledEventDate"/>
@@ -383,6 +387,7 @@
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <field name="leadStatus" expr="eval: __repo__(LeadStatus).getDefaultStatus()"/>
+    <field name="agency" expr="eval:__user__.activeAgency"/>
   </action-record>
 
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
