@@ -2016,7 +2016,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["120&lt;days&lt;150"]</expression>
+                                        <expression name="value" type="javascript">row["150&lt;days&lt;180"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
