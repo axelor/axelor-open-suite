@@ -5,6 +5,8 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ConsumedProductListResponse;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
+import com.axelor.apps.production.rest.dto.ProducedProductListResponse;
+import com.axelor.apps.production.rest.dto.ProducedProductResponse;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.RequestValidator;
@@ -44,5 +46,25 @@ public class ManufOrderRestController {
         Response.Status.OK,
         "Request successfully completed",
         new ConsumedProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+  }
+
+  @Path("/produced-products/fetch")
+  @POST
+  @HttpExceptionHandler
+  public Response fetchProducedProducts(ManufOrderProductGetRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .readAccess(Arrays.asList(ManufOrder.class, StockMove.class, ProdProduct.class))
+        .check();
+
+    List<ProducedProductResponse> producedProductList =
+        Beans.get(ManufOrderProductRestService.class)
+            .getProducedProductList(requestBody.fetchManufOrder());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Request successfully completed",
+        new ProducedProductListResponse(producedProductList, requestBody.fetchManufOrder()));
   }
 }

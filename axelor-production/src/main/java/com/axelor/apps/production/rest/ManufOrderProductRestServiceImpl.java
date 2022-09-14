@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
+import com.axelor.apps.production.rest.dto.ProducedProductResponse;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.exception.AxelorException;
@@ -149,6 +150,104 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       Product product = line.getProduct();
       if (isProductNotChecked(checkProducts, product)) {
         result.add(createConsumedProductResponse(manufOrder, line, BigDecimal.ZERO));
+        checkProducts.add(product);
+      }
+    }
+
+    return result;
+  }
+
+  public BigDecimal getGlobalProducedPlannedQty(Product product, ManufOrder manufOrder) {
+    List<ProdProduct> prodProducts =
+        getProdProductsOfProduct(manufOrder.getToProduceProdProductList(), product);
+
+    BigDecimal plannedQty = BigDecimal.ZERO;
+
+    if (prodProducts == null || prodProducts.isEmpty()) {
+      return BigDecimal.ZERO;
+    }
+
+    for (ProdProduct prodProduct : prodProducts) {
+      plannedQty = plannedQty.add(prodProduct.getQty());
+    }
+
+    return plannedQty;
+  }
+
+  public ProducedProductResponse createProducedProductResponse(
+      StockMoveLine stockMoveLine, BigDecimal plannedQty) {
+    return new ProducedProductResponse(
+        stockMoveLine.getProduct(),
+        BigDecimal.ZERO.max(plannedQty),
+        stockMoveLine.getQty(),
+        stockMoveLine.getTrackingNumber(),
+        stockMoveLine.getUnit());
+  }
+
+  @Override
+  public List<ProducedProductResponse> getProducedProductList(ManufOrder manufOrder) {
+    List<Product> checkProducts = new ArrayList<>();
+    List<ProducedProductResponse> result =
+        new ArrayList<>(getPlannedProducedProductList(manufOrder, checkProducts));
+    result.addAll(getAdditionalProducedProductList(manufOrder, checkProducts));
+    return result;
+  }
+
+  public void getAllProducedProductResponsesOfProduct(
+      ManufOrder manufOrder,
+      Product product,
+      List<StockMoveLine> productLines,
+      List<ProducedProductResponse> productResponses) {
+    BigDecimal producedQty = BigDecimal.ZERO;
+    int lastIndex = productLines.size() - 1;
+    StockMoveLine lastProductLine = productLines.get(lastIndex);
+    List<StockMoveLine> productLinesSubList = productLines.subList(0, lastIndex);
+
+    for (StockMoveLine currentLine : productLinesSubList) {
+      productResponses.add(
+          createProducedProductResponse(
+              currentLine,
+              currentLine
+                  .getQty()
+                  .min(getGlobalProducedPlannedQty(product, manufOrder).subtract(producedQty))));
+      producedQty = producedQty.add(currentLine.getQty());
+    }
+
+    productResponses.add(
+        createProducedProductResponse(
+            lastProductLine,
+            getGlobalProducedPlannedQty(product, manufOrder).subtract(producedQty)));
+  }
+
+  public List<ProducedProductResponse> getPlannedProducedProductList(
+      ManufOrder manufOrder, List<Product> checkProducts) {
+    List<ProducedProductResponse> result = new ArrayList<>();
+
+    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+      Product product = prodProduct.getProduct();
+      if (isProductNotChecked(checkProducts, product)) {
+        List<StockMoveLine> productLines =
+            getStockMoveLinesOfProduct(manufOrder.getProducedStockMoveLineList(), product);
+
+        if (productLines.size() == 1) {
+          result.add(createProducedProductResponse(productLines.get(0), prodProduct.getQty()));
+        } else {
+          getAllProducedProductResponsesOfProduct(manufOrder, product, productLines, result);
+        }
+        checkProducts.add(product);
+      }
+    }
+    return result;
+  }
+
+  public List<ProducedProductResponse> getAdditionalProducedProductList(
+      ManufOrder manufOrder, List<Product> checkProducts) {
+    List<ProducedProductResponse> result = new ArrayList<>();
+
+    for (StockMoveLine line : manufOrder.getProducedStockMoveLineList()) {
+      Product product = line.getProduct();
+      if (isProductNotChecked(checkProducts, product)) {
+        result.add(createProducedProductResponse(line, BigDecimal.ZERO));
         checkProducts.add(product);
       }
     }
