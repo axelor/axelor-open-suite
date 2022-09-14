@@ -87,6 +87,7 @@
             <field name="isSupplier" showTitle="true" colSpan="3"/>
             <field name="leadScoring" showIf="isProspect" widget="ImageSelect"
               x-labels="false" colSpan="3" showTitle="true"/>
+            <field name="agency"/>
           </panel>
 
           <panel name="generalContactDetailsPanel" title="General contact details"

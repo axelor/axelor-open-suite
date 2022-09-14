@@ -181,4 +181,10 @@
     <option value="5">1000 to 2000</option>
     <option value="6">Over 2000</option>
   </selection>
+
+  <selection name="crm.reporting.type.select">
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+  </selection>
+
 </object-views>

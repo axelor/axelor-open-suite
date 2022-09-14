@@ -222,6 +222,7 @@ public class ConvertLeadWizardController {
     response.setAttr("partnerCategory", "value", lead.getType());
     response.setAttr("sizeSelect", "value", lead.getSizeSelect());
     response.setAttr("isNurturing", "value", lead.getIsNurturing());
+    response.setAttr("agency", "value", lead.getAgency());
     if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
       if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
           == CompanyRepository.CATEGORY_CUSTOMER) {

@@ -447,6 +447,7 @@
               hideIf="isEmployee"/>
             <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
               form-view="company-form" grid-view="company-grid"/>
+            <field name="agency" if="__config__.app.getApp('base').getAgenciesManagement()"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">
@@ -1441,6 +1442,7 @@
     <field name="isCarrier" expr="true" if="_isCarrier"/>
     <field name="isSubcontractor" expr="true" if="_isSubcontractor"/>
     <field name="partnerTypeSelect" expr="#{2}" if="created_from_user_id"/>
+    <field name="agency" expr="eval:__user__.activeAgency"/>
   </action-record>
 
   <action-record name="action-partner-contact-record-default"

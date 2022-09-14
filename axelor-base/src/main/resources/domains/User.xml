@@ -68,6 +68,11 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading name"></many-to-one>
 
+    <many-to-one name="activeAgency" ref="com.axelor.apps.base.db.Agency"
+      title="Active agency"/>
+    <many-to-many name="agencySet" ref="com.axelor.apps.base.db.Agency"
+      title="Agencies"/>
+
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>
 

@@ -64,6 +64,7 @@
           onChange="action-base-validate-multi-company-boolean"/>
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
+        <field name="agenciesManagement" widget="boolean-switch"/>
         <panel name="printingsPanel" title="Printings" colSpan="12">
           <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
             colSpan="3"
