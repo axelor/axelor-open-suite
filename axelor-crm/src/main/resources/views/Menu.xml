@@ -465,4 +465,13 @@
     <view type="form" name="lead-status-form"/>
   </action-view>
 
+  <menuitem title="Sales pipeline follow-up" name="crm-root-crm-reporting"
+    parent="crm-root" action="crm.root.crm.reporting" order="31"/>
+  <action-view name="crm.root.crm.reporting" title="Sales pipeline follow-up"
+    model="com.axelor.apps.crm.db.CrmReporting">
+    <view type="grid" name="crm-reporting-grid"/>
+    <view type="form" name="crm-reporting-form"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
 </object-views>

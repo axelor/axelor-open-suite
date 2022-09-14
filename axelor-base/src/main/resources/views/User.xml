@@ -105,11 +105,16 @@
           form-view="trading-name-form" grid-view="trading-name-grid"/>
         <field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"
           onSelect="action-user-attrs-domain-active-team"/>
+        <field name="activeAgency" canEdit="false"
+          onSelect="action-user-attrs-domain-active-agency" form-view="agency-form"
+          grid-view="agency-grid" if="__config__.app.getApp('base').getAgenciesManagement()"/>
         <panel-related name="companySetPanel" title="Internal companies"
           field="companySet" showTitle="false" canNew="false"
           showIf="[2,5].indexOf(stepStatusSelect) > -1" colSpan="12"/>
         <field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid"
           colSpan="12"/>
+        <field name="agencySet" colSpan="12" canEdit="false" form-view="agency-form"
+          grid-view="agency-grid" if="__config__.app.getApp('base').getAgenciesManagement()"/>
       </panel>
       <panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
         <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
@@ -252,6 +257,14 @@
           onSelect="action-user-attrs-domain-active-team"/>
         <field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid"
           colSpan="12"/>
+      </panel>
+      <panel if="__config__.app.getApp('base').getAgenciesManagement()" name="agencyPanel"
+        title="Agencies" showIf="[2,5].indexOf(stepStatusSelect) > -1">
+        <field name="activeAgency" canEdit="false"
+          onSelect="action-user-attrs-domain-active-agency" form-view="agency-form"
+          grid-view="agency-grid"/>
+        <field name="agencySet" colSpan="12" canEdit="false" form-view="agency-form"
+          grid-view="agency-grid"/>
       </panel>
       <panel name="calendarsConfigPanel" title="Calendars Configuration"
         showIf="[2,5].indexOf(stepStatusSelect) > -1">
@@ -399,6 +412,12 @@
     <attribute name="domain"
       expr="eval: &quot; self.id IN (${(teamSet?.collect{it.id})?.join(',')}) &quot; "
       for="activeTeam"/>
+  </action-attrs>
+
+  <action-attrs name="action-user-attrs-domain-active-agency">
+    <attribute name="domain"
+      expr="eval:agencySet?.size() > 0 ? &quot; self.id IN (${agencySet?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; "
+      for="activeAgency"/>
   </action-attrs>
 
   <action-attrs name="action-user-attrs">

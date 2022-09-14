@@ -68,6 +68,8 @@
     <string name="fullName" title="Contact name" namecolumn="true"/>
 
     <boolean name="isNurturing" title="Nurturing"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="agency" ref="com.axelor.apps.base.db.Agency" title="Agency"/>
 
     <integer name="numberOfEmployees" title="Number of employees"/>
     <boolean name="isConverted" title="Converted"/>
