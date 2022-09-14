@@ -61,15 +61,15 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
             .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
       if (fixedAsset.getCorrectedAccountingValue().signum() > 0) {
         // Nb depreciation = new nb depreciation - ( nb lines realized + prorata )
-        return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation() - nbRealizedLines)
+        return BigDecimal.valueOf((fixedAsset.getNumberOfDepreciation() - nbRealizedLines))
             .subtract(initialProrata);
       } else {
         // Nb depreciation = new nb depreciation - ( nb lines realized + prorata - 1 )
-        return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation() - nbRealizedLines + 1)
+        return BigDecimal.valueOf((fixedAsset.getNumberOfDepreciation() - nbRealizedLines + 1))
             .subtract(initialProrata);
       }
     }
-    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation() - nbRealizedLines);
+    return BigDecimal.valueOf((fixedAsset.getNumberOfDepreciation() - nbRealizedLines));
   }
 
   @Override

@@ -318,7 +318,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
                     + (depreciationDay - acquisitionDay))
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod =
-        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30L)
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     prorataTemporis =
         nbDaysBetweenAcqAndFirstDepDate.divide(

@@ -152,9 +152,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
     return BigDecimal.valueOf(
-        getFixedAssetLineList(fixedAsset).size()
+        (getFixedAssetLineList(fixedAsset).size()
             - listSizeAfterClear
-            + fixedAsset.getNbrOfPastDepreciations());
+            + fixedAsset.getNbrOfPastDepreciations()));
   }
 
   @Override
