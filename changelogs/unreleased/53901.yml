@@ -1,3 +1,0 @@
----
-title: "Invoice: Fixed a bug where on generation of a invoice the company bank details was changed even if it was explicity given"
-type: fix

@@ -1,3 +1,11 @@
+## [5.4.24] (2022-09-15)
+
+#### Fixed
+
+* Invoice: fixed a bug where, when generating an invoice, the default company bank details was used instead of the one selected by the user.
+* Partner: fixed a regression where the partner displayed name was first name followed by name, it is now back to name followed by first name.
+* Move: fixed an issue were validating a large amount of moves would lead to a technical error stopping the process.
+
 ## [5.4.23] (2022-09-01)
 
 #### Fixed
@@ -675,6 +683,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.24]: https://github.com/axelor/axelor-open-suite/compare/v5.4.23...v5.4.24
 [5.4.23]: https://github.com/axelor/axelor-open-suite/compare/v5.4.22...v5.4.23
 [5.4.22]: https://github.com/axelor/axelor-open-suite/compare/v5.4.21...v5.4.22
 [5.4.21]: https://github.com/axelor/axelor-open-suite/compare/v5.4.20...v5.4.21
