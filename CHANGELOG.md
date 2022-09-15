@@ -1,3 +1,18 @@
+## [6.2.8] (2022-09-15)
+
+#### Fixed
+
+* Invoice: fixed a bug where, when generating an invoice, the default company bank details was used instead of the one selected by the user.
+* Optimize stock history batch update to reduce process duration.
+* Analytic distribution line: Fix axis with no company being selectable.
+* Leave Request: prevent the creation of leave requests for former employees.
+* Partner: fixed a regression where the partner displayed name was first name followed by name, it is now back to name followed by first name.
+* Accounting report: fixed duplicate report error message raised for custom report types.
+* DAS2: fix error message when phone number from DAS2 contact is missing.
+* Accounting report config line: fixed bugs where the alternation character '|' could not be used in account code and values of the report could be duplicated.
+* Invoice: fixed an issue where financial discount dead line date was not correctly computed on a copied invoice.
+* Move: fixed an issue were validating a large amount of moves would lead to a technical error stopping the process.
+
 ## [6.2.7] (2022-09-01)
 
 #### Fixed
@@ -574,6 +589,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.8]: https://github.com/axelor/axelor-open-suite/compare/v6.2.7...v6.2.8
 [6.2.7]: https://github.com/axelor/axelor-open-suite/compare/v6.2.6...v6.2.7
 [6.2.6]: https://github.com/axelor/axelor-open-suite/compare/v6.2.5...v6.2.6
 [6.2.5]: https://github.com/axelor/axelor-open-suite/compare/v6.2.4...v6.2.5
