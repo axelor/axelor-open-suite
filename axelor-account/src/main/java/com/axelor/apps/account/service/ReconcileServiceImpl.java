@@ -428,8 +428,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     Currency companyCurrency = debitMoveLine.getMove().getCompanyCurrency();
 
     if (!Objects.equals(debitCurrency, creditCurrency)
-        && (!Objects.equals(debitCurrency, companyCurrency)
-            || !Objects.equals(creditCurrency, companyCurrency))) {
+        && !Objects.equals(debitCurrency, companyCurrency)
+        && !Objects.equals(creditCurrency, companyCurrency)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           AccountExceptionMessage.RECONCILE_WRONG_CURRENCY);

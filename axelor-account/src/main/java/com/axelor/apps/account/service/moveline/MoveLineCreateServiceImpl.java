@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
@@ -623,7 +624,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     BigDecimal currencyRate =
         currencyService.getCurrencyConversionRate(
             invoice.getCurrency(), companyCurrency, invoice.getInvoiceDate());
+    BigDecimal companyAmount;
+
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      companyAmount =
+          invoice
+              .getCompanyInTaxTotal()
+              .multiply(invoiceTerm.getPercentage())
+              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
         account = invoiceService.getPartnerAccount(invoice, true);
@@ -633,7 +642,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 partner,
                 account,
                 invoiceTerm.getAmount(),
-                invoiceTerm.getCompanyAmount(),
+                companyAmount,
                 currencyRate,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
@@ -652,7 +661,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   partner,
                   account,
                   invoiceTerm.getAmount(),
-                  invoiceTerm.getCompanyAmount(),
+                  companyAmount,
                   currencyRate,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -664,10 +673,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
-            moveLine.setDebit(moveLine.getDebit().add(invoiceTerm.getCompanyAmount()));
+            moveLine.setDebit(moveLine.getDebit().add(companyAmount));
           } else {
             // Credit
-            moveLine.setCredit(moveLine.getCredit().add(invoiceTerm.getCompanyAmount()));
+            moveLine.setCredit(moveLine.getCredit().add(companyAmount));
           }
           moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
@@ -680,6 +689,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.addInvoiceTermListItem(invoiceTerm);
         }
       }
+
+      moveLine.setDebit(
+          moveLine
+              .getDebit()
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      moveLine.setCredit(
+          moveLine
+              .getCredit()
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
       moveLines.add(moveLine);
     }
 

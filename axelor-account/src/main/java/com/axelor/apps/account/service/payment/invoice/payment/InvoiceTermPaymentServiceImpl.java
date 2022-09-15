@@ -234,8 +234,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
-    BigDecimal ratio = invoiceTerm.getMoveLine().getCurrencyRate();
-    return paidAmount
+    BigDecimal ratio = paidAmount.divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+
+    return invoiceTerm
+        .getCompanyAmount()
         .multiply(ratio)
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }

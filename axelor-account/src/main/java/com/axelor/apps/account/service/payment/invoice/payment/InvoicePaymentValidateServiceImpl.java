@@ -245,7 +245,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
 
-    move = this.fillMove(invoicePayment, move, customerAccount);
+    BigDecimal maxAmount =
+        invoiceMoveLines.stream()
+            .map(MoveLine::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    move = this.fillMove(invoicePayment, move, customerAccount, maxAmount);
     moveValidateService.accounting(move);
 
     for (MoveLine moveline : move.getMoveLineList()) {
@@ -303,7 +308,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move fillMove(InvoicePayment invoicePayment, Move move, Account customerAccount)
+  public Move fillMove(
+      InvoicePayment invoicePayment, Move move, Account customerAccount, BigDecimal maxAmount)
       throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
@@ -329,7 +335,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         invoicePayment.getInvoiceTermPaymentList().stream()
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
+            .orElse(BigDecimal.ZERO)
+            .min(maxAmount);
     BigDecimal currencyRate =
         companyPaymentAmount.divide(
             paymentAmount, AppAccountService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);

@@ -1538,9 +1538,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(BigDecimal.valueOf(total.subtract(invoiceTermTotal).signum()));
 
     InvoiceTerm lastInvoiceTerm = invoiceTermList.get(invoiceTermList.size() - 1);
-    lastInvoiceTerm.setAmount(lastInvoiceTerm.getAmount().add(diff));
-    lastInvoiceTerm.setAmountRemaining(lastInvoiceTerm.getAmountRemaining().add(diff));
-    this.computeCompanyAmounts(lastInvoiceTerm);
+
+    if (isCompanyAmount) {
+      lastInvoiceTerm.setCompanyAmount(lastInvoiceTerm.getCompanyAmount().add(diff));
+      lastInvoiceTerm.setCompanyAmountRemaining(
+          lastInvoiceTerm.getCompanyAmountRemaining().add(diff));
+    } else {
+      lastInvoiceTerm.setAmount(lastInvoiceTerm.getAmount().add(diff));
+      lastInvoiceTerm.setAmountRemaining(lastInvoiceTerm.getAmountRemaining().add(diff));
+    }
 
     return invoiceTermTotal.add(diff);
   }
