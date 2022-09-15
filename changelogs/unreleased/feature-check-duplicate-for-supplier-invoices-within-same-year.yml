@@ -1,5 +1,0 @@
----
-title: "Invoice: Check duplicate for supplier invoices with same partner and supplierInvoiceNb within same year"
-type: feature
-description: |
-  "Now display a message if there is a duplicate of a invoice with same partner and supplierInvoiceNb within same year"
