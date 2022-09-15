@@ -337,9 +337,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO)
             .min(maxAmount);
-    BigDecimal currencyRate =
-        companyPaymentAmount.divide(
-            paymentAmount, AppAccountService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
