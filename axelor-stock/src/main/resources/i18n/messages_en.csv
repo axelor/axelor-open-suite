@@ -533,6 +533,7 @@
 "Please fill unit for the stock location line in %s for the product %s.",,,
 "Please fill unit for the stock location line with tracking number %s in %s for the product %s.",,,
 "Please filled supplier shipment date and supplier shipment reference.",,,
+"Please indicate a new quantity.",,,
 "Please select lines to split",,,
 "Please select the Stock Location(s) to print.",,,
 "Please select the StockMove(s) to print.",,,
