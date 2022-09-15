@@ -20,12 +20,36 @@
       <insert position="after">
         <panel name="bankOrderPanel" sidebar="true" title="Bank order"
           showIf="paymentMode &amp;&amp; paymentMode.generateBankOrder &amp;&amp; statusSelect &gt; 1">
-          <field name="bankOrder" colSpan="12" readonly="true"/>
           <field name="paymentMode.generateBankOrder" hidden="true" colSpan="12"/>
         </panel>
       </insert>
     </extend>
+    <extend target="//button[@name='cancelBtn']">
+      <insert position="after">
+        <button name="displayGeneratedMoves" title="Display generated moves"
+          showIf="statusSelect &gt; 1" onClick="action-move-view-generated-payments-moves"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='bankOrder']">
+      <insert position="after">
+        <button name="displayBankOrder" title="Display bank order"
+          onClick="action-bank-order-view-generated-bank-order"/>
+      </insert>
+    </extend>
 
   </form>
-
+  <action-view name="action-move-view-generated-payments-moves"
+    title="Generated payments moves" model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>self.origin= :_sequence</domain>
+    <context name="_sequence" expr="eval:sequence"/>
+  </action-view>
+  <action-view name="action-bank-order-view-generated-bank-order"
+    title="Generated bank order" model="com.axelor.apps.bankpayment.db.BankOrder">
+    <view type="grid" name="bank-order-grid"/>
+    <view type="form" name="bank-order-form"/>
+    <domain>self.id= :_bankOrderId</domain>
+    <context name="_bankOrderId" expr="eval:bankOrder.id"/>
+  </action-view>
 </object-views>
