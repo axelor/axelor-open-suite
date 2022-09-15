@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.exception;
 
 public final class AccountExceptionMessage {
@@ -98,6 +115,9 @@ public final class AccountExceptionMessage {
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/
+      "Account of financial discount is missing for company: %s (tax: %s)" /*)*/;
 
   /** AccountingSituationService * */
   public static final String ACCOUNTING_SITUATION_1 = /*$$(*/
@@ -676,6 +696,14 @@ public final class AccountExceptionMessage {
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_46 = /*$$(*/
       "%s : You must configure an supplier advance payment account for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_47 = /*$$(*/
+      "%s : You must configure a purchase financial discount tax for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_48 = /*$$(*/
+      "%s : You must configure a sale financial discount tax for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_49 = /*$$(*/
+      "%s : You must configure a purchase financial discount account for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_50 = /*$$(*/
+      "%s : You must configure a sale financial discount account for the company %s" /*)*/;
 
   public static final String ACCOUNT_CONFIG_MISSING_HOLDBACK_CUSTOMER = /*$$(*/
       "%s : You must configure a holdback customer account for the company %s" /*)*/;

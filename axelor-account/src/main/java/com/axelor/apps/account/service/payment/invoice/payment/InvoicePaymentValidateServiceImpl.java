@@ -453,10 +453,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   protected Account getFinancialDiscountAccount(Invoice invoice, Company company)
       throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (InvoiceToolService.isPurchase(invoice)) {
-      return accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount();
+      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
     } else {
-      return accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount();
+      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
     }
   }
 

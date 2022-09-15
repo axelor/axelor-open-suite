@@ -708,32 +708,39 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+
     if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
       return null;
-    } else {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    }
 
-        FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
-        purchaseOrderLine.setTaxLine(taxLine);
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
-
-        purchaseOrderLine.setTaxEquiv(taxEquiv);
-
-        purchaseOrderLine.setInTaxTotal(
-            purchaseOrderLine
-                .getExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        purchaseOrderLine.setCompanyInTaxTotal(
-            purchaseOrderLine
-                .getCompanyExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
+      // Skip line update if product is not filled
+      if (purchaseOrderLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+
+      TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
+      purchaseOrderLine.setTaxLine(taxLine);
+
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
+              purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
+
+      purchaseOrderLine.setTaxEquiv(taxEquiv);
+
+      purchaseOrderLine.setInTaxTotal(
+          purchaseOrderLine
+              .getExTaxTotal()
+              .multiply(purchaseOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
+      purchaseOrderLine.setCompanyInTaxTotal(
+          purchaseOrderLine
+              .getCompanyExTaxTotal()
+              .multiply(purchaseOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
     }
     return purchaseOrderLineList;
   }
