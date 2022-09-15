@@ -462,12 +462,20 @@ public class BankReconciliationController {
 
   public void computeTotalOfSelectedMoveLines(ActionRequest request, ActionResponse response) {
     try {
+      Long bankReconciliationId =
+          Long.valueOf(
+              (Integer)
+                  ((LinkedHashMap<?, ?>) request.getContext().get("_bankReconciliation"))
+                      .get("id"));
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliationId);
+
       List<LinkedHashMap> toReconcileMoveLineSet =
           (List<LinkedHashMap>) (request.getContext().get("toReconcileMoveLineSet"));
       response.setValue(
           "$selectedMoveLineTotal",
           Beans.get(BankReconciliationService.class)
-              .getSelectedMoveLineTotal(toReconcileMoveLineSet));
+              .getSelectedMoveLineTotal(bankReconciliation, toReconcileMoveLineSet));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

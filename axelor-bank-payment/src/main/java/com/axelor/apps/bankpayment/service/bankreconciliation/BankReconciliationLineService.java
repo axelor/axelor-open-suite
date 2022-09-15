@@ -111,8 +111,28 @@ public class BankReconciliationLineService {
 
     BigDecimal bankDebit = bankReconciliationLine.getDebit();
     BigDecimal bankCredit = bankReconciliationLine.getCredit();
-    BigDecimal moveLineDebit = moveLine.getDebit();
-    BigDecimal moveLineCredit = moveLine.getCredit();
+    boolean isDebit = bankDebit.compareTo(bankCredit) > 0;
+
+    BigDecimal moveLineDebit;
+    BigDecimal moveLineCredit;
+
+    if (isDebit) {
+      if (BankReconciliationToolService.isForeignCurrency(
+          bankReconciliationLine.getBankReconciliation())) {
+        moveLineCredit = moveLine.getCurrencyAmount();
+      } else {
+        moveLineCredit = moveLine.getCredit();
+      }
+      moveLineDebit = moveLine.getDebit();
+    } else {
+      if (BankReconciliationToolService.isForeignCurrency(
+          bankReconciliationLine.getBankReconciliation())) {
+        moveLineDebit = moveLine.getCurrencyAmount();
+      } else {
+        moveLineDebit = moveLine.getDebit();
+      }
+      moveLineCredit = moveLine.getCredit();
+    }
 
     if (bankDebit.add(bankCredit).compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
