@@ -75,6 +75,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
     return new ManufOrderProductResponse(
         product,
+        stockMoveLine,
         BigDecimal.ZERO.max(plannedQty),
         stockMoveLine.getQty(),
         missingQty,
