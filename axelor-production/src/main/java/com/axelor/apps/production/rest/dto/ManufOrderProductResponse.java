@@ -4,32 +4,38 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.tool.api.ResponseStructure;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
 
-public class ConsumedProductResponse extends ResponseStructure {
+public class ManufOrderProductResponse extends ResponseStructure {
 
   private final Long productId;
   private final String productName;
   private final BigDecimal plannedQty;
-  private final BigDecimal consumedQty;
+  private final BigDecimal realQty;
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private final BigDecimal missingQty;
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private final BigDecimal availableStock;
+
   private final TrackingNumberResponse trackingNumber;
   private final UnitResponse unit;
 
-  public ConsumedProductResponse(
+  public ManufOrderProductResponse(
       Product product,
       BigDecimal plannedQty,
-      BigDecimal consumedQty,
+      BigDecimal realQty,
       BigDecimal missingQty,
       BigDecimal availableStock,
-      Unit unit,
-      TrackingNumber trackingNumber) {
+      TrackingNumber trackingNumber,
+      Unit unit) {
     super(product.getVersion());
     this.productId = product.getId();
     this.productName = product.getName();
     this.plannedQty = plannedQty;
-    this.consumedQty = consumedQty;
+    this.realQty = realQty;
     this.missingQty = missingQty;
     this.availableStock = availableStock;
     this.unit = new UnitResponse(unit);
@@ -52,8 +58,8 @@ public class ConsumedProductResponse extends ResponseStructure {
     return plannedQty;
   }
 
-  public BigDecimal getConsumedQty() {
-    return consumedQty;
+  public BigDecimal getRealQty() {
+    return realQty;
   }
 
   public BigDecimal getMissingQty() {
