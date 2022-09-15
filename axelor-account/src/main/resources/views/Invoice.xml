@@ -857,7 +857,8 @@ InvoiceSet.length > 0))"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
-      <button name="validateAndVentilateBtn" hidden="true" title="Validate  onClick="action-invoice-group-validate-and-ventilate-onclick"/>
+      <button name="validateAndVentilateBtn" hidden="true" title="Validate"
+        onClick="action-invoice-group-validate-and-ventilate-onclick"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
           title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
