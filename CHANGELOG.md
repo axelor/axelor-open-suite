@@ -1,3 +1,11 @@
+## [6.0.31] (2022-09-15)
+
+#### Fixed
+
+* Invoice: fixed a bug where, when generating an invoice, the default company bank details was used instead of the one selected by the user.
+* Partner: fixed a regression where the partner displayed name was first name followed by name, it is now back to name followed by first name.
+* Move: fixed an issue were validating a large amount of moves would lead to a technical error stopping the process.
+
 ## [6.0.30] (2022-09-01)
 
 #### Fixed
@@ -917,6 +925,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.31]: https://github.com/axelor/axelor-open-suite/compare/v6.0.30...v6.0.31
 [6.0.30]: https://github.com/axelor/axelor-open-suite/compare/v6.0.29...v6.0.30
 [6.0.29]: https://github.com/axelor/axelor-open-suite/compare/v6.0.28...v6.0.29
 [6.0.28]: https://github.com/axelor/axelor-open-suite/compare/v6.0.27...v6.0.28
