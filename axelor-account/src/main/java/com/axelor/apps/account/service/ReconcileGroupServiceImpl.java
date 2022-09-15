@@ -263,7 +263,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     return reconcileRepository
         .all()
         .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :confirmed")
-        .bind("reconcileGroupId", reconcileGroup.getId())
+        .bind("reconcileGroupId", reconcileGroup != null ? reconcileGroup.getId() : 0)
         .bind("confirmed", ReconcileRepository.STATUS_CONFIRMED)
         .fetch();
   }

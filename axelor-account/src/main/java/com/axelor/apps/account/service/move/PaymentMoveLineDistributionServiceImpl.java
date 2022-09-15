@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -36,12 +35,15 @@ import java.util.List;
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
   protected PaymentMoveLineDistributionRepository paymentMvlDistributionRepository;
+  protected ReconcileRepository reconcileRepository;
 
   @Inject
   public PaymentMoveLineDistributionServiceImpl(
-      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository) {
+      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository,
+      ReconcileRepository reconcileRepository) {
 
     this.paymentMvlDistributionRepository = paymentMvlDistributionRepository;
+    this.reconcileRepository = reconcileRepository;
   }
 
   @Override
@@ -64,34 +66,37 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
         move.getMoveLineList().stream()
             .map(MoveLine::getDebit)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    BigDecimal paymentAmount = reconcile.getAmount();
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      // ignore move lines related to taxes
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        continue;
-      }
-      PaymentMoveLineDistribution paymentMvlD =
-          new PaymentMoveLineDistribution(
-              move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
+    if (invoiceTotalAmount.signum() > 0 && move.getPartner() != null) {
+      BigDecimal paymentAmount = reconcile.getAmount();
 
-      paymentMvlD.setOperationDate(reconcile.getReconciliationDate());
-      if (!moveLine.getAccount().getReconcileOk()) {
-        this.computeProratedAmounts(
-            paymentMvlD,
-            invoiceTotalAmount,
-            paymentAmount,
-            moveLine.getCredit().add(moveLine.getDebit()),
-            moveLine.getTaxLine());
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        // ignore move lines related to taxes
+        if (moveLine
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)) {
+          continue;
+        }
+        PaymentMoveLineDistribution paymentMvlD =
+            new PaymentMoveLineDistribution(
+                move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
+
+        paymentMvlD.setOperationDate(reconcile.getReconciliationDate());
+        if (!moveLine.getAccount().getReconcileOk()) {
+          this.computeProratedAmounts(
+              paymentMvlD,
+              invoiceTotalAmount,
+              paymentAmount,
+              moveLine.getCredit().add(moveLine.getDebit()),
+              moveLine.getTaxLine());
+        }
+        reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
       }
-      reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
+
+      reconcileRepository.save(reconcile);
     }
-
-    Beans.get(ReconcileRepository.class).save(reconcile);
   }
 
   @Override
@@ -122,7 +127,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       }
     }
     reconcile.getPaymentMoveLineDistributionList().addAll(reverseLines);
-    Beans.get(ReconcileRepository.class).save(reconcile);
+    reconcileRepository.save(reconcile);
   }
 
   protected void computeProratedAmounts(
