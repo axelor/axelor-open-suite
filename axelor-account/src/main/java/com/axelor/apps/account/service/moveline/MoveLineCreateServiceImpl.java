@@ -755,9 +755,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setDescription(move.getDescription());
 
     newOrUpdatedMoveLine.setDebit(
-        newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
+        newOrUpdatedMoveLine
+            .getDebit()
+            .add(debit.multiply(taxLine.getValue().divide(new BigDecimal(100)))));
     newOrUpdatedMoveLine.setCredit(
-        newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
+        newOrUpdatedMoveLine
+            .getCredit()
+            .add(credit.multiply(taxLine.getValue().divide(new BigDecimal(100)))));
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
 

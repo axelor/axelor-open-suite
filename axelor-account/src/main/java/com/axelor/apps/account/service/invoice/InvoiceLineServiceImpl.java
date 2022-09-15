@@ -219,9 +219,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
     } else {
-      price = price.add(price.multiply(taxLine.getValue()));
+      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }
     return price;
   }
@@ -363,10 +367,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     if (!invoice.getInAti()) {
       exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
     } else {
       inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
     companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, invoice);
@@ -506,10 +512,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
     if (Boolean.FALSE.equals(invoice.getInAti())) {
       exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
     } else {
       inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setCompanyExTaxTotal(this.getCompanyExTaxTotal(exTaxTotal, invoice));
@@ -588,7 +596,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         invoiceLine.setInTaxTotal(
             invoiceLine
                 .getExTaxTotal()
-                .multiply(invoiceLine.getTaxRate())
+                .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100)))
                 .setScale(2, RoundingMode.HALF_UP));
         invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
       }

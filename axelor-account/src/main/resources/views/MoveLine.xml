@@ -781,6 +781,10 @@
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
     <action name="action-move-line-method-description-required"/>
+    <action name="action-move-line-record-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange">
@@ -969,6 +973,11 @@
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
     <field name="description" expr="eval: __parent__?.description"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-financial-discount"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="financialDiscount" expr="eval: partner?.financialDiscount"/>
   </action-record>
 
   <action-record name="action-move-line-record-update-due-date"
