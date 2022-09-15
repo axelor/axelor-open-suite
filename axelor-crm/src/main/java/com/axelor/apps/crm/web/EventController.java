@@ -3,23 +3,19 @@
  *
  * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License, version 3, as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
@@ -55,13 +51,10 @@ import java.lang.invoke.MethodHandles;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -540,19 +533,10 @@ public class EventController {
 
   public void realizeEvent(ActionRequest request, ActionResponse response) {
     try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      event.setStatusSelect(
-          event.getTypeSelect() != ICalendarEventRepository.TYPE_TASK
-                  && event.getTypeSelect() != EventRepository.TYPE_NOTE
-              ? EventRepository.STATUS_REALIZED
-              : EventRepository.STATUS_FINISHED);
-      Beans.get(EventService.class).saveEvent(event);
-      Lead lead = event.getLead();
-      if (lead.getLastEventDate() == null
-          || lead.getLastEventDate().compareTo(event.getEndDateTime().toLocalDate()) < 0) {
-        leadLastEventDate(request, response);
-      }
+      Event event =
+          Beans.get(EventRepository.class).find(request.getContext().asType(Event.class).getId());
+
+      Beans.get(EventService.class).realizeEvent(event);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -561,80 +545,23 @@ public class EventController {
 
   public void cancelEvent(ActionRequest request, ActionResponse response) {
     try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      event.setStatusSelect(
-          event.getTypeSelect() != ICalendarEventRepository.TYPE_TASK
-                  && event.getTypeSelect() != EventRepository.TYPE_NOTE
-              ? EventRepository.STATUS_CANCELED
-              : EventRepository.STATUS_REPORTED);
-      Beans.get(EventService.class).saveEvent(event);
-      Lead lead = event.getLead();
-      LocalDateTime currentDateTime = event.getEndDateTime();
-      if (lead.getLastEventDate().equals(currentDateTime.toLocalDate())) {
-        Long eventId = event.getId();
-        List<Event> eventList =
-            lead.getEventList().stream()
-                .filter(
-                    e ->
-                        e.getId() != eventId
-                            && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
-                            && e.getEndDateTime().compareTo(currentDateTime) <= 0)
-                .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
-                .collect(Collectors.toList());
+      Event event =
+          Beans.get(EventRepository.class).find(request.getContext().asType(Event.class).getId());
 
-        LocalDateTime prevDate = null;
-        if (!eventList.isEmpty()) {
-          prevDate = eventList.get(0).getEndDateTime();
-        }
-        Beans.get(EventService.class).leadLastEventDate(lead, prevDate);
-      }
+      Beans.get(EventService.class).cancelEvent(event);
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void leadScheduledEventDate(ActionRequest request, ActionResponse response) {
+  public void fillEventDates(ActionRequest request, ActionResponse response) {
     try {
       Event event = request.getContext().asType(Event.class);
-      Lead lead = event.getLead();
-      LocalDateTime startDateTime = event.getStartDateTime();
-      if (lead != null
-          && startDateTime != null
-          && event.getStatusSelect() == EventRepository.STATUS_PLANNED) {
-        Beans.get(EventService.class).computeLeadStartDate(lead, startDateTime);
-      }
-    } catch (Exception e) {
+      Beans.get(EventService.class).fillEventDates(event);
+    } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void leadLastEventDate(ActionRequest request, ActionResponse response) {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      Lead lead = event.getLead();
-      LocalDateTime endEventDate = event.getEndDateTime();
-      if (lead != null && endEventDate != null) {
-        Beans.get(EventService.class).leadLastEventDate(lead, endEventDate);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void partnerScheduledEventDate(ActionRequest request, ActionResponse response) {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      Partner partner = event.getPartner();
-      LocalDateTime startDateTime = event.getStartDateTime();
-      if (partner != null
-          && startDateTime != null
-          && event.getStatusSelect() == EventRepository.STATUS_PLANNED) {
-        Beans.get(EventService.class).partnerStartDate(partner, startDateTime);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 }
