@@ -5,11 +5,13 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ConsumedProductListResponse;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
+import com.axelor.apps.production.rest.dto.ManufOrderProductPostRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderProductPutRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
+import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
@@ -21,6 +23,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -66,6 +69,33 @@ public class ManufOrderRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         "Quantity successfully updated.",
+        new ManufOrderStockMoveLineResponse(stockMoveLine));
+  }
+
+  @Path("/{manufOrderId}/add-product/")
+  @POST
+  @HttpExceptionHandler
+  public Response addProduct(
+      @PathParam("manufOrderId") long manufOrderId, ManufOrderProductPostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(ManufOrder.class).createAccess(StockMoveLine.class).check();
+
+    ManufOrder manufOrder =
+        ObjectFinder.find(ManufOrder.class, manufOrderId, requestBody.getVersion());
+
+    StockMoveLine stockMoveLine =
+        Beans.get(ManufOrderProductRestService.class)
+            .addManufOrderProduct(
+                requestBody.fetchProduct(),
+                requestBody.getQty(),
+                requestBody.fetchTrackingNumber(),
+                manufOrder,
+                requestBody.getProductType());
+
+    return ResponseConstructor.build(
+        Response.Status.CREATED,
+        "Product successfully added to manufacturing order.",
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }
