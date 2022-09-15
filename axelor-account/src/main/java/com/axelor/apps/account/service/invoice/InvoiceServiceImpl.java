@@ -531,7 +531,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq.toString(),
             externalRef.toString(),
             null,
-            company.getDefaultBankDetails(),
+            null,
             tradingName,
             null) {
 
@@ -630,7 +630,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq.toString(),
             externalRef.toString(),
             null,
-            company.getDefaultBankDetails(),
+            null,
             tradingName,
             null) {
 
