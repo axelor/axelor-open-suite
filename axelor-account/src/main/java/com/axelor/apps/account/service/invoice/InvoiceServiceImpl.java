@@ -340,6 +340,19 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
+    if (invoice.getFinancialDiscount() != null && InvoiceToolService.isMultiCurrency(invoice)) {
+      String message;
+
+      if (InvoiceToolService.isPurchase(invoice)) {
+        message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE;
+      } else {
+        message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE;
+      }
+
+      throw new AxelorException(
+          invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
+    }
+
     log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
 
     ventilateFactory.getVentilator(invoice).process();

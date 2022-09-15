@@ -279,6 +279,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_LINE_INVOICE_TERM_SUM_AMOUNT = /*$$(*/
       "The sum of all invoice terms is not equal to the move line amount" /*)*/;
 
+  public static final String MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT = /*$$(*/
+      "The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
+
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
       "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
 
@@ -389,6 +392,9 @@ public final class AccountExceptionMessage {
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
   public static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
       "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
+
+  public static final String RECONCILE_WRONG_CURRENCY = /*$$(*/
+      "Reconcile involves two different currencies and neither of them is the company currency" /*)*/;
 
   /** Reimbursement service and controller */
   public static final String REIMBURSEMENT_1 = /*$$(*/
@@ -781,6 +787,15 @@ public final class AccountExceptionMessage {
       "The project must be the same for all invoices" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
       "Their is at least one invoice selected that it is not validated to pay" /*)*/;
+
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE = /*$$(*/
+      "This invoice/refund indicates that the supplier offers the possibility to obtain a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
+
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE = /*$$(*/
+      "This invoice/refund indicates that the customer is eligible to a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
+
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
+      "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
 
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/

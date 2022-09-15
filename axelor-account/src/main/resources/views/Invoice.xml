@@ -1575,6 +1575,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-total-title"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -1705,6 +1706,7 @@ InvoiceSet.length > 0))"
     <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
@@ -2306,6 +2308,10 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-invoice-term-payment-mode">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateInvoiceTermPaymentMode"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-check-multi-currency">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkMultiCurrency"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
