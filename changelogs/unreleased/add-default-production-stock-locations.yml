@@ -1,5 +1,0 @@
----
-title:  "Add default production StockLocations in TradingName"
-type: feature
-description: |
-  Add default production StockLocations in TradingName and use them if enableTradingNamesManagement
