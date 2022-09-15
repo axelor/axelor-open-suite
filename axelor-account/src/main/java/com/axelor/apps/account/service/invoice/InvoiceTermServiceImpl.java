@@ -54,7 +54,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
@@ -94,7 +93,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
-  protected CurrencyService currencyService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -105,8 +103,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService,
-      CurrencyService currencyService) {
+      InvoicePaymentCreateService invoicePaymentCreateService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -115,7 +112,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
-    this.currencyService = currencyService;
   }
 
   @Override
