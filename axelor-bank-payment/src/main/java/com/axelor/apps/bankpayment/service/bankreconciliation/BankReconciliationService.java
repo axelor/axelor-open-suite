@@ -716,8 +716,7 @@ public class BankReconciliationService {
     String query =
         "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
             + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
-            + " AND self.move.statusSelect != :statusSelect"
-            + " AND self.move.company = :company";
+            + " AND self.move.statusSelect != :statusSelect";
 
     if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
       query =
