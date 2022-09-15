@@ -246,7 +246,7 @@
         </panel>
         <field name="isProspect" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly()"
-          onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
+          onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
         <field name="isEmployee" colSpan="2" widget="InlineCheckbox"
           hideIf="$readonly() || isCustomer || isSupplier || isCarrier || isFactor || partnerTypeSelect != 2"
           onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
@@ -1172,6 +1172,18 @@
     <action name="action-partner-attrs-partner-seq-editable"/>
   </action-group>
 
+  <action-group name="action-partner-group-unset-customer">
+    <action name="action-partner-record-factor-supplier-customer-no-error"/>
+    <action name="action-partner-attrs-unset-customer"/>
+    <action name="action-partner-method-check-any-sale-order-attached"
+      if="__config__.app.isApp('sale')"/>
+    <action name="action-partner-method-check-any-invoice-client-sale-attached"
+      if="__config__.app.isApp('invoice')"/>
+    <action name="action-partner-method-check-any-receivable-move-line-attached"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-partner-attrs-set-customer"/>
+  </action-group>
+
   <action-record name="action-partner-empty-first-name"
     model="com.axelor.apps.base.db.Partner">
     <field name="firstName" expr="eval: null"/>
@@ -1188,6 +1200,10 @@
 
   <action-attrs name="action-partner-attrs-unset-customer">
     <attribute name="value" for="isCustomer" expr="eval:false" if="isProspect"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-attrs-set-customer">
+    <attribute name="value" for="isCustomer" expr="eval:true" if="customerCantBeRemoved"/>
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-name-balance">
