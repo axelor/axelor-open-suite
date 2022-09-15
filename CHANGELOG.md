@@ -1,3 +1,12 @@
+## [6.1.20] (2022-09-15)
+
+#### Fixed
+
+* Invoice: fixed a bug where, when generating an invoice, the default company bank details was used instead of the one selected by the user.
+* Partner: fixed a regression where the partner displayed name was first name followed by name, it is now back to name followed by first name.
+* Move: fixed an issue were validating a large amount of moves would lead to a technical error stopping the process.
+* Leave Request: prevent the creation of leave requests for former employees.
+
 ## [6.1.19] (2022-09-01)
 
 #### Fixed
@@ -742,6 +751,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.20]: https://github.com/axelor/axelor-open-suite/compare/v6.1.19...v6.1.20
 [6.1.19]: https://github.com/axelor/axelor-open-suite/compare/v6.1.18...v6.1.19
 [6.1.18]: https://github.com/axelor/axelor-open-suite/compare/v6.1.17...v6.1.18
 [6.1.17]: https://github.com/axelor/axelor-open-suite/compare/v6.1.16...v6.1.17
