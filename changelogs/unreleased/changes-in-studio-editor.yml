@@ -1,0 +1,9 @@
+---
+title: "Studio : Changes in studio editor"
+type: change
+description: |
+  Add new panel by button in panel tabs.
+  When a panel tabs is insert, automaticly insert a panel into it.
+  Forbid the save if a panel tabs haven't a panel into it.
+  Add refresh icon button to refresh the editor.
+  Add colSpan property for panel of custom view.
