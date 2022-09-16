@@ -2,6 +2,7 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -24,4 +25,6 @@ public interface ManufOrderProductRestService {
       ManufOrder manufOrder,
       String productType)
       throws AxelorException;
+
+  void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct);
 }

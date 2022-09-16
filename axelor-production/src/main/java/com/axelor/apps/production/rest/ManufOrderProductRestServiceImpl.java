@@ -257,4 +257,12 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
     }
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct) {
+    if (manufOrder != null && wasteProduct != null) {
+      manufOrder.addWasteProdProductListItem(wasteProduct);
+    }
+  }
 }
