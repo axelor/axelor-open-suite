@@ -23,6 +23,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -53,17 +54,20 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   protected final ExpenseRepository expenseRepo;
   protected final ExpenseService expenseService;
   protected final BankOrderMergeService bankOrderMergeService;
+  protected final BankOrderRepository bankOrderRepo;
 
   @Inject
   public BatchCreditTransferExpensePaymentHR(
       AppAccountService appAccountService,
       ExpenseRepository expenseRepo,
       ExpenseService expenseService,
-      BankOrderMergeService bankOrderMergeService) {
+      BankOrderMergeService bankOrderMergeService,
+      BankOrderRepository bankOrderRepo) {
     this.appAccountService = appAccountService;
     this.expenseRepo = expenseRepo;
     this.expenseService = expenseService;
     this.bankOrderMergeService = bankOrderMergeService;
+    this.bankOrderRepo = bankOrderRepo;
   }
 
   @Override
@@ -198,6 +202,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     for (Expense expense : doneList) {
       BankOrder bankOrder = expense.getBankOrder();
       if (bankOrder != null) {
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
         expenseList.add(expense);
         bankOrderList.add(bankOrder);
       }

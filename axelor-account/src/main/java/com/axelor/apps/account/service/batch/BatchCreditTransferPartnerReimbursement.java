@@ -26,6 +26,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
@@ -47,20 +48,24 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
   protected PartnerRepository partnerRepo;
   protected PartnerService partnerService;
   protected ReimbursementExportService partnerReimbursementExportService;
+  protected CompanyRepository companyRepo;
 
   @Inject
   public BatchCreditTransferPartnerReimbursement(
       PartnerRepository partnerRepo,
       PartnerService partnerService,
-      ReimbursementExportService reimbursementExportService) {
+      ReimbursementExportService reimbursementExportService,
+      CompanyRepository companyRepo) {
     this.partnerRepo = partnerRepo;
     this.partnerService = partnerService;
     partnerReimbursementExportService = reimbursementExportService;
+    this.companyRepo = companyRepo;
   }
 
   @Override
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
+    Company company = accountingBatch.getCompany();
 
     // Fetch all partners that have a credit balance for the specified company.
     TypedQuery<Partner> partnerQuery =
@@ -69,13 +74,13 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                 "SELECT self FROM Partner self JOIN self.accountingSituationList accountingSituation "
                     + "WHERE accountingSituation.company = :company AND accountingSituation.balanceCustAccount < 0",
                 Partner.class);
-    partnerQuery.setParameter("company", accountingBatch.getCompany());
+    partnerQuery.setParameter("company", company);
     List<Partner> partnerList = partnerQuery.getResultList();
 
     for (Partner partner : partnerList) {
       try {
         partner = partnerRepo.find(partner.getId());
-        Reimbursement reimbursement = createReimbursement(partner, accountingBatch.getCompany());
+        Reimbursement reimbursement = createReimbursement(partner, company);
         if (reimbursement != null) {
           incrementDone();
         }
@@ -141,6 +146,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();
 
+    company = companyRepo.find(company.getId()); // Fetch company to avoid detached entity error
     Reimbursement reimbursement =
         partnerReimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
     return reimbursement;

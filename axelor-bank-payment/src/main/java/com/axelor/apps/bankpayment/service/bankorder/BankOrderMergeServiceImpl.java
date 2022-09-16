@@ -346,6 +346,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       BankOrder bankOrder = invoicePayment.getBankOrder();
 
       if (bankOrder != null) {
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
         invoicePaymentsWithBankOrders.add(invoicePayment);
         bankOrders.add(bankOrder);
       }

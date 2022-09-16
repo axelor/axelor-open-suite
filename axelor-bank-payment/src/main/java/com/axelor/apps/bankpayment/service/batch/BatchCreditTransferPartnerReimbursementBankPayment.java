@@ -30,6 +30,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.Query;
@@ -64,13 +65,14 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
       PartnerRepository partnerRepo,
       PartnerService partnerService,
       ReimbursementExportService reimbursementExportService,
+      CompanyRepository companyRepo,
       AppAccountService appAccountService,
       ReimbursementRepository reimbursementRepo,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
       BankOrderLineService bankOrderLineService,
       BankOrderRepository bankOrderRepo) {
-    super(partnerRepo, partnerService, reimbursementExportService);
+    super(partnerRepo, partnerService, reimbursementExportService, companyRepo);
     this.appAccountService = appAccountService;
     this.reimbursementRepo = reimbursementRepo;
     this.bankOrderCreateService = bankOrderCreateService;
@@ -82,6 +84,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
   @Override
   protected void process() {
     super.process();
+    findBatch();
     AccountingBatch accountingBatch = batch.getAccountingBatch();
 
     if (!accountingBatch.getPaymentMode().getGenerateBankOrder()) {
@@ -156,7 +159,11 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
               reimbursement.getDescription(),
               reimbursement);
       bankOrder.addBankOrderLineListItem(bankOrderLine);
-      reimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
+
+      /*
+       * Using the service reference name declared in super class instead of using constructor parameter name to avoid NPE
+       */
+      partnerReimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
     }
 
     bankOrder = bankOrderRepo.save(bankOrder);
