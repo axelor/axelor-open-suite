@@ -20,11 +20,13 @@ package com.axelor.apps.contract.batch;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 
 public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
@@ -36,6 +38,10 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
   @Override
   public Query<Contract> prepare(Batch batch) {
+    LocalDate invoicingDate = batch.getContractBatch().getInvoicingDate();
+    if (invoicingDate == null) {
+      invoicingDate = baseService.getTodayDate(batch.getContractBatch().getCompany());
+    }
     return repository
         .all()
         .filter(
@@ -43,12 +49,12 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
                 + "AND self.currentContractVersion.automaticInvoicing = TRUE "
                 + "AND self.invoicingDate <= :date "
                 + "AND :batch NOT MEMBER of self.batchSet "
-                + "AND self.statusSelect != :statusSelect"
+                + "AND self.statusSelect != :statusSelect "
                 + "AND self.targetTypeSelect = :targetTypeSelect")
-        .bind("date", batch.getContractBatch().getInvoicingDate())
+        .bind("date", invoicingDate)
         .bind("batch", batch)
         .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect())
-        .bind("statusSelect", ContractRepository.CLOSED_CONTRACT);
+        .bind("statusSelect", AbstractContractRepository.CLOSED_CONTRACT);
   }
 
   @Override
