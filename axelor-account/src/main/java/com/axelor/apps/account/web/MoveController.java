@@ -61,6 +61,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -194,7 +195,7 @@ public class MoveController {
     }
   }
 
-  public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteMove(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       move = Beans.get(MoveRepository.class).find(move.getId());
@@ -212,7 +213,8 @@ public class MoveController {
                 .map());
         response.setCanClose(true);
       }
-
+    } catch (PersistenceException e) {
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
