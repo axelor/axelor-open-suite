@@ -39,9 +39,6 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
   @Override
   public Query<Contract> prepare(Batch batch) {
     LocalDate invoicingDate = batch.getContractBatch().getInvoicingDate();
-    if (invoicingDate == null) {
-      invoicingDate = baseService.getTodayDate(batch.getContractBatch().getCompany());
-    }
     return repository
         .all()
         .filter(

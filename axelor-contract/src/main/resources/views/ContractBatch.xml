@@ -23,7 +23,7 @@
     <panel-tabs name="mainPanelTab">
       <panel name="invoicingPanel" title="Invoicing" showIf="actionSelect == 1">
         <field name="targetTypeSelect"/>
-        <field name="invoicingDate"/>
+        <field name="invoicingDate" requiredIf="actionSelect == 1"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
