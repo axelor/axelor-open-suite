@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -89,6 +90,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepo,
       InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoiceService invoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
@@ -101,7 +103,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       SupplyChainConfigService supplyChainConfigService,
       StockMoveLineRepository stockMoveLineRepository) {
 
-    super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService);
+    super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService, invoiceService);
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;

@@ -1,3 +1,0 @@
----
-title: "AccountingReportConfigLine: Fixed bugs where the alternation character '|' could not be used in account code and values of the report could be multiplied"
-type: fix

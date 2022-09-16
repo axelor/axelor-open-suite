@@ -1,8 +1,0 @@
----
-title : "BANK RECONCILIATION : improve the form view"
-type : change
-description: |
-  Removed wrong line beside the bank statement lines
-  Put the header in readonly once we have loaded the bank statement lines in order to avoid to have inconsistency datas
-  Put the ending balance in readonly
-  Increase the height of the two tabs (bank statement lines and move lines to reconciles) in order to display 10 lines per tab

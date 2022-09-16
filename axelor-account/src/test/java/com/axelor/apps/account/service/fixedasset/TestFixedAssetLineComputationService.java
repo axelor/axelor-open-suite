@@ -100,9 +100,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("25.00"),
-            new BigDecimal("25.00"),
-            new BigDecimal("475.00")),
+            new BigDecimal("23.89"),
+            new BigDecimal("23.89"),
+            new BigDecimal("476.11")),
         fixedAssetLine.get());
   }
 

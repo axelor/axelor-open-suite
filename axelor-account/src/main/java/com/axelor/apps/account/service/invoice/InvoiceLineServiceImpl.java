@@ -219,9 +219,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
     } else {
-      price = price.add(price.multiply(taxLine.getValue()));
+      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }
     return price;
   }
@@ -363,10 +367,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     if (!invoice.getInAti()) {
       exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
     } else {
       inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
     companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, invoice);
@@ -506,10 +512,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
     if (Boolean.FALSE.equals(invoice.getInAti())) {
       exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
     } else {
       inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setCompanyExTaxTotal(this.getCompanyExTaxTotal(exTaxTotal, invoice));
@@ -560,38 +568,45 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+
     if (CollectionUtils.isEmpty(invoiceLineList)) {
       return null;
-    } else {
-      for (InvoiceLine invoiceLine : invoiceLineList) {
+    }
 
-        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-        boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-        TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
-        invoiceLine.setTaxLine(taxLine);
-        invoiceLine.setTaxRate(taxLine.getValue());
-        invoiceLine.setTaxCode(taxLine.getTax().getCode());
+    for (InvoiceLine invoiceLine : invoiceLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementAccountService.getProductTaxEquiv(
-                invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
-        invoiceLine.setTaxEquiv(taxEquiv);
-
-        Account account =
-            accountManagementAccountService.getProductAccount(
-                invoiceLine.getProduct(),
-                invoice.getCompany(),
-                fiscalPosition,
-                isPurchase,
-                invoiceLine.getFixedAssets());
-        invoiceLine.setAccount(account);
-        invoiceLine.setInTaxTotal(
-            invoiceLine
-                .getExTaxTotal()
-                .multiply(invoiceLine.getTaxRate())
-                .setScale(2, RoundingMode.HALF_UP));
-        invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
+      // Skip line update if product is not filled
+      if (invoiceLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+      boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+
+      TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
+      invoiceLine.setTaxLine(taxLine);
+      invoiceLine.setTaxRate(taxLine.getValue());
+      invoiceLine.setTaxCode(taxLine.getTax().getCode());
+
+      TaxEquiv taxEquiv =
+          accountManagementAccountService.getProductTaxEquiv(
+              invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
+      invoiceLine.setTaxEquiv(taxEquiv);
+
+      Account account =
+          accountManagementAccountService.getProductAccount(
+              invoiceLine.getProduct(),
+              invoice.getCompany(),
+              fiscalPosition,
+              isPurchase,
+              invoiceLine.getFixedAssets());
+      invoiceLine.setAccount(account);
+      invoiceLine.setInTaxTotal(
+          invoiceLine
+              .getExTaxTotal()
+              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100)))
+              .setScale(2, RoundingMode.HALF_UP));
+      invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
     }
     return invoiceLineList;
   }

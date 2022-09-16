@@ -38,6 +38,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -349,5 +350,12 @@ public class InvoiceToolService {
     } else {
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);
     }
+  }
+
+  public static boolean isMultiCurrency(Invoice invoice) {
+    return invoice != null
+        && invoice.getCurrency() != null
+        && invoice.getCompany() != null
+        && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
   }
 }

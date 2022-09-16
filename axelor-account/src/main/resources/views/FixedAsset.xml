@@ -102,9 +102,9 @@
           onChange="action-fixed-asset-validate-check-fiscal-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"/>
         <field name="fiscalComputationMethodSelect"
-          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef,action-attrs-account-change-fiscal-depreciation-date-init-select,action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
+          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef,action-group-account-change-fiscal-depreciation-date-init-select,action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
         <field name="fiscalFirstDepreciationDateInitSelect"
-          onChange="action-method-account-fixed-asset-compute-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation, action-fixed-asset-method-check-depreciation-plans"
+          onChange="action-method-account-fixed-asset-compute-fiscal-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation, action-fixed-asset-method-check-depreciation-plans"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"/>
         <field name="fiscalDegressiveCoef"
           showIf="fiscalComputationMethodSelect == 'degressive'"
@@ -140,18 +140,18 @@
           onChange="action-fixed-asset-validate-check-first-depreciation-date"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"/>
         <field name="computationMethodSelect"
-          onChange="action-fixed-asset-attrs-set-degressive-coef,action-attrs-account-change-depreciation-date-init-select,action-fixed-asset-method-check-depreciation-plans"
+          onChange="action-fixed-asset-attrs-set-degressive-coef,action-group-account-change-economic-depreciation-date-init-select,action-fixed-asset-method-check-depreciation-plans"
           requiredIf="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="firstDepreciationDateInitSelect"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"
-          onChange="action-method-account-fixed-asset-compute-first-depreciation-date"/>
+          onChange="action-method-account-fixed-asset-compute-economic-first-depreciation-date"/>
         <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
           hidden="true"/>
         <field name="numberOfDepreciation"
           onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="periodicityTypeSelect"
-          onChange="action-attrs-account-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-first-depreciation-date,action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"/>
+          onChange="action-attrs-account-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-economic-first-depreciation-date,action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
           onChange="action-fixed-asset-category-record-compute-duration" min="1" hidden="true"/>
         <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"
@@ -183,16 +183,16 @@
           onChange="action-fixed-asset-validate-check-ifrs-first-depreciation-date"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))"/>
         <field name="ifrsComputationMethodSelect"
-          onChange="action-attrs-account-change-ifrs-depreciation-date-init-select"/>
+          onChange="action-group-account-change-ifrs-depreciation-date-init-select"/>
         <field name="ifrsFirstDepreciationDateInitSelect"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))"
-          onChange="action-method-account-fixed-asset-compute-first-depreciation-date"/>
+          onChange="action-method-account-fixed-asset-compute-ifrs-first-depreciation-date"/>
         <field name="ifrsDegressiveCoef" showIf="ifrsComputationMethodSelect == 'degressive'"
           hidden="true"/>
         <field name="ifrsNumberOfDepreciation"
           onChange="action-record-account-fixed-asset-compute-ifrs-duration"/>
         <field name="ifrsPeriodicityTypeSelect"
-          onChange="action-attrs-account-ifrs-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-first-depreciation-date,action-record-account-fixed-asset-compute-ifrs-duration"/>
+          onChange="action-attrs-account-ifrs-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-ifrs-first-depreciation-date,action-record-account-fixed-asset-compute-ifrs-duration"/>
         <field name="ifrsPeriodicityInMonth"
           onChange="action-record-account-fixed-asset-compute-ifrs-duration"
           showIf="ifrsPeriodicityTypeSelect == 1" min="1" hidden="true"/>
@@ -803,6 +803,25 @@
     <call class="com.axelor.apps.account.web.FixedAssetController"
       method="computeFirstDepreciationDate"/>
   </action-method>
+
+  <action-method
+    name="action-method-account-fixed-asset-compute-fiscal-first-depreciation-date">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="computeFiscalFirstDepreciationDate"/>
+  </action-method>
+
+  <action-method
+    name="action-method-account-fixed-asset-compute-economic-first-depreciation-date">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="computeEconomicFirstDepreciationDate"/>
+  </action-method>
+
+  <action-method
+    name="action-method-account-fixed-asset-compute-ifrs-first-depreciation-date">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="computeIfrsFirstDepreciationDate"/>
+  </action-method>
+
   <action-method name="action-method-account-fixed-asset-update-depreciation">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="updateDepreciation"/>
   </action-method>
@@ -826,7 +845,7 @@
     <action name="action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
     <action name="action-record-account-fixed-asset-compute-ifrs-duration"/>
     <action name="action-fixed-asset-category-record-compute-duration"/>
-    <action name="action-method-account-fixed-asset-compute-first-depreciation-date"/>
+    <action name="action-method-account-fixed-asset-compute-fiscal-first-depreciation-date"/>
   </action-group>
 
   <action-attrs name="action-fixed-asset-attrs-set-fiscal-degressive-coef">
@@ -904,6 +923,22 @@
     <attribute name="value" for="ifrsFirstDepreciationDateInitSelect" expr="eval: 2"
       if="ifrsComputationMethodSelect == 'linear'"/>
   </action-attrs>
+
+  <action-group name="action-group-account-change-fiscal-depreciation-date-init-select">
+    <action name="action-attrs-account-change-fiscal-depreciation-date-init-select"/>
+    <action name="action-method-account-fixed-asset-compute-fiscal-first-depreciation-date"/>
+  </action-group>
+
+  <action-group
+    name="action-group-account-change-economic-depreciation-date-init-select">
+    <action name="action-attrs-account-change-depreciation-date-init-select"/>
+    <action name="action-method-account-fixed-asset-compute-economic-first-depreciation-date"/>
+  </action-group>
+
+  <action-group name="action-group-account-change-ifrs-depreciation-date-init-select">
+    <action name="action-attrs-account-change-ifrs-depreciation-date-init-select"/>
+    <action name="action-method-account-fixed-asset-compute-ifrs-first-depreciation-date"/>
+  </action-group>
 
   <action-method name="action-fixed-asset-method-wizard-init-values">
     <call class="com.axelor.apps.account.web.FixedAssetController"
