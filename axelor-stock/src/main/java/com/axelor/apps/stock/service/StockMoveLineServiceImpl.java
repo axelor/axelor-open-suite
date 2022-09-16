@@ -181,7 +181,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       unitPriceUntaxed =
           unitPrice.divide(
-              taxRate.add(BigDecimal.ONE),
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               RoundingMode.HALF_UP);
     } else {
@@ -189,7 +189,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       unitPriceTaxed =
           unitPrice
-              .multiply(taxRate.add(BigDecimal.ONE))
+              .multiply(taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE))
               .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     }
     return this.createStockMoveLine(
@@ -1280,5 +1280,56 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     stockLocationLineOpt.ifPresent(
         stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
+  }
+
+  /** Create new stock line, then set product infos and compute prices (API AOS) */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void createStockMoveLine(
+      StockMove stockMove,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal qty,
+      BigDecimal realQty,
+      Unit unit,
+      Integer conformitySelect)
+      throws AxelorException {
+
+    StockMoveLine line =
+        createStockMoveLine(
+            product,
+            product.getName(),
+            "",
+            qty,
+            null,
+            null,
+            null,
+            null,
+            unit,
+            stockMove,
+            trackingNumber);
+    setProductInfo(stockMove, line, stockMove.getCompany());
+    compute(line, stockMove);
+    line.setRealQty(realQty);
+    line.setConformitySelect(conformitySelect);
+    stockMoveLineRepository.save(line);
+  }
+
+  /** Update stock move line realQty and conformity (API AOS) */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity) throws AxelorException {
+    if (stockMoveLine.getStockMove() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, "Error: missing parent stock move.");
+    } else {
+      if (stockMoveLine.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_REALIZED
+          && stockMoveLine.getStockMove().getStatusSelect()
+              != StockMoveRepository.STATUS_CANCELED) {
+        stockMoveLine.setRealQty(realQty);
+        stockMoveLine.setConformitySelect(conformity);
+      }
+    }
   }
 }

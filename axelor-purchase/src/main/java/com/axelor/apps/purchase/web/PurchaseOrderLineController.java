@@ -286,7 +286,10 @@ public class PurchaseOrderLineController {
 
     try {
       BigDecimal price = purchaseOrderLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(purchaseOrderLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(
+                  purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -415,9 +418,9 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       Partner partner = this.getPurchaseOrder(context).getSupplierPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
 
-      if (purchaseOrderLine.getProduct() != null) {
+      if (purchaseOrderLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
         response.setValue(
             "description",
             internationalService.translate(

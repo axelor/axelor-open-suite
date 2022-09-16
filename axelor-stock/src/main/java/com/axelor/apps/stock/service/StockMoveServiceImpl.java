@@ -36,14 +36,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Incoterm;
-import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.ShipmentMode;
-import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -219,6 +212,58 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
       stockMove.setIsWithReturnSurplus(company.getStockConfig().getIsWithReturnSurplus());
     }
+    return stockMove;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public StockMove createStockMoveMobility(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      Company company,
+      Product product,
+      TrackingNumber trackNb,
+      BigDecimal movedQty,
+      Unit unit)
+      throws AxelorException {
+
+    StockMove stockMove = new StockMove();
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
+    stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
+    stockMove.setCompany(company);
+    stockMove.setFromStockLocation(fromStockLocation);
+    stockMove.setFromAddress(fromStockLocation.getAddress());
+    stockMove.setToStockLocation(toStockLocation);
+    stockMove.setToAddress(toStockLocation.getAddress());
+    stockMove.setNote(""); // comment to display on stock move
+    stockMove.setPickingOrderComments(""); // comment to display on picking order
+    stockMove.setRealDate(LocalDate.now());
+    stockMove.setEstimatedDate(LocalDate.now());
+    stockMoveRepo.save(stockMove);
+
+    StockMoveLine line = new StockMoveLine();
+    line.setStockMove(stockMove);
+    line.setProduct(product);
+    stockMoveLineService.setProductInfo(stockMove, line, company);
+    if (product.getTrackingNumberConfiguration() != null) {
+      line.setTrackingNumber(trackNb);
+    }
+    line.setQty(movedQty);
+    line.setRealQty(movedQty);
+    line.setUnitPriceUntaxed(product.getLastPurchasePrice());
+    line.setUnit(unit);
+    stockMoveLineRepo.save(line);
+    stockMoveLineService.setAvailableStatus(line);
+    stockMoveLineService.compute(line, stockMove);
+    stockMoveLineRepo.save(line);
+
+    ArrayList<StockMoveLine> stockMoveLineList = new ArrayList<>();
+    stockMoveLineList.add(line);
+    stockMove.setStockMoveLineList(stockMoveLineList);
+    stockMoveRepo.save(stockMove);
+
+    this.validate(stockMove);
+
     return stockMove;
   }
 

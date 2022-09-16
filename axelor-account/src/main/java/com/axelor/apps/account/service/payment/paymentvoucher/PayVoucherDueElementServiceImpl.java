@@ -20,6 +20,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected PaymentVoucherToolService paymentVoucherToolService;
 
   private final int RETURN_SCALE = 2;
 
@@ -29,12 +30,14 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      PaymentVoucherToolService paymentVoucherToolService) {
     this.payVoucherDueElementRepository = payVoucherDueElementRepository;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.paymentVoucherToolService = paymentVoucherToolService;
   }
 
   @Override
@@ -44,7 +47,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
     payVoucherDueElement.setPaymentVoucher(paymentVoucher);
     InvoiceTerm invoiceTerm = payVoucherDueElement.getInvoiceTerm();
 
-    if (this.applyFinancialDiscount(invoiceTerm, paymentVoucher)) {
+    if (this.applyFinancialDiscount(invoiceTerm, paymentVoucher)
+        && !paymentVoucherToolService.isMultiCurrency(paymentVoucher)) {
       payVoucherDueElement.setApplyFinancialDiscount(true);
       payVoucherDueElement.setFinancialDiscount(invoiceTerm.getFinancialDiscount());
 

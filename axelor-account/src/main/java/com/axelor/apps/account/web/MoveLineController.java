@@ -511,7 +511,8 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = null;
 
-      if (request.getContext().getParent() != null) {
+      if (request.getContext().getParent() != null
+          && (Move.class).equals(request.getContext().getParent().getContextClass())) {
         move = request.getContext().getParent().asType(Move.class);
       } else if (moveLine.getId() != null) {
         moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());

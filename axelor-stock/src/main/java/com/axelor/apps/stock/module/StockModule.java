@@ -39,9 +39,13 @@ import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberManagementRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.rest.StockProductRestService;
+import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
 import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryProductServiceImpl;
+import com.axelor.apps.stock.service.InventoryUpdateService;
+import com.axelor.apps.stock.service.InventoryUpdateServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
@@ -65,6 +69,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.StockMoveToolServiceImpl;
+import com.axelor.apps.stock.service.StockMoveUpdateService;
+import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
@@ -93,6 +99,7 @@ public class StockModule extends AxelorModule {
     bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
     bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
     bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+    bind(StockMoveUpdateService.class).to(StockMoveUpdateServiceImpl.class);
     bind(StockLocationService.class).to(StockLocationServiceImpl.class);
     bind(ProductBaseRepository.class).to(ProductStockRepository.class);
     bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
@@ -118,5 +125,7 @@ public class StockModule extends AxelorModule {
     bind(TrackingNumberConfigurationService.class).to(TrackingNumberConfigurationServiceImpl.class);
     bind(ProductVariantServiceImpl.class).to(ProductVariantServiceStockImpl.class);
     bind(WapHistoryService.class).to(WapHistoryServiceImpl.class);
+    bind(StockProductRestService.class).to(StockProductRestServiceImpl.class);
+    bind(InventoryUpdateService.class).to(InventoryUpdateServiceImpl.class);
   }
 }

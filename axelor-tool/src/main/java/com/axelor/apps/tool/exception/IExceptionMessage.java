@@ -55,4 +55,7 @@ public interface IExceptionMessage {
 
   // Callable Tool
   String PROCESS_BEING_COMPUTED = /*$$(*/ "Computation in progress..." /*)*/;
+
+  static final String API_DISABLED = /*$$(*/
+      "AOS API calls are disabled, please contact your administrator. The property aos.api.enable is false in application.properties." /*)*/;
 }

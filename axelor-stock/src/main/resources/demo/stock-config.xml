@@ -102,6 +102,7 @@
     type="com.axelor.apps.stock.db.StockMoveLine" search="self.importId = :importId">
     <bind to="stockMove" search="self.importId = :stockMove_importId"/>
     <bind to="product" search="self.importId = :product_importId"/>
+    <bind to="unit" search="self.importId = :unit_importId"/>
   </input>
 
   <input file="stock_logisticalForm.csv" separator=";"

@@ -273,7 +273,9 @@ public class InvoiceLineController {
 
     try {
       BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -543,9 +545,9 @@ public class InvoiceLineController {
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Partner partner = this.getInvoice(context).getPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
 
-      if (invoiceLine.getProduct() != null) {
+      if (invoiceLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
         response.setValue(
             "description",
             internationalService.translate(

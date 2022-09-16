@@ -12,7 +12,8 @@
   </grid>
 
   <form name="invoice-line-tax-form" title="Tax Line"
-    model="com.axelor.apps.account.db.InvoiceLineTax">
+    model="com.axelor.apps.account.db.InvoiceLineTax" onLoad="action-base-attrs-set-tax-line-scale"
+    onNew="action-base-attrs-set-tax-line-scale">
     <panel name="mainPanel">
       <field name="taxLine" canEdit="false" grid-view="tax-line-grid"
         form-view="tax-line-form"/>

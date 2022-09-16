@@ -1159,4 +1159,24 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void checkMultiCurrency(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (invoice.getPartner() != null
+          && invoice.getPartner().getFinancialDiscount() != null
+          && InvoiceToolService.isMultiCurrency(invoice)) {
+        String partnerType =
+            InvoiceToolService.isPurchase(invoice) ? I18n.get("Supplier") : I18n.get("Customer");
+
+        response.setInfo(
+            String.format(
+                I18n.get(AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER),
+                partnerType.toLowerCase()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

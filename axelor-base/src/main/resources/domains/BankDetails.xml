@@ -23,34 +23,15 @@
     <string name="ibanBic" title="IBAN / BBAN + BIC" max="255"/>
     <string name="label" title="Label"/>
     <boolean name="isDefault" title="Default"/>
-    <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
-        <![CDATA[
-            String str = "";
-            if (!(ownerName == null || ownerName.isEmpty())) {
-                str = ownerName;
-                if (!(ibanBic == null || ibanBic.isEmpty())) {
-                    str = str.concat(" - ").concat(ibanBic);
-                } else if (!(iban == null || iban.isEmpty())) {
-                    str = str.concat(" - ").concat(iban);
-                } else if (!(bankCode == null || bankCode.isEmpty())
-                        && !(sortCode == null || sortCode.isEmpty())
-                        && !(accountNbr == null || accountNbr.isEmpty())
-                        && !(bbanKey == null || bbanKey.isEmpty())) {
-                    str = str.concat(" - ").concat(bankCode)
-                                           .concat(sortCode)
-                                           .concat(accountNbr)
-                                           .concat(bbanKey);
-                }
-                if (!(code == null || code.isEmpty())) {
-                    str = str.concat(" - ").concat(code);
-                }
-            }
-            return str;
-        ]]>
-    </string>
     <boolean name="active" title="Active" default="true" massUpdate="true"/>
     <string name="code"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+    <string name="fullName" title="Bank Details" search="code,label" namecolumn="true">
+      <![CDATA[
+            return com.axelor.apps.base.service.BankDetailsServiceImpl.computeBankDetailsFullName
+            (code, label, iban, bank.getFullName());
+        ]]>
+    </string>
 
     <finder-method name="findDefaultByPartner" using="partner"
       filter="self.partner = :partner AND self.isDefault = TRUE"/>

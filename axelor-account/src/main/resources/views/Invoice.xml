@@ -1575,6 +1575,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-total-title"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -1624,6 +1625,8 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-group-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
@@ -1637,6 +1640,10 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
     <action name="action-invoice-method-validate"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-group-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
@@ -1699,6 +1706,7 @@ InvoiceSet.length > 0))"
     <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
@@ -2302,6 +2310,10 @@ InvoiceSet.length > 0))"
       method="updateInvoiceTermPaymentMode"/>
   </action-method>
 
+  <action-method name="action-invoice-method-check-multi-currency">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkMultiCurrency"/>
+  </action-method>
+
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
     model="com.axelor.apps.account.db.InvoicePayment">
     <view type="form" name="invoice-payment-form"/>
@@ -2645,7 +2657,7 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountTotalAmount"
       expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>

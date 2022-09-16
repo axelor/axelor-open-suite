@@ -91,12 +91,15 @@ public class BatchAccountingCutOff extends BatchStrategy {
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
-      accountingBatchRepository.find(accountingBatch.getId());
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+      company = accountingBatch.getCompany();
+      researchJournal = accountingBatch.getResearchJournal();
 
       for (Move move : moveList) {
         ++offset;
 
-        if (this._processMove(move, accountingBatch)) {
+        if (this._processMove(
+            moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()))) {
           break;
         }
       }
@@ -115,7 +118,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
             .collect(Collectors.toList());
 
     for (Move move : moveList) {
-      this._processMove(move, accountingBatch);
+      this._processMove(
+          moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()));
     }
   }
 
