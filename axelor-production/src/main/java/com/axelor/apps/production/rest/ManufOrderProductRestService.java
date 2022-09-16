@@ -1,6 +1,7 @@
 package com.axelor.apps.production.rest;
 
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -14,4 +15,6 @@ public interface ManufOrderProductRestService {
 
   StockMoveLine updateStockMoveLineQty(StockMoveLine stockMoveLine, BigDecimal qty)
       throws AxelorException;
+
+  void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct);
 }

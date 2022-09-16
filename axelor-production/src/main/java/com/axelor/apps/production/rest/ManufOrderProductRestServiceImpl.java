@@ -180,4 +180,12 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     stockMoveLine.setQty(qty);
     return stockMoveLine;
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct) {
+    if (manufOrder != null && wasteProduct != null) {
+      manufOrder.addWasteProdProductListItem(wasteProduct);
+    }
+  }
 }
