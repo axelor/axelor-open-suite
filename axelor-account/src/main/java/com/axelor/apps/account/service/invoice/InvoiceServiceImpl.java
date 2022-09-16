@@ -1153,12 +1153,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public LocalDate getFinancialDiscountDeadlineDate(Invoice invoice) {
+  public LocalDate getFinancialDiscountDeadlineDate(
+      Invoice invoice, FinancialDiscount financialDiscount) {
     int discountDelay =
-        Optional.of(invoice)
-            .map(Invoice::getFinancialDiscount)
-            .map(FinancialDiscount::getDiscountDelay)
-            .orElse(0);
+        Optional.of(financialDiscount).map(FinancialDiscount::getDiscountDelay).orElse(0);
 
     LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
 
