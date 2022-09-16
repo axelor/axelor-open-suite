@@ -26,7 +26,6 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.time.LocalDate;
 
 public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
@@ -38,7 +37,6 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
   @Override
   public Query<Contract> prepare(Batch batch) {
-    LocalDate invoicingDate = batch.getContractBatch().getInvoicingDate();
     return repository
         .all()
         .filter(
@@ -48,7 +46,7 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
                 + "AND :batch NOT MEMBER of self.batchSet "
                 + "AND self.statusSelect != :statusSelect "
                 + "AND self.targetTypeSelect = :targetTypeSelect")
-        .bind("date", invoicingDate)
+        .bind("date", batch.getContractBatch().getInvoicingDate())
         .bind("batch", batch)
         .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect())
         .bind("statusSelect", AbstractContractRepository.CLOSED_CONTRACT);
