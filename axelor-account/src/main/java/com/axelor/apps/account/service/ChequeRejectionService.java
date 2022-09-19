@@ -24,13 +24,13 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
-import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -51,6 +51,7 @@ public class ChequeRejectionService {
   protected AccountConfigService accountConfigService;
   protected ChequeRejectionRepository chequeRejectionRepository;
   protected MoveReverseService moveReverseService;
+  protected PaymentVoucherCancelService paymentVoucherCancelService;
 
   @Inject
   public ChequeRejectionService(
@@ -60,7 +61,8 @@ public class ChequeRejectionService {
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
       ChequeRejectionRepository chequeRejectionRepository,
-      MoveReverseService moveReverseService) {
+      MoveReverseService moveReverseService,
+      PaymentVoucherCancelService paymentVoucherCancelService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -69,6 +71,7 @@ public class ChequeRejectionService {
     this.accountConfigService = accountConfigService;
     this.chequeRejectionRepository = chequeRejectionRepository;
     this.moveReverseService = moveReverseService;
+    this.paymentVoucherCancelService = paymentVoucherCancelService;
   }
 
   /**
@@ -136,7 +139,7 @@ public class ChequeRejectionService {
 
     move.setRejectOk(true);
 
-    paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CANCELED);
+    paymentVoucherCancelService.cancelPaymentVoucher(paymentVoucher);
 
     moveValidateService.accounting(move);
 

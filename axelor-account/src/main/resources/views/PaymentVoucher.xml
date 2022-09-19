@@ -23,7 +23,7 @@
     onLoad="action-account-payment-voucher-onload-group"
     onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
 
-    <panel name="mainPanel" readonlyIf="statusSelect == 3" itemSpan="12">
+    <panel name="mainPanel" readonlyIf="statusSelect == 3 || statusSelect == 4" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
         onChange="action-payment-voucher-hidden-fields-if-purchase"/>
@@ -49,9 +49,9 @@
 
     <panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
       <field name="statusSelect"/>
-      <field name="generatedMove" showIf="statusSelect == 3" form-view="move-form"
-        grid-view="move-grid"/>
-      <field name="receiptNo" showIf="statusSelect == 3"/>
+      <field name="generatedMove" showIf="statusSelect == 3 || statusSelect == 4"
+        form-view="move-form" grid-view="move-grid"/>
+      <field name="receiptNo" showIf="statusSelect == 3 || statusSelect == 4"/>
     </panel>
 
     <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
@@ -84,7 +84,8 @@
         onClick="action-payment-voucher-group-search-elements-to-pay" colSpan="6"/>
     </panel>
 
-    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
+    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3 || statusSelect == 4"
+      colSpan="12">
       <field name="paidAmount" colSpan="4"
         onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"

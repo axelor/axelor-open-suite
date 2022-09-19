@@ -247,6 +247,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -510,5 +512,7 @@ public class AccountModule extends AxelorModule {
     bind(ChequeRejectionRepository.class).to(ChequeRejectionManagementRepository.class);
 
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
+
+    bind(PaymentVoucherCancelService.class).to(PaymentVoucherCancelServiceImpl.class);
   }
 }

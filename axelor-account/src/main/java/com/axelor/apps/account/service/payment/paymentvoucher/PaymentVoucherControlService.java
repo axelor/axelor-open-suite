@@ -131,7 +131,8 @@ public class PaymentVoucherControlService {
   }
 
   public boolean isReceiptDisplayed(PaymentVoucher paymentVoucher) {
-    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED) {
+    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED
+        && paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CANCELED) {
       return false;
     }
 

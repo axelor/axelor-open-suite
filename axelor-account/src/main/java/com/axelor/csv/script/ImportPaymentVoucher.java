@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherToolService;
@@ -41,6 +42,8 @@ public class ImportPaymentVoucher {
   @Inject PaymentVoucherToolService paymentVoucherToolService;
 
   @Inject PaymentVoucherConfirmService paymentVoucherConfirmService;
+
+  @Inject PaymentVoucherCancelService paymentVoucherCancelService;
 
   @SuppressWarnings("rawtypes")
   public Object importPaymentVoucher(Object bean, Map values) {
@@ -63,6 +66,9 @@ public class ImportPaymentVoucher {
       if (paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED) {
 
         paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
+      }
+      if (paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CANCELED) {
+        paymentVoucherCancelService.cancelPaymentVoucher(paymentVoucher);
       }
       return paymentVoucher;
     } catch (Exception e) {
