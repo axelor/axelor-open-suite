@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -32,8 +33,9 @@ public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl 
   @Inject
   public StockHistoryServiceSupplyChainImpl(
       StockMoveLineRepository stockMoveLineRepository,
-      UnitConversionService unitConversionService) {
-    super(stockMoveLineRepository, unitConversionService);
+      UnitConversionService unitConversionService,
+      StockLocationRepository stockLocationRepository) {
+    super(stockMoveLineRepository, unitConversionService, stockLocationRepository);
   }
 
   @Override
@@ -54,7 +56,8 @@ public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl 
               stockMoveLine.getRealQty(),
               stockMoveLine.getRealQty().scale(),
               stockMoveLine.getProduct());
-      if (stockMoveLine.getSaleOrderLine().getSaleOrder().getOneoffSale()) {
+      if (stockMoveLine.getSaleOrderLine() != null
+          && stockMoveLine.getSaleOrderLine().getSaleOrder().getOneoffSale()) {
         sumOneoffSaleOutQtyPeriod = sumOneoffSaleOutQtyPeriod.add(qtyConverted);
       } else {
         sumOutQtyPeriod = sumOutQtyPeriod.add(qtyConverted);

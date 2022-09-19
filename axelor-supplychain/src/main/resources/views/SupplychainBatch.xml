@@ -84,6 +84,8 @@
         showIf="actionSelect == 4" colSpan="12">
         <field name="period"
           domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
+        <field name="productCategorySet" colSpan="12" canNew="false" canEdit="false"
+          canSelect="true"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -135,11 +137,12 @@
   <!-- ACTION RECORD -->
   <action-record name="action-supplychain-batch-record-on-new"
     model="com.axelor.apps.base.db.MailBatch">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"

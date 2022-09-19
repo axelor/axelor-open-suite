@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
@@ -60,11 +60,11 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DMS_IMPORT_PROCESS_SUCCESS_MESSAGE));
+          I18n.get(BaseExceptionMessage.DMS_IMPORT_PROCESS_SUCCESS_MESSAGE));
     } catch (IOException | UnsupportedOperationException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DMS_IMPORT_FILE_PROCESS_ERROR));
+          I18n.get(BaseExceptionMessage.DMS_IMPORT_FILE_PROCESS_ERROR));
     }
   }
 
@@ -76,7 +76,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     } catch (IOException | TikaException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DMS_IMPORT_INVALID_ZIP_ERROR));
+          I18n.get(BaseExceptionMessage.DMS_IMPORT_INVALID_ZIP_ERROR));
     }
   }
 

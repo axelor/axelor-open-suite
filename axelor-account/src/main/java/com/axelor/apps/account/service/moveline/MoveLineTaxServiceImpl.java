@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -67,6 +68,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine generateTaxPaymentMoveLineList(
       MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException {
+
     BigDecimal paymentAmount = reconcile.getAmount();
     BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
@@ -90,6 +92,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               appBaseService.getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
+      taxPaymentMoveLine.setFunctionalOriginSelect(InvoiceToolService.getFunctionalOrigin(invoice));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
@@ -179,7 +182,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
             || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
             || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-            || accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+            || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
               move, map, newMap, moveLine, taxLine, accountType);

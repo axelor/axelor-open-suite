@@ -18,8 +18,9 @@
 package com.axelor.apps.account.service.invoice.generator.batch;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -77,14 +78,14 @@ public class BatchValidation extends BatchWkf {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_VALIDATION_1) + "\n";
+    String comment = I18n.get(AccountExceptionMessage.BATCH_VALIDATION_1) + "\n";
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_VALIDATION_2) + "\n", batch.getDone());
+            "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_VALIDATION_2) + "\n",
+            batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

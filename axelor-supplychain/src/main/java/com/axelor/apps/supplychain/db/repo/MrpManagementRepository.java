@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.Mrp;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -55,7 +55,7 @@ public class MrpManagementRepository extends MrpRepository {
           throw new AxelorException(
               company,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.SUPPLYCHAIN_MRP_SEQUENCE_ERROR),
+              I18n.get(SupplychainExceptionMessage.SUPPLYCHAIN_MRP_SEQUENCE_ERROR),
               company.getName());
         }
 
@@ -74,6 +74,9 @@ public class MrpManagementRepository extends MrpRepository {
 
     Mrp copy = super.copy(entity, deep);
     copy.setMrpSeq(null);
+    copy.setStartDateTime(null);
+    copy.setEndDateTime(null);
+    copy.setStatusSelect(MrpRepository.STATUS_DRAFT);
     return copy;
   }
 }

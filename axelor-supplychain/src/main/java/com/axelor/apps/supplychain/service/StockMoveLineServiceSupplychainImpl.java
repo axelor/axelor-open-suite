@@ -43,7 +43,7 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -185,7 +185,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
@@ -200,7 +200,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
@@ -456,10 +456,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       availableQty = stockMoveLine.getAvailableQtyForProduct();
     }
     BigDecimal realQty = stockMoveLine.getRealQty();
-    if (availableQty.compareTo(realQty) < 0) {
-      return false;
-    }
-    return true;
+    return availableQty.compareTo(realQty) >= 0;
   }
 
   @Override
@@ -467,7 +464,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLine.getQtyInvoiced().compareTo(BigDecimal.ZERO) == 0) {
       stockMoveLine.setAvailableStatus(I18n.get("Not invoiced"));
       stockMoveLine.setAvailableStatusSelect(3);
-    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == -1) {
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) < 0) {
       stockMoveLine.setAvailableStatus(I18n.get("Partially invoiced"));
       stockMoveLine.setAvailableStatusSelect(4);
     } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == 0) {

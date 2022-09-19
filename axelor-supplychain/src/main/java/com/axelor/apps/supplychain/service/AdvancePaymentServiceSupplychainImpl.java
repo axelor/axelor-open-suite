@@ -34,12 +34,13 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -68,8 +69,6 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
   @Inject protected AccountConfigService accountConfigService;
 
   @Inject protected InvoicePaymentRepository invoicePaymentRepository;
-
-  @Inject protected AdvancePaymentRepository advancePaymentRepository;
 
   @Inject protected MoveCancelService moveCancelService;
 
@@ -102,7 +101,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     advancePaymentRepository.save(advancePayment);
   }
 
-  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) throws AxelorException {
+  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) {
     if (saleOrder.getAdvancePaymentList() == null || saleOrder.getAdvancePaymentList().isEmpty()) {
       return;
     }
@@ -150,8 +149,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName(),
           saleOrder.getSaleOrderSeq());
@@ -206,7 +205,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             origin,
             null));
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     advancePayment.setMove(move);
     advancePaymentRepository.save(advancePayment);
@@ -216,7 +215,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(
-      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
+      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) {
 
     log.debug("Creating InvoicePayment from SaleOrder AdvancePayment");
     InvoicePayment invoicePayment = new InvoicePayment();

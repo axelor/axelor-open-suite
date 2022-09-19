@@ -28,7 +28,7 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -189,7 +189,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-          I18n.get(IExceptionMessage.PAYROLL_PREPARATION_DUPLICATE),
+          I18n.get(HumanResourceExceptionMessage.PAYROLL_PREPARATION_DUPLICATE),
           employee.getName(),
           (company != null) ? hrBatch.getCompany().getName() : null,
           hrBatch.getPeriod().getName());
@@ -216,24 +216,28 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
     String comment =
         String.format(
-            I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_GENERATION_RECAP) + '\n', total);
+            I18n.get(HumanResourceExceptionMessage.BATCH_PAYROLL_PREPARATION_GENERATION_RECAP)
+                + '\n',
+            total);
 
     comment +=
         String.format(
-            I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_SUCCESS_RECAP) + '\n',
+            I18n.get(HumanResourceExceptionMessage.BATCH_PAYROLL_PREPARATION_SUCCESS_RECAP) + '\n',
             batch.getDone());
 
     if (duplicateAnomaly > 0) {
       comment +=
           String.format(
-              I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_DUPLICATE_RECAP) + '\n',
+              I18n.get(HumanResourceExceptionMessage.BATCH_PAYROLL_PREPARATION_DUPLICATE_RECAP)
+                  + '\n',
               duplicateAnomaly);
     }
 
     if (configurationAnomaly > 0) {
       comment +=
           String.format(
-              I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_CONFIGURATION_RECAP) + '\n',
+              I18n.get(HumanResourceExceptionMessage.BATCH_PAYROLL_PREPARATION_CONFIGURATION_RECAP)
+                  + '\n',
               configurationAnomaly);
     }
 

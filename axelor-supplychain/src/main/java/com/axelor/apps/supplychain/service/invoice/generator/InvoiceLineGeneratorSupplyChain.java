@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -57,7 +56,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
-  protected AppBaseService appBaseService;
   protected UnitConversionService unitConversionService;
 
   @Inject
@@ -342,7 +340,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       AnalyticMoveLine analyticMoveLine =
           Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
 
-      analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }

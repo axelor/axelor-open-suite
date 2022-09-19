@@ -13,4 +13,8 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="bankpayment_bankStatementQuery.csv" separator=";"
+    type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId">
+  </input>
+
 </csv-inputs>

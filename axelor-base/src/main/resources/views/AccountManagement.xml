@@ -70,7 +70,7 @@
       <panel name="purchaseConfig1Panel" title="Purchases" colSpan="12"
         showIf="typeSelect == 1">
         <field name="purchaseAccount"
-          domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
+          domain="self.statusSelect = 1 AND self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
         <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
@@ -83,14 +83,14 @@
           form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"
           canEdit="false"/>
         <field name="purchFixedAssetsAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
       </panel>
 
       <panel name="saleConfig1Panel" title="Sale" colSpan="12" showIf="typeSelect == 1">
         <field name="saleAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
         <field name="saleTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
@@ -100,7 +100,7 @@
       <panel name="purchaseConfig2Panel" title="Purchases" colSpan="12"
         showIf="typeSelect == 2">
         <field name="purchaseAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
       </panel>
@@ -108,36 +108,38 @@
       <panel name="fixedAssetsConfig2Panel" title="Purchase of fixed assets" colSpan="12"
         showIf="typeSelect == 2">
         <field name="purchFixedAssetsAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
       </panel>
 
       <panel name="saleConfig2Panel" title="Sale" colSpan="12" showIf="typeSelect == 2">
         <field name="saleAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
       </panel>
 
       <!-- PAYMENT -->
       <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
-        <field name="cashAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
-        <field name="paymentMode" hidden="true" form-view="payment-mode-form"
-          grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3"/>
-        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
-          form-view="journal-form" grid-view="journal-grid" canEdit="false"
-          requiredIf="typeSelect == 3"/>
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
           onSelect="action-account-management-attrs-bank-details-domain"
           onChange="action-account-management-attrs-bank-details-on-change"
           requiredIf="typeSelect == 3"/>
+        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
+          form-view="journal-form" grid-view="journal-grid" canEdit="false"
+          requiredIf="typeSelect == 3"/>
+        <field name="cashAccount"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
         <field name="sequence"
           domain="self.company = :company  AND self.codeSelect='paymentVoucher'" canNew="true"
           form-view="sequence-form" grid-view="sequence-grid" requiredIf="typeSelect == 3"/>
+        <field name="paymentMode" hidden="true" form-view="payment-mode-form"
+          grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3"/>
+        <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"
+          form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
       </panel>
 
       <panel name="analyticsPanel" title="Analytics" colSpan="12" showIf="typeSelect != 2">
@@ -152,7 +154,7 @@
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         showIf="typeSelect == 2">
         <field name="financialDiscountAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
           canEdit="false"/>

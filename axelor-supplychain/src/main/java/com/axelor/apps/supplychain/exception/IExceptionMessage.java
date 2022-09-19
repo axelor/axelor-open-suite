@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.supplychain.exception;
 
-/** @author axelor */
+/**
+ * @author axelor *
+ * @deprecated Replaced by {@link SupplychainExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
   /** Purchase order Invoice Service and controller */
   static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
@@ -87,6 +91,8 @@ public interface IExceptionMessage {
       "The trading name must be the same for all purchase orders." /*)*/;
   static final String STOCK_MOVE_MULTI_INVOICE_IN_ATI = /*$$(*/
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
+  static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders." /*)*/;
   static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/ "No invoice was generated" /*)*/;
   static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/
       "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
@@ -139,6 +145,9 @@ public interface IExceptionMessage {
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
   static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
+
+  static final String MRP_NO_PRODUCT_ID = /*$$(*/
+      "The component %s - %s not referenced in the product list selected for the MRP or in the BOM route should be added on the MRP." /*)*/;
 
   static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
@@ -315,4 +324,13 @@ public interface IExceptionMessage {
   String MRP_FINISHED_MESSAGE_SUBJECT = /*$$(*/ "MRP n°%s is now finished" /*)*/;
   String MRP_FINISHED_MESSAGE_BODY = /*$$(*/
       "The execution of MRP n°%s is now finished, you can click above to see the results." /*)*/;
+
+  static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
+      "Field fieldSelect is null for %s" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
 }

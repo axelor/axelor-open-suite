@@ -54,8 +54,8 @@ public class ExtraHoursController {
         Beans.get(ExtraHoursRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                AuthUtils.getUser(),
+                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
+                AuthUtils.getUser().getId(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
     if (extraHoursList.isEmpty()) {
@@ -138,7 +138,7 @@ public class ExtraHoursController {
 
     if (employee == null || !employee.getHrManager()) {
       actionView
-          .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
           .context("_user", user);
     }
 
@@ -158,7 +158,7 @@ public class ExtraHoursController {
             .param("search-filters", "extra-hours-filters");
 
     String domain =
-        "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbExtraHours =
         Query.of(ExtraHours.class)

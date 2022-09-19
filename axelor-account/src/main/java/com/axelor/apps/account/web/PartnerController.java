@@ -18,11 +18,17 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -52,5 +58,128 @@ public class PartnerController {
     response.setValue(
         "specificTaxNote",
         Beans.get(PartnerAccountService.class).getDefaultSpecificTaxNote(partner));
+  }
+
+  public void checkAnyCompanyAccountConfigAttached(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsFactor()) {
+        long accountConfigCount =
+            Beans.get(AccountConfigRepository.class)
+                .all()
+                .filter("self.factorPartner = :factorPartner")
+                .bind("factorPartner", partner.getId())
+                .count();
+        if (accountConfigCount > 0) {
+          response.setValue("factorCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnyNotificationAttached(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsFactor()) {
+        long notificationCount =
+            Beans.get(NotificationRepository.class)
+                .all()
+                .filter("self.factorPartner = :factorPartner")
+                .bind("factorPartner", partner.getId())
+                .count();
+        if (notificationCount > 0) {
+          response.setValue("factorCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnyPayableMoveLineAttached(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsSupplier()) {
+        long moveLineCount =
+            Beans.get(MoveLineRepository.class)
+                .all()
+                .filter(
+                    "self.partner = :partner AND self.account.accountType.technicalTypeSelect = :technicalTypeSelect")
+                .bind("partner", partner.getId())
+                .bind("technicalTypeSelect", AccountTypeRepository.TYPE_PAYABLE)
+                .count();
+        if (moveLineCount > 0) {
+          response.setValue("supplierCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnyInvoiceSupplierPurchaseAttached(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsSupplier()) {
+        long invoiceCount =
+            Beans.get(InvoiceRepository.class)
+                .all()
+                .filter(
+                    "self.operationTypeSelect = :operationTypeSelect AND self.partner = :partner")
+                .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+                .bind("partner", partner.getId())
+                .count();
+        if (invoiceCount > 0) {
+          response.setValue("supplierCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnyReceivableMoveLineAttached(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsCustomer()) {
+        long moveLineCount =
+            Beans.get(MoveLineRepository.class)
+                .all()
+                .filter(
+                    "self.partner = :partner AND self.account.accountType.technicalTypeSelect = :technicalTypeSelect")
+                .bind("partner", partner.getId())
+                .bind("technicalTypeSelect", AccountTypeRepository.TYPE_RECEIVABLE)
+                .count();
+        if (moveLineCount > 0) {
+          response.setValue("customerCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnyInvoiceClientSaleAttached(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsCustomer()) {
+        long invoiceCount =
+            Beans.get(InvoiceRepository.class)
+                .all()
+                .filter(
+                    "self.operationTypeSelect = :operationTypeSelect AND self.partner = :partner")
+                .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+                .bind("partner", partner.getId())
+                .count();
+        if (invoiceCount > 0) {
+          response.setValue("customerCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

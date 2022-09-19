@@ -115,7 +115,7 @@
     model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="requestBy" expr="eval:__user__"/>
-    <field name="requestDate" expr="eval:__config__.app.getTodayDate()"/>
+    <field name="requestDate" expr="eval:__config__.app.getTodayDate(null)"/>
     <field name="machine" expr="eval: _parent?.machine"
       if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
     <field name="equipementMaintenance" expr="eval: _parent"

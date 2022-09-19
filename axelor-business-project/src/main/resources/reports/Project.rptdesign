@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -164,7 +164,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1638,8 +1638,7 @@ group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></
        sum(expl.untaxed_amount) as exp_amt
 from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
-left join auth_user authuser on (authuser.id = expense.user_id)
-left join hr_employee emp on (emp.id = authuser.employee)
+left join hr_employee emp on (emp.id = expense.employee)
 left join project_project project on (project.id = expl.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
@@ -1775,8 +1774,7 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
        sum(tml.hours_duration) * emp.hourly_rate as emp_cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
-left join auth_user usr on (usr.id = tm.user_id)
-left join hr_employee emp on (emp.id = usr.employee)
+left join hr_employee emp on (emp.id = tm.employee)
 left join project_project project on (project.id = tml.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 left join base_product prod on (prod.id = tml.product)
@@ -1885,8 +1883,8 @@ left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 where (ppt.is_include_in_turnover_forecast = true and 
 case 
-	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
-		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1)
 	else 1 = 1
 end )
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
@@ -2311,8 +2309,8 @@ left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 where (ppt.is_include_in_turnover_forecast = true and 
 case 
-	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
-		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1)
 	else 1 = 1
 end )
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
@@ -2375,15 +2373,14 @@ group by month
 union
 select to_char(ppt.date_val, 'YYYY-MM') as month, sum(planned_hours) * sum(prod.cost_price) as costs
 from project_project_planning_time as ppt
-left join auth_user usr on (usr.id = ppt.user_id)
-left join hr_employee emp on (emp.id = usr.employee)
+left join hr_employee emp on (emp.id = ppt.employee)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 left join base_product as prod on (prod.id = ppt.product)
 where 
 case 
-	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
-		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1)
 	else 1 = 1
 end
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
@@ -2713,8 +2710,7 @@ union
 select to_char(tm.validation_date,'YYYY-MM') as month, sum(tml.hours_duration) * sum(prod.cost_price) as cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
-left join auth_user usr on (usr.id = tm.user_id)
-left join hr_employee emp on (emp.id = usr.employee)
+left join hr_employee emp on (emp.id = tm.employee)
 left join project_project project on (project.id = tml.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 left join base_product as prod on (prod.id = tml.product)
@@ -3116,15 +3112,14 @@ order by po_seq]]></xml-property>
        sum(planned_hours) as total_hours,
 	   sum(planned_hours) * emp.hourly_rate as emp_cost
 from project_project_planning_time as ppt
-left join auth_user usr on (usr.id = ppt.user_id)
-left join hr_employee emp on (emp.id = usr.employee)
+left join hr_employee emp on (emp.id = ppt.employee)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 left join base_product prod on (prod.id = ppt.product)
 where
 case 
-	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
-		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and employee = ppt.employee order by id desc LIMIT 1)
 	else 1 = 1
 end
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))

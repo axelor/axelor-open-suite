@@ -180,7 +180,7 @@
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <button name="confirmBtn" title="Confirmer"
-        onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
+        onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
     </panel>
   </form>
 
@@ -692,8 +692,8 @@
       <button if="__config__.app.getApp('sale').getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
-      <button name="seperateInNewQuotationBtn" title="Separate in a new quotation"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
         if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
@@ -1366,10 +1366,7 @@
   </action-group>
 
   <action-group name="action-group-sale-order-merge-action">
-    <action name="action-sale-order-method-merge-sale"
-      if="!__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-method-merge-supplychain"
-      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-method-merge-sale"/>
   </action-group>
 
   <action-group name="action-sale-group-onchange-company">
@@ -1580,12 +1577,12 @@
   </action-method>
 
   <action-method name="action-sale-order-method-merge-sale">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="mergeSaleOrder"/>
+    <call class="com.axelor.apps.sale.web.SaleOrderMergingController" method="mergeSaleOrder"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-merge-supplychain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="mergeSaleOrder"/>
+  <action-method name="action-sale-order-method-merge-from-pop-up">
+    <call class="com.axelor.apps.sale.web.SaleOrderMergingController"
+      method="mergeSaleOrderFromPopUp"/>
   </action-method>
 
   <action-method name="action-sale-order-method-confirm">
@@ -1626,8 +1623,8 @@
       method="handleComplementaryProducts"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-seperate-in-new-quotation">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="seperateInNewQuotation"/>
+  <action-method name="action-sale-order-method-separate-in-new-quotation">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="separateInNewQuotation"/>
   </action-method>
 
   <action-method
@@ -1733,7 +1730,7 @@
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
     <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
-      if="saleOrderLineList?.isEmpty()"/>
+      if="__config__.app.isApp('account') &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <field name="currency" expr="eval: clientPartner?.currency"
       if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
@@ -2078,6 +2075,12 @@
   <action-validate name="action-sale-order-validate-check-on-confirm">
     <alert message="The total amount of quotation is zero. Do you want to proceed ?"
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <error message="Incoterm must be filled"
+      if="__config__.app.isApp('supplychain')
+          &amp;&amp; incoterm == null
+          &amp;&amp; (
+          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"
@@ -2195,7 +2198,7 @@
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-stock-location"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    model="com.axelor.apps.sale.db.SaleOrder">
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>

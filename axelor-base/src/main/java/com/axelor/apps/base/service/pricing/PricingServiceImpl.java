@@ -69,6 +69,7 @@ public class PricingServiceImpl implements PricingService {
     Map<String, Object> bindings = new HashMap<>();
 
     filter.append("self.startDate <= :todayDate ");
+    filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
     bindings.put("todayDate", appBaseService.getTodayDate(company));
 
     if (company != null) {

@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -137,7 +138,7 @@ public class ChequeRejectionService {
 
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CANCELED);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     return move;
   }
@@ -169,8 +170,8 @@ public class ChequeRejectionService {
       throw new AxelorException(
           chequeRejection,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHECK_REJECTION_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CHECK_REJECTION_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           chequeRejection.getCompany().getName());
     }
 
