@@ -959,10 +959,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
-                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
+                " self.saleOrder.id = :saleOrderId "
+                    + "AND self.statusSelect != :invoiceStatus "
+                    + "AND (self.operationTypeSelect = :saleOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .bind("saleOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             .fetch();
     if (isPercent) {
       amountToInvoice =
