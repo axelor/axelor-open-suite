@@ -188,4 +188,12 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       manufOrder.addWasteProdProductListItem(wasteProduct);
     }
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void updateProdProductQty(ProdProduct prodProduct, BigDecimal qty) {
+    if (prodProduct != null && qty != null) {
+      prodProduct.setQty(qty);
+    }
+  }
 }

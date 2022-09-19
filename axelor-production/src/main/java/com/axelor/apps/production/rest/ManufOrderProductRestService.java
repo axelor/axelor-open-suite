@@ -17,4 +17,6 @@ public interface ManufOrderProductRestService {
       throws AxelorException;
 
   void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct);
+
+  void updateProdProductQty(ProdProduct prodProduct, BigDecimal qty);
 }

@@ -10,6 +10,7 @@ import com.axelor.apps.production.rest.dto.ManufOrderPutRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.production.rest.dto.WastedProductPostRequest;
+import com.axelor.apps.production.rest.dto.WastedProductPutRequest;
 import com.axelor.apps.production.rest.dto.WastedProductResponse;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -116,6 +117,26 @@ public class ManufOrderRestController {
     return ResponseConstructor.build(
         Response.Status.CREATED,
         "Waste product successfully added to manufacturing order",
+        new WastedProductResponse(prodProduct));
+  }
+
+  @Path("/waste-product/{prodProductId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response updateWastedProductQuantity(
+      @PathParam("prodProductId") long prodProductId, WastedProductPutRequest requestBody) {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Arrays.asList(ManufOrder.class, ProdProduct.class)).check();
+
+    ProdProduct prodProduct =
+        ObjectFinder.find(ProdProduct.class, prodProductId, requestBody.getVersion());
+
+    Beans.get(ManufOrderProductRestService.class)
+        .updateProdProductQty(prodProduct, requestBody.getQty());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Wasted product quantity successfully updated.",
         new WastedProductResponse(prodProduct));
   }
 }
