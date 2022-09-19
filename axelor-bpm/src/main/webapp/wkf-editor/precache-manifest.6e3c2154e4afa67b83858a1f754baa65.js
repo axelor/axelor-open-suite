@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2022 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "81b7e5eee0627da54412f704c1be1449",
+    "revision": "88da1e32c403bc27c877cf377bdc7735",
     "url": "./index.html"
   },
   {
@@ -29,7 +30,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/css/3.24a5c644.chunk.css"
   },
   {
-    "revision": "350db8a47f0039892f3c",
+    "revision": "5af4d44f9653d74d6806",
     "url": "./static/css/main.4e427609.chunk.css"
   },
   {
@@ -45,8 +46,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/js/3.ef50a943.chunk.js"
   },
   {
-    "revision": "350db8a47f0039892f3c",
-    "url": "./static/js/main.c89a6776.chunk.js"
+    "revision": "5af4d44f9653d74d6806",
+    "url": "./static/js/main.0d47bd5f.chunk.js"
   },
   {
     "revision": "f9b12699d006eb3e0095",
