@@ -330,8 +330,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
-    List<MoveLine> moveLines = new ArrayList<MoveLine>();
-
     Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 
     if (partner == null) {
@@ -362,10 +360,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    moveLines.addAll(
-        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    List<MoveLine> moveLines =
+        new ArrayList<>(
+            addInvoiceTermMoveLines(
+                invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+
     int moveLineId = moveLines.size() + 1;
     boolean mustRound = false;
+    BigDecimal currencyRate =
+        moveLines.stream().map(MoveLine::getCurrencyRate).findAny().orElse(null);
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -373,8 +376,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
       if (companyExTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-
-        analyticAccounts.clear();
 
         Account account = invoiceLine.getAccount();
 
@@ -425,7 +426,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 account,
                 invoiceLine.getExTaxTotal(),
                 companyExTaxTotal,
-                null,
+                currencyRate,
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
@@ -521,7 +522,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   account,
                   invoiceLineTax.getSubTotalOfFixedAssets(),
                   companyTaxTotal,
-                  null,
+                  currencyRate,
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
@@ -583,7 +584,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   account,
                   invoiceLineTax.getSubTotalExcludingFixedAssets(),
                   companyTaxTotal,
-                  null,
+                  currencyRate,
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
