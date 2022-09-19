@@ -163,6 +163,9 @@ public final class SupplychainExceptionMessage {
   public static final String MRP_ALREADY_STARTED = /*$$(*/
       "Mrp calculation is already on going." /*)*/;
 
+  public static final String MRP_CANNOT_PROCESS_ONGOING = /*$$(*/
+      "Could not process MRP %s since its computation is already ongoing." /*)*/;
+
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
       "Can only be confirmed from drafted forecast." /*)*/;
