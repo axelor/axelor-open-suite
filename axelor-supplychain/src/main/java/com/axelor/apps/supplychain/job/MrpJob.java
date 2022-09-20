@@ -16,8 +16,16 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+/** Class implementing Job to be called by the quartz scheduler. */
 public class MrpJob implements Job {
 
+  /**
+   * Called from the scheduler, will call {@link MrpService#runCalculation(Mrp)} with the MRP
+   * configured with the scheduler.
+   *
+   * @param context context given by quartz scheduler, containing the configuration.
+   * @throws JobExecutionException if any exception happens during the process.
+   */
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     try {
