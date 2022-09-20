@@ -17,6 +17,6 @@ axelor {
 dependencies {
 	api project(":modules:axelor-exception")
 	api project(":modules:axelor-tool")
-	implementation 'net.datafaker:datafaker:1.5.0'
+	implementation libs.faker
 	api libs.opencsv
 }

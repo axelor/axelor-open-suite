@@ -34,7 +34,7 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -94,7 +94,7 @@ public class TableFooterEventHandler implements IEventHandler {
             pdfDoc.getDefaultPageSize().getBottom() - doc.getBottomMargin(),
             100,
             90);
-    new Canvas(canvas, pdfDoc, rect1).add(tableFooter);
+    new Canvas(canvas, rect1).add(tableFooter);
   }
 
   private void setCellFooterTextAlignment(Cell cellFooter, String footerTextAlignment) {

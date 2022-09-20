@@ -16,6 +16,6 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-tool")
-	implementation "com.squareup.okhttp3:okhttp:4.10.0-RC1"
+	implementation libs.okhhtp
 	api libs.wslite
 }
