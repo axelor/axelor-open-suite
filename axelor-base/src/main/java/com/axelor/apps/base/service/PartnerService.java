@@ -60,7 +60,8 @@ public interface PartnerService {
   @CallMethod
   String computeSimpleFullName(Partner partner);
 
-  Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
+  Map<String, String> getSocialNetworkUrl(
+      String name, String firstName, Integer typeSelect, Partner mainPartner);
 
   List<Long> findPartnerMails(Partner partner);
 

@@ -42,13 +42,17 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -289,9 +293,16 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public Map<String, String> getSocialNetworkUrl(
-      String name, String firstName, Integer typeSelect) {
+      String name, String firstName, Integer typeSelect, Partner mainPartner) {
 
     Map<String, String> urlMap = new HashMap<String, String>();
+    try {
+      name = name == null ? "" : URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
+      firstName =
+          firstName == null ? "" : URLEncoder.encode(firstName, StandardCharsets.UTF_8.toString());
+    } catch (UnsupportedEncodingException e) {
+      TraceBackService.trace(e);
+    }
     if (typeSelect == 2) {
       name =
           firstName != null && name != null
@@ -301,19 +312,19 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+        "<a class='fa fa-google' href='https://www.google.com/search?q="
             + name
             + "' target='_blank' />");
     urlMap.put(
         "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
+        "<a class='fa fa-facebook' href='https://www.facebook.com/search/top/?q="
             + name
-            + "&init=public"
             + "' target='_blank'/>");
     urlMap.put(
         "twitter",
         "<a class='fa fa-twitter' href='https://twitter.com/search?q="
             + name
+            + "&f=user"
             + "' target='_blank' />");
     urlMap.put(
         "linkedin",
@@ -326,6 +337,13 @@ public class PartnerServiceImpl implements PartnerService {
           "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
               + name.replace("+", "/")
               + "' target='_blank' />");
+    }
+    if (mainPartner != null) {
+      try {
+        name = URLEncoder.encode(mainPartner.getName(), StandardCharsets.UTF_8.toString());
+      } catch (UnsupportedEncodingException e) {
+        TraceBackService.trace(e);
+      }
     }
     urlMap.put(
         "youtube",

@@ -229,7 +229,10 @@ public class PartnerController {
     Map<String, String> urlMap =
         Beans.get(PartnerService.class)
             .getSocialNetworkUrl(
-                partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
+                partner.getName(),
+                partner.getFirstName(),
+                partner.getPartnerTypeSelect(),
+                partner.getMainPartner());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
     response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
     response.setAttr("twitterLabel", "title", urlMap.get("twitter"));

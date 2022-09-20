@@ -669,7 +669,8 @@
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-            form-view="partner-form" grid-view="partner-grid"/>
+            form-view="partner-form" grid-view="partner-grid"
+            onChange="action-partner-method-set-social-network-url"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>
       </panel>
@@ -908,7 +909,8 @@
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-            form-view="partner-form" grid-view="partner-grid"/>
+            form-view="partner-form" grid-view="partner-grid"
+            onChange="action-partner-method-set-social-network-url"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>
         <field name="isEmployee" readonly="true" colSpan="12"/>

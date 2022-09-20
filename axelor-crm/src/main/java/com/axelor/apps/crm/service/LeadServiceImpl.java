@@ -36,10 +36,14 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -147,6 +151,14 @@ public class LeadServiceImpl implements LeadService {
       String name, String firstName, String companyName) {
 
     Map<String, String> urlMap = new HashMap<String, String>();
+    try {
+      name = name == null ? "" : URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
+      firstName =
+          firstName == null ? "" : URLEncoder.encode(firstName, StandardCharsets.UTF_8.toString());
+    } catch (UnsupportedEncodingException e) {
+      TraceBackService.trace(e);
+    }
+
     String searchName =
         firstName != null && name != null
             ? firstName + "+" + name
@@ -154,14 +166,14 @@ public class LeadServiceImpl implements LeadService {
     searchName = searchName == null ? "" : searchName;
     urlMap.put(
         "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
+        "<a class='fa fa-facebook' href='https://www.facebook.com/search/top/?q="
             + searchName
-            + "&init=public"
             + "' target='_blank'/>");
     urlMap.put(
         "twitter",
         "<a class='fa fa-twitter' href='https://twitter.com/search?q="
             + searchName
+            + "&f=user"
             + "' target='_blank' />");
     urlMap.put(
         "linkedin",
@@ -169,6 +181,11 @@ public class LeadServiceImpl implements LeadService {
             + searchName.replace("+", "/")
             + "' target='_blank' />");
     if (companyName != null) {
+      try {
+        companyName = URLEncoder.encode(companyName, StandardCharsets.UTF_8.toString());
+      } catch (UnsupportedEncodingException e) {
+        TraceBackService.trace(e);
+      }
       urlMap.put(
           "youtube",
           "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
@@ -176,7 +193,7 @@ public class LeadServiceImpl implements LeadService {
               + "' target='_blank' />");
       urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/search?q="
               + companyName
               + "+"
               + searchName
@@ -189,7 +206,7 @@ public class LeadServiceImpl implements LeadService {
               + "' target='_blank' />");
       urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/search?q="
               + searchName
               + "' target='_blank' />");
     }
