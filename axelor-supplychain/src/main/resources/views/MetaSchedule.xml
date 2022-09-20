@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form id="supplychain-meta-schedule-form" name="meta-schedule-form" title="Schedule"
+    model="com.axelor.meta.db.MetaSchedule" extension="true">
+    <extend target="//panel[@name='batchPanel']">
+      <insert position="after">
+        <panel name="mrpPanel" title="MRP"
+          showIf="job == 'com.axelor.apps.supplychain.job.MrpJob'">
+          <field name="mrp" form-view="mrp-form" grid-view="mrp-grid"
+            requiredIf="job == 'com.axelor.apps.supplychain.job.MrpJob'"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>
