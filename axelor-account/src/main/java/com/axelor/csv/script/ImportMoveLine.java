@@ -79,10 +79,10 @@ public class ImportMoveLine {
     Partner partner = getPartner(partnerId);
     if (partner != null) {
       moveLine.setPartnerSeq(partner.getPartnerSeq());
-      moveLine.setPartnerFullName(partner.getFullName());
+      moveLine.setPartnerFullName(partner.getSimpleFullName());
     } else {
       moveLine.setPartnerSeq((String) values.get("partnerSeq"));
-      moveLine.setPartnerFullName((String) values.get("partnerFullName"));
+      moveLine.setPartnerFullName((String) values.get("partnerSimpleFullName"));
     }
 
     moveLineRepository.save(moveLine);

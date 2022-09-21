@@ -37,7 +37,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -59,6 +59,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -110,7 +111,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
-  protected AppBaseService appBaseService;
   protected TaxService taxService;
 
   private final int RETURN_SCALE = 2;
@@ -128,7 +128,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      AppBaseService appBaseService,
       TaxService taxService) {
 
     this.validateFactory = validateFactory;
@@ -141,7 +140,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
-    this.appBaseService = appBaseService;
     this.taxService = taxService;
   }
 
@@ -210,7 +208,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.JOURNAL_1),
+            I18n.get(AccountExceptionMessage.JOURNAL_1),
             invoice.getInvoiceId());
     }
   }
@@ -232,7 +230,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public Invoice compute(final Invoice invoice) throws AxelorException {
 
-    log.debug("Calcul de la facture");
+    log.debug("Invoice computation");
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator() {
@@ -273,7 +271,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
 
-    log.debug("Validation de la facture");
+    log.debug("Invoice validation");
 
     compute(invoice);
 
@@ -298,14 +296,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     if (invoice.getPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       Account account = invoiceLine.getAccount();
@@ -315,7 +313,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_6),
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_6),
             invoiceLine.getProductName());
       }
 
@@ -327,11 +325,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_7));
       }
     }
 
-    log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
 
     ventilateFactory.getVentilator(invoice).process();
 
@@ -356,7 +354,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException {
 
-    log.debug("Annulation de la facture {}", invoice.getInvoiceId());
+    log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
@@ -399,7 +397,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 
         if (clientRefundsAmount > 0) {
-          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+          return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
         }
       }
 
@@ -409,7 +407,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
 
         if (supplierRefundsAmount > 0) {
-          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+          return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
         }
       }
     }
@@ -533,7 +531,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq.toString(),
             externalRef.toString(),
             null,
-            company.getDefaultBankDetails(),
+            null,
             tradingName,
             null) {
 
@@ -632,7 +630,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq.toString(),
             externalRef.toString(),
             null,
-            company.getDefaultBankDetails(),
+            null,
             tradingName,
             null) {
 
@@ -887,7 +885,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     throw new AxelorException(
         invoice,
         TraceBackRepository.CATEGORY_MISSING_FIELD,
-        I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
+        I18n.get(AccountExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
         partner.getName());
   }
 
@@ -1082,7 +1080,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           getNotLetteredAdvancePaymentMoveLinesAmount(invoice.getPartner());
 
       if (supplierNotLetteredAdvancePaymentMoveLinesAmount > 0) {
-        return I18n.get(IExceptionMessage.INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES);
+        return I18n.get(AccountExceptionMessage.INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES);
       }
     }
     return null;
@@ -1110,17 +1108,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .setParameter(4, partner.getId())
         .getResultList()
         .size();
-  }
-
-  @Override
-  public List<Long> getInvoiceLineIds(Invoice invoice) {
-    List<Long> invoiceLineListIds = new ArrayList<Long>();
-    if (invoice != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLineListIds.add(invoiceLine.getId());
-      }
-    }
-    return invoiceLineListIds;
   }
 
   public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
@@ -1152,7 +1139,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
-                  appBaseService.getTodayDate(company))
+                  appAccountService.getTodayDate(company))
               .getValue()
               .add(new BigDecimal(1)),
           CALCULATION_SCALE,
@@ -1165,7 +1152,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return baseAmount.divide(
           taxService
               .getTaxLine(
-                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+                  accountConfig.getSaleFinancialDiscountTax(),
+                  appAccountService.getTodayDate(company))
               .getValue()
               .add(new BigDecimal(1)),
           CALCULATION_SCALE,
@@ -1202,7 +1190,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
-                  appBaseService.getTodayDate(company))
+                  appAccountService.getTodayDate(company))
               .getValue());
     } else if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
@@ -1210,7 +1198,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return financialDiscountAmount.multiply(
           taxService
               .getTaxLine(
-                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+                  accountConfig.getSaleFinancialDiscountTax(),
+                  appAccountService.getTodayDate(company))
               .getValue());
     }
     return BigDecimal.ZERO;
@@ -1263,7 +1252,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && invoice
                 .getFinancialDiscountDeadlineDate()
-                .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
+                .compareTo(appAccountService.getTodayDate(invoice.getCompany()))
             >= 0);
   }
 

@@ -1,5 +1,0 @@
----
-title: "Accounting move: fix account selection when generating automatically the counterpart of a move line."
-type: fix
-description: |
-  Improve error messages when the account cannot be determined when generating the counterpart of a move line, also use the default company bank details to select the right account.

@@ -66,7 +66,6 @@
     model="com.axelor.apps.base.db.DataBackup">
     <view type="grid" name="data-create-backup-grid"/>
     <view type="form" name="data-create-backup-form"/>
-    <domain>self.backupDate != null</domain>
   </action-view>
 
   <menuitem name="admin-root-data-restore-backup" parent="admin-root-data-backup"

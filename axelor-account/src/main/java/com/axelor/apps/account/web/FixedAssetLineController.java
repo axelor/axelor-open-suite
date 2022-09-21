@@ -19,7 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -51,7 +51,7 @@ public class FixedAssetLineController {
       if (Beans.get(FixedAssetLineMoveService.class).canSimulate(fixedAssetLine)) {
         Beans.get(FixedAssetLineMoveService.class).simulate(fixedAssetLine);
       } else {
-        response.setError(I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CAN_NOT_SIMULATE));
+        response.setError(I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CAN_NOT_SIMULATE));
       }
       response.setReload(true);
     } catch (Exception e) {

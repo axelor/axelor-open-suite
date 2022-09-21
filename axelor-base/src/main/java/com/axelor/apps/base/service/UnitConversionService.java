@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -79,19 +79,19 @@ public class UnitConversionService {
     if ((startUnit == null && endUnit == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.UNIT_CONVERSION_3));
+          I18n.get(BaseExceptionMessage.UNIT_CONVERSION_3));
     }
 
     if (startUnit == null && endUnit != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+          I18n.get(BaseExceptionMessage.UNIT_CONVERSION_2));
     }
 
     if (endUnit == null && startUnit != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.UNIT_CONVERSION_4));
+          I18n.get(BaseExceptionMessage.UNIT_CONVERSION_4));
     }
 
     if (startUnit.equals(endUnit)) return value;
@@ -192,7 +192,7 @@ public class UnitConversionService {
     /* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.UNIT_CONVERSION_1),
+        I18n.get(BaseExceptionMessage.UNIT_CONVERSION_1),
         startUnit.getName(),
         endUnit.getName());
   }

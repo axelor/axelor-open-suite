@@ -107,63 +107,67 @@ public class StockLocationServiceImpl implements StockLocationService {
   @Override
   public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
       throws AxelorException {
-    if (productId != null) {
-      Product product = productRepo.find(productId);
-      Unit productUnit = product.getUnit();
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-      int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
+    if (productId == null) {
+      return BigDecimal.ZERO;
+    }
 
-      if (locationId == null || locationId == 0L) {
-        List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
-        if (!stockLocations.isEmpty()) {
-          BigDecimal qty = BigDecimal.ZERO;
-          for (StockLocation stockLocation : stockLocations) {
-            StockLocationLine stockLocationLine =
-                stockLocationLineService.getStockLocationLine(
-                    stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
+    Product product = productRepo.find(productId);
+    Unit productUnit = product.getUnit();
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
+    BigDecimal qty = BigDecimal.ZERO;
 
-            if (stockLocationLine != null) {
-              Unit stockLocationLineUnit = stockLocationLine.getUnit();
-              qty =
-                  qty.add(
-                      qtyType.equals("real")
-                          ? stockLocationLine.getCurrentQty()
-                          : stockLocationLine.getFutureQty());
+    if (locationId == null || locationId == 0L) {
+      List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
+      if (stockLocations.isEmpty()) {
+        return BigDecimal.ZERO;
+      }
 
-              if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
-                qty =
-                    unitConversionService.convert(
-                        stockLocationLineUnit, productUnit, qty, qty.scale(), product);
-              }
-            }
-          }
-          return qty.setScale(scale, RoundingMode.HALF_UP);
-        }
-      } else {
+      for (StockLocation stockLocation : stockLocations) {
         StockLocationLine stockLocationLine =
             stockLocationLineService.getStockLocationLine(
-                stockLocationRepo.find(locationId), productRepo.find(productId));
-
-        if (stockLocationLine != null) {
-          Unit stockLocationLineUnit = stockLocationLine.getUnit();
-          BigDecimal qty = BigDecimal.ZERO;
-
-          qty =
-              qtyType.equals("real")
-                  ? stockLocationLine.getCurrentQty()
-                  : stockLocationLine.getFutureQty();
-
-          if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
-            qty =
-                unitConversionService.convert(
-                    stockLocationLineUnit, productUnit, qty, qty.scale(), product);
-          }
-          return qty.setScale(scale, RoundingMode.HALF_UP);
+                stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
+        if (stockLocationLine == null) {
+          continue;
         }
+
+        Unit stockLocationLineUnit = stockLocationLine.getUnit();
+        qty =
+            qty.add(
+                qtyType.equals("real")
+                    ? stockLocationLine.getCurrentQty()
+                    : stockLocationLine.getFutureQty());
+
+        if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+          qty =
+              unitConversionService.convert(
+                  stockLocationLineUnit, productUnit, qty, qty.scale(), product);
+        }
+      }
+
+    } else {
+      StockLocationLine stockLocationLine =
+          stockLocationLineService.getStockLocationLine(
+              stockLocationRepo.find(locationId), productRepo.find(productId));
+
+      if (stockLocationLine == null) {
+        return BigDecimal.ZERO;
+      }
+
+      Unit stockLocationLineUnit = stockLocationLine.getUnit();
+      qty =
+          qtyType.equals("real")
+              ? stockLocationLine.getCurrentQty()
+              : stockLocationLine.getFutureQty();
+
+      if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+        qty =
+            unitConversionService.convert(
+                stockLocationLineUnit, productUnit, qty, qty.scale(), product);
       }
     }
 
-    return BigDecimal.ZERO;
+    return qty.setScale(scale, RoundingMode.HALF_UP);
   }
 
   @Override

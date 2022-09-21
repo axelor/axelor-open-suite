@@ -47,13 +47,6 @@ public interface FixedAssetService {
 
   void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
 
-  /**
-   * Compute first depreciation date of fixedAsset
-   *
-   * @param fixedAsset
-   */
-  void computeFirstDepreciationDate(FixedAsset fixedAsset);
-
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**

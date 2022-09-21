@@ -24,10 +24,11 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
@@ -51,6 +52,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -82,13 +84,17 @@ public class FixedAssetController {
   public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     if (context.get("disposalDate") == null
-        || context.get("disposalAmount") == null
         || context.get("disposalTypeSelect") == null
         || context.get("disposalQtySelect") == null) {
       return;
     }
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
-    BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
+    BigDecimal disposalAmount =
+        new BigDecimal(
+            Optional.ofNullable(context.get("disposalAmount"))
+                .map(Object::toString)
+                .orElse(BigDecimal.ZERO.toString()));
+
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
     Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
     Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
@@ -121,7 +127,7 @@ public class FixedAssetController {
         && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
     }
     try {
@@ -253,9 +259,50 @@ public class FixedAssetController {
 
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-      Beans.get(FixedAssetService.class).computeFirstDepreciationDate(fixedAsset);
+      Beans.get(FixedAssetDateService.class).computeFirstDepreciationDate(fixedAsset);
 
       response.setValue("firstDepreciationDate", fixedAsset.getFirstDepreciationDate());
+      response.setValue("fiscalFirstDepreciationDate", fixedAsset.getFiscalFirstDepreciationDate());
+      response.setValue("ifrsFirstDepreciationDate", fixedAsset.getIfrsFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeFiscalFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetDateService.class).computeFiscalFirstDepreciationDate(fixedAsset);
+
+      response.setValue("fiscalFirstDepreciationDate", fixedAsset.getFiscalFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeEconomicFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetDateService.class).computeEconomicFirstDepreciationDate(fixedAsset);
+
+      response.setValue("firstDepreciationDate", fixedAsset.getFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeIfrsFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetDateService.class).computeIfrsFirstDepreciationDate(fixedAsset);
+
+      response.setValue("ifrsFirstDepreciationDate", fixedAsset.getIfrsFirstDepreciationDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -401,7 +448,7 @@ public class FixedAssetController {
           && disposalQty.compareTo(fixedAsset.getQty()) == 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL));
+            I18n.get(AccountExceptionMessage.FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);

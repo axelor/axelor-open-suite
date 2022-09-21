@@ -35,9 +35,13 @@
     <integer name="durationInMonth" title="Duration in month"/>
     <integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
     <decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <integer name="firstDepreciationDateInitSelect" massUpdate="true"
+      title="Reference Date for first depreciation"
+      selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
+    <date name="firstDepreciationDate" title="First depreciation date"/>
 
     <date name="acquisitionDate" title="Date of acquisition"/>
-    <date name="firstDepreciationDate" title="First depreciation date"/>
+
 
     <decimal name="grossValue" title="Gross value"/>
     <decimal name="residualValue" title="Residual value"/>
@@ -92,6 +96,10 @@
       name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"
       mappedBy="fiscalFixedAsset"/>
     <date name="depreciationEndDate" title="Depreciation end date"/>
+    <integer name="fiscalFirstDepreciationDateInitSelect" massUpdate="true"
+      title="Reference Date for first depreciation"
+      selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
+    <date name="fiscalFirstDepreciationDate" title="Fiscal first depreciation date"/>
 
     <boolean name="isIfrsEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
     <string name="ifrsComputationMethodSelect" title="IFRS Computation Method Select"
@@ -106,6 +114,10 @@
     <decimal name="ifrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
+    <integer name="ifrsFirstDepreciationDateInitSelect" massUpdate="true"
+      title="Reference Date for first depreciation"
+      selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
+    <date name="ifrsFirstDepreciationDate" title="IFRS first depreciation date"/>
 
     <many-to-many ref="com.axelor.apps.account.db.FixedAsset"
       name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
@@ -128,12 +140,15 @@
       title="Depreciated amount current Year"/>
     <decimal name="ifrsDepreciatedAmountCurrentYear" title="Depreciated amount current Year"/>
 
+
     <string name="serialNumber" title="Serial Nbr"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="barcode" title="Barcode"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
     <many-to-one name="assetDisposalReason"
       ref="com.axelor.apps.account.db.AssetDisposalReason" title="Disposal Reason"/>
+
+    <integer name="initialPeriodicityInMonth" title="Initial periodicity in month"/>
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

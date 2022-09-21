@@ -17,7 +17,13 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -240,7 +246,7 @@ public class DoubtfulCustomerService {
       MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {
 
-    log.debug("Ecriture concernée : {} ", moveLine.getName());
+    log.debug("Concerned move : {} ", moveLine.getName());
     Company company = moveLine.getMove().getCompany();
     Partner partner = moveLine.getPartner();
     LocalDate todayDate = appBaseService.getTodayDate(company);
@@ -422,7 +428,7 @@ public class DoubtfulCustomerService {
         break;
     }
 
-    log.debug("Date de créance prise en compte : {} ", date);
+    log.debug("Debt date taken into account : {} ", date);
 
     String request =
         "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND m.company.id = "
@@ -435,7 +441,7 @@ public class DoubtfulCustomerService {
             + " AND m.invoice.operationTypeSelect = "
             + InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 
-    log.debug("Requete : {} ", request);
+    log.debug("Query : {} ", request);
 
     Query query = JPA.em().createQuery(request);
 
@@ -513,7 +519,7 @@ public class DoubtfulCustomerService {
         break;
     }
 
-    log.debug("Date de créance prise en compte : {} ", date);
+    log.debug("Debt date taken into account : {} ", date);
 
     return moveLineList;
   }

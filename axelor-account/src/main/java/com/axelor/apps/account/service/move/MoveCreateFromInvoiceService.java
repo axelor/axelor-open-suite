@@ -64,4 +64,6 @@ public interface MoveCreateFromInvoiceService {
   Move createMoveUseDebit(
       Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine)
       throws AxelorException;
+
+  boolean isPartnerNotCompatible(Move move);
 }

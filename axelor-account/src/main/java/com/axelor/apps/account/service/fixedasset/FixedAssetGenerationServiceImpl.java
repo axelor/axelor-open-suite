@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AccountConfig;
@@ -9,12 +26,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -45,12 +64,14 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected FixedAssetValidateService fixedAssetValidateService;
+  protected FixedAssetDateService fixedAssetDateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
@@ -59,6 +80,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       FixedAssetValidateService fixedAssetValidateService) {
+    this.fixedAssetDateService = fixedAssetDateService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
@@ -294,7 +316,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         throw new AxelorException(
             invoiceLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
+            I18n.get(AccountExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
             invoiceLine.getProductName());
       }
 
@@ -314,6 +336,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
+      fixedAsset.setResidualValue(BigDecimal.ZERO);
       if (invoiceLine.getQty() != null) {
         fixedAsset.setName(
             invoiceLine.getProductName()
@@ -333,7 +356,9 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setInvoiceLine(invoiceLine);
       fixedAsset.setPurchaseAccountMove(invoice.getMove());
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+      fixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_INVOICE);
 
+      fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
       if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
         fixedAssetValidateService.validate(fixedAsset);
       } else {
@@ -351,8 +376,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     if (!sequenceService.hasSequence(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           fixedAsset.getCompany().getName());
     }
     String seq =
@@ -392,7 +417,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     if (moveLine.getDescription() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
+          I18n.get(AccountExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
           moveLine.getName());
     }
     fixedAsset.setName(moveLine.getDescription());
@@ -439,6 +464,22 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setComputationMethodSelect(computationMethodSelect);
     fixedAsset.setIfrsComputationMethodSelect(computationMethodSelect);
     fixedAsset.setFiscalComputationMethodSelect(computationMethodSelect);
+
+    if (computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+      fixedAsset.setFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
+    } else {
+      fixedAsset.setFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
+    }
 
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
     fixedAsset.setFiscalNumberOfDepreciation(numberOfDepreciation);

@@ -17,7 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -27,7 +33,10 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.InternationalService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -392,6 +401,30 @@ public class InvoiceLineController {
           "analyticMoveLineList",
           invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Partner partner = this.getInvoice(context).getPartner();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+
+      if (invoiceLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
+        response.setValue(
+            "description",
+            internationalService.translate(
+                invoiceLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+        response.setValue(
+            "productName",
+            internationalService.translate(
+                invoiceLine.getProduct().getName(), userLanguage, partnerLanguage));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

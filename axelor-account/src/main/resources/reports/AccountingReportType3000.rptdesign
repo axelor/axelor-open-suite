@@ -38,7 +38,7 @@ var temp = {};]]></method>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -124,9 +124,6 @@ var temp = {};]]></method>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -160,72 +157,7 @@ var temp = {};]]></method>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="RulesDS" id="9">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">type</property>
-                    <property name="alias">type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">type</text-property>
-                    <text-property name="heading">type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_label</property>
-                    <property name="alias">rule_label</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule_label</text-property>
-                    <text-property name="heading">rule_label</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_code</property>
-                    <property name="alias">rule_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule_code</text-property>
-                    <text-property name="heading">rule_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_type</property>
-                    <property name="alias">rule_type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">rule_type</text-property>
-                    <text-property name="heading">rule_type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">result</property>
-                    <property name="alias">result</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">result</text-property>
-                    <text-property name="heading">result</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">hidden</property>
-                    <property name="alias">hidden</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">hidden</text-property>
-                    <text-property name="heading">hidden</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule</property>
-                    <property name="alias">rule</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule</text-property>
-                    <text-property name="heading">rule</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diff</property>
-                    <property name="alias">account_diff</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">account_diff</text-property>
-                    <text-property name="heading">account_diff</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diffn1</property>
-                    <property name="analysis">measure</property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diffn2</property>
-                    <property name="analysis">measure</property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">ReportId</property>
@@ -239,60 +171,7 @@ var temp = {};]]></method>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">type</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">rule_label</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">rule_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">rule_type</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">result</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">hidden</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">rule</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">account_diff</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">account_diffn1</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">account_diffn2</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <method name="onFetch"><![CDATA[var value;
 var valuen1;
 var valuen2;
@@ -324,81 +203,13 @@ if (row["rule_type"] == 2) {
 	rulesn2[row["rule_code"]] = valuen2;
 } else if (row["rule_type"] == 3)  {
 	rules[row["rule_code"]] = eval(row["rule"]);
+	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1')); 
+	rulesn2[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn2'));
 }]]></method>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">type</property>
-                    <property name="nativeName">type</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">rule_label</property>
-                    <property name="nativeName">rule_label</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">rule_code</property>
-                    <property name="nativeName">rule_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">rule_type</property>
-                    <property name="nativeName">rule_type</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">result</property>
-                    <property name="nativeName">result</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">hidden</property>
-                    <property name="nativeName">hidden</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">rule</property>
-                    <property name="nativeName">rule</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">account_diff</property>
-                    <property name="nativeName">account_diff</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">account_diffn1</property>
-                    <property name="nativeName">account_diffn1</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">account_diffn2</property>
-                    <property name="nativeName">account_diffn2</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-            </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[WITH MoveLineQuery as (SELECT DISTINCT
+	ConfigLine.sequence,
 	ConfigLine.type_select 				  as type,
 	ConfigLine.label 					  as rule_label,
 	ConfigLine.code 					  as rule_code,
@@ -406,17 +217,11 @@ if (row["rule_type"] == 2) {
 	ConfigLine.result_select 			  as result,
 	ConfigLine.hidden 					  as hidden,
 	ConfigLine.rule	 					  as rule,
-	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE (Report.period IS NULL OR Move.period = Report.period)) as account_diff,
-
-	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE ((((date_part('day',Year.to_date) = 31 AND
-	date_part('day',Year.from_date) = 01 AND
-    ((date_part('year',Year.from_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.from_date) = 04 AND date_part('year',Year.to_date) = date_part('year', current_date - interval '1 year') AND date_part('month', Year.to_date) = 03) OR (
-	date_part('year',Year.from_date) = date_part('year', current_date - interval '1 year') AND date_part('month', Year.from_date) = 01 AND date_part('year', Year.to_date) = date_part('year', current_date - interval '1 year') AND date_part('month', Year.to_date) = 12))))) AND ReportType.comparison = 2) OR (Move.period IN (Select id FROM base_period WHERE from_date = Report.date_from - interval '1 year' AND to_date = Report.date_to - interval '1 year') AND ReportType.comparison = 3)) as account_diffn1,
-
-	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE ((((date_part('day',Year.to_date) = 31 AND
-	date_part('day',Year.from_date) = 01 AND
-    ((date_part('year',Year.from_date) = date_part('year', current_date - interval '3 year') AND date_part('month', Year.from_date) = 04 AND date_part('year',Year.to_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.to_date) = 03) OR (
-	date_part('year',Year.from_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.from_date) = 01 AND date_part('year', Year.to_date) = date_part('year', current_date - interval '2 year') AND date_part('month', Year.to_date) = 12))))) AND ReportType.comparison = 2) OR (Move.period IN (Select id FROM base_period WHERE from_date = Report.date_from - interval '2 year' AND to_date = Report.date_to - interval '2 year') AND ReportType.comparison = 3)) as account_diffn2
+	MoveLine.date_val,
+	Report.date_from,
+	Report.date_to,
+	MoveLine.debit as debit,
+	MoveLine.credit as credit
 FROM account_accounting_report as Report
 
 JOIN account_accounting_report_type as ReportType
@@ -437,13 +242,14 @@ ON AccountSet.account_accounting_report_config_line = ConfigLine.id
 LEFT JOIN account_account as Account
 ON Account.id = AccountSet.account_set 
 OR Account.account_type = AccountType.id
-OR Account.code LIKE ConfigLine.account_code
+OR Account.code SIMILAR TO ConfigLine.account_code
 
 LEFT JOIN account_move_line as MoveLine
 ON MoveLine.account = Account.id 
 
 LEFT JOIN account_move as Move
 ON MoveLine.move = Move.id
+
 
 LEFT JOIN base_period as Period
 ON Move.period = Period.id
@@ -455,21 +261,34 @@ LEFT JOIN account_accounting_report_partner_set as PartnerSet
 ON PartnerSet.account_accounting_report = Report.id
 
 WHERE Report.id = ?
-	AND (Report.date_from    IS NULL OR MoveLine.date_val >= Report.date_from)
-	AND (Report.date_to      IS NULL OR MoveLine.date_val <= Report.date_to)
-	AND (Report.journal      IS NULL OR Move.journal = Report.journal)
-	AND (Report.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
-	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner = PartnerSet.partner_set)
+	AND (Report.date_from    IS NULL OR MoveLine.date_val IS NULL OR MoveLine.date_val >= Report.date_from - interval '2 year')
+	AND (Report.date_to      IS NULL OR MoveLine.date_val IS NULL OR MoveLine.date_val <= Report.date_to)
+	AND (Report.journal      IS NULL OR Move.journal IS NULL OR Move.journal = Report.journal)
+	AND (Report.payment_mode IS NULL OR Move.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
+	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner IS NULL OR MoveLine.partner = PartnerSet.partner_set)
 	AND (MoveLine.id 	     IS NULL OR (
 		Report.currency	  = Move.company_currency
 		AND Report.company = Move.company
 		AND Move.ignore_in_accounting_ok IN ('false', null) 
 		AND (Move.status_select IN (2, 3) OR (Move.status_select = 5 AND Report.display_simulated_move))
 	))
-	
-GROUP BY ConfigLine.id
+ORDER BY ConfigLine.sequence)
 
-ORDER BY ConfigLine.sequence]]></xml-property>
+Select MoveLineQuery.sequence,
+	MoveLineQuery.type,
+	MoveLineQuery.rule_label,
+	MoveLineQuery.rule_code,
+	MoveLineQuery.rule_type,
+	MoveLineQuery.result,
+	MoveLineQuery.hidden,
+	MoveLineQuery.rule,
+	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from AND MoveLineQuery.date_to) as account_diff,
+	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from - interval '1 year' AND MoveLineQuery.date_to - interval '1 year') as account_diffn1,
+	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from - interval '2 year' AND MoveLineQuery.date_to - interval '2 year') as account_diffn2
+FROM MoveLineQuery
+GROUP BY MoveLineQuery.sequence, MoveLineQuery.type, MoveLineQuery.rule_label, MoveLineQuery.rule_code, MoveLineQuery.rule_type,MoveLineQuery.result,MoveLineQuery.hidden,MoveLineQuery.rule
+Order by MoveLineQuery.sequence
+	]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
             <list-property name="columnHints">
@@ -1444,8 +1263,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="5400">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
+                    <text id="5551">
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["report_date"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Date'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <text id="5505">
                         <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">ReportDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1462,7 +1317,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Date : <VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1658,8 +1513,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="rowSpan">1</property>
                     <property name="fontSize">18pt</property>
                     <property name="textAlign">left</property>
+                    <text id="5552">
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["journal"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Journal'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <text id="5503">
                         <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">ReportDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1676,7 +1567,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Journal : <VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="5471">
@@ -1684,8 +1575,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="rowSpan">1</property>
                     <property name="fontSize">18pt</property>
                     <property name="textAlign">left</property>
+                    <text id="5553">
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["payment_mode"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Payment Mode'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <text id="5508">
                         <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">ReportDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1702,7 +1629,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Mode : <VALUE-OF>row["payment_mode"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["payment_mode"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="5472"/>
@@ -1805,7 +1732,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["period"] == null</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1</expression>
                                 </structure>
                             </list-property>
                         </column>
@@ -1814,24 +1741,49 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1 || row._outer["period"] == null</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1</expression>
                                 </structure>
                             </list-property>
                         </column>
                         <header>
                             <row id="70">
+                                <property name="fontWeight">bold</property>
                                 <cell id="71">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                 </cell>
-                                <cell id="72"/>
+                                <cell id="72">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <text id="5554">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row._outer["date_from"]</VALUE-OF> - <VALUE-OF  format="dd/MM/yyyy">row._outer["date_to"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="5541">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
+                                    <text id="5555">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF> - <VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_to"], -1)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5546">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
+                                    <text id="5559">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF> - <VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_to"], -2)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </header>
@@ -1910,8 +1862,15 @@ if (row["type"] != 3) {
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3)
-	rulesn1[row["rule_code"]]
+if (row["type"] != 3){
+    if (isNaN(rulesn1[row["rule_code"]])) {
+    	0
+    }
+    else {
+    	rulesn1[row["rule_code"]]
+    }
+	
+}
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -1933,8 +1892,15 @@ if (row["type"] != 3)
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3)
-	rulesn2[row["rule_code"]]
+if (row["type"] != 3){
+    if (isNaN(rulesn2[row["rule_code"]])) {
+    	0
+    }
+    else {
+    	rulesn2[row["rule_code"]]
+    }
+	
+}
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>

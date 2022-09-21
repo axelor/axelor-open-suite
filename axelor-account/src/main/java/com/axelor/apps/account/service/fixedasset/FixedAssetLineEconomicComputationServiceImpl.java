@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -33,25 +32,21 @@ import java.util.List;
 public class FixedAssetLineEconomicComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
 
-  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDateService fixedAssetDateService;
 
   @Inject
   public FixedAssetLineEconomicComputationServiceImpl(
-      AnalyticFixedAssetService analyticFixedAssetService,
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService) {
     super(fixedAssetFailOverControlService, appBaseService);
-    this.analyticFixedAssetService = analyticFixedAssetService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return fixedAsset.getFailoverDate();
-    }
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return analyticFixedAssetService.computeFirstDepreciationDate(
-          fixedAsset, fixedAsset.getFirstServiceDate());
     }
     return fixedAsset.getFirstDepreciationDate();
   }
@@ -74,19 +69,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return analyticFixedAssetService.computeFirstDepreciationDate(
-          fixedAsset, fixedAsset.getFirstServiceDate());
-    }
-    return fixedAsset.getFirstDepreciationDate();
-  }
 
-  @Override
-  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAsset.getFirstServiceDate();
-    }
-    return fixedAsset.getAcquisitionDate();
+    return fixedAsset.getFirstDepreciationDate();
   }
 
   @Override
@@ -95,8 +79,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation();
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation());
   }
 
   @Override
@@ -141,8 +125,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -165,5 +149,10 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+    return fixedAsset.getFirstDepreciationDateInitSelect();
   }
 }

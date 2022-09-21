@@ -36,6 +36,8 @@
       selection="account.journal.compatible.partner.type.select"/>
     <boolean name="authorizeSimulatedMove" title="Authorize simulated move?"/>
     <boolean name="allowAccountingDaybook" title="Allow accounting daybook"/>
+    <string name="authorizedFunctionalOriginSelect" title="Authorized functional origin"
+      selection="iaccount.move.functional.origin.select"/>
 
     <unique-constraint columns="company,code"/>
 
@@ -45,7 +47,10 @@
 		public static final int STATUS_INACTIVE = 0;
 		public static final int STATUS_ACTIVE = 1;
 		public static final int STATUS_ARCHIVED = 2;
-
+        public static final String IS_PROSPECT = "isProspect";
+		public static final String IS_CUSTOMER = "isCustomer";
+		public static final String IS_SUPPLIER = "isSupplier";
+		public static final String IS_FACTOR = "isFactor";
 	]]></extra-code>
 
   </entity>

@@ -20,8 +20,10 @@ package com.axelor.apps.bankpayment.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BankPaymentExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Bank statement service */
@@ -282,4 +284,10 @@ public interface IExceptionMessage {
       "Move line's query formula has not been evaluated to a Move line" /*)*/;
   static final String BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER = /*$$(*/
       "Partner's query formula has not been evaluated to a Partner" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
 }
