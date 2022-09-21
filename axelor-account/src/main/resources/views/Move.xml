@@ -26,10 +26,10 @@
     <field name="date" width="90"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="140"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
     <field name="tradingName"
-      if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
       form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
     <field name="statusSelect" width="90"/>
   </grid>
@@ -85,7 +85,7 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+            if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
@@ -329,7 +329,7 @@
             onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
-          <field if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+          <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"/>
@@ -836,13 +836,13 @@
   <action-attrs name="action-attrs-move-hide-trading-name"
     model="com.axelor.apps.account.db.Move">
     <attribute name="hidden" for="tradingName"
-      expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Current Period Entries">
       <domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;=
         self.period.toDate)</domain>

@@ -16,7 +16,7 @@
     <field name="name"/>
     <field name="partner" grid-view="partner-supplier-grid" form-view="partner-form"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fixedAssetCategory" form-view="fixed-asset-category-form"
       grid-view="fixed-asset-category-grid"/>
     <field name="acquisitionDate"/>
@@ -80,7 +80,7 @@
         form-view="account-form" grid-view="account-grid"/>
       <panel name="analyticPanel">
         <field
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
           name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
           onChange="action-fixed-asset-method-create-analytic-distribution,action-method-fixed-asset-change-button-title"
           domain="self.company = :company AND self.isSpecific = false"
@@ -217,12 +217,12 @@
           canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid"
           domain="self.company = :company and (:id = null or self.id != :id)" hidden="true"/>
       </panel>
-      <panel if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
+      <panel if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"
         name="barcodePanel" title="Barcode" readonlyIf="barcode != null" colspan="12">
         <field name="serialNumber" readonlyIf="barcode != null"/>
         <field name="barcodeTypeConfig" colspan="4"
-          if="__config__.app.getApp('account').getEditFixedAssetBarcodeType()"/>
-        <field if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
+          if="__config__.app.getApp('account')?.getEditFixedAssetBarcodeType()"/>
+        <field if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"
           name="barcode" showTitle="false" colSpan="12" widget="image"/>
       </panel>
       <panel name="commentsPanel" title="Commentary">
@@ -555,9 +555,9 @@
   <search-filters name="fixed-asset-filters"
     model="com.axelor.apps.account.db.FixedAsset" title="Fixed asset filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="analyticDistributionTemplate" hidden="true"
-      if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </search-filters>
 
   <action-group name="action-group-fixed-asset-panels-copy-fiscal-depreciation">
@@ -904,7 +904,7 @@
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="barcodeTypeConfig"
       expr="eval: __config__?.app?.getApp('account')?.getFixedAssetBarcodeTypeConfig()"
-      if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"/>
+      if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"/>
   </action-record>
 </object-views>
 
