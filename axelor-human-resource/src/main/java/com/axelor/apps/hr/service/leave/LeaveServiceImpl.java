@@ -934,12 +934,10 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.user = :user")
+                "self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.employee = :employee")
             .bind("statusSelect", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
             .bind("leaveReason", leaveLine.getLeaveReason())
-            .bind(
-                "user",
-                Optional.ofNullable(leaveLine.getEmployee()).map(Employee::getUser).orElse(null))
+            .bind("employee", leaveLine.getEmployee())
             .fetch();
 
     BigDecimal daysToValidate = BigDecimal.ZERO;
