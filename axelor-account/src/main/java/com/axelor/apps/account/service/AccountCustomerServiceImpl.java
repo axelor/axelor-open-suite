@@ -39,6 +39,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
@@ -83,29 +85,22 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
   @Override
   public BigDecimal getBalance(Partner partner, Company company) {
     log.debug("Compute balance (Partner : {}, Company : {})", partner.getName(), company.getName());
+    Instant start = Instant.now();
 
     Query query =
         JPA.em()
             .createNativeQuery(
-                "SELECT SUM(COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "
+                "SELECT SUM(CASE WHEN ml.debit > 0 THEN ml.amount_remaining ELSE ml.amount_remaining * -1 END) "
                     + "FROM public.account_move_line AS ml  "
-                    + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
-                    + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.debit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "
-                    + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
-                    + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.credit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
-                    + "WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null)"
-                    + "AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = ?3 or move.status_select = ?4) AND ml.amount_remaining > 0 ")
-            .setParameter(1, partner)
-            .setParameter(2, company)
-            .setParameter(3, MoveRepository.STATUS_ACCOUNTED)
-            .setParameter(4, MoveRepository.STATUS_DAYBOOK);
+                    + "WHERE ml.partner = :partner AND move.company = :company "
+                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
+                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ml.amount_remaining > 0 ")
+            .setParameter("partner", partner)
+            .setParameter("company", company)
+            .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
+            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -114,6 +109,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     }
 
     log.debug("Balance : {}", balance);
+    Instant end = Instant.now();
+    log.debug("Durée : {}", Duration.between(start, end).toMillis());
 
     return balance;
   }
@@ -133,38 +130,21 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
   public BigDecimal getBalanceDue(Partner partner, Company company, TradingName tradingName) {
     log.debug(
         "Compute balance due (Partner : {}, Company : {})", partner.getName(), company.getName());
+    Instant start = Instant.now();
 
     Query query =
         JPA.em()
             .createNativeQuery(
-                "SELECT SUM( COALESCE(t1.term_amountRemaining,0) - COALESCE(t2.term_amountRemaining,0) ) "
-                    + "FROM public.account_move_line AS ml "
-                    + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.id AS moveline_id "
-                    + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.debit > 0 "
-                    + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "
-                    + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.id AS moveline_id "
-                    + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.credit > 0 "
-                    + "GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
-                    + "LEFT OUTER JOIN ( "
-                    + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
+                "SELECT SUM(CASE WHEN ml.debit > 0 THEN term.amount_remaining ELSE term.amount_remaining * -1 END) "
                     + "FROM public.account_invoice_term AS term "
-                    + "WHERE (term.due_date IS NOT NULL AND term.due_date <= :todayDate)"
-                    + "GROUP BY term.move_line, term.amount_remaining ) AS t1 ON (t1.term_ml = m1.moveline_id) "
-                    + "LEFT OUTER JOIN ( "
-                    + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
-                    + "FROM public.account_invoice_term AS term "
-                    + "WHERE (term.due_date IS NOT NULL AND term.due_date <= :todayDate)"
-                    + "GROUP BY term.move_line, term.amount_remaining ) AS t2 ON (t2.term_ml = m2.moveline_id) "
-                    + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
-                    + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company "
+                    + "JOIN public.account_move_line AS ml ON term.move_line = ml.id "
+                    + "LEFT OUTER JOIN public.account_account AS account ON ml.account = account.id "
+                    + "LEFT OUTER JOIN public.account_move AS move ON ml.move = move.id "
+                    + "WHERE term.due_date IS NOT NULL AND term.due_date <= :todayDate "
+                    + "AND ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 ")
+                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
+                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ml.amount_remaining > 0 ")
             .setParameter(
                 "todayDate",
                 Date.from(
@@ -189,6 +169,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     }
 
     log.debug("Balance due : {}", balance);
+    Instant end = Instant.now();
+    log.debug("Durée : {}", Duration.between(start, end).toMillis());
 
     return balance;
   }
