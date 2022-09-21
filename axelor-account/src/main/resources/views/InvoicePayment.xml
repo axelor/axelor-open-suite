@@ -44,11 +44,11 @@
       <field name="description" colSpan="12"/>
       <field name="paymentMode.typeSelect" hidden="true"/>
       <field name="invoice.tradingName"
-        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
     </panel>
     <panel name="discountPanel" title="Financial Discount" showIf="applyFinancialDiscount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()">
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
       <field name="applyFinancialDiscount" readonly="true"/>
       <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
       <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"
@@ -100,7 +100,7 @@
         showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
       <field name="description" colSpan="12"/>
       <panel name="discountPanel" title="Financial Discount"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()">
+        if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
         <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"/>
         <field name="financialDiscount" hidden="true"/>
       </panel>

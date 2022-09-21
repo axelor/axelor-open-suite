@@ -10,7 +10,7 @@
       <field name="invoicesCopySelect"
         hideIf="(!isCustomer &amp;&amp; !isSupplier) || isEmployee"/>
       <field name="groupProductsOnPrintings"
-        hideIf="(!isCustomer &amp;&amp; !isSupplier) || __config__.app.getApp('base').getIsRegroupProductsOnPrintings() == false"/>
+        hideIf="(!isCustomer &amp;&amp; !isSupplier) || __config__.app.getApp('base')?.getIsRegroupProductsOnPrintings() == false"/>
       <field name="inPaymentMode" canEdit="false" grid-view="payment-mode-grid"
         form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
       <field name="outPaymentMode" canEdit="false" grid-view="payment-mode-grid"
