@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -237,7 +238,12 @@ public class InvoicePaymentController {
                     invoicePayment.getManualChange());
 
         if (!invoicePayment.getManualChange()
-            || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
+            || (invoicePayment.getAmount().compareTo(payableAmount) > 0
+                && !Beans.get(PaymentModeService.class)
+                    .isExcessPaymentOk(
+                        invoicePayment.getPaymentMode(),
+                        invoicePayment.getInvoice().getCompany(),
+                        invoicePayment.getCompanyBankDetails()))) {
           invoicePayment.setAmount(payableAmount);
           amountError = invoicePayment.getManualChange();
         }

@@ -358,4 +358,16 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
             && inOutSelect == PaymentModeRepository.IN);
   }
+
+  @Override
+  public boolean isExcessPaymentOk(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
+    if (paymentMode == null) {
+      return false;
+    }
+
+    Journal journal = this.getPaymentModeJournal(paymentMode, company, bankDetails);
+
+    return journal != null && journal.getExcessPaymentOk();
+  }
 }

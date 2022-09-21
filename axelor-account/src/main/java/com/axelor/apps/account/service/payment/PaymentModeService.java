@@ -74,4 +74,7 @@ public interface PaymentModeService {
   public PaymentMode reverseInOut(PaymentMode paymentMode);
 
   boolean isPendingPayment(PaymentMode paymentMode);
+
+  boolean isExcessPaymentOk(PaymentMode paymentMode, Company company, BankDetails bankDetails)
+      throws AxelorException;
 }
