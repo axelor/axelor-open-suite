@@ -39,8 +39,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +83,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
   @Override
   public BigDecimal getBalance(Partner partner, Company company) {
     log.debug("Compute balance (Partner : {}, Company : {})", partner.getName(), company.getName());
-    Instant start = Instant.now();
 
     Query query =
         JPA.em()
@@ -109,8 +106,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     }
 
     log.debug("Balance : {}", balance);
-    Instant end = Instant.now();
-    log.debug("Durée : {}", Duration.between(start, end).toMillis());
 
     return balance;
   }
@@ -130,7 +125,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
   public BigDecimal getBalanceDue(Partner partner, Company company, TradingName tradingName) {
     log.debug(
         "Compute balance due (Partner : {}, Company : {})", partner.getName(), company.getName());
-    Instant start = Instant.now();
 
     Query query =
         JPA.em()
@@ -169,8 +163,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     }
 
     log.debug("Balance due : {}", balance);
-    Instant end = Instant.now();
-    log.debug("Durée : {}", Duration.between(start, end).toMillis());
 
     return balance;
   }
