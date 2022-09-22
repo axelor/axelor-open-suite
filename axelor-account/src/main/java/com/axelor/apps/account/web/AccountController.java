@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -102,7 +103,7 @@ public class AccountController {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class).checkAnalyticAxis(account);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
