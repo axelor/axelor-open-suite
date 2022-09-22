@@ -267,7 +267,7 @@ public interface InvoiceTermService {
 
   BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
 
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
