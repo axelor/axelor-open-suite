@@ -52,12 +52,15 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
       payVoucherDueElement.setApplyFinancialDiscount(true);
       payVoucherDueElement.setFinancialDiscount(invoiceTerm.getFinancialDiscount());
 
-      BigDecimal ratioPaid =
-          payVoucherDueElement
-              .getInvoiceTerm()
-              .getAmountRemaining()
-              .divide(payVoucherDueElement.getInvoiceTerm().getAmount(), 10, RoundingMode.HALF_UP);
-
+      BigDecimal ratioPaid = BigDecimal.ONE;
+      if (payVoucherDueElement.getInvoiceTerm().getAmount().compareTo(BigDecimal.ZERO) > 0) {
+        ratioPaid =
+            payVoucherDueElement
+                .getInvoiceTerm()
+                .getAmountRemaining()
+                .divide(
+                    payVoucherDueElement.getInvoiceTerm().getAmount(), 10, RoundingMode.HALF_UP);
+      }
       payVoucherDueElement.setFinancialDiscountTotalAmount(
           invoiceTerm
               .getFinancialDiscountAmount()
