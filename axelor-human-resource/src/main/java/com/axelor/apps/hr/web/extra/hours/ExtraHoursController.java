@@ -19,6 +19,7 @@ package com.axelor.apps.hr.web.extra.hours;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -150,6 +151,10 @@ public class ExtraHoursController {
     User user = AuthUtils.getUser();
     Company activeCompany = user.getActiveCompany();
 
+    if (activeCompany == null) {
+      response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+    }
+
     ActionViewBuilder actionView =
         ActionView.define(I18n.get("Extra hours to be Validated by your subordinates"))
             .model(ExtraHours.class.getName())
@@ -167,7 +172,7 @@ public class ExtraHoursController {
             .bind("_activeCompany", activeCompany)
             .count();
 
-    if (nbExtraHours == 0) {
+    if (nbExtraHours == 0 && activeCompany != null) {
       response.setNotify(I18n.get("No extra hours to be validated by your subordinates"));
     } else {
       response.setView(

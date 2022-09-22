@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.message;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -59,38 +60,29 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
     // Get template depending on event type
     Template template = null;
+    Company company = event.getUser().getActiveCompany();
 
-    switch (event.getTypeSelect()) {
-      case EventRepository.TYPE_EVENT:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getEventTemplate();
-        break;
+    if (company != null) {
+      switch (event.getTypeSelect()) {
+        case EventRepository.TYPE_EVENT:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getEventTemplate();
+          break;
 
-      case EventRepository.TYPE_CALL:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getCallTemplate();
-        break;
+        case EventRepository.TYPE_CALL:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getCallTemplate();
+          break;
 
-      case EventRepository.TYPE_MEETING:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getMeetingTemplate();
-        break;
+        case EventRepository.TYPE_MEETING:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getMeetingTemplate();
+          break;
 
-      case EventRepository.TYPE_TASK:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getTaskTemplate();
-        break;
+        case EventRepository.TYPE_TASK:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getTaskTemplate();
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
 
     Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);

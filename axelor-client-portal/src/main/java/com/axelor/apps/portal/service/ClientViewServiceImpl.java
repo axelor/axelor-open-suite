@@ -19,6 +19,7 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
@@ -258,6 +259,7 @@ public class ClientViewServiceImpl implements ClientViewService {
   @Override
   public List<Filter> getOrdersInProgressOfUser(User user) {
 
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, SaleOrder.class);
     Filter filter =
@@ -267,10 +269,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.statusSelect = "
                 + SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -279,6 +279,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getQuotationsOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, SaleOrder.class);
     Filter filter =
@@ -291,10 +293,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + SaleOrderRepository.STATUS_FINALIZED_QUOTATION
                 + ")");
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
 
     filters.add(filter);
@@ -304,6 +304,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getLastOrderOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, SaleOrder.class);
     Filter filter =
@@ -313,10 +315,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.statusSelect = "
                 + SaleOrderRepository.STATUS_ORDER_COMPLETED);
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -326,6 +326,8 @@ public class ClientViewServiceImpl implements ClientViewService {
   /* StockMove Query */
   @Override
   public List<Filter> getLastDeliveryOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
     Filter filter =
@@ -338,10 +340,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + StockMoveRepository.STATUS_REALIZED
                 + " AND self.isReversion != true");
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     if (filterFromPermission != null) {
       filter = Filter.and(filter, filterFromPermission);
@@ -353,6 +353,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getNextDeliveryOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
     Filter filter =
@@ -365,10 +367,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + StockMoveRepository.STATUS_PLANNED
                 + " AND self.isReversion != true");
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -383,6 +383,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getPlannedDeliveriesOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
     Filter filter =
@@ -394,10 +396,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.statusSelect = "
                 + StockMoveRepository.STATUS_PLANNED
                 + " AND self.isReversion != true");
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -406,6 +406,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getReversionsOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
     Filter filter =
@@ -416,10 +418,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + StockMoveRepository.TYPE_OUTGOING
                 + " AND self.isReversion = true");
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -429,6 +429,8 @@ public class ClientViewServiceImpl implements ClientViewService {
   /* Invoice Query */
   @Override
   public List<Filter> getOverdueInvoicesOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
     Filter filter =
@@ -441,10 +443,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.statusSelect != "
                 + InvoiceRepository.STATUS_CANCELED);
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -453,6 +453,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getAwaitingInvoicesOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
     Filter filter =
@@ -464,10 +466,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.statusSelect != "
                 + InvoiceRepository.STATUS_CANCELED);
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -476,6 +476,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getTotalRemainingOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
     Filter filter =
@@ -487,10 +489,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.statusSelect != "
                 + InvoiceRepository.STATUS_CANCELED);
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -500,6 +500,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getRefundOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
     Filter filter =
@@ -509,10 +511,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + " AND self.operationTypeSelect = "
                 + InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -591,6 +591,8 @@ public class ClientViewServiceImpl implements ClientViewService {
   /* Project Query */
   @Override
   public List<Filter> getTotalProjectsOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Project.class);
     Filter filter =
@@ -598,10 +600,8 @@ public class ClientViewServiceImpl implements ClientViewService {
             "self.clientPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.projectStatus.isCompleted = false");
-    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
-      filter =
-          Filter.and(
-              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
+    if (company != null && appService.isApp("business-project")) {
+      filter = Filter.and(filter, new JPQLFilter(" self.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -611,6 +611,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   @Override
   public List<Filter> getTasksInCompletedOfUser(User user) {
+
+    Company company = user.getActiveCompany();
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, ProjectTask.class);
 
@@ -621,11 +623,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + ProjectTaskRepository.TYPE_TASK
                 + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
-    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
-      filter =
-          Filter.and(
-              filter,
-              new JPQLFilter(" self.project.company.id = " + user.getActiveCompany().getId()));
+    if (company != null && appService.isApp("business-project")) {
+      filter = Filter.and(filter, new JPQLFilter(" self.project.company.id = " + company.getId()));
     }
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);

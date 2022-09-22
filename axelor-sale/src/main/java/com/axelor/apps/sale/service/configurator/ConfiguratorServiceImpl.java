@@ -365,8 +365,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Company company = currentUser != null ? currentUser.getActiveCompany() : null;
 
     values.put("__user__", currentUser);
-    values.put("__date__", appBaseService.getTodayDate(company));
-    values.put("__datetime__", appBaseService.getTodayDateTime(company));
+    if (company != null) {
+      values.put("__date__", appBaseService.getTodayDate(company));
+      values.put("__datetime__", appBaseService.getTodayDateTime(company));
+    }
     ScriptHelper scriptHelper = new GroovyScriptHelper(values);
 
     return scriptHelper.eval(groovyFormula);

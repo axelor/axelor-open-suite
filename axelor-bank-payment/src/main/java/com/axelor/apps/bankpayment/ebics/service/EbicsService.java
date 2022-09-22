@@ -33,6 +33,7 @@ import com.axelor.apps.bankpayment.ebics.client.KeyManagement;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -92,11 +93,13 @@ public class EbicsService {
     String email = null;
     String companyName = defaultProduct.getInstituteID();
     User user = ebicsUser.getAssociatedUser();
+    Company company;
 
     if (user != null) {
       email = user.getEmail();
-      if (user.getActiveCompany() != null) {
-        companyName = user.getActiveCompany().getName();
+      company = user.getActiveCompany();
+      if (company != null) {
+        companyName = company.getName();
       }
     }
 

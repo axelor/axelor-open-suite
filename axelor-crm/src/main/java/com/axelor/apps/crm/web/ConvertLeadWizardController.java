@@ -30,6 +30,7 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -198,6 +199,8 @@ public class ConvertLeadWizardController {
       throws AxelorException {
 
     Lead lead = findLead(request);
+    User user = lead.getUser();
+    Company company;
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
     response.setAttr("name", "value", lead.getEnterpriseName());
@@ -210,13 +213,12 @@ public class ConvertLeadWizardController {
     response.setAttr("source", "value", lead.getSource());
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("user", "value", lead.getUser());
-    if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
-      if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
-          == CompanyRepository.CATEGORY_CUSTOMER) {
+    response.setAttr("user", "value", user);
+    if (user != null && user.getActiveCompany() != null) {
+      company = user.getActiveCompany();
+      if (company.getDefaultPartnerCategorySelect() == CompanyRepository.CATEGORY_CUSTOMER) {
         response.setAttr("isCustomer", "value", true);
-      } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
-          == CompanyRepository.CATEGORY_SUPPLIER) {
+      } else if (company.getDefaultPartnerCategorySelect() == CompanyRepository.CATEGORY_SUPPLIER) {
         response.setAttr("isSupplier", "value", true);
       } else {
         response.setAttr("isProspect", "value", true);

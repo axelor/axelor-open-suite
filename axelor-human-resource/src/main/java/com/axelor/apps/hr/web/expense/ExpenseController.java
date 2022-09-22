@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -228,6 +229,10 @@ public class ExpenseController {
     User user = AuthUtils.getUser();
     Company activeCompany = user.getActiveCompany();
 
+    if (activeCompany == null) {
+      response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+    }
+
     ActionViewBuilder actionView =
         ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
             .model(Expense.class.getName())
@@ -245,7 +250,7 @@ public class ExpenseController {
             .bind("_activeCompany", activeCompany)
             .count();
 
-    if (nbExpenses == 0) {
+    if (nbExpenses == 0 && activeCompany != null) {
       response.setNotify(I18n.get("No expense to be validated by your subordinates"));
     } else {
       response.setView(
