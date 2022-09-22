@@ -35,6 +35,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
   public static final String SALES_ORDER_DELIVERY_ADDRESS = /*$$(*/
       "SaleOrder.deliveryAddress"; /*)*/
+  public static final String SALES_ORDER_SHIPMENT_DATE = /*$$(*/ "SaleOrder.shipmentDate"; /*)*/
   public static final String SALES_ORDER_DESCRIPTION = /*$$(*/ "SaleOrder.description"; /*)*/
   public static final String SALES_ORDER_TAX = /*$$(*/ "SaleOrder.tax"; /*)*/
   public static final String SALES_ORDER_QTY_UNIT = /*$$(*/ "SaleOrder.qtyUnit"; /*)*/

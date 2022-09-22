@@ -474,6 +474,7 @@
 "SaleOrder.salemanEmail",,,
 "SaleOrder.salemanName",,,
 "SaleOrder.salemanPhone",,,
+"SaleOrder.shipmentDate",,,
 "SaleOrder.subscriptionContract",,,
 "SaleOrder.supplier",,,
 "SaleOrder.supplyRef",,,
