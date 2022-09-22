@@ -166,6 +166,11 @@ public final class SupplychainExceptionMessage {
   public static final String MRP_CANNOT_PROCESS_ONGOING = /*$$(*/
       "Could not process MRP %s since its computation is already ongoing." /*)*/;
 
+  public static final String MRP_NOT_FOUND_WITH_SEQ = /*$$(*/
+      "Could not find MRP with sequence %s." /*)*/;
+
+  public static final String MRP_SCHEDULER_SEQ_MISSING = /*$$(*/ "MRP sequence is missing." /*)*/;
+
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
       "Can only be confirmed from drafted forecast." /*)*/;

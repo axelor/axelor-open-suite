@@ -32,26 +32,43 @@ public class MrpJob implements Job {
       JobDetail jobDetail = context.getJobDetail();
       MetaSchedule metaSchedule =
           Beans.get(MetaScheduleRepository.class).findByName(jobDetail.getKey().getName());
-      Mrp mrp = metaSchedule.getMrp();
-      if (mrp != null) {
-        if (mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(SupplychainExceptionMessage.MRP_CANNOT_PROCESS_ONGOING),
-              mrp.getFullName());
-        }
-        MrpService mrpService = Beans.get(MrpService.class);
-        try {
-          mrpService.runCalculation(mrp);
-        } catch (Exception e) {
-          mrpService.reset(mrp);
-          mrpService.saveErrorInMrp(mrp, e);
-          throw e;
-        }
+      String mrpSeq = metaSchedule.getMrpSeq();
+      if (mrpSeq == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.MRP_SCHEDULER_SEQ_MISSING));
       }
+      Mrp mrp = Beans.get(MrpRepository.class).findByMrpSeq(mrpSeq);
+      if (mrp == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.MRP_NOT_FOUND_WITH_SEQ),
+            mrpSeq);
+      }
+      if (mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.MRP_CANNOT_PROCESS_ONGOING),
+            mrp.getFullName());
+      }
+      runCalculationWithExceptionManagement(mrp);
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new JobExecutionException(e);
+    }
+  }
+
+  /*
+   * Might have to move this method to a more appropriate service.
+   */
+  protected void runCalculationWithExceptionManagement(Mrp mrp) throws AxelorException {
+    MrpService mrpService = Beans.get(MrpService.class);
+    try {
+      mrpService.runCalculation(mrp);
+    } catch (Exception e) {
+      mrpService.reset(mrp);
+      mrpService.saveErrorInMrp(mrp, e);
+      throw e;
     }
   }
 }
