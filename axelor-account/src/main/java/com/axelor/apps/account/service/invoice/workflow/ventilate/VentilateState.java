@@ -151,11 +151,7 @@ public class VentilateState extends WorkflowInvoice {
 
     Account partnerAccount = invoice.getPartnerAccount();
 
-    if (!partnerAccount.getHasInvoiceTerm()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
-    } else if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
+    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
