@@ -72,7 +72,9 @@ public class TaxService {
       }
     } else {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.TAX_DATE_MISSING));
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(BaseExceptionMessage.TAX_DATE_MISSING),
+          tax.getName());
     }
 
     throw new AxelorException(
