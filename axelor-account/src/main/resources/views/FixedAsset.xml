@@ -274,11 +274,11 @@
       <field name="failoverDate" requiredIf="originSelect == 99"/>
     </panel>
     <panel name="toUpdateValuesPanel" title="Update Depreciation parameters"
-      showIf="statusSelect == 2" readonlyIf="!$canUpdateDepreciation" sidebar="true" hidden="true">
-      <field name="correctedAccountingValue"
-        readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
+      showIf="statusSelect == 2"
+      readonlyIf="!$canUpdateDepreciation || accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2 || isEqualToFiscalDepreciation"
+      sidebar="true" hidden="true">
+      <field name="correctedAccountingValue"/>
       <field name="numberOfDepreciation"
-        readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2 || isEqualToFiscalDepreciation"
         onChange="action-fixed-asset-category-record-compute-duration"/>
     </panel>
     <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true"
@@ -701,7 +701,6 @@
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="fiscalNumberOfDepreciation"
       expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
-    <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:true"/>
     <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:false"
       if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
 
@@ -834,7 +833,6 @@
 
   <action-attrs name="action-attrs-account-fixed-asset-failover-override">
     <attribute name="value" for="depreciationPlanSelect" expr="eval:&quot;1,2&quot;"/>
-    <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:true"/>
     <attribute name="value" for="fiscalComputationMethodSelect" expr="eval:'linear'"/>
     <attribute name="value" for="computationMethodSelect" expr="eval:'linear'"/>
   </action-attrs>
