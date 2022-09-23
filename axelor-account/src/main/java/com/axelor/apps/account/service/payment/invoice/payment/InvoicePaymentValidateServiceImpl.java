@@ -331,29 +331,55 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
+    BigDecimal invoicePaymentAmount =
+        invoicePayment.getInvoiceTermPaymentList().stream()
+            .map(InvoiceTermPayment::getPaidAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
     BigDecimal companyPaymentAmount =
         invoicePayment.getInvoiceTermPaymentList().stream()
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .min(maxAmount);
-    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+            .orElse(BigDecimal.ZERO);
+    BigDecimal currencyRate;
 
-    move.addMoveLineListItem(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
-            paymentAmount,
-            companyPaymentAmount,
-            currencyRate,
-            isDebitInvoice,
-            paymentDate,
-            null,
-            paymentDate,
-            counter++,
-            origin,
-            move.getDescription()));
+    if (paymentAmount.compareTo(invoicePaymentAmount) > 0) {
+      MoveLine moveLine =
+          moveLineCreateService.createMoveLine(
+              move,
+              partner,
+              paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+              paymentAmount,
+              isDebitInvoice,
+              paymentDate,
+              counter++,
+              origin,
+              move.getDescription());
+
+      move.addMoveLineListItem(moveLine);
+      companyPaymentAmount = moveLine.getDebit().max(moveLine.getCredit());
+      currencyRate = moveLine.getCurrencyRate();
+    } else {
+      companyPaymentAmount = companyPaymentAmount.min(maxAmount);
+      currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+
+      move.addMoveLineListItem(
+          moveLineCreateService.createMoveLine(
+              move,
+              partner,
+              paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+              paymentAmount,
+              companyPaymentAmount,
+              currencyRate,
+              isDebitInvoice,
+              paymentDate,
+              null,
+              paymentDate,
+              counter++,
+              origin,
+              move.getDescription()));
+    }
+
     MoveLine financialDiscountMoveLine = null;
     if (isFinancialDiscount) {
       financialDiscountMoveLine =
@@ -442,6 +468,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
+
+    if (paymentAmount.compareTo(invoicePaymentAmount) > 0) {
+      invoicePayment.setAmount(invoicePaymentAmount);
+    }
+
     return move;
   }
 
