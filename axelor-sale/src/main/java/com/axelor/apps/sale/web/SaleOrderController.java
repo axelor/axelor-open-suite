@@ -667,13 +667,10 @@ public class SaleOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineService.updateLinesAfterFiscalPositionChange(saleOrder);
-        }
-        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+        Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
       }
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
