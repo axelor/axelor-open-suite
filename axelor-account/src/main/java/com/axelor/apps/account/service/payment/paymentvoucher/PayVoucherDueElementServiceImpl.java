@@ -8,6 +8,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -43,7 +44,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   @Override
   @Transactional
   public PayVoucherDueElement updateDueElementWithFinancialDiscount(
-      PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher) {
+      PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher)
+      throws AxelorException {
     payVoucherDueElement.setPaymentVoucher(paymentVoucher);
     InvoiceTerm invoiceTerm = payVoucherDueElement.getInvoiceTerm();
 
@@ -88,7 +90,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   }
 
   @Override
-  public PayVoucherDueElement updateAmounts(PayVoucherDueElement payVoucherDueElement) {
+  public PayVoucherDueElement updateAmounts(PayVoucherDueElement payVoucherDueElement)
+      throws AxelorException {
     if (payVoucherDueElement != null && !payVoucherDueElement.getApplyFinancialDiscount()) {
       payVoucherDueElement.setFinancialDiscountAmount(BigDecimal.ZERO);
       payVoucherDueElement.setFinancialDiscountTaxAmount(BigDecimal.ZERO);

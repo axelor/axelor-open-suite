@@ -6,8 +6,7 @@
   <module name="meta" package="com.axelor.meta.db"/>
 
   <entity name="MetaSchedule" table="META_SCHEDULE">
-    <many-to-one name="mrp" title="MRP to compute"
-      ref="com.axelor.apps.supplychain.db.Mrp"/>
+    <string name="mrpSeq" title="MRP number"/>
   </entity>
 
 </domain-models>
