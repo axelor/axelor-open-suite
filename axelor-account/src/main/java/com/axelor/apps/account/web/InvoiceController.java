@@ -832,12 +832,9 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
-        InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
-        }
-        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+        Beans.get(InvoiceLineService.class).updateLinesAfterFiscalPositionChange(invoice);
       }
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
