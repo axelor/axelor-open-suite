@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -131,24 +132,26 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public SaleOrderLine getAndComputeAnalyticDistribution(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    if (accountConfigService
-            .getAccountConfig(saleOrder.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return saleOrderLine;
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(saleOrder.getCompany());
+
+    if (accountConfig.getManageAnalyticAccounting()) {
+      if (accountConfig.getAnalyticDistributionTypeSelect()
+          == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+        return saleOrderLine;
+      }
+
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          analyticMoveLineService.getAnalyticDistributionTemplate(
+              saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+
+      saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+      if (saleOrderLine.getAnalyticMoveLineList() != null) {
+        saleOrderLine.getAnalyticMoveLineList().clear();
+      }
+
+      this.computeAnalyticDistribution(saleOrderLine);
     }
-
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        analyticMoveLineService.getAnalyticDistributionTemplate(
-            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
-
-    saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-
-    if (saleOrderLine.getAnalyticMoveLineList() != null) {
-      saleOrderLine.getAnalyticMoveLineList().clear();
-    }
-
-    this.computeAnalyticDistribution(saleOrderLine);
 
     return saleOrderLine;
   }
