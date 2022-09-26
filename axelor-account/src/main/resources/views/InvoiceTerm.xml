@@ -416,7 +416,7 @@
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
         readonlyIf="isPaid || paymentSession"
-        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(invoice.statusSelect) "
+        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(invoice.statusSelect) &amp;&amp; !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2))"
         colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"
@@ -593,7 +593,7 @@
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
         readonlyIf="isPaid || paymentSession"
-        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
+        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(moveLine.move.statusSelect) &amp;&amp; (invoice == null || !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2)))"
         colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"
@@ -997,7 +997,7 @@
 
   <action-attrs name="action-invoice-term-attrs-display-actions">
     <attribute name="hidden" for="actionPanel"
-      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(invoice.statusSelect)"
+      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(invoice.statusSelect) &amp;&amp; invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2)"
       if="invoice != null"/>
     <attribute name="hidden" for="actionPanel"
       expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
