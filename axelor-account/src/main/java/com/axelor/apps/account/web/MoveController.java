@@ -98,20 +98,17 @@ public class MoveController {
 
     Move move = request.getContext().asType(Move.class);
 
+    Period period = null;
     try {
       if (move.getDate() != null && move.getCompany() != null) {
-        Period period =
+        period =
             Beans.get(PeriodService.class)
                 .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-        if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
-
-          response.setValue("period", period);
-        }
-      } else {
-        response.setValue("period", null);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      response.setValue("period", period);
     }
   }
 
