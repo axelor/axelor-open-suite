@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -410,6 +411,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoiceLineList.add(invoiceLineCreated);
       }
     }
+
+    // Correctly divide budget distribution
+    divideBudgetDistribution(invoiceLineList);
+
     return invoiceLineList;
   }
 
@@ -670,5 +675,17 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean isRefundInvoice = InvoiceToolService.isRefund(invoice);
     boolean isReversionStockMove = stockMove.getIsReversion();
     return isRefundInvoice != isReversionStockMove;
+  }
+
+  protected List<InvoiceLine> divideBudgetDistribution(List<InvoiceLine> invoiceLineList) {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        BigDecimal amount = budgetDistribution.getAmount();
+        budgetDistribution.setAmount(
+            amount.divide(new BigDecimal(invoiceLineList.size()), BigDecimal.ROUND_HALF_UP));
+      }
+    }
+    return invoiceLineList;
   }
 }
