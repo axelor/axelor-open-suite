@@ -160,4 +160,22 @@ public class WkfNodeService {
       wkfMenuService.removeUserMenu(taskConfig);
     }
   }
+
+  public void removeOldMenus(WkfModel wkfModel) {
+    List<WkfTaskConfig> oldTaskConfigs =
+        wkfConfigRepository
+            .all()
+            .filter(
+                "(self.newMenu = true OR self.userNewMenu = true) "
+                    + "AND self.wkfModel = :oldWkfModel")
+            .bind("oldWkfModel", wkfModel.getPreviousVersion())
+            .fetch();
+
+    oldTaskConfigs.stream()
+        .forEach(
+            taskConfig -> {
+              wkfMenuService.removeMenu(taskConfig);
+              wkfMenuService.removeUserMenu(taskConfig);
+            });
+  }
 }
