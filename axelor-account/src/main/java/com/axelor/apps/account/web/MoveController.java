@@ -600,6 +600,9 @@ public class MoveController {
             Beans.get(MoveCreateFromInvoiceService.class).isPartnerNotCompatible(move);
         if (isPartnerNotCompatible) {
           response.setValue("partner", null);
+          response.setFlash(
+              I18n.get(
+                  AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
         }
       }
     } catch (Exception e) {

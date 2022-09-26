@@ -2564,6 +2564,7 @@
 "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation.",,,
 "The partner is blocked for invoicing.",,,
 "The partner is required and must be the same for all invoices",,,
+"The partner which was already selected is not compatible with the selected journal. Please reselect a compatible partner or modify the journal settings accordingly.",,,
 "The partner's language is different from the current language. Description and product name are in :",,,
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.",,,
 "The payment mode is not in adequacy with the invoice type",,,

@@ -99,6 +99,11 @@ public class JournalService {
 
   public String filterJournalPartnerCompatibleType(Move move) {
     Journal journal = move.getJournal();
+
+    if (journal == null) {
+      return null;
+    }
+
     if (journal.getCompatiblePartnerTypeSelect() != null) {
       StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
       String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");

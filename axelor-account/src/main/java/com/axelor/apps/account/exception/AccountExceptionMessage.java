@@ -319,6 +319,8 @@ public final class AccountExceptionMessage {
       "The currency is missing on the account move %s" /*)*/;
   public static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+  public static final String MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL = /*$$(*/
+      "The partner which was already selected is not compatible with the selected journal. Please reselect a compatible partner or modify the journal settings accordingly." /*)*/;
 
   /** Payment schedule export service */
   public static final String PAYMENT_SCHEDULE_1 = /*$$(*/
