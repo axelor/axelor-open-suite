@@ -218,6 +218,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
+  public BigDecimal computeAmountToInvoice(
+      BigDecimal amountToInvoice,
+      int operationSelect,
+      SaleOrder saleOrder,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap) {
+
+    if (operationSelect == SaleOrderRepository.INVOICE_LINES) {
+      amountToInvoice = BigDecimal.ZERO;
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Long saleOrderLineId = saleOrderLine.getId();
+        if (qtyToInvoiceMap.containsKey(saleOrderLineId) && priceMap.containsKey(saleOrderLineId)) {
+          amountToInvoice =
+              amountToInvoice.add(
+                  qtyToInvoiceMap.get(saleOrderLineId).multiply(priceMap.get(saleOrderLineId)));
+        }
+      }
+    }
+    return amountToInvoice;
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateAdvancePayment(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
