@@ -16,8 +16,10 @@
     <boolean name="isExpenseAppEnable" default="true" title="Expense"/>
     <boolean name="isTaskAppEnable" default="true" title="Task"/>
     <boolean name="isQualityAppEnable" default="true" title="Quality"/>
-    <boolean name="isStockAppEnable" default="true" title="Stock"/>
-    <boolean name="isProductionAppEnable" default="true" title="Production"/>
+    <boolean name="isStockAppEnable" default="true" title="Stock"
+      help="A new version of this application will be available in future releases, this application will no longer be maintained"/>
+    <boolean name="isProductionAppEnable" default="true" title="Production"
+      help="A new version of this application will be available in future releases, this application will no longer be maintained"/>
     <decimal name="offlineRecordLimit" title="Offline record limit"/>
 
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"

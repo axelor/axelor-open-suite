@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -67,7 +68,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
         endDate,
         saleOrder,
         saleOrderLine,
-        ManufOrderService.ORIGIN_TYPE_OTHER);
+        ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
   }

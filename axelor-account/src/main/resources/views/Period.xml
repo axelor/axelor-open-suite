@@ -12,9 +12,57 @@
     </panel>
   </form>
 
+  <form id="account-period-form" name="period-form" title="Period"
+    model="com.axelor.apps.base.db.Period" extension="true">
+    <extend target="/">
+      <attribute name="onLoad"
+        value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-period-show-buttons,action-method-account-set-readonly"/>
+      <attribute name="onSave"
+        value="action-method-period-show-buttons,action-method-account-period-control-dates"/>
+    </extend>
+    <extend target="//button[@name='openBtn']">
+      <attribute name="onClick"
+        value="save,action-method-period-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <attribute name="readonlyIf" value=""/>
+    </extend>
+  </form>
+  <form id="account-period-year-form" name="period-year-form" title="Period"
+    model="com.axelor.apps.base.db.Period" extension="true">
+    <extend target="/">
+      <attribute name="onLoad"
+        value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-account-set-readonly"/>
+      <attribute name="onSave" value="action-method-account-period-control-dates"/>
+    </extend>
+  </form>
+
+  <action-method name="action-method-account-period-control-dates">
+    <call class="com.axelor.apps.account.web.PeriodController" method="controlDates"/>
+  </action-method>
+
+  <action-method name="action-method-account-set-readonly">
+    <call class="com.axelor.apps.account.web.PeriodController" method="setReadOnly"/>
+  </action-method>
+
   <action-group name="action-period-group-close" id="action-account-period-group-close">
     <action name="save"/>
     <action name="action-period-method-search-moves"/>
+  </action-group>
+
+  <action-group id="account-action-period-group-close" name="action-period-group-close">
+    <action name="save"/>
+    <action name="action-method-validate-close-period"/>
+    <action name="action-method-period-close"/>
+    <action name="action-method-period-show-buttons"/>
+  </action-group>
+
+  <action-group id="account-action-period-group-close-temp"
+    name="action-period-group-close-temp">
+    <action name="save"/>
+    <action name="action-method-validate-close-temp-period"/>
+    <action name="action-method-period-close-temp"/>
+    <action name="action-method-period-show-buttons"/>
   </action-group>
 
   <action-method name="action-period-method-search-moves">
@@ -25,4 +73,7 @@
     <call class="com.axelor.apps.account.web.PeriodController" method="continueClose"/>
   </action-method>
 
+  <action-method name="action-method-period-show-buttons">
+    <call class="com.axelor.apps.account.web.PeriodController" method="showButtons"/>
+  </action-method>
 </object-views>

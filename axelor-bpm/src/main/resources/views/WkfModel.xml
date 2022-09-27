@@ -222,7 +222,7 @@
   </action-record>
 
   <action-view name="action-wkf-view-open-editor" title="BPM Studio">
-    <view type="html" name="wkf-editor?id={{_id}}&amp;timerTask={{_timerTask}}"/>
+    <view type="html" name="wkf-editor/index.html?id={{_id}}&amp;timerTask={{_timerTask}}"/>
     <context name="_timerTask"
       expr="eval: !com.axelor.app.AppSettings.get().getBoolean('application.multi_tenancy', false)"/>
   </action-view>
@@ -292,7 +292,7 @@
   </action-method>
 
   <action-method name="action-wkf-model-method-show-dashboard">
-    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showDashboard"/>
+    <call class="com.axelor.apps.bpm.web.WkfDashboardController" method="showDashboard"/>
   </action-method>
 
   <action-method name="action-wkf-model-method-status-per-view">

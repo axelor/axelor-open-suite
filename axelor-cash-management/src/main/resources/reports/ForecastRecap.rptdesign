@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202111251518</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -403,6 +403,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">logopath</text-property>
                     <text-property name="heading">logopath</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">sequence</property>
+                    <property name="analysis">dimension</property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -482,66 +486,77 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">calculationdate</property>
                     <property name="nativeName">calculationdate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">opportunitiestypeselect</property>
                     <property name="nativeName">opportunitiestypeselect</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">fromdate</property>
                     <property name="nativeName">fromdate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">startingbalance</property>
                     <property name="nativeName">startingbalance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">bankdetails</property>
                     <property name="nativeName">bankdetails</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">todate</property>
                     <property name="nativeName">todate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">endingbalance</property>
                     <property name="nativeName">endingbalance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">logopath</property>
                     <property name="nativeName">logopath</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">sequence</property>
                     <property name="nativeName">sequence</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
@@ -559,7 +574,8 @@ ForecastRecap.forecast_recap_seq as sequence
 from management_forecast_recap as ForecastRecap
 left outer join base_company as Company on (ForecastRecap.company = Company.id)
 left outer join base_currency as Currency on (ForecastRecap.currency = Currency.id)
-left outer join base_bank_details as BankDetails on (ForecastRecap.bank_details = BankDetails.id)
+left outer join management_forecast_recap_bank_details_set as ForecastRecapBankDetails on (ForecastRecapBankDetails.management_forecast_recap = ForecastRecap.id)
+left outer join base_bank_details as BankDetails on (BankDetails.id = ForecastRecapBankDetails.bank_details_set)
 left outer join meta_file as MetaFile on (Company.logo = MetaFile.id)
 where ForecastRecap.id = ?;]]></xml-property>
         </oda-data-set>

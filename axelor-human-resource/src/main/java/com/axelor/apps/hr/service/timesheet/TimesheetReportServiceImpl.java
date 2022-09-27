@@ -35,7 +35,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReminderRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReportRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -45,7 +45,6 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.date.DateTool;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -118,16 +117,15 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   @Override
-  public Set<User> getUserToBeReminded(TimesheetReport timesheetReport) {
-    Set<User> userSet = new HashSet<>();
+  public Set<Employee> getEmployeeToBeReminded(TimesheetReport timesheetReport) {
+    Set<Employee> employeeSet = new HashSet<>();
     BigDecimal worksHour = BigDecimal.ZERO, workedHour = BigDecimal.ZERO;
 
-    List<User> users = getUsers(timesheetReport);
+    List<Employee> employees = getEmployees(timesheetReport);
     LocalDate fromDate = timesheetReport.getFromDate();
     LocalDate toDate = timesheetReport.getToDate();
 
-    for (User user : users) {
-      Employee employee = user.getEmployee();
+    for (Employee employee : employees) {
       try {
         worksHour = workedHour = BigDecimal.ZERO;
         BigDecimal publicHolidays =
@@ -136,16 +134,16 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
                 toDate,
                 employee.getWeeklyPlanning(),
                 employee.getPublicHolidayEventsPlanning());
-        worksHour = getTotalWeekWorksHours(user, fromDate, toDate, publicHolidays);
-        workedHour = getTotalWeekWorkedHours(user, fromDate, toDate, publicHolidays);
+        worksHour = getTotalWeekWorksHours(employee, fromDate, toDate, publicHolidays);
+        workedHour = getTotalWeekWorkedHours(employee, fromDate, toDate, publicHolidays);
         if (worksHour.compareTo(workedHour) != 0) {
-          userSet.add(user);
+          employeeSet.add(employee);
         }
       } catch (Exception e) {
         TraceBackService.trace(e);
       }
     }
-    return userSet;
+    return employeeSet;
   }
 
   @Transactional
@@ -156,7 +154,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     if (reminderTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE));
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE));
     }
     List<TimesheetReminder> timesheetReminders = getTimesheetReminderList(timesheetReport);
     return sendEmailMessage(timesheetReminders, reminderTemplate);
@@ -165,9 +163,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   private List<TimesheetReminder> getTimesheetReminderList(TimesheetReport timesheetReport) {
     List<TimesheetReminder> timesheetReminders = new ArrayList<>();
 
-    List<User> users = new ArrayList<>(timesheetReport.getReminderUserSet());
+    List<Employee> employees = new ArrayList<>(timesheetReport.getReminderEmployeeSet());
     try {
-      addTimesheetReminder(timesheetReport, users, timesheetReminders);
+      addTimesheetReminder(timesheetReport, employees, timesheetReminders);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -175,7 +173,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   private void addTimesheetReminder(
-      TimesheetReport timesheetReport, List<User> users, List<TimesheetReminder> timesheetReminders)
+      TimesheetReport timesheetReport,
+      List<Employee> employees,
+      List<TimesheetReminder> timesheetReminders)
       throws AxelorException {
     BigDecimal worksHour = BigDecimal.ZERO,
         workedHour = BigDecimal.ZERO,
@@ -189,8 +189,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         toDate = timesheetReport.getToDate();
       }
 
-      for (User user : users) {
-        Employee employee = user.getEmployee();
+      for (Employee employee : employees) {
         missingHour = BigDecimal.ZERO;
         extraHour = BigDecimal.ZERO;
 
@@ -201,9 +200,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
                 employee.getWeeklyPlanning(),
                 employee.getPublicHolidayEventsPlanning());
 
-        worksHour = getTotalWeekWorksHours(user, fromDate, toDate, publicHolidays);
+        worksHour = getTotalWeekWorksHours(employee, fromDate, toDate, publicHolidays);
 
-        workedHour = getTotalWeekWorkedHours(user, fromDate, toDate, publicHolidays);
+        workedHour = getTotalWeekWorkedHours(employee, fromDate, toDate, publicHolidays);
         if (worksHour.compareTo(workedHour) == 1) {
           missingHour = worksHour.subtract(workedHour);
         } else if (worksHour.compareTo(workedHour) == -1) {
@@ -287,10 +286,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .limit(numOfDays + 1)
             .collect(Collectors.toList());
 
-    List<User> users = getUsers(timesheetReport);
+    List<Employee> employees = getEmployees(timesheetReport);
 
-    for (User user : users) {
-      Employee employee = user.getEmployee();
+    for (Employee employee : employees) {
       BigDecimal dailyWorkingHours = employee.getDailyWorkHours();
       WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
@@ -321,7 +319,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
                       .multiply(BigDecimal.valueOf(daysInWeek / 5.00))
                       .setScale(2, RoundingMode.HALF_UP)
                   : employee.getWeeklyWorkHours();
-          Map<String, Object> map = getTimesheetMap(user, date, dailyWorkingHours);
+          Map<String, Object> map = getTimesheetMap(employee, date, dailyWorkingHours);
           map.put("weeklyWorkHours", weeklyWorkHours);
           map.put("weekNumber", weekNumber.toString());
           list.add(map);
@@ -334,22 +332,21 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   private Map<String, Object> getTimesheetMap(
-      User user, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
-    Employee employee = user.getEmployee();
+      Employee employee, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
     BigDecimal worksHour = BigDecimal.ZERO, workedHour = BigDecimal.ZERO;
 
     boolean isPublicHoliday =
         publicHolidayService.checkPublicHolidayDay(date, employee.getPublicHolidayEventsPlanning());
-    worksHour = getTotalWorksHours(user, date, isPublicHoliday, dailyWorkingHours);
+    worksHour = getTotalWorksHours(employee, date, isPublicHoliday, dailyWorkingHours);
 
     try {
-      workedHour = getTotalWorkedHours(user, date, isPublicHoliday, dailyWorkingHours);
+      workedHour = getTotalWorkedHours(employee, date, isPublicHoliday, dailyWorkingHours);
     } catch (Exception e) {
       System.out.println(e);
     }
 
     Map<String, Object> map = new HashMap<String, Object>();
-    map.put("userName", user.getFullName());
+    map.put("userName", employee.getUser().getFullName());
     map.put("date", DateTool.toDate(date));
     map.put("workedHour", workedHour);
     map.put("workingHour", worksHour);
@@ -357,9 +354,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   private BigDecimal getTotalWorksHours(
-      User user, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
+      Employee employee, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
       throws AxelorException {
-    Employee employee = user.getEmployee();
     BigDecimal worksHour =
         employeeService
             .getDaysWorksInPeriod(employee, date, date)
@@ -372,8 +368,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         extraHoursLineRepository
             .all()
             .filter(
-                "self.user = ? AND self.date = ? AND (self.extraHours.statusSelect = ? OR self.extraHours.statusSelect = ?)",
-                user,
+                "self.employee = ? AND self.date = ? AND (self.extraHours.statusSelect = ? OR self.extraHours.statusSelect = ?)",
+                employee,
                 date,
                 ExtraHoursRepository.STATUS_VALIDATED,
                 ExtraHoursRepository.STATUS_CONFIRMED)
@@ -385,9 +381,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   private BigDecimal getTotalWeekWorksHours(
-      User user, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
+      Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
       throws AxelorException {
-    Employee employee = user.getEmployee();
     BigDecimal worksHour =
         employeeService
             .getDaysWorksInPeriod(employee, fromDate, toDate)
@@ -398,8 +393,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         extraHoursLineRepository
             .all()
             .filter(
-                "self.user = ? AND (self.date BETWEEN ? AND ?) AND (self.extraHours.statusSelect = ? OR self.extraHours.statusSelect = ?)",
-                user,
+                "self.employee = ? AND (self.date BETWEEN ? AND ?) AND (self.extraHours.statusSelect = ? OR self.extraHours.statusSelect = ?)",
+                employee,
                 fromDate,
                 toDate,
                 ExtraHoursRepository.STATUS_VALIDATED,
@@ -412,7 +407,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   private BigDecimal getTotalWorkedHours(
-      User user, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
+      Employee employee, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal totalHours = BigDecimal.ZERO;
 
@@ -420,8 +415,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         timesheetLineRepository
             .all()
             .filter(
-                "self.user = ? AND self.date = ? AND (self.timesheet.statusSelect = ? OR self.timesheet.statusSelect = ?)",
-                user,
+                "self.employee = ? AND self.date = ? AND (self.timesheet.statusSelect = ? OR self.timesheet.statusSelect = ?)",
+                employee,
                 date,
                 TimesheetRepository.STATUS_CONFIRMED,
                 TimesheetRepository.STATUS_VALIDATED)
@@ -436,24 +431,23 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     if (isPublicHoliday) {
       totalHours = totalHours.add(dailyWorkingHours);
     } else {
-      totalHours = totalHours.add(getLeaveHours(user, date, dailyWorkingHours));
+      totalHours = totalHours.add(getLeaveHours(employee, date, dailyWorkingHours));
     }
 
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
   private BigDecimal getTotalWeekWorkedHours(
-      User user, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
+      Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
       throws AxelorException {
     BigDecimal totalHours = BigDecimal.ZERO;
-    Employee employee = user.getEmployee();
 
     List<TimesheetLine> timesheetLineList =
         timesheetLineRepository
             .all()
             .filter(
-                "self.user = ? AND (self.date BETWEEN ? AND ?) AND (self.timesheet.statusSelect = ? OR self.timesheet.statusSelect = ?)",
-                user,
+                "self.employee = ? AND (self.date BETWEEN ? AND ?) AND (self.timesheet.statusSelect = ? OR self.timesheet.statusSelect = ?)",
+                employee,
                 fromDate,
                 toDate,
                 TimesheetRepository.STATUS_VALIDATED,
@@ -467,14 +461,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .setScale(2, RoundingMode.HALF_UP);
     totalHours = totalHours.add(publicHolidays.multiply(employee.getDailyWorkHours()));
     totalHours =
-        totalHours.add(getWeekLeaveHours(user, fromDate, toDate, employee.getDailyWorkHours()));
+        totalHours.add(getWeekLeaveHours(employee, fromDate, toDate, employee.getDailyWorkHours()));
 
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getLeaveHours(User user, LocalDate date, BigDecimal dailyWorkingHours)
+  private BigDecimal getLeaveHours(Employee employee, LocalDate date, BigDecimal dailyWorkingHours)
       throws AxelorException {
-    List<LeaveRequest> leavesList = leaveService.getLeaves(user, date);
+    List<LeaveRequest> leavesList = leaveService.getLeaves(employee, date);
     BigDecimal totalLeaveHours = BigDecimal.ZERO;
     for (LeaveRequest leave : leavesList) {
       BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
@@ -487,29 +481,29 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   private BigDecimal getWeekLeaveHours(
-      User user, LocalDate fromDate, LocalDate toDate, BigDecimal dailyWorkingHours)
+      Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal leaveHours = BigDecimal.ZERO;
     do {
 
       boolean isPublicHoliday =
           publicHolidayService.checkPublicHolidayDay(
-              fromDate, user.getEmployee().getPublicHolidayEventsPlanning());
+              fromDate, employee.getPublicHolidayEventsPlanning());
       if (!isPublicHoliday) {
-        leaveHours = leaveHours.add(getLeaveHours(user, fromDate, dailyWorkingHours));
+        leaveHours = leaveHours.add(getLeaveHours(employee, fromDate, dailyWorkingHours));
       }
       fromDate = fromDate.plusDays(1);
     } while (fromDate.until(toDate).getDays() > -1);
     return leaveHours;
   }
 
-  protected List<User> getUsers(TimesheetReport timesheetReport) {
-    QueryBuilder<User> userQuery = QueryBuilder.of(User.class);
+  protected List<Employee> getEmployees(TimesheetReport timesheetReport) {
+    QueryBuilder<Employee> userQuery = QueryBuilder.of(Employee.class);
     userQuery.add(
-        "self.employee IS NOT NULL AND self.employee.weeklyPlanning IS NOT NULL AND self.employee.publicHolidayEventsPlanning IS NOT NULL AND self.employee.mainEmploymentContract IS NOT NULL");
-    if (!CollectionUtils.isEmpty(timesheetReport.getUserSet())) {
-      userQuery.add("self IN :users");
-      userQuery.bind("users", timesheetReport.getUserSet());
+        "self.user IS NOT NULL AND self.weeklyPlanning IS NOT NULL AND self.publicHolidayEventsPlanning IS NOT NULL AND self.mainEmploymentContract IS NOT NULL");
+    if (!CollectionUtils.isEmpty(timesheetReport.getEmployeeSet())) {
+      userQuery.add("self IN :employees");
+      userQuery.bind("employees", timesheetReport.getEmployeeSet());
     }
     return userQuery.build().fetch();
   }

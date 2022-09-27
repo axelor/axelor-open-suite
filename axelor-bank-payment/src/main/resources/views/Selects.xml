@@ -33,7 +33,8 @@
     <option value="4">International Direct Debit</option>
     <option value="5">National Treasury transfer</option>
     <option value="6">International Treasury transfer</option>
-    <option value="7">Send a bank order</option>
+    <option value="7">Send bank order</option>
+    <option value="8">LCR</option>
   </selection>
 
   <selection name="bankpayment.bank.order.partner.type.select">
@@ -192,6 +193,18 @@
     <option value="3">Monthly payment schedules</option>
   </selection>
 
+  <selection name="bankpayment.account.batch.bill.of.exchange.data.type.select">
+    <option value="1">Customer invoices</option>
+    <option value="2">Payment schedules</option>
+    <option value="3">Monthly payment schedules</option>
+  </selection>
+
+  <selection name="bankpayment.account.batch.bill.of.exchange.step.batch.select">
+    <option value="1">Bill of exchange generation</option>
+    <option value="2">Send note bills</option>
+    <option value="3">Bank order generation</option>
+  </selection>
+
   <selection name="bankpayment.bank.statement.line.afb.120.line.type.select">
     <option value="1">Initial balance</option>
     <option value="2">Movement</option>
@@ -262,12 +275,40 @@
   <selection name="bank.payment.bank.statement.rule.rule.type.select">
     <option value="0">Accounting auto</option>
     <option value="1">Reconciliation auto</option>
+    <option value="2">Partner's fetching</option>
+    <option value="3">Move line's fetching</option>
   </selection>
 
   <selection name="bank.payment.bank.statement.query.confidence.index.select">
     <option value="1">Green</option>
     <option value="2">Orange</option>
     <option value="3">Red</option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.entry.code.select">
+    <option value="1">Discount</option>
+    <option value="2">Discount in value</option>
+    <option value="3">Collection and credit lump sum after maturity</option>
+    <option value="4">Cash out after expiration of unpaid bill's return period</option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.daily.code.select">
+    <option value="0">No indication</option>
+    <option value="1">Discounted transfer under a Dailly agreement</option>
+    <option value="2">Pledge of receivables under a Dailly agreement</option>
+    <option value="3">Assignment or pledge outside Dailly agreement</option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.accept.per.line.code.select">
+    <option value="0">Not accepted LCR</option>
+    <option value="1">Accepted LCR</option>
+    <option value="2">BOR</option>
+  </selection>
+
+  <selection name="bank.payment.bank.statement.rule.partner.fetch.method.select">
+    <option value="0">None</option>
+    <option value="1">Select</option>
+    <option value="2">With formula</option>
   </selection>
 
 </object-views>

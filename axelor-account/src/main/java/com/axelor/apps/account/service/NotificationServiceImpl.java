@@ -201,7 +201,7 @@ public class NotificationServiceImpl implements NotificationService {
     paymentMove.addMoveLineListItem(partnerMoveLine);
     paymentMove = moveRepository.save(paymentMove);
 
-    moveValidateService.validate(paymentMove);
+    moveValidateService.accounting(paymentMove);
 
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
     MoveLine subrogationReleaseMoveLine =

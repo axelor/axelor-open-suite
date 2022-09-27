@@ -44,6 +44,8 @@ public interface PeriodService {
 
   public void close(Period period) throws AxelorException;
 
+  public void closeTemporarily(Period period) throws AxelorException;
+
   @Transactional
   public void adjust(Period period);
 
@@ -71,4 +73,22 @@ public interface PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException;
+
+  /**
+   * @param period
+   * @throws AxelorException if the period is permanently or temporally closed
+   */
+  void checkClosedPeriod(Period period, boolean isAuthorizedToAccountOnPeriod)
+      throws AxelorException;
+
+  public void validateTempClosure(Period period) throws AxelorException;
+
+  public void validateClosure(Period period) throws AxelorException;
+
+  /**
+   * Method thats open the period
+   *
+   * @param period
+   */
+  void openPeriod(Period period);
 }

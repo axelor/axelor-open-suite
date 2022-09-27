@@ -69,8 +69,8 @@
         </field>
       </panel>
       <button name="timeSpentBtn" title="Log time"
-        onClick="save,action-project-task-view-time-spent" colSpan="2"
-        showIf="project.isShowTimeSpent"/>
+        onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
+        colSpan="2" showIf="project.isShowTimeSpent"/>
       <field name="project.isShowTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
@@ -567,7 +567,7 @@
     <context name="_timePlannedPopup" expr="eval: true"/>
     <context name="_projectTask" expr="eval:__self__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_user" expr="eval:assignedTo"
+    <context name="_employee" expr="eval:assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__self__.project"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>

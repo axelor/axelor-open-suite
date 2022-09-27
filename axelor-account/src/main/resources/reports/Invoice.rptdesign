@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1777,6 +1777,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">ts_project_unit_id</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">parent_pack_price_select</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">pack_price_select</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_pack_line</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_sub_line</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">total_pack</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">productCode</property>
+                    <property name="analysis">dimension</property>
+                </structure>
             </list-property>
             <list-property name="filter">
                 <structure>
@@ -1834,6 +1858,36 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="position">9</property>
                         <property name="name">ts_project_unit_id</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">parent_pack_price_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">pack_price_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">is_pack_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">is_sub_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">total_pack</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">productCode</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1910,7 +1964,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_user.name AS ts_user, 
+            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_emp.name AS ts_user, 
 product.name AS ts_activity, 
 line.hours_duration AS ts_duration,
 product_unit.name AS ts_product_unit, 
@@ -1926,7 +1980,7 @@ FROM hr_timesheet_line line
 JOIN businessproject_invoicing_project_log_times_set logset ON logset.log_times_set = line.id
 JOIN businessproject_invoicing_project invproj ON invproj.id = logset.businessproject_invoicing_project
 JOIN project_project project ON project.id = invproj.project
-JOIN auth_user timesheet_user ON timesheet_user.id = line.user_id
+JOIN hr_employee timesheet_emp ON timesheet_emp.id = line.employee
 JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
@@ -6204,7 +6258,7 @@ else {
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF> row["translation"] != null ? row["translation"] : row._outer["product_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF> row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <data id="5384">
                                         <property name="fontSize">8pt</property>
@@ -6877,7 +6931,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
             <property name="marginLeft">0pt</property>
             <property name="marginBottom">0pt</property>
             <property name="marginRight">0pt</property>
-            <property name="pageBreakAfter">always</property>
+            <property name="pageBreakAfter">auto</property>
             <property name="pageBreakBefore">auto</property>
             <property name="pageBreakInside">auto</property>
             <property name="width">19.552708333333335cm</property>
@@ -8044,7 +8098,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     <property name="textAlign">right</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_total_discount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_sum_discount_line"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5682">

@@ -46,7 +46,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -125,7 +126,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PO_MISSING_STOCK_LOCATION),
+          I18n.get(SupplychainExceptionMessage.PO_MISSING_STOCK_LOCATION),
           purchaseOrder.getPurchaseOrderSeq());
     }
 
@@ -134,7 +135,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     for (LocalDate estimatedDeliveryDate :
         purchaseOrderLinePerDateMap.keySet().stream()
-            .filter(x -> x != null)
+            .filter(Objects::nonNull)
             .sorted((x, y) -> x.compareTo(y))
             .collect(Collectors.toList())) {
 
@@ -207,7 +208,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.PURCHASE_ORDER_TRADING_NAME_MISSING));
+            I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_TRADING_NAME_MISSING));
       }
 
     } else {
@@ -302,7 +303,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_1),
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_1),
           company.getName());
     }
 
@@ -374,11 +375,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Product product = purchaseOrderLine.getProduct();
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-    if (product.getControlOnReceipt()
-        && !purchaseOrder.getStockLocation().getDirectOrderLocation()) {
-      return true;
-    }
-    return false;
+    return product.getControlOnReceipt()
+        && !purchaseOrder.getStockLocation().getDirectOrderLocation();
   }
 
   protected StockMoveLine createProductStockMoveLine(

@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproduction.web;
 
-import com.axelor.apps.businessproduction.exception.IExceptionMessage;
+import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -42,7 +42,9 @@ public class OperationOrderBusinessController {
       if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
           && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder)
               > 0) {
-        response.setAlert(I18n.get(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
+        response.setAlert(
+            I18n.get(
+                BusinessProductionExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

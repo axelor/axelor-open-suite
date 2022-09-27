@@ -1158,7 +1158,7 @@ where AccountingReport.id = ?
 	Asset.computation_method_select AS computation_method,
 	Asset.duration_in_month AS duration,
 	Asset.acquisition_date AS acquisition_date,
-	Asset.gross_value AS gross_value,
+	Asset.gross_value,
 	Asset.residual_value AS residual_value,
 	Asset.disposal_value AS disposal_value,
 	Asset.disposal_date AS disposal_date,
@@ -1171,12 +1171,12 @@ where AccountingReport.id = ?
 	AnalyticDistributionTemplate.name AS analytic_distribution_template_name,
 	CASE 
 		WHEN acquisition_date <= date_from 
-		THEN gross_value 
+		THEN Asset.gross_value 
 		ELSE 0
 	END AS original_value,
 	CASE 
 		WHEN acquisition_date >= date_from AND acquisition_date <= date_to
-		THEN gross_value 
+		THEN Asset.gross_value 
 		ELSE 0
 	END AS acquisition,
 	CASE 
@@ -1184,8 +1184,8 @@ where AccountingReport.id = ?
 		THEN disposal_value
 		ELSE 0
 	END AS asset_disposal,
-	gross_value - disposal_value AS year_end_value,
-	gross_value - COALESCE(SUM(
+	Asset.gross_value - disposal_value AS year_end_value,
+	Asset.gross_value - COALESCE(SUM(
 		CASE 
 			WHEN 
 				AccountingReport.date_from IS NULL 
@@ -1200,7 +1200,7 @@ where AccountingReport.id = ?
    			THEN depreciation 
    		END
    	) AS depreciation_charge,
-   	gross_value - SUM(
+   	Asset.gross_value - SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
 				AND (date_to IS NULL OR depreciation_date <= date_to)
@@ -1230,7 +1230,7 @@ LEFT JOIN public.account_accounting_report_account_set AS AccountSet
 ON AccountSet.account_accounting_report = AccountingReport.id
 
 LEFT JOIN public.account_fixed_asset_line AS AssetLine
-ON AssetLine.fixed_asset = Asset.id
+ON AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id
    	
 WHERE
 	(
@@ -1245,11 +1245,15 @@ WHERE
    	AND Asset.company = AccountingReport.company
    	AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+   	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
 		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name 
    	
-ORDER BY Account.code]]></xml-property>
+ORDER BY Account.code
+
+
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

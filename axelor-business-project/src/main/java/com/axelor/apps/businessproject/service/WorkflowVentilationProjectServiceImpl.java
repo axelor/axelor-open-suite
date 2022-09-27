@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -59,6 +60,7 @@ public class WorkflowVentilationProjectServiceImpl
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepo,
       InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoiceService invoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
@@ -76,6 +78,7 @@ public class WorkflowVentilationProjectServiceImpl
         accountConfigService,
         invoicePaymentRepo,
         invoicePaymentCreateService,
+        invoiceService,
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         saleOrderRepository,

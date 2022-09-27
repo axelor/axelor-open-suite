@@ -177,7 +177,7 @@ public class BankReconciliationValidateService {
 
     moveRepository.save(move);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 
@@ -231,15 +231,24 @@ public class BankReconciliationValidateService {
             moveLineRepository.find(((Integer) moveLineToReconcile.get("id")).longValue());
         BigDecimal debit;
         BigDecimal credit;
+
         if (isDebit) {
+          BigDecimal amountMoveLine =
+              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
+                  ? moveLine.getCurrencyAmount()
+                  : moveLine.getCredit();
           debit =
-              (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
+              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
+          BigDecimal amountMoveLine =
+              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
+                  ? moveLine.getCurrencyAmount()
+                  : moveLine.getDebit();
           debit = BigDecimal.ZERO;
           credit =
-              (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
+              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
         }
 

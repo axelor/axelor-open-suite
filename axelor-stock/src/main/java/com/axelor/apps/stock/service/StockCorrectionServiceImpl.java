@@ -29,7 +29,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -116,7 +116,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         || stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
     }
 
     StockMove stockMove = generateStockMove(stockCorrection);
@@ -215,7 +215,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       throw new AxelorException(
           stockCorrection,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CORRECTION_1));
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_1));
     }
     if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
       stockMoveLine.setTrackingNumber(trackingNumber);
@@ -231,6 +231,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   public void getDefaultQtys(
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
+    stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("futureQty", stockLocationLine.getFutureQty());
   }

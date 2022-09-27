@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Street;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -195,7 +195,7 @@ public class AddressServiceImpl implements AddressService {
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
       throws AxelorException, JSONException {
-    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
     Optional<Pair<BigDecimal, BigDecimal>> latLong = getLatLong(address);
 
     if (latLong.isPresent()) {
@@ -209,7 +209,7 @@ public class AddressServiceImpl implements AddressService {
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException {
-    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
     if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {
       Map<String, Object> result = mapService.getMap(address.getFullName());
@@ -229,7 +229,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional
   public void resetLatLong(Address address) {
-    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
     setLatLong(address, Pair.of(null, null));
   }
 

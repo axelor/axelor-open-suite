@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.Collection;
 
 public interface BankOrderMergeService {
@@ -37,4 +38,7 @@ public interface BankOrderMergeService {
    */
   BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments)
       throws AxelorException;
+
+  BankOrder mergeFromInvoicePayments(
+      Collection<InvoicePayment> invoicePayments, LocalDate bankOrderDate) throws AxelorException;
 }

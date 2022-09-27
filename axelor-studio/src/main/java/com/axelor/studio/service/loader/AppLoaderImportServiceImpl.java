@@ -59,7 +59,10 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
         "dashlet-builder.xml",
         "dashboard-builder-call.xml",
         "action-builder.xml",
-        "menu-builder.xml"
+        "menu-builder.xml",
+        "ws-request.xml",
+        "ws-authenticator.xml",
+        "ws-connector.xml"
       };
 
   @Inject protected AppLoaderRepository appLoaderRepository;

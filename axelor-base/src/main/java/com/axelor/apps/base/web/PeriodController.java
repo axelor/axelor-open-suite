@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -41,6 +42,18 @@ public class PeriodController {
     }
   }
 
+  public void closeTemporarily(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    period = Beans.get(PeriodRepository.class).find(period.getId());
+
+    try {
+      Beans.get(PeriodService.class).closeTemporarily(period);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void adjust(ActionRequest request, ActionResponse response) {
     Period period = request.getContext().asType(Period.class);
     period = Beans.get(PeriodRepository.class).find(period.getId());
@@ -48,6 +61,37 @@ public class PeriodController {
     try {
       Beans.get(PeriodService.class).adjust(period);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateTempClosure(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    try {
+      Beans.get(PeriodService.class).validateTempClosure(period);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+
+  public void validateClosure(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    try {
+      Beans.get(PeriodService.class).validateClosure(period);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+
+  public void open(ActionRequest request, ActionResponse response) {
+    Period period =
+        Beans.get(PeriodRepository.class).find(request.getContext().asType(Period.class).getId());
+    try {
+      if (period != null) {
+        Beans.get(PeriodService.class).openPeriod(period);
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

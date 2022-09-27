@@ -42,7 +42,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -120,7 +121,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SO_MISSING_STOCK_LOCATION),
+          I18n.get(SupplychainExceptionMessage.SO_MISSING_STOCK_LOCATION),
           saleOrder.getSaleOrderSeq());
     }
 
@@ -131,7 +132,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (LocalDate estimatedDeliveryDate :
         saleOrderLinePerDateMap.keySet().stream()
-            .filter(x -> x != null)
+            .filter(Objects::nonNull)
             .sorted((x, y) -> x.compareTo(y))
             .collect(Collectors.toList())) {
 
@@ -348,7 +349,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         default:
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE));
+              I18n.get(
+                  SupplychainExceptionMessage.RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE));
       }
 
       if (reservationDateTime == null) {
