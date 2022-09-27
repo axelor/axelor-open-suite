@@ -18,10 +18,11 @@
     <field name="productName" required="true" width="200px"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
     <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"
-      width="100px" x-scale="2" readonlyIf="$get('stockMove.statusSelect') &gt; 1"/>
+      width="100px" x-scale="2"
+      readonlyIf="$get('stockMove.statusSelect') &gt; 1 || lineTypeSelect == 1"/>
     <field name="realQty" aggregate="sum" width="100px" x-scale="2"
       onChange="action-stock-move-line-group-real-qty-onchange"
-      readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
+      readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3 || lineTypeSelect == 1"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
       x-scale="2" if="__config__.app.getApp('supplychain').getManageStockReservation()"
       aggregate="sum"/>
