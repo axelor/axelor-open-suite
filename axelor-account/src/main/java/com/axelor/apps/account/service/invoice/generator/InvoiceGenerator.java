@@ -352,12 +352,12 @@ public abstract class InvoiceGenerator {
     logger.debug("Populate an invoice => invoice lines : {} ", invoiceLines.size());
 
     initCollections(invoice);
-    
+
     if (invoice instanceof ContextEntity) {
-        invoice.getInvoiceLineList().addAll(invoiceLines);
-      } else {
-        invoiceLines.forEach(invoice::addInvoiceLineListItem);
-      }
+      invoice.getInvoiceLineList().addAll(invoiceLines);
+    } else {
+      invoiceLines.forEach(invoice::addInvoiceLineListItem);
+    }
     // Create tax lines.
     List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
