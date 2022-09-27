@@ -106,7 +106,9 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       Map<String, Object> newStockMoveLine = Mapper.toMap(new StockMoveLine());
+      newStockMoveLine.put("productName", stockMoveLine.getProductName());
       newStockMoveLine.put("qty", BigDecimal.ZERO);
+      newStockMoveLine.put("realQty", BigDecimal.ZERO);
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
