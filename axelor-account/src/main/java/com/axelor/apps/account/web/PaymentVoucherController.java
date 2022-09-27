@@ -50,6 +50,7 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,13 +132,9 @@ public class PaymentVoucherController {
         Journal journal =
             Beans.get(PaymentModeService.class)
                 .getPaymentModeJournal(paymentMode, company, companyBankDetails);
-        if (journal.getExcessPaymentOk()) {
+        if (journal.getExcessPaymentOk()
+            && CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
           response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
-        }
-        if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
-          response.setError(
-              I18n.get(
-                  "Some move amounts have been changed since the impuration. Please remake the imputation."));
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);

@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -470,24 +471,44 @@ public class PaymentVoucherConfirmService {
               .map(it -> isDebitToPay ? it.getCredit() : it.getDebit())
               .reduce(BigDecimal::add)
               .orElse(paymentVoucher.getPaidAmount());
-      BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+      BigDecimal currencyRate = null;
+      if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+        currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+      }
+
+      boolean isExcessPayment = paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0;
 
       if (paymentVoucher.getMoveLine() != null) {
-        moveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                paymentVoucher.getPartner(),
-                paymentVoucher.getMoveLine().getAccount(),
-                paymentVoucher.getPaidAmount(),
-                companyPaidAmount,
-                currencyRate,
-                isDebitToPay,
-                paymentDate,
-                null,
-                paymentDate,
-                moveLineNo++,
-                paymentVoucher.getRef(),
-                null);
+        if (isExcessPayment) {
+          moveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  paymentVoucher.getPartner(),
+                  paymentVoucher.getMoveLine().getAccount(),
+                  paymentVoucher.getPaidAmount(),
+                  isDebitToPay,
+                  paymentDate,
+                  moveLineNo++,
+                  paymentVoucher.getRef(),
+                  null);
+        } else if (currencyRate != null) {
+          moveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  paymentVoucher.getPartner(),
+                  paymentVoucher.getMoveLine().getAccount(),
+                  paymentVoucher.getPaidAmount(),
+                  companyPaidAmount,
+                  currencyRate,
+                  isDebitToPay,
+                  paymentDate,
+                  null,
+                  paymentDate,
+                  moveLineNo++,
+                  paymentVoucher.getRef(),
+                  null);
+        }
+
         Reconcile reconcile =
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
@@ -495,27 +516,48 @@ public class PaymentVoucherConfirmService {
           reconcileService.confirmReconcile(reconcile, true, true);
         }
       } else {
-
-        moveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                payerPartner,
-                paymentModeAccount,
-                paymentVoucher.getPaidAmount(),
-                companyPaidAmount,
-                currencyRate,
-                isDebitToPay,
-                paymentDate,
-                null,
-                paymentDate,
-                moveLineNo++,
-                paymentVoucher.getRef(),
-                null);
+        if (isExcessPayment) {
+          moveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  paymentModeAccount,
+                  paymentVoucher.getPaidAmount(),
+                  isDebitToPay,
+                  paymentDate,
+                  moveLineNo++,
+                  paymentVoucher.getRef(),
+                  null);
+        } else if (currencyRate != null) {
+          moveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  paymentModeAccount,
+                  paymentVoucher.getPaidAmount(),
+                  companyPaidAmount,
+                  currencyRate,
+                  isDebitToPay,
+                  paymentDate,
+                  null,
+                  paymentDate,
+                  moveLineNo++,
+                  paymentVoucher.getRef(),
+                  null);
+        }
       }
+
+      if (currencyRate == null) {
+        currencyRate = moveLine.getCurrencyRate();
+      } else {
+        moveLine.setCurrencyRate(currencyRate);
+      }
+
       move.getMoveLineList().add(moveLine);
+
       // Check if the paid amount is > paid lines total
       // Then Use Excess payment on old invoices / moveLines
-      if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0) {
+      if (isExcessPayment) {
         BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
 
         // TODO rajouter le process d'imputation automatique
@@ -547,6 +589,8 @@ public class PaymentVoucherConfirmService {
                 moveLineNo++,
                 paymentVoucher.getRef(),
                 null);
+
+        moveLine.setCurrencyRate(currencyRate);
         move.getMoveLineList().add(moveLine);
 
         if (isDebitToPay) {
