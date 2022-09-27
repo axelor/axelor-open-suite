@@ -262,7 +262,8 @@ public class DebtRecoveryActionService {
             I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_4));
       }
 
-      if (CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
+      if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_MAIL
+          && CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_5),
