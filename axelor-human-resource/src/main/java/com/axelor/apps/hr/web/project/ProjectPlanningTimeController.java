@@ -38,6 +38,7 @@ import java.util.Map;
 @Singleton
 public class ProjectPlanningTimeController {
 
+  @SuppressWarnings("unchecked")
   public void showPlanning(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -119,6 +120,7 @@ public class ProjectPlanningTimeController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
     List<Map<String, Object>> projectPlanningTimeLines =

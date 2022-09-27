@@ -26,6 +26,18 @@
       form-view="analytic-journal-form"/>
   </grid>
 
+  <grid name="analytic-distribution-line-personalized-grid" title="Analytic distribution lines"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine" editable="true"
+    groupBy="analyticAxis">
+    <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+    <field name="analyticAccount" required="true" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
+    <field name="percentage"/>
+    <field name="analyticJournal" grid-view="analytic-journal-grid"
+      form-view="analytic-journal-form"/>
+  </grid>
+
   <form name="analytic-distribution-line-form" title="Analytic distribution line"
     model="com.axelor.apps.account.db.AnalyticDistributionLine"
     onNew="action-group-analytic-distribution-line-set-on-new">
@@ -36,7 +48,24 @@
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true"
-        domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)"/>
+        domain="((:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)) AND self.statusSelect = 1"/>
+      <field name="percentage" required="true"/>
+      <field name="analyticJournal" grid-view="analytic-journal-grid"
+        form-view="analytic-journal-form" required="true"/>
+    </panel>
+  </form>
+
+  <form name="analytic-distribution-line-personalized-form" title="Analytic distribution line"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine"
+    onNew="action-group-analytic-distribution-line-set-on-new"
+    onLoad="action-group-analytic-distribution-line-set-on-new">
+    <panel name="mainPanel">
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onChange="action-axis-change-remove-account" required="true" readonly="true"/>
+      <field name="analyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
+        required="true"
+        domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form" required="true"
@@ -60,7 +89,7 @@
 
   <action-attrs name="action-attrs-domain-axis-distribution-line">
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} &quot;"
       if="__parent__ &amp;&amp; __parent__.company"/>
     <attribute name="domain" for="analyticAxis" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
@@ -68,7 +97,7 @@
 
   <action-attrs name="action-attrs-domain-journal-distribution-line">
     <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
       if="__parent__ &amp;&amp; __parent__.company"/>
     <attribute name="domain" for="analyticJournal" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
@@ -78,7 +107,7 @@
     model="com.axelor.apps.account.db.AnalyticDistributionLine">
     <field name="analyticJournal"
       expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal"/>
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal.statusSelect == 1"/>
   </action-record>
 
 </object-views>

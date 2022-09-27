@@ -146,6 +146,18 @@
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
+  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
+    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+
+  <action-view name="account.root.move.move.simplifed"
+    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
+    <view name="move-grid" type="grid"/>
+    <view name="move-simplified-form" type="form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
   <menuitem name="account-root-move-move-line" parent="account-root-move"
     title="Move lines" action="account.root.move.move.line" order="5"/>
 
@@ -424,7 +436,8 @@
     order="30"/>
 
   <menuitem title="Fixed assets" name="account-root-asset-management-fixed-assets"
-    parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"/>
+    parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"
+    order="1"/>
 
   <action-view name="account.root.asset.management.fixed.assets" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset">
@@ -434,7 +447,7 @@
   </action-view>
 
   <menuitem title="Configurations" name="account-root-asset-management-conf"
-    parent="account-root-asset-management" icon="fa-cog"/>
+    parent="account-root-asset-management" icon="fa-cog" order="10"/>
 
   <menuitem title="Fixed asset categories"
     name="account-root-asset-management-conf-asset-categories"
@@ -456,6 +469,17 @@
     title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType">
     <view type="grid" name="fixed-asset-type-grid"/>
     <view type="form" name="fixed-asset-type-form"/>
+  </action-view>
+
+  <menuitem title="Asset disposal reasons"
+    name="account-root-asset-management-asset-disposal-reasons"
+    parent="account-root-asset-management-conf"
+    action="account.root.asset.management.asset-disposal-reasons" order="2"/>
+
+  <action-view name="account.root.asset.management.asset-disposal-reasons"
+    title="Asset disposal reasons" model="com.axelor.apps.account.db.AssetDisposalReason">
+    <view type="grid" name="asset-disposal-reason-grid"/>
+    <view type="form" name="asset-disposal-reason-form"/>
   </action-view>
 
 
@@ -661,6 +685,7 @@
     <view type="grid" name="analytic-distribution-template-grid"/>
     <view type="form" name="analytic-distribution-template-form"/>
     <view-param name="search-filters" value="analytic-distribution-template-filters"/>
+    <domain>self.isSpecific = false</domain>
   </action-view>
 
   <menuitem name="account-conf-payment" parent="account-conf" title="Payment"/>

@@ -279,13 +279,16 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     }
 
     String invoiceId = "";
+    StringBuilder invoiceIdBld = new StringBuilder();
     Set<Invoice> invoiceSet = stockMove.getInvoiceSet();
     if (invoiceSet != null) {
       for (Invoice invoice : invoiceSet) {
         if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-          invoiceId += invoice.getInvoiceId() + "|";
+          invoiceIdBld.append(invoice.getInvoiceId() + "|");
         }
       }
+
+      invoiceId = invoiceIdBld.toString();
       if (invoiceId != null && !invoiceId.isEmpty()) {
         invoiceId = invoiceId.substring(0, invoiceId.length() - 1);
       }

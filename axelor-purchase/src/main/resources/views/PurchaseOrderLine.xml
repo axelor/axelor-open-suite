@@ -101,7 +101,15 @@
 
     <panel-tabs name="mainPanelTab" hideIf="isTitleLine">
       <panel name="informationsPanel" title="Information">
-
+        <field name="$partnerLanguage" hidden="true"/>
+        <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+          showTitle="false">
+          <viewer depends="$partnerLanguage">
+            <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
+              ]]>
+          </viewer>
+        </field>
         <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
         <field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0"
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -333,6 +341,7 @@
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -346,7 +355,7 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
-    <action name="action-purchase-order-line-method-check-different-supplier"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -356,6 +365,7 @@
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
     <action name="action-budget-validate-exceed-line-amount"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
+    <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -515,6 +525,12 @@
       method="checkDifferentSupplier"/>
   </action-method>
 
+  <action-method
+    name="action-purchase-order-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="translateProductDescriptionAndName"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-purchase-order-line-attrs-product-domain">
@@ -574,6 +590,30 @@
     name="action-purchase-order-line-attrs-hide-different-supplier-warning-label">
     <attribute name="hidden" for="differentSupplierLabel" expr="true"/>
   </action-attrs>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__?.supplierPartner?.language?.code.equals(__user__.getLanguage())"
+      if="__parent__"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__?.supplierPartner?.language?.code.toUpperCase()" if="__parent__"/>
+
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code.equals(__user__.getLanguage())"
+      if="purchaseOrder"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code.toUpperCase()" if="purchaseOrder"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code.toUpperCase()"/>
+  </action-attrs>
+
   <!-- ACTION VIEW -->
   <action-view name="action-purchase-order-line-view-stock-move-line" title=""
     model="com.axelor.apps.stock.db.StockMoveLine">

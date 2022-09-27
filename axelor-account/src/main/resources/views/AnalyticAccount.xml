@@ -5,10 +5,15 @@
 
   <grid name="analytic-account-grid" title="Analytic Accounts"
     model="com.axelor.apps.account.db.AnalyticAccount">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+    <field name="statusSelect"/>
   </grid>
 
   <tree name="analytic-account-tree" title="Analytic accounting account">
@@ -30,7 +35,14 @@
 
   <form name="analytic-account-form" title="Analytic Account"
     model="com.axelor.apps.account.db.AnalyticAccount"
-    onLoad="action-attrs-analytic-account-change-axis">
+    onLoad="action-attrs-analytic-account-change-axis,action-attrs-account-analytic-account-status-show-title">
+    <panel name="statusPanel">
+      <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
+        colSpan="8"/>
+      <button name="activeStatusBtn" title="Set Active"
+        onClick="save,account-analytic-account-method-toggle-status-active,action-attrs-account-analytic-account-status-show-title"
+        colSpan="3"/>
+    </panel>
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
@@ -77,20 +89,20 @@
       <field name="code" as="code"/>
     </node>
     <node model="com.axelor.apps.account.db.AnalyticAccount" parent="analyticAxis"
-      domain="self.parent is null" onClick="action-analytic-account-view-account-onchange-view"
-      draggable="true">
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.id = :_accountId">
       <field name="name" as="name"/>
       <field name="code" as="code"/>
     </node>
     <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
-      domain="self.parent is not null" onClick="action-analytic-account-view-account-onchange-view"
-      draggable="true">
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.parent is not null">
       <field name="name" as="name"/>
       <field name="code" as="code"/>
     </node>
     <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
-      domain="self.parent is not null" onClick="action-analytic-account-view-account-onchange-view"
-      draggable="true">
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.parent is not null">
       <field name="name" as="name"/>
       <field name="code" as="code"/>
     </node>
@@ -98,8 +110,9 @@
 
   <action-view name="action-analytic-account-tree-view"
     model="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Tree">
-    <view type="tree" name="analytic-account-tree-2"/>
+    <view name="analytic-account-tree-2" type="tree"/>
     <context name="_axisId" expr="eval: analyticAxis?.id"/>
+    <context name="_accountId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-analytic-account-view-account-onchange-view"
@@ -184,6 +197,13 @@
       if="analyticAxis"/>
   </action-attrs>
 
+  <action-attrs name="action-attrs-account-analytic-account-status-show-title">
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
+  </action-attrs>
+
   <action-record name="action-record-analytic-account-set-values"
     model="com.axelor.apps.account.db.AnalyticAccount">
     <field name="analyticGroupingValue1" expr="eval: null"
@@ -209,5 +229,11 @@
     <field name="parent" expr="eval: null"
       if="analyticAxis &amp;&amp; !analyticAxis.manageParentAccount"/>
   </action-record>
+
+  <action-method name="account-analytic-account-method-toggle-status-active">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController" method="toggleStatus"/>
+  </action-method>
+
+
 
 </object-views>

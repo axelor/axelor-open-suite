@@ -24,6 +24,23 @@
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 2"/>
   </action-view>
 
+  <menuitem title="LCR" name="account-root-bank-order-lcr"
+    parent="account-root-bank-orders"
+    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"/>
+
+  <menuitem title="LCR bank orders" name="account-root-bank-order-lcr-bank-orders"
+    parent="account-root-bank-order-lcr"
+    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
+    action="account.bank.payment.bank.order.lcr"/>
+
+  <action-view name="account.bank.payment.bank.order.lcr" title="LCR Bank orders"
+    model="com.axelor.apps.bankpayment.db.BankOrder">
+    <view type="grid" name="bank-order-grid"/>
+    <view type="form" name="bank-order-form"/>
+    <domain>self.orderTypeSelect = 8</domain>
+    <context name="_orderTypeSelect" expr="8"/>
+  </action-view>
+
   <menuitem name="account-root-bank-order-international-direct-debit"
     parent="account-root-bank-order-direct-debit" title="International Direct Debits"
     action="account.bank.order.international.direct.debit"/>

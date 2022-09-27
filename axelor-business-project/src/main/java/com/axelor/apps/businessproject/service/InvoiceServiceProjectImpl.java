@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -69,7 +68,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService,
       IntercoService intercoService,
       TaxService taxService,
       StockMoveRepository stockMoveRepository) {
@@ -85,7 +83,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
-        appBaseService,
         intercoService,
         taxService,
         stockMoveRepository);
@@ -98,7 +95,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+              I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
               invoice.getInvoiceId()),
           invoice);
     }

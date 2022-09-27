@@ -8,9 +8,26 @@
   <entity name="AnalyticJournal" lang="java">
 
     <string name="name" title="Name" required="true" unique="true"/>
+    <string name="code" title="Code"/>
     <many-to-one name="type" ref="AnalyticJournalType" title="Type"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
+    <integer name="statusSelect" title="Status" selection="ianalytic.journal.status.select"
+      default="0"/>
+
+    <unique-constraint columns="code,company"/>
+
+    <extra-code>
+      	<![CDATA[
+      		// STATUS SELECT
+      		public static final int STATUS_INACTIVE = 0;
+      		public static final int STATUS_ACTIVE = 1;
+      	]]>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+    </track>
   </entity>
 
 </domain-models>

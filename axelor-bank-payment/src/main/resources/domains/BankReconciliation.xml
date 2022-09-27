@@ -19,7 +19,7 @@
     <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"
       title="Cash account"/>
     <decimal name="startingBalance" title="Starting Balance"/>
-    <decimal name="endingBalance" title="Ending Balance"/>
+    <decimal name="endingBalance" title="Ending Balance" readonly="true"/>
     <decimal name="accountBalance" title="Account balance"/>
     <one-to-many name="bankReconciliationLineList"
       ref="com.axelor.apps.bankpayment.db.BankReconciliationLine" mappedBy="bankReconciliation"

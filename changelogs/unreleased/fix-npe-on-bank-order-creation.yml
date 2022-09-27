@@ -1,0 +1,3 @@
+---
+title: "Accounting Batch: Fix npe on bank order creation when expense payment date is null."
+type: fix

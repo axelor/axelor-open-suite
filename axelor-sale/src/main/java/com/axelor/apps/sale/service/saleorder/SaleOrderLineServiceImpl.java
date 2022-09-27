@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingComputer;
+import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
@@ -48,6 +49,7 @@ import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -139,11 +141,24 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
-          PricingComputer.of(
-                  pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+          getPricingComputer(pricing.get(), saleOrderLine)
               .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
+      pricingComputer.subscribe(getSaleOrderLinePricingObserver(saleOrderLine));
       pricingComputer.apply();
+    } else {
+      saleOrderLine.setPricingScaleLogs(I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_NO_PRICING));
     }
+  }
+
+  protected PricingObserver getSaleOrderLinePricingObserver(SaleOrderLine saleOrderLine) {
+    return new SaleOrderLinePricingObserver(saleOrderLine);
+  }
+
+  protected PricingComputer getPricingComputer(Pricing pricing, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    return PricingComputer.of(
+        pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class);
   }
 
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
@@ -163,8 +178,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent()) {
-      return !PricingComputer.of(
-              pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+      return !getPricingComputer(pricing.get(), saleOrderLine)
           .putInContext("saleOrder", EntityHelper.getEntity(saleOrder))
           .getMatchedPricingLines()
           .isEmpty();
@@ -398,7 +412,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -1072,31 +1086,35 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return null;
-    } else {
-      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    }
 
-        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-        saleOrderLine.setTaxLine(taxLine);
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
-
-        saleOrderLine.setTaxEquiv(taxEquiv);
-
-        saleOrderLine.setTaxEquiv(taxEquiv);
-
-        saleOrderLine.setInTaxTotal(
-            saleOrderLine
-                .getExTaxTotal()
-                .multiply(saleOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        saleOrderLine.setCompanyInTaxTotal(
-            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+      // Skip line update if product is not filled
+      if (saleOrderLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+      TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+      saleOrderLine.setTaxLine(taxLine);
+
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
+              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+
+      saleOrderLine.setTaxEquiv(taxEquiv);
+
+      saleOrderLine.setInTaxTotal(
+          saleOrderLine
+              .getExTaxTotal()
+              .multiply(saleOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
+      saleOrderLine.setCompanyInTaxTotal(
+          saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
     }
     return saleOrderLineList;
   }

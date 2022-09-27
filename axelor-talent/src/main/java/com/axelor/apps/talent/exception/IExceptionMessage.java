@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.talent.exception;
 
+/** @deprecated Replaced by {@link TalentExceptionMessage} */
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String INVALID_DATE_RANGE = /*$$(*/

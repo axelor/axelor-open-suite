@@ -73,7 +73,7 @@
           x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"/>
       </panel>
     </panel>
-    <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12" hidden="true">
+    <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
       <panel name="minCapacityPanel">
         <field name="defMinCapacityFormula" colSpan="12"/>
         <field name="minCapacityPerCycle" showIf="!defMinCapacityFormula" colSpan="6"/>
@@ -124,8 +124,6 @@
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-configurator-prod-process-line-attrs-default">
-    <attribute name="hidden" for="capacitySettingsPanel"
-      expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterPanel"
       expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
     <attribute name="required" for="workCenter"
