@@ -305,10 +305,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (invoiceTerm.getMoveLine() == null) {
       return null;
     }
-    
+
     if (invoiceTerm.getMoveLine().getMove() != null
-            && invoiceTerm.getMoveLine().getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-          moveValidateService.accounting(invoiceTerm.getMoveLine().getMove());
+        && invoiceTerm.getMoveLine().getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+      moveValidateService.accounting(invoiceTerm.getMoveLine().getMove());
     }
 
     Partner partner = null;
