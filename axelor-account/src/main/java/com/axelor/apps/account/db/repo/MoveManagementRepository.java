@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -52,12 +51,6 @@ public class MoveManagementRepository extends MoveRepository {
           Beans.get(PeriodService.class)
               .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
       copy.setStatusSelect(STATUS_NEW);
-      if (Beans.get(AccountConfigService.class)
-              .getAccountConfig(entity.getCompany())
-              .getIsActivateSimulatedMove()
-          && entity.getStatusSelect() == STATUS_SIMULATED) {
-        copy.setStatusSelect(STATUS_SIMULATED);
-      }
       copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
       copy.setReference(null);
       copy.setExportNumber(null);
