@@ -73,7 +73,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
       Currency currency,
@@ -135,7 +135,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
     return mergedPurchaseOrder;
   }
 
-  private List<ManufOrder> getManufOrdersOfPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
+  protected List<ManufOrder> getManufOrdersOfPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
     List<ManufOrder> manufOrderList = new ArrayList<>();
     for (PurchaseOrder purchaseOrder : purchaseOrderList) {
       manufOrderList.addAll(
