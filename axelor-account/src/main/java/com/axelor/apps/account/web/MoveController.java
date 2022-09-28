@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -67,6 +68,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -219,6 +221,12 @@ public class MoveController {
       this.removeOneMove(move, response);
 
       if (!move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+        boolean isActivateSimulatedMoves =
+            Optional.of(AuthUtils.getUser())
+                .map(User::getActiveCompany)
+                .map(Company::getAccountConfig)
+                .map(AccountConfig::getIsActivateSimulatedMove)
+                .orElse(false);
 
         response.setView(
             ActionView.define(I18n.get("Moves"))
@@ -226,6 +234,7 @@ public class MoveController {
                 .add("grid", "move-grid")
                 .add("form", "move-form")
                 .param("search-filters", "move-filters")
+                .context("_isActivateSimulatedMoves", isActivateSimulatedMoves)
                 .map());
         response.setCanClose(true);
       }
