@@ -147,15 +147,14 @@ public class MoveLineServiceImpl implements MoveLineService {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
         this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
-        i++;
       } catch (Exception e) {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
       } finally {
+        i++;
         if (i % 20 == 0) {
           JPA.clear();
         }
-        i++;
       }
     }
   }
