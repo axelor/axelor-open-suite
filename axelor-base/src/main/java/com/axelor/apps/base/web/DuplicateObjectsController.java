@@ -18,7 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -136,7 +136,7 @@ public class DuplicateObjectsController {
       }
     }
     if (!flag) {
-      response.setAlert(I18n.get(IExceptionMessage.GENERAL_11));
+      response.setAlert(I18n.get(BaseExceptionMessage.GENERAL_11));
     }
     duplicateObj.remove(original);
     if (originalObj != null) {
@@ -166,12 +166,12 @@ public class DuplicateObjectsController {
       String filter = findDuplicated(request, fields, modelClass);
 
       if (filter == null) {
-        response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
+        response.setFlash(I18n.get(BaseExceptionMessage.GENERAL_1));
       } else {
         String modelNameKebabCase =
             CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, modelClass.getSimpleName());
         response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
+            ActionView.define(I18n.get(BaseExceptionMessage.GENERAL_2))
                 .model(modelClass.getName())
                 .add("grid", modelNameKebabCase + "-grid")
                 .add("form", modelNameKebabCase + "-form")
@@ -184,9 +184,9 @@ public class DuplicateObjectsController {
         }
       }
     } else if (context.get("_contextModel") == null) {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_10));
+      response.setFlash(I18n.get(BaseExceptionMessage.GENERAL_10));
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
+      response.setFlash(I18n.get(BaseExceptionMessage.GENERAL_3));
     }
   }
 

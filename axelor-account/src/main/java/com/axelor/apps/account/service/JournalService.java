@@ -19,10 +19,12 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,10 +35,12 @@ import javax.persistence.Query;
 
 public class JournalService {
   protected final PartnerService partnerService;
+  protected JournalRepository journalRepository;
 
   @Inject
-  public JournalService(PartnerService partnerService) {
+  public JournalService(PartnerService partnerService, JournalRepository journalRepository) {
     this.partnerService = partnerService;
+    this.journalRepository = journalRepository;
   }
 
   /**
@@ -57,8 +61,8 @@ public class JournalService {
     Query resultQuery = JPA.em().createQuery(query);
 
     resultQuery.setParameter("journal", journal.getId());
-    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
-    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_VALIDATED);
+    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED);
 
     Object[] resultArr = (Object[]) resultQuery.getResultList().get(0);
 
@@ -69,6 +73,28 @@ public class JournalService {
     resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
 
     return resultMap;
+  }
+
+  @Transactional
+  public void toggleStatusSelect(Journal journal) {
+    if (journal != null) {
+      if (journal.getStatusSelect() == JournalRepository.STATUS_INACTIVE) {
+        journal = activate(journal);
+      } else {
+        journal = desactivate(journal);
+      }
+      journalRepository.save(journal);
+    }
+  }
+
+  protected Journal activate(Journal journal) {
+    journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
+    return journal;
+  }
+
+  protected Journal desactivate(Journal journal) {
+    journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
+    return journal;
   }
 
   public String filterJournalPartnerCompatibleType(Move move) {

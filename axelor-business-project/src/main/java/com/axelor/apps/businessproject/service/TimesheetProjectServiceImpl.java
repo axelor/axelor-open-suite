@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -39,7 +40,6 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectService;
-import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -105,7 +105,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[6];
       tabInformations[0] = timesheetLine.getProduct();
-      tabInformations[1] = timesheetLine.getUser();
+      tabInformations[1] = timesheetLine.getEmployee();
       // Start date
       tabInformations[2] = timesheetLine.getDate();
       // End date, useful only for consolidation
@@ -121,7 +121,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         key =
             timesheetLine.getProduct().getId()
                 + "|"
-                + timesheetLine.getUser().getId()
+                + timesheetLine.getEmployee().getId()
                 + "|"
                 + timesheetLine.getProject().getId();
         if (timeSheetInformationsMap.containsKey(key)) {
@@ -153,7 +153,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
       String strDate = null;
       Product product = (Product) timesheetInformations[0];
-      User user = (User) timesheetInformations[1];
+      Employee employee = (Employee) timesheetInformations[1];
       LocalDate startDate = (LocalDate) timesheetInformations[2];
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
@@ -171,7 +171,13 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
       invoiceLineList.addAll(
           this.createInvoiceLine(
-              invoice, product, user, strDate, hoursDuration, priority * 100 + count, priceList));
+              invoice,
+              product,
+              employee,
+              strDate,
+              hoursDuration,
+              priority * 100 + count,
+              priceList));
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
       count++;
     }

@@ -116,6 +116,15 @@
         <panel name="productInfoPanel" colSpan="12"
           readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0">
           <panel name="tagPanel" colSpan="12">
+            <field name="$partnerLanguage" hidden="true"/>
+            <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+              showTitle="false">
+              <viewer depends="$partnerLanguage">
+                <![CDATA[
+                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
+              ]]>
+              </viewer>
+            </field>
             <field name="$viewerTag" showTitle="false" showIf="product != null"
               readonly="true" colSpan="2">
               <viewer depends="product.isUnrenewed,product.isPrototype"><![CDATA[
@@ -338,7 +347,6 @@
       <panel name="invoicingFollowUpPanel" title="Invoicing"
         readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
-        <field name="invoicingDate"/>
         <field name="amountInvoiced"/>
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
@@ -379,6 +387,8 @@
         <field name="standardDelay" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" hidden="true"
           showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+        <field name="pricingScaleLogs" colSpan="12"
+          showIf="pricingScaleLogs &amp;&amp; product"/>
         <field name="supplierPartner" showIf="saleSupplySelect == 2"
           onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
@@ -500,6 +510,8 @@
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <field name="standardDelay" if-module="axelor-supplychain" hidden="true"
           showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+        <field name="pricingScaleLogs" colSpan="12"
+          showIf="pricingScaleLogs &amp;&amp; product"/>
         <field name="supplierPartner" showIf="saleSupplySelect == 2"
           onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
@@ -621,6 +633,7 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -646,6 +659,7 @@
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -667,6 +681,7 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-line-record-complementary-products-to-handle"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
+    <action name="action-sale-order-line-method-translate-product-description-and-name"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -901,6 +916,12 @@
       method="computeProductDomain"/>
   </action-method>
 
+  <action-method
+    name="action-sale-order-line-method-translate-product-description-and-name">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="translateProductDescriptionAndName"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material"
@@ -960,6 +981,12 @@
       if="eval: __user__.group?.isClient" expr="true"/>
   </action-attrs>
 
+  <action-attrs name="action-sale-order-line-attrs-hide-panel">
+    <attribute name="hidden"
+      for="stockMoveLineOfSOPanel,projectTaskListPanel,invoicingFollowUpPanel" expr="true"
+      if="__parent__.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
+  </action-attrs>
+
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
     <attribute name="hidden" for="allPanelTab" if="eval: __user__.group?.isClient"
       expr="true"/>
@@ -987,6 +1014,20 @@
   <action-attrs name="action-sale-order-line-attrs-delivered-qty-hidden">
     <attribute for="deliveredQty" name="hidden"
       expr="__parent__.statusSelect == 1 || __parent__.statusSelect == 2" if="__parent__ != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__?.clientPartner?.language?.code.equals(__user__.getLanguage())"
+      if="__parent__"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__?.clientPartner?.language?.code.toUpperCase()" if="__parent__"/>
+
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: saleOrder?.clientPartner?.language?.code.equals(__user__.getLanguage())"
+      if="saleOrder"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: saleOrder?.clientPartner?.language?.code.toUpperCase()" if="saleOrder"/>
   </action-attrs>
 
   <!-- ACTION VIEW -->

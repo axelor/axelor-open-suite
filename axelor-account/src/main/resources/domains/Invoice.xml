@@ -94,23 +94,38 @@
     <!-- Blocking information -->
     <boolean name="debitBlockingOk" title="Direct debit blocking"/>
     <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason"
-      title="Blocking reason"/>
-    <date name="debitBlockingToDate" title="Blocking until"/>
+      title="Debit blocking reason"/>
+    <date name="debitBlockingToDate" title="Debit blocking until"/>
     <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User"
-      title="Blocking done by"/>
+      title="Debit blocking done by"/>
+    <string name="commentOnDebitBlocking" title="Blocking comment for Direct debit"
+      large="true"/>
 
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
     <many-to-one name="debtRecoveryBlockingReason"
-      ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <date name="debtRecoveryBlockingToDate" title="Blocking until"/>
+      ref="com.axelor.apps.base.db.StopReason" title="Debt recovery blocking reason"/>
+    <date name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
     <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User"
-      title="Blocking done by"/>
+      title="Debt recovery blocking done by"/>
+    <string name="commentOnRecoveryBlocking" title="Blocking comment for Debt recovery"
+      large="true"/>
+
+    <boolean name="billOfExchangeBlockingOk" title="Bill of exchange blocking"/>
+    <many-to-one name="billOfExchangeBlockingReason"
+      ref="com.axelor.apps.base.db.StopReason" title="Bill of exchange blocking reason"/>
+    <date name="billOfExchangeBlockingToDate" title="Bill of exchange blocking until"/>
+    <many-to-one name="billOfExchangeBlockingByUser" ref="com.axelor.auth.db.User"
+      title="Bill of exchange blocking done by"/>
+    <string name="commentOnExchangeBlocking" title="Blocking comment for Bills of exchange"
+      large="true"/>
+
 
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Rejection move line"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
+    <boolean name="lcrAccounted" title="LCR accounted"/>
     <decimal name="amountRejected" title="Rejected amount"/>
     <date name="rejectDate" title="Rejection date"/>
     <many-to-one name="interbankCodeLine"
@@ -217,6 +232,15 @@
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
+    <integer name="paymentDelay" title="Payment delay (days)" formula="true">
+      <![CDATA[
+	      SELECT CASE WHEN
+	      ((DATE(NOW())::DATE - inv.due_date::DATE) > 0 AND inv.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv.due_date::DATE) ELSE 0 END from account_invoice inv WHERE inv.id =
+	      id]]>
+    </integer>
+
+
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>
@@ -285,6 +309,9 @@
       <field name="irrecoverableStatusSelect" on="UPDATE"/>
       <field name="debitBlockingOk" on="UPDATE"/>
       <field name="debtRecoveryBlockingOk" on="UPDATE"/>
+      <field name="commentOnDebitBlocking" on="UPDATE"/>
+      <field name="commentOnRecoveryBlocking" on="UPDATE"/>
+      <field name="commentOnExchangeBlocking" on="UPDATE"/>
       <field name="usherPassageOk" on="UPDATE"/>
       <field name="exTaxTotal" on="UPDATE"/>
       <field name="taxTotal" on="UPDATE"/>

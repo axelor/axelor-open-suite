@@ -1,0 +1,4 @@
+---
+title: "Invoice line : fix error message when opening an invoice line, not from an invoice."
+type: fix
+

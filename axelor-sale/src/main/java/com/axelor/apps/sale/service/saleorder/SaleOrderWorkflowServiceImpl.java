@@ -34,7 +34,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
@@ -94,7 +94,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SALES_ORDER_1),
+          I18n.get(SaleExceptionMessage.SALES_ORDER_1),
           company.getName());
     }
     return seq;
@@ -113,7 +113,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_CANCEL_WRONG_STATUS));
+          I18n.get(SaleExceptionMessage.SALE_ORDER_CANCEL_WRONG_STATUS));
     }
 
     Query q =
@@ -147,7 +147,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_FINALIZE_QUOTATION_WRONG_STATUS));
+          I18n.get(SaleExceptionMessage.SALE_ORDER_FINALIZE_QUOTATION_WRONG_STATUS));
     }
 
     Partner partner = saleOrder.getClientPartner();
@@ -191,7 +191,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
+          I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
@@ -218,7 +218,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_WRONG_STATUS));
+          I18n.get(SaleExceptionMessage.SALE_ORDER_COMPLETE_WRONG_STATUS));
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
@@ -237,7 +237,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             String.format(
-                I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
                 saleOrder.getSaleOrderSeq()),
             saleOrder);
       }

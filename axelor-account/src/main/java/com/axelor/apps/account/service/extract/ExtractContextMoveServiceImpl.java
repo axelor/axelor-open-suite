@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.extract;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -62,7 +62,7 @@ public class ExtractContextMoveServiceImpl implements ExtractContextMoveService 
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.REVERSE_DATE_SELECT_UNKNOW_TYPE),
+            I18n.get(AccountExceptionMessage.REVERSE_DATE_SELECT_UNKNOW_TYPE),
             dateOfReversionSelect);
     }
     assistantMap.put("dateOfReversion", dateOfReversion);

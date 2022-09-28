@@ -478,6 +478,7 @@ public class DataBackupCreateService {
               csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
             }
           }
+          JPA.clear();
         }
       } else {
         for (Property property : pro) {

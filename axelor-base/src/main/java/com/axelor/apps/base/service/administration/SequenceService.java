@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.SequenceTypeSelect;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
@@ -70,6 +70,8 @@ public class SequenceService {
 
   protected final SequenceVersionRepository sequenceVersionRepository;
 
+  protected final SequenceVersionGeneratorService sequenceVersionGeneratorService;
+
   protected final AppBaseService appBaseService;
 
   protected final SequenceRepository sequenceRepo;
@@ -78,11 +80,13 @@ public class SequenceService {
   public SequenceService(
       SequenceVersionRepository sequenceVersionRepository,
       AppBaseService appBaseService,
-      SequenceRepository sequenceRepo) {
+      SequenceRepository sequenceRepo,
+      SequenceVersionGeneratorService sequenceVersionGeneratorService) {
 
     this.sequenceVersionRepository = sequenceVersionRepository;
     this.appBaseService = appBaseService;
     this.sequenceRepo = sequenceRepo;
+    this.sequenceVersionGeneratorService = sequenceVersionGeneratorService;
   }
 
   public static boolean isYearValid(Sequence sequence) {
@@ -246,52 +250,9 @@ public class SequenceService {
 
     log.debug("Reference date : : : : {}", refDate);
 
-    if (sequence.getMonthlyResetOk()) {
-      return getVersionByMonth(sequence, refDate);
-    }
-    if (sequence.getYearlyResetOk()) {
-      return getVersionByYear(sequence, refDate);
-    }
-    return getVersionByDate(sequence, refDate);
-  }
-
-  protected SequenceVersion getVersionByDate(Sequence sequence, LocalDate refDate) {
-
     SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
     if (sequenceVersion == null) {
-      sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
-    }
-
-    return sequenceVersion;
-  }
-
-  protected SequenceVersion getVersionByMonth(Sequence sequence, LocalDate refDate) {
-
-    SequenceVersion sequenceVersion =
-        sequenceVersionRepository.findByMonth(sequence, refDate.getMonthValue(), refDate.getYear());
-    if (sequenceVersion == null) {
-      sequenceVersion =
-          new SequenceVersion(
-              sequence,
-              refDate.withDayOfMonth(1),
-              refDate.withDayOfMonth(refDate.lengthOfMonth()),
-              1L);
-    }
-
-    return sequenceVersion;
-  }
-
-  protected SequenceVersion getVersionByYear(Sequence sequence, LocalDate refDate) {
-
-    SequenceVersion sequenceVersion =
-        sequenceVersionRepository.findByYear(sequence, refDate.getYear());
-    if (sequenceVersion == null) {
-      sequenceVersion =
-          new SequenceVersion(
-              sequence,
-              refDate.withDayOfMonth(1),
-              refDate.withDayOfMonth(refDate.lengthOfMonth()),
-              1L);
+      sequenceVersion = sequenceVersionGeneratorService.createNewSequenceVersion(sequence, refDate);
     }
 
     return sequenceVersion;
@@ -322,7 +283,7 @@ public class SequenceService {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+          I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
     return String.format("%s%d", DRAFT_PREFIX, model.getId());
   }
@@ -339,7 +300,7 @@ public class SequenceService {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+          I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
     return String.format(
         "%s%s",
@@ -391,11 +352,6 @@ public class SequenceService {
     List<SequenceVersion> sequenceVersionList = sequence.getSequenceVersionList();
     SequenceVersion lastSequenceVersion;
     lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
-
-    if (lastSequenceVersion == null) {
-      // Checking yearly to prevent an anomaly only fixed in 6.3
-      lastSequenceVersion = sequenceVersionRepository.findByYear(sequence, todayDate.getYear());
-    }
 
     SequenceVersion finalLastSequenceVersion = lastSequenceVersion;
     sequenceVersionList.stream()

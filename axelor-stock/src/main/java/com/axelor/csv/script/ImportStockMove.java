@@ -18,17 +18,22 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class ImportStockMove {
 
   protected StockMoveToolService stockMoveToolService;
+  protected StockMoveService stockMoveService;
 
   @Inject
-  public ImportStockMove(StockMoveToolService stockMoveToolService) {
+  public ImportStockMove(
+      StockMoveToolService stockMoveToolService, StockMoveService stockMoveService) {
     this.stockMoveToolService = stockMoveToolService;
+    this.stockMoveService = stockMoveService;
   }
 
   public Object importAddressStr(Object bean, Map<String, Object> values) {
@@ -36,6 +41,14 @@ public class ImportStockMove {
 
     StockMove stockMove = (StockMove) bean;
     stockMoveToolService.computeAddressStr(stockMove);
+    return stockMove;
+  }
+
+  public Object importStockMove(Object bean, Map<String, Object> values) throws AxelorException {
+    assert bean instanceof StockMove;
+
+    StockMove stockMove = (StockMove) bean;
+    stockMoveService.plan(stockMove);
     return stockMove;
   }
 }

@@ -47,6 +47,53 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
+    <field name="paymentDelay"/>
+    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+      onClick="action-invoice-method-show-invoice"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+      onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+  </grid>
+
+  <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <menubar>
+      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="printInvoicesItem" title="Print invoices"
+          action="action-invoice-method-show-invoice"/>
+      </menu>
+      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+        <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
+          action="action-invoice-method-mass-validation"
+          prompt="Are you sure you want to validate all selected invoices ?"/>
+        <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
+          action="action-invoice-method-mass-ventilation"
+          prompt="Are you sure you want to ventilate all selected invoices ?"
+          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+        <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
+          action="action-invoice-mergecustinvoices"/>
+        <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
+          action="action-customer-invoice-line-menu"/>
+      </menu>
+    </menubar>
+    <hilite if="operationTypeSelect == 4" color="orange"/>
+    <hilite color="danger" if="billOfExchangeBlockingOk"/>
+    <field name="invoiceId" width="120"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" width="200"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="operationSubTypeSelect" width="160"/>
+    <field name="operationTypeSelect"/>
+    <field name="invoiceDate" width="120"/>
+    <field name="dueDate" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120"/>
+    <field name="inTaxTotal" aggregate="sum" width="120"/>
+    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="currency" width="60"/>
+    <field name="statusSelect" width="100"/>
+    <field name="billOfExchangeBlockingOk"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -95,6 +142,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
+    <field name="paymentDelay"/>
     <field name="paymentDelayReason"/>
     <field name="nextActionDate"/>
     <field name="paymentDelayReasonComments" widget="html"/>
@@ -149,6 +197,7 @@
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -209,6 +258,7 @@
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -265,6 +315,7 @@
       name="pfpValidateStatusSelect" title="PFP"/>
     <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
+    <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -332,7 +383,8 @@
   </grid>
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
+    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
+    onSave="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner">
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
@@ -488,20 +540,21 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
-      <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false"
-        readonly="true">
-        <viewer>
+        onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+      <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
+        type="boolean" readonly="true">
+        <viewer depends="$supplierInvoiceNbStatic">
                 <![CDATA[
                	  <h4>
-               	    <span class="label label-warning" style="color: #FFFFFF;" x-translate>Watch out, an invoice was already created for this supplier invoice number.</span>
+               	    <span class="label label-default" style="background-color: #B6473F; color: #FFFFFF;"> <span x-translate>Watch out, an invoice with the same number</span> ({{record.$supplierInvoiceNbStatic}}) <span x-translate>already exists for this supplier</span> {{record.partner.fullName}} <span x-translate>and the year</span> {{record.originDate|date:'YYYY'}} </span>
                   </h4>
               	]]>
         </viewer>
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-invoice-record-due-date"/>
+        onChange="action-invoice-record-due-date,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+      <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
@@ -531,6 +584,8 @@
             onSelect="action-invoice-attrs-domain-delivery-address"
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
+          <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
+            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer>{{record.addressStr}}</viewer>
@@ -559,8 +614,9 @@
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
           <field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3"
-            onSelect="action-invoice-partner-account-domain" domain="self.company = :company"
-            form-view="account-form" grid-view="account-grid"/>
+            onSelect="action-invoice-partner-account-domain"
+            domain="self.statusSelect = 1 AND self.company = :company" form-view="account-form"
+            grid-view="account-grid"/>
           <panel name="movePanel" showIf="move != null">
             <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
             <field name="move.accountingOk" readonly="true"/>
@@ -570,6 +626,7 @@
           <field name="usherPassageOk"
             showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"
             onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
+          <field name="lcrAccounted" readonly="true"/>
           <field name="oldMove" readonly="true" showIf="oldMove" form-view="move-form"
             grid-view="move-grid"/>
           <field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
@@ -683,6 +740,7 @@ InvoiceSet.length > 0))"
         showTitle="false">
         <field name="debitBlockingOk"/>
         <field name="debtRecoveryBlockingOk"/>
+        <field name="billOfExchangeBlockingOk"/>
         <panel name="debitBlockingGroupPanel" title="Direct debit blocking"
           showIf="debitBlockingOk" colSpan="12">
           <field name="debitBlockingByUser" canNew="false" canEdit="false" canView="false"
@@ -690,6 +748,7 @@ InvoiceSet.length > 0))"
           <field name="debitBlockingToDate"/>
           <field name="debitBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnDebitBlocking" widget="html" colSpan="12"/>
         </panel>
         <panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlockingPanel"
           title="Debt recovery blocking" colSpan="12">
@@ -698,6 +757,16 @@ InvoiceSet.length > 0))"
           <field name="debtRecoveryBlockingToDate"/>
           <field name="debtRecoveryBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnRecoveryBlocking" widget="html" colSpan="12"/>
+        </panel>
+        <panel showIf="billOfExchangeBlockingOk" name="debtRecoveryBlockingPanel"
+          title="Bill of exchange blocking" colSpan="12">
+          <field name="billOfExchangeBlockingByUser" canNew="false" canEdit="false"
+            canView="false" form-view="user-form" grid-view="user-grid"/>
+          <field name="billOfExchangeBlockingToDate"/>
+          <field name="billOfExchangeBlockingReason" form-view="stop-reason-form"
+            grid-view="stop-reason-grid"/>
+          <field name="commentOnExchangeBlocking" widget="html" colSpan="12"/>
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
@@ -760,7 +829,7 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
+        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
@@ -841,6 +910,7 @@ InvoiceSet.length > 0))"
 								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
 								<font x-translate ng-if="record.typeSelect == 5">On</font>
 								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
+								<font x-translate ng-if="record.typeSelect == 7">Exp. accounted on</font>
 								<font>
 									 {{$fmt('paymentDate')}}
 								</font>
@@ -860,6 +930,7 @@ InvoiceSet.length > 0))"
 							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
 							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">On</font>
 							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
+							<font x-translate ng-if="record.typeSelect == 7 && record.applyFinancialDiscount == true">Exp. accounted on</font>
 							<font x-translate ng-if="record.applyFinancialDiscount == true">
 								{{$fmt('paymentDate')}}
 							</font>
@@ -931,6 +1002,7 @@ InvoiceSet.length > 0))"
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')" colSpan="12"/>
+        <field name="paymentDelay" readonly="true" colSpan="12"/>
       </panel>
     </panel-stack>
 
@@ -1095,7 +1167,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
-        onClick="save,action-invoice-method-ventilate,save"
+        onClick="save,action-invoice-method-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-invoice-method-cancel,save"
@@ -1166,6 +1238,9 @@ InvoiceSet.length > 0))"
 								<font x-translate ng-if="record.typeSelect == 6">
 									Imputed on
 								</font>
+								<font x-translate ng-if="record.typeSelect == 7">
+									Exp. accounted on
+								/font>
 								<font>
 									 {{$fmt('paymentDate')}}
 								</font>
@@ -1409,7 +1484,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
-    <action name="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
@@ -1450,6 +1525,7 @@ InvoiceSet.length > 0))"
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -1805,7 +1881,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-partner-account-domain">
     <attribute name="domain" for="partnerAccount"
-      expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;"
       if="company"/>
   </action-attrs>
 
@@ -1880,12 +1956,6 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-regenerate-and-show-invoice">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="regenerateAndShowInvoice"/>
-  </action-method>
-
-  <action-method
-    name="action-account-invoice-method-show-duplicate-invoice-nbr-warning">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="showDuplicateInvoiceNbrWarning"/>
   </action-method>
 
   <action-validate name="action-invoice-validate-regenerate-invoice">
@@ -2363,7 +2433,7 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountTotalAmount"
       expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
@@ -2382,6 +2452,18 @@ InvoiceSet.length > 0))"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
   </action-record>
+
+  <action-method
+    name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkDuplicateInvoice"/>
+  </action-method>
+
+  <action-validate
+    name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner">
+    <alert
+      message="Watch out, an invoice already exist with same number (${supplierInvoiceNb}) and year for the supplier ${partner.fullName} . Do you want to proceed ?"
+      if="duplicateInvoiceNbrSameYear"/>
+  </action-validate>
 
   <action-method name="action-customer-invoice-line-menu">
     <call class="com.axelor.apps.account.web.InvoiceController"

@@ -22,7 +22,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
@@ -70,7 +70,7 @@ public class GenerateMessageController {
       if (templateNumber == 0) {
 
         response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
+            ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_3))
                 .model(Message.class.getName())
                 .add("form", "message-form")
                 .param("forceEdit", "true")
@@ -82,7 +82,7 @@ public class GenerateMessageController {
       } else if (templateNumber > 1) {
 
         response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.MESSAGE_2))
+            ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_2))
                 .model(Wizard.class.getName())
                 .add("form", "generate-message-wizard-form")
                 .param("show-confirm", "false")
@@ -157,7 +157,7 @@ public class GenerateMessageController {
                   null);
     }
 
-    return ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
+    return ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_3))
         .model(Message.class.getName())
         .add("form", "message-form")
         .param("forceEdit", "true")

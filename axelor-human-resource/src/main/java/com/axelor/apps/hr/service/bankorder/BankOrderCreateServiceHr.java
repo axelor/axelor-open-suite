@@ -61,7 +61,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
   public BankOrder createBankOrder(Expense expense, BankDetails bankDetails)
       throws AxelorException {
     Company company = expense.getCompany();
-    Partner partner = expense.getUser().getPartner();
+    Partner partner = expense.getEmployee().getContactPartner();
     PaymentMode paymentMode = expense.getPaymentMode();
     BigDecimal amount =
         expense
@@ -70,7 +70,12 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
     Currency currency = company.getCurrency();
-    LocalDate paymentDate = Beans.get(AppBaseService.class).getTodayDate(company);
+    LocalDate paymentDate =
+        expense.getPaymentDate() != null
+            ? expense.getPaymentDate()
+            : Beans.get(AppBaseService.class)
+                .getTodayDate(
+                    company); // Take into consideration today's date if paymentDate is null
 
     BankOrder bankOrder =
         super.createBankOrder(

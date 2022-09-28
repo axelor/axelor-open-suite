@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.WorkshopSequenceConfigLine;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
@@ -39,7 +39,7 @@ public class ProductionConfigService {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_1),
           company.getName());
     }
 
@@ -83,7 +83,7 @@ public class ProductionConfigService {
       throw new AxelorException(
           productionConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ),
+          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ),
           productionConfig.getCompany().getName());
     }
 

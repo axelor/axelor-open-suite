@@ -72,4 +72,8 @@ public interface InvoicePaymentCreateService {
       throws AxelorException;
 
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException;
+
+  InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException;
 }

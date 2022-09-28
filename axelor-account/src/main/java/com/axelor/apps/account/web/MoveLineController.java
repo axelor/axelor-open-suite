@@ -25,9 +25,10 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
@@ -151,8 +152,8 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
-                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED)
+          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
               && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
             moveLineList.add(moveLine);
           }
@@ -181,8 +182,8 @@ public class MoveLineController {
             MoveLine moveLine = moveLineRepository.find(id.longValue());
             if (moveLine != null && moveLine.getMove() != null) {
               Integer statusSelect = moveLine.getMove().getStatusSelect();
-              if (statusSelect.equals(MoveRepository.STATUS_VALIDATED)
-                  || statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
+              if (statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
+                  || statusSelect.equals(MoveRepository.STATUS_DAYBOOK)
                   || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());
@@ -214,7 +215,7 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
+        response.setAlert(I18n.get(AccountExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -342,13 +343,10 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
-        }
-
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
+
         response.setValue("taxLine", taxLine);
       }
 
@@ -423,7 +421,12 @@ public class MoveLineController {
                     .map(id -> id.toString())
                     .collect(Collectors.joining(","));
             response.setAttr(
-                "axis" + i + "AnalyticAccount", "domain", "self.id IN (" + idList + ")");
+                "axis" + i + "AnalyticAccount",
+                "domain",
+                "self.id IN ("
+                    + idList
+                    + ") AND self.statusSelect = "
+                    + AnalyticAccountRepository.STATUS_ACTIVE);
           }
         }
       }
@@ -518,6 +521,18 @@ public class MoveLineController {
             }
           }
         }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getValidatePeriod(ActionRequest request, ActionResponse response) {
+    try {
+      Context parentContext = request.getContext().getParent();
+      if (ObjectUtils.notEmpty(parentContext)
+          && Move.class.equals(parentContext.getContextClass())) {
+        response.setValue("$validatePeriod", parentContext.get("validatePeriod"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

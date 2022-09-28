@@ -32,7 +32,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.CertificateManager;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -231,7 +231,7 @@ public class EbicsController {
                 bankOrderFileFormat,
                 testSignatureFile);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+        response.setFlash(I18n.get(BankPaymentExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
 
     } catch (Exception e) {
@@ -261,7 +261,7 @@ public class EbicsController {
                 bankStatementFileFormat.getStatementFileFormatSelect());
         downloadFile(response, ebicsUser);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+        response.setFlash(I18n.get(BankPaymentExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
 
     } catch (Exception e) {
@@ -451,7 +451,7 @@ public class EbicsController {
       throw new AxelorException(
           ebicsUser,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES));
+          I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_CERTIFICATES));
     }
 
     String title = I18n.get("EbicsCertificate");
