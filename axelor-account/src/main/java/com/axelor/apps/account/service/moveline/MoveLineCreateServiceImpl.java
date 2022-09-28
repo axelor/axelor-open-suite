@@ -777,24 +777,22 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newOrUpdatedMoveLine
             .getDebit()
             .add(
-                debit.multiply(
-                    taxLine
-                        .getValue()
-                        .divide(
-                            BigDecimal.valueOf(100),
-                            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                            RoundingMode.HALF_UP))));
+                debit
+                    .multiply(taxLine.getValue())
+                    .divide(
+                        BigDecimal.valueOf(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP)));
     newOrUpdatedMoveLine.setCredit(
         newOrUpdatedMoveLine
             .getCredit()
             .add(
-                credit.multiply(
-                    taxLine
-                        .getValue()
-                        .divide(
-                            BigDecimal.valueOf(100),
-                            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                            RoundingMode.HALF_UP))));
+                credit
+                    .multiply(taxLine.getValue())
+                    .divide(
+                        BigDecimal.valueOf(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP)));
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
