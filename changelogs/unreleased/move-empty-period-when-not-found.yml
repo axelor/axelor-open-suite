@@ -1,0 +1,3 @@
+---
+title: "Move: fixed an issue where the period field was not emptied on company change, causing inconsistencies."
+type: fix
