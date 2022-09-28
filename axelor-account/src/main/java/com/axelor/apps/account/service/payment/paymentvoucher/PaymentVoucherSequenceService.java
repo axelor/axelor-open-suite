@@ -31,6 +31,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherSequenceService {
 
@@ -53,6 +54,7 @@ public class PaymentVoucherSequenceService {
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public String getReference(PaymentVoucher paymentVoucher) throws AxelorException {
 
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();

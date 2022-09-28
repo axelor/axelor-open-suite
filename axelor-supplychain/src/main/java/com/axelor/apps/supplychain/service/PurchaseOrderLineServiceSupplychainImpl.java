@@ -122,7 +122,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
         analyticMoveLineService.getAnalyticDistributionTemplate(
             purchaseOrder.getSupplierPartner(),
             purchaseOrderLine.getProduct(),
-            purchaseOrder.getCompany());
+            purchaseOrder.getCompany(),
+            true);
 
     purchaseOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

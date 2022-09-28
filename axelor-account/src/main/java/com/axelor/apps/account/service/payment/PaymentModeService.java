@@ -33,6 +33,10 @@ public interface PaymentModeService {
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
+  public Account getPaymentModeAccount(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException;
+
   /**
    * Find payment mode account from the move payment mode, journal and company. Use company active
    * bank details to find the correct account.
@@ -52,6 +56,10 @@ public interface PaymentModeService {
   public Journal getPaymentModeJournal(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
+  public Journal getPaymentModeJournal(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException;
+
   /**
    * @param paymentMode
    * @param company
@@ -64,4 +72,6 @@ public interface PaymentModeService {
    * out status. Return null if no payment mode were found or if the given payment mode is null.
    */
   public PaymentMode reverseInOut(PaymentMode paymentMode);
+
+  boolean isPendingPayment(PaymentMode paymentMode);
 }

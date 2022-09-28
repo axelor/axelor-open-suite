@@ -21,6 +21,7 @@
     <boolean name="manageCustomerCredit" title="Manage customerCredit"/>
     <boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
     <boolean name="manageFactors"/>
+    <boolean name="manageCutOffPeriod" title="Manage Cut off period"/>
 
     <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration"
       selection="account.partner.bal.config.select" default="1"/>

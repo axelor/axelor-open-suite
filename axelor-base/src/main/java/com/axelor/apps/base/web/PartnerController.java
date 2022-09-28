@@ -386,14 +386,27 @@ public class PartnerController {
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
-      String taxNbr = Beans.get(PartnerService.class).getTaxNbrFromRegistrationCode(partner);
-      String nic = Beans.get(PartnerService.class).getNicFromRegistrationCode(partner);
-      String siren = Beans.get(PartnerService.class).getSirenFromRegistrationCode(partner);
-      response.setValue("taxNbr", taxNbr);
-      response.setValue("nic", nic);
-      response.setValue("siren", siren);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      if (partnerService.isRegistrationCodeValid(partner)) {
+        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
+        String nic = partnerService.getNicFromRegistrationCode(partner);
+        String siren = partnerService.getSirenFromRegistrationCode(partner);
+
+        response.setValue("taxNbr", taxNbr);
+        response.setValue("nic", nic);
+        response.setValue("siren", siren);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCode(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    PartnerService partnerService = Beans.get(PartnerService.class);
+    if (!partnerService.isRegistrationCodeValid(partner)) {
+      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 }

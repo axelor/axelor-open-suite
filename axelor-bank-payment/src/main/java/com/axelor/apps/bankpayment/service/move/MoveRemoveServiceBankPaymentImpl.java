@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.tool.service.ArchivingToolService;
@@ -33,7 +33,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
-public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
+public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
   @Inject
   public MoveRemoveServiceBankPaymentImpl(

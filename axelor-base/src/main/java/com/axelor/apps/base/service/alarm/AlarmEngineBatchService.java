@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.alarm;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.EntityHelper;
@@ -134,5 +135,9 @@ public class AlarmEngineBatchService extends AbstractBatch {
   private <T extends Model> boolean isAssociable(Field field, T t) {
 
     return field.getType().equals(EntityHelper.getEntityClass(t));
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ALARM_ENGINE_BATCH);
   }
 }

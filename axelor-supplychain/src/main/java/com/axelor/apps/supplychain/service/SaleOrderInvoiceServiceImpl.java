@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
@@ -94,6 +95,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected SaleOrderWorkflowService saleOrderWorkflowService;
 
+  protected InvoiceTermService invoiceTermService;
   protected CommonInvoiceService commonInvoiceService;
 
   @Inject
@@ -105,6 +107,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceServiceSupplychainImpl invoiceService,
       SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
+      InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService) {
 
@@ -115,6 +118,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
+    this.invoiceTermService = invoiceTermService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
   }
@@ -193,8 +197,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
+    invoiceTermService.computeInvoiceTerms(invoice);
     invoice.setIncoterm(saleOrder.getIncoterm());
-
     invoice = invoiceRepo.save(invoice);
 
     return invoice;
@@ -321,7 +325,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         TaxLine taxLine = saleOrderLineTax.getTaxLine();
         BigDecimal lineAmountToInvoiceInclTax =
             (taxLine != null)
-                ? lineAmountToInvoice.add(lineAmountToInvoice.multiply(taxLine.getValue()))
+                ? lineAmountToInvoice.add(
+                    lineAmountToInvoice.multiply(taxLine.getValue().divide(new BigDecimal(100))))
                 : lineAmountToInvoice;
 
         InvoiceLineGenerator invoiceLineGenerator =

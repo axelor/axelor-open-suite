@@ -165,6 +165,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DEPRECIATED);
     }
 
+    fixedAsset.setCorrectedAccountingValue(BigDecimal.ZERO);
     fixedAssetLineRepo.save(fixedAssetLine);
 
     if (fixedAsset != null) {
@@ -312,15 +313,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         BigDecimal amount;
         if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
           if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
-              || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
+              || fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-                I18n.get("Charge account")
+                I18n.get("Appropriation Provision Tangible Fixed Asset Account")
                     + " / "
                     + I18n.get("Provision Tangible Fixed Asset Account"));
           }
-          debitLineAccount = fixedAssetCategory.getChargeAccount();
+          debitLineAccount = fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount();
           creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
         } else {
           if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
@@ -330,7 +331,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
                 I18n.get("Provision Tangible Fixed Asset Account")
                     + " / "
-                    + I18n.get("WB Provision Tangible Fixed Asset Account"));
+                    + I18n.get("Written-back provision tangible fixed asset account"));
           }
           debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
           creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
@@ -636,7 +637,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
-      BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue());
+      BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue().divide(new BigDecimal(100)));
       BigDecimal creditAmountOne =
           disposalAmount.divide(
               denominator, FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
@@ -654,7 +655,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
       BigDecimal creditAmountTwo =
           creditAmountOne
-              .multiply(taxLine.getValue())
+              .multiply(taxLine.getValue().divide(new BigDecimal(100)))
               .setScale(FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
       creditAmountOne =
           creditAmountOne.setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);

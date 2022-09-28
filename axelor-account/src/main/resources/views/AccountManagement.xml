@@ -30,20 +30,25 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid" if="__config__.app.isApp('account')"
+    <field name="purchaseTaxVatSystem1Account"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="purchFixedAssetsTaxVatSystem1Account"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="saleTaxVatSystem1Account"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="allowedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
+      form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
-    <field name="purchFixedAssetsAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
-    <field name="saleAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
-    <field name="financialDiscountAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid"
+    <field name="obtainedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
+      form-view="account-form" grid-view="account-grid"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
@@ -58,6 +63,92 @@
     <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
     <field name="paymentMode"/>
   </grid>
+
+  <form name="account-management-form" title="Account management"
+    id="account-account-management-form" model="com.axelor.apps.account.db.AccountManagement"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-account-management-group-onNew,action-account-management-attrs-global-accounting-cash-account-title"/>
+      <attribute name="onLoad"
+        value="action-account-management-group-on-load,action-account-management-attrs-global-accounting-cash-account-title"/>
+    </extend>
+    <extend
+      target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
+      <attribute name="showIf"
+        value="paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
+      <attribute name="requiredIf"
+        value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
+      <insert position="after">
+        <field name="chequeDepositJournal"
+          domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
+          form-view="journal-form" grid-view="journal-grid" canEdit="false" hidden="true"
+          showIf="paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+      </insert>
+    </extend>
+    <extend
+      target="//panel[@name='paymentConfigPanel']/field[@name='paymentMode.accountingMethodSelect']">
+      <insert position="after">
+        <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
+        <field name="paymentMode.accountingTriggerSelect" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='purchaseConfig2Panel']/field[@name='purchaseAccount']">
+      <insert position="after">
+        <spacer colSpan="6"/>
+        <field name="purchaseTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+        <field name="purchaseTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+      </insert>
+      <attribute name="hideIf" value="tax != null"/>
+    </extend>
+    <extend
+      target="//panel[@name='fixedAssetsConfig2Panel']/field[@name='purchFixedAssetsAccount']">
+      <insert position="after">
+        <spacer colSpan="6"/>
+        <field name="purchFixedAssetsTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+        <field name="purchFixedAssetsTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+      </insert>
+      <attribute name="hideIf" value="tax != null"/>
+    </extend>
+    <extend target="//panel[@name='saleConfig2Panel']/field[@name='saleAccount']">
+      <insert position="after">
+        <spacer colSpan="6"/>
+        <field name="saleTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+        <field name="saleTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+      </insert>
+      <attribute name="hideIf" value="tax != null"/>
+    </extend>
+  </form>
+
+  <action-attrs
+    name="action-account-management-attrs-global-accounting-cash-account-title">
+    <attribute name="title" for="globalAccountingCashAccount"
+      expr="eval:com.axelor.i18n.I18n.get('Value for collection account')"
+      if="__parent__?._model == 'com.axelor.apps.account.db.PaymentMode' &amp;&amp; __parent__.typeSelect == 7 &amp;&amp; __parent__.inOutSelect == 1"/>
+    <attribute name="title" for="globalAccountingCashAccount"
+      expr="eval:com.axelor.i18n.I18n.get('Value for collection account')"
+      if="__parent__?._model != 'com.axelor.apps.account.db.PaymentMode' &amp;&amp; paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1"/>
+  </action-attrs>
 
   <action-group name="action-group-account-account-management-onchange-common">
     <action name="action-account-management-clean-company"/>

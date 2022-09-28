@@ -144,6 +144,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
               invoice.getFiscalPosition(),
+              invoice.getBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
               origin,
@@ -154,6 +155,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setInvoice(invoice);
 
         move.setTradingName(invoice.getTradingName());
+        move.setPaymentCondition(invoice.getPaymentCondition());
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
@@ -345,7 +347,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               reconcileService.createReconcile(
                   invoiceCustomerMoveLine, creditMoveLine, amount, false);
           if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
+            reconcileService.confirmReconcile(reconcile, true, true);
           }
         }
       }
@@ -427,7 +429,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       Reconcile reconcile =
           reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
       if (reconcile != null) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
     return oDmove;

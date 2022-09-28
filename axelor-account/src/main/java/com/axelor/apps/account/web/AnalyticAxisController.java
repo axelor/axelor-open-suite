@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
+import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -106,6 +110,31 @@ public class AnalyticAxisController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkAnalyticAccountCompany(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
+      if (analyticAxis.getId() != null
+          && analyticAxis.getCompany() != null
+          && !analyticAxis
+              .getCompany()
+              .equals(
+                  Beans.get(AnalyticAxisRepository.class)
+                      .find(analyticAxis.getId())
+                      .getCompany())) {
+        List<AnalyticAccount> childrenList =
+            Beans.get(AnalyticAccountRepository.class).findByAnalyticAxis(analyticAxis).fetch();
+
+        if (Beans.get(AnalyticAccountService.class)
+            .checkChildrenAccount(analyticAxis.getCompany(), childrenList)) {
+          response.setError(
+              I18n.get(AccountExceptionMessage.ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY));
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

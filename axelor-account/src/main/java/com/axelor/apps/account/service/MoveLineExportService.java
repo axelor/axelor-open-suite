@@ -36,18 +36,6 @@ public interface MoveLineExportService {
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
       throws AxelorException;
 
-  public void exportMoveLineTypeSelect1006(AccountingReport mlr, boolean replay)
-      throws AxelorException, IOException;
-
-  public void exportMoveLineTypeSelect1007(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException;
-
-  public void exportMoveLineTypeSelect1008(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException;
-
-  public void exportMoveLineTypeSelect1009(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException;
-
   /**
    * Export general balance to CSV file.
    *

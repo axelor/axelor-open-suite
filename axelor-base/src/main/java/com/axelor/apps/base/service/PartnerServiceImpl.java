@@ -60,6 +60,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -509,14 +510,10 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
-
-    for (BankDetails bankDetails : partner.getBankDetailsList()) {
-      if (bankDetails.getIsDefault()) {
-        return bankDetails;
-      }
-    }
-
-    return null;
+    return partner.getBankDetailsList().stream()
+        .filter(BankDetails::getIsDefault)
+        .findFirst()
+        .orElse(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -770,6 +767,58 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return siren;
+  }
+
+  @Override
+  public boolean isRegistrationCodeValid(Partner partner) {
+    List<PartnerAddress> addresses = partner.getPartnerAddressList();
+    String registrationCode = partner.getRegistrationCode();
+    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
+        || Strings.isNullOrEmpty(registrationCode)
+        || CollectionUtils.isEmpty(addresses)
+        || addresses.stream()
+                .filter(
+                    address ->
+                        address.getAddress() != null
+                            && address.getAddress().getAddressL7Country() != null
+                            && "FR"
+                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
+                .collect(Collectors.toList())
+                .size()
+            == 0) {
+      return true;
+    }
+
+    return computeRegistrationCodeValidity(registrationCode);
+  }
+
+  protected boolean computeRegistrationCodeValidity(String registrationCode) {
+    int sum = 0;
+    boolean isOddNumber = true;
+    registrationCode = registrationCode.replace(" ", "");
+    if (registrationCode.length() != 14) {
+      return false;
+    }
+    int i = registrationCode.length() - 1;
+    while (i > -1) {
+      int number = Character.getNumericValue(registrationCode.charAt(i));
+      if (number < 0) {
+        i--;
+        continue;
+      }
+      if (!isOddNumber) {
+        number *= 2;
+      }
+      if (number < 10) {
+        sum += number;
+      } else {
+        number -= 10;
+        sum += number + 1;
+      }
+      i--;
+      isOddNumber = !isOddNumber;
+    }
+    return sum % 10 == 0;
   }
 
   @Override

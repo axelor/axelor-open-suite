@@ -62,4 +62,8 @@ public abstract class BatchStrategy extends AbstractBatch {
       checkPoint();
     }
   }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SUPPLYCHAIN_BATCH);
+  }
 }

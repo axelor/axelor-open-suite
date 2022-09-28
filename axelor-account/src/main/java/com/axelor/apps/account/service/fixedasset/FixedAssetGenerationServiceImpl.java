@@ -386,8 +386,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   }
 
   @Override
-  public FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty)
-      throws AxelorException {
+  public FixedAsset copyFixedAsset(FixedAsset fixedAsset) throws AxelorException {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because copy does not copy list
     fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);

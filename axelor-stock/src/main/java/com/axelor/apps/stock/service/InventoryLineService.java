@@ -23,22 +23,27 @@ import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class InventoryLineService {
 
   protected StockConfigService stockConfigService;
+  protected InventoryLineRepository inventoryLineRepository;
 
   @Inject
-  public InventoryLineService(StockConfigService stockConfigService) {
+  public InventoryLineService(
+      StockConfigService stockConfigService, InventoryLineRepository inventoryLineRepository) {
     this.stockConfigService = stockConfigService;
+    this.inventoryLineRepository = inventoryLineRepository;
   }
 
   public InventoryLine createInventoryLine(
@@ -158,5 +163,37 @@ public class InventoryLineService {
       }
     }
     return currentQty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInventoryLine(
+      InventoryLine inventoryLine, BigDecimal realQty, String description) throws AxelorException {
+    inventoryLine.setRealQty(realQty);
+    if (description != null) {
+      inventoryLine.setDescription(description);
+    }
+    this.compute(inventoryLine, inventoryLine.getInventory());
+    inventoryLineRepository.save(inventoryLine);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public InventoryLine addLine(
+      Inventory inventory,
+      Product product,
+      TrackingNumber trackingNumber,
+      String rack,
+      BigDecimal realQty)
+      throws AxelorException {
+    InventoryLine inventoryLine =
+        createInventoryLine(
+            inventory,
+            product,
+            getCurrentQty(inventory.getStockLocation(), product),
+            rack,
+            trackingNumber,
+            inventory.getStockLocation(),
+            null);
+    updateInventoryLine(inventoryLine, realQty, null);
+    return inventoryLine;
   }
 }

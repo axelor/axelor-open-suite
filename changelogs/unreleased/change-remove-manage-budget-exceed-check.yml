@@ -1,0 +1,7 @@
+---
+title: "PurchaseOrder : do not manage budget exceed in supply chain module"
+type: change
+description: |
+  The budget exceed check called when requesting a purchase order can no longer be managed from supply chain module, as there is now different types of budget exceed checks that are managed directly in budget module.
+  Also, the check is now more of an informative message than an error message blocking requesting action.
+   

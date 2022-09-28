@@ -10,7 +10,19 @@
     <one-to-many name="accountManagementList"
       ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode"
       title="Accounting settings"/>
-    <boolean name="validatePaymentByDepositSlipPublication"/>
+    <boolean name="canSelectInPaymentSession" title="Select on sessions ?"/>
+    <integer name="daysMarginOnPaySession"
+      title="Default days Margin to retrieve terms on Payment Session ?" default="5"/>
+    <integer name="accountingMethodSelect" title="Accounting method for payment move"
+      selection="paymentMode.accounting.method.select" default="1"/>
+    <integer name="accountingTriggerSelect" title="Move generation trigger settings"
+      selection="payment.mode.accounting.trigger.select"/>
+
+    <extra-code><![CDATA[
+        public static final int ACCOUNTING_TRIGGER_NONE = 0;
+        public static final int ACCOUNTING_TRIGGER_IMMEDIATE = 1;
+        public static final int ACCOUNTING_TRIGGER_VALUE_FOR_COLLECTION = 5;
+    ]]></extra-code>
 
   </entity>
 

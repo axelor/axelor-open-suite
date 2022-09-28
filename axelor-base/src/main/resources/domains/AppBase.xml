@@ -48,6 +48,8 @@
       max="10" default="2"/>
     <integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0"
       max="10" default="2"/>
+    <integer name="nbDecimalDigitForTaxRate" title="Nb of digits for tax rate" min="0"
+      max="10" default="2"/>
     <integer name="globalTrackingLogPersistence"
       title="Tracking logs persistence (in months)" min="0" default="1"/>
 

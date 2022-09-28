@@ -57,6 +57,9 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.listener.BaseServerStartListener;
+import com.axelor.apps.base.rest.TranslationRestService;
+import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.AddressService;
@@ -137,6 +140,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
+import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
+import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileServiceImpl;
 import com.axelor.apps.base.service.imports.ImportCityService;
@@ -256,9 +261,12 @@ public class BaseModule extends AxelorModule {
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
+    bind(FileSourceConnectorService.class).to(FileSourceConnectorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
     bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
     bind(InternationalService.class).to(InternationalServiceImpl.class);
     bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
+    bind(BaseServerStartListener.class);
+    bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
   }
 }

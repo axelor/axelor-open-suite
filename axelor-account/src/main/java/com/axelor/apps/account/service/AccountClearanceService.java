@@ -146,13 +146,20 @@ public class AccountClearanceService {
 
     BigDecimal taxRate =
         taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
-    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     Account profitAccount = accountConfig.getProfitAccount();
     Journal journal = accountConfig.getAccountClearanceJournal();
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      Account taxAccount =
+          taxAccountService.getAccount(
+              tax,
+              company,
+              journal,
+              moveLine.getAccount().getVatSystemSelect(),
+              false,
+              moveLine.getMove().getFunctionalOriginSelect());
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
@@ -207,7 +214,7 @@ public class AccountClearanceService {
     move.getMoveLineList().add(debitMoveLine);
 
     // Credit MoveLine 77. (profit account)
-    BigDecimal divid = taxRate.add(BigDecimal.ONE);
+    BigDecimal divid = taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE);
     BigDecimal profitAmount =
         amount
             .divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
@@ -242,7 +249,7 @@ public class AccountClearanceService {
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     debitMoveLine.setAccountClearance(accountClearance);

@@ -19,12 +19,10 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportDas2Service;
 import com.axelor.apps.account.service.AccountingReportPrintService;
@@ -130,31 +128,6 @@ public class AccountingReportController {
         response.setView(actionViewBuilder.map());
       }
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * @param request
-   * @param response
-   */
-  public void getJournalType(ActionRequest request, ActionResponse response) {
-
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-
-    try {
-
-      JournalType journalType =
-          Beans.get(AccountingReportService.class).getJournalType(accountingReport);
-      if (journalType != null) {
-        String domainQuery =
-            "self.journalType.id = "
-                + journalType.getId()
-                + " AND self.statusSelect = "
-                + JournalRepository.STATUS_ACTIVE;
-        response.setAttr("journal", "domain", domainQuery);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
