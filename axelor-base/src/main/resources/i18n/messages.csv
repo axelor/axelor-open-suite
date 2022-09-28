@@ -1525,6 +1525,7 @@
 "Query result",,,
 "Rank",,,
 "Rate",,,
+"Rate (%)",,,
 "Read only",,,
 "Real qty",,,
 "Receive notifications by email",,,
