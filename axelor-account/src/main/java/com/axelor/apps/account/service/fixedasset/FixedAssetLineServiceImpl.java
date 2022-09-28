@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -217,15 +218,36 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   public LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
       FixedAsset fixedAsset) {
     Objects.requireNonNull(fixedAsset);
+
+    List<FixedAssetLine> fiscalFixedAssetLineList =
+        fixedAsset.getFiscalFixedAssetLineList().stream().collect(Collectors.toList());
+    List<FixedAssetLine> fixedAssetLineList =
+        fixedAsset.getFixedAssetLineList().stream().collect(Collectors.toList());
+
+    if (fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
+      if (CollectionUtils.isNotEmpty(fiscalFixedAssetLineList)) {
+        correctLastFixedAssetLineForProrata(
+            fiscalFixedAssetLineList,
+            fixedAsset.getFiscalFirstDepreciationDate(),
+            fixedAsset.getFiscalPeriodicityInMonth());
+      }
+      if (CollectionUtils.isNotEmpty(fixedAssetLineList)) {
+        correctLastFixedAssetLineForProrata(
+            fixedAssetLineList,
+            fixedAsset.getFirstDepreciationDate(),
+            fixedAsset.getPeriodicityInMonth());
+      }
+    }
+
     // Preparation of data needed for computation
     List<FixedAssetLine> tmpList = new ArrayList<>();
     // This method will only compute line that are not realized.
     tmpList.addAll(
-        fixedAsset.getFiscalFixedAssetLineList().stream()
+        fiscalFixedAssetLineList.stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .collect(Collectors.toList()));
     tmpList.addAll(
-        fixedAsset.getFixedAssetLineList().stream()
+        fixedAssetLineList.stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .collect(Collectors.toList()));
 
@@ -238,6 +260,19 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
         .collect(
             Collectors.groupingBy(
                 FixedAssetLine::getDepreciationDate, LinkedHashMap::new, Collectors.toList()));
+  }
+
+  protected void correctLastFixedAssetLineForProrata(
+      List<FixedAssetLine> fixedAssetLineList,
+      LocalDate firstDepreciationDate,
+      int periodicityInMonth) {
+    int lastIndex = fixedAssetLineList.size() - 1;
+    FixedAssetLine lastFixedAssetLineCopy =
+        fixedAssetLineRepository.copy(fixedAssetLineList.get(lastIndex), false);
+    lastFixedAssetLineCopy.setDepreciationDate(
+        firstDepreciationDate.plusMonths(lastIndex * periodicityInMonth));
+    fixedAssetLineList.remove(lastIndex);
+    fixedAssetLineList.add(lastFixedAssetLineCopy);
   }
 
   /**
