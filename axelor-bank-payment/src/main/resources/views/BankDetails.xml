@@ -63,4 +63,15 @@
     </node>
   </tree>
 
+  <action-view name="action-bank-details-view-show-bank-statement-lines-final-balance"
+    title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+    <view type="grid" name="bank-statement-line-afb-120-grid"/>
+    <view type="form" name="bank-statement-line-afb-120-form"/>
+    <view-param name="search-filters" value="bank-statement-line-afb-120-filters"/>
+    <view-param name="default-search-filters"
+      value="initial-final-balance-bank-statement-line-afb-120"/>
+    <domain>self.bankDetails.id = :bankDetailsId </domain>
+    <context name="bankDetailsId" expr="eval: id"/>
+  </action-view>
+
 </object-views>

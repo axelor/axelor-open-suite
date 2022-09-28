@@ -313,14 +313,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return invoiceTermPaymentList.stream()
         .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
-            it ->
-                invoiceTermService
+            it -> {
+              try {
+                return invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(
                         it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
                         10,
-                        RoundingMode.HALF_UP))
+                        RoundingMode.HALF_UP);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);

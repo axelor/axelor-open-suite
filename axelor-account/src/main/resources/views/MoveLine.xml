@@ -747,7 +747,7 @@
   <form name="account-move-line-calculation-wizard-form" title="Calculation"
     model="com.axelor.apps.base.db.Wizard" onNew="action-account-move-line-record-calculate-balance"
     canArchive="false">
-    <panel name="mainPanel" colSpan="12" title="Total of the selected lines :">
+    <panel name="mainPanel" colSpan="12" title="Total of the selected lines (without New) :">
       <field name="$debit" title="Debit :" readonly="true" colSpan="4"/>
       <field name="$credit" title="Credit :" readonly="true" colSpan="4"/>
       <field name="$balance" title="Balance :" readonly="true" colSpan="4"/>

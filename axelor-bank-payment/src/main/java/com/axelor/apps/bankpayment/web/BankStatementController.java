@@ -51,10 +51,10 @@ public class BankStatementController {
       BankStatementService bankStatementService = Beans.get(BankStatementService.class);
       bankStatement = bankStatementRepo.find(bankStatement.getId());
       bankStatementService.runImport(bankStatement, true);
-      bankStatementService.checkImport(bankStatement);
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
+      TraceBackService.trace(
+          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
     }
     response.setReload(true);
   }

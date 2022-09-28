@@ -183,6 +183,9 @@
       search="self.code = :globalAccountingCashAccount_code and self.company.importId = :company_id"
       to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
     <bind
+      search="self.code = :chequeDepositJournal_code and self.company.importId = :company_id"
+      to="chequeDepositJournal" update="true" if="chequeDepositJournal_code"/>
+    <bind
       search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
       to="allowedFinDiscountTaxVatSystem1Account" update="true"
       if="allowedFinDiscountTaxVatSystem1Account_code"/>

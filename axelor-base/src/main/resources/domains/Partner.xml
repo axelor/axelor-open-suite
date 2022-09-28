@@ -159,6 +159,11 @@
       <field name="fixedPhone" on="UPDATE"/>
       <field name="emailAddress" on="UPDATE"/>
       <field name="currency" on="UPDATE"/>
+      <field name="isCustomer"/>
+      <field name="isProspect"/>
+      <field name="isSupplier"/>
+      <field name="isEmployee"/>
+      <field name="isInternal"/>
     </track>
 
   </entity>

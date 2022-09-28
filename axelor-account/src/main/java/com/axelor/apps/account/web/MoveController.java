@@ -45,6 +45,7 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -71,6 +72,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -109,20 +111,17 @@ public class MoveController {
 
     Move move = request.getContext().asType(Move.class);
 
+    Period period = null;
     try {
       if (move.getDate() != null && move.getCompany() != null) {
-        Period period =
+        period =
             Beans.get(PeriodService.class)
-                .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-        if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
-
-          response.setValue("period", period);
-        }
-      } else {
-        response.setValue("period", null);
+                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      response.setValue("period", period);
     }
   }
 
@@ -273,6 +272,12 @@ public class MoveController {
       this.removeOneMove(move, response);
 
       if (!move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+        boolean isActivateSimulatedMoves =
+            Optional.of(AuthUtils.getUser())
+                .map(User::getActiveCompany)
+                .map(Company::getAccountConfig)
+                .map(AccountConfig::getIsActivateSimulatedMove)
+                .orElse(false);
 
         response.setView(
             ActionView.define(I18n.get("Moves"))
@@ -280,6 +285,7 @@ public class MoveController {
                 .add("grid", "move-grid")
                 .add("form", "move-form")
                 .param("search-filters", "move-filters")
+                .context("_isActivateSimulatedMoves", isActivateSimulatedMoves)
                 .map());
         response.setCanClose(true);
       }

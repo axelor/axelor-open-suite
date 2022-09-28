@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -917,35 +918,62 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
-    BigDecimal total;
-
-    if (invoiceTerm.getInvoice() != null) {
-      total = invoiceTerm.getInvoice().getTaxTotal();
-    } else {
-      total =
-          invoiceTerm.getMoveLine().getMove().getMoveLineList().stream()
-              .filter(
-                  it ->
-                      it.getAccount()
-                          .getAccountType()
-                          .getTechnicalTypeSelect()
-                          .equals(AccountTypeRepository.TYPE_TAX))
-              .map(it -> it.getDebit().max(it.getCredit()))
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-    }
-
-    if (total.signum() > 0
-        && invoiceTerm.getFinancialDiscount() != null
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException {
+    if (invoiceTerm.getFinancialDiscount() != null
         && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return total
-          .multiply(invoiceTerm.getPercentage())
-          .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
-          .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
+      BigDecimal total = BigDecimal.ZERO;
+
+      if (invoiceTerm.getInvoice() != null) {
+        total = invoiceTerm.getInvoice().getTaxTotal();
+      }
+
+      if (total.signum() > 0) {
+        return total
+            .multiply(invoiceTerm.getPercentage())
+            .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
+            .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
+      } else {
+        Tax financialDiscountTax =
+            this.isPurchase(invoiceTerm)
+                ? accountConfigService.getPurchFinancialDiscountTax(
+                    accountConfigService.getAccountConfig(this.getCompany(invoiceTerm)))
+                : accountConfigService.getSaleFinancialDiscountTax(
+                    accountConfigService.getAccountConfig(this.getCompany(invoiceTerm)));
+        BigDecimal taxRate = financialDiscountTax.getActiveTaxLine().getValue();
+
+        return invoiceTerm
+            .getFinancialDiscountAmount()
+            .multiply(taxRate)
+            .divide(
+                BigDecimal.ONE
+                    .add(taxRate.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP))
+                    .multiply(BigDecimal.valueOf(100)),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
+      }
     } else {
       return BigDecimal.ZERO;
+    }
+  }
+
+  protected Company getCompany(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getInvoice() != null
+        ? invoiceTerm.getInvoice().getCompany()
+        : invoiceTerm.getMoveLine().getMove().getCompany();
+  }
+
+  protected boolean isPurchase(InvoiceTerm invoiceTerm) throws AxelorException {
+    if (invoiceTerm.getInvoice() != null) {
+      return InvoiceToolService.isPurchase(invoiceTerm.getInvoice());
+    } else {
+      return invoiceTerm
+              .getMoveLine()
+              .getMove()
+              .getJournal()
+              .getJournalType()
+              .getTechnicalTypeSelect()
+          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
     }
   }
 

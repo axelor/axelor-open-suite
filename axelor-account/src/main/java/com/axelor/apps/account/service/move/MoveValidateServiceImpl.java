@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -77,6 +78,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineControlService moveLineControlService;
+  protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
@@ -95,6 +97,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Inject
   public MoveValidateServiceImpl(
       MoveLineControlService moveLineControlService,
+      MoveLineToolService moveLineToolService,
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
@@ -111,6 +114,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveControlService moveControlService) {
 
     this.moveLineControlService = moveLineControlService;
+    this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
@@ -286,6 +290,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
+
+        moveLineToolService.checkDateInPeriod(move, moveLine);
       }
 
       moveLineTaxService.checkTaxMoveLines(move);

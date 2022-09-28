@@ -32,6 +32,10 @@
     <one-to-many name="freightCarrierCustomerAccountNumberList"
       ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
       title="Customer account numbers to carriers" mappedBy="partner"/>
+
+    <track>
+      <field name="isCarrier"/>
+    </track>
   </entity>
 
 </domain-models>
