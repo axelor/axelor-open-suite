@@ -1833,7 +1833,7 @@
 "Next action date","Date de la prochaine action",,
 "No Accounting Situation related to %s.","Aucun fournisseur à déléguer",,
 "No Lines selected","Aucune ligne sélectionnée",,
-"No PFP",,,
+"No PFP","Aucun BAP",,
 "No comparison","Aucune comparaison",,
 "No email address in debt recovery %s. Please set one.","La méthode de recouvrement %s n'a pas d'adresse email à qui envoyer le message. Veuillez en configurer une.",,
 "No invoice to pay","Aucune facture à payer",,
