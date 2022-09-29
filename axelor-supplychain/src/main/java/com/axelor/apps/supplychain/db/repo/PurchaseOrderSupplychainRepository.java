@@ -48,6 +48,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
         purchaseOrderLine.setReceivedQty(null);
         purchaseOrderLine.setAmountInvoiced(null);
         purchaseOrderLine.setInvoiced(null);
+        purchaseOrderLine.setBudgetDistributionList(null);
       }
     }
 

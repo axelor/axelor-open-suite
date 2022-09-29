@@ -1,3 +1,0 @@
----
-title: "Invoice : Generating an invoice from a Sale Order or a Stock Move now correctly sets the project if there is one."
-type: fix
