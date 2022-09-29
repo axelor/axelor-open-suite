@@ -126,9 +126,9 @@
         </viewer>
       </field>
       <spacer hidden="true"/>
-      <label name="$noData" title="No data to display" hideIf="$activityList"/>
+      <label name="$noData" title="No data to display" hideIf="$activityList.length == 0"/>
       <field name="$activities" showTitle="false" colSpan="12" readonly="true"
-        showIf="$activityList">
+        showIf="$activityList &amp;&amp; $activityList.length > 0">
         <viewer>
 			<![CDATA[
 			  <span ng-repeat="activity in record.$activityList" class="mail-thread" style="border:none !important;">
