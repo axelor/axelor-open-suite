@@ -621,7 +621,7 @@
 
   <action-method
     name="action-invoice-line-method-translate-product-description-and-name">
-    <call class="com.axelor.apps.account.web.InvoiceLineController"
+    <call class="com.axelor.apps.supplychain.web.InvoiceLineController"
       method="translateProductDescriptionAndName"/>
   </action-method>
 

@@ -29,7 +29,9 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -413,19 +415,28 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-      Partner partner = this.getPurchaseOrder(context).getSupplierPartner();
+      PurchaseOrder parent = this.getPurchaseOrder(context);
+      Partner partner = parent.getSupplierPartner();
+      Company company = parent.getCompany();
       String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = purchaseOrderLine.getProduct();
 
-      if (purchaseOrderLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                purchaseOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                purchaseOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+      if (product != null && partner != null && company != null) {
+
+        SupplierCatalog supplierCatalog =
+            Beans.get(SupplierCatalogService.class).getSupplierCatalog(product, partner, company);
+
+        if (supplierCatalog == null) {
+          String partnerLanguage = partner.getLanguage().getCode();
+          response.setValue(
+              "description",
+              internationalService.translate(
+                  purchaseOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+          response.setValue(
+              "productName",
+              internationalService.translate(
+                  purchaseOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
