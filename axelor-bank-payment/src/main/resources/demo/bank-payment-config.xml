@@ -30,9 +30,6 @@
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
   </input>
 
-  <input file="bankpayment_bankStatementQuery.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId"/>
-
   <input file="bankpayment_bankStatementRule.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId"/>
 
@@ -63,5 +60,19 @@
       if="operationInterbankCodeLine_importId"/>
     <bind to="currency" column="currency_code" search="self.code = :currency_code"/>
   </input>
+
+  <input file="base_template_context.csv" separator=";"
+    type="com.axelor.apps.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+    search="self.name = :name">
+    <bind to="language" search="self.code = :languageCode"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
+    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
+      search="self.importId in :birtTemplateSet_importId"
+      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
 
 </csv-inputs>

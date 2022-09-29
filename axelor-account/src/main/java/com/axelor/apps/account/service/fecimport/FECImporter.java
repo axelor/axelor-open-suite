@@ -189,14 +189,14 @@ public class FECImporter extends Importer {
       if (move != null) {
         String csvReference = extractCSVMoveReference(move.getReference());
 
-        if (move.getValidationDate() != null) {
+        if (move.getAccountingDate() != null) {
           move.setReference(String.format("%s", csvReference));
         } else {
           move.setReference(String.format("#%s", move.getId().toString()));
         }
 
         if (fecImport.getValidGeneratedMove()) {
-          moveValidateService.validate(move);
+          moveValidateService.accounting(move);
         } else {
           return moveRepository.save(move);
         }

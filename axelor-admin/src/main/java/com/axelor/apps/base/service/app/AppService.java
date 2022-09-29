@@ -18,7 +18,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -56,7 +56,7 @@ public interface AppService {
     if (appSettingsPath == null || appSettingsPath.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FILE_UPLOAD_DIR_ERROR));
+          I18n.get(AdminExceptionMessage.FILE_UPLOAD_DIR_ERROR));
     }
     return !appSettingsPath.endsWith(File.separator)
         ? appSettingsPath + File.separator

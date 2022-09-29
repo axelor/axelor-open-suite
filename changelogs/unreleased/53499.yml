@@ -1,0 +1,5 @@
+---
+title : "Tax : fix an error occurring when choosing a product for a sale or a purchase order."
+type: fix
+description: |
+  Fix an error occurring when choosing a product and if the creation date was not filled in a purchase or sale order.

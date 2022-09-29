@@ -41,13 +41,13 @@
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
     <boolean name="ignoreInDebtRecoveryOk" title="Ignore in debt recovery process"
       default="false"/>
-    <date name="validationDate" title="Validation date"/>
+    <date name="accountingDate" title="Accounting date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true"
       readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-    <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
+    <integer name="functionalOriginSelect" title="Functional origin"
       selection="iaccount.move.functional.origin.select"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading name"/>
@@ -68,8 +68,8 @@
 
 	   	// STATUS SELECT
 		public static final int STATUS_NEW = 1;
-		public static final int STATUS_ACCOUNTED = 2;
-		public static final int STATUS_VALIDATED = 3;
+		public static final int STATUS_DAYBOOK = 2;
+		public static final int STATUS_ACCOUNTED = 3;
 		public static final int STATUS_CANCELED = 4;
 		public static final int STATUS_SIMULATED = 5;
 
@@ -93,6 +93,8 @@
 		public static final int FUNCTIONAL_ORIGIN_PAYMENT = 5;
 		public static final int FUNCTIONAL_ORIGIN_CUT_OFF = 6;
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
+
+		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
 	]]></extra-code>
 
     <track>
@@ -111,9 +113,10 @@
       <field name="description"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
-      <message if="statusSelect == 2" tag="info">Accounted move</message>
-      <message if="statusSelect == 3" tag="success">Move validated</message>
+      <message if="statusSelect == 2" tag="info">Daybook move</message>
+      <message if="statusSelect == 3" tag="success">Accounted move</message>
       <message if="statusSelect == 4" tag="warning">Move canceled</message>
+      <message if="statusSelect == 5" tag="info">Simulated move</message>
     </track>
 
   </entity>

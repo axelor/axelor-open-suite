@@ -18,7 +18,11 @@
 /** */
 package com.axelor.apps.purchase.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link PurchaseExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;

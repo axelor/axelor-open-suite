@@ -70,6 +70,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/synccontact")
+@Deprecated
 public class SyncContactService {
 
   private PartnerRepository partnerRepo;
@@ -127,6 +128,7 @@ public class SyncContactService {
 
   @POST
   @Path("/key/{id}")
+  @Deprecated
   public SyncContactResponse getKeyAndClientId(@PathParam("id") Long id) {
     SyncContact syncContact = syncContactRepo.find(id);
     if (syncContact == null) {
@@ -143,6 +145,7 @@ public class SyncContactService {
 
   @POST
   @Path("/sync/{id}")
+  @Deprecated
   public Response importContact(@PathParam("id") Long id, PeopleRequest request) {
     if (request == null || request.getPeople() == null || id == null) {
       return new Response();
@@ -172,6 +175,7 @@ public class SyncContactService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Deprecated
   public void updateSyncContact(Long id, SyncContactHistoric syncContactHistoric) {
     SyncContact syncContact;
     syncContact = syncContactRepo.find(id);
@@ -190,6 +194,7 @@ public class SyncContactService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Deprecated
   public Partner importContact(Person googlePerson, Boolean updateContactField) {
     if (googlePerson.getNames() == null) {
       return null;
@@ -214,6 +219,7 @@ public class SyncContactService {
     return partner;
   }
 
+  @Deprecated
   public Partner createPartner(Person googlePerson, Name googleName) {
     Partner partner = new Partner();
     setDefaultPartnerValue(partner);

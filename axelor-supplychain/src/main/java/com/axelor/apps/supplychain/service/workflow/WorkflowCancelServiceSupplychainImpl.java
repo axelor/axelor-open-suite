@@ -177,7 +177,6 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
       // Get all different purchaseOrders from invoice
 
       List<PurchaseOrder> purchaseOrderList = Lists.newArrayList();
-      ;
 
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 

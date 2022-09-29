@@ -54,6 +54,8 @@ public class FECImportController {
       ImportHistory importHistory = fecImporter.init(importConfig).run();
 
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
+      Beans.get(FECImportService.class).letterImportedReconcileGroup(fecImport);
+
       response.setNotify(
           FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
               .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));

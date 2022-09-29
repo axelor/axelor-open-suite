@@ -19,17 +19,21 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.db.AnalyticJournal;
+import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +43,15 @@ public class AnalyticDistributionTemplateServiceImpl
     implements AnalyticDistributionTemplateService {
   protected AccountConfigService accountConfigService;
   protected AnalyticDistributionLineService analyticDistributionLineService;
+  protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
 
   @Inject
   public AnalyticDistributionTemplateServiceImpl(
       AccountConfigService accountConfigService,
+      AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
       AnalyticDistributionLineService analyticDistributionLineService) {
     this.accountConfigService = accountConfigService;
+    this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
     this.analyticDistributionLineService = analyticDistributionLineService;
   }
 
@@ -93,6 +100,33 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
+  @Transactional
+  public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
+      AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null && analyticDistributionTemplate.getIsSpecific()) {
+      return null;
+    }
+    AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+        new AnalyticDistributionTemplate();
+    specificAnalyticDistributionTemplate =
+        personalizeAnalyticTemplateFromConfig(
+            analyticDistributionTemplate, specificAnalyticDistributionTemplate, company);
+    analyticDistributionTemplateRepository.save(specificAnalyticDistributionTemplate);
+    if (analyticDistributionTemplate != null) {
+      specificAnalyticDistributionTemplate.setName(
+          analyticDistributionTemplate.getName()
+              + " - "
+              + specificAnalyticDistributionTemplate.getId());
+    } else {
+      specificAnalyticDistributionTemplate.setName(
+          "Template - " + specificAnalyticDistributionTemplate.getId());
+    }
+
+    return specificAnalyticDistributionTemplate;
+  }
+
+  @Override
   public void checkAnalyticDistributionTemplateCompany(
       AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
     if (analyticDistributionTemplate.getCompany() != null) {
@@ -126,15 +160,16 @@ public class AnalyticDistributionTemplateServiceImpl
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(
-              IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
+              AccountExceptionMessage
+                  .ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
     } else if (checkAxis) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
+          I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
     } else if (checkJournal) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
+          I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
     }
   }
 
@@ -162,5 +197,116 @@ public class AnalyticDistributionTemplateServiceImpl
       return analyticDistributionTemplate;
     }
     return null;
+  }
+
+  @Override
+  public void checkAnalyticAccounts(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && CollectionUtils.isNotEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine analyticDistributionLine :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (analyticDistributionLine.getAnalyticAccount() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING));
+        }
+      }
+    }
+  }
+
+  protected AnalyticDistributionTemplate personalizeAnalyticTemplateFromConfig(
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      AnalyticDistributionTemplate newAnalyticDistributionTemplate,
+      Company company)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    newAnalyticDistributionTemplate.setCompany(company);
+    newAnalyticDistributionTemplate.setName("Template - ");
+    newAnalyticDistributionTemplate.setIsSpecific(true);
+
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfig.getAnalyticAxisByCompanyList()) {
+      List<AnalyticDistributionLine> analyticDistributionLineList =
+          extractAnalyticDistributionLineListByAxis(
+              analyticAxisByCompany.getAnalyticAxis(), analyticDistributionTemplate);
+      updateCreatedTemplate(
+          analyticDistributionLineList,
+          newAnalyticDistributionTemplate,
+          analyticAxisByCompany.getAnalyticAxis(),
+          accountConfig);
+    }
+    return newAnalyticDistributionTemplate;
+  }
+
+  protected List<AnalyticDistributionLine> extractAnalyticDistributionLineListByAxis(
+      AnalyticAxis analyticAxis, AnalyticDistributionTemplate analyticDistributionTemplate) {
+    List<AnalyticDistributionLine> analyticDistributionLineList = new ArrayList();
+    if (analyticDistributionTemplate != null
+        && CollectionUtils.isNotEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine analyticDistributionLine :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (analyticDistributionLine.getAnalyticAxis().equals(analyticAxis)) {
+          analyticDistributionLineList.add(analyticDistributionLine);
+        }
+      }
+    }
+    return analyticDistributionLineList;
+  }
+
+  protected void updateCreatedTemplate(
+      List<AnalyticDistributionLine> analyticDistributionLineList,
+      AnalyticDistributionTemplate newAnalyticDistributionTemplate,
+      AnalyticAxis analyticAxis,
+      AccountConfig accountConfig) {
+    if (CollectionUtils.isNotEmpty(analyticDistributionLineList)) {
+      analyticDistributionLineList.forEach(
+          line ->
+              personalizeLine(line, analyticAxis, accountConfig, newAnalyticDistributionTemplate));
+    } else {
+      personalizeLine(null, analyticAxis, accountConfig, newAnalyticDistributionTemplate);
+    }
+  }
+
+  protected void personalizeLine(
+      AnalyticDistributionLine analyticDistributionLine,
+      AnalyticAxis analyticAxis,
+      AccountConfig accountConfig,
+      AnalyticDistributionTemplate newAnalyticDistributionTemplate) {
+    if (analyticDistributionLine != null) {
+      personalizeAnalyticDistributionLine(
+          analyticAxis,
+          analyticDistributionLine.getAnalyticAccount(),
+          analyticDistributionLine.getAnalyticJournal(),
+          analyticDistributionLine.getPercentage(),
+          newAnalyticDistributionTemplate);
+    } else {
+      personalizeAnalyticDistributionLine(
+          analyticAxis,
+          null,
+          accountConfig.getAnalyticJournal(),
+          new BigDecimal(100),
+          newAnalyticDistributionTemplate);
+    }
+  }
+
+  protected AnalyticDistributionLine personalizeAnalyticDistributionLine(
+      AnalyticAxis analyticAxis,
+      AnalyticAccount analyticAccount,
+      AnalyticJournal analyticJournal,
+      BigDecimal percentage,
+      AnalyticDistributionTemplate newAnalyticDistributionTemplate) {
+
+    AnalyticDistributionLine specificAnalyticDistributionLine =
+        analyticDistributionLineService.createAnalyticDistributionLine(
+            analyticAxis, analyticAccount, analyticJournal, percentage);
+    specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
+        newAnalyticDistributionTemplate);
+
+    newAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
+        specificAnalyticDistributionLine);
+    return specificAnalyticDistributionLine;
   }
 }

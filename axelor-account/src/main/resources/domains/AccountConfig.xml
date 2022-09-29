@@ -67,6 +67,8 @@
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
+    <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bill of exchange receivable account"/>
 
 
     <!-- Automatic account creation for partners -->
@@ -84,9 +86,6 @@
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
-
-    <many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax"
-      title="Tax for management fee"/>
 
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -171,7 +170,6 @@
     <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice"
       title="Allow cancelation of ventilated invoice"/>
-    <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
@@ -278,6 +276,21 @@
     <many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
       title="Sale financial discount tax"/>
 
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="temporaryClosureAuthorizedRoleList" title="Temporary Closure Authorized Role"
+      help="Authorized roles for temporary closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role" name="closureAuthorizedRoleList"
+      title="Closure Authorized Role" help="Authorized roles for closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="moveOnTempClosureAuthorizedRoleList"
+      title="Creation / Edition of move on temporary closed period authorized role"
+      help="Authorized roles for creation or edition of move on temporary closed period"/>
+
+    <!-- Holdback accounts -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Supplier account"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -328,6 +341,7 @@
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
+      <field name="billOfExchReceivAccount" on="UPDATE"/>
 
       <field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
       <field name="customerAccountPrefix" on="UPDATE"/>
@@ -341,8 +355,6 @@
 
       <field name="autoReconcileOnInvoice" on="UPDATE"/>
       <field name="autoReconcileOnPayment" on="UPDATE"/>
-
-      <field name="payingBackTax" on="UPDATE"/>
 
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>
@@ -387,7 +399,6 @@
 
 
       <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
-      <field name="allowRemovalValidatedMove" on="UPDATE"/>
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>

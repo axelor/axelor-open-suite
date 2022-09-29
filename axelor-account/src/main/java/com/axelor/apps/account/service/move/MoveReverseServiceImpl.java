@@ -93,8 +93,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             null);
 
     boolean validatedMove =
-        move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-            || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
+        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+            || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED;
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       log.debug("Moveline {}", moveLine);
@@ -143,7 +143,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     }
 
     if (validatedMove && isAutomaticAccounting) {
-      moveValidateService.validate(newMove);
+      moveValidateService.accounting(newMove);
     }
 
     return moveRepository.save(newMove);

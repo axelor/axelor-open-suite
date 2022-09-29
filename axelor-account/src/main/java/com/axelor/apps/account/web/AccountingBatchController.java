@@ -103,6 +103,15 @@ public class AccountingBatchController {
     runBatch(AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES, request, response);
   }
 
+  public void actionBillOfExchange(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
+    Batch batch = Beans.get(AccountingBatchService.class).billOfExchange(accountingBatch);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
   public void actionCloseAnnualAccounts(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS, request, response);
   }

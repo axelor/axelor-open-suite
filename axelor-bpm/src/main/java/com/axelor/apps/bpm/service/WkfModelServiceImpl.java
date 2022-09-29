@@ -22,22 +22,16 @@ import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.apps.bpm.db.WkfModel;
 import com.axelor.apps.bpm.db.WkfProcess;
 import com.axelor.apps.bpm.db.WkfProcessConfig;
-import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
-import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
-import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
+import com.axelor.apps.bpm.service.dashboard.WkfDashboardCommonService;
 import com.axelor.apps.bpm.service.deployment.BpmDeploymentService;
-import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.apps.bpm.translation.ITranslation;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -45,27 +39,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.MetaJsonRecord;
-import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaJsonRecordRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.persistence.Query;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -83,21 +68,9 @@ public class WkfModelServiceImpl implements WkfModelService {
 
   private static final String IMPORT_CONFIG_PATH = "/data-import/import-wkf-models.xml";
 
-  private static final String TASK_TODAY = "taskToday";
-  private static final String TASK_NEXT = "taskNext";
-  private static final String LATE_TASK = "lateTask";
-
   @Inject protected WkfModelRepository wkfModelRepository;
 
-  @Inject private WkfProcessRepository wkfProcessRepo;
-
-  @Inject private WkfInstanceService wkfInstanceService;
-
-  @Inject private WkfTaskConfigRepository wkfTaskConfigRepo;
-
-  @Inject private MetaJsonRecordRepository metaJsonRecordRepo;
-
-  @Inject private MetaModelRepository metaModelRepo;
+  @Inject private WkfDashboardCommonService wkfDashboardCommonService;
 
   @Inject private TranslationService translationService;
 
@@ -245,79 +218,6 @@ public class WkfModelServiceImpl implements WkfModelService {
     return importer;
   }
 
-  private Query createCommonRecordQuery(String tableName, String condition, String status) {
-
-    StringBuilder queryBuilder = new StringBuilder();
-
-    queryBuilder.append("SELECT record.id FROM " + tableName + " record ");
-    queryBuilder.append(
-        "LEFT JOIN act_hi_actinst activity ON record.process_instance_id = activity.proc_inst_id_ ");
-    queryBuilder.append("WHERE (activity.act_name_ = :status OR activity.act_id_ = :status)");
-
-    if (!StringUtils.isEmpty(condition)) {
-      queryBuilder.append(" AND " + condition);
-    }
-
-    Query query = JPA.em().createNativeQuery(queryBuilder.toString());
-    query.setParameter("status", status);
-    return query;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Long> getStatusPerMonthRecord(
-      String tableName, String status, String month, String jsonModel) {
-
-    String condition = "TO_CHAR(activity.start_time_,'yyyy-MM') = :month";
-
-    if (jsonModel != null) {
-      condition += " AND record.json_model = '" + jsonModel + "'";
-    }
-
-    Query query = createCommonRecordQuery(tableName, condition, status);
-
-    query.setParameter("month", month);
-
-    return query.getResultList();
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Long> getStatusPerDayRecord(
-      String tableName, String status, String day, String jsonModel) {
-
-    String condition = "TO_CHAR(activity.start_time_,'MM/dd/yyyy') = :day";
-
-    if (jsonModel != null) {
-      condition += " AND record.json_model = '" + jsonModel + "'";
-    }
-
-    Query query = createCommonRecordQuery(tableName, condition, status);
-
-    query.setParameter("day", day.toString());
-
-    return query.getResultList();
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<Long> getTimespentPerStatusRecord(
-      String tableName, String status, LocalDate fromDate, LocalDate toDate, String jsonModel) {
-
-    String condition = "DATE(activity.start_time_) BETWEEN :fromDate AND :toDate";
-
-    if (jsonModel != null) {
-      condition += " AND record.json_model = '" + jsonModel + "'";
-    }
-
-    Query query = createCommonRecordQuery(tableName, condition, status);
-
-    query.setParameter("fromDate", fromDate);
-    query.setParameter("toDate", toDate);
-
-    return query.getResultList();
-  }
-
   @Override
   public String importWkfModels(
       MetaFile metaFile, boolean isTranslate, String sourceLanguage, String targetLanguage)
@@ -426,14 +326,14 @@ public class WkfModelServiceImpl implements WkfModelService {
   public List<Map<String, Object>> getProcessPerStatus(WkfModel wkfModel) {
     List<Map<String, Object>> dataList = new ArrayList<>();
 
-    List<WkfProcess> processList = getProcesses(wkfModel);
+    List<WkfProcess> processList = wkfDashboardCommonService.findProcesses(wkfModel, null);
 
     for (WkfProcess process : processList) {
       Map<String, Object> processMap = new HashMap<>();
       List<Map<String, Object>> configList = new ArrayList<>();
 
       List<WkfProcessConfig> processConfigs = process.getWkfProcessConfigList();
-      this.sortProcessConfig(processConfigs);
+      wkfDashboardCommonService.sortProcessConfig(processConfigs);
 
       List<String> _modelList = new ArrayList<>();
       for (WkfProcessConfig processConfig : processConfigs) {
@@ -449,7 +349,8 @@ public class WkfModelServiceImpl implements WkfModelService {
         }
         _modelList.add(modelName);
 
-        Map<String, Object> _map = this.computeStatus(isMetaModel, modelName, process, null);
+        Map<String, Object> _map =
+            wkfDashboardCommonService.computeStatus(isMetaModel, modelName, process, null, null);
 
         List<Long> recordIdsPerModel = (List<Long>) _map.get("recordIdsPerModel");
         List<Map<String, Object>> statusList = (List<Map<String, Object>>) _map.get("statuses");
@@ -486,110 +387,13 @@ public class WkfModelServiceImpl implements WkfModelService {
     return dataList;
   }
 
-  @Override
-  public void sortProcessConfig(List<WkfProcessConfig> processConfigs) {
-    processConfigs.sort(Comparator.comparing(WkfProcessConfig::getId));
-  }
-
-  @SuppressWarnings("serial")
-  private Map<String, Object> computeStatus(
-      boolean isMetaModel, String modelName, WkfProcess process, User user) {
-
-    List<WkfTaskConfig> taskConfigs = getTaskConfigs(process, modelName, isMetaModel, user, true);
-
-    Object obj[] = computeTaskConfig(taskConfigs, modelName, isMetaModel, user, true);
-
-    return new HashMap<String, Object>() {
-      {
-        put("recordIdsPerModel", obj[0]);
-        put("statuses", obj[1]);
-        put("tasks", obj[2]);
-      }
-    };
-  }
-
-  @SuppressWarnings("serial")
-  @Override
-  public Object[] computeTaskConfig(
-      List<WkfTaskConfig> taskConfigs,
-      String modelName,
-      boolean isMetaModel,
-      User user,
-      boolean withTask) {
-
-    List<Map<String, Object>> statusList = new ArrayList<>();
-    List<Long> recordIdsPerModel = new ArrayList<>();
-    Map<String, Object> taskMap = new HashMap<String, Object>();
-
-    taskConfigs.forEach(
-        config -> {
-          List<String> processInstanceIds =
-              wkfInstanceService.findProcessInstanceByNode(
-                  config.getName(), config.getProcessId(), config.getType(), false);
-
-          List<Long> recordStatusIds = new ArrayList<>();
-
-          if (!isMetaModel) {
-            List<MetaJsonRecord> jsonModelrecords =
-                this.getMetaJsonRecords(config, processInstanceIds, modelName, user, null);
-
-            recordStatusIds.addAll(
-                jsonModelrecords.stream()
-                    .map(record -> record.getId())
-                    .collect(Collectors.toList()));
-
-            if (withTask) {
-              this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
-            }
-
-          } else {
-            List<Model> metaModelRecords =
-                this.getMetaModelRecords(config, processInstanceIds, modelName, user, null);
-
-            recordStatusIds.addAll(
-                metaModelRecords.stream()
-                    .map(record -> record.getId())
-                    .collect(Collectors.toList()));
-
-            if (withTask) {
-              this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
-            }
-          }
-
-          if (CollectionUtils.isNotEmpty(recordStatusIds)) {
-            recordIdsPerModel.addAll(recordStatusIds);
-            statusList.add(
-                new HashMap<String, Object>() {
-                  {
-                    put(
-                        "title",
-                        !StringUtils.isBlank(config.getDescription())
-                            ? config.getDescription()
-                            : config.getName());
-                    put("isMetaModel", isMetaModel);
-                    put("modelName", modelName);
-                    put("statusCount", recordStatusIds.size());
-                    put("statusRecordIds", recordStatusIds);
-                  }
-                });
-          }
-        });
-
-    if (withTask) {
-      taskMap.put("isMetaModel", isMetaModel);
-      taskMap.put("modelName", modelName);
-    }
-
-    return new Object[] {recordIdsPerModel, statusList, taskMap};
-  }
-
   @SuppressWarnings({"serial", "unchecked"})
   @Override
   public List<Map<String, Object>> getProcessPerUser(WkfModel wkfModel) {
     User user = AuthUtils.getUser();
     List<Map<String, Object>> dataList = new ArrayList<>();
 
-    List<WkfProcess> processList = getProcesses(wkfModel);
+    List<WkfProcess> processList = wkfDashboardCommonService.findProcesses(wkfModel, null);
 
     for (WkfProcess process : processList) {
       Map<String, Object> processMap = new HashMap<>();
@@ -597,7 +401,7 @@ public class WkfModelServiceImpl implements WkfModelService {
       WkfProcessConfig firstProcessConfig = null;
 
       List<WkfProcessConfig> processConfigs = process.getWkfProcessConfigList();
-      this.sortProcessConfig(processConfigs);
+      wkfDashboardCommonService.sortProcessConfig(processConfigs);
 
       int taskAssignedToMe = 0;
       List<String> _modelList = new ArrayList<>();
@@ -620,7 +424,9 @@ public class WkfModelServiceImpl implements WkfModelService {
         }
         _modelList.add(modelName);
 
-        Map<String, Object> _map = this.computeStatus(isMetaModel, modelName, process, user);
+        Map<String, Object> _map =
+            wkfDashboardCommonService.computeStatus(
+                isMetaModel, modelName, process, user, WkfDashboardCommonService.ASSIGNED_ME);
         List<Long> recordIdsPerModel = (List<Long>) _map.get("recordIdsPerModel");
 
         List<Map<String, Object>> statusList = (List<Map<String, Object>>) _map.get("statuses");
@@ -641,6 +447,7 @@ public class WkfModelServiceImpl implements WkfModelService {
                     !StringUtils.isBlank(processConfig.getTitle())
                         ? processConfig.getTitle()
                         : modelName);
+                put("modelName", modelName);
                 put("modelRecordCount", recordIdsPerModel.size());
                 put("isMetaModel", isMetaModel);
                 put("recordIdsPerModel", recordIdsPerModel);
@@ -672,218 +479,5 @@ public class WkfModelServiceImpl implements WkfModelService {
     }
 
     return dataList;
-  }
-
-  @Override
-  public List<WkfProcess> getProcesses(WkfModel wkfModel) {
-    return wkfProcessRepo
-        .all()
-        .filter("self.wkfModel.id = ?", wkfModel.getId())
-        .order("-id")
-        .fetch();
-  }
-
-  private List<MetaJsonRecord> getMetaJsonRecords(
-      WkfTaskConfig config,
-      List<String> processInstanceIds,
-      String modelName,
-      User user,
-      String type) {
-
-    LocalDate toDate = LocalDate.now();
-    String filter =
-        "self.processInstanceId IN (:processInstanceIds) AND self.jsonModel = :jsonModel";
-
-    String userPath = config.getUserPath();
-    if (user != null) {
-      if (Strings.isNullOrEmpty(userPath)) {
-        return new ArrayList<>();
-      }
-      filter += " AND self.attrs." + userPath + ".id = '" + user.getId() + "'";
-    }
-
-    if (type != null) {
-      String deadLinePath = config.getDeadlineFieldPath();
-      if (Strings.isNullOrEmpty(deadLinePath)) {
-        return new ArrayList<>();
-      }
-      filter += " AND self.attrs." + deadLinePath;
-      switch (type) {
-        case TASK_TODAY:
-          filter += " = '" + toDate + "'";
-          break;
-
-        case TASK_NEXT:
-          filter +=
-              " > '"
-                  + toDate
-                  + "' AND self.attrs."
-                  + config.getDeadlineFieldPath()
-                  + " < '"
-                  + toDate.plusDays(7)
-                  + "'";
-          break;
-
-        case LATE_TASK:
-          filter += " < '" + toDate + "'";
-          break;
-      }
-    }
-
-    return metaJsonRecordRepo
-        .all()
-        .filter(filter)
-        .bind("processInstanceIds", processInstanceIds)
-        .bind("jsonModel", modelName)
-        .fetch();
-  }
-
-  @SuppressWarnings("unchecked")
-  private Object[] getMetaModelRecordFilter(WkfTaskConfig config, String modelName, User user) {
-    MetaModel metaModel = metaModelRepo.findByName(modelName);
-    String model = metaModel.getFullName();
-    String filter = "self.processInstanceId IN (:processInstanceIds)";
-    Class<Model> klass = null;
-    try {
-      klass = (Class<Model>) Class.forName(model);
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
-
-    if (user != null) {
-      String path = config.getUserPath();
-      Property property = Mapper.of(klass).getProperty(path.split("\\.")[0]);
-      if (property == null) {
-        filter += " AND self.attrs." + path + ".id = '" + user.getId() + "'";
-      } else {
-        filter += " AND self." + path + ".id = " + user.getId();
-      }
-    }
-    return new Object[] {klass, filter};
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<Model> getMetaModelRecords(
-      WkfTaskConfig config,
-      List<String> processInstanceIds,
-      String modelName,
-      User user,
-      String type) {
-
-    LocalDate toDate = LocalDate.now();
-    Object obj[] = this.getMetaModelRecordFilter(config, modelName, user);
-    Class<Model> klass = (Class<Model>) obj[0];
-    String filter = (String) obj[1];
-
-    if (type != null) {
-      String deadLinePath = config.getDeadlineFieldPath();
-      if (Strings.isNullOrEmpty(deadLinePath)) {
-        return new ArrayList<>();
-      }
-      Property property = Mapper.of(klass).getProperty(deadLinePath.split("\\.")[0]);
-      if (property == null) {
-        filter += " AND self.attrs." + deadLinePath;
-        if (type.equals(TASK_NEXT)) {
-          filter +=
-              " > '"
-                  + toDate
-                  + "' AND self.attrs."
-                  + deadLinePath
-                  + " < '"
-                  + toDate.plusDays(7)
-                  + "'";
-        }
-      } else {
-        filter += " AND self." + deadLinePath;
-        if (type.equals(TASK_NEXT)) {
-          filter +=
-              " > '" + toDate + "' AND self." + deadLinePath + " < '" + toDate.plusDays(7) + "'";
-        }
-      }
-
-      if (type.equals(TASK_TODAY)) {
-        filter += " = '" + toDate + "'";
-      } else if (type.equals(LATE_TASK)) {
-        filter += " < '" + toDate + "'";
-      }
-    }
-
-    return JPA.all(klass).filter(filter).bind("processInstanceIds", processInstanceIds).fetch();
-  }
-
-  @Override
-  public List<WkfTaskConfig> getTaskConfigs(
-      WkfProcess process, String modelName, boolean isMetaModel, User user, boolean withTask) {
-
-    String filter = "self.processId = :processId";
-
-    if (user != null) {
-      filter += " AND self.userPath IS NOT NULL";
-    } else if (!withTask) {
-      filter += " AND self.userPath IS NULL";
-    }
-
-    if (user != null) {
-      filter +=
-          isMetaModel
-              ? " AND self.modelName = '" + modelName + "'"
-              : " AND self.jsonModelName = '" + modelName + "'";
-    }
-
-    return wkfTaskConfigRepo.all().filter(filter).bind("processId", process.getProcessId()).fetch();
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private void getTasks(
-      WkfTaskConfig config,
-      List<String> processInstanceIds,
-      String modelName,
-      boolean isMetaModel,
-      User user,
-      Map<String, Object> taskMap) {
-    List<Long> taskTodayIds = new ArrayList<>();
-    List<Long> taskNextIds = new ArrayList<>();
-    List<Long> lateTaskIds = new ArrayList<>();
-
-    if (!isMetaModel) {
-      List<MetaJsonRecord> taskTodayList =
-          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, TASK_TODAY);
-      taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
-
-      List<MetaJsonRecord> taskNextList =
-          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, TASK_NEXT);
-      taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
-
-      List<MetaJsonRecord> lateTaskList =
-          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, LATE_TASK);
-      lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
-
-    } else {
-      List<Model> taskTodayList =
-          this.getMetaModelRecords(config, processInstanceIds, modelName, user, TASK_TODAY);
-      taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
-
-      List<Model> taskNextList =
-          this.getMetaModelRecords(config, processInstanceIds, modelName, user, TASK_NEXT);
-      taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
-
-      List<Model> lateTaskList =
-          this.getMetaModelRecords(config, processInstanceIds, modelName, user, LATE_TASK);
-      lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
-    }
-
-    if (taskMap.containsKey("taskTodayIds")) {
-      taskTodayIds.addAll((List<Long>) taskMap.get("taskTodayIds"));
-    }
-    if (taskMap.containsKey("taskTodayIds")) {
-      taskNextIds.addAll((List<Long>) taskMap.get("taskNextIds"));
-    }
-    if (taskMap.containsKey("taskTodayIds")) {
-      lateTaskIds.addAll((List<Long>) taskMap.get("lateTaskIds"));
-    }
-
-    taskMap.put("taskTodayIds", taskTodayIds);
-    taskMap.put("taskNextIds", taskNextIds);
-    taskMap.put("lateTaskIds", lateTaskIds);
   }
 }

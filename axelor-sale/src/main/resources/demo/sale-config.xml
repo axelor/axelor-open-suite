@@ -103,4 +103,7 @@
   <input file="base_pricingLine.csv" separator=";" type="com.axelor.apps.base.db.PricingLine"
     search="self.importId = :importId"/>
 
+  <input file="sale_complementaryProduct.csv" separator=";"
+    type="com.axelor.apps.sale.db.ComplementaryProduct" search="self.importId = :importId"/>
+
 </csv-inputs>

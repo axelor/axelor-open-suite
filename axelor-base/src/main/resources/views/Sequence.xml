@@ -50,8 +50,9 @@
         onChange="action-sequence-method-compute-fullname"/>
       <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
         onChange="action-sequence-method-compute-fullname"/>
-      <field name="yearlyResetOk" readonlyIf="monthlyResetOk"/>
-      <field name="monthlyResetOk" onChange="action-sequence-monthly-reset"/>
+      <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
+        onChange="action-sequence-group-yearly-reset-on-change"/>
+      <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
     </panel>
     <panel-related name="sequenceVersionListPanel" field="sequenceVersionList"
       grid-view="sequence-version-grid" form-view="sequence-version-form"/>
@@ -64,7 +65,7 @@
   <grid editable="true" name="sequence-version-grid" title="Versions"
     model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">
     <field name="startDate"/>
-    <field name="endDate"/>
+    <field name="endDate" onChange="action-sequence-version-end-date-onchange-info"/>
     <field name="nextNum"/>
   </grid>
 
@@ -72,7 +73,7 @@
     model="com.axelor.apps.base.db.SequenceVersion">
     <panel name="mainPanel" itemSpan="4">
       <field name="startDate"/>
-      <field name="endDate"/>
+      <field name="endDate" onChange="action-sequence-version-end-date-onchange-info"/>
       <field name="nextNum"/>
     </panel>
   </form>
@@ -127,6 +128,31 @@
   <action-method name="action-sequence-method-compute-fullname">
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
   </action-method>
+
+  <action-method name="action-sequence-method-update-sequence-version-monthly">
+    <call class="com.axelor.apps.base.web.SequenceController"
+      method="updateSequenceVersionsMonthly"/>
+  </action-method>
+
+  <action-method name="action-sequence-method-update-sequence-version-yearly">
+    <call class="com.axelor.apps.base.web.SequenceController"
+      method="updateSequenceVersionsYearly"/>
+  </action-method>
+
+  <action-group name="action-sequence-group-yearly-reset-on-change">
+    <action name="action-sequence-method-update-sequence-version-yearly"/>
+  </action-group>
+
+  <action-group name="action-sequence-group-monthly-reset-on-change">
+    <action name="action-sequence-method-update-sequence-version-monthly"/>
+    <action name="action-sequence-monthly-reset"/>
+  </action-group>
+
+  <action-validate name="action-sequence-version-end-date-onchange-info">
+    <info
+      message="Changing manually the end date of a sequence which reset yearly or monthly could break the sequence system."
+      if="__self__ != null &amp;&amp; (sequence.yearlyResetOk || sequence.monthlyResetOk)"/>
+  </action-validate>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
     title="Sequence filters">

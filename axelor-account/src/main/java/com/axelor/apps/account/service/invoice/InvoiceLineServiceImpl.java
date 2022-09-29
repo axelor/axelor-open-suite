@@ -628,38 +628,45 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+
     if (CollectionUtils.isEmpty(invoiceLineList)) {
       return null;
-    } else {
-      for (InvoiceLine invoiceLine : invoiceLineList) {
+    }
 
-        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-        boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-        TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
-        invoiceLine.setTaxLine(taxLine);
-        invoiceLine.setTaxRate(taxLine.getValue());
-        invoiceLine.setTaxCode(taxLine.getTax().getCode());
+    for (InvoiceLine invoiceLine : invoiceLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementAccountService.getProductTaxEquiv(
-                invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
-        invoiceLine.setTaxEquiv(taxEquiv);
-
-        Account account =
-            accountManagementAccountService.getProductAccount(
-                invoiceLine.getProduct(),
-                invoice.getCompany(),
-                fiscalPosition,
-                isPurchase,
-                invoiceLine.getFixedAssets());
-        invoiceLine.setAccount(account);
-        invoiceLine.setInTaxTotal(
-            invoiceLine
-                .getExTaxTotal()
-                .multiply(invoiceLine.getTaxRate())
-                .setScale(2, RoundingMode.HALF_UP));
-        invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
+      // Skip line update if product is not filled
+      if (invoiceLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+      boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+
+      TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
+      invoiceLine.setTaxLine(taxLine);
+      invoiceLine.setTaxRate(taxLine.getValue());
+      invoiceLine.setTaxCode(taxLine.getTax().getCode());
+
+      TaxEquiv taxEquiv =
+          accountManagementAccountService.getProductTaxEquiv(
+              invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
+      invoiceLine.setTaxEquiv(taxEquiv);
+
+      Account account =
+          accountManagementAccountService.getProductAccount(
+              invoiceLine.getProduct(),
+              invoice.getCompany(),
+              fiscalPosition,
+              isPurchase,
+              invoiceLine.getFixedAssets());
+      invoiceLine.setAccount(account);
+      invoiceLine.setInTaxTotal(
+          invoiceLine
+              .getExTaxTotal()
+              .multiply(invoiceLine.getTaxRate())
+              .setScale(2, RoundingMode.HALF_UP));
+      invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
     }
     return invoiceLineList;
   }

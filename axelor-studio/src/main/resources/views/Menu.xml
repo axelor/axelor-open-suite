@@ -142,5 +142,43 @@
     <view-param name="details-view" value="true"/>
   </action-view>
 
+  <menuitem name="studio-web-service" title="Web service" parent="app-builder-root"
+    order="90"/>
+
+  <menuitem name="studio-web-service-ws-request" title="Request" order="5"
+    parent="studio-web-service" action="studio.web.service.ws.request"/>
+
+  <action-view name="studio.web.service.ws.request" title="Request"
+    model="com.axelor.studio.db.WsRequest">
+    <view type="grid" name="ws-request-grid"/>
+    <view type="form" name="ws-request-form"/>
+  </action-view>
+
+  <menuitem name="studio-web-service-ws-connector" title="Connector" order="10"
+    parent="studio-web-service" action="studio.web.service.ws.connector"/>
+
+  <action-view name="studio.web.service.ws.connector" title="Connector"
+    model="com.axelor.studio.db.WsConnector">
+    <view type="grid" name="ws-connector-grid"/>
+    <view type="form" name="ws-connector-form"/>
+  </action-view>
+
+  <menuitem name="studio-web-service-ws-authenticator" title="Authenticator" order="15"
+    parent="studio-web-service" action="studio.web.service.ws.authenticator"/>
+
+  <action-view name="studio.web.service.ws.authenticator" title="Authenticator"
+    model="com.axelor.studio.db.WsAuthenticator">
+    <view type="grid" name="ws-authenticator-grid"/>
+    <view type="form" name="ws-authenticator-form"/>
+  </action-view>
+
+  <action-view name="admin.root.app.management" title="Apps management"
+    model="com.axelor.apps.base.db.App" id="admin.root.custom.app.management">
+    <view type="cards" name="app-cards"/>
+    <view type="grid" name="app-grid"/>
+    <view type="form" name="app-form"/>
+    <domain>self.isCustom = null OR self.isCustom = false OR (self.isCustom = true AND
+      self.isInAppView = true)</domain>
+  </action-view>
 
 </object-views>

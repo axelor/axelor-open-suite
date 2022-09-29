@@ -21,11 +21,12 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
@@ -149,7 +150,7 @@ public class BankReconciliationController {
             bankReconciliationRepository.find(bankReconciliation.getId()));
         response.setReload(true);
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.BANK_RECONCILIATION_ALREADY_OPEN));
+        response.setAlert(I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_ALREADY_OPEN));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -301,7 +302,13 @@ public class BankReconciliationController {
       if (Strings.isNullOrEmpty(journalIds)) {
         response.setAttr("journal", "domain", "self.id IN (0)");
       } else {
-        response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+        response.setAttr(
+            "journal",
+            "domain",
+            "self.id IN("
+                + journalIds
+                + ") AND self.statusSelect = "
+                + JournalRepository.STATUS_ACTIVE);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -462,12 +469,20 @@ public class BankReconciliationController {
 
   public void computeTotalOfSelectedMoveLines(ActionRequest request, ActionResponse response) {
     try {
+      Long bankReconciliationId =
+          Long.valueOf(
+              (Integer)
+                  ((LinkedHashMap<?, ?>) request.getContext().get("_bankReconciliation"))
+                      .get("id"));
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliationId);
+
       List<LinkedHashMap> toReconcileMoveLineSet =
           (List<LinkedHashMap>) (request.getContext().get("toReconcileMoveLineSet"));
       response.setValue(
           "$selectedMoveLineTotal",
           Beans.get(BankReconciliationService.class)
-              .getSelectedMoveLineTotal(toReconcileMoveLineSet));
+              .getSelectedMoveLineTotal(bankReconciliation, toReconcileMoveLineSet));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

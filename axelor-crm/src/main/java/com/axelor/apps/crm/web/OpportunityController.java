@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
@@ -52,8 +53,7 @@ public class OpportunityController {
         opportunityService.saveOpportunity(opportunity);
       }
     } else {
-      response.setNotify(
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
+      response.setNotify(I18n.get(BaseExceptionMessage.RECORD_NONE_SELECTED));
       return;
     }
 
