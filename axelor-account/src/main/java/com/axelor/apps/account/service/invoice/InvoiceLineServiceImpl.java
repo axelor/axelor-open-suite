@@ -447,8 +447,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Product product = invoiceLine.getProduct();
 
     Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-    productInformation.put("productName", product.getName());
-    productInformation.put("productCode", product.getCode());
+    if (productInformation.get("productName") == null
+        && productInformation.get("productCode") == null) {
+      productInformation.put("productName", product.getName());
+      productInformation.put("productCode", product.getCode());
+    }
     productInformation.put("unit", this.getUnit(product, isPurchase));
 
     AppInvoice appInvoice = appAccountService.getAppInvoice();
@@ -504,9 +507,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     productInformation.putAll(
         this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
-
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-
     return productInformation;
   }
 

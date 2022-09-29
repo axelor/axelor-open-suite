@@ -1,0 +1,8 @@
+---
+title : "Invoice Line : choosing a product from a supplier catalog in an invoice line now has the same behavior as a purchase order line"
+type: fix
+description: |
+  In an invoice line :
+  Choosing a product from a supplier catalog takes the product name from the supplier catalog.
+  If there is a minimum quantity, the user is alerted that the quantity is inferior than the minimum quantity.
+  Choosing a quantity inferior than the minimum quantity doesn't remove the product name anymore.
