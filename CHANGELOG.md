@@ -1,3 +1,17 @@
+## [5.4.25] (2022-09-29)
+
+#### Fixed
+
+* Sale order: fixed an issue allowing users to invoice too much quantities when invoicing partially.
+* Sale order: fixed an error preventing users from invoicing partially a sale order after refunding it.
+* Move: fixed error message when trying to remove a move.
+* Debt recovery: removed error message when there is no email address for a mail type message.
+* Invoice: generating an invoice from a sale order or a stock move now correctly sets the project.
+* Contract: remove duplicate duration values on contract templates and fix french translation in form view.
+* Stock move line: fixed an issue allowing the user to fill quantity in a title line, causing inconsistencies.
+* Tracking number: fixed an issue where the product was missing in a tracking number created from inventory lines.
+* Tax: fixed an error occurring when choosing a product for a sale or a purchase order if the creation date was not filled.
+
 ## [5.4.24] (2022-09-15)
 
 #### Fixed
@@ -683,6 +697,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.25]: https://github.com/axelor/axelor-open-suite/compare/v5.4.24...v5.4.25
 [5.4.24]: https://github.com/axelor/axelor-open-suite/compare/v5.4.23...v5.4.24
 [5.4.23]: https://github.com/axelor/axelor-open-suite/compare/v5.4.22...v5.4.23
 [5.4.22]: https://github.com/axelor/axelor-open-suite/compare/v5.4.21...v5.4.22
