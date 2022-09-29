@@ -475,8 +475,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
-            && toStatus == StockMoveRepository.STATUS_REALIZED) {
+        if (toStatus == StockMoveRepository.STATUS_REALIZED) {
           this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
@@ -496,11 +495,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-      this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+      BigDecimal avgPrice =
+          Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO);
+      if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+        avgPrice = this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+      }
+
+      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
     }
   }
 
-  protected void computeNewAveragePriceLocationLine(
+  protected BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     // avgPrice in stock move line is a bigdecimal but is nullable.
@@ -555,7 +560,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       newAvgPrice = oldAvgPrice;
     }
-    stockLocationLineService.updateWap(stockLocationLine, newAvgPrice, stockMoveLine);
+    return newAvgPrice;
   }
 
   @Override
