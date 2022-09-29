@@ -158,12 +158,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getBudget() != null
+        Budget budget = purchaseOrderLine.getBudget();
+        if (purchaseOrder.getStatusSelect().equals(PurchaseOrderRepository.STATUS_REQUESTED)
+            && budget != null
             && (purchaseOrderLine.getBudgetDistributionList() == null
                 || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(purchaseOrderLine.getBudget());
+          budgetDistribution.setBudget(budget);
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
+          budgetDistribution.setBudgetAmountAvailable(
+              budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
@@ -479,5 +483,23 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
     return exTaxTotal;
+  }
+
+  @Transactional
+  @Override
+  public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        List<BudgetDistribution> budgetDistributionList =
+            purchaseOrderLine.getBudgetDistributionList();
+        Budget budget = purchaseOrderLine.getBudget();
+        if (!budgetDistributionList.isEmpty() && budget != null) {
+          for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+            budgetDistribution.setBudgetAmountAvailable(
+                budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
+          }
+        }
+      }
+    }
   }
 }
