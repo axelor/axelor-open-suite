@@ -388,6 +388,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public InvoiceTerm initCustomizedInvoiceTerm(
       MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) throws AxelorException {
+    invoiceTerm.setMoveLine(moveLine);
     if (move != null) {
       invoiceTerm.setInvoice(move.getInvoice());
       invoiceTerm.setPaymentMode(move.getPaymentMode());
