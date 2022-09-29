@@ -476,7 +476,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
         if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+          // If it is a outcoming move
+          if (toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine);
+
+          } else {
+            this.updateAveragePriceLocationLine(
+                toStockLocation, stockMoveLine, fromStatus, toStatus);
+          }
+
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
       }
@@ -503,6 +511,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
     }
+  }
+
+  protected void updateWapStockMoveLine(StockLocation stockLocation, StockMoveLine stockMoveLine) {
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocation, stockMoveLine.getProduct());
+    if (stockLocationLine == null) {
+      return;
+    }
+    BigDecimal avgPrice =
+        Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO);
+    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
   }
 
   protected BigDecimal computeNewAveragePriceLocationLine(
