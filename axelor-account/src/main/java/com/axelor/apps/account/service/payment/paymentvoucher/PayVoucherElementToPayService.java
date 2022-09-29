@@ -148,7 +148,10 @@ public class PayVoucherElementToPayService {
   public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay)
       throws AxelorException {
     if (!payVoucherElementToPay.getApplyFinancialDiscount()
-        || payVoucherElementToPay.getFinancialDiscount() == null) {
+        || payVoucherElementToPay.getFinancialDiscount() == null
+        || (payVoucherElementToPay.getInvoiceTerm() != null
+            && payVoucherElementToPay.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum()
+                == 0)) {
       return;
     }
 
