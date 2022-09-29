@@ -1,3 +1,34 @@
+## [6.3.1] (2022-09-29)
+
+#### Fixed
+
+* Sale order: fixed an issue allowing users to invoice too much quantities when invoicing partially.
+* Sale order: fixed an error preventing users from invoicing partially a sale order after refunding it.
+* Sale quotation template: Fix NPE error when saving a new sale quotation template.
+* Bank Statement: corrected wrong behaviors of check bank statement on import.
+* Account type: Update demo data by checking, on the designated technical account types, the checkbox that exports the partner associated to the move line.
+* Move: fixed an issue where simulate button was not displayed on grid view after deleting move from form view.
+* Move: fixed error message when trying to remove a move.
+* Move: fixed an issue where the period field was not emptied on company change, causing inconsistencies.
+* Move: duplicating a move with status simulated will now correctly reset the status to new instead of simulated.
+* Move: prevent the accounting of a move that contains move lines out of the move period.
+* Move: optimize performance when reconciling multiple move lines.
+* Journal: complete "allow accounting daybook" in journal demo data.
+* Debt recovery: removed error message when there is no email address for a mail type message.
+* Purchase Order: fixed an issue where "amount available" in budget tab was not correctly computed.
+* DAS2: fix mandatory infos null checks for DAS2 export
+* Invoice: generating an invoice from a sale order or a stock move now correctly sets the project.
+* Invoice: fixed an issue where project was not filled on a partial invoice generated from a purchase order.
+* Invoice line: fix error message when opening an invoice line not from an invoice.
+* Bank Payment: added bank statement demo data.
+* Contract: remove duplicate duration values on contract templates and fix french translation in form view.
+* MRP: fixed MRP calculation for manufacturing order partially finished, the remaining amount to produce is now used in the computation.
+* Stock move line: fixed an issue allowing the user to fill quantity in a title line, causing inconsistencies.
+* Tracking number: fixed an issue where the product was missing in a tracking number created from inventory lines.
+* Tax: fixed an error occurring when choosing a product for a sale or a purchase order if the creation date was not filled.
+* Accounting Report: corrected numbers exported as text in general comparative balance report in excel format.
+* Accounting Batch: fixed NPE error on bank order creation when expense payment date is null.
+
 ## [6.3.0] (2022-09-15)
 
 #### Features
@@ -113,4 +144,5 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.1]: https://github.com/axelor/axelor-open-suite/compare/v6.3.0...v6.3.1
 [6.3.0]: https://github.com/axelor/axelor-open-suite/compare/v6.2.8...v6.3.0
