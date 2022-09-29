@@ -1,3 +1,22 @@
+## [6.1.21] (2022-09-29)
+
+#### Fixed
+
+* Sale order: fixed an issue allowing users to invoice too much quantities when invoicing partially.
+* Sale order: fixed an error preventing users from invoicing partially a sale order after refunding it.
+* Move: fixed error message when trying to remove a move.
+* Move: fixed an issue where the period field was not emptied on company change, causing inconsistencies.
+* Debt recovery: removed error message when there is no email address for a mail type message.
+* Purchase Order: fixed an issue where "amount available" in budget tab was not correctly computed.
+* Bank Payment: added bank statement demo data.
+* Invoice: generating an invoice from a sale order or a stock move now correctly sets the project.
+* Contract: remove duplicate duration values on contract templates and fix french translation in form view.
+* MRP: fixed MRP calculation for manufacturing order partially finished, the remaining amount to produce is now used in the computation.
+* Stock move line: fixed an issue allowing the user to fill quantity in a title line, causing inconsistencies.
+* Tracking number: fixed an issue where the product was missing in a tracking number created from inventory lines.
+* BPM: optimization in BPM editor, BPM records are now loaded only if they are needed.
+* Tax: fixed an error occurring when choosing a product for a sale or a purchase order if the creation date was not filled.
+
 ## [6.1.20] (2022-09-15)
 
 #### Fixed
@@ -751,6 +770,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.21]: https://github.com/axelor/axelor-open-suite/compare/v6.1.20...v6.1.21
 [6.1.20]: https://github.com/axelor/axelor-open-suite/compare/v6.1.19...v6.1.20
 [6.1.19]: https://github.com/axelor/axelor-open-suite/compare/v6.1.18...v6.1.19
 [6.1.18]: https://github.com/axelor/axelor-open-suite/compare/v6.1.17...v6.1.18
