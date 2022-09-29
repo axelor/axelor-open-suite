@@ -1,5 +1,0 @@
----
-title : "MRP : Fix MRP calculation for manufacturing order partially finished"
-type: fix
-description: |
-  Now display the remaining amount to produce in a line generated from a manufacturing order partially finished.
