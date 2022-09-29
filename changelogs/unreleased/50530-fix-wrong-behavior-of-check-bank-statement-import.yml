@@ -1,7 +1,0 @@
----
-title: "BANK STATEMENT: corrected wrong behaviors of check bank statement import"
-type: fix
-description: |
-   corrected check amount with previous bank statement, that were searching the wrong bank statement line
-   added call of check bank statement import to automatic part
-   corrected bank details not updated if check bank statement import returned an error

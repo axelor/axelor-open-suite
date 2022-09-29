@@ -1,6 +1,0 @@
-title: Fix errors on purchase order production service
-type: fix
-description: |
-  Fix cast exception & rollback exception.
-  Refactor to inject classes instead of Beans.get
-  Fix not conforming to database contraint during flush
