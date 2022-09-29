@@ -504,10 +504,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       BigDecimal avgPrice =
-          Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO);
-      if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-        avgPrice = this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-      }
+          this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 
       stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
     }
