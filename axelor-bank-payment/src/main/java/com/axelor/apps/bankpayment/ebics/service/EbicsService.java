@@ -61,15 +61,12 @@ import org.jdom.JDOMException;
 
 public class EbicsService {
 
-  @Inject private EbicsUserRepository userRepo;
+  protected final EbicsUserRepository userRepo;
+  protected final EbicsRequestLogRepository logRepo;
+  protected final EbicsUserService userService;
+  protected final MetaFiles metaFiles;
 
-  @Inject private EbicsRequestLogRepository logRepo;
-
-  @Inject private EbicsUserService userService;
-
-  @Inject private MetaFiles metaFiles;
-
-  private EbicsProduct defaultProduct;
+  protected final EbicsProduct defaultProduct;
 
   static {
     org.apache.xml.security.Init.init();
@@ -77,7 +74,16 @@ public class EbicsService {
   }
 
   @Inject
-  public EbicsService() {
+  public EbicsService(
+      EbicsUserRepository userRepo,
+      EbicsRequestLogRepository logRepo,
+      EbicsUserService userService,
+      MetaFiles metaFiles) {
+
+    this.userRepo = userRepo;
+    this.logRepo = logRepo;
+    this.userService = userService;
+    this.metaFiles = metaFiles;
 
     AppSettings settings = AppSettings.get();
     String name = settings.get("application.name") + " " + settings.get("application.version");
@@ -300,7 +306,7 @@ public class EbicsService {
     sendFULRequest(transportUser, signatoryUser, product, file, ebicsCodification, signature);
   }
 
-  private String findEbicsCodification(EbicsPartner ebicsPartner, BankOrderFileFormat format)
+  protected String findEbicsCodification(EbicsPartner ebicsPartner, BankOrderFileFormat format)
       throws AxelorException {
     Preconditions.checkNotNull(ebicsPartner);
     Preconditions.checkNotNull(format);
@@ -328,7 +334,7 @@ public class EbicsService {
    * @param product the application product.
    * @throws AxelorException
    */
-  private void sendFULRequest(
+  protected void sendFULRequest(
       EbicsUser transportUser,
       EbicsUser signatoryUser,
       EbicsProduct product,
@@ -425,7 +431,7 @@ public class EbicsService {
     return fetchFile(OrderType.HPD, user, product, start, end, null);
   }
 
-  private File fetchFile(
+  protected File fetchFile(
       OrderType orderType,
       EbicsUser user,
       EbicsProduct product,
@@ -469,7 +475,7 @@ public class EbicsService {
     return file;
   }
 
-  private boolean isTest(EbicsUser user) {
+  protected boolean isTest(EbicsUser user) {
 
     EbicsPartner partner = user.getEbicsPartner();
 
