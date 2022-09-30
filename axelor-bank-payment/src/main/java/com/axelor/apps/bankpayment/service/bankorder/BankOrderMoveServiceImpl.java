@@ -60,16 +60,20 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected BankPaymentConfigService bankPaymentConfigService;
   protected MoveLineCreateService moveLineCreateService;
 
-  protected PaymentMode paymentMode;
-  protected Company senderCompany;
-  protected int orderTypeSelect;
-  protected int partnerTypeSelect;
-  protected Journal journal;
-  protected Account senderBankAccount;
-  protected BankDetails senderBankDetails;
-  protected boolean isMultiDate;
-  protected boolean isMultiCurrency;
-  protected boolean isDebit;
+  // TODO: remove all the following attributes, this is not reliable for parallel processes
+  // Instead give the bankOrder & the structure in method parameters (see 2nd TODO below)
+  @Deprecated protected PaymentMode paymentMode;
+  @Deprecated protected Company senderCompany;
+  @Deprecated protected int orderTypeSelect;
+  @Deprecated protected int partnerTypeSelect;
+  @Deprecated protected BankDetails senderBankDetails;
+  @Deprecated protected boolean isMultiDate;
+  @Deprecated protected boolean isMultiCurrency;
+  // TODO: use a proper structure to contain the 3 following computed attributes to use them without
+  // having to recompute them in loops
+  @Deprecated protected Journal journal;
+  @Deprecated protected Account senderBankAccount;
+  @Deprecated protected boolean isDebit;
 
   @Inject
   public BankOrderMoveServiceImpl(
