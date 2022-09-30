@@ -896,6 +896,7 @@
 "Supplier invoices in dispute",,,
 "Supplier's delay on payment",,,
 "TLS",,,
+"TECHNICAL_FIELD_HELP","Technical field, should not be displayed.",,
 "Technical Origin",,,
 "Template",,,
 "Test configuration",,,

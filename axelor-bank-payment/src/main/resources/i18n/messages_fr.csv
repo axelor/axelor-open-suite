@@ -896,6 +896,7 @@
 "Supplier invoices in dispute","Factures fournisseurs en litige",,
 "Supplier's delay on payment","Délai fournisseur sur paiement",,
 "TLS","TLS",,
+"TECHNICAL_FIELD_HELP","Champ technique, ne devrait pas être affiché.",,
 "Technical Origin","Origine technique",,
 "Template","Modèle",,
 "Test configuration","Configuration de test",,
