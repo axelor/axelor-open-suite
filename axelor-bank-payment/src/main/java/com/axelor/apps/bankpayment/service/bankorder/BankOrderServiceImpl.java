@@ -77,16 +77,17 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
-  protected BankOrderRepository bankOrderRepo;
-  protected InvoicePaymentRepository invoicePaymentRepo;
-  protected BankOrderLineService bankOrderLineService;
-  protected EbicsService ebicsService;
-  protected InvoicePaymentCancelService invoicePaymentCancelService;
-  protected BankPaymentConfigService bankPaymentConfigService;
-  protected SequenceService sequenceService;
-  protected BankOrderLineOriginService bankOrderLineOriginService;
-  protected BankOrderMoveService bankOrderMoveService;
-  protected AppBaseService appBaseService;
+  protected final BankOrderRepository bankOrderRepo;
+  protected final InvoicePaymentRepository invoicePaymentRepo;
+  protected final BankOrderLineService bankOrderLineService;
+  protected final EbicsService ebicsService;
+  protected final InvoicePaymentCancelService invoicePaymentCancelService;
+  protected final BankPaymentConfigService bankPaymentConfigService;
+  protected final SequenceService sequenceService;
+  protected final BankOrderLineOriginService bankOrderLineOriginService;
+  protected final BankOrderMoveService bankOrderMoveService;
+  protected final AppBaseService appBaseService;
+  protected final AppBankPaymentService appBankPaymentService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -99,7 +100,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderMoveService bankOrderMoveService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AppBankPaymentService appBankPaymentService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -111,6 +113,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderMoveService = bankOrderMoveService;
     this.appBaseService = appBaseService;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -314,7 +317,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
+    if (appBankPaymentService.getAppBankPayment().getEnableEbicsModule()
         && paymentMode != null
         && paymentMode.getAutomaticTransmission()) {
 
@@ -357,7 +360,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public void realize(BankOrder bankOrder) throws AxelorException {
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
+    if (appBankPaymentService.getAppBankPayment().getEnableEbicsModule()) {
       if (bankOrder.getSignatoryEbicsUser() == null) {
         throw new AxelorException(
             bankOrder,
@@ -409,7 +412,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
+    if (appBankPaymentService.getAppBankPayment().getEnableEbicsModule()) {
       bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
     }
 
