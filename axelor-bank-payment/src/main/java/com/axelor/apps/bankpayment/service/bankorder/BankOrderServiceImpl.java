@@ -255,14 +255,12 @@ public class BankOrderServiceImpl implements BankOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINES_MISSING));
     } else {
-      validateBankOrderLines(
-          bankOrderLines, bankOrder.getOrderTypeSelect(), bankOrder.getArithmeticTotal());
+      validateBankOrderLines(bankOrderLines, bankOrder.getArithmeticTotal());
     }
   }
 
-  public void validateBankOrderLines(
-      List<BankOrderLine> bankOrderLines, int orderType, BigDecimal arithmeticTotal)
-      throws AxelorException {
+  protected void validateBankOrderLines(
+      List<BankOrderLine> bankOrderLines, BigDecimal arithmeticTotal) throws AxelorException {
     BigDecimal totalAmount = BigDecimal.ZERO;
     for (BankOrderLine bankOrderLine : bankOrderLines) {
 
