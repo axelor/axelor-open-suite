@@ -3228,6 +3228,7 @@
 "VAT Statement on amount received","État TVA sur encaissement",,
 "VAT Statement on invoices","État TVA sur facturation",,
 "VAT System","Régime TVA",,
+"VAT system missing for partner %s and for account %s.","Régime TVA manquant pour le tiers %s et pour le compte %s.",,
 "Valid","Valide",,
 "Valid the generated move","Valider l'écriture générée ?",,
 "Validate","Valider",,

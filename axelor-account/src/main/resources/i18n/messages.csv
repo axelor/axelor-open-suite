@@ -3228,6 +3228,7 @@
 "VAT Statement on amount received",,,
 "VAT Statement on invoices",,,
 "VAT System",,,
+"VAT system missing for partner %s and for account %s.",,,
 "Valid",,,
 "Valid the generated move",,,
 "Validate",,,

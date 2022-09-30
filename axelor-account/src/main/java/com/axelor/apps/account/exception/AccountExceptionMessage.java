@@ -1278,6 +1278,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
 
+  public static final String ACCOUNT_VAT_SYSTEM_MISSING = /*$$(*/
+      "VAT system missing for partner %s and for account %s." /*)*/;
+
   public static final String TAX_MOVELINE_VAT_SYSTEM_DEFAULT = /*$$(*/
       "At least one tax accounting move line associated to the move %s is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
 

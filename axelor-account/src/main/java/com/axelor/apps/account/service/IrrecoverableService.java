@@ -19,6 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -35,6 +36,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
@@ -95,6 +97,7 @@ public class IrrecoverableService {
   protected TaxService taxService;
   protected TaxAccountService taxAccountService;
   protected PaymentScheduleService paymentScheduleService;
+  protected AccountingSituationService accountingSituationService;
   protected PaymentScheduleRepository paymentScheduleRepo;
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
   protected AccountConfigService accountConfigService;
@@ -118,6 +121,7 @@ public class IrrecoverableService {
       TaxService taxService,
       TaxAccountService taxAccountService,
       PaymentScheduleService paymentScheduleService,
+      AccountingSituationService accountingSituationService,
       PaymentScheduleRepository paymentScheduleRepo,
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       AccountConfigService accountConfigService,
@@ -135,6 +139,7 @@ public class IrrecoverableService {
     this.reconcileService = reconcileService;
     this.taxService = taxService;
     this.taxAccountService = taxAccountService;
+    this.accountingSituationService = accountingSituationService;
     this.paymentScheduleService = paymentScheduleService;
     this.paymentScheduleRepo = paymentScheduleRepo;
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
@@ -927,6 +932,26 @@ public class IrrecoverableService {
             invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          AccountingSituation accountingSituation =
+              accountingSituationService.getAccountingSituation(payerPartner, company);
+          int vatSystemSelect = 0;
+          if (accountingSituation != null) {
+            vatSystemSelect = accountingSituation.getVatSystemSelect();
+          } else {
+            vatSystemSelect = invoiceMoveLine.getAccount().getVatSystemSelect();
+          }
+          if (vatSystemSelect == 0) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.ACCOUNT_VAT_SYSTEM_MISSING),
+                invoiceMove.getCompany().getPartner().getName(),
+                invoiceMoveLine.getAccount().getName());
+          }
+
+          if (vatSystemSelect == AccountingSituationRepository.VAT_DELIVERY
+              && invoiceMoveLine.getVatSystemSelect() != MoveLineRepository.VAT_COMMON_SYSTEM) {
+            continue;
+          }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
@@ -935,7 +960,7 @@ public class IrrecoverableService {
                       invoiceMoveLine.getTaxLine().getTax(),
                       company,
                       move.getJournal(),
-                      invoiceMoveLine.getAccount().getVatSystemSelect(),
+                      invoiceMoveLine.getVatSystemSelect(),
                       false,
                       move.getFunctionalOriginSelect()),
                   amount,
