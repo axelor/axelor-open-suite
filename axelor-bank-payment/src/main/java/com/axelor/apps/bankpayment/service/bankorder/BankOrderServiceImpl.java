@@ -127,6 +127,10 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.appBankPaymentService = appBankPaymentService;
   }
 
+  protected boolean isEbicsEnabled() {
+    return Boolean.TRUE.equals(appBankPaymentService.getAppBankPayment().getEnableEbicsModule());
+  }
+
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
 
     LocalDate brankOrderDate = bankOrder.getBankOrderDate();
@@ -168,7 +172,8 @@ public class BankOrderServiceImpl implements BankOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
     }
-    if (!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() == null) {
+    if (Boolean.FALSE.equals(bankOrder.getIsMultiCurrency())
+        && bankOrder.getBankOrderCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
@@ -222,7 +227,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
     }
 
-    if (!bankOrder.getIsMultiCurrency()) {
+    if (Boolean.FALSE.equals(bankOrder.getIsMultiCurrency())) {
       bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
     }
 
@@ -355,9 +360,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
-    if (appBankPaymentService.getAppBankPayment().getEnableEbicsModule()
+    if (isEbicsEnabled()
         && paymentMode != null
-        && paymentMode.getAutomaticTransmission()) {
+        && Boolean.TRUE.equals(paymentMode.getAutomaticTransmission())) {
 
       bankOrder.setConfirmationDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
       bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
@@ -401,7 +406,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public void realize(BankOrder bankOrder) throws AxelorException {
 
-    if (appBankPaymentService.getAppBankPayment().getEnableEbicsModule()) {
+    if (isEbicsEnabled()) {
       if (bankOrder.getSignatoryEbicsUser() == null) {
         throw new AxelorException(
             bankOrder,
@@ -451,7 +456,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
-    if (appBankPaymentService.getAppBankPayment().getEnableEbicsModule()) {
+    if (isEbicsEnabled()) {
       bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
     }
 
@@ -583,7 +588,7 @@ public class BankOrderServiceImpl implements BankOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
     }
-    if (!bankDetails.getActive()) {
+    if (Boolean.FALSE.equals(bankDetails.getActive())) {
       throw new AxelorException(
           bankOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -597,7 +602,8 @@ public class BankOrderServiceImpl implements BankOrderService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BankPaymentExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
       }
-      if (!bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+      if (Boolean.FALSE.equals(
+              bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails())
           && !this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
         throw new AxelorException(
             bankOrder,
