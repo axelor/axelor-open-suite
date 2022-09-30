@@ -288,13 +288,11 @@ public class BankOrderServiceImpl implements BankOrderService {
     for (InvoicePayment invoicePayment : invoicePaymentList) {
       if (invoicePayment != null
           && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
-          && invoicePayment.getInvoice() != null) {
+          && invoicePayment.getInvoice() != null
+          && bankOrderLineOriginService.existBankOrderLineOrigin(
+              bankOrder, invoicePayment.getInvoice())) {
 
-        if (bankOrderLineOriginService.existBankOrderLineOrigin(
-            bankOrder, invoicePayment.getInvoice())) {
-
-          invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
-        }
+        invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
       }
     }
   }
@@ -642,11 +640,10 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder) {
     // filter on the currency if it is set in file format
-    if (bankOrder.getBankOrderCurrency() != null) {
-      if (bankDetails.getCurrency() != null
-          && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
-        return false;
-      }
+    if (bankOrder.getBankOrderCurrency() != null
+        && bankDetails.getCurrency() != null
+        && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
+      return false;
     }
 
     return true;
