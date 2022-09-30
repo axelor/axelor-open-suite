@@ -319,7 +319,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     return bankOrder;
   }
 
-  protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
+  protected BankOrder generateMovesAndValidatePayment(BankOrder bankOrder) throws AxelorException {
     switch (bankOrder.getFunctionalOriginSelect()) {
       case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
         PaymentSession paymentSession =
@@ -335,7 +335,9 @@ public class BankOrderServiceImpl implements BankOrderService {
         validatePayment(bankOrder);
     }
 
-    return bankOrderRepo.find(bankOrder.getId());
+    bankOrder = bankOrderRepo.find(bankOrder.getId());
+    bankOrder.setAreMovesGenerated(true);
+    return bankOrder;
   }
 
   @Override
@@ -369,9 +371,10 @@ public class BankOrderServiceImpl implements BankOrderService {
       validate(bankOrder);
     }
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
-      this.generateMoves(bankOrder);
+    if (Boolean.FALSE.equals(bankOrder.getAreMovesGenerated())
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
+      this.generateMovesAndValidatePayment(bankOrder);
     }
   }
 
@@ -391,9 +394,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      bankOrder = this.generateMoves(bankOrder);
+    if (Boolean.FALSE.equals(bankOrder.getAreMovesGenerated())
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
+      bankOrder = this.generateMovesAndValidatePayment(bankOrder);
     }
 
     bankOrderRepo.save(bankOrder);
@@ -415,8 +419,9 @@ public class BankOrderServiceImpl implements BankOrderService {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
       }
-
-      sendBankOrderFile(bankOrder);
+      if (Boolean.FALSE.equals(bankOrder.getHasBeenSentToBank())) {
+        sendBankOrderFile(bankOrder);
+      }
     }
     realizeBankOrder(bankOrder);
   }
@@ -442,11 +447,17 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  protected void markAsSent(BankOrder bankOrder) throws AxelorException {
+    bankOrder.setHasBeenSentToBank(true);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
-      bankOrder = this.generateMoves(bankOrder);
+    if (Boolean.FALSE.equals(bankOrder.getAreMovesGenerated())
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
+      bankOrder = this.generateMovesAndValidatePayment(bankOrder);
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
