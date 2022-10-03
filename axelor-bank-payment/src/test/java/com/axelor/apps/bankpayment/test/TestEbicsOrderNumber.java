@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.test;
 
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class TestEbicsOrderNumber {
 
   @Test
   public void validateOrderId() {
-    EbicsUserService ebicsUserService = new EbicsUserService();
+    EbicsUserService ebicsUserService = Beans.get(EbicsUserService.class);
     try {
       ebicsUserService.getNextOrderNumber("01.AC");
     } catch (AxelorException e) {
@@ -36,7 +37,7 @@ public class TestEbicsOrderNumber {
 
   @Test
   public void testPossibleOrderNumbers() {
-    EbicsUserService ebicsUserService = new EbicsUserService();
+    EbicsUserService ebicsUserService = Beans.get(EbicsUserService.class);
     int i = 0;
     String orderNo = "A000";
     try {

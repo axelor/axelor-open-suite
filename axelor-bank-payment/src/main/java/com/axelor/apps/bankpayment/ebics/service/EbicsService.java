@@ -49,10 +49,8 @@ import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
 import java.util.List;
@@ -138,13 +136,6 @@ public class EbicsService {
     boolean okay = verifier.verify(signature);*/
 
     return pub;
-  }
-
-  public RSAPrivateKey getPrivateKey(byte[] encoded)
-      throws NoSuchAlgorithmException, InvalidKeySpecException {
-    PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-    KeyFactory kf = KeyFactory.getInstance("RSA");
-    return (RSAPrivateKey) kf.generatePrivate(keySpec);
   }
 
   /**
