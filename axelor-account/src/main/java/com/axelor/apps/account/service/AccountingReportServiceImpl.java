@@ -229,6 +229,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getYear() != null
+        && accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
