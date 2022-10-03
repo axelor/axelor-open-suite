@@ -729,17 +729,16 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      if (moveLine.getAccount() != null) {
-        if (moveLine.getAccount().getHasInvoiceTerm()
-            && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-          if (moveLine.getMove() == null) {
-            moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
-          }
+      if (moveLine.getAccount() != null && moveLine.getAccount().getHasInvoiceTerm()) {
 
-          LocalDate dueDate = this.extractDueDate(request);
-          Beans.get(MoveLineInvoiceTermService.class)
-              .generateDefaultInvoiceTerm(moveLine, dueDate, false);
+        if (moveLine.getMove() == null) {
+          moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
         }
+
+        LocalDate dueDate = this.extractDueDate(request);
+        moveLine.clearInvoiceTermList();
+        Beans.get(MoveLineInvoiceTermService.class)
+            .generateDefaultInvoiceTerm(moveLine, dueDate, false);
       }
 
       response.setValues(moveLine);
@@ -750,10 +749,12 @@ public class MoveLineController {
 
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    LocalDate dueDate =
-        Beans.get(InvoiceTermService.class)
-            .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());
-    response.setValue("dueDate", dueDate);
+    if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
+      LocalDate dueDate =
+          Beans.get(InvoiceTermService.class)
+              .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());
+      response.setValue("dueDate", dueDate);
+    }
   }
 
   private LocalDate extractDueDate(ActionRequest request) {
