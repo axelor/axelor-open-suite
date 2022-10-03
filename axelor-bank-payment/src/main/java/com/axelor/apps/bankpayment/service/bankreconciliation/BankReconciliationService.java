@@ -1110,6 +1110,7 @@ public class BankReconciliationService {
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
+    computeBalances(bankReconciliation);
   }
 
   public String getDomainForWizard(
