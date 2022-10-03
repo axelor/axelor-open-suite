@@ -689,7 +689,10 @@ public class BankReconciliationService {
     }
 
     for (AccountManagement accountManagement : accountManagementList) {
-      if (accountManagement.getCashAccount() != null) {
+      if (accountManagement.getCashAccount() != null
+          && accountManagement.getCashAccount().getAccountType() != null
+          && AccountTypeRepository.TYPE_CASH.equals(
+              accountManagement.getCashAccount().getAccountType().getTechnicalTypeSelect())) {
         cashAccountIdSet.add(accountManagement.getCashAccount().getId().toString());
       }
     }
@@ -774,9 +777,7 @@ public class BankReconciliationService {
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
     } else {
-      if (bankReconciliation.getJournal() != null) {
-        query = query + " AND self.account.accountType.technicalTypeSelect = :accountType";
-      }
+      query = query + " AND self.account.accountType.technicalTypeSelect = :accountType";
     }
     return query;
   }
@@ -796,7 +797,7 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       params.put("cashAccount", bankReconciliation.getCashAccount());
-    } else if (bankReconciliation.getJournal() != null) {
+    } else {
       params.put("accountType", AccountTypeRepository.TYPE_CASH);
     }
     return params;
