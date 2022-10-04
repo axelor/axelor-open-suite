@@ -20,12 +20,12 @@ package com.axelor.apps.contract.batch;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.time.format.DateTimeFormatter;
 
 public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
@@ -44,15 +44,12 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
                 + "AND self.currentContractVersion.automaticInvoicing = TRUE "
                 + "AND self.invoicingDate <= :date "
                 + "AND :batch NOT MEMBER of self.batchSet "
-                + "AND self.statusSelect != 3"
+                + "AND self.statusSelect != :statusSelect "
                 + "AND self.targetTypeSelect = :targetTypeSelect")
-        .bind(
-            "date",
-            baseService
-                .getTodayDate(batch.getContractBatch().getCompany())
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+        .bind("date", batch.getContractBatch().getInvoicingDate())
         .bind("batch", batch)
-        .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect());
+        .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect())
+        .bind("statusSelect", AbstractContractRepository.CLOSED_CONTRACT);
   }
 
   @Override

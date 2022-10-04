@@ -127,37 +127,60 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
             moveLine.getAccount().getCode());
       } else {
-        BigDecimal total =
-            invoiceAttached == null
-                ? moveLine.getDebit().max(moveLine.getCredit())
-                : invoiceAttached.getInTaxTotal();
-        total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        BigDecimal invoiceTermTotal =
-            invoiceTermList.stream()
-                .map(InvoiceTerm::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (invoiceTermTotal.compareTo(total) != 0) {
-          invoiceTermTotal = invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total);
-
-          if (invoiceAttached == null) {
-            moveLineService.computeFinancialDiscount(moveLine);
-          } else {
-            invoiceTermList.forEach(
-                it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
-          }
-
-          if (invoiceTermTotal.compareTo(total) != 0) {
-            throw new AxelorException(
-                moveLine,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
-                moveLine.getAccount().getCode());
-          }
-        }
+        this.checkTotal(invoiceTermList, invoiceAttached, moveLine, false);
+        this.checkTotal(invoiceTermList, invoiceAttached, moveLine, true);
       }
     }
     controlAccountingAccount(moveLine);
+  }
+
+  protected void checkTotal(
+      List<InvoiceTerm> invoiceTermList,
+      Invoice invoiceAttached,
+      MoveLine moveLine,
+      boolean isCompanyAmount)
+      throws AxelorException {
+    BigDecimal total;
+
+    if (isCompanyAmount) {
+      total =
+          invoiceAttached == null
+              ? moveLine.getDebit().max(moveLine.getCredit())
+              : invoiceAttached.getCompanyInTaxTotal();
+    } else {
+      total =
+          invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
+    }
+
+    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal invoiceTermTotal =
+        invoiceTermList.stream()
+            .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    if (invoiceTermTotal.compareTo(total) != 0) {
+      invoiceTermTotal =
+          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
+
+      if (!isCompanyAmount) {
+        if (invoiceAttached == null) {
+          moveLineService.computeFinancialDiscount(moveLine);
+        } else {
+          invoiceTermList.forEach(
+              it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+        }
+      }
+
+      if (invoiceTermTotal.compareTo(total) != 0) {
+        throw new AxelorException(
+            moveLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                isCompanyAmount
+                    ? AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT
+                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT));
+      }
+    }
   }
 
   public boolean isInvoiceTermReadonly(MoveLine moveLine, User user) {

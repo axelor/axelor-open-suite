@@ -19,9 +19,11 @@ public class TestBankDetailsService {
 
   @Test
   public void testComputeEmptyFullName() {
-
     BankDetails emptyBankDetails = new BankDetails();
-    Assert.assertEquals("", bankDetailsService.computeBankDetailsFullName(emptyBankDetails));
+
+    String result = bankDetailsService.computeBankDetailsFullName(emptyBankDetails);
+
+    Assert.assertEquals("", result);
   }
 
   @Test
@@ -32,9 +34,9 @@ public class TestBankDetailsService {
     bankDetails1.setIban("FR7699333020961963437764029");
     bankDetails1.setBank(bank1);
 
-    Assert.assertEquals(
-        "FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas",
-        bankDetailsService.computeBankDetailsFullName(bankDetails1));
+    String result = bankDetailsService.computeBankDetailsFullName(bankDetails1);
+
+    Assert.assertEquals("FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
   @Test
@@ -46,9 +48,9 @@ public class TestBankDetailsService {
     bankDetails2.setLabel("Axelor");
     bankDetails2.setIban("FR7699333020961963437764029");
 
-    Assert.assertEquals(
-        "Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas",
-        bankDetailsService.computeBankDetailsFullName(bankDetails2));
+    String result = bankDetailsService.computeBankDetailsFullName(bankDetails2);
+
+    Assert.assertEquals("Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
   @Test
@@ -60,9 +62,9 @@ public class TestBankDetailsService {
     bankDetails3.setIban("FR7699333020961963437764029");
     bankDetails3.setCode("AXE");
 
-    Assert.assertEquals(
-        "AXE - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas",
-        bankDetailsService.computeBankDetailsFullName(bankDetails3));
+    String result = bankDetailsService.computeBankDetailsFullName(bankDetails3);
+
+    Assert.assertEquals("AXE - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
   @Test
@@ -75,8 +77,9 @@ public class TestBankDetailsService {
     bankDetails4.setLabel("Axelor");
     bankDetails4.setCode("AXE");
 
+    String result = bankDetailsService.computeBankDetailsFullName(bankDetails4);
+
     Assert.assertEquals(
-        "AXE - Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas",
-        bankDetailsService.computeBankDetailsFullName(bankDetails4));
+        "AXE - Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 }

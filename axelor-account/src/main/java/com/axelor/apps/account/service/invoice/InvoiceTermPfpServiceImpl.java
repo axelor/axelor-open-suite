@@ -69,11 +69,9 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected List<InvoiceTerm> getInvoiceTerms(List<Long> invoiceTermIds) {
     return invoiceTermRepo
         .all()
-        .filter(
-            "self.id IN :invoiceTermIds AND self.pfpValidateStatusSelect NOT IN (:pfpStatusAwaiting, :pfpStatusLitigation)")
+        .filter("self.id IN :invoiceTermIds AND self.pfpValidateStatusSelect = :pfpStatusAwaiting")
         .bind("invoiceTermIds", invoiceTermIds)
         .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
-        .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
         .fetch();
   }
 

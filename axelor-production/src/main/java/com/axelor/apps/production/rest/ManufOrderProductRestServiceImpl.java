@@ -5,9 +5,13 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,5 +191,42 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     }
 
     return result;
+  }
+
+  /**
+   * Update quantity for consumed or produced product in manuf order.
+   *
+   * @param stockMoveLine
+   * @param qty
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public StockMoveLine updateStockMoveLineQty(StockMoveLine stockMoveLine, BigDecimal qty)
+      throws AxelorException {
+    if (qty == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MISSING_QUANTITY));
+    }
+    stockMoveLine.setQty(qty);
+    return stockMoveLine;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct) {
+    if (manufOrder != null && wasteProduct != null) {
+      manufOrder.addWasteProdProductListItem(wasteProduct);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void updateProdProductQty(ProdProduct prodProduct, BigDecimal qty) {
+    if (prodProduct != null && qty != null) {
+      prodProduct.setQty(qty);
+    }
   }
 }

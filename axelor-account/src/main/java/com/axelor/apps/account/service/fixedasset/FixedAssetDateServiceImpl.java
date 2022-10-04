@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
@@ -26,21 +43,28 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
 
   @Override
   public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
+    computeEconomicFirstDepreciationDate(fixedAsset);
+    computeFiscalFirstDepreciationDate(fixedAsset);
+    computeIfrsFirstDepreciationDate(fixedAsset);
+  }
 
-    LocalDate economicDate =
-        fixedAsset.getFirstDepreciationDateInitSelect()
-                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-                && fixedAsset.getFirstServiceDate() != null
-            ? fixedAsset.getFirstServiceDate()
-            : fixedAsset.getAcquisitionDate();
+  @Override
+  public void computeFiscalFirstDepreciationDate(FixedAsset fixedAsset) {
     LocalDate fiscalDate =
         fixedAsset.getFiscalFirstDepreciationDateInitSelect()
                     == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
             : fixedAsset.getAcquisitionDate();
-    LocalDate ifrsDate =
-        fixedAsset.getIfrsFirstDepreciationDateInitSelect()
+    fixedAsset.setFiscalFirstDepreciationDate(
+        computeFirstDepreciationDate(
+            fixedAsset.getCompany(), fiscalDate, fixedAsset.getFiscalPeriodicityTypeSelect()));
+  }
+
+  @Override
+  public void computeEconomicFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate economicDate =
+        fixedAsset.getFirstDepreciationDateInitSelect()
                     == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
@@ -49,9 +73,17 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
     fixedAsset.setFirstDepreciationDate(
         computeFirstDepreciationDate(
             fixedAsset.getCompany(), economicDate, fixedAsset.getPeriodicityTypeSelect()));
-    fixedAsset.setFiscalFirstDepreciationDate(
-        computeFirstDepreciationDate(
-            fixedAsset.getCompany(), fiscalDate, fixedAsset.getFiscalPeriodicityTypeSelect()));
+  }
+
+  @Override
+  public void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate ifrsDate =
+        fixedAsset.getIfrsFirstDepreciationDateInitSelect()
+                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                && fixedAsset.getFirstServiceDate() != null
+            ? fixedAsset.getFirstServiceDate()
+            : fixedAsset.getAcquisitionDate();
+
     fixedAsset.setIfrsFirstDepreciationDate(
         computeFirstDepreciationDate(
             fixedAsset.getCompany(), ifrsDate, fixedAsset.getIfrsPeriodicityTypeSelect()));

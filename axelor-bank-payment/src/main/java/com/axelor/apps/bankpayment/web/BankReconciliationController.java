@@ -73,7 +73,10 @@ public class BankReconciliationController {
       if (bankReconciliationLines.isEmpty()) {
         response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
+        BankReconciliationService bankReconciliationService =
+            Beans.get(BankReconciliationService.class);
+        bankReconciliationService.unreconcileLines(bankReconciliationLines);
+        bankReconciliationService.computeBalances(br);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -469,12 +472,20 @@ public class BankReconciliationController {
 
   public void computeTotalOfSelectedMoveLines(ActionRequest request, ActionResponse response) {
     try {
+      Long bankReconciliationId =
+          Long.valueOf(
+              (Integer)
+                  ((LinkedHashMap<?, ?>) request.getContext().get("_bankReconciliation"))
+                      .get("id"));
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliationId);
+
       List<LinkedHashMap> toReconcileMoveLineSet =
           (List<LinkedHashMap>) (request.getContext().get("toReconcileMoveLineSet"));
       response.setValue(
           "$selectedMoveLineTotal",
           Beans.get(BankReconciliationService.class)
-              .getSelectedMoveLineTotal(toReconcileMoveLineSet));
+              .getSelectedMoveLineTotal(bankReconciliation, toReconcileMoveLineSet));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -8,8 +8,10 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -26,18 +28,24 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
+  protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected MoveLineService moveLineService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
+      AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
+      MoveLineService moveLineService,
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
       AccountingSituationService accountingSituationService) {
+    this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.moveLineService = moveLineService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
@@ -59,11 +67,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       return;
     } else if (move.getPaymentCondition() == null
         || CollectionUtils.isEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
-      BigDecimal amount =
-          moveLine.getCredit().signum() == 0 ? moveLine.getDebit() : moveLine.getCredit();
-
       this.computeInvoiceTerm(
-          moveLine, move, move.getDate(), BigDecimal.valueOf(100), amount, 1, false);
+          moveLine,
+          move,
+          move.getDate(),
+          BigDecimal.valueOf(100),
+          moveLine.getCurrencyAmount(),
+          1,
+          false);
 
       return;
     }
@@ -101,12 +112,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       moveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
+      this.handleFinancialDiscount(moveLine);
     }
 
     if (holdbackMoveLine != null
         && CollectionUtils.isNotEmpty(holdbackMoveLine.getInvoiceTermList())) {
       holdbackMoveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
       this.setDueDateFromInvoiceTerms(holdbackMoveLine);
+      this.handleFinancialDiscount(holdbackMoveLine);
     }
 
     if (!containsHoldback) {
@@ -122,6 +135,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     }
 
     this.setDueDateFromInvoiceTerms(moveLine);
+  }
+
+  protected void handleFinancialDiscount(MoveLine moveLine) {
+    if (moveLine.getPartner() != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
+      moveLineService.computeFinancialDiscount(moveLine);
+    }
   }
 
   public void updateInvoiceTermsParentFields(MoveLine moveLine) {

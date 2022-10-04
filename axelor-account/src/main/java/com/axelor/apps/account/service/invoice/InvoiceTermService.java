@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -70,7 +71,8 @@ public interface InvoiceTermService {
    * @return
    * @throws AxelorException
    */
-  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm);
+  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm)
+      throws AxelorException;
 
   /**
    * Method to initialize invoice terms due dates
@@ -214,7 +216,8 @@ public interface InvoiceTermService {
    */
   public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice);
 
-  InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm, Move move);
+  InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm, Move move)
+      throws AxelorException;
 
   LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine);
 
@@ -264,7 +267,7 @@ public interface InvoiceTermService {
 
   BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
 
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
@@ -305,5 +308,10 @@ public interface InvoiceTermService {
 
   void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
 
-  BigDecimal roundUpLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal total);
+  BigDecimal roundUpLastInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total, boolean isCompanyAmount)
+      throws AxelorException;
+
+  @CallMethod
+  boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 }
