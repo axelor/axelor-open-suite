@@ -17,9 +17,10 @@
  */
 package com.axelor.apps.bankpayment.test;
 
-import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
+import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserManagementRepository;
+import com.axelor.apps.bankpayment.ebics.service.EbicsUserServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +28,9 @@ public class TestEbicsOrderNumber {
 
   @Test
   public void validateOrderId() {
-    EbicsUserService ebicsUserService = Beans.get(EbicsUserService.class);
+    EbicsUserServiceImpl ebicsUserService =
+        new EbicsUserServiceImpl(
+            new EbicsRequestLogRepository(), new EbicsUserManagementRepository());
     try {
       ebicsUserService.getNextOrderNumber("01.AC");
     } catch (AxelorException e) {
@@ -37,7 +40,9 @@ public class TestEbicsOrderNumber {
 
   @Test
   public void testPossibleOrderNumbers() {
-    EbicsUserService ebicsUserService = Beans.get(EbicsUserService.class);
+    EbicsUserServiceImpl ebicsUserService =
+        new EbicsUserServiceImpl(
+            new EbicsRequestLogRepository(), new EbicsUserManagementRepository());
     int i = 0;
     String orderNo = "A000";
     try {
