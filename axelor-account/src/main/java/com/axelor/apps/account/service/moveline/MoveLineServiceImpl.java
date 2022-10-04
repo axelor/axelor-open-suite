@@ -155,6 +155,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
+    int i = 0;
+
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
@@ -163,7 +165,10 @@ public class MoveLineServiceImpl implements MoveLineService {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
       } finally {
-        JPA.clear();
+        i++;
+        if (i % 20 == 0) {
+          JPA.clear();
+        }
       }
     }
   }

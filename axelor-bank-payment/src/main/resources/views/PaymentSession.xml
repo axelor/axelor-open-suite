@@ -3,16 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="payment-session-grid" title="Payment sessions"
-    model="com.axelor.apps.account.db.PaymentSession">
-    <field name="name"/>
-    <field name="createdOn"/>
-    <field name="company"/>
-    <field name="sessionTotalAmount"/>
-    <field name="statusSelect"/>
-    <field name="assignedToUser" hidden="true"/>
-  </grid>
-
   <form id="bank-payment-payment-session-form" name="payment-session-form"
     title="Payment session" model="com.axelor.apps.account.db.PaymentSession" extension="true">
 

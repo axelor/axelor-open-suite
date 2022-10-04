@@ -80,11 +80,12 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
           && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
         errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE));
       }
-      if (partner.getFirstName() == null) {
+      if (Strings.isNullOrEmpty(partner.getFirstName())) {
         errorList.add(
             I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING));
       }
-      if (partner.getEmailAddress() == null) {
+      if (partner.getEmailAddress() == null
+          || Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
         errorList.add(
             I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
       }

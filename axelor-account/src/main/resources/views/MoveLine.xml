@@ -98,10 +98,10 @@
     <field name="currencyRate" onChange="action-move-line-record-set-debitcredit"
       readonlyIf="!isOtherCurrency"/>
     <field name="debit"
-      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange"
+      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
       width="90" readonlyIf="amountPaid &gt; 0"/>
     <field name="credit"
-      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange"
+      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
       width="90" readonlyIf="amountPaid &gt; 0"/>
     <field name="amountRemaining" hidden="true" width="150"/>
     <field name="amountPaid" hidden="true"/>
@@ -239,9 +239,9 @@
     <field name="currencyRate" hidden="true" readonlyIf="!isOtherCurrency"
       onChange="action-move-line-record-set-debitcredit"/>
     <field name="debit" readonlyIf="amountPaid > 0" width="120"
-      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange"/>
+      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"/>
     <field name="credit" readonlyIf="amountPaid > 0" width="120"
-      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange"/>
+      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"/>
     <field name="taxLine" hidden="true" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       requiredIf="account.isTaxRequiredOnMoveLine"/>
@@ -577,10 +577,12 @@
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="isOtherCurrency" hidden="true"/>
-      <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"
+      <field name="debit"
+        onChange="action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
-      <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"
+      <field name="credit"
+        onChange="action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
       <field name="amountRemaining" colSpan="3"
@@ -747,7 +749,7 @@
   <form name="account-move-line-calculation-wizard-form" title="Calculation"
     model="com.axelor.apps.base.db.Wizard" onNew="action-account-move-line-record-calculate-balance"
     canArchive="false">
-    <panel name="mainPanel" colSpan="12" title="Total of the selected lines :">
+    <panel name="mainPanel" colSpan="12" title="Total of the selected lines (without New) :">
       <field name="$debit" title="Debit :" readonly="true" colSpan="4"/>
       <field name="$credit" title="Credit :" readonly="true" colSpan="4"/>
       <field name="$balance" title="Balance :" readonly="true" colSpan="4"/>
@@ -1212,8 +1214,7 @@
   </action-method>
 
   <action-method name="action-move-line-method-update-due-dates">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="updateDueDates"
-      if="move.originDate"/>
+    <call class="com.axelor.apps.account.web.MoveLineController" method="updateDueDates"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

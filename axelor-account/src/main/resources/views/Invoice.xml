@@ -556,8 +556,8 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="$contains([1,2], operationTypeSelect)"
-        requiredIf="$contains([1,2], operationTypeSelect) &amp;&amp; (statusSelect &lt;= 2 || operationSubTypeSelect == 2)"
+      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
@@ -1575,6 +1575,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-total-title"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -1705,6 +1706,7 @@ InvoiceSet.length > 0))"
     <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
@@ -2308,6 +2310,10 @@ InvoiceSet.length > 0))"
       method="updateInvoiceTermPaymentMode"/>
   </action-method>
 
+  <action-method name="action-invoice-method-check-multi-currency">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkMultiCurrency"/>
+  </action-method>
+
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
     model="com.axelor.apps.account.db.InvoicePayment">
     <view type="form" name="invoice-payment-form"/>
@@ -2651,7 +2657,7 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountTotalAmount"
       expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
@@ -2667,7 +2673,7 @@ InvoiceSet.length > 0))"
     <field name="remainingAmountAfterFinDiscount" expr="eval: BigDecimal.ZERO"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
   </action-record>
 

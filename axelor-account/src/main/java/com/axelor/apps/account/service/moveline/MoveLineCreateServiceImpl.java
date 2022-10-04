@@ -624,7 +624,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     BigDecimal currencyRate =
         currencyService.getCurrencyConversionRate(
             invoice.getCurrency(), companyCurrency, invoice.getInvoiceDate());
+    BigDecimal companyAmount;
+
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      companyAmount =
+          invoice
+              .getCompanyInTaxTotal()
+              .multiply(invoiceTerm.getPercentage())
+              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
         account = invoiceService.getPartnerAccount(invoice, true);
@@ -634,13 +642,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 partner,
                 account,
                 invoiceTerm.getAmount(),
-                currencyService
-                    .getAmountCurrencyConvertedAtDate(
-                        invoice.getCurrency(),
-                        companyCurrency,
-                        invoiceTerm.getAmount(),
-                        invoice.getInvoiceDate())
-                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                companyAmount,
                 currencyRate,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
@@ -659,13 +661,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   partner,
                   account,
                   invoiceTerm.getAmount(),
-                  currencyService
-                      .getAmountCurrencyConvertedAtDate(
-                          invoice.getCurrency(),
-                          companyCurrency,
-                          invoiceTerm.getAmount(),
-                          invoice.getInvoiceDate())
-                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                  companyAmount,
                   currencyRate,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -677,26 +673,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
-            moveLine.setDebit(
-                moveLine
-                    .getDebit()
-                    .add(
-                        currencyService.getAmountCurrencyConvertedAtDate(
-                            invoice.getCurrency(),
-                            companyCurrency,
-                            invoiceTerm.getAmount(),
-                            invoice.getInvoiceDate())));
+            moveLine.setDebit(moveLine.getDebit().add(companyAmount));
           } else {
             // Credit
-            moveLine.setCredit(
-                moveLine
-                    .getCredit()
-                    .add(
-                        currencyService.getAmountCurrencyConvertedAtDate(
-                            invoice.getCurrency(),
-                            companyCurrency,
-                            invoiceTerm.getAmount(),
-                            invoice.getInvoiceDate())));
+            moveLine.setCredit(moveLine.getCredit().add(companyAmount));
           }
           moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
@@ -709,6 +689,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.addInvoiceTermListItem(invoiceTerm);
         }
       }
+
+      moveLine.setDebit(
+          moveLine
+              .getDebit()
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      moveLine.setCredit(
+          moveLine
+              .getCredit()
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
       moveLines.add(moveLine);
     }
 
@@ -786,11 +776,24 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setDebit(
         newOrUpdatedMoveLine
             .getDebit()
-            .add(debit.multiply(taxLine.getValue().divide(new BigDecimal(100)))));
+            .add(
+                debit
+                    .multiply(taxLine.getValue())
+                    .divide(
+                        BigDecimal.valueOf(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP)));
     newOrUpdatedMoveLine.setCredit(
         newOrUpdatedMoveLine
             .getCredit()
-            .add(credit.multiply(taxLine.getValue().divide(new BigDecimal(100)))));
+            .add(
+                credit
+                    .multiply(taxLine.getValue())
+                    .divide(
+                        BigDecimal.valueOf(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP)));
+
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
 

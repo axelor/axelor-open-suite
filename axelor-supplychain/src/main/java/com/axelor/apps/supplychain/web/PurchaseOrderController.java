@@ -442,4 +442,16 @@ public class PurchaseOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateBudgetDistributionAmountAvailable(
+      ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderSupplychainService.class)
+          .updateBudgetDistributionAmountAvailable(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

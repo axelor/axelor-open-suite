@@ -1,5 +1,0 @@
----
-title: "Optimize update stock history batch to reduce process duration"
-type: fix
-description: |
-  Optimize the query called in batch to optimize duration of the update stock history batch
