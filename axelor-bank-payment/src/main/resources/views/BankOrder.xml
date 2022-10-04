@@ -437,6 +437,26 @@
         </field>
       </panel>
     </panel>
+
+    <panel name="otherTagsPanel" sidebar="true"
+      showIf="hasBeenSentToBank || areMovesGenerated" itemSpan="12" readonly="true">
+      <field name="ptherTags" showTitle="false" readonlyIf="true">
+        <viewer depends="areMovesGenerated"><![CDATA[
+          <h4 class="text-left">
+            <span class="label label-success" ng-show="record.areMovesGenerated" x-translate>Moves generated</span>
+          </h4>
+        ]]></viewer>
+      </field>
+
+      <field name="patherTags" showTitle="false" readonlyIf="true">
+        <viewer depends="hasBeenSentToBank"><![CDATA[
+          <h4 class="text-left">
+            <span class="label label-success" ng-show="record.hasBeenSentToBank" x-translate>Has been sent to bank</span>
+          </h4>
+        ]]></viewer>
+      </field>
+    </panel>
+
     <panel name="actionPanel" title="Action" itemSpan="12" sidebar="true"
       hideIf="statusSelect == 4 || statusSelect == 5">
       <button name="confirmBtn" title="Confirm" showIf="statusSelect == 1"
