@@ -2288,7 +2288,6 @@
 "This option allows you, by account type, to activate the management of subsidiary accounts on export journal entry.",,,
 "This regular expression must be of the SQL syntax. The most useful terms are :",,,
 "This state allows to create a custom rule to be shown in the report.",,,
-"This value is already selected in another field, please select another value",,,
 "Timetable line %s","Linia rozkładu jazdy %s",,
 "Timetable's reject move's creation %s","Tworzenie ruchu odrzucenia rozkładu jazdy %s",,
 "Title","Tytuł",,
