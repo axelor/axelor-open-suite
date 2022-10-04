@@ -232,10 +232,10 @@
 
   <action-attrs name="action-attrs-domain-onselect-axis-analytic-move-line">
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot;self.company is null OR self.company.id = ${analyticJournal.company.id} &quot;"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${analyticJournal.company.id}) AND self.id IN (${__repo__(AccountConfig).findByCompany(analyticJournal.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
       if="analyticJournal &amp;&amp; analyticJournal.company"/>
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot; (self.company is null OR self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id}) &quot;"
+      expr="eval: &quot; (self.company is null OR self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id}) AND self.id IN (${__repo__(AccountConfig).findByCompany(__parent__?.parentContext?.company != null ? __parent__?.parentContext?.company : __parent__?.move?.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
       if="!(analyticJournal?.company)"/>
   </action-attrs>
 

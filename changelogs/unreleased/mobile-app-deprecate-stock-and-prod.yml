@@ -1,6 +1,0 @@
----
-title: "Deprecate stock and production configuration for the mobile application."
-type: deprecate
-description: |
-  These old configs will be removed in 6.4 because a new mobile application for
-  stock and production modules will be available.

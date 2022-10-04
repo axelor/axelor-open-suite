@@ -277,6 +277,18 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
     return invoice;
   }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice generateSupplierAdvancePayment(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
+      throws AxelorException {
+    Invoice invoice =
+        super.generateSupplierAdvancePayment(purchaseOrder, amountToInvoice, isPercent);
+    invoice.setProject(purchaseOrder.getProject());
+
+    return invoiceRepo.save(invoice);
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,

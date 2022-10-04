@@ -109,7 +109,9 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       Map<String, Object> newStockMoveLine = Mapper.toMap(new StockMoveLine());
+      newStockMoveLine.put("productName", stockMoveLine.getProductName());
       newStockMoveLine.put("qty", BigDecimal.ZERO);
+      newStockMoveLine.put("realQty", BigDecimal.ZERO);
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
@@ -297,23 +299,23 @@ public class StockMoveLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
-      StockMove stockMove =
-          context.getParent() != null
-              ? context.getParent().asType(StockMove.class)
-              : stockMoveLine.getStockMove();
-      Partner partner = stockMove.getPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
+      Context parentContext = context.getParent();
+      if (parentContext != null && parentContext.getContextClass().equals(StockMove.class)) {
+        StockMove stockMove = parentContext.asType(StockMove.class);
+        Partner partner = stockMove.getPartner();
+        String userLanguage = AuthUtils.getUser().getLanguage();
 
-      if (stockMoveLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+        if (stockMoveLine.getProduct() != null && partner != null) {
+          String partnerLanguage = partner.getLanguage().getCode();
+          response.setValue(
+              "description",
+              internationalService.translate(
+                  stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+          response.setValue(
+              "productName",
+              internationalService.translate(
+                  stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -1,6 +1,0 @@
----
-title: "Pack : fix issues with pack form view"
-type: fix
-description : |
-  In the pack wizard, the button to add a pack is now in readonly if there is no pack.
-  When creating a pack, the name is now required.

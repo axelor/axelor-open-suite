@@ -67,11 +67,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       return;
     } else if (move.getPaymentCondition() == null
         || CollectionUtils.isEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
-      BigDecimal amount =
-          moveLine.getCredit().signum() == 0 ? moveLine.getDebit() : moveLine.getCredit();
-
       this.computeInvoiceTerm(
-          moveLine, move, move.getDate(), BigDecimal.valueOf(100), amount, 1, false);
+          moveLine,
+          move,
+          move.getDate(),
+          BigDecimal.valueOf(100),
+          moveLine.getCurrencyAmount(),
+          1,
+          false);
 
       return;
     }

@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.supplychain.exception;
 
 public final class SupplychainExceptionMessage {
@@ -145,6 +162,14 @@ public final class SupplychainExceptionMessage {
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
   public static final String MRP_ALREADY_STARTED = /*$$(*/
       "Mrp calculation is already on going." /*)*/;
+
+  public static final String MRP_CANNOT_PROCESS_ONGOING = /*$$(*/
+      "Could not process MRP %s since its computation is already ongoing." /*)*/;
+
+  public static final String MRP_NOT_FOUND_WITH_SEQ = /*$$(*/
+      "Could not find MRP with sequence %s." /*)*/;
+
+  public static final String MRP_SCHEDULER_SEQ_MISSING = /*$$(*/ "MRP sequence is missing." /*)*/;
 
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/

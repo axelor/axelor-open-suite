@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -57,6 +58,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -243,7 +245,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
 
-    move = this.fillMove(invoicePayment, move, customerAccount);
+    BigDecimal maxAmount =
+        invoiceMoveLines.stream()
+            .map(MoveLine::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    move = this.fillMove(invoicePayment, move, customerAccount, maxAmount);
     moveValidateService.accounting(move);
 
     for (MoveLine moveline : move.getMoveLineList()) {
@@ -301,7 +308,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move fillMove(InvoicePayment invoicePayment, Move move, Account customerAccount)
+  public Move fillMove(
+      InvoicePayment invoicePayment, Move move, Account customerAccount, BigDecimal maxAmount)
       throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
@@ -323,15 +331,26 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
+    BigDecimal companyPaymentAmount =
+        invoicePayment.getInvoiceTermPaymentList().stream()
+            .map(InvoiceTermPayment::getCompanyPaidAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .min(maxAmount);
+    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
             paymentAmount,
+            companyPaymentAmount,
+            currencyRate,
             isDebitInvoice,
             paymentDate,
             null,
+            paymentDate,
             counter++,
             origin,
             move.getDescription()));
@@ -373,6 +392,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                   invoicePayment
                       .getFinancialDiscountAmount()
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
+      companyPaymentAmount = paymentAmount;
     }
 
     move.addMoveLineListItem(
@@ -381,9 +401,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             partner,
             customerAccount,
             paymentAmount,
+            companyPaymentAmount,
+            currencyRate,
             !isDebitInvoice,
             paymentDate,
             null,
+            paymentDate,
             counter++,
             origin,
             move.getDescription()));
@@ -430,10 +453,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   protected Account getFinancialDiscountAccount(Invoice invoice, Company company)
       throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (InvoiceToolService.isPurchase(invoice)) {
-      return accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount();
+      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
     } else {
-      return accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount();
+      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
     }
   }
 

@@ -230,7 +230,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
     }
 
-    if (accountingReport.getYear() != null) {
+    if (accountingReport.getYear() != null
+        && accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
     }
 

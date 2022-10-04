@@ -209,6 +209,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
     ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
 
+    if (reconcileGroup == null) {
+      return;
+    }
+
     // update move lines
     List<MoveLine> moveLineToRemoveList =
         moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();

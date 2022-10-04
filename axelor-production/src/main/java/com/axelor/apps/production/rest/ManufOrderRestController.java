@@ -5,9 +5,12 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ConsumedProductListResponse;
 import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
+import com.axelor.apps.production.rest.dto.ManufOrderProductPutRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderPutRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderResponse;
+import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.tool.api.HttpExceptionHandler;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
@@ -49,6 +52,25 @@ public class ManufOrderRestController {
         Response.Status.OK,
         "Request successfully completed",
         new ConsumedProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+  }
+
+  @Path("/update-product-qty")
+  @PUT
+  @HttpExceptionHandler
+  public Response updateProductQuantity(ManufOrderProductPutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Arrays.asList(ManufOrder.class, StockMoveLine.class)).check();
+
+    StockMoveLine stockMoveLine =
+        Beans.get(ManufOrderProductRestService.class)
+            .updateStockMoveLineQty(
+                requestBody.fetchStockMoveLine(), requestBody.getProdProductQty());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Quantity successfully updated.",
+        new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 
   @Path("/{manufOrderId}")
