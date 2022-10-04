@@ -68,7 +68,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     BigDecimal availableQty = null;
     BigDecimal missingQty = null;
 
-    if (Objects.isNull(stockMoveLine.getProducedManufOrder())) {
+    if (stockMoveLine.getProducedManufOrder() == null) {
       Map<String, Object> mapIndicators =
           productStockLocationService.computeIndicators(
               product.getId(), manufOrder.getCompany().getId(), 0L);
