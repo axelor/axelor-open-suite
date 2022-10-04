@@ -37,10 +37,8 @@
     <integer name="technicalOriginSelect" title="Technical Origin"
       selection="bankpayment.bank.order.technical.origin.select" default="0"/>
 
-    <boolean name="hasBeenSentToBank" title="Has been sent to bank" default="false"
-      nullable="false" help="TECHNICAL_FIELD_HELP"/>
-    <boolean name="areMoveGenerated" title="Are move generated" default="false"
-      nullable="false" help="TECHNICAL_FIELD_HELP"/>
+    <boolean name="hasBeenSentToBank" title="Sent to bank"/>
+    <boolean name="areMovesGenerated" title="Moves generated"/>
 
     <!-- Sender -->
     <many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company"

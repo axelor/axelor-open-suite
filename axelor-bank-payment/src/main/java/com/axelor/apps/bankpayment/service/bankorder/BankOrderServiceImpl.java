@@ -344,7 +344,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (!bankOrder.getAreMoveGenerated()
+    if (!bankOrder.getAreMovesGenerated()
         && bankPaymentConfigService
             .getBankPaymentConfig(bankOrder.getSenderCompany())
             .getGenerateMoveOnBankOrderValidation()) {
@@ -357,8 +357,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public void realize(BankOrder bankOrder) throws AxelorException {
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
-        && !bankOrder.getHasBeenSentToBank()) {
+    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
       if (bankOrder.getSignatoryEbicsUser() == null) {
         throw new AxelorException(
             bankOrder,
@@ -372,7 +371,9 @@ public class BankOrderServiceImpl implements BankOrderService {
             I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
       }
 
-      sendBankOrderFile(bankOrder);
+      if (!bankOrder.getHasBeenSentToBank()) {
+        sendBankOrderFile(bankOrder);
+      }
     }
     realizeBankOrder(bankOrder);
   }
@@ -395,6 +396,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 
     sendFile(bankOrder, dataFileToSend, signatureFileToSend);
+    markAsSent(bankOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -405,7 +407,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (!bankOrder.getAreMoveGenerated()
+    if (!bankOrder.getAreMovesGenerated()
         && !bankPaymentConfigService
             .getBankPaymentConfig(bankOrder.getSenderCompany())
             .getGenerateMoveOnBankOrderValidation()) {
@@ -425,7 +427,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected void generateMovesAndValidatePayment(BankOrder bankOrder) throws AxelorException {
     bankOrderMoveService.generateMoves(bankOrder);
     validatePayment(bankOrder);
-    bankOrder.setAreMoveGenerated(true);
+    bankOrder.setAreMovesGenerated(true);
   }
 
   protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend)
