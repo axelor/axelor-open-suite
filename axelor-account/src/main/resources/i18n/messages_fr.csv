@@ -3066,7 +3066,6 @@
 "This period is already in use by some accounting moves. The dates can't be modified.","Cette période est déjà utilisée par des écritures. Les dates ne peuvent pas être modifiées.",,
 "This regular expression must be of the SQL syntax. The most useful terms are :","L'expression régulière doit respecter la syntaxe SQL. Les termes les plus utiles sont :",,
 "This state allows to create a custom rule to be shown in the report.","Cet état permet de créer des règles personnalisées à ajouter dans le rapport.",,
-"This value is already selected in another field, please select another value","Cette valeur est déjà sélectionée, veuillez en sélectionner une autre",,
 "Timetable line %s","Ligne d'échéancier %s",,
 "Timetable's reject move's creation %s","Création de l'écriture de rejet de l'échéance %s",,
 "Title","Titre",,
