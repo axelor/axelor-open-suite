@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,7 +175,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
-    Map<Partner, List<Move>> moveMap = new HashMap<>();
+    Map<LocalDate, Map<Partner, List<Move>>> moveDateMap = new HashMap<>();
     Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
 
     boolean out = paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT;
@@ -182,29 +183,29 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_GLOBAL;
 
-    this.processInvoiceTerms(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-    this.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    this.processInvoiceTerms(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
+    this.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
 
-    return this.getMoveCount(moveMap, isGlobal);
+    return this.getMoveCount(moveDateMap, isGlobal);
   }
 
   protected void postProcessPaymentSession(
       PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     this.updateStatus(paymentSession);
-    this.generateCashMoveAndLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-    this.generateTaxMoveLines(moveMap);
-    this.updateStatuses(paymentSession, moveMap, paymentAmountMap);
+    this.generateCashMoveAndLines(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
+    this.generateTaxMoveLines(moveDateMap);
+    this.updateStatuses(paymentSession, moveDateMap, paymentAmountMap);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void processInvoiceTerms(
       PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
@@ -231,7 +232,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
             this.processInvoiceTerm(
-                paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+                paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
           }
         } else {
           this.releaseInvoiceTerm(invoiceTerm);
@@ -252,7 +253,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
@@ -263,7 +264,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.generateMoveFromInvoiceTerm(
-          paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+          paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
     }
 
     return paymentSession;
@@ -297,7 +298,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Move generateMoveFromInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
@@ -316,7 +317,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       partner = invoiceTerm.getMoveLine().getPartner();
     }
 
-    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
+    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap);
 
     this.generateMoveLineFromInvoiceTerm(
         paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
@@ -335,10 +336,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentSession paymentSession,
       Partner partner,
       InvoiceTerm invoiceTerm,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
+    LocalDate accountingDate = this.getAccountingDate(paymentSession, invoiceTerm);
     Move move;
+
+    if (!moveDateMap.containsKey(accountingDate)) {
+      moveDateMap.put(accountingDate, new HashMap<>());
+    }
+
+    Map<Partner, List<Move>> moveMap = moveDateMap.get(accountingDate);
 
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
@@ -488,22 +496,31 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void generateCashMoveAndLines(
       PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-    if (!moveMap.isEmpty()) {
-      this.generateCashMoveLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    for (LocalDate accountingDate : moveDateMap.keySet()) {
+      Map<Partner, List<Move>> moveMapIt = moveDateMap.get(accountingDate);
 
-      if (isGlobal) {
-        this.generateCashMove(paymentSession, paymentAmountMap.values().iterator().next(), out);
+      if (!moveMapIt.isEmpty()) {
+        this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
+
+        if (isGlobal) {
+          this.generateCashMove(
+              paymentSession, accountingDate, paymentAmountMap.values().iterator().next(), out);
+        }
       }
     }
   }
 
   protected Move generateCashMove(
-      PaymentSession paymentSession, BigDecimal paymentAmount, boolean out) throws AxelorException {
+      PaymentSession paymentSession,
+      LocalDate accountingDate,
+      BigDecimal paymentAmount,
+      boolean out)
+      throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
     Move move = this.createMove(paymentSession, null);
     String description = this.getMoveLineDescription(paymentSession);
@@ -515,7 +532,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     moveRepo.save(move);
 
-    this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
+    this.updateStatus(move);
+    move.setAccountingDate(accountingDate);
 
     return move;
   }
@@ -541,11 +559,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  protected void generateTaxMoveLines(Map<Partner, List<Move>> moveMap) throws AxelorException {
-    for (Partner partner : moveMap.keySet()) {
-      for (Move move : moveMap.get(partner)) {
-        move = moveRepo.find(move.getId());
-        moveLineTaxService.autoTaxLineGenerate(move);
+  protected void generateTaxMoveLines(Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
+      throws AxelorException {
+    for (Map<Partner, List<Move>> moveMap : moveDateMap.values()) {
+      for (Partner partner : moveMap.keySet()) {
+        for (Move move : moveMap.get(partner)) {
+          move = moveRepo.find(move.getId());
+          moveLineTaxService.autoTaxLineGenerate(move);
+        }
       }
     }
   }
@@ -609,32 +630,51 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void updateStatuses(
       PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
+    for (LocalDate accountingDate : moveDateMap.keySet()) {
+      this.updateStatuses(
+          paymentSession, moveDateMap.get(accountingDate), paymentAmountMap, accountingDate);
+    }
+  }
+
+  protected void updateStatuses(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      LocalDate accountingDate)
+      throws AxelorException {
     for (List<Move> moveList : moveMap.values()) {
       for (Move move : moveList) {
         move = moveRepo.find(move.getId());
         move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
 
-        this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
+        this.updateStatus(move);
         this.updatePaymentDescription(move);
+        move.setAccountingDate(accountingDate);
       }
     }
   }
 
-  protected void updateStatus(Move move, boolean daybook) throws AxelorException {
-    moveValidateService.updateValidateStatus(move, daybook);
+  protected void updateStatus(Move move) throws AxelorException {
+    moveValidateService.updateValidateStatus(move, false);
+    moveValidateService.accounting(move);
+  }
 
-    if (daybook) {
-      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
-      moveValidateService.completeMoveLines(move);
-      moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
-    } else {
-      moveValidateService.accounting(move);
+  protected LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    switch (paymentSession.getMoveAccountingDateSelect()) {
+      case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT:
+        return paymentSession.getPaymentDate();
+      case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT:
+        return invoiceTerm.getDueDate();
+      case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER:
+        return appBaseService.getTodayDate(paymentSession.getCompany());
     }
+
+    return null;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -646,9 +686,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  protected int getMoveCount(Map<Partner, List<Move>> moveMap, boolean isGlobal) {
-    return moveMap.values().stream().map(List::size).reduce(Integer::sum).orElse(0)
-        + (isGlobal ? 1 : 0);
+  protected int getMoveCount(
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap, boolean isGlobal) {
+    return moveDateMap.values().stream()
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(List::size)
+            .reduce(Integer::sum)
+            .orElse(0)
+        + (isGlobal ? moveDateMap.values().size() : 0);
   }
 
   protected MoveLine createFinancialDiscountMoveLine(

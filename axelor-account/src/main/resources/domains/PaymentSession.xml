@@ -34,6 +34,8 @@
       required="true" selection="paymentMode.accounting.method.select" default="1"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"
       required="true" selection="payment.mode.accounting.trigger.select" default="1"/>
+    <integer name="moveAccountingDateSelect" title="Payment(s) move(s) Accounting Date"
+      selection="payment.mode.move.accounting.date.select" default="1"/>
     <integer name="daysMarginOnPaySession" title="Days margin on pay session"
       required="true"/>
     <integer name="partnerTypeSelect" title="Recipient type"
@@ -68,6 +70,11 @@
 		public static final int PARTNER_TYPE_CUSTOMER = 3;
 		public static final int PARTNER_TYPE_COMPANY = 4;
 		public static final int PARTNER_TYPE_OTHER = 5;
+
+		  // MOVE ACCOUNTING DATE SELECT
+		  public static final int MOVE_ACCOUNTING_DATE_PAYMENT = 1;
+		  public static final int MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT = 2;
+		  public static final int MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER = 3;
 
     ]]></extra-code>
   </entity>

@@ -147,7 +147,16 @@
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
-      <field name="accountingMethodSelect"/>
+      <panel name="accountingMethodPanel" stacked="true">
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"/>
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
+          selection-in="[1,2]"/>
+      </panel>
+      <panel name="moveAccountingDatePanel" stacked="true">
+        <field name="moveAccountingDateSelect" showIf="accountMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountMethodSelect == 3"
+          selection-in="[1,2]"/>
+      </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
         selection-in="[1,2,3,4]"/>
       <field name="daysMarginOnPaySession"
