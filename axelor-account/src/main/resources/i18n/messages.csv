@@ -2615,7 +2615,6 @@
 "This period is already in use by some accounting moves. The dates can't be modified.",,,
 "This regular expression must be of the SQL syntax. The most useful terms are :",,,
 "This state allows to create a custom rule to be shown in the report.",,,
-"This value is already selected in another field, please select another value",,,
 "Timetable line %s",,,
 "Timetable's reject move's creation %s",,,
 "Title",,,
