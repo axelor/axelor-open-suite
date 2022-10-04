@@ -662,6 +662,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected void updateStatus(Move move) throws AxelorException {
     moveValidateService.updateValidateStatus(move, false);
     moveValidateService.accounting(move);
+
+    if (move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED) {
+      moveValidateService.accounting(move);
+    }
   }
 
   protected LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
