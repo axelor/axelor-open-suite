@@ -134,24 +134,23 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(saleOrder.getCompany());
 
-    if (accountConfig.getManageAnalyticAccounting()) {
-      if (accountConfig.getAnalyticDistributionTypeSelect()
-          == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-        return saleOrderLine;
-      }
-
-      AnalyticDistributionTemplate analyticDistributionTemplate =
-          analyticMoveLineService.getAnalyticDistributionTemplate(
-              saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
-
-      saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-
-      if (saleOrderLine.getAnalyticMoveLineList() != null) {
-        saleOrderLine.getAnalyticMoveLineList().clear();
-      }
-
-      this.computeAnalyticDistribution(saleOrderLine);
+    if (accountConfig.getManageAnalyticAccounting()
+        && accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+      return saleOrderLine;
     }
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+
+    saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (saleOrderLine.getAnalyticMoveLineList() != null) {
+      saleOrderLine.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(saleOrderLine);
 
     return saleOrderLine;
   }
