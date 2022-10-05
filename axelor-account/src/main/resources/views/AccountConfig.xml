@@ -29,9 +29,10 @@
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="4"/>
-      <field name="accountingDaybook" colSpan="4"/>
-      <field name="isActivateSimulatedMove" colSpan="4"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3"/>
+      <field name="isActivateSimulatedMove" colSpan="3"/>
+      <field name="accountingDaybook" colSpan="3"/>
+      <field name="accountAtPayment" colSpan="3" showIf="accountingDaybook"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
