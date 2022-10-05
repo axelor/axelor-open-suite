@@ -103,7 +103,7 @@
 10108;1;3;"Produits d'exploitation (I)";"prodex";;"rules[""vdem""] + rules[""proven""] + rules[""prosto""] + rules[""proimo""] + rules[""subdex""] + rules[""rdpatc""] + rules[""autpro""]";;;101;7
 10109;3;1;;;;;;;101;8
 10110;2;2;"Achats de marchandises";"acdem";1;;;"607%|609700";101;9
-10111;2;2;"Variation de stocks de marchandises";"vdsdm";1;;;"603700";101;10
+10111;2;2;"Variation de stocks de marchandises";"vdsdm";1;;;603700;101;10
 10112;2;2;"Achats de matières premières";"acdemp";1;;;"601%|602%|6091%|6092%";101;11
 10113;2;2;"Variations de stocks";"vadest";1;;;"6031%|6032%";101;12
 10114;2;2;"Autres charges externes";"auchex";1;;;"604%|605%|606%|608%|6094%|6095%|6096%|6098%|611%|612%|613%|614%|615%|616%|617%|618%|619 %";101;13
@@ -159,54 +159,54 @@
 10164;1;3;"TOTAL DES CHARGES (II+IV+VI+VIII+IX+X)";"totcha";;"rules[""chadex""] + rules[""psobt""] + rules[""chafin""] + rules[""chaexc""]";;;101;63
 10165;3;1;;;;;;;101;64
 10166;1;3;"RESULTAT NET COMPTABLE (Total Produits – Total Charges)";"resntcpt";;"rules[""totprod""] – rules[""totcha""]";;;101;65
-10001;2;2;"Ventes de marchandises (707)";"707-ventesDeMarchandises";2;;;"707%";100;0
-10002;2;2;"Rabais, remise, ristourne sur ventes de marchandises (7097)";"7097-RRR-ventes-de-marchandises";1;;;"7097%";100;1
-10003;1;3;"Ventes de marchandises (I)";"ventes-marchandises";;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;100;2
-10004;2;2;"Achat de marchandises (607)";"607-achats-marchandises";1;;;"607%";100;3
-10005;2;2;"Variations des stocks de marchandises (6037)";"6037-variations-stocks-marchandises";2;;;"6037%";100;4
-10006;2;2;"Rabais, remises et ristournes sur achat de marchandises";"6097-RRR";2;;;"6097%";100;5
-10007;1;3;"Cout direct d'achat (II)";"cout-direct-achat";;"rules[""607-achats-marchandises""]-rules[""6037-variations-stocks-marchandises""]-rules[""6097-RRR""]";;;100;6
-10008;3;1;;;;;;;100;7
-10009;1;3;"MARGE COMMERCIALE (I-II)";"marge-commerciale";;"rules[""ventes-marchandises""]-rules[""cout-direct-achat""]";;;100;8
-10010;3;1;;;;;;;100;9
-10011;2;2;"Ventes de produits";"701-702-703-ventes-produits";2;;;"701%|702%|703%";100;10
-10012;3;1;;;;;;;100;11
-10013;2;2;"Travaux, études, produits vendues";"704-705-706-708-travaux-etudes-produits";2;;;"704%|705%|706%|708100|708%";100;12
-10014;2;2;"Rabais, remises, ristournes accordés";"709-RRR";1;;;"7091%|7092%|7094%|7095%|7096%|7098%";100;13
-10015;1;3;"Production vendue";"production-vendue";;"rules[""704-705-706-708-travaux-etudes-produits""]-rules[""709-RRR""]";;;100;14
-10016;3;1;;;;;;;100;15
-10017;2;2;"Production stockée";"713-production-stockee";2;;;"71%";100;16
-10018;2;2;"Production immobilisée";"72-Production-immobilisee";2;;;"72%";100;17
-10019;1;3;"Production de l'exercice";"production-exercice";;"rules[""701-702-703-ventes-produits""]+rules[""production-vendue""]+rules[""713-production-stockee""]+rules[""72-Production-immobilisee""]";;;100;18
-10020;3;1;;;;;;;100;19
-10021;2;2;"Achats d'approvisionnements";"achat-appro";1;;;"601%|602%|604%|605%|606%|608%|6091%|6092%|6093%|6094%|6095%|6096%|6098%";100;20
-10022;2;2;"Autres charges externes";"autres-charges-externes";1;;;"61%|62%";100;21
-10023;1;3;"VALEUR AJOUTÉE (III)";"valeur-ajoutee";;"rules[""marge-commerciale""]+rules[""production-exercice""]-rules[""achat-appro""]-rules[""autres-charges-externes""]";;;100;22
-10024;3;1;;;;;;;100;23
-10025;2;2;"Subventions d'exploitation";"74-subventions-exploitation";1;;;"74%";100;24
-10026;2;2;"Impôts, taxes et versements assimilés";"63-impots-taxes";2;;;"63%";100;25
-10027;2;2;"Charges de personnel";"64-charges-personnel";2;;;"64%";100;26
-10028;1;3;"EXCÉDENT BRUT D'EXPLOITATION (EBE) (IV)";"ebe";;"rules[""valeur-ajoutee""]+rules[""74-subventions-exploitation""]-rules[""63-impots-taxes""]-rules[""64-charges-personnel""]";;;100;27
-10029;3;1;;;;;;;100;28
-10030;2;2;"Reprises sur amortissements & provisions";"781-reprises-amort";2;;;"781%";100;29
-10031;2;2;"Dotations aux amortissements et provisions";"681-dotations";1;;;"681%";100;30
-10032;2;2;"Autres produits de gestion courante";"75-autres-produits";2;;;"751%|752%|753%|754%|758%";100;31
-10033;2;2;"Autres charges de gestion courante";"65-autres-charges";1;;;"651%|653%|654%|658%";100;32
-10034;2;2;"Transferts de charges d'exploitation";"791-transferts-charges";1;;;"791%";100;33
-10035;1;3;"RÉSULTAT D'EXPLOITATION (V)";"resultat-exploitation";;"rules[""ebe""]+rules[""781-reprises-amort""]-rules[""681-dotations""]+rules[""75-autres-produits""]-rules[""65-autres-charges""]+rules[""791-transferts-charges""]";;;100;34
-10036;3;1;;;;;;;100;35
-10037;2;2;"Quotes-parts d'opérations faites en commun (VI)";"755-655-quotes-parts";2;;;"655%|755%";100;36
-10038;3;1;;;;;;;100;37
-10039;2;2;"Produits financiers";"76-786-796-produits-financiers";2;;;"76%|786%|796%";100;38
-10040;2;2;"Charges financières";"66-686-charges-financieres";1;;;"66%|686%";100;39
-10041;1;3;"RÉSULTAT FINANCIER (VII)";"resultat-financier";;"rules[""76-786-796-produits-financiers""]-rules[""66-686-charges-financieres""]";;;100;40
-10042;3;1;;;;;;;100;41
-10043;1;3;"RÉSULTAT COURANT AVANT IMPÔTS (VIII) (V+VI+VII)";"resultat-courant-avant-impots";;"rules[""resultat-exploitation""]+rules[""755-655-quotes-parts""]+rules[""resultat-financier""]";;;100;42
-10044;3;1;;;;;;;100;43
-10045;2;2;"Produits exceptionnels";"77-787-797-produits-exceptionnels";2;;;"77%|787%|797%";100;44
-10046;2;2;"Charges exceptionnelles";"67-687-charges-exceptionnelles";1;;;"67%|687%";100;45
-10047;1;3;"RÉSULTAT EXCEPTIONNEL (IX)";"resultat-exceptionnel";;"rules[""77-787-797-produits-exceptionnels""]-rules[""67-687-charges-exceptionnelles""]";;;100;46
-10048;3;1;;;;;;;100;47
-10049;2;2;"Participation des salariés (X)";"participation-salaries";1;;;"691%";100;48
-10050;2;2;"Impôts sur les bénéfices (XI)";"impots-benefices";1;;;"695%";100;49
-10051;1;3;"RÉSULTAT NET COMPTABLE (BENEFICE OU PERTE) (XII) (VIII+IX-X-XI)";"resultat-net-comptable";;"rules[""resultat-courant-avant-impots""]+rules[""resultat-exceptionnel""]-rules[""participation-salaries""]-rules[""impots-benefices""]";;;100;50
+10001;2;2;"Ventes de marchandises (707)";"707-ventesDeMarchandises";2;;;"707%";104;0
+10002;2;2;"Rabais, remise, ristourne sur ventes de marchandises (7097)";"7097-RRR-ventes-de-marchandises";1;;;"7097%";104;1
+10003;1;3;"Ventes de marchandises (I)";"ventes-marchandises";;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;104;2
+10004;2;2;"Achat de marchandises (607)";"607-achats-marchandises";1;;;"607%";104;3
+10005;2;2;"Variations des stocks de marchandises (6037)";"6037-variations-stocks-marchandises";2;;;"6037%";104;4
+10006;2;2;"Rabais, remises et ristournes sur achat de marchandises";"6097-RRR";2;;;"6097%";104;5
+10007;1;3;"Cout direct d'achat (II)";"cout-direct-achat";;"rules[""607-achats-marchandises""]-rules[""6037-variations-stocks-marchandises""]-rules[""6097-RRR""]";;;104;6
+10008;3;1;;;;;;;104;7
+10009;1;3;"MARGE COMMERCIALE (I-II)";"marge-commerciale";;"rules[""ventes-marchandises""]-rules[""cout-direct-achat""]";;;104;8
+10010;3;1;;;;;;;104;9
+10011;2;2;"Ventes de produits";"701-702-703-ventes-produits";2;;;"701%|702%|703%";104;10
+10012;3;1;;;;;;;104;11
+10013;2;2;"Travaux, études, produits vendues";"704-705-706-708-travaux-etudes-produits";2;;;"704%|705%|706%|708100|708%";104;12
+10014;2;2;"Rabais, remises, ristournes accordés";"709-RRR";1;;;"7091%|7092%|7094%|7095%|7096%|7098%";104;13
+10015;1;3;"Production vendue";"production-vendue";;"rules[""704-705-706-708-travaux-etudes-produits""]-rules[""709-RRR""]";;;104;14
+10016;3;1;;;;;;;104;15
+10017;2;2;"Production stockée";"713-production-stockee";2;;;"71%";104;16
+10018;2;2;"Production immobilisée";"72-Production-immobilisee";2;;;"72%";104;17
+10019;1;3;"Production de l'exercice";"production-exercice";;"rules[""701-702-703-ventes-produits""]+rules[""production-vendue""]+rules[""713-production-stockee""]+rules[""72-Production-immobilisee""]";;;104;18
+10020;3;1;;;;;;;104;19
+10021;2;2;"Achats d'approvisionnements";"achat-appro";1;;;"601%|602%|604%|605%|606%|608%|6091%|6092%|6093%|6094%|6095%|6096%|6098%";104;20
+10022;2;2;"Autres charges externes";"autres-charges-externes";1;;;"61%|62%";104;21
+10023;1;3;"VALEUR AJOUTÉE (III)";"valeur-ajoutee";;"rules[""marge-commerciale""]+rules[""production-exercice""]-rules[""achat-appro""]-rules[""autres-charges-externes""]";;;104;22
+10024;3;1;;;;;;;104;23
+10025;2;2;"Subventions d'exploitation";"74-subventions-exploitation";1;;;"74%";104;24
+10026;2;2;"Impôts, taxes et versements assimilés";"63-impots-taxes";2;;;"63%";104;25
+10027;2;2;"Charges de personnel";"64-charges-personnel";2;;;"64%";104;26
+10028;1;3;"EXCÉDENT BRUT D'EXPLOITATION (EBE) (IV)";"ebe";;"rules[""valeur-ajoutee""]+rules[""74-subventions-exploitation""]-rules[""63-impots-taxes""]-rules[""64-charges-personnel""]";;;104;27
+10029;3;1;;;;;;;104;28
+10030;2;2;"Reprises sur amortissements & provisions";"781-reprises-amort";2;;;"781%";104;29
+10031;2;2;"Dotations aux amortissements et provisions";"681-dotations";1;;;"681%";104;30
+10032;2;2;"Autres produits de gestion courante";"75-autres-produits";2;;;"751%|752%|753%|754%|758%";104;31
+10033;2;2;"Autres charges de gestion courante";"65-autres-charges";1;;;"651%|653%|654%|658%";104;32
+10034;2;2;"Transferts de charges d'exploitation";"791-transferts-charges";1;;;"791%";104;33
+10035;1;3;"RÉSULTAT D'EXPLOITATION (V)";"resultat-exploitation";;"rules[""ebe""]+rules[""781-reprises-amort""]-rules[""681-dotations""]+rules[""75-autres-produits""]-rules[""65-autres-charges""]+rules[""791-transferts-charges""]";;;104;34
+10036;3;1;;;;;;;104;35
+10037;2;2;"Quotes-parts d'opérations faites en commun (VI)";"755-655-quotes-parts";2;;;"655%|755%";104;36
+10038;3;1;;;;;;;104;37
+10039;2;2;"Produits financiers";"76-786-796-produits-financiers";2;;;"76%|786%|796%";104;38
+10040;2;2;"Charges financières";"66-686-charges-financieres";1;;;"66%|686%";104;39
+10041;1;3;"RÉSULTAT FINANCIER (VII)";"resultat-financier";;"rules[""76-786-796-produits-financiers""]-rules[""66-686-charges-financieres""]";;;104;40
+10042;3;1;;;;;;;104;41
+10043;1;3;"RÉSULTAT COURANT AVANT IMPÔTS (VIII) (V+VI+VII)";"resultat-courant-avant-impots";;"rules[""resultat-exploitation""]+rules[""755-655-quotes-parts""]+rules[""resultat-financier""]";;;104;42
+10044;3;1;;;;;;;104;43
+10045;2;2;"Produits exceptionnels";"77-787-797-produits-exceptionnels";2;;;"77%|787%|797%";104;44
+10046;2;2;"Charges exceptionnelles";"67-687-charges-exceptionnelles";1;;;"67%|687%";104;45
+10047;1;3;"RÉSULTAT EXCEPTIONNEL (IX)";"resultat-exceptionnel";;"rules[""77-787-797-produits-exceptionnels""]-rules[""67-687-charges-exceptionnelles""]";;;104;46
+10048;3;1;;;;;;;104;47
+10049;2;2;"Participation des salariés (X)";"participation-salaries";1;;;"691%";104;48
+10050;2;2;"Impôts sur les bénéfices (XI)";"impots-benefices";1;;;"695%";104;49
+10051;1;3;"RÉSULTAT NET COMPTABLE (BENEFICE OU PERTE) (XII) (VIII+IX-X-XI)";"resultat-net-comptable";;"rules[""resultat-courant-avant-impots""]+rules[""resultat-exceptionnel""]-rules[""participation-salaries""]-rules[""impots-benefices""]";;;104;50
