@@ -463,7 +463,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
     boolean isDebit =
         (isPurchase && amountInCurrency.signum() > 0)
-            || !isPurchase && amountInCurrency.signum() < 0;
+            || (!isPurchase && amountInCurrency.signum() < 0);
     if (isReverse) {
       isDebit = !isDebit;
     }
