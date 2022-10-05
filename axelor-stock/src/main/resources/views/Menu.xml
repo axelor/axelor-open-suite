@@ -87,7 +87,7 @@
 
   <menuitem name="stock-root-custshipprep" parent="stock-root-stock-moves"
     title="Cust. Shipment to prepare" action="stock.root.custshipprep" order="31"
-    if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations"/>
+    if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
 
   <action-view name="stock.root.custshipprep" title="Cust. Shipment to prepare"
     model="com.axelor.apps.stock.db.StockMove">

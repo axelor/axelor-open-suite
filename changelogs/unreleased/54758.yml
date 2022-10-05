@@ -1,0 +1,3 @@
+---
+title: "Fixet asset : Fix readonly conditions for correctedAccountingValue and isEqualToFiscalDepreciation automatic valuation."
+type: fix
