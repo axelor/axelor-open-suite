@@ -4,8 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
-    model="com.axelor.apps.stock.db.StockMoveLine" onNew="action-stock-move-line-attrs-sub-line"
-    editable="true">
+    model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
     <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
     <field name="lineTypeSelect" hidden="true"/>
     <field name="product" canEdit="false"
@@ -19,10 +18,11 @@
     <field name="productName" required="true" width="200px"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
     <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"
-      width="100px" x-scale="2" readonlyIf="$get('stockMove.statusSelect') &gt; 1"/>
+      width="100px" x-scale="2"
+      readonlyIf="$get('stockMove.statusSelect') &gt; 1 || lineTypeSelect == 1"/>
     <field name="realQty" aggregate="sum" width="100px" x-scale="2"
       onChange="action-stock-move-line-group-real-qty-onchange"
-      readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
+      readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3 || lineTypeSelect == 1"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
       x-scale="2" if="__config__.app.getApp('supplychain').getManageStockReservation()"
       aggregate="sum"/>
@@ -92,8 +92,8 @@
       <field name="productName" colSpan="9"/>
       <field name="lineTypeSelect" colSpan="3"
         onChange="action-stock-move-line-method-empty-line"/>
-      <field name="qty" readonlyIf="lineTypeSelect != 1"/>
-      <field name="realQty"/>
+      <field name="qty" hidden="true" hideIf="lineTypeSelect == 1"/>
+      <field name="realQty" hidden="true" hideIf="lineTypeSelect == 1"/>
     </panel>
 
     <panel name="mainPanel" hideIf="lineTypeSelect == 1">
@@ -589,6 +589,7 @@
     <action name="action-stock-move-line-method-set-available-status"/>
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     <action name="action-stock-move-line-method-translate-product-description-and-name"/>
+    <action name="action-stock-move-line-attrs-reset-qty" if="eval: product == null"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -880,6 +881,11 @@
 
   <action-attrs name="action-stock-move-line-attrs-set-real-qty-modified-by-user-true">
     <attribute for="isRealQtyModifiedByUser" name="value" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-stock-move-line-attrs-reset-qty">
+    <attribute for="qty" name="value" expr="eval: 0"/>
+    <attribute for="realQty" name="value" expr="eval: 0"/>
   </action-attrs>
 
   <search-filters name="stock-move-line-filters"

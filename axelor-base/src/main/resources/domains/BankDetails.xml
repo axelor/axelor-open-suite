@@ -28,8 +28,12 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
     <string name="fullName" title="Bank Details" search="code,label" namecolumn="true">
       <![CDATA[
+            String bankFullName = "";
+            if(bank != null) {
+                bankFullName = bank.getFullName();
+            }
             return com.axelor.apps.base.service.BankDetailsServiceImpl.computeBankDetailsFullName
-            (code, label, iban, bank.getFullName());
+            (code, label, iban, bankFullName);
         ]]>
     </string>
 

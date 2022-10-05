@@ -69,7 +69,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
     }
 
     invoice.setFinancialDiscountDeadlineDate(
-        invoiceService.getFinancialDiscountDeadlineDate(invoice));
+        invoiceService.getFinancialDiscountDeadlineDate(invoice, invoice.getFinancialDiscount()));
 
     // send message
     if (invoice.getInvoiceAutomaticMail()) {

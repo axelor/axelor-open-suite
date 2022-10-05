@@ -73,7 +73,10 @@ public class BankReconciliationController {
       if (bankReconciliationLines.isEmpty()) {
         response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
+        BankReconciliationService bankReconciliationService =
+            Beans.get(BankReconciliationService.class);
+        bankReconciliationService.unreconcileLines(bankReconciliationLines);
+        bankReconciliationService.computeBalances(br);
         response.setReload(true);
       }
     } catch (Exception e) {
