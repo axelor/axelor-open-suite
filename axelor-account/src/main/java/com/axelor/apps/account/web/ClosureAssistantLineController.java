@@ -123,11 +123,11 @@ public class ClosureAssistantLineController {
       AccountService accountService = Beans.get(AccountService.class);
       BigDecimal income =
           accountService.computeBalance(
-              incomeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+              incomeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
       BigDecimal charge =
           accountService.computeBalance(
-              chargeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
-      BigDecimal profit = income.subtract(charge);
+              chargeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
+      BigDecimal profit = income.add(charge);
 
       response.setAttr("year", "value", year);
       response.setAttr("income", "value", income);

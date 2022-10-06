@@ -80,4 +80,6 @@ public interface PurchaseOrderSupplychainService {
   String removeShipmentCostLine(PurchaseOrder purchaseOrder);
 
   BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
+
+  void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
 }

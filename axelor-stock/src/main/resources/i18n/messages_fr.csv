@@ -533,6 +533,7 @@
 "Please fill unit for the stock location line in %s for the product %s.","Merci de renseigner l'unité pour la ligne d'emplacement de stock dans %s pour le produit %s.",,
 "Please fill unit for the stock location line with tracking number %s in %s for the product %s.","Merci de renseigner l'unité pour la ligne d'emplacement de stock avec le numéro de suivi %s dans %s pour le produit %s.",,
 "Please filled supplier shipment date and supplier shipment reference.","Veuillez renseigner la date d'expédition fournisseur et la référence d'expédition du fournisseur.",,
+"Please indicate a new quantity.","Merci d'indiquer une nouvelle quantité.",,
 "Please select lines to split","Merci de sélectionner les lignes à fractionner",,
 "Please select the Stock Location(s) to print.","Merci de sélectionner un emplacement de stock à imprimer",,
 "Please select the StockMove(s) to print.","Merci de sélectionner un Mouvement de stock à imprimer",,

@@ -89,7 +89,7 @@
             </editor>
           </field>
           <field name="ticketNumber"
-            if="__config__.app.getApp('project').isEnablePerProjectTaskSequence"/>
+            if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
           <field name="project" colSpan="6"
             onChange="action-project-task-group-project-onchange"
             domain="self.projectStatus.isCompleted = false" required="true"/>
@@ -278,7 +278,7 @@
           </panel>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
         </panel>
-        <field if="__config__.app.getApp('project').isEnableSignature" name="metaFile"
+        <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
           width="120" widget="Image"/>
       </panel>
 
@@ -303,14 +303,14 @@
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <panel-dashlet name="waitingTimesheetLinesPanel"
           action="action-project-task-dashlet-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <panel-dashlet name="allTimesheetLinesPanel"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet').needValidation"/>
+          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
@@ -915,7 +915,7 @@
     <field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project').isEnableSignature"/>
+      if="!__config__.app.getApp('project')?.isEnableSignature"/>
     <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 

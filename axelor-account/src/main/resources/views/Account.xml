@@ -16,7 +16,7 @@
     <field name="reconcileOk"/>
     <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="defaultTax" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
@@ -315,7 +315,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="serviceType"
-      expr="eval:__config__.app.getApp('account').defaultServiceTypeTypology"/>
+      expr="eval:__config__.app.getApp('account')?.defaultServiceTypeTypology"/>
   </action-record>
 
   <action-validate name="action-account-validate">
@@ -407,7 +407,7 @@
   <search-filters name="account-filters" model="com.axelor.apps.account.db.Account"
     title="Account filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
   <action-method name="action-on-change-distribution-template-account">

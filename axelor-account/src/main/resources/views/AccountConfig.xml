@@ -6,7 +6,7 @@
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="account-config-form" title="Account configuration"
@@ -120,7 +120,7 @@
               form-view="account-form"/>
           </panel>
           <panel name="accountFactorPanel" title="Factor"
-            if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
+            if="__config__.app.getApp('account')?.getManageFactors()" colSpan="12">
             <field name="factorDebitAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
@@ -213,7 +213,7 @@
           showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 
         <panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()">
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <field name="isManagePassedForPayment" widget="boolean-switch"/>
           <field name="isManagePFPInRefund" widget="boolean-switch"
             showIf="isManagePassedForPayment"/>
@@ -411,7 +411,7 @@
           grid-view="account-grid" form-view="account-form"/>
       </panel>
       <panel name="analyticPanel"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()" title="Analytic">
         <field name="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"/>
         <field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting"

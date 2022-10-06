@@ -103,22 +103,24 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       stockHistoryLine.setPeriod(
           Beans.get(PeriodService.class)
               .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL));
-      fetchAndFillResultForStockHistoryQuery(
-          stockHistoryLine,
-          productId,
-          companyId,
-          stockLocationIdList,
-          periodBeginDate,
-          periodEndDate,
-          true);
-      fetchAndFillResultForStockHistoryQuery(
-          stockHistoryLine,
-          productId,
-          companyId,
-          stockLocationIdList,
-          periodBeginDate,
-          periodEndDate,
-          false);
+      if (!stockLocationIdList.isEmpty()) {
+        fetchAndFillResultForStockHistoryQuery(
+            stockHistoryLine,
+            productId,
+            companyId,
+            stockLocationIdList,
+            periodBeginDate,
+            periodEndDate,
+            true);
+        fetchAndFillResultForStockHistoryQuery(
+            stockHistoryLine,
+            productId,
+            companyId,
+            stockLocationIdList,
+            periodBeginDate,
+            periodEndDate,
+            false);
+      }
       stockHistoryLineList.add(stockHistoryLine);
     }
     StockHistoryLine totalStockHistoryLine = createStockHistoryTotalLine(stockHistoryLineList);

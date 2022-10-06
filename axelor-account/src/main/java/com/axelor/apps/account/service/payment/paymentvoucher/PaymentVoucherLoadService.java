@@ -487,6 +487,10 @@ public class PaymentVoucherLoadService {
   protected Comparator<PayVoucherDueElement> getDueElementComparator() {
     Comparator<PayVoucherDueElement> comparator =
         Comparator.comparing(t -> t.getInvoiceTerm().getDueDate());
-    return comparator.thenComparing(t -> t.getInvoiceTerm().getInvoice().getInvoiceDate());
+    return comparator.thenComparing(
+        t ->
+            t.getInvoiceTerm().getInvoice() != null
+                ? t.getInvoiceTerm().getInvoice().getInvoiceDate()
+                : t.getInvoiceTerm().getMoveLine().getMove().getDate());
   }
 }

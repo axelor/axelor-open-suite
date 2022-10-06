@@ -49,16 +49,14 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -609,21 +607,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   }
 
   protected void reconcile(Move move, Move reverseMove) throws AxelorException {
-
-    List<MoveLine> moveLineSortedList = move.getMoveLineList();
-    Collections.sort(moveLineSortedList, Comparator.comparing(MoveLine::getCounter));
-
-    List<MoveLine> reverseMoveLineSortedList = reverseMove.getMoveLineList();
-    Collections.sort(reverseMoveLineSortedList, Comparator.comparing(MoveLine::getCounter));
-
-    Iterator<MoveLine> reverseMoveLinesIt = reverseMoveLineSortedList.iterator();
-
-    for (MoveLine moveLine : moveLineSortedList) {
-
-      MoveLine reverseMoveLine = reverseMoveLinesIt.next();
-
-      reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
-    }
+    List<MoveLine> moveLineList = Lists.newArrayList(move.getMoveLineList());
+    moveLineList.addAll(reverseMove.getMoveLineList());
+    moveLineService.reconcileMoveLines(moveLineList);
   }
 
   protected MoveLine getMoveLineWithSameTax(

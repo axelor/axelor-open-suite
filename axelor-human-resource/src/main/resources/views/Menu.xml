@@ -31,7 +31,7 @@
 
   <menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt"
     title="Payroll Preparations" action="payroll.preparation.all"
-    if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+    if="__config__.app.getApp('employee')?.getPayrollPreparation()"/>
 
   <action-view name="payroll.preparation.all" title="Payroll Preparations"
     model="com.axelor.apps.hr.db.PayrollPreparation">
@@ -42,7 +42,7 @@
 
   <menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt"
     title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
-    if="__config__.app.getApp('employee').getLunchVoucher()"/>
+    if="__config__.app.getApp('employee')?.getLunchVoucher()"/>
 
   <action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management"
     model="com.axelor.apps.hr.db.LunchVoucherMgt">
@@ -53,7 +53,7 @@
 
   <menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt"
     title="Employee bonus mgt" action="employee.bonus.mgt.all"
-    if="__config__.app.getApp('employee').getEmployeeBonus()"/>
+    if="__config__.app.getApp('employee')?.getEmployeeBonus()"/>
 
   <action-view name="employee.bonus.mgt.all" title="Employee bonus mgt"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt">
@@ -104,7 +104,7 @@
 
   <menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf"
     title="Employee bonus type" action="employee.bonus.type.all"
-    if="__config__.app.getApp('employee').getEmployeeBonus()"/>
+    if="__config__.app.getApp('employee')?.getEmployeeBonus()"/>
 
   <action-view name="employee.bonus.type.all" title="Employee bonus type"
     model="com.axelor.apps.hr.db.EmployeeBonusType">
@@ -493,7 +493,7 @@
   <menuitem name="validate-timesheet" parent="timesheet-root"
     title="Timesheets to Validate" action="timesheet.validate" order="3" tag-style="default"
     tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getNeedValidation()"/>
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getNeedValidation()"/>
 
   <action-method name="timesheet.validate">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
@@ -510,7 +510,7 @@
 
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
     action="time.sheet.timer"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
     order="5"/>
 
   <action-method name="time.sheet.timer">
