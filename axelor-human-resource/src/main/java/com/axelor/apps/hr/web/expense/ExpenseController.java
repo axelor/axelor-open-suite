@@ -231,6 +231,7 @@ public class ExpenseController {
 
     if (activeCompany == null) {
       response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+      return;
     }
 
     ActionViewBuilder actionView =
@@ -250,7 +251,7 @@ public class ExpenseController {
             .bind("_activeCompany", activeCompany)
             .count();
 
-    if (nbExpenses == 0 && activeCompany != null) {
+    if (nbExpenses == 0) {
       response.setNotify(I18n.get("No expense to be validated by your subordinates"));
     } else {
       response.setView(

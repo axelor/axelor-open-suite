@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.message;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -30,6 +31,8 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.google.inject.Inject;
@@ -83,6 +86,10 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
         default:
           break;
       }
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
     }
 
     Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);

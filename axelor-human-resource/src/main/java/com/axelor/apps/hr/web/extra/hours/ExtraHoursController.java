@@ -153,6 +153,7 @@ public class ExtraHoursController {
 
     if (activeCompany == null) {
       response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+      return;
     }
 
     ActionViewBuilder actionView =
@@ -172,7 +173,7 @@ public class ExtraHoursController {
             .bind("_activeCompany", activeCompany)
             .count();
 
-    if (nbExtraHours == 0 && activeCompany != null) {
+    if (nbExtraHours == 0) {
       response.setNotify(I18n.get("No extra hours to be validated by your subordinates"));
     } else {
       response.setView(

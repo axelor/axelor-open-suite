@@ -201,6 +201,11 @@ public class ConvertLeadWizardController {
     Lead lead = findLead(request);
     User user = lead.getUser();
     Company company;
+    Company activeCompany = null;
+
+    if (user != null) {
+      activeCompany = user.getActiveCompany();
+    }
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
     response.setAttr("name", "value", lead.getEnterpriseName());
@@ -214,8 +219,8 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", user);
-    if (user != null && user.getActiveCompany() != null) {
-      company = user.getActiveCompany();
+    if (activeCompany != null) {
+      company = activeCompany;
       if (company.getDefaultPartnerCategorySelect() == CompanyRepository.CATEGORY_CUSTOMER) {
         response.setAttr("isCustomer", "value", true);
       } else if (company.getDefaultPartnerCategorySelect() == CompanyRepository.CATEGORY_SUPPLIER) {
