@@ -93,7 +93,7 @@ public class AccountingReportController {
         if (accountingReportToolService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
               I18n.get(
-                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+                  "There is already an ongoing accounting report of this type in draft status and covering the same period (potentially created by another user). To continue, please delete one of the reports so that only one remains at the status Draft and for the period and then relaunch the print in that remaining report record."));
           return;
         }
 
@@ -259,7 +259,7 @@ public class AccountingReportController {
                 == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
           response.setError(
               I18n.get(
-                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+                  "There is already an ongoing accounting report of this type in draft status and covering the same period (potentially created by another user). To continue, please delete one of the reports so that only one remains at the status Draft and for the period and then relaunch the print in that remaining report record."));
           return;
         }
         String fileLink = accountingReportService.print(accountingReport);
