@@ -26,4 +26,6 @@ public interface FiscalPositionService {
   public Tax getTax(FiscalPosition fiscalPosition, Tax tax);
 
   public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax);
+
+  public TaxEquiv getTaxEquivFromAndTo(FiscalPosition fiscalPosition, Tax tax);
 }

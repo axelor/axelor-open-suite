@@ -737,7 +737,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (fiscalPosition != null) {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
-      taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
+      taxEquiv = fiscalPositionService.getTaxEquivFromAndTo(fiscalPosition, taxLine.getTax());
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {
         taxLineRC =
             Optional.ofNullable(taxEquiv.getReverseChargeTax())
