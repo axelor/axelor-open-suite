@@ -146,7 +146,9 @@ public class ImportSupplyChain {
         invoice.setOriginDate(date.minusDays(15));
 
         invoiceService.validateAndVentilate(invoice);
-        purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        if (purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
+          purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        }
       }
 
     } catch (Exception e) {
