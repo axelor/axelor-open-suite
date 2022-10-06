@@ -195,7 +195,7 @@ public class ImportSupplyChain {
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);
-            stockMoveService.validate(stockMove);
+            stockMoveService.realize(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
               stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
             }
