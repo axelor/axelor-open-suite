@@ -665,7 +665,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT:
         return paymentSession.getPaymentDate();
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT:
-        return invoiceTerm.getDueDate();
+        return invoiceTerm.getDueDate().isBefore(paymentSession.getPaymentDate())
+            ? paymentSession.getPaymentDate()
+            : invoiceTerm.getDueDate();
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER:
         return appBaseService.getTodayDate(paymentSession.getCompany());
     }
