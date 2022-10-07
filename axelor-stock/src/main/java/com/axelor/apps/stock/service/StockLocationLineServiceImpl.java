@@ -769,4 +769,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     stockLocationLine.setAvgPrice(wap);
     wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine);
   }
+
+  @Override
+  public void updateWap(
+      StockLocationLine stockLocationLine,
+      BigDecimal wap,
+      StockMoveLine stockMoveLine,
+      LocalDate date) {
+    stockLocationLine.setAvgPrice(wap);
+    wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine, date);
+  }
 }

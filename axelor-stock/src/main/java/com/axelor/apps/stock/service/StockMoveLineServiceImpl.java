@@ -44,6 +44,8 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorAlertException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -449,6 +451,29 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       boolean realQty)
       throws AxelorException {
 
+    updateLocations(
+        fromStockLocation,
+        toStockLocation,
+        fromStatus,
+        toStatus,
+        stockMoveLineList,
+        lastFutureStockMoveDate,
+        realQty,
+        null);
+  }
+
+  @Override
+  public void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int fromStatus,
+      int toStatus,
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date)
+      throws AxelorException {
+
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -478,11 +503,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (toStatus == StockMoveRepository.STATUS_REALIZED) {
           // If it is a outcoming move
           if (toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
-            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine);
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date);
 
           } else {
             this.updateAveragePriceLocationLine(
-                toStockLocation, stockMoveLine, fromStatus, toStatus);
+                toStockLocation, stockMoveLine, fromStatus, toStatus, date);
           }
 
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
@@ -493,7 +518,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+      StockLocation stockLocation,
+      StockMoveLine stockMoveLine,
+      int fromStatus,
+      int toStatus,
+      LocalDate date)
       throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
@@ -506,11 +535,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal avgPrice =
           this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 
-      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
+      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date);
     }
   }
 
-  protected void updateWapStockMoveLine(StockLocation stockLocation, StockMoveLine stockMoveLine) {
+  protected void updateWapStockMoveLine(
+      StockLocation stockLocation, StockMoveLine stockMoveLine, LocalDate date) {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
@@ -519,7 +549,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
     BigDecimal avgPrice =
         Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO);
-    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
+    if (date == null) {
+      date =
+          appBaseService.getTodayDate(
+              stockLocationLine.getStockLocation() != null
+                  ? stockLocationLine.getStockLocation().getCompany()
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
+    }
+
+    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date);
   }
 
   protected BigDecimal computeNewAveragePriceLocationLine(

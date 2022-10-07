@@ -52,6 +52,13 @@ public class WapHistoryServiceImpl implements WapHistoryService {
 
   @Override
   @Transactional
+  public WapHistory saveWapHistory(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, LocalDate date) {
+    return wapHistoryRepository.save(createWapHistory(stockLocationLine, stockMoveLine, date));
+  }
+
+  @Override
+  @Transactional
   public WapHistory saveWapHistory(StockLocationLine stockLocationLine) {
     return wapHistoryRepository.save(createWapHistory(stockLocationLine));
   }
@@ -70,6 +77,14 @@ public class WapHistoryServiceImpl implements WapHistoryService {
             .map(StockMove::getStockMoveSeq)
             .orElse("");
     return createWapHistory(stockLocationLine, stockMoveLine, origin);
+  }
+
+  protected WapHistory createWapHistory(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, LocalDate date) {
+    WapHistory wapHistory = createWapHistory(stockLocationLine, stockMoveLine);
+    wapHistory.setDate(date);
+
+    return wapHistory;
   }
 
   /** Use current value of stock location line to create a wap history. */

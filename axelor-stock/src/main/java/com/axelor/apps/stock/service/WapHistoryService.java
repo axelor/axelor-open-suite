@@ -20,6 +20,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.WapHistory;
+import java.time.LocalDate;
 
 public interface WapHistoryService {
 
@@ -46,4 +47,16 @@ public interface WapHistoryService {
    * @return the saved wap history
    */
   WapHistory saveWapHistory(StockLocationLine stockLocationLine, StockMoveLine stockMoveLine);
+
+  /**
+   * Same as {@link #saveWapHistory(StockLocationLine, StockMoveLine)}, but with a personalized date
+   * instead of today date
+   *
+   * @param stockLocationLine
+   * @param stockMoveLine
+   * @param date
+   * @return
+   */
+  WapHistory saveWapHistory(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, LocalDate date);
 }

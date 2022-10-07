@@ -256,4 +256,19 @@ public interface StockLocationLineService {
    * @param stockMoveLine the move line responsible for the WAP change.
    */
   void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
+
+  /**
+   * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date can be
+   * personalized.
+   *
+   * @param stockLocationLine
+   * @param wap
+   * @param stockMoveLine
+   * @param date
+   */
+  void updateWap(
+      StockLocationLine stockLocationLine,
+      BigDecimal wap,
+      StockMoveLine stockMoveLine,
+      LocalDate date);
 }
