@@ -153,8 +153,8 @@
           selection-in="[1,2]"/>
       </panel>
       <panel name="moveAccountingDatePanel" stacked="true">
-        <field name="moveAccountingDateSelect" showIf="accountMethodSelect != 3"/>
-        <field name="moveAccountingDateSelect" showIf="accountMethodSelect == 3"
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect == 3"
           selection-in="[1,2]"/>
       </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"

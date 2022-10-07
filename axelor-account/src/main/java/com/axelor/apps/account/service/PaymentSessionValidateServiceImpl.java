@@ -44,6 +44,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
@@ -351,7 +352,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
         || !moveMap.containsKey(partner)) {
-      move = this.createMove(paymentSession, partner);
+      move = this.createMove(paymentSession, partner, accountingDate);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -368,14 +369,16 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return move;
   }
 
-  protected Move createMove(PaymentSession paymentSession, Partner partner) throws AxelorException {
+  protected Move createMove(
+      PaymentSession paymentSession, Partner partner, LocalDate accountingDate)
+      throws AxelorException {
     Move move =
         moveCreateService.createMove(
             paymentSession.getJournal(),
             paymentSession.getCompany(),
             paymentSession.getCurrency(),
             partner,
-            paymentSession.getPaymentDate(),
+            accountingDate,
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
@@ -501,6 +504,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
+    Iterator<BigDecimal> amountIterator = isGlobal ? paymentAmountMap.values().iterator() : null;
+
     for (LocalDate accountingDate : moveDateMap.keySet()) {
       Map<Partner, List<Move>> moveMapIt = moveDateMap.get(accountingDate);
 
@@ -508,8 +513,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
         if (isGlobal) {
-          this.generateCashMove(
-              paymentSession, accountingDate, paymentAmountMap.values().iterator().next(), out);
+          this.generateCashMove(paymentSession, accountingDate, amountIterator.next(), out);
         }
       }
     }
@@ -522,7 +526,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    Move move = this.createMove(paymentSession, null);
+    Move move = this.createMove(paymentSession, null, accountingDate);
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
@@ -533,7 +537,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     moveRepo.save(move);
 
     this.updateStatus(move);
-    move.setAccountingDate(accountingDate);
 
     return move;
   }
@@ -636,25 +639,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
     for (LocalDate accountingDate : moveDateMap.keySet()) {
-      this.updateStatuses(
-          paymentSession, moveDateMap.get(accountingDate), paymentAmountMap, accountingDate);
-    }
-  }
+      for (List<Move> moveList : moveDateMap.get(accountingDate).values()) {
+        for (Move move : moveList) {
+          move = moveRepo.find(move.getId());
+          move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
 
-  protected void updateStatuses(
-      PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
-      Map<Move, BigDecimal> paymentAmountMap,
-      LocalDate accountingDate)
-      throws AxelorException {
-    for (List<Move> moveList : moveMap.values()) {
-      for (Move move : moveList) {
-        move = moveRepo.find(move.getId());
-        move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
-
-        this.updateStatus(move);
-        this.updatePaymentDescription(move);
-        move.setAccountingDate(accountingDate);
+          this.updateStatus(move);
+          this.updatePaymentDescription(move);
+        }
       }
     }
   }
