@@ -1,5 +1,6 @@
 package com.axelor.apps.stock.service.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -244,5 +245,10 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
     }
 
     return new StockMoveGroup(realDate, fromStockLocation, toStockLocation, status);
+  }
+
+  @Override
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_STOCK_BATCH);
   }
 }
