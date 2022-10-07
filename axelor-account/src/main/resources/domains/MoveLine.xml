@@ -42,8 +42,13 @@
     <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-one name="taxLineBeforeReverse" ref="com.axelor.apps.account.db.TaxLine"
+      title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Source Tax"/>
+
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax Equiv"/>
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>

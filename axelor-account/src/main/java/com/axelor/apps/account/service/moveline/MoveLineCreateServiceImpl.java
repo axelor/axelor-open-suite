@@ -89,6 +89,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected AccountingSituationRepository accountingSituationRepository;
   protected AccountingSituationService accountingSituationService;
   protected FiscalPositionService fiscalPositionService;
+  protected TaxService taxService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -105,7 +106,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLineTaxService moveLineTaxService,
       AccountingSituationRepository accountingSituationRepository,
       AccountingSituationService accountingSituationService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -120,6 +122,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.accountingSituationRepository = accountingSituationRepository;
     this.accountingSituationService = accountingSituationService;
     this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
   }
 
   /**
@@ -730,6 +733,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     Account newAccount = null;
     TaxEquiv taxEquiv = null;
     TaxLine taxLineRC = null;
+    TaxLine taxLineBeforeReverse = null;
     Account newAccountRC = null;
     String newSourceTaxLineRCKey = null;
 
@@ -737,16 +741,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (fiscalPosition != null) {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
-      taxEquiv = fiscalPositionService.getTaxEquivFromAndTo(fiscalPosition, taxLine.getTax());
+      taxEquiv = moveLine.getTaxEquiv();
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+        taxLineBeforeReverse = moveLine.getTaxLineBeforeReverse();
         taxLineRC =
             Optional.ofNullable(taxEquiv.getReverseChargeTax())
                 .map(Tax::getActiveTaxLine)
                 .orElse(
-                    Beans.get(TaxService.class)
-                        .getTaxLine(
-                            taxEquiv.getReverseChargeTax(),
-                            Beans.get(AppBaseService.class).getTodayDate(move.getCompany())));
+                    taxService.getTaxLine(
+                        taxEquiv.getReverseChargeTax(),
+                        Beans.get(AppBaseService.class).getTodayDate(move.getCompany())));
       }
     }
 
@@ -814,9 +818,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(move.getDescription());
 
+    BigDecimal taxLineValue =
+        taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
     BigDecimal newMoveLineDebit =
         debit
-            .multiply(taxLine.getValue())
+            .multiply(taxLineValue)
             .divide(
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
@@ -824,7 +830,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setDebit(newOrUpdatedMoveLine.getDebit().add(newMoveLineDebit));
     BigDecimal newMoveLineCredit =
         credit
-            .multiply(taxLine.getValue())
+            .multiply(taxLineValue)
             .divide(
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
