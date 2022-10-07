@@ -71,7 +71,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public List<StockHistoryLine> computeAndSaveStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
