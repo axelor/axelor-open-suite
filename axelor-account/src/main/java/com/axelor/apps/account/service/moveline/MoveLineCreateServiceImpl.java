@@ -366,7 +366,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 invoice, partnerAccount, move, partner, isDebitCustomer, origin));
 
     int moveLineId = moveLines.size() + 1;
-    boolean mustRound = false;
     BigDecimal currencyRate =
         moveLines.stream().map(MoveLine::getCurrencyRate).findAny().orElse(null);
 
@@ -405,18 +404,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_MISSING),
               invoiceLine.getName(),
               company.getName());
-        }
-
-        if (currencyService.isUnevenRounding(
-            invoice.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            invoiceLine.getExTaxTotal(),
-            invoice.getInvoiceDate())) {
-          if (mustRound) {
-            companyExTaxTotal = companyExTaxTotal.subtract(BigDecimal.valueOf(0.01));
-          }
-
-          mustRound = !mustRound;
         }
 
         MoveLine moveLine =
@@ -499,29 +486,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 company.getName());
           }
 
-          companyTaxTotal = invoiceLineTax.getCompanySubTotalOfFixedAssets();
-          if (currencyService.isUnevenRounding(
-              invoice.getCurrency(),
-              invoice.getCompany().getCurrency(),
-              invoiceLineTax.getSubTotalOfFixedAssets(),
-              invoice.getInvoiceDate())) {
-            if (mustRound) {
-              companyTaxTotal =
-                  invoiceLineTax
-                      .getCompanySubTotalOfFixedAssets()
-                      .subtract(BigDecimal.valueOf(0.01));
-            }
-
-            mustRound = !mustRound;
-          }
-
           moveLine =
               this.createMoveLine(
                   move,
                   partner,
                   account,
                   invoiceLineTax.getSubTotalOfFixedAssets(),
-                  companyTaxTotal,
+                  invoiceLineTax.getCompanySubTotalOfFixedAssets(),
                   currencyRate,
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -561,29 +532,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 company.getName());
           }
 
-          companyTaxTotal = invoiceLineTax.getCompanySubTotalExcludingFixedAssets();
-          if (currencyService.isUnevenRounding(
-              invoice.getCurrency(),
-              invoice.getCompany().getCurrency(),
-              invoiceLineTax.getSubTotalExcludingFixedAssets(),
-              invoice.getInvoiceDate())) {
-            if (mustRound) {
-              companyTaxTotal =
-                  invoiceLineTax
-                      .getCompanySubTotalExcludingFixedAssets()
-                      .subtract(BigDecimal.valueOf(0.01));
-            }
-
-            mustRound = !mustRound;
-          }
-
           moveLine =
               this.createMoveLine(
                   move,
                   partner,
                   account,
                   invoiceLineTax.getSubTotalExcludingFixedAssets(),
-                  companyTaxTotal,
+                  invoiceLineTax.getCompanySubTotalExcludingFixedAssets(),
                   currencyRate,
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -777,11 +732,24 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setDebit(
         newOrUpdatedMoveLine
             .getDebit()
-            .add(debit.multiply(taxLine.getValue().divide(new BigDecimal(100)))));
+            .add(
+                debit
+                    .multiply(taxLine.getValue())
+                    .divide(
+                        BigDecimal.valueOf(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP)));
     newOrUpdatedMoveLine.setCredit(
         newOrUpdatedMoveLine
             .getCredit()
-            .add(credit.multiply(taxLine.getValue().divide(new BigDecimal(100)))));
+            .add(
+                credit
+                    .multiply(taxLine.getValue())
+                    .divide(
+                        BigDecimal.valueOf(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP)));
+
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
 

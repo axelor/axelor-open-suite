@@ -12,7 +12,7 @@
     <field name="duration" widget="duration" x-big="true" x-seconds="true" aggregate="sum"/>
     <field name="costSheetGroup" form-view="cost-sheet-group-form"
       grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"
-      if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+      if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
   </grid>
 
   <grid name="prod-human-resource-group-grid" title="Prod. Human resources"
@@ -25,7 +25,7 @@
     <field name="operationOrder.manufOrder" hidden="true"/>
     <field name="costSheetGroup" domain="self.costTypeSelect = 2"
       form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
-      if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+      if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
   </grid>
 
   <form name="prod-human-resource-form" title="Prod. Human resource"
@@ -40,7 +40,7 @@
       <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
       <field name="costSheetGroup" form-view="cost-sheet-group-form"
         grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"
-        if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+        if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
     </panel>
   </form>
 
@@ -48,7 +48,7 @@
     model="com.axelor.apps.production.db.ProdHumanResource">
     <field name="costSheetGroup"
       expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null "
-      if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+      if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
   </action-record>
 
 </object-views>

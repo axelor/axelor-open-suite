@@ -80,7 +80,7 @@
       <panel colSpan="2" name="imagePanel">
         <field name="picture" showTitle="false" colSpan="12" widget="Image"/>
         <field name="barCode" showTitle="false" colSpan="12" widget="Image"
-          if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true"
+          if="__config__.app.getApp('base')?.getActivateBarCodeGeneration()" readonly="true"
           x-height="50"/>
       </panel>
       <panel name="namePanel" colSpan="10">

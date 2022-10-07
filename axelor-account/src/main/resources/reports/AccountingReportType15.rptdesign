@@ -438,17 +438,37 @@ Account.code as accountCode,
 Account.name as accountName, 
 Tax.code as taxCode,
 FiscalPosition.code as fiscalPositionCode,
-Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount
-else 0
+Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else 
+			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
+			end
+		end
+	end
 end as baseCredit,
-Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount
-else 0
+Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.tax_amount else
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
+			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 0
+			end
+		end
+	end
 end as taxCredit,
-Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount
-else 0
+Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else
+			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
+			end
+		end
+	end
 end as baseDebit,
-Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount
-else 0
+Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else
+			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else 0
+			end
+		end
+	end
 end as taxDebit
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
@@ -875,17 +895,37 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 Tax.name as taxName, 
 FiscalPosition.code as fiscalPositionCode,
 TaxPaymentMoveLine.tax_rate as taxPaymentMoveLineTaxRate,
-SUM(Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount
-else 0
+SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else 
+			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
+			end
+		end
+	end
 end) as baseCredit,
-SUM(Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount
-else 0
+SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.tax_amount else
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
+			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount  else 0
+			end
+		end
+	end
 end) as taxCredit,
-SUM(Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount
-else 0
+SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
+			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount  else 0
+			end
+		end
+	end
 end) as baseDebit,
-SUM(Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount
-else 0
+SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else 
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else
+			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount  else 0
+			end
+		end
+	end
 end) as taxDebit
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine

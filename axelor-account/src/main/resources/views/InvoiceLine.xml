@@ -80,7 +80,7 @@
             form-view="product-form" grid-view="product-grid"/>
           <field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean"
             widget="boolean-switch" colSpan="2"
-            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
+            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
         </panel>
@@ -92,7 +92,7 @@
             form-view="product-form" grid-view="product-purchase-grid"/>
           <field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean"
             widget="boolean-switch" colSpan="2"
-            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
+            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
           <field name="typeSelect" colSpan="3"
             onChange="action-invoice-line-method-empty-line"/>
         </panel>
@@ -165,7 +165,8 @@
 
       <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
         <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-          if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true" hidden="false">
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
+          hidden="false">
           <viewer depends="companyExTaxTotal,$currencySymbol">
 						<![CDATA[
 							<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
@@ -173,13 +174,13 @@
           </viewer>
         </field>
         <field name="budgetDistributionSumAmount" colSpan="6"
-          if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
-        <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
+        <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
           canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
         <panel-related name="budgetDistributionListPanel"
           field="budgetDistributionList" grid-view="invoice-budget-distribution-grid"
           form-view="invoice-budget-distribution-form" editable="true" colSpan="12"
-          if="__config__.app.getApp('budget').getManageMultiBudget()"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
           onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
         <field name="$currencySymbol" hidden="true"/>
       </panel>
@@ -193,7 +194,7 @@
           action="action-invoice-line-view-project-tasks" colSpan="12"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           if="__config__.app.getApp('account').getManageAnalyticAccounting()"
@@ -417,7 +418,7 @@
     <attribute name="domain"
       expr="eval: &quot; self.isModel = false and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.partner?.id}) AND purchasable = true &quot;"
       for="product"
-      if="__parent__?.operationTypeSelect &lt; 3 &amp;&amp; __config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog() &amp;&amp; isFilterOnSupplier"/>
+      if="__parent__?.operationTypeSelect &lt; 3 &amp;&amp; __config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() &amp;&amp; isFilterOnSupplier"/>
   </action-attrs>
 
   <!-- ACTION GROUPs -->
@@ -427,7 +428,7 @@
     <action name="action-invoice-line-record-operation-type"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
@@ -438,7 +439,7 @@
     <action name="action-invoice-line-attrs-readonly-form"/>
     <action name="action-invoice-line-record-operation-type"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
@@ -621,11 +622,11 @@
   <action-attrs name="action-attrs-account-invoice-line-onnew-onload">
     <!-- Show Elements -->
     <attribute name="title" for="projectPanel"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
     <attribute name="title" for="project"
-      expr="eval:  __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval:  __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
     <attribute name="hidden" for="saleOrder"
       expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4"
       if="__config__.app.isApp('business-project')"/>
@@ -667,7 +668,7 @@
 
     <attribute name="required" for="analyticDistributionTemplate"
       expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
-      if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <attribute name="hidden" for="customerInvoicePanel"
       expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3"/>
     <attribute name="hidden" for="supplierInvoicePanel"
@@ -687,7 +688,7 @@
   <action-attrs name="action-attrs-account-invoice-line-account-onchange">
     <attribute name="required" for="analyticDistributionTemplate"
       expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
-      if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-line-attrs-discountamount-title">
@@ -721,19 +722,19 @@
     <field name="invoice.company" title="Company"/>
     <field name="invoice.statusSelect" title="Status select"/>
     <field name="companyExTaxTotal" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget())"/>
     <field name="budgetDistributionSumAmount" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget())"/>
     <field name="budget" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget())"/>
+      if="!(__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget())"/>
     <field name="budgetDistributionList" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget())"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines())"/>
     <field name="analyticDistributionTemplate" hidden="true"
-      if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <field name="analyticMoveLineList" hidden="true"
-      if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
@@ -751,13 +752,13 @@
 
   <action-attrs name="action-invoice-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.language?.code.equals(__user__.getLanguage())"
+      expr="eval: __parent__?.partner?.language?.code?.equals(__user__.getLanguage())"
       if="__parent__"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.partner?.language?.code.toUpperCase()" if="__parent__"/>
+      expr="eval: __parent__?.partner?.language?.code?.toUpperCase()" if="__parent__"/>
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: invoice?.partner?.language?.code.equals(__user__.getLanguage())" if="invoice"/>
+      expr="eval: invoice?.partner?.language?.code?.equals(__user__.getLanguage())" if="invoice"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: invoice?.partner?.language?.code.toUpperCase()" if="invoice"/>
+      expr="eval: invoice?.partner?.language?.code?.toUpperCase()" if="invoice"/>
   </action-attrs>
 </object-views>

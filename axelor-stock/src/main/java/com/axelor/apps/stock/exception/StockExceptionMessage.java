@@ -184,6 +184,9 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/
       "Expired product(s): %s" /*)*/;
 
+  public static final String STOCK_MOVE_LINE_MISSING_QUANTITY = /*$$(*/
+      "Please indicate a new quantity." /*)*/;
+
   public static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;
 

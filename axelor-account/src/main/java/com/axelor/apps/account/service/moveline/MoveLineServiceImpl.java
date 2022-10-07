@@ -155,6 +155,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
+    int i = 0;
+
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
@@ -163,7 +165,10 @@ public class MoveLineServiceImpl implements MoveLineService {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
       } finally {
-        JPA.clear();
+        i++;
+        if (i % 20 == 0) {
+          JPA.clear();
+        }
       }
     }
   }
@@ -296,11 +301,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    if (moveDate == null
+        || moveLine.getCutOffStartDate() == null
+        || moveLine.getCutOffEndDate() == null) {
+      return BigDecimal.ZERO;
+    }
     BigDecimal daysProrata =
         BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
             ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+    if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
+    }
     BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
