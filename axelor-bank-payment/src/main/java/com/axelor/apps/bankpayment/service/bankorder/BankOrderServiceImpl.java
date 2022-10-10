@@ -368,6 +368,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
       this.generateMoves(bankOrder);
+      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
     }
   }
 
@@ -390,6 +391,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
       bankOrder = this.generateMoves(bankOrder);
+      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
     }
 
     bankOrderRepo.save(bankOrder);
@@ -443,6 +445,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
       bankOrder = this.generateMoves(bankOrder);
+      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
@@ -761,8 +764,13 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   protected void setBankOrderSeq(BankOrder bankOrder, Sequence sequence) throws AxelorException {
-    bankOrder.setBankOrderSeq(
-        (sequenceService.getSequenceNumber(sequence, bankOrder.getBankOrderDate())));
+    LocalDate date = bankOrder.getBankOrderDate();
+
+    if (date == null) {
+      date = appBaseService.getTodayDate(bankOrder.getSenderCompany());
+    }
+
+    bankOrder.setBankOrderSeq((sequenceService.getSequenceNumber(sequence, date)));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;
