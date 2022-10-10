@@ -2588,7 +2588,7 @@
 "Their is at least one invoice selected that it is not validated to pay",,,
 "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export.",,,
 "There is already N4DS export generated for this report.",,,
-"There is already an ongoing accounting report of this type in draft status for this same period.",,,
+"There is already an ongoing accounting report of this type in draft status and covering the same period (potentially created by another user). To continue, please delete one of the reports so that only one remains at the status Draft and for the period and then relaunch the print in that remaining report record.",,,
 "There is at least one advance payment or payment that can be imputed to this invoice.",,,
 "There is no configured sequence for final reconcile group",,,
 "There is no configured sequence for temporary reconcile group",,,
