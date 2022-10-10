@@ -274,6 +274,7 @@
       if="paymentMode?.inOutSelect == __repo__(PaymentMode).OUT"/>
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
     <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
+    <field name="moveAccountingDateSelect" expr="eval: paymentMode?.moveAccountingDateSelect"/>
   </action-record>
 
   <action-record name="action-payment-session-record-set-session-total-amount-btn"
