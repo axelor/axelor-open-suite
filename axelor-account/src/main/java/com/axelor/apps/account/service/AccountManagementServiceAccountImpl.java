@@ -349,9 +349,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
                     .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
           }
         }
-
-        return account;
-
       } else if (isFixedAssets) {
         if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
           account = accountManagement.getPurchFixedAssetsTaxVatSystem1Account();
