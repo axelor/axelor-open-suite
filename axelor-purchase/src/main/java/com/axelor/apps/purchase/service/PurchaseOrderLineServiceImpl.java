@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -79,6 +80,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected SupplierCatalogService supplierCatalogService;
 
   @Inject protected ProductCompanyService productCompanyService;
+
+  @Inject protected TaxService taxService;
 
   @Deprecated private int sequence = 0;
 
@@ -247,7 +250,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal price =
         (inAti == resultInAti)
             ? purchasePrice
-            : this.convertUnitPrice(inAti, taxLine, purchasePrice);
+            : taxService.convertUnitPrice(inAti, taxLine, purchasePrice);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
@@ -301,17 +304,17 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         BigDecimal discountPrice = (BigDecimal) discounts.get("price");
         if (product.getInAti()) {
           inTaxPrice = discountPrice;
-          price = this.convertUnitPrice(true, line.getTaxLine(), discountPrice);
+          price = taxService.convertUnitPrice(true, line.getTaxLine(), discountPrice);
         } else {
           price = discountPrice;
-          inTaxPrice = this.convertUnitPrice(false, line.getTaxLine(), discountPrice);
+          inTaxPrice = taxService.convertUnitPrice(false, line.getTaxLine(), discountPrice);
         }
       }
       if (product.getInAti() != purchaseOrder.getInAti()
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         line.setDiscountAmount(
-            this.convertUnitPrice(
+            taxService.convertUnitPrice(
                 product.getInAti(),
                 line.getTaxLine(),
                 (BigDecimal) discounts.get("discountAmount")));
@@ -379,7 +382,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       if (purchaseOrder.getInAti()
           != (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())) {
         price =
-            this.convertUnitPrice(
+            taxService.convertUnitPrice(
                 (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany()),
                 saleTaxLine,
                 ((BigDecimal)
@@ -550,21 +553,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     //		}
 
     return supplierCatalog;
-  }
-
-  @Override
-  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
-
-    if (taxLine == null) {
-      return price;
-    }
-
-    if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-    } else {
-      price = price.add(price.multiply(taxLine.getValue()));
-    }
-    return price;
   }
 
   @Override

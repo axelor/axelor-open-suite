@@ -82,4 +82,18 @@ public class TaxService {
         I18n.get(BaseExceptionMessage.TAX_1),
         tax.getName());
   }
+
+  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
+
+    if (taxLine == null) {
+      return price;
+    }
+
+    if (priceIsAti) {
+      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+    } else {
+      price = price.add(price.multiply(taxLine.getValue()));
+    }
+    return price;
+  }
 }

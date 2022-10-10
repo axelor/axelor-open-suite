@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
@@ -87,6 +88,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderService saleOrderService;
   protected PricingService pricingService;
+  protected TaxService taxService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -98,7 +100,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       AccountManagementService accountManagementService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderService saleOrderService,
-      PricingService pricingService) {
+      PricingService pricingService,
+      TaxService taxService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -108,6 +111,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderService = saleOrderService;
     this.pricingService = pricingService;
+    this.taxService = taxService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
@@ -203,7 +207,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       inTaxPrice = this.getInTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
       inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
-        saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+        saleOrderLine.setPrice(
+            taxService.convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
@@ -212,7 +217,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
-            convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+            taxService.convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
       }
     }
   }
@@ -254,7 +259,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         saleOrderLine.setDiscountAmount(
-            this.convertUnitPrice(
+            taxService.convertUnitPrice(
                 saleOrderLine.getProduct().getInAti(),
                 saleOrderLine.getTaxLine(),
                 (BigDecimal) discounts.get("discountAmount")));
@@ -459,7 +464,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal price =
         (productInAti == resultInAti)
             ? productSalePrice
-            : this.convertUnitPrice(productInAti, taxLine, productSalePrice);
+            : taxService.convertUnitPrice(productInAti, taxLine, productSalePrice);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
@@ -526,21 +531,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     return priceListService.computeDiscount(
         price, saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount());
-  }
-
-  @Override
-  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
-
-    if (taxLine == null) {
-      return price;
-    }
-
-    if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-    } else {
-      price = price.add(price.multiply(taxLine.getValue()));
-    }
-    return price;
   }
 
   @Override
@@ -916,7 +906,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           this.getInTaxUnitPriceFromPackLine(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
       inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
-        saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+        saleOrderLine.setPrice(
+            taxService.convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
@@ -926,7 +917,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
-            convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+            taxService.convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
       }
     }
   }
@@ -966,7 +957,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal price =
         (productInAti == resultInAti)
             ? productSalePrice
-            : this.convertUnitPrice(productInAti, taxLine, productSalePrice);
+            : taxService.convertUnitPrice(productInAti, taxLine, productSalePrice);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
