@@ -30,7 +30,8 @@
       </panel>
     </panel>
     <panel-related name="periodListPanel" field="periodList" colSpan="12"
-      readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+      readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"
+      showIf="id != null"/>
     <panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel" showIf="statusSelect &gt; 1"/>
     <panel name="actionsPanel" sidebar="true" readonlyIf="statusSelect == 2">
