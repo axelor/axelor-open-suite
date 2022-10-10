@@ -58,7 +58,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
                           currentStartDate, currentEndDate, fixedAssetLine.getDepreciationDate()))
               .collect(Collectors.toList());
       if (subFixedAssetLineList.isEmpty()) {
-        break;
+        continue;
       }
       fixedAssetLineList.removeAll(subFixedAssetLineList);
       // depreciation date is required and sub fixed asset line list is not empty, so we can get()
