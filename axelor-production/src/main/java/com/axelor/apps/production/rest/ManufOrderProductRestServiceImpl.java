@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
@@ -21,10 +22,14 @@ import java.util.stream.Collectors;
 public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestService {
 
   protected ProductStockLocationService productStockLocationService;
+  protected ManufOrderService manufOrderService;
 
   @Inject
-  public ManufOrderProductRestServiceImpl(ProductStockLocationService productStockLocationService) {
+  public ManufOrderProductRestServiceImpl(
+      ProductStockLocationService productStockLocationService,
+      ManufOrderService manufOrderService) {
     this.productStockLocationService = productStockLocationService;
+    this.manufOrderService = manufOrderService;
   }
 
   public List<ProdProduct> getProdProductsOfProduct(
@@ -76,6 +81,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       missingQty = BigDecimal.ZERO.max(plannedQty.subtract(availableQty));
     }
 
+    ManufOrder subManufOrder = getProductSubManufOrder(manufOrder, product);
+
     return new ManufOrderProductResponse(
         product,
         stockMoveLine,
@@ -84,7 +91,14 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
         missingQty,
         availableQty,
         stockMoveLine.getTrackingNumber(),
-        stockMoveLine.getUnit());
+        stockMoveLine.getUnit(),
+        subManufOrder);
+  }
+
+  protected ManufOrder getProductSubManufOrder(ManufOrder manufOrder, Product product) {
+    List<ManufOrder> childrenManufOrder = manufOrderService.getChildrenManufOrder(manufOrder);
+    ManufOrder childManufOrder = getChildManufOrder(childrenManufOrder, product);
+    return childManufOrder;
   }
 
   @Override
@@ -227,5 +241,21 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     if (prodProduct != null && qty != null) {
       prodProduct.setQty(qty);
     }
+  }
+
+  protected ManufOrder getChildManufOrder(List<ManufOrder> childrenManufOrder, Product product) {
+    ManufOrder childManufOrder = null;
+    if (!childrenManufOrder.isEmpty()) {
+      childManufOrder =
+          childrenManufOrder.stream()
+              .filter(manufOrder -> productAreEqual(manufOrder.getProduct(), product))
+              .findAny()
+              .orElse(null);
+    }
+    return childManufOrder;
+  }
+
+  protected boolean productAreEqual(Product product1, Product product2) {
+    return product1.equals(product2);
   }
 }

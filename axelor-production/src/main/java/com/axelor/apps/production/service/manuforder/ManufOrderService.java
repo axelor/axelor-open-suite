@@ -265,4 +265,6 @@ public interface ManufOrderService {
    * @return
    */
   public void createBarcode(ManufOrder manufOrder);
+
+  List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 }
