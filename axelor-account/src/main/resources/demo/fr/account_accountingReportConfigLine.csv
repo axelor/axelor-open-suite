@@ -1,4 +1,4 @@
-"importId";"type";"ruleType";"label";"code";"result";"rule";"accountType";"accountCode";"reportTypeId"
+"importId";"typeSelect";"ruleTypeSelect";"label";"code";"resultSelect";"rule";"accountType";"accountCode";"reportTypeId"
 1;1;1;"ACTIFS";;;;;;25
 2;3;1;;;;;;;25
 3;2;2;"Capital souscrit non appelé";"csna";1;;;"109000";25
