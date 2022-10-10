@@ -176,6 +176,8 @@ public class BankReconciliationLineService {
     moveLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setMoveLine(moveLine);
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+    bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
     return bankReconciliationLine;
   }
 
