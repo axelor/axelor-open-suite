@@ -86,6 +86,12 @@
     <category key="_month" type="number" title="Month"/>
     <series key="_turn_over" type="bar" title="TurnOver" groupBy="_year"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter"
+      value="CAST((DATE_PART('month',self.confirmation_date_time)) AS TEXT)"/>
+    <config name="_groupFilter"
+      value="CAST((DATE_PART('year', self.confirmation_date_time)) AS TEXT)"/>
   </chart>
 
   <chart name="chart.sale.turnover.ytd.vs.lastyear"
@@ -117,6 +123,11 @@
     </dataset>
     <category key="_year" type="text" title="Year"/>
     <series key="_turn_over" type="bar" title="TurnOver"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter"
+      value="CAST((DATE_PART('year',_order.confirmation_date_time)) AS TEXT)"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart name="chart.sale.turnover.by.product.ytd.vs.lastyear"
@@ -144,6 +155,12 @@
     </dataset>
     <category key="_year" type="text" title="Year"/>
     <series key="_turn_over" type="bar" groupBy="_product" title="TurnOver"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter"
+      value="CAST((DATE_PART('year',_order.confirmation_date_time)) AS TEXT)"/>
+    <config name="_groupFilter" value="_line.product_name"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart name="chart.sale.turnover.ytd.vs.lastyear.by.family"
@@ -176,6 +193,12 @@
     </dataset>
     <category key="_year" type="text" title="Year"/>
     <series key="_turn_over" groupBy="_product_family" type="bar" title="Turnover"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter"
+      value="CAST((DATE_PART('year', _order.confirmation_date_time)) AS TEXT)"/>
+    <config name="_groupFilter" value="_family.name"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.dates.this.last.year"
@@ -216,6 +239,11 @@
     </dataset>
     <category key="_year" type="text" title="Year"/>
     <series key="_turn_over" type="bar" title="TurnOver"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter"
+      value="CAST((DATE_PART('year',_order.confirmation_date_time)) AS TEXT)"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart name="chart.sale.turnover.by.family.ytd.vs.lastyear"
@@ -248,6 +276,12 @@
     </dataset>
     <category key="_product_family" type="text" title="Product Accounting Family"/>
     <series key="_turn_over" groupBy="_year" type="bar" title="Turnover"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="_family.name"/>
+    <config name="_groupFilter"
+      value="CAST((DATE_PART('year', _order.confirmation_date_time)) AS TEXT)"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <action-record model="com.axelor.apps.sale.db.SaleOrder"
@@ -290,6 +324,9 @@
     </dataset>
     <category key="_team_name" type="text" title="Team"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="team.name"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.date.1m"
@@ -326,6 +363,9 @@
     </dataset>
     <category key="saleman_name" type="text" title="Salesperson"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="salesperson.full_name"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.date"
@@ -367,6 +407,9 @@
     </dataset>
     <category key="family_name" type="text" title="Product Accounting Family"/>
     <series key="amount" type="donut" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="family.name"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.date"
@@ -406,6 +449,9 @@
     </dataset>
     <category key="category_name" type="text" title="Product Category"/>
     <series key="amount" type="donut" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="category.name"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.date"
@@ -446,6 +492,9 @@
     </dataset>
     <category key="country_name" type="text" title="Country"/>
     <series key="amount" type="donut" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="country.name"/>
   </chart>
 
   <chart stacked="true" onInit="action.sale.chart.set.date.1m"
@@ -477,6 +526,9 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_amount" type="bar" title="Amount"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="TO_CHAR(self.confirmation_date_time,'yyyy-MM')"/>
   </chart>
 
 
@@ -535,6 +587,11 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="TO_CHAR(_sale._confirmation_date,'yyyy-MM')"/>
+    <config name="_groupFilter" value="COALESCE(_product._product_type, 'other')"/>
+    <config name="_optSelectConfig" value="_order_id"/>
   </chart>
 
 
@@ -594,6 +651,11 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_turn_over" groupBy="product" type="bar" title="No Of Units" aggregate="sum"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="TO_CHAR(_sale._confirmation_date,'yyyy-MM')"/>
+    <config name="_groupFilter" value="COALESCE(_product._product_type, 'other')"/>
+    <config name="_optSelectConfig" value="_order_id"/>
   </chart>
 
   <!-- This chart is used in product-form (base) -->
@@ -686,6 +748,10 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_amount" type="bar" title="Turnover" groupBy="_username"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')"/>
+    <config name="_groupFilter" value="self.saleOrder.salespersonUser.name"/>
   </chart>
 
   <action-record model="com.axelor.apps.sale.db.SaleOrder"
@@ -721,6 +787,9 @@
     </dataset>
     <category key="_partner" type="text" title="Partner Type"/>
     <series key="_amount" type="donut" title="Turnover"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="item.title"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.category"
@@ -745,6 +814,9 @@
     </dataset>
     <category key="category" type="text" title="Category"/>
     <series key="_amount" type="bar" title="Turnover"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrder"/>
+    <config name="_filter" value="self.saleOrder.clientPartner.partnerCategory.name"/>
   </chart>
 
   <chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.sector"
@@ -773,6 +845,9 @@
     </dataset>
     <category key="_industry_sector" type="text" title="Industry Sector"/>
     <series key="_amount" type="donut" title="Turnover"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <config name="_filter" value="industrySector.name"/>
   </chart>
 
   <chart name="chart.margin.rate.per.customer" title="Average margin rate per customer"

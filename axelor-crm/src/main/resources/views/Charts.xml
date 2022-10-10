@@ -34,6 +34,9 @@
     </dataset>
     <category key="_sale_stage" type="text" title="Sales Stage"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Opportunity"/>
+    <config name="_filter" value="coalesce(nullif(message_value, ''), message_key)"/>
   </chart>
 
   <chart name="chart.dashboard.opportunities.sale.stage.amount.funnel"
@@ -100,6 +103,10 @@
     </dataset>
     <category key="_sale_stage" type="text" title="Sales Stage"/>
     <series key="amount" type="bar" groupBy="opp_type_name" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Opportunity"/>
+    <config name="_filter" value="coalesce(nullif(message_value, ''), message_key)"/>
+    <config name="_groupFilter" value="opp_type.name"/>
   </chart>
 
   <chart name="chart.dashboard.opportunities.source.amount.bar"
@@ -121,6 +128,9 @@
     </dataset>
     <category key="_source" type="text" title="Source"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Opportunity"/>
+    <config name="_filter" value="Source.name"/>
   </chart>
 
   <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Type">
@@ -141,6 +151,9 @@
     </dataset>
     <category key="_opportunity_type" type="text" title="Opportunity Type"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Opportunity"/>
+    <config name="_filter" value="opportunity_type.name"/>
   </chart>
 
   <chart name="chart.dashboard.opportunities.won.by.leadsource.bar"
@@ -162,6 +175,9 @@
     </dataset>
     <category key="_source" type="text" title="Source"/>
     <series key="lead_won" type="donut" title="Opportunities"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Opportunity"/>
+    <config name="_filter" value="Source.name"/>
   </chart>
 
   <chart name="chart.dashboard.opportunities.won.by.saleman.bar"
@@ -184,6 +200,9 @@
     </dataset>
     <category key="_sale_man" type="text" title="Salesperson"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Opportunity"/>
+    <config name="_filter" value="sale_man.full_name"/>
   </chart>
 
   <chart name="chart.dashboard.events.by.team" title="Events by team">
@@ -204,6 +223,9 @@
     </dataset>
     <category key="team_name" type="text" title="Team"/>
     <series key="total_event" type="bar" title="Events"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="_team.name"/>
   </chart>
 
   <chart name="chart.dashboard.events.by.saleman" title="Events by saleman">
@@ -225,6 +247,9 @@
     </dataset>
     <category key="_sale_man" type="text" title="Salesperson"/>
     <series key="total_event" type="bar" title="Event"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="sale_man.full_name"/>
   </chart>
 
 
@@ -262,6 +287,10 @@
     </dataset>
     <category key="source" type="text" title="Source"/>
     <series key="amount" groupBy="stage" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="src.name"/>
+    <config name="_groupFilter" value="coalesce(nullif(message_value, ''), message_key)"/>
   </chart>
 
   <chart name="chart.opportunities.pipeline.next.90d" title="Pipeline next 90 days"
@@ -333,6 +362,9 @@
     </dataset>
     <category key="source" type="text" title="Source"/>
     <series key="leads" type="bar" title="Leads"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="self.source.name"/>
   </chart>
 
   <chart onInit="action.crm.chart.set.date" name="chart.leads.by.team.by.status.bar"
@@ -374,6 +406,10 @@
     </dataset>
     <category key="_team" type="text" title="Team"/>
     <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="team.name"/>
+    <config name="_groupFilter" value="coalesce(nullif(message_value, ''), message_key)"/>
   </chart>
 
   <chart onInit="action.crm.chart.set.date" name="chart.leads.by.saleman.by.status.bar"
@@ -415,6 +451,10 @@
     </dataset>
     <category key="_sale_man" type="text" title="Salesperson"/>
     <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="sale_man.full_name"/>
+    <config name="_groupFilter" value="coalesce(nullif(message_value, ''), message_key)"/>
   </chart>
 
   <chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.user.bar"
@@ -467,6 +507,11 @@
     </dataset>
     <category key="_user_name" type="text" title="User"/>
     <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="_user.full_name"/>
+    <config name="_groupFilter" value="_meta._select_title"/>
+    <config name="_selectFilter" value="_event"/>
   </chart>
   <chart onInit="action.crm.chart.set.date" name="chart.held.calls.types.by.user.bar"
     title="Calls held by type by user" stacked="true">
@@ -519,7 +564,13 @@
     </dataset>
     <category key="_user_name" type="text" title="User"/>
     <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="_user.full_name"/>
+    <config name="_groupFilter" value="_meta._select_title"/>
+    <config name="_selectFilter" value="_event"/>
   </chart>
+
   <chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.bar"
     title="Calls type by team" stacked="true">
     <search-fields>
@@ -571,7 +622,13 @@
     </dataset>
     <category key="_team_name" type="text" title="Team"/>
     <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="_team.name"/>
+    <config name="_groupFilter" value="_meta._select_title"/>
+    <config name="_selectFilter" value="_event"/>
   </chart>
+
   <chart onInit="action.crm.chart.set.date" name="chart.held.calls.types.by.team.bar"
     title="Calls held by team by type" stacked="true">
     <search-fields>
@@ -623,6 +680,11 @@
     </dataset>
     <category key="_team_name" type="text" title="Team"/>
     <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="_team.name"/>
+    <config name="_groupFilter" value="_meta._select_title"/>
+    <config name="_selectFilter" value="_event"/>
   </chart>
 
   <chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team"
@@ -679,7 +741,13 @@
     </dataset>
     <category key="_user_name" type="text" title="User"/>
     <series key="_total_calls" type="bar" groupBy="_call_type" title="Calls"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="_user.full_name"/>
+    <config name="_groupFilter" value="_meta._select_title"/>
+    <config name="_selectFilter" value="_event"/>
   </chart>
+
   <chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team"
     name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user"
     stacked="false">
@@ -710,6 +778,9 @@
     </dataset>
     <category key="_sale_man" type="text" title="User"/>
     <series key="_total_calls" type="bar" title="Calls"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Event"/>
+    <config name="_filter" value="salesMan.fullName"/>
   </chart>
 
 
@@ -785,6 +856,9 @@
     </dataset>
     <category key="_country" type="text" title="Country"/>
     <series key="_total_leads" type="bar" title="Leads"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="country.name"/>
   </chart>
 
   <action-record model="com.axelor.apps.crm.db.Lead"
@@ -817,6 +891,9 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_leads" type="bar" title="Leads"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="to_char(self.created_on,'yyyy-MM')"/>
   </chart>
 
   <chart name="chart.created.leads.by.industry.sector"
@@ -834,6 +911,9 @@
     </dataset>
     <category key="industrySector" type="text" title="Industry Sector"/>
     <series key="leads" type="bar" title="Leads"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="self.industrySector.name"/>
   </chart>
 
   <chart onInit="action.base.chart.set.date.6m" name="chart.created.leads.with.opportunity"
@@ -891,6 +971,10 @@
     </dataset>
     <category key="title" type="text" title="Month"/>
     <series key="average" type="bar"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.crm.db.Lead"/>
+    <config name="_filter" value="to_char(ld.createdOn,'MM-yyyy')"/>
+    <config name="_selectFilter" value="ld"/>
   </chart>
 
 

@@ -58,6 +58,10 @@
     </dataset>
     <category key="_status" type="text" title="Status"/>
     <series key="total_row" type="bar" title="Total tickets"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="helpdesk_ticket"/>
   </chart>
 
   <chart name="chart.ticket.no.of.solved.my.team.ticket" title="My team tickets"
@@ -130,6 +134,10 @@
     </dataset>
     <category key="_status" type="text" title="Status"/>
     <series key="total_row" type="bar" title="Total tickets"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="_ticket"/>
   </chart>
 
 
@@ -184,6 +192,10 @@
     </dataset>
     <category key="_status" type="text" title="Status"/>
     <series key="total_row" type="bar" title="Total tickets"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="helpdesk_ticket"/>
   </chart>
 
   <chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team"
@@ -270,6 +282,10 @@
     <category key="_status" type="text" title="Status"/>
     <series key="_percentage" type="pie" title="Percentage"/>
     <config name="percent" value="true"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="_ticket1"/>
   </chart>
 
   <chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user"
@@ -352,6 +368,10 @@
     <category key="_status" type="text" title="Status"/>
     <series key="_percentage" type="pie" title="Percentage"/>
     <config name="percent" value="true"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="_ticket1"/>
   </chart>
 
   <chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team"
@@ -435,6 +455,10 @@
     </dataset>
     <category key="_status" type="text" title="Status"/>
     <series key="_total" type="bar" title="Total tickets"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="_ticket1"/>
   </chart>
 
   <chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user"
@@ -510,6 +534,10 @@
     </dataset>
     <category key="_status" type="text" title="Status"/>
     <series key="_total" type="bar" title="Total tickets"/>
+    <config name="onClick"
+      value="com.axelor.apps.helpdesk.web.HelpDeskChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.helpdesk.db.Ticket"/>
+    <config name="_selectFilter" value="_ticket1"/>
   </chart>
 
   <action-record model="com.axelor.apps.helpdesk.db.Ticket"

@@ -37,6 +37,10 @@
     </dataset>
     <category key="country_name" type="text" title="Country"/>
     <series key="partners" type="donut" title="Customers"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.base.db.Partner"/>
+    <config name="_filter" value="_country.name"/>
+    <config name="_selectFilter" value="_partner"/>
   </chart>
 
   <chart name="chart.customers.by.industrySector.bar" title="Customers by Industry Sector">

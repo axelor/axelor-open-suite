@@ -49,6 +49,10 @@
     </dataset>
     <category key="_status" type="text" title="Status"/>
     <series key="_passed" type="bar"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.quality.db.ControlPoint"/>
+    <config name="_filter"
+      value="(CASE WHEN(translation.message_value = '') THEN _meta._select_title ELSE translation.message_value END)"/>
   </chart>
 
   <chart onInit="action.quality.chart.set.date" name="chart.quality.controls.total.numbers"
@@ -74,6 +78,9 @@
     </dataset>
     <category key="_team" type="text"/>
     <series key="_controls" type="bar"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.quality.db.QualityControl"/>
+    <config name="_filter" value="self.team.name"/>
   </chart>
 
   <chart name="chart.quality.alerts.total.numbers" title="Number of quality alerts by team"
@@ -99,6 +106,9 @@
     </dataset>
     <category key="_team" type="text"/>
     <series key="_alerts" type="bar"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.quality.db.QualityAlert"/>
+    <config name="_filter" value="self.team.name"/>
   </chart>
 
   <chart onInit="action.quality.chart.set.date"
@@ -126,6 +136,9 @@
     </dataset>
     <category key="_team" type="text"/>
     <series key="_alerts" type="bar"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.quality.db.QualityAlert"/>
+    <config name="_filter" value="self.team.name"/>
   </chart>
 
   <action-record model="com.axelor.apps.quality.db.ControlPoint"
