@@ -96,6 +96,7 @@ public class InventoryService {
 
   static final int INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT = 15;
 
+  protected InventoryLineRepository inventoryLineRepository;
   protected InventoryLineService inventoryLineService;
   protected SequenceService sequenceService;
   protected StockConfigService stockConfigService;
@@ -124,7 +125,8 @@ public class InventoryService {
       StockLocationLineRepository stockLocationLineRepository,
       TrackingNumberRepository trackingNumberRepository,
       AppBaseService appBaseService,
-      StockLocationRepository stockLocationRepository) {
+      StockLocationRepository stockLocationRepository,
+      InventoryLineRepository inventoryLineRepository) {
     this.inventoryLineService = inventoryLineService;
     this.sequenceService = sequenceService;
     this.stockConfigService = stockConfigService;
@@ -138,6 +140,7 @@ public class InventoryService {
     this.trackingNumberRepository = trackingNumberRepository;
     this.appBaseService = appBaseService;
     this.stockLocationRepository = stockLocationRepository;
+    this.inventoryLineRepository = inventoryLineRepository;
   }
 
   public Inventory createInventory(
@@ -198,26 +201,28 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public Path importFile(Inventory inventory) throws AxelorException {
 
-    List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
+    HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
+
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
     List<String[]> data = this.getDatas(filePath);
-    HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
+
     List<String> headers = Arrays.asList(data.get(0));
+    inventory.clearInventoryLineList();
 
     data.remove(0); /* Skip headers */
 
     for (String[] line : data) {
-      addToInventory(inventory, inventoryLineList, inventoryLineMap, headers, line);
+      inventory.addInventoryLineListItem(
+          createInventoryLine(inventory, inventoryLineMap, headers, line));
     }
-    inventory.setInventoryLineList(inventoryLineList);
 
     inventoryRepo.save(inventory);
+
     return filePath;
   }
 
-  protected void addToInventory(
+  protected InventoryLine createInventoryLine(
       Inventory inventory,
-      List<InventoryLine> inventoryLineList,
       HashMap<String, InventoryLine> inventoryLineMap,
       List<String> headers,
       String[] line)
@@ -253,28 +258,31 @@ public class InventoryService {
     }
 
     if (inventoryLineMap.containsKey(key)) {
-      editInventoryLine(inventoryLineMap.get(key), description, realQty);
+      return copyAndEditInventoryLine(inventoryLineMap.get(key), description, realQty);
     } else {
-      inventoryLineList.add(
-          createInventoryLine(
-              inventory,
-              rack,
-              trackingNumberSeq,
-              description,
-              realQty,
-              currentQty,
-              product,
-              stockLocation));
+      return createInventoryLine(
+          inventory,
+          rack,
+          trackingNumberSeq,
+          description,
+          realQty,
+          currentQty,
+          product,
+          stockLocation);
     }
   }
 
-  protected void editInventoryLine(
+  protected InventoryLine copyAndEditInventoryLine(
       InventoryLine inventoryLine, String description, BigDecimal realQty) {
-    inventoryLine.setRealQty(realQty);
-    inventoryLine.setDescription(description);
-    if (inventoryLine.getTrackingNumber() != null) {
-      inventoryLine.getTrackingNumber().setCounter(realQty);
+
+    // There is not one to many for inventoryLine, so true or false is the same.
+    InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
+    inventoryLineResult.setRealQty(realQty);
+    inventoryLineResult.setDescription(description);
+    if (inventoryLineResult.getTrackingNumber() != null) {
+      inventoryLineResult.getTrackingNumber().setCounter(realQty);
     }
+    return inventoryLineResult;
   }
 
   protected InventoryLine createInventoryLine(
