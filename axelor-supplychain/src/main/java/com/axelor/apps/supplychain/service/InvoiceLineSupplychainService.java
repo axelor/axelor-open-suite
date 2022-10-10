@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -63,7 +64,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      TaxService taxService) {
     super(
         currencyService,
         priceListService,
@@ -73,7 +75,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService);
+        accountConfigService,
+        taxService);
     this.purchaseProductService = purchaseProductService;
   }
 

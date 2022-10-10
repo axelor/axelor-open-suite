@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -72,6 +73,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
+  protected TaxService taxService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -83,7 +85,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      TaxService taxService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -94,6 +97,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.invoiceLineRepo = invoiceLineRepo;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -228,7 +232,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany())
         != resultInAti) {
       price =
-          this.convertUnitPrice(
+          taxService.convertUnitPrice(
               (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
               taxLine,
               price);
@@ -284,21 +288,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
-
-    if (taxLine == null) {
-      return price;
-    }
-
-    if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-    } else {
-      price = price.add(price.multiply(taxLine.getValue()));
-    }
-    return price;
-  }
-
-  @Override
   public Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException {
 
@@ -315,7 +304,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         processedDiscounts.put(
             "discountAmount",
-            this.convertUnitPrice(
+            taxService.convertUnitPrice(
                 invoiceLine.getProduct().getInAti(),
                 invoiceLine.getTaxLine(),
                 (BigDecimal) rawDiscounts.get("discountAmount")));
@@ -333,11 +322,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       if (invoiceLine.getProduct().getInAti()) {
         processedDiscounts.put("inTaxPrice", price);
         processedDiscounts.put(
-            "price", this.convertUnitPrice(true, invoiceLine.getTaxLine(), price));
+            "price", taxService.convertUnitPrice(true, invoiceLine.getTaxLine(), price));
       } else {
         processedDiscounts.put("price", price);
         processedDiscounts.put(
-            "inTaxPrice", this.convertUnitPrice(false, invoiceLine.getTaxLine(), price));
+            "inTaxPrice", taxService.convertUnitPrice(false, invoiceLine.getTaxLine(), price));
       }
     }
 
