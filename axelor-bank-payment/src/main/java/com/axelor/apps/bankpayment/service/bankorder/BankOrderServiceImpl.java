@@ -610,13 +610,9 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder) {
     // filter on the currency if it is set in file format
-    if (bankOrder.getBankOrderCurrency() != null
-        && bankDetails.getCurrency() != null
-        && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
-      return false;
-    }
-
-    return true;
+    return bankOrder.getBankOrderCurrency() == null
+    || bankDetails.getCurrency() == null
+    || bankDetails.getCurrency().equals(bankOrder.getBankOrderCurrency());
   }
 
   @Override
