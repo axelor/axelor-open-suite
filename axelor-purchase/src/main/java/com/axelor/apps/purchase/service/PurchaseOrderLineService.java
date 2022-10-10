@@ -86,8 +86,6 @@ public interface PurchaseOrderLineService {
   public SupplierCatalog getSupplierCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
-  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
-
   public Map<String, Object> updateInfoFromCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 

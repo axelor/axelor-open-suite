@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -231,7 +232,7 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(InvoiceLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price", Beans.get(TaxService.class).convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -253,8 +254,7 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice",
-          Beans.get(InvoiceLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice", Beans.get(TaxService.class).convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

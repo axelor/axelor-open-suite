@@ -60,8 +60,6 @@ public interface InvoiceLineService {
 
   BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
 
-  BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
-
   Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException;
 
