@@ -44,8 +44,8 @@
             </panel>
             <field name="bankOrderExportFolderPath" requiredIf="generateBankOrder"/>
             <field name="bankOrderFileFormat"
-              domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
-              canEdit="false" requiredIf="generateBankOrder" form-view="bank-order-file-format-form"
+              onSelect="action-payment-mode-attrs-set-bank-order-file-format-domain" canEdit="false"
+              requiredIf="generateBankOrder" form-view="bank-order-file-format-form"
               grid-view="bank-order-file-format-grid"/>
           </panel>
         </panel>
@@ -69,6 +69,14 @@
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">
     <attribute name="value" for="bankOrderFileFormat" expr=""/>
+  </action-attrs>
+
+  <action-attrs name="action-payment-mode-attrs-set-bank-order-file-format-domain">
+    <attribute name="domain" for="bankOrderFileFormat"
+      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true' &quot;"/>
+    <attribute name="domain" for="bankOrderFileFormat"
+      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true' AND self.isMultiDate = 'true' &quot;"
+      if="moveAccountingDateSelect == 2 &amp;&amp; accountingTriggerSelect == 1"/>
   </action-attrs>
 
 </object-views>
