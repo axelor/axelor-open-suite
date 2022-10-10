@@ -29,7 +29,7 @@ import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MessageService;
@@ -518,7 +518,7 @@ public class EventServiceImpl implements EventService {
     if (conf.getRecurrenceType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.RECURRENCE_RECURRENCE_TYPE);
+          CrmExceptionMessage.RECURRENCE_RECURRENCE_TYPE);
     }
 
     int recurrenceType = new Integer(conf.getRecurrenceType().toString());
@@ -526,7 +526,7 @@ public class EventServiceImpl implements EventService {
     if (conf.getPeriodicity() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
+          I18n.get(CrmExceptionMessage.RECURRENCE_PERIODICITY));
     }
 
     int periodicity = new Integer(conf.getPeriodicity().toString());
@@ -534,7 +534,7 @@ public class EventServiceImpl implements EventService {
     if (periodicity < 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
+          I18n.get(CrmExceptionMessage.RECURRENCE_PERIODICITY));
     }
 
     boolean monday = conf.getMonday();
@@ -563,7 +563,7 @@ public class EventServiceImpl implements EventService {
       if (daysCheckedMap.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.RECURRENCE_DAYS_CHECKED));
+            I18n.get(CrmExceptionMessage.RECURRENCE_DAYS_CHECKED));
       }
     }
 
@@ -577,7 +577,7 @@ public class EventServiceImpl implements EventService {
       if (conf.getRepetitionsNumber() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
+            I18n.get(CrmExceptionMessage.RECURRENCE_REPETITION_NUMBER));
       }
 
       repetitionsNumber = new Integer(conf.getRepetitionsNumber().toString());
@@ -585,7 +585,7 @@ public class EventServiceImpl implements EventService {
       if (repetitionsNumber < 1) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
+            I18n.get(CrmExceptionMessage.RECURRENCE_REPETITION_NUMBER));
       }
     }
     LocalDate endDate = event.getEndDateTime().toLocalDate();
@@ -593,7 +593,7 @@ public class EventServiceImpl implements EventService {
       if (conf.getEndDate() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
+            I18n.get(CrmExceptionMessage.RECURRENCE_END_DATE));
       }
 
       endDate = LocalDate.parse(conf.getEndDate().toString(), DateTimeFormatter.ISO_DATE);
@@ -602,7 +602,7 @@ public class EventServiceImpl implements EventService {
           || endDate.isEqual(event.getStartDateTime().toLocalDate())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
+            I18n.get(CrmExceptionMessage.RECURRENCE_END_DATE));
       }
     }
     switch (recurrenceType) {

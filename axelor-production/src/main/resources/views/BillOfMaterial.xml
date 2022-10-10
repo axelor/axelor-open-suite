@@ -6,9 +6,9 @@
   <grid name="bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="fullName"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop()"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="product" domain="self.productTypeSelect = 'storable'"
       onChange="action-bill-of-material-group-product" form-view="product-form"
       grid-view="product-grid"/>
@@ -21,9 +21,9 @@
   <grid name="product-bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="fullName"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop()"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="product" domain="self.productTypeSelect = 'storable'"
       onChange="action-bill-of-material-group-product" form-view="product-form"
       grid-view="product-grid"/>
@@ -36,7 +36,7 @@
   <grid name="personalized-bill-of-material-grid" title="Bills of material" canNew="false"
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="fullName"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"/>
     <field name="product" domain="self.productTypeSelect = 'storable'"
       onChange="action-bill-of-material-group-product" form-view="product-form"
@@ -60,7 +60,7 @@
       <menu name="bomOptionsMenu" title="Options">
         <item name="generateNewVersionItem" title="Generate new version"
           action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
-          if="__config__.app.getApp('production').manageBillOfMaterialVersion"/>
+          if="__config__.app.getApp('production')?.manageBillOfMaterialVersion"/>
         <item name="defineDefaultBomProductItem"
           title="Define as default bill of materials of product"
           action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
@@ -96,7 +96,7 @@
         grid-view="company-grid"/>
       <field name="workshopStockLocation" canEdit="false"
         domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
-        if="__config__.app.getApp('production').getManageWorkshop()"/>
+        if="__config__.app.getApp('production')?.getManageWorkshop()"/>
       <field name="product" canEdit="false"
         onChange="action-bill-of-material-record-product-unit"
         domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND self.dtype = 'Product'"
@@ -147,7 +147,7 @@
       <panel-related name="prodResidualProductListPanel"
         field="prodResidualProductList" title="Residual products" colSpan="12"
         grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"
-        if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>
+        if="__config__.app.getApp('production')?.getManageResidualProductOnBom()"/>
 
       <panel name="costPanel" title="Cost">
         <button name="computeCostPriceBtn" title="Compute cost price"
@@ -270,7 +270,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
     <field name="product" expr="eval:_product"/>
     <field name="name" expr="eval:_product?.name"/>
     <field name="unit" expr="eval: _product?.unit"/>
@@ -350,7 +350,7 @@
     <attribute name="scale" for="costPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
+      expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
   </action-attrs>
 
   <action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
@@ -377,11 +377,11 @@
   <search-filters name="bill-of-material-filters"
     model="com.axelor.apps.production.db.BillOfMaterial" title="Bills of material filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="prodResidualProductList" hidden="true"
-      if="!__config__.app.getApp('production').getManageResidualProductOnBom()"/>
+      if="!__config__.app.getApp('production')?.getManageResidualProductOnBom()"/>
   </search-filters>
 </object-views>
 

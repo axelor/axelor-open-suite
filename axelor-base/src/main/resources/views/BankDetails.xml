@@ -45,7 +45,7 @@
       <field name="label"/>
       <field name="currency"/>
       <field name="bankAccount" showIf="company != null"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
       <field name="journal" showIf="company != null"
         domain="self.company = :company AND self.statusSelect = 1"/>
       <field name="code" x-bind="{{code|uppercase}}" hidden="true"/>
@@ -160,6 +160,8 @@
 
   <action-group name="action-group-account-bank-details-form-onnew">
     <action name="action-method_bank-details-validate-iban"/>
+    <action name="action-bank-details-record-set-company"
+      if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
     <action name="action-set-default-partner"/>
     <action name="action-set-default-bank"/>
     <action name="action-bank-details-attrs-code"/>
@@ -195,6 +197,11 @@
     <field name="ownerName"
       if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
       expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''"/>
+  </action-record>
+
+  <action-record name="action-bank-details-record-set-company"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="company" expr="eval: __parent__"/>
   </action-record>
 
   <action-record name="action-set-default-bank"
@@ -247,17 +254,6 @@
     <view-param name="default-search-filters"
       value="movement-bank-statement-line-afb-120"/>
     <domain>self.bankDetails.id = :bankDetailsId</domain>
-    <context name="bankDetailsId" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-bank-details-view-show-bank-statement-lines-final-balance"
-    title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
-    <view type="grid" name="bank-statement-line-afb-120-grid"/>
-    <view type="form" name="bank-statement-line-afb-120-form"/>
-    <view-param name="search-filters" value="bank-statement-line-afb-120-filters"/>
-    <view-param name="default-search-filters"
-      value="initial-final-balance-bank-statement-line-afb-120"/>
-    <domain>self.bankDetails.id = :bankDetailsId </domain>
     <context name="bankDetailsId" expr="eval: id"/>
   </action-view>
 

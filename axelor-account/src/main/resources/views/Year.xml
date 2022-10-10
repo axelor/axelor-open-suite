@@ -11,12 +11,13 @@
     <field name="toDate"/>
     <field name="reportedBalanceDate"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="statusSelect"/>
   </grid>
 
   <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
-    onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet" onSave="action-year-check-date"
+    onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet,action-method-account-fiscal-year-readonly-if-in-move"
+    onSave="action-year-check-date,action-method-account-year-control-dates"
     onNew="action-year-account-record-new">
     <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="name"/>
@@ -24,13 +25,14 @@
       <field name="company" widget="SuggestBox" form-view="company-form" required="true"
         colSpan="3" grid-view="company-grid"/>
       <panel name="datesPanel" title="Dates" colSpan="12">
-        <field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
-        <field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
+        <field name="fromDate" colSpan="3"/>
+        <field name="toDate" colSpan="3"/>
         <field name="reportedBalanceDate" required="true" colSpan="3"/>
       </panel>
     </panel>
-    <panel-related name="periodListPanel" field="periodList" colSpan="12"
-      readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+    <panel-related onChange="action-method-account-fiscal-year-readonly-if-in-move"
+      name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2"
+      form-view="period-year-form" grid-view="period-grid"/>
     <panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel" showIf="statusSelect &gt; 1"/>
     <panel name="actionsPanel" sidebar="true">
@@ -45,7 +47,8 @@
         onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
     </panel>
     <panel sidebar="true" name="periodsGenerationAssistantPanel"
-      title="Periods generation assistant" hideIf="statusSelect == 2" readonlyIf="!id">
+      title="Periods generation assistant" hideIf="statusSelect == 2"
+      readonlyIf="!id || periodList.length > 0">
       <field name="periodDurationSelect"/>
       <button name="generatePeriodsBtn" title="Generate periods"
         onClick="action-year-group-generate-period-click"/>
@@ -93,5 +96,14 @@
   <action-method name="action-year-adjust-method">
     <call class="com.axelor.apps.account.web.YearController" method="adjust"/>
   </action-method>
+
+  <action-method name="action-method-account-year-control-dates">
+    <call class="com.axelor.apps.account.web.YearController" method="controlDates"/>
+  </action-method>
+
+  <action-method name="action-method-account-fiscal-year-readonly-if-in-move">
+    <call class="com.axelor.apps.account.web.YearController" method="setReadOnly"/>
+  </action-method>
+
 
 </object-views>

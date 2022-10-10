@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.bpm.web;
 
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.bpm.db.WkfModel;
-import com.axelor.apps.bpm.db.WkfProcess;
 import com.axelor.apps.bpm.db.WkfProcessConfig;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
 import com.axelor.apps.bpm.db.repo.WkfProcessConfigRepository;
 import com.axelor.apps.bpm.service.WkfModelService;
+import com.axelor.apps.bpm.service.dashboard.WkfDashboardCommonService;
 import com.axelor.apps.bpm.service.deployment.BpmDeploymentService;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.auth.AuthUtils;
@@ -46,23 +45,16 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Table;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class WkfModelController {
 
-  private static final String CHART_MONTH_STATUS = "chart.wkf.model.status.per.month";
-
-  private static final String CHART_DAY_STATUS = "chart.wkf.model.status.per.day";
-
-  private static final String CHART_TIMESPENT_STATUS = "chart.wkf.model.time.spent.per.status";
+  @Inject private WkfDashboardCommonService wkfDashboardCommonService;
 
   private static final String PROCESS_PER_STATUS = "processPerStatus";
   private static final String PROCESS_PER_USER = "processPerUser";
@@ -211,198 +203,6 @@ public class WkfModelController {
     response.setReload(true);
   }
 
-  public void showDashboard(ActionRequest request, ActionResponse response) {
-
-    try {
-      WkfModel wkfModel = request.getContext().asType(WkfModel.class);
-      wkfModel = Beans.get(WkfModelRepository.class).find(wkfModel.getId());
-      if (CollectionUtils.isEmpty(wkfModel.getWkfProcessList())) {
-        return;
-      }
-
-      if (wkfModel.getWkfProcessList().size() == 1) {
-        response.setView(
-            ActionView.define(I18n.get("Workflow dashboard"))
-                .add("dashboard", "dasbhoard-wkf-model")
-                .context("_wkfId", wkfModel.getId())
-                .context("_process", wkfModel.getWkfProcessList().get(0).getName())
-                .map());
-      } else {
-        response.setView(
-            ActionView.define(I18n.get("Select process"))
-                .model(Wizard.class.getName())
-                .add("form", "wfk-model-select-process-wizard-form")
-                .param("popup", "true")
-                .param("popup-save", "false")
-                .param("show-confirm", "false")
-                .param("show-toolbar", "false")
-                .context("_wkf", wkfModel)
-                .map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setModelsDomain(ActionRequest request, ActionResponse response) {
-
-    try {
-      WkfModel wkfModel = null;
-      List<Long> jsonModelIds = new ArrayList<>();
-      List<Long> metaModelIds = new ArrayList<>();
-
-      if (request.getContext().get("wkfId") != null) {
-        wkfModel =
-            Beans.get(WkfModelRepository.class)
-                .find(Long.parseLong(request.getContext().get("wkfId").toString()));
-      }
-
-      String process = (String) request.getContext().get("_process");
-
-      if (wkfModel != null) {
-        for (WkfProcess wkfProcess : wkfModel.getWkfProcessList()) {
-          if (CollectionUtils.isEmpty(wkfProcess.getWkfProcessConfigList())
-              || !wkfProcess.getName().equals(process)) {
-            continue;
-          }
-          for (WkfProcessConfig processConfig : wkfProcess.getWkfProcessConfigList()) {
-            if (processConfig.getMetaModel() != null) {
-              metaModelIds.add(processConfig.getMetaModel().getId());
-            }
-
-            if (processConfig.getMetaJsonModel() != null) {
-              jsonModelIds.add(processConfig.getMetaJsonModel().getId());
-            }
-          }
-        }
-      }
-
-      response.setAttr(
-          "metaJsonModel",
-          "domain",
-          !jsonModelIds.isEmpty()
-              ? "self.id IN (" + StringUtils.join(jsonModelIds, ',') + ")"
-              : "self.id IN (0)");
-
-      response.setAttr(
-          "metaModel",
-          "domain",
-          !metaModelIds.isEmpty()
-              ? "self.id IN (" + StringUtils.join(metaModelIds, ',') + ")"
-              : "self.id IN (0)");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public void showRecord(ActionRequest request, ActionResponse response) {
-
-    try {
-      Context context = request.getContext();
-      String status = context.get("status").toString();
-      String tableName = null;
-      String jsonModel = null;
-
-      ActionViewBuilder actionViewBuilder = null;
-      if (context.get("metaModel") != null) {
-        Long id =
-            Long.parseLong(((Map<String, Object>) context.get("metaModel")).get("id").toString());
-        MetaModel metaModel = Beans.get(MetaModelRepository.class).find(id);
-        tableName = metaModel.getTableName();
-        actionViewBuilder = createActionBuilder(status, metaModel);
-      } else if (context.get("metaJsonModel") != null) {
-        Long id =
-            Long.parseLong(
-                ((Map<String, Object>) context.get("metaJsonModel")).get("id").toString());
-        MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).find(id);
-        jsonModel = metaJsonModel.getName();
-        tableName = MetaJsonRecord.class.getAnnotation(Table.class).name();
-        actionViewBuilder = createActionBuilder(status, metaJsonModel);
-      }
-
-      List<Long> idList = getRecordIds(context, tableName, jsonModel);
-
-      response.setView(actionViewBuilder.context("ids", !idList.isEmpty() ? idList : 0).map());
-
-      response.setCanClose(true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  private ActionViewBuilder createActionBuilder(String status, MetaJsonModel metaJsonModel) {
-
-    String title =
-        Strings.isNullOrEmpty(status)
-            ? metaJsonModel.getTitle()
-            : metaJsonModel.getTitle() + "-" + status;
-
-    ActionViewBuilder actionViewBuilder =
-        ActionView.define(title)
-            .model(MetaJsonRecord.class.getName())
-            .add("grid", metaJsonModel.getGridView().getName())
-            .add("form", metaJsonModel.getFormView().getName())
-            .domain("self.jsonModel = :jsonModel AND self.id IN (:ids)")
-            .context("jsonModel", metaJsonModel.getName());
-
-    return actionViewBuilder;
-  }
-
-  private ActionViewBuilder createActionBuilder(String status, MetaModel metaModel) {
-
-    String viewPrefix = Inflector.getInstance().dasherize(metaModel.getName());
-
-    String title =
-        Strings.isNullOrEmpty(status) ? metaModel.getName() : metaModel.getName() + "-" + status;
-
-    ActionViewBuilder actionViewBuilder =
-        ActionView.define(title)
-            .model(metaModel.getFullName())
-            .add("grid", viewPrefix + "-grid")
-            .add("form", viewPrefix + "-form")
-            .domain("self.id IN (:ids)");
-
-    return actionViewBuilder;
-  }
-
-  private List<Long> getRecordIds(Context context, String tableName, String jsonModel) {
-
-    String month = (String) context.get("month");
-    String day = (String) context.get("day");
-    LocalDate fromDate = LocalDate.parse(context.get("fromDate").toString());
-    LocalDate toDate = LocalDate.parse(context.get("toDate").toString());
-    String _chart = context.get("_chart").toString();
-    String status = context.get("status").toString();
-
-    List<Long> idList = new ArrayList<Long>();
-    if (tableName != null) {
-      switch (_chart) {
-        case CHART_MONTH_STATUS:
-          idList =
-              Beans.get(WkfModelService.class)
-                  .getStatusPerMonthRecord(tableName, status, month, jsonModel);
-          break;
-        case CHART_DAY_STATUS:
-          idList =
-              Beans.get(WkfModelService.class)
-                  .getStatusPerDayRecord(tableName, status, day, jsonModel);
-          break;
-        case CHART_TIMESPENT_STATUS:
-          idList =
-              Beans.get(WkfModelService.class)
-                  .getTimespentPerStatusRecord(tableName, status, fromDate, toDate, jsonModel);
-          break;
-        default:
-          break;
-      }
-    }
-
-    return idList;
-  }
-
   public void restart(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -431,25 +231,6 @@ public class WkfModelController {
     response.setFlash(I18n.get("Node cancelled"));
   }
 
-  private List<Map<String, Object>> getDataList(ActionRequest request, String type) {
-    if (request.getData().get("id") == null) {
-      return new ArrayList<>();
-    }
-    Long wkfModelId = Long.valueOf(request.getData().get("id").toString());
-    WkfModel wkfModel = Beans.get(WkfModelRepository.class).find(wkfModelId);
-
-    switch (type) {
-      case PROCESS_PER_STATUS:
-        return Beans.get(WkfModelService.class).getProcessPerStatus(wkfModel);
-
-      case PROCESS_PER_USER:
-        return Beans.get(WkfModelService.class).getProcessPerUser(wkfModel);
-
-      default:
-        return new ArrayList<>();
-    }
-  }
-
   public void getProcessPerStatus(ActionRequest request, ActionResponse response) {
     try {
       List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_STATUS);
@@ -467,6 +248,25 @@ public class WkfModelController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  private List<Map<String, Object>> getDataList(ActionRequest request, String type) {
+    if (request.getData().get("id") == null) {
+      return new ArrayList<>();
+    }
+    Long wkfModelId = Long.valueOf(request.getData().get("id").toString());
+    WkfModel wkfModel = Beans.get(WkfModelRepository.class).find(wkfModelId);
+
+    switch (type) {
+      case PROCESS_PER_STATUS:
+        return Beans.get(WkfModelService.class).getProcessPerStatus(wkfModel);
+
+      case PROCESS_PER_USER:
+        return Beans.get(WkfModelService.class).getProcessPerUser(wkfModel);
+
+      default:
+        return new ArrayList<>();
     }
   }
 
@@ -489,15 +289,9 @@ public class WkfModelController {
     boolean isMetaModel = (boolean) _map.get("isMetaModel");
     List<Long> recordIds = (List<Long>) _map.get(recordkey);
 
-    ActionViewBuilder actionViewBuilder = null;
-    if (isMetaModel) {
-      MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
-      actionViewBuilder = this.createActionBuilder(status, metaModel);
-
-    } else {
-      MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).findByName(modelName);
-      actionViewBuilder = this.createActionBuilder(status, metaJsonModel);
-    }
+    ActionViewBuilder actionViewBuilder =
+        Beans.get(WkfDashboardCommonService.class)
+            .computeActionView(status, modelName, isMetaModel);
 
     response.setView(actionViewBuilder.context("ids", !recordIds.isEmpty() ? recordIds : 0).map());
   }
@@ -565,7 +359,7 @@ public class WkfModelController {
       String viewPrefix = Inflector.getInstance().dasherize(metaModel.getName());
 
       actionViewBuilder =
-          ActionView.define(metaModel.getName())
+          ActionView.define(I18n.get(metaModel.getName()))
               .model(metaModel.getFullName())
               .add("form", viewPrefix + "-form");
 
@@ -573,7 +367,7 @@ public class WkfModelController {
       MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).findByName(modelName);
 
       actionViewBuilder =
-          ActionView.define(metaJsonModel.getTitle())
+          ActionView.define(I18n.get(metaJsonModel.getTitle()))
               .model(MetaJsonRecord.class.getName())
               .add("form", metaJsonModel.getFormView().getName())
               .domain("self.jsonModel = :jsonModel")
@@ -592,7 +386,7 @@ public class WkfModelController {
         return;
       }
 
-      if (isAdmin(wkfModel, user)) {
+      if (wkfDashboardCommonService.isAdmin(wkfModel, user)) {
         return;
       }
 
@@ -600,13 +394,13 @@ public class WkfModelController {
       response.setAttr("adminPanel", "hidden", true);
       response.setAttr("managerPanel", "hidden", true);
 
-      if (isManager(wkfModel, user)) {
+      if (wkfDashboardCommonService.isManager(wkfModel, user)) {
         return;
       }
 
       response.setAttr("allProcessPanel", "hidden", true);
 
-      if (isUser(wkfModel, user)) {
+      if (wkfDashboardCommonService.isUser(wkfModel, user)) {
         return;
       }
 
@@ -616,57 +410,6 @@ public class WkfModelController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public boolean isAdmin(WkfModel wkfModel, User user) {
-    boolean isAdminUser = wkfModel.getAdminUserSet().contains(user);
-    boolean isAdminRole =
-        wkfModel.getAdminRoleSet().stream()
-            .filter(
-                role -> {
-                  return user.getRoles().contains(role);
-                })
-            .findAny()
-            .isPresent();
-
-    if (isAdminUser || isAdminRole) {
-      return true;
-    }
-    return false;
-  }
-
-  public boolean isManager(WkfModel wkfModel, User user) {
-    boolean isManagerUser = wkfModel.getManagerUserSet().contains(user);
-    boolean isManagerRole =
-        wkfModel.getManagerRoleSet().stream()
-            .filter(
-                role -> {
-                  return user.getRoles().contains(role);
-                })
-            .findAny()
-            .isPresent();
-
-    if (isManagerUser || isManagerRole) {
-      return true;
-    }
-    return false;
-  }
-
-  public boolean isUser(WkfModel wkfModel, User user) {
-    boolean isUser = wkfModel.getUserSet().contains(user);
-    boolean isUserRole =
-        wkfModel.getRoleSet().stream()
-            .filter(
-                role -> {
-                  return user.getRoles().contains(role);
-                })
-            .findAny()
-            .isPresent();
-
-    if (isUser || isUserRole) {
-      return true;
-    }
-    return false;
   }
 
   public void openTaskToday(ActionRequest request, ActionResponse response) {

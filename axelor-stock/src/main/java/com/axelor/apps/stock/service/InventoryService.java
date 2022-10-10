@@ -38,8 +38,9 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -92,6 +93,8 @@ public class InventoryService {
   private final String DESCRIPTION = I18n.get("Description");
   private final String LAST_INVENTORY_DATE = I18n.get("Last Inventory date");
   private final String STOCK_LOCATION = I18n.get("Stock Location");
+
+  static final int INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT = 15;
 
   protected InventoryLineService inventoryLineService;
   protected SequenceService sequenceService;
@@ -151,7 +154,7 @@ public class InventoryService {
     if (stockLocation == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_1));
+          I18n.get(StockExceptionMessage.INVENTORY_1));
     }
 
     Inventory inventory = new Inventory();
@@ -187,7 +190,7 @@ public class InventoryService {
     if (ref == null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_2) + " " + company.getName());
+          I18n.get(StockExceptionMessage.INVENTORY_2) + " " + company.getName());
 
     return ref;
   }
@@ -364,14 +367,14 @@ public class InventoryService {
       throw new AxelorException(
           e.getCause(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_5));
+          I18n.get(StockExceptionMessage.INVENTORY_5));
     }
 
     if (data == null || data.isEmpty()) {
       throw new AxelorException(
-          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_DATA_NULL_OR_EMPTY)),
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_DATA_NULL_OR_EMPTY)),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_3));
+          I18n.get(StockExceptionMessage.INVENTORY_3));
     }
 
     return data;
@@ -426,7 +429,7 @@ public class InventoryService {
         || inventory.getStatusSelect() != InventoryRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVENTORY_PLAN_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.INVENTORY_PLAN_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_PLANNED);
   }
@@ -437,7 +440,7 @@ public class InventoryService {
         || inventory.getStatusSelect() != InventoryRepository.STATUS_PLANNED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVENTORY_START_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.INVENTORY_START_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
   }
@@ -448,8 +451,9 @@ public class InventoryService {
         || inventory.getStatusSelect() != InventoryRepository.STATUS_IN_PROGRESS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVENTORY_COMPLETE_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.INVENTORY_COMPLETE_WRONG_STATUS));
     }
+    validateInventoryLineList(inventory);
     inventory.setStatusSelect(InventoryRepository.STATUS_COMPLETED);
     inventory.setCompletedBy(AuthUtils.getUser());
   }
@@ -460,8 +464,10 @@ public class InventoryService {
         || inventory.getStatusSelect() != InventoryRepository.STATUS_COMPLETED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVENTORY_VALIDATE_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.INVENTORY_VALIDATE_WRONG_STATUS));
     }
+
+    checkMissingStockLocation(inventory.getInventoryLineList());
     inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
@@ -476,7 +482,7 @@ public class InventoryService {
         || inventory.getStatusSelect() != InventoryRepository.STATUS_CANCELED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVENTORY_DRAFT_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.INVENTORY_DRAFT_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_DRAFT);
     inventory.setValidatedBy(null);
@@ -496,7 +502,7 @@ public class InventoryService {
         || !authorizedStatus.contains(inventory.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVENTORY_CANCEL_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.INVENTORY_CANCEL_WRONG_STATUS));
     }
     List<StockMove> stockMoveList =
         stockMoveRepo
@@ -709,7 +715,7 @@ public class InventoryService {
         throw new AxelorException(
             inventoryLine.getInventory(),
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVENTORY_7)
+            I18n.get(StockExceptionMessage.INVENTORY_7)
                 + " "
                 + inventoryLine.getInventory().getInventorySeq());
       }
@@ -726,7 +732,7 @@ public class InventoryService {
       throw new AxelorException(
           inventory,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_1));
+          I18n.get(StockExceptionMessage.INVENTORY_1));
     }
 
     this.initInventoryLines(inventory);
@@ -972,5 +978,52 @@ public class InventoryService {
         + (!Strings.isNullOrEmpty(entity.getDescription())
             ? "-" + StringUtils.abbreviate(entity.getDescription(), 10)
             : "");
+  }
+
+  protected void validateInventoryLineList(Inventory inventory) throws AxelorException {
+    if (inventory.getInventoryLineList().stream()
+        .anyMatch(inventoryLine -> inventoryLine.getRealQty() == null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(StockExceptionMessage.INVENTORY_VALIDATE_INVENTORY_LINE_LIST));
+    }
+  }
+
+  protected void checkMissingStockLocation(List<InventoryLine> inventoryLineList)
+      throws AxelorException {
+    List<InventoryLine> inventoryLinesWithMissingStockLocation = new ArrayList<>();
+    for (InventoryLine inventoryLine : inventoryLineList) {
+      if (inventoryLine.getStockLocation() == null) {
+        inventoryLinesWithMissingStockLocation.add(inventoryLine);
+      }
+    }
+
+    StringHTMLListBuilder stringHTMLListInventoryLine = new StringHTMLListBuilder();
+    inventoryLinesWithMissingStockLocation.stream()
+        .limit(INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT)
+        .forEach(
+            inventoryLine -> {
+              if (inventoryLine.getTrackingNumber() == null) {
+                stringHTMLListInventoryLine.append(inventoryLine.getProduct().getFullName());
+              } else {
+                stringHTMLListInventoryLine.append(
+                    String.format(
+                        "%s : %s",
+                        inventoryLine.getProduct().getFullName(),
+                        inventoryLine.getTrackingNumber().getTrackingNumberSeq()));
+              }
+            });
+
+    if (!inventoryLinesWithMissingStockLocation.isEmpty()) {
+      if (inventoryLinesWithMissingStockLocation.size()
+          > INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT) {
+        stringHTMLListInventoryLine.append("...");
+      }
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          String.format(
+              I18n.get(StockExceptionMessage.INVENTORY_LINE_STOCK_LOCATION_MISSING),
+              stringHTMLListInventoryLine));
+    }
   }
 }

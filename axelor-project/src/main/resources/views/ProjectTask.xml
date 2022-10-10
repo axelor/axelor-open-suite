@@ -69,8 +69,8 @@
         </field>
       </panel>
       <button name="timeSpentBtn" title="Log time"
-        onClick="save,action-project-task-view-time-spent" colSpan="2"
-        showIf="project.isShowTimeSpent"/>
+        onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
+        colSpan="2" showIf="project.isShowTimeSpent"/>
       <field name="project.isShowTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
@@ -89,7 +89,7 @@
             </editor>
           </field>
           <field name="ticketNumber"
-            if="__config__.app.getApp('project').isEnablePerProjectTaskSequence"/>
+            if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
           <field name="project" colSpan="6"
             onChange="action-project-task-group-project-onchange"
             domain="self.projectStatus.isCompleted = false" required="true"/>
@@ -278,7 +278,7 @@
           </panel>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
         </panel>
-        <field if="__config__.app.getApp('project').isEnableSignature" name="metaFile"
+        <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
           width="120" widget="Image"/>
       </panel>
 
@@ -303,14 +303,14 @@
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <panel-dashlet name="waitingTimesheetLinesPanel"
           action="action-project-task-dashlet-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <panel-dashlet name="allTimesheetLinesPanel"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet').needValidation"/>
+          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
@@ -567,7 +567,7 @@
     <context name="_timePlannedPopup" expr="eval: true"/>
     <context name="_projectTask" expr="eval:__self__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_user" expr="eval:assignedTo"
+    <context name="_employee" expr="eval:assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__self__.project"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
@@ -915,7 +915,7 @@
     <field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project').isEnableSignature"/>
+      if="!__config__.app.getApp('project')?.isEnableSignature"/>
     <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 

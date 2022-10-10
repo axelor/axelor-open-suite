@@ -12,6 +12,17 @@
       title="Existing select"/>
     <string name="selectionText" title="Selection" large="true"/>
     <boolean name="isSelectionField"/>
+    <string name="uniqueModel">
+    	<![CDATA[
+    		if (jsonModel != null) {
+    			return model + " " + jsonModel.getName();
+    		}
+    		return model;
+    	]]>
+    </string>
+
+    <unique-constraint columns="name,uniqueModel"/>
+
     <track>
       <field name="name"/>
       <field name="title"/>

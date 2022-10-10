@@ -76,6 +76,8 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
+import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.InternationalServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
@@ -89,6 +91,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PricedOrderDomainService;
+import com.axelor.apps.base.service.PricedOrderDomainServiceImpl;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.apps.base.service.PrintServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateLineService;
@@ -113,6 +117,8 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
+import com.axelor.apps.base.service.administration.SequenceVersionGeneratorServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.ActionServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
@@ -251,5 +257,8 @@ public class BaseModule extends AxelorModule {
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
+    bind(InternationalService.class).to(InternationalServiceImpl.class);
+    bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
   }
 }

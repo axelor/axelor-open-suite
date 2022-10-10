@@ -17,13 +17,17 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -65,7 +69,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
-  protected FixedAssetService fixedAssetService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
 
   @Inject
   public VentilateState(
@@ -76,7 +80,7 @@ public class VentilateState extends WorkflowInvoice {
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetService fixedAssetService) {
+      FixedAssetGenerationService fixedAssetGenerationService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -84,7 +88,7 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
-    this.fixedAssetService = fixedAssetService;
+    this.fixedAssetGenerationService = fixedAssetGenerationService;
   }
 
   @Override
@@ -130,7 +134,7 @@ public class VentilateState extends WorkflowInvoice {
       if (account == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_5));
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_5));
       }
 
       if (invoice.getPartner() != null) {
@@ -143,7 +147,7 @@ public class VentilateState extends WorkflowInvoice {
     if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
+          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
     }
   }
 
@@ -164,7 +168,7 @@ public class VentilateState extends WorkflowInvoice {
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
           invoice.getInvoiceId());
     }
 
@@ -172,12 +176,12 @@ public class VentilateState extends WorkflowInvoice {
     if (isPurchase && invoice.getOriginDate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
     }
     if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
     }
 
     if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
@@ -222,20 +226,20 @@ public class VentilateState extends WorkflowInvoice {
         throw new AxelorException(
             sequence,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_2),
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_2),
             lastInvoice.getInvoiceDate().getMonth().toString());
       }
       if (sequence.getYearlyResetOk()) {
         throw new AxelorException(
             sequence,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_3),
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_3),
             Integer.toString(lastInvoice.getInvoiceDate().getYear()));
       }
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_1),
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_1),
           lastInvoice.getInvoiceDate().toString());
     }
   }
@@ -273,7 +277,7 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("Generate fixed asset");
     // Create fixed asset
-    fixedAssetService.createFixedAssets(invoice);
+    fixedAssetGenerationService.createFixedAssets(invoice);
   }
 
   /**
@@ -311,7 +315,7 @@ public class VentilateState extends WorkflowInvoice {
     throw new AxelorException(
         invoice,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.VENTILATE_STATE_4),
+        I18n.get(AccountExceptionMessage.VENTILATE_STATE_4),
         invoice.getCompany().getName());
   }
 
@@ -336,7 +340,7 @@ public class VentilateState extends WorkflowInvoice {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.JOURNAL_1),
+            I18n.get(AccountExceptionMessage.JOURNAL_1),
             invoice.getInvoiceId());
     }
   }

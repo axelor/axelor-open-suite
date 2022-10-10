@@ -9,7 +9,7 @@
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
     <field name="analyticDistributionTemplate"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"/>
     <field name="debit"/>
@@ -23,7 +23,7 @@
     <field name="product" grid-view="product-grid" form-view="product-form"/>
     <field name="account" grid-view="account-grid" form-view="account-form"/>
     <field name="analyticDistributionTemplate"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"/>
     <field name="debitCreditSelect"/>
@@ -44,10 +44,10 @@
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
       <field name="account" canEdit="false"
         onSelect="action-move-template-line-set-account-domain" grid-view="account-grid"
-        form-view="account-form"/>
+        form-view="account-form" onChange="action-move-template-line-record-account-onchange"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
       <field name="isValid" readonly="true" hidden="true"/>
@@ -67,12 +67,12 @@
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
       <field name="account" canEdit="false"
         onSelect="action-move-template-line-set-account-domain" grid-view="account-grid"
-        form-view="account-form"/>
+        form-view="account-form" onChange="action-move-template-line-record-account-onchange"/>
       <field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
       <field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
       <field name="isValid" readonly="true" hidden="true"/>
@@ -112,11 +112,18 @@
 
   <action-attrs name="action-move-template-line-set-account-domain">
     <attribute name="domain" for="account"
-      expr="eval:&quot;self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ != null"/>
+      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
+      if="__parent__ != null"/>
     <attribute name="domain" for="account"
-      expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;"
+      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${moveTemplate?.company?.id} &quot;"
       if="moveTemplate != null"/>
   </action-attrs>
 
+  <action-record name="action-move-template-line-record-account-onchange"
+    model="com.axelor.apps.account.db.MoveTemplateLine">
+    <field name="tax" expr="eval: account?.defaultTax"/>
+    <field name="analyticDistributionTemplate"
+      expr="eval: account?.analyticDistributionTemplate "/>
+  </action-record>
 
 </object-views>

@@ -21,11 +21,12 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
@@ -48,7 +49,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +73,10 @@ public class BankReconciliationController {
       if (bankReconciliationLines.isEmpty()) {
         response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
+        BankReconciliationService bankReconciliationService =
+            Beans.get(BankReconciliationService.class);
+        bankReconciliationService.unreconcileLines(bankReconciliationLines);
+        bankReconciliationService.computeBalances(br);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -147,7 +153,7 @@ public class BankReconciliationController {
             bankReconciliationRepository.find(bankReconciliation.getId()));
         response.setReload(true);
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.BANK_RECONCILIATION_ALREADY_OPEN));
+        response.setAlert(I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_ALREADY_OPEN));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -299,7 +305,13 @@ public class BankReconciliationController {
       if (Strings.isNullOrEmpty(journalIds)) {
         response.setAttr("journal", "domain", "self.id IN (0)");
       } else {
-        response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+        response.setAttr(
+            "journal",
+            "domain",
+            "self.id IN("
+                + journalIds
+                + ") AND self.statusSelect = "
+                + JournalRepository.STATUS_ACTIVE);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -434,6 +446,48 @@ public class BankReconciliationController {
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getDomainForWizard(ActionRequest request, ActionResponse response) {
+    try {
+      Long bankReconciliationId =
+          Long.valueOf(
+              (Integer)
+                  ((LinkedHashMap<?, ?>) request.getContext().get("_bankReconciliation"))
+                      .get("id"));
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliationId);
+      BigDecimal credit = new BigDecimal((String) request.getContext().get("bankStatementCredit"));
+      BigDecimal debit = new BigDecimal((String) request.getContext().get("bankStatementDebit"));
+      response.setAttr(
+          "$toReconcileMoveLineSet",
+          "domain",
+          Beans.get(BankReconciliationService.class)
+              .getDomainForWizard(bankReconciliation, credit, debit));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotalOfSelectedMoveLines(ActionRequest request, ActionResponse response) {
+    try {
+      Long bankReconciliationId =
+          Long.valueOf(
+              (Integer)
+                  ((LinkedHashMap<?, ?>) request.getContext().get("_bankReconciliation"))
+                      .get("id"));
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliationId);
+
+      List<LinkedHashMap> toReconcileMoveLineSet =
+          (List<LinkedHashMap>) (request.getContext().get("toReconcileMoveLineSet"));
+      response.setValue(
+          "$selectedMoveLineTotal",
+          Beans.get(BankReconciliationService.class)
+              .getSelectedMoveLineTotal(bankReconciliation, toReconcileMoveLineSet));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
