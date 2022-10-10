@@ -365,7 +365,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     moveLines.addAll(
         addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
     int moveLineId = moveLines.size() + 1;
-    boolean mustRound = false;
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -404,18 +403,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_MISSING),
               invoiceLine.getName(),
               company.getName());
-        }
-
-        if (currencyService.isUnevenRounding(
-            invoice.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            invoiceLine.getExTaxTotal(),
-            invoice.getInvoiceDate())) {
-          if (mustRound) {
-            companyExTaxTotal = companyExTaxTotal.subtract(BigDecimal.valueOf(0.01));
-          }
-
-          mustRound = !mustRound;
         }
 
         MoveLine moveLine =
@@ -498,29 +485,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 company.getName());
           }
 
-          companyTaxTotal = invoiceLineTax.getCompanySubTotalOfFixedAssets();
-          if (currencyService.isUnevenRounding(
-              invoice.getCurrency(),
-              invoice.getCompany().getCurrency(),
-              invoiceLineTax.getSubTotalOfFixedAssets(),
-              invoice.getInvoiceDate())) {
-            if (mustRound) {
-              companyTaxTotal =
-                  invoiceLineTax
-                      .getCompanySubTotalOfFixedAssets()
-                      .subtract(BigDecimal.valueOf(0.01));
-            }
-
-            mustRound = !mustRound;
-          }
-
           moveLine =
               this.createMoveLine(
                   move,
                   partner,
                   account,
                   invoiceLineTax.getSubTotalOfFixedAssets(),
-                  companyTaxTotal,
+                  invoiceLineTax.getCompanySubTotalOfFixedAssets(),
                   null,
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -560,29 +531,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 company.getName());
           }
 
-          companyTaxTotal = invoiceLineTax.getCompanySubTotalExcludingFixedAssets();
-          if (currencyService.isUnevenRounding(
-              invoice.getCurrency(),
-              invoice.getCompany().getCurrency(),
-              invoiceLineTax.getSubTotalExcludingFixedAssets(),
-              invoice.getInvoiceDate())) {
-            if (mustRound) {
-              companyTaxTotal =
-                  invoiceLineTax
-                      .getCompanySubTotalExcludingFixedAssets()
-                      .subtract(BigDecimal.valueOf(0.01));
-            }
-
-            mustRound = !mustRound;
-          }
-
           moveLine =
               this.createMoveLine(
                   move,
                   partner,
                   account,
                   invoiceLineTax.getSubTotalExcludingFixedAssets(),
-                  companyTaxTotal,
+                  invoiceLineTax.getCompanySubTotalExcludingFixedAssets(),
                   null,
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),

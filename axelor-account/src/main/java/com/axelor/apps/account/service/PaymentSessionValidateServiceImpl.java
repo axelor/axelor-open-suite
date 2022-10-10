@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -309,8 +310,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     if (invoiceTerm.getMoveLine().getMove() != null
+        && invoiceTerm.getMoveLine().getMove().getCompany() != null
         && invoiceTerm.getMoveLine().getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-      moveValidateService.accounting(invoiceTerm.getMoveLine().getMove());
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(invoiceTerm.getMoveLine().getMove().getCompany());
+      if (accountConfig.getAccountingDaybook() && accountConfig.getAccountAtPayment()) {
+        moveValidateService.accounting(invoiceTerm.getMoveLine().getMove());
+      }
     }
 
     Partner partner = null;

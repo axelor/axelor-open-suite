@@ -2,10 +2,10 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.rest.dto.ConsumedProductListResponse;
-import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
+import com.axelor.apps.production.rest.dto.ManufOrderProductListResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderProductPutRequest;
+import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderPutRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
@@ -47,14 +47,34 @@ public class ManufOrderRestController {
         .readAccess(Arrays.asList(ManufOrder.class, StockMove.class, ProdProduct.class))
         .check();
 
-    List<ConsumedProductResponse> consumedProductList =
+    List<ManufOrderProductResponse> consumedProductList =
         Beans.get(ManufOrderProductRestService.class)
             .getConsumedProductList(requestBody.fetchManufOrder());
 
     return ResponseConstructor.build(
         Response.Status.OK,
         "Request successfully completed",
-        new ConsumedProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+        new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+  }
+
+  @Path("/produced-products/fetch")
+  @POST
+  @HttpExceptionHandler
+  public Response fetchProducedProducts(ManufOrderProductGetRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .readAccess(Arrays.asList(ManufOrder.class, StockMove.class, ProdProduct.class))
+        .check();
+
+    List<ManufOrderProductResponse> producedProductList =
+        Beans.get(ManufOrderProductRestService.class)
+            .getProducedProductList(requestBody.fetchManufOrder());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Request successfully completed",
+        new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
   }
 
   @Path("/update-product-qty")
