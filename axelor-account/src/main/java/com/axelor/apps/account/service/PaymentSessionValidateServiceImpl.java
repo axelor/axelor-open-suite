@@ -542,7 +542,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     moveRepo.save(move);
 
-    this.updateStatus(move);
+    this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
 
     return move;
   }
@@ -650,18 +650,22 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           move = moveRepo.find(move.getId());
           move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
 
-          this.updateStatus(move);
+          this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
           this.updatePaymentDescription(move);
         }
       }
     }
   }
 
-  protected void updateStatus(Move move) throws AxelorException {
+  protected void updateStatus(Move move, boolean daybook) throws AxelorException {
     moveValidateService.updateValidateStatus(move, false);
     moveValidateService.accounting(move);
 
-    if (move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED) {
+    if (daybook) {
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+      moveValidateService.completeMoveLines(move);
+      moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    } else {
       moveValidateService.accounting(move);
     }
   }
