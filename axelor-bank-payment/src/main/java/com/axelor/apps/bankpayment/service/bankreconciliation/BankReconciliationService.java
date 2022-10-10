@@ -226,8 +226,15 @@ public class BankReconciliationService {
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
-            move = generateMove(bankReconciliationLine, bankStatementRule);
-            moveValidateService.validate(move);
+            if (bankReconciliationLine.getBankStatementLine() != null
+                && bankReconciliationLine.getBankStatementLine().getMoveLine() != null) {
+              bankReconciliationLineService.reconcileBRLAndMoveLine(
+                  bankReconciliationLine,
+                  bankReconciliationLine.getBankStatementLine().getMoveLine());
+            } else {
+              move = generateMove(bankReconciliationLine, bankStatementRule);
+              moveValidateService.validate(move);
+            }
             break;
           }
         }
@@ -851,7 +858,7 @@ public class BankReconciliationService {
   public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
     bankReconciliationLine.setBankStatementQuery(null);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
-    bankReconciliationLine.getBankStatementLine().setMoveLine(null);
+
     String query = "self.postedNbr LIKE '%%s%'";
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
