@@ -26,3 +26,4 @@
 "account-conf-ebics-ebics-certificate";"Admin"
 "admin-root-batch-bank-payment";"Admin"
 "account-conf-ebics-bank-statement-file-format";"Admin"
+"account-root-payment-schedule-payment-schedule-line-reject";"Admin"

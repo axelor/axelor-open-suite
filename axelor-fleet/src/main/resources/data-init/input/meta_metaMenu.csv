@@ -11,5 +11,6 @@
 "fleet-conf-vehicle-make";"Admin"
 "fleet-conf-vehicle-odometer";"Admin"
 "fleet-conf-vehicle-service-type";"Admin"
-"fleet-conf-vehicle-state";"Admin"
 "fleet-conf-vehicle-tag";"Admin"
+"fleet-conf-vehicle-repair-cause";"Admin"
+"fleet-root-vehicle-rent";"Admin"
