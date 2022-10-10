@@ -659,7 +659,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void updateStatus(Move move, boolean daybook) throws AxelorException {
     moveValidateService.updateValidateStatus(move, daybook);
-    moveValidateService.accounting(move);
 
     if (daybook) {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
