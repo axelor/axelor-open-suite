@@ -26,3 +26,4 @@
 "account-conf-ebics-ebics-certificate";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "admin-root-batch-bank-payment";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "account-conf-ebics-bank-statement-file-format";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
+"Account-root-payment-schedule-payment-schedule-line-reject";"Bank Payment Manager|Bank Payment User|Bank Payment Role"

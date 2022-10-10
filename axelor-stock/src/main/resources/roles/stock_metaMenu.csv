@@ -34,3 +34,7 @@
 "menu-stock-dashboard-2";"Stock Manager|Stock User|Stock Read"
 "stock-root-logistical-forms";"Stock Manager|Stock User|Stock Read"
 "stock-root-conf-cancel-reason";"Stock Manager"
+"stock-root-custshipprep";"Stock Manager|Stock User|Stock Read"
+"stock-root-stock-correction";"Stock Manager|Stock User|Stock Read"
+"stock-root-abc-analysis";"Stock Manager|Stock User|Stock Read"
+"stock-root-conf-stock-correction-reason";"Stock Manager"
