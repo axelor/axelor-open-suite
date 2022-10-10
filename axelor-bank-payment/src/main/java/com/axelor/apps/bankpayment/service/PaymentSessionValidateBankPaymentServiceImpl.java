@@ -44,6 +44,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -129,13 +130,11 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Override
   protected void postProcessPaymentSession(
       PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-    super.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
       bankOrderService.updateTotalAmounts(bankOrder);
@@ -151,6 +150,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         }
       }
     }
+
+    super.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -190,14 +191,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
-            paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+            paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
