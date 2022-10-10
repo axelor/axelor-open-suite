@@ -224,10 +224,10 @@ public class InventoryService {
       throws AxelorException {
     if (line.length < 6) {
       throw new AxelorException(
-          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_LINE_LENGHT)),
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_LINE_LENGHT)),
           inventory,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_3));
+          I18n.get(StockExceptionMessage.INVENTORY_3));
     }
 
     String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
@@ -249,7 +249,7 @@ public class InventoryService {
       throw new AxelorException(
           inventory,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_4) + " " + code);
+          I18n.get(StockExceptionMessage.INVENTORY_4) + " " + code);
     }
 
     if (inventoryLineMap.containsKey(key)) {
@@ -312,14 +312,14 @@ public class InventoryService {
         throw new AxelorException(
             inventory,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVENTORY_12) + " " + code);
+            I18n.get(StockExceptionMessage.INVENTORY_12) + " " + code);
       }
       return productList.get(0);
     } else {
       throw new AxelorException(
           inventory,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_4) + " " + code);
+          I18n.get(StockExceptionMessage.INVENTORY_4) + " " + code);
     }
   }
 
@@ -331,10 +331,10 @@ public class InventoryService {
           .setScale(qtyScale, RoundingMode.HALF_UP);
     } catch (NumberFormatException e) {
       throw new AxelorException(
-          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
           inventory,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_3));
+          I18n.get(StockExceptionMessage.INVENTORY_3));
     }
   }
 
@@ -349,10 +349,10 @@ public class InventoryService {
 
     } catch (NumberFormatException e) {
       throw new AxelorException(
-          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
           inventory,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_3));
+          I18n.get(StockExceptionMessage.INVENTORY_3));
     }
     return null;
   }
