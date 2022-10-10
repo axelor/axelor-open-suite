@@ -1,0 +1,3 @@
+---
+title: "BANK RECONCILIATION : moveline is now saved in bank statement line to avoid unlimited auto accounting on a same bank statement line"
+type: fix

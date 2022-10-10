@@ -24,6 +24,8 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.tool.service.ArchivingToolService;
@@ -31,9 +33,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
+
+  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
   public MoveRemoveServiceBankPaymentImpl(
@@ -42,7 +48,8 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
       ArchivingToolService archivingToolService,
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
-      AccountCustomerService accountCustomerService) {
+      AccountCustomerService accountCustomerService,
+      BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     super(
         moveRepo,
         moveLineRepo,
@@ -50,10 +57,12 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
         reconcileService,
         accountingSituationService,
         accountCustomerService);
+    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 
   @Override
   protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
+    removeMoveLineFromBankStatements(moveLine);
     String errorMessage = super.checkDaybookMoveLine(moveLine);
 
     if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
@@ -66,5 +75,15 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
               moveLine.getName());
     }
     return errorMessage;
+  }
+
+  @Transactional
+  protected void removeMoveLineFromBankStatements(MoveLine moveLine) {
+    List<BankStatementLineAFB120> bankStatementLineAFB120List =
+        bankStatementLineAFB120Repository.all().filter("self.moveLine = ?1", moveLine).fetch();
+    for (BankStatementLineAFB120 bankStatementLineAFB120 : bankStatementLineAFB120List) {
+      bankStatementLineAFB120.setMoveLine(null);
+      bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
+    }
   }
 }
