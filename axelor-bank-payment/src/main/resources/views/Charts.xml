@@ -46,6 +46,10 @@
     <config name="colors"
       value="#f63,#28a745,#007bff,#ffc107,#6c757d,#6f42c1,#17a2b8,#dc3545,#6f42c1,#f8f9fa"/>
 
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.account.db.Invoice"/>
+    <config name="_filter" value="to_char(_moveLine.date,'yyyy-MM')"/>
+    <config name="_groupFilter" value="_analyticAccount.name"/>
   </chart>
 
   <chart name="chart.purchases.invoice.per.month.pie"

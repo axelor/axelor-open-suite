@@ -87,6 +87,8 @@ import com.axelor.apps.account.service.AnalyticAxisControlServiceImpl;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
+import com.axelor.apps.account.service.ChartService;
+import com.axelor.apps.account.service.ChartServiceImpl;
 import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -506,5 +508,6 @@ public class AccountModule extends AxelorModule {
     bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
 
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
+    bind(ChartService.class).to(ChartServiceImpl.class);
   }
 }

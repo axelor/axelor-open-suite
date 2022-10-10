@@ -51,6 +51,8 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.PartnerStockSettingsServiceImpl;
 import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
+import com.axelor.apps.stock.service.StockChartService;
+import com.axelor.apps.stock.service.StockChartServiceImp;
 import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
@@ -118,5 +120,6 @@ public class StockModule extends AxelorModule {
     bind(TrackingNumberConfigurationService.class).to(TrackingNumberConfigurationServiceImpl.class);
     bind(ProductVariantServiceImpl.class).to(ProductVariantServiceStockImpl.class);
     bind(WapHistoryService.class).to(WapHistoryServiceImpl.class);
+    bind(StockChartService.class).to(StockChartServiceImp.class);
   }
 }

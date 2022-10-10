@@ -25,15 +25,21 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountChartService;
+import com.axelor.apps.account.service.ChartService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.BaseChartService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.loader.XMLViews;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.meta.schema.views.ChartView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class AccountChartController {
@@ -57,5 +63,25 @@ public class AccountChartController {
       response.setReload(true);
 
     } else response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNT_CHART_3));
+  }
+
+  @SuppressWarnings("unchecked")
+  public void chartOnClick(ActionRequest request, ActionResponse response) throws AxelorException {
+    Map<String, Object> data = request.getData();
+    Map<String, Object> context = (Map<String, Object>) data.get("context");
+    if (!context.containsKey("_chart")) {
+      return;
+    }
+
+    String chartName = context.get("_chart").toString();
+    ChartView chartView = (ChartView) XMLViews.findView(chartName, "chart");
+    if (chartView == null) {
+      return;
+    }
+    List<Long> ids = Beans.get(ChartService.class).getIdList(context, chartView);
+    ActionViewBuilder actionViewBuilder =
+        Beans.get(BaseChartService.class).getActionView(chartView);
+    actionViewBuilder.context("ids", ids);
+    response.setView(actionViewBuilder.map());
   }
 }

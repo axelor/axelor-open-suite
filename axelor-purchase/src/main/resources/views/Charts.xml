@@ -51,6 +51,9 @@
     </dataset>
     <category key="_product_family" type="text" title="Product Accounting Family"/>
     <series key="_qty" type="donut" title="Quantity"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="product.productFamily.name"/>
   </chart>
 
 
@@ -91,6 +94,9 @@
     </dataset>
     <category key="_product_family" type="text" title="Product Accounting Family"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="product.productFamily.name"/>
   </chart>
 
 
@@ -139,6 +145,10 @@
     </dataset>
     <category key="buyer_name" type="text" title="Buyer"/>
     <series key="qty" type="bar" title="Quantity" groupBy="family_name"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="buyer.full_name"/>
+    <config name="_groupFilter" value="family.name"/>
   </chart>
 
 
@@ -181,6 +191,9 @@
     </dataset>
     <category key="family_name" type="text" title="Product Accounting Family"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="family.name"/>
   </chart>
 
 
@@ -236,6 +249,10 @@
     </dataset>
     <category key="_family_product" type="text" title="Product Accounting Family"/>
     <series key="_percent" type="donut" title="Percent"/>
+    <config name="onClick"
+      value="com.axelor.apps.purchase.web.PurchaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="base_product_family.name"/>
   </chart>
 
   <chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount"
@@ -267,6 +284,10 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_amount" type="bar" title="Amount"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="to_char(_order.validation_date,'yyyy-MM')"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty"
@@ -305,6 +326,10 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_qty" type="bar" title="Units"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="to_char(_order.validation_date,'yyyy-MM')"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month"
@@ -335,6 +360,10 @@
     <category key="_month" type="month" title="Month"/>
     <series key="_orders" type="bar" title="ChartPO.saleOrder"/>
     <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="to_char(_order.validation_date,'yyyy-MM')"/>
+    <config name="_selectFilter" value="_order"/>
   </chart>
 
   <chart onInit="action.purchase.chart.set.date.6m"
@@ -372,6 +401,9 @@
     </dataset>
     <category key="_family_product" type="text" title="Product Accounting Family"/>
     <series key="amount" type="bar" title="Amount"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.purchase.db.PurchaseOrder"/>
+    <config name="_filter" value="product.productFamily.name"/>
   </chart>
 
 </object-views>

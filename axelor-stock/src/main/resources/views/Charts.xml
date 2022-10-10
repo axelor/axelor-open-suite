@@ -35,6 +35,10 @@
     </dataset>
     <category key="_country" type="text" title="Country"/>
     <series key="_moves" type="bar" title="Quantity"/>
+    <config name="xFormat" value="MM-YYYY"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.stock.db.StockMove"/>
+    <config name="_filter" value="country.name"/>
   </chart>
 
   <chart onInit="action.base.chart.set.date.6m"
@@ -72,6 +76,9 @@
     </dataset>
     <category key="_country" type="text" title="Country"/>
     <series key="_qty" type="bar" title="Quantity"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.stock.db.StockMoveLine"/>
+    <config name="_filter" value="country.name"/>
   </chart>
 
   <chart onInit="action.base.chart.set.date.6m"
@@ -112,6 +119,10 @@
     </dataset>
     <category key="_country" type="text" title="Country"/>
     <series key="_qty" type="bar" title="Quantity" groupBy="_family"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.stock.db.StockMoveLine"/>
+    <config name="_filter" value="country.name"/>
+    <config name="_groupFilter" value="productFamily.name"/>
   </chart>
 
   <chart onInit="action.base.default.month.value"
@@ -166,6 +177,11 @@
     </dataset>
     <category key="status" type="text" title="Status"/>
     <series key="moves" type="donut" title="Stock Moves"/>
+    <config name="onClick"
+      value="com.axelor.apps.stock.web.StockChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.stock.db.StockMove"/>
+    <config name="_filter"
+      value="(CASE WHEN (translation.message_value IS NULL OR translation.message_value = '') THEN label ELSE translation.message_value END)"/>
   </chart>
 
   <chart onInit="action.base.chart.set.date.6m"
@@ -209,6 +225,14 @@
     </dataset>
     <category key="label" type="text" title="Delay"/>
     <series key="days" type="bar" title="Days"/>
+    <config name="onClick" value="com.axelor.apps.base.web.BaseChartController:chartOnClick"/>
+    <config name="_model" value="com.axelor.apps.stock.db.StockMove"/>
+    <config name="_filter"
+      value="(CASE
+      WHEN (translation.message_value IS NULL OR translation.message_value = '') THEN 'Delay'
+      ELSE
+      translation.message_value
+      END)"/>
   </chart>
 
   <chart name="chart.stock.report.for.product" title="Stock"

@@ -67,6 +67,8 @@ import com.axelor.apps.base.service.BankService;
 import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
+import com.axelor.apps.base.service.BaseChartService;
+import com.axelor.apps.base.service.BaseChartServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
@@ -260,5 +262,6 @@ public class BaseModule extends AxelorModule {
     bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
     bind(InternationalService.class).to(InternationalServiceImpl.class);
     bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
+    bind(BaseChartService.class).to(BaseChartServiceImpl.class);
   }
 }
