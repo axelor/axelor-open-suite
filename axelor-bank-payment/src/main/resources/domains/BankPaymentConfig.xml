@@ -28,6 +28,8 @@
       title="International credit transfers"/>
     <many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence"
       title="International direct debits"/>
+    <many-to-one ref="com.axelor.apps.base.db.Sequence" name="billOfExchangeSequence"
+      title="Bill of exchanges"/>
 
     <many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence"
       title="International treasury transfers"/>

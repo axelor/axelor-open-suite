@@ -73,8 +73,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
       PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
     LOG.debug(
-        "Création d'une ligne de commande fournisseur pour le produit : {}",
-        saleOrderLine.getProductName());
+        "Creation of a purchase order line for the product : {}", saleOrderLine.getProductName());
 
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;

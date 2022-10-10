@@ -23,12 +23,13 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -79,7 +80,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
     if (!accountOpt.isPresent()) {
       String exceptionMessage =
-          I18n.get(IExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
       exceptionMessage += " ";
       exceptionMessage +=
           I18n.get("Company")
@@ -92,7 +93,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         exceptionMessage += I18n.get("Bank details") + " : %s, ";
       }
 
-      exceptionMessage += I18n.get(IExceptionMessage.PAYMENT_MODE_1);
+      exceptionMessage += I18n.get(AccountExceptionMessage.PAYMENT_MODE_1);
       exceptionMessage =
           String.format(
               exceptionMessage,
@@ -199,16 +200,16 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     } else if (accountManagement == null || accountManagement.getSequence() == null) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     }
@@ -227,16 +228,16 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     } else if (accountManagement == null || accountManagement.getJournal() == null) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     }

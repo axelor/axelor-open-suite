@@ -582,17 +582,20 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
     if (getCommonFields(result).getCommonCurrency() == null) {
       fieldErrors.add(
           I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+              com.axelor.apps.account.exception.AccountExceptionMessage
+                  .INVOICE_MERGE_ERROR_CURRENCY));
     }
     if (getCommonFields(result).getCommonCompany() == null) {
       fieldErrors.add(
           I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
+              com.axelor.apps.account.exception.AccountExceptionMessage
+                  .INVOICE_MERGE_ERROR_COMPANY));
     }
     if (getCommonFields(result).getCommonPartner() == null) {
       fieldErrors.add(
           I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
+              com.axelor.apps.account.exception.AccountExceptionMessage
+                  .INVOICE_MERGE_ERROR_PARTNER));
     }
   }
 

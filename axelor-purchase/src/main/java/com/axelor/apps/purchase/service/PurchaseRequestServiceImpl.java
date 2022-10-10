@@ -47,28 +47,6 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void confirmCart() throws AxelorException {
-    List<PurchaseRequest> purchaseRequests =
-        purchaseRequestRepo
-            .all()
-            .filter("self.statusSelect = 1 and self.createdBy = ?1", AuthUtils.getUser())
-            .fetch();
-
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      purchaseRequestWorkflowService.requestPurchaseRequest(purchaseRequest);
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void acceptRequest(List<PurchaseRequest> purchaseRequests) throws AxelorException {
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      purchaseRequestWorkflowService.acceptPurchaseRequest(purchaseRequest);
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
   public List<PurchaseOrder> generatePo(
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException {

@@ -29,16 +29,13 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -131,17 +128,10 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
 
       log.debug(
-          "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
+          "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
           new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-      int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
-      if (functionalOrigin == PriceListRepository.TYPE_PURCHASE) {
-        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
-      } else if (functionalOrigin == PriceListRepository.TYPE_SALE) {
-        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
-      } else {
-        functionalOrigin = 0;
-      }
+      int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
       boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
       move =
@@ -184,7 +174,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         invoice.setMove(move);
 
         invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
-        moveValidateService.validate(move);
+        moveValidateService.accounting(move);
       }
     }
 
@@ -290,7 +280,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
       // We directly use excess if invoice and excessPayment share the same account
       if (moveToolService.isSameAccount(creditMoveLineList, account)) {
-        List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
+        List<MoveLine> debitMoveLineList = new ArrayList<>();
         debitMoveLineList.add(invoiceCustomerMoveLine);
         paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
       }
@@ -298,8 +288,10 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       else {
 
         log.debug(
-            "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
-            new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+            "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
+            invoice.getInvoiceId(),
+            company.getName(),
+            journal.getCode());
 
         Move move =
             moveCreateService.createMove(
@@ -346,7 +338,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               invoice.getInvoiceDate(),
               invoice.getDueDate());
 
-          moveValidateService.validate(move);
+          moveValidateService.accounting(move);
 
           // Reconciliation creation
           Reconcile reconcile =
@@ -375,12 +367,14 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
     log.debug(
-        "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
-        new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+        "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
+        invoice.getInvoiceId(),
+        company.getName(),
+        journal.getCode());
 
     BigDecimal remainingAmount = invoice.getInTaxTotal().abs();
 
-    log.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
+    log.debug("Amount to pay with the credit note : {}", remainingAmount);
 
     Move oDmove =
         moveCreateService.createMove(
@@ -427,7 +421,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           account,
           appAccountService.getTodayDate(company));
 
-      moveValidateService.validate(oDmove);
+      moveValidateService.accounting(oDmove);
 
       // Reconciliation creation
       Reconcile reconcile =

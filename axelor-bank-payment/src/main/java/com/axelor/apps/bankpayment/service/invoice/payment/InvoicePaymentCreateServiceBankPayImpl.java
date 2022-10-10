@@ -26,7 +26,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyService;
@@ -128,7 +128,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
     if (listbankOrder != null && !listbankOrder.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_BANK_ORDER_ALREADY_EXIST),
+          I18n.get(BankPaymentExceptionMessage.INVOICE_BANK_ORDER_ALREADY_EXIST),
           listbankOrder.get(0).getBankOrderSeq(),
           invoice.getInvoiceId());
     }

@@ -30,9 +30,10 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -105,8 +106,8 @@ public class PaymentVoucherLoadService {
             query,
             paymentVoucher.getPartner(),
             paymentVoucher.getCompany(),
-            MoveRepository.STATUS_VALIDATED,
             MoveRepository.STATUS_ACCOUNTED,
+            MoveRepository.STATUS_DAYBOOK,
             InvoiceRepository.PFP_STATUS_LITIGATION,
             paymentVoucher.getTradingName())
         .fetch();
@@ -170,8 +171,8 @@ public class PaymentVoucherLoadService {
         throw new AxelorException(
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
       }
 
       this.completeElementToPay(paymentVoucher);

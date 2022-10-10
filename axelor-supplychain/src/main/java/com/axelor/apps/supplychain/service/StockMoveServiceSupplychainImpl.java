@@ -49,7 +49,7 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -134,14 +134,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             && partnerSupplychainService.isBlockedPartnerOrParent(stockMove.getPartner()))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+          I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
     }
 
     if (!appSupplyChainService.isApp("supplychain")) {
       return super.realize(stockMove, check);
     }
 
-    LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
+    LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
@@ -453,7 +453,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
+                I18n.get(SupplychainExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
                 notAvailableProducts.toString()));
       }
     }
@@ -526,7 +526,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
                 partnerSupplychainLinkInvoicedByList.get(0);
             stockMove.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
-          } else if (partnerSupplychainLinkInvoicedByList.size() == 0) {
+          } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
             stockMove.setInvoicedPartner(partner);
           } else {
             stockMove.setInvoicedPartner(null);

@@ -50,16 +50,16 @@
 
   <menuitem name="invoice-root-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
     order="16"/>
 
   <menuitem name="invoice-root-pfp" title="PFP" parent="invoice-root"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
     order="16"/>
 
   <menuitem name="invoice-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <action-view name="invoice.root.my.awaiting.pfp" title="My awaiting PFP"
     model="com.axelor.apps.account.db.Invoice">
@@ -74,7 +74,7 @@
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
     action="invoice.root.pfp.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
 
   <action-view name="invoice.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
     model="com.axelor.apps.account.db.Invoice">
@@ -146,6 +146,18 @@
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
+  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
+    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+
+  <action-view name="account.root.move.move.simplifed"
+    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
+    <view name="move-grid" type="grid"/>
+    <view name="move-simplified-form" type="form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
   <menuitem name="account-root-move-move-line" parent="account-root-move"
     title="Move lines" action="account.root.move.move.line" order="5"/>
 
@@ -184,7 +196,7 @@
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <context name="_pfpStatus"
-      expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
+      expr="eval:__config__.app.getApp('account')?.getActivatePassedForPayment()?[2]:[1,2,3]"/>
   </action-view>
 
   <menuitem name="account-root-periodic-processing" parent="account-root"
@@ -424,7 +436,8 @@
     order="30"/>
 
   <menuitem title="Fixed assets" name="account-root-asset-management-fixed-assets"
-    parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"/>
+    parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"
+    order="1"/>
 
   <action-view name="account.root.asset.management.fixed.assets" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset">
@@ -434,7 +447,7 @@
   </action-view>
 
   <menuitem title="Configurations" name="account-root-asset-management-conf"
-    parent="account-root-asset-management" icon="fa-cog"/>
+    parent="account-root-asset-management" icon="fa-cog" order="10"/>
 
   <menuitem title="Fixed asset categories"
     name="account-root-asset-management-conf-asset-categories"
@@ -456,6 +469,17 @@
     title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType">
     <view type="grid" name="fixed-asset-type-grid"/>
     <view type="form" name="fixed-asset-type-form"/>
+  </action-view>
+
+  <menuitem title="Asset disposal reasons"
+    name="account-root-asset-management-asset-disposal-reasons"
+    parent="account-root-asset-management-conf"
+    action="account.root.asset.management.asset-disposal-reasons" order="2"/>
+
+  <action-view name="account.root.asset.management.asset-disposal-reasons"
+    title="Asset disposal reasons" model="com.axelor.apps.account.db.AssetDisposalReason">
+    <view type="grid" name="asset-disposal-reason-grid"/>
+    <view type="form" name="asset-disposal-reason-form"/>
   </action-view>
 
 
@@ -593,7 +617,7 @@
   </action-view>
 
   <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
-    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+    if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
     title="Analytic journals" action="account.conf.analytic.journal"/>
@@ -661,6 +685,7 @@
     <view type="grid" name="analytic-distribution-template-grid"/>
     <view type="form" name="analytic-distribution-template-form"/>
     <view-param name="search-filters" value="analytic-distribution-template-filters"/>
+    <domain>self.isSpecific = false</domain>
   </action-view>
 
   <menuitem name="account-conf-payment" parent="account-conf" title="Payment"/>
@@ -838,11 +863,11 @@
   </action-view>
 
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50"
-    icon="fa-cog" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    icon="fa-cog" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
     title="Reason of refusal" action="invoice.conf.refusalreason"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <action-view name="invoice.conf.refusalreason" title="Reason of refusal"
     model="com.axelor.apps.base.db.CancelReason">

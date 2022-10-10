@@ -31,6 +31,8 @@
     <option value="3">Sale order</option>
     <option value="4">Sales forecast</option>
     <option value="5">Purchase proposal</option>
+    <option value="10">Stock history</option>
+    <option value="11">Purchase proposal / Estimated delivery</option>
   </selection>
 
   <selection name="supplychain.mrp.line.type.select">
@@ -164,6 +166,12 @@
     <option value="0">One-off sales included</option>
     <option value="1">One-off sales excluded</option>
     <option value="2">One-off sales only</option>
+  </selection>
+
+  <selection name="supplychain.mrp.line.type.late.sales.select">
+    <option value="0">Include late sales</option>
+    <option value="1">Exclude late sales</option>
+    <option value="2">Consider only late sales</option>
   </selection>
 
 </object-views>

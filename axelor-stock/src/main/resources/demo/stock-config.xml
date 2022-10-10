@@ -15,9 +15,6 @@
     type="com.axelor.apps.stock.db.TrackingNumberConfiguration" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportTrackingNumberConfig:computeFullName"/>
 
-  <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product"
-    update="true" search="self.importId = :importId"/>
-
   <input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"
     call="com.axelor.csv.script.ImportInventory:importInventory">
     <bind to="inventorySeq"
@@ -33,6 +30,17 @@
 
   <input file="stock_stockConfig.csv" separator=";"
     type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
+
+  <input file="stock_customsCodeNomenclature.csv" separator=";"
+    type="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+    <bind to="parentCustomsCode" search="self.code = :parentCode" if="parentCode"/>
+  </input>
+
+  <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product"
+    update="true" search="self.importId = :importId">
+    <bind to="customsCodeNomenclature" search="self.code = :customsCodeNomenclature_code"
+      if="usedInDEB" update="true"/>
+  </input>
 
   <input file="stock_inventoryLine.csv" separator=";"
     type="com.axelor.apps.stock.db.InventoryLine"
@@ -50,10 +58,6 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedStartDateT)"/>
   </input>
 
-  <input file="stock_customsCodeNomenclature.csv" separator=";"
-    type="com.axelor.apps.stock.db.CustomsCodeNomenclature">
-    <bind to="parentCustomsCode" search="self.code = :parentCode" if="parentCode"/>
-  </input>
 
   <input file="stock_incoterm.csv" separator=";" type="com.axelor.apps.stock.db.Incoterm">
     <bind to="fullname" eval="code+' - '+name"/>
@@ -85,5 +89,36 @@
 
   <input file="base_appStock.csv" separator=";" type="com.axelor.apps.base.db.AppStock"
     search="self.app.code = :code"/>
+
+  <input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportStockMove:importStockMove">
+    <bind to="company" search="self.importId = :company_importId"/>
+    <bind to="toStockLocation" search="self.importId = :toStockLocation_importId"/>
+    <bind to="fromStockLocation" search="self.importId = :fromStockLocation_importId"/>
+    <bind to="partner" search="self.importId = :partner_importId"/>
+  </input>
+
+  <input file="stock_stockMoveLine.csv" separator=";"
+    type="com.axelor.apps.stock.db.StockMoveLine" search="self.importId = :importId">
+    <bind to="stockMove" search="self.importId = :stockMove_importId"/>
+    <bind to="product" search="self.importId = :product_importId"/>
+    <bind to="unit" search="self.importId = :unit_importId"/>
+  </input>
+
+  <input file="stock_logisticalForm.csv" separator=";"
+    type="com.axelor.apps.stock.db.LogisticalForm" search="self.importId = :importId">
+    <bind to="company" search="self.importId = :company_importId"/>
+    <bind to="deliverToCustomerPartner"
+      search="self.importId = :deliverToCustomerPartner_importId"/>
+    <bind to="carrierPartner" search="self.importId = :carrierPartner_importId"/>
+    <bind to="forwarderPartner" search="self.importId = :forwarderPartner_importId"/>
+  </input>
+
+  <input file="stock_logisticalFormLine.csv" separator=";"
+    type="com.axelor.apps.stock.db.LogisticalFormLine" search="self.importId = :importId">
+    <bind to="logisticalForm" search="self.importId = :logisticalForm_importId"/>
+    <bind to="stockMoveLine" search="self.importId = :stockMoveLine_importId"
+      if="stockMoveLine_importId"/>
+  </input>
 
 </csv-inputs>

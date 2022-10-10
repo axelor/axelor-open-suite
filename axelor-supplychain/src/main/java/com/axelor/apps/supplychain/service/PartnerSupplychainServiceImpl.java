@@ -30,7 +30,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
@@ -53,7 +52,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void updateBlockedAccount(Partner partner) throws AxelorException {
-    List<Invoice> partnerInvoice = new ArrayList<Invoice>();
+    List<Invoice> partnerInvoice;
     int FETCH_LIMIT = 10;
     int offset = 0;
     Query<Invoice> query =

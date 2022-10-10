@@ -6,12 +6,12 @@
   <grid name="supplychain-batch-grid" title="Supplychain batches"
     model="com.axelor.apps.supplychain.db.SupplychainBatch">
     <field name="actionSelect"
-      if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+      if="!__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select"
-      if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+      if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="createdOn"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
@@ -22,10 +22,10 @@
     onLoad="action-group-supplychain-batch-group-onload">
     <panel name="mainPanel">
       <field name="actionSelect"
-        if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+        if="!__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
       <field name="actionSelect"
         selection="supplychain.batch.invoice.stock.moves.action.select"
-        if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+        if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -36,10 +36,10 @@
       <panel name="invoiceOrdersConfigurationPanel" title="Invoice orders configuration"
         showIf="actionSelect == 3">
         <field name="invoiceOrdersTypeSelect"
-          if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()"/>
+          if="!__config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"/>
         <field name="invoiceOrdersTypeSelect"
           selection="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select"
-          if="__config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()"/>
+          if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"/>
         <panel name="subInvoiceOrderConfig1Panel" showIf="invoiceOrdersTypeSelect == 1"
           colSpan="12">
           <field name="salespersonOrBuyerSet" widget="TagSelect" title="Salespersons"/>
@@ -84,6 +84,8 @@
         showIf="actionSelect == 4" colSpan="12">
         <field name="period"
           domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
+        <field name="productCategorySet" colSpan="12" canNew="false" canEdit="false"
+          canSelect="true"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -99,7 +101,7 @@
         colSpan="12"/>
       <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves"
         showIf="actionSelect == 2" onClick="save,action-supplychain-batch-method-run-batch"
-        colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+        colSpan="12" if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
       <button name="invoiceOrdersBatchBtn" title="Invoice orders" showIf="actionSelect == 3"
         onClick="save,action-supplychain-batch-method-run-batch" colSpan="12"/>
       <button name="invoiceOrdersBatchBtn" title="Update stock history"
@@ -199,7 +201,7 @@
   <search-filters name="supplychain-batch-filters"
     model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

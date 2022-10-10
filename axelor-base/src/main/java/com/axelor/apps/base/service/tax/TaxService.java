@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -54,26 +54,32 @@ public class TaxService {
 
     if (tax == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_2));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(BaseExceptionMessage.TAX_2));
     }
 
     if (tax.getActiveTaxLine() != null) {
       return tax.getActiveTaxLine();
     }
+    if (localDate != null) {
+      if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty()) {
 
-    if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty()) {
+        for (TaxLine taxLine : tax.getTaxLineList()) {
 
-      for (TaxLine taxLine : tax.getTaxLineList()) {
-
-        if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
-          return taxLine;
+          if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
+            return taxLine;
+          }
         }
       }
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(BaseExceptionMessage.TAX_DATE_MISSING),
+          tax.getName());
     }
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.TAX_1),
+        I18n.get(BaseExceptionMessage.TAX_1),
         tax.getName());
   }
 }

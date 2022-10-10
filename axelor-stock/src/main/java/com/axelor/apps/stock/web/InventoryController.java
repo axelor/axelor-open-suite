@@ -26,7 +26,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryService;
@@ -122,7 +122,7 @@ public class InventoryController {
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setFlash(
-          String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
+          String.format(I18n.get(StockExceptionMessage.INVENTORY_8), filePath.toString()));
 
       response.setReload(true);
     } catch (Exception e) {
@@ -203,12 +203,12 @@ public class InventoryController {
         Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
         Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
         if (succeed == null) {
-          response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+          response.setFlash(I18n.get(StockExceptionMessage.INVENTORY_9));
         } else {
           if (succeed) {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
+            response.setNotify(I18n.get(StockExceptionMessage.INVENTORY_10));
           } else {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
+            response.setNotify(I18n.get(StockExceptionMessage.INVENTORY_11));
           }
         }
       }

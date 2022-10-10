@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -92,7 +92,7 @@ public class StockMoveInvoiceController {
                   .map());
           response.setCanClose(true);
         } else {
-          response.setError(I18n.get(IExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
+          response.setError(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
         }
       }
     } catch (Exception e) {
@@ -613,7 +613,7 @@ public class StockMoveInvoiceController {
                   .map());
         }
       } else {
-        response.setAlert(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
+        response.setAlert(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

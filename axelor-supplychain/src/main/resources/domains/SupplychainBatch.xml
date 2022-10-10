@@ -40,7 +40,12 @@
     <string name="moveDescription" title="Move description"/>
     <boolean name="includeNotStockManagedProduct" title="Include not stock managed product"/>
 
+    <!-- STOCK HISTORY INFORMATION -->
+
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+    <many-to-many name="productCategorySet" title="Product Categories"
+      ref="com.axelor.apps.base.db.ProductCategory"
+      help="A list of all product categories for which to run the batch (children categories are automatically included). All products will be processed if this list is left empty (note that the batch may take a long time to run if you have a lot of products)."/>
 
     <extra-code><![CDATA[
 

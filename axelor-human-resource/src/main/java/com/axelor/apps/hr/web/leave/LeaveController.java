@@ -29,7 +29,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -40,6 +40,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -65,8 +66,8 @@ public class LeaveController {
           Beans.get(LeaveRequestRepository.class)
               .all()
               .filter(
-                  "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                  user,
+                  "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
+                  user.getId(),
                   user.getActiveCompany())
               .fetch();
       if (leaveList.isEmpty()) {
@@ -161,7 +162,7 @@ public class LeaveController {
 
       if (employee == null || !employee.getHrManager()) {
         actionView
-            .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+            .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
             .context("_user", user);
       }
 
@@ -191,8 +192,8 @@ public class LeaveController {
         actionView
             .domain(
                 actionView.get().getDomain()
-                    + " AND leaveRequest.user.employee.managerUser = :_user")
-            .context("_user", user);
+                    + " AND leaveRequest.employee.managerUser.id = :_userId")
+            .context("_userId", user.getId());
       }
       actionView.domain(actionView.get().getDomain() + ")");
       response.setView(actionView.map());
@@ -207,7 +208,7 @@ public class LeaveController {
       User user = AuthUtils.getUser();
 
       String domain =
-          "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
+          "self.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
       long nbLeaveRequests =
           Query.of(LeaveRequest.class).filter(domain).bind("_user", user).count();
 
@@ -242,6 +243,13 @@ public class LeaveController {
   public void computeDuration(ActionRequest request, ActionResponse response) {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      Employee employee = leave.getEmployee();
+      if (employee == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+            AuthUtils.getUser().getName());
+      }
       response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -256,11 +264,11 @@ public class LeaveController {
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
-      if (leaveRequest.getUser().getEmployee().getWeeklyPlanning() == null) {
+      if (leaveRequest.getEmployee().getWeeklyPlanning() == null) {
         response.setAlert(
             String.format(
-                I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
-                leaveRequest.getUser().getEmployee().getName()));
+                I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
+                leaveRequest.getEmployee().getName()));
         return;
       }
 
@@ -275,7 +283,7 @@ public class LeaveController {
           }
           response.setAlert(
               String.format(
-                      I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
+                      I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
                       leaveRequest.getLeaveReason().getName())
                   + " "
                   + instruction);
@@ -283,7 +291,7 @@ public class LeaveController {
         } else {
           response.setNotify(
               String.format(
-                  I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
+                  I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
                   leaveRequest.getLeaveReason().getName()));
         }
       }
@@ -407,11 +415,11 @@ public class LeaveController {
         return;
       }
       Company company = leave.getCompany();
-      if (leave.getUser() == null) {
+      if (leave.getEmployee() == null) {
         return;
       }
-      if (company == null) {
-        company = leave.getUser().getActiveCompany();
+      if (company == null && leave.getEmployee().getUser() != null) {
+        company = leave.getEmployee().getUser().getActiveCompany();
       }
       if (company == null) {
         return;
@@ -419,14 +427,14 @@ public class LeaveController {
 
       Beans.get(HRConfigService.class).getLeaveReason(company.getHrConfig());
 
-      Employee employee = leave.getUser().getEmployee();
+      Employee employee = leave.getEmployee();
 
       LeaveReason leaveReason =
           Beans.get(LeaveReasonRepository.class)
               .find(company.getHrConfig().getToJustifyLeaveReason().getId());
 
       if (employee != null) {
-        employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
+        employee = Beans.get(EmployeeRepository.class).find(employee.getId());
         leaveLine = Beans.get(LeaveService.class).addLeaveReasonOrCreateIt(employee, leaveReason);
         response.setValue("leaveLine", leaveLine);
       }

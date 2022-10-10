@@ -16,7 +16,7 @@
 
   <input file="hr_timesheetLine.csv" type="com.axelor.apps.hr.db.TimesheetLine" separator=";"
     search="self.importId = :importId">
-    <bind to="user" search="self.importId = :user_importId"/>
+    <bind to="employee" search="self.importId = :employee_importId"/>
     <bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"
       column="date"/>
     <bind to="duration" column="hoursDuration"/>

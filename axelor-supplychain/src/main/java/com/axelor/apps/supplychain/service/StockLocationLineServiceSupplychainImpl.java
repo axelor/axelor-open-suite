@@ -28,7 +28,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.WapHistoryService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -82,7 +82,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         throw new AxelorException(
             stockLocationLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
+            I18n.get(SupplychainExceptionMessage.LOCATION_LINE_RESERVED_QTY),
             stockLocationLine.getProduct().getName(),
             stockLocationLine.getProduct().getCode());
       }
