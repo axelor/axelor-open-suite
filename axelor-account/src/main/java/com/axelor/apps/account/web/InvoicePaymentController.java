@@ -236,14 +236,20 @@ public class InvoicePaymentController {
                     invoiceTerms,
                     invoicePayment.getPaymentDate(),
                     invoicePayment.getManualChange());
+        boolean excessPaymentOk =
+            Beans.get(PaymentModeService.class)
+                .isExcessPaymentOk(
+                    invoicePayment.getPaymentMode(),
+                    invoicePayment.getInvoice().getCompany(),
+                    invoicePayment.getCompanyBankDetails());
+        boolean isThereHoldbacks =
+            invoicePayment.getInvoice().getInvoiceTermList().stream()
+                .anyMatch(InvoiceTerm::getIsHoldBack);
+        boolean isPayingHoldbacks = invoiceTerms.stream().allMatch(InvoiceTerm::getIsHoldBack);
 
         if (!invoicePayment.getManualChange()
             || (invoicePayment.getAmount().compareTo(payableAmount) > 0
-                && !Beans.get(PaymentModeService.class)
-                    .isExcessPaymentOk(
-                        invoicePayment.getPaymentMode(),
-                        invoicePayment.getInvoice().getCompany(),
-                        invoicePayment.getCompanyBankDetails()))) {
+                && (!excessPaymentOk || (isThereHoldbacks && !isPayingHoldbacks)))) {
           invoicePayment.setAmount(payableAmount);
           amountError = invoicePayment.getManualChange();
         }
