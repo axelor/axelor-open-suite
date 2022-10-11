@@ -18,6 +18,12 @@
 package com.axelor.studio.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.service.app.AccessConfigImportService;
+import com.axelor.apps.base.service.app.AccessConfigImportServiceImpl;
+import com.axelor.apps.base.service.app.AccessTemplateService;
+import com.axelor.apps.base.service.app.AccessTemplateServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.app.AppServiceImpl;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
@@ -71,5 +77,9 @@ public class StudioModule extends AxelorModule {
     bind(WsAuthenticatorService.class).to(WsAuthenticatorServiceImpl.class);
     bind(WsConnectorRepository.class).to(WsConnectorRepo.class);
     bind(WsAuthenticatorRepository.class).to(WsAuthenticatorRepo.class);
+
+    bind(AppService.class).to(AppServiceImpl.class);
+    bind(AccessTemplateService.class).to(AccessTemplateServiceImpl.class);
+    bind(AccessConfigImportService.class).to(AccessConfigImportServiceImpl.class);
   }
 }
