@@ -44,7 +44,9 @@ libs.zxing_core = 'com.google.zxing:core:3.3.2'
 
 libs.tidy = 'org.eclipse.birt.runtime.3_7_1:Tidy:1'
 libs.jdom = 'jdom:jdom:1.1'
-libs.xalan = 'xalan:xalan:2.7.2'
+libs.xalan = dependencies.create('xalan:xalan:2.7.2') {
+  exclude group: 'xml-apis', module: 'xml-apis'
+}
 libs.xmlbeans = 'org.apache.xmlbeans:xmlbeans:2.5.0'
 libs.xmlsec = 'org.apache.santuario:xmlsec:1.4.3'
 
