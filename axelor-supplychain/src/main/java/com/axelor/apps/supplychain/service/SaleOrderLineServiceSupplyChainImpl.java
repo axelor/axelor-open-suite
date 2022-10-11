@@ -121,8 +121,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public SaleOrderLine getAndComputeAnalyticDistribution(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (!appAccountService.getAppAccount().getManageAnalyticAccounting()
+        || appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
+            == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 
