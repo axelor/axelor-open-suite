@@ -452,6 +452,7 @@
 "SaleOrder.description","Description to display",,
 "SaleOrder.discountAmount","Discount",,
 "SaleOrder.duration","Validity duration",,
+"SaleOrder.endOfValidityDate","End of validity date",,
 "SaleOrder.estimatedDeliveryDate","Estimated shipping date",,
 "SaleOrder.invoicingAddrs","Invoicing address",,
 "SaleOrder.isIspmRequired","ISPM 15 standard required",,

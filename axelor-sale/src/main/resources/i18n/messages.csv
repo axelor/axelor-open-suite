@@ -452,6 +452,7 @@
 "SaleOrder.description",,,
 "SaleOrder.discountAmount",,,
 "SaleOrder.duration",,,
+"SaleOrder.endOfValidityDate",,,
 "SaleOrder.estimatedDeliveryDate",,,
 "SaleOrder.invoicingAddrs",,,
 "SaleOrder.isIspmRequired",,,
