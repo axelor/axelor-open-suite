@@ -96,9 +96,8 @@
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-move-group-partner-on-select"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
+            grid-view="partner-grid" onSelect="action-move-group-partner-on-select"
             onChange="action-move-group-partner-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -595,6 +594,7 @@
     <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-hide-move-line-partner"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
