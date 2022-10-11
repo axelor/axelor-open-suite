@@ -962,4 +962,13 @@
     <view type="form" name="import-batch-form"/>
   </action-view>
 
+  <menuitem name="admin-root-api-documentation" parent="admin-root"
+    if="__config__.app.isApp('base')" title="API Documentation" order="50"
+    action="admin.root.api.documentation"/>
+
+  <action-view name="admin.root.api.documentation" title="API Documentation">
+    <view type="html" name="swagger/"/>
+  </action-view>
+
+
 </object-views>
