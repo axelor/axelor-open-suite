@@ -134,7 +134,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(saleOrder.getCompany());
 
-    if (Boolean.FALSE.equals(accountConfig.getManageAnalyticAccounting())
+    if (!accountConfig.getManageAnalyticAccounting()
         || accountConfig.getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
