@@ -30,4 +30,30 @@ public interface IExceptionMessage {
 
   static final String CANNOT_ALTER_NODES = /*$$(*/
       "Can't alter nodes for real existing selection field" /*)*/;
+
+  public static final String DEMO_DATA_SUCCESS = /*$$(*/ "Demo data loaded successfully" /*)*/;
+
+  public static final String NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;
+
+  public static final String BULK_INSTALL_SUCCESS = /*$$(*/ "Apps installed successfully" /*)*/;
+
+  public static final String REFRESH_APP_SUCCESS = /*$$(*/ "Apps refreshed successfully" /*)*/;
+
+  public static final String REFRESH_APP_ERROR = /*$$(*/ "Error in refreshing app" /*)*/;
+
+  public static final String ROLE_IMPORT_SUCCESS = /*$$(*/ "Roles imported successfully" /*)*/;
+
+  public static final String ACCESS_CONFIG_IMPORTED = /*$$(*/
+      "Access config imported successfully" /*)*/;
+
+  public static final String NO_LANGUAGE_SELECTED = /*$$(*/
+      "No application language set. Please set 'application.locale' property." /*)*/;
+
+  public static final String FILE_UPLOAD_DIR_ERROR = /*$$(*/
+      "File upload path not configured" /*)*/;
+
+  public static final String APP_IN_USE = /*$$(*/
+      "This app is used by %s. Please deactivate them before continue." /*)*/;
+
+  public static final String DATA_EXPORT_DIR_ERROR = /*$$(*/ "Export path not configured" /*)*/;
 }

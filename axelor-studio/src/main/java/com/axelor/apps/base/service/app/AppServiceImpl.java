@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.app;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
-import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
@@ -40,6 +39,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.exception.StudioExceptionMessage;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -104,7 +104,7 @@ public class AppServiceImpl implements AppService {
     if (lang == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.NO_LANGUAGE_SELECTED));
+          I18n.get(StudioExceptionMessage.NO_LANGUAGE_SELECTED));
     }
 
     importData(app, DIR_DEMO, true);
@@ -525,7 +525,7 @@ public class AppServiceImpl implements AppService {
       List<String> childrenNames = getNames(children);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AdminExceptionMessage.APP_IN_USE,
+          StudioExceptionMessage.APP_IN_USE,
           childrenNames);
     }
 
@@ -595,7 +595,7 @@ public class AppServiceImpl implements AppService {
     if (appSettingsPath == null || appSettingsPath.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.DATA_EXPORT_DIR_ERROR));
+          I18n.get(StudioExceptionMessage.DATA_EXPORT_DIR_ERROR));
     }
     return !appSettingsPath.endsWith(File.separator)
         ? appSettingsPath + File.separator

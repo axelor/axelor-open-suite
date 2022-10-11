@@ -15,7 +15,6 @@ axelor {
 }
 
 dependencies {
-  api project(":modules:axelor-admin")
 	api project(":modules:axelor-message")
 
 	api libs.commons_lang3
