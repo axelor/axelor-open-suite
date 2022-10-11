@@ -17,6 +17,7 @@ axelor {
 dependencies {
 	api project(":modules:axelor-exception")
 	api project(":modules:axelor-tool")
+	api project(":modules:axelor-studio")
 	implementation libs.faker
 	api libs.opencsv
 }
