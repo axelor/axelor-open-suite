@@ -1,0 +1,3 @@
+---
+title : "INVENTORY : Trying to import a inventory line with a product that does not exist will now result in a explicit error"
+type : fix
