@@ -236,8 +236,16 @@ public class BankReconciliationService {
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
-            move = generateMove(bankReconciliationLine, bankStatementRule);
-            moveValidateService.accounting(move);
+            if (bankReconciliationLine.getBankStatementLine() != null
+                && bankReconciliationLine.getBankStatementLine().getMoveLine() != null) {
+              bankReconciliationLineService.reconcileBRLAndMoveLine(
+                  bankReconciliationLine,
+                  bankReconciliationLine.getBankStatementLine().getMoveLine());
+              move = bankReconciliationLine.getBankStatementLine().getMoveLine().getMove();
+            } else {
+              move = generateMove(bankReconciliationLine, bankStatementRule);
+              moveValidateService.accounting(move);
+            }
             if (bankStatementRule.getLetterToInvoice()) {
               letterToInvoice(bankStatementRule, bankReconciliationLine, move);
             }
@@ -901,7 +909,7 @@ public class BankReconciliationService {
   public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
     bankReconciliationLine.setBankStatementQuery(null);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
-    bankReconciliationLine.getBankStatementLine().setMoveLine(null);
+
     String query = "self.postedNbr LIKE '%%s%'";
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
@@ -1163,6 +1171,7 @@ public class BankReconciliationService {
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
+    computeBalances(bankReconciliation);
   }
 
   public String getDomainForWizard(

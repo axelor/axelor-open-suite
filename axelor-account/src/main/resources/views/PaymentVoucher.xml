@@ -209,7 +209,7 @@
 
   <action-attrs name="action-attrs-payment-voucher-hidden-bank-details">
     <attribute name="hidden"
-      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()" for="companyBankDetails"/>
+      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()" for="companyBankDetails"/>
   </action-attrs>
 
   <action-record name="action-record-payment-voucher-default-record"
@@ -246,7 +246,7 @@
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
     </filter>
     <filter title="Customer payments waiting for deposit slip"
-      if="__config__.app.getApp('account').paymentVouchersOnInvoice">
+      if="__config__.app.getApp('account')?.paymentVouchersOnInvoice">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
     </filter>
     <filter title="Confirmed Customer payments">
@@ -347,7 +347,7 @@
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <attribute name="hidden" for="tradingName"
-      expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </action-attrs>
 
 </object-views>

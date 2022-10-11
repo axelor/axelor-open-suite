@@ -73,8 +73,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private InvoiceServiceSupplychainImpl invoiceService;
-  private InvoiceRepository invoiceRepo;
+  protected InvoiceServiceSupplychainImpl invoiceService;
+  protected InvoiceRepository invoiceRepo;
   protected TimetableRepository timetableRepo;
   protected AppSupplychainService appSupplychainService;
 
@@ -709,10 +709,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             .filter(
                 " self.purchaseOrder.id = :purchaseOrderId "
                     + "AND self.statusSelect != :invoiceStatus "
-                    + "AND self.operationTypeSelect = :operationTypeSelect")
+                    + "AND (self.operationTypeSelect = :purchaseOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
             .bind("purchaseOrderId", purchaseOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+            .bind("purchaseOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
             .fetch();
     if (isPercent) {
       amountToInvoice =
