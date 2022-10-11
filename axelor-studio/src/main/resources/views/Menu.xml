@@ -181,4 +181,15 @@
       self.isInAppView = true)</domain>
   </action-view>
 
+  <menuitem name="admin-root-app-management" parent="admin-root" order="5"
+    title="Apps management" action="admin.root.app.management"/>
+
+  <action-view name="admin.root.app.management" title="Apps management"
+    model="com.axelor.apps.base.db.App">
+    <view type="cards" name="app-cards"/>
+    <view type="grid" name="app-grid"/>
+    <view type="form" name="app-form"/>
+    <domain>self.isCustom = null OR self.isCustom = false</domain>
+  </action-view>
+
 </object-views>
