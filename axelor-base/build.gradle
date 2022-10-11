@@ -42,4 +42,6 @@ dependencies {
 	testImplementation libs.mockito
 
 	api libs.tika
+
+	implementation libs.swagger_jaxrs;
 }

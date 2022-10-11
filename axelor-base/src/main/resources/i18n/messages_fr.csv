@@ -1771,6 +1771,8 @@
 "Suppliers payment delay (Average in days)","Délai de paiement des fournisseurs (Moyenne en jours)",,
 "Supply Chain config","Config. Supply chain",,
 "Suspend Alarm","Acquitter",,
+"Swagger is enabled but not resource packages is specified.","Swagger est activé mais aucune ressource est spécifiée.",,
+"Swagger is not enabled.","Swagger n'est pas activé.",,
 "Symbol","Symbole",,
 "SyncContact","Synchronizer les contacts",,
 "Synchronization duration (week)","Période de synchronisation (semaine)",,

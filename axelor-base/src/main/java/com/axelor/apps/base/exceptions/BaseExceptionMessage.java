@@ -515,4 +515,9 @@ public final class BaseExceptionMessage {
       "The start date cannot be later than the end date." /*)*/;
 
   public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
+
+  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
+
+  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
+      "Swagger is enabled but not resource packages is specified." /*)*/;
 }

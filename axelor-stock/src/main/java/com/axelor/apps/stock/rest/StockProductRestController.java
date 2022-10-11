@@ -35,6 +35,9 @@ import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -45,6 +48,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-product")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +58,10 @@ public class StockProductRestController {
    * Fetch product stock indicators. Full path to request is
    * /ws/aos/fetch-product-with-stock/{productId}
    */
+  @Operation(
+      summary = "Fetch product indicators",
+      tags = {"Stock product"},
+      description = "description")
   @Path("/fetch-product-with-stock/{productId}")
   @POST
   @HttpExceptionHandler
@@ -65,8 +73,8 @@ public class StockProductRestController {
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
-    Company company = requestBody.getCompany();
-    StockLocation stockLocation = requestBody.getStockLocation();
+    Company company = requestBody.fetchCompany();
+    StockLocation stockLocation = requestBody.fetchStockLocation();
 
     return Beans.get(StockProductRestService.class)
         .getProductIndicators(product, company, stockLocation);
@@ -76,6 +84,9 @@ public class StockProductRestController {
    * Modify locker of product in given stock location. Full path to request is
    * /ws/aos/modify-locker/{productId}
    */
+  @Operation(
+      summary = "Modify product locker",
+      tags = {"Stock product"})
   @Path("/modify-locker/{productId}")
   @PUT
   @HttpExceptionHandler
@@ -98,6 +109,9 @@ public class StockProductRestController {
             + requestBody.getNewLocker());
   }
 
+  @Operation(
+      summary = "Get product variant attributes",
+      tags = {"Stock product"})
   @Path("/get-variant-attributes/{productId}")
   @POST
   @HttpExceptionHandler

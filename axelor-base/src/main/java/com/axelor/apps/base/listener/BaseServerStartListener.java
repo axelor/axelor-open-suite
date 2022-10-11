@@ -18,6 +18,7 @@
 package com.axelor.apps.base.listener;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.openapi.AosSwagger;
 import com.axelor.common.StringUtils;
 import com.axelor.event.Observes;
 import com.axelor.events.StartupEvent;
@@ -25,6 +26,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.App;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
@@ -87,6 +89,13 @@ public class BaseServerStartListener {
     } catch (Exception e) {
       TraceBackService.trace(e);
       log.debug(e.getMessage());
+    }
+  }
+
+  public void initSwaggerOnStartup(@Observes StartupEvent startupEvent) {
+    if (Boolean.parseBoolean(AppSettings.get().get("aos.swagger.enable"))) {
+      Beans.get(AosSwagger.class).initSwagger();
+      log.info("Initialize swagger");
     }
   }
 }

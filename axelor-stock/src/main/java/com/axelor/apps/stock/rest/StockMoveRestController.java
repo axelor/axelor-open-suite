@@ -34,6 +34,9 @@ import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -43,12 +46,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-move")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class StockMoveRestController {
 
   /** Realize a planified stock move. Full path to request is /ws/aos/stock-move/realize/{id} */
+  @Operation(
+      summary = "Realize stock move",
+      tags = {"Stock move"})
   @Path("/realize/{id}")
   @PUT
   @HttpExceptionHandler
@@ -66,6 +73,9 @@ public class StockMoveRestController {
   }
 
   /** Add new line in a stock move. Full path to request is /ws/aos/stock-move/add-line/{id} */
+  @Operation(
+      summary = "Add line to stock move",
+      tags = {"Stock move"})
   @Path("/add-line/{id}")
   @POST
   @HttpExceptionHandler
@@ -97,6 +107,9 @@ public class StockMoveRestController {
    * Create new internal move with only one product. Full path to request is
    * /ws/aos/stock-move/internal/
    */
+  @Operation(
+      summary = "Create internal stock move",
+      tags = {"Stock move"})
   @Path("/internal/")
   @POST
   @HttpExceptionHandler
@@ -125,6 +138,9 @@ public class StockMoveRestController {
    * Update an internal stock move depending on the elements given in requestBody. Full path to
    * request is /ws/aos/stock-move/internal/{id}
    */
+  @Operation(
+      summary = "Update internal stock move",
+      tags = {"Stock move"})
   @Path("/internal/{id}")
   @PUT
   @HttpExceptionHandler

@@ -51,14 +51,14 @@ public class StockProductGetRequest extends RequestStructure {
   }
 
   // Transform id to object
-  public Company getCompany() {
+  public Company fetchCompany() {
     if (companyId == null) {
       return null;
     }
     return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
   }
 
-  public StockLocation getStockLocation() {
+  public StockLocation fetchStockLocation() {
     if (stockLocationId == null) {
       return null;
     }
