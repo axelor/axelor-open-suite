@@ -18,12 +18,12 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
-import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.studio.exception.StudioExceptionMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -56,7 +56,7 @@ public interface AppService {
     if (appSettingsPath == null || appSettingsPath.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.FILE_UPLOAD_DIR_ERROR));
+          I18n.get(StudioExceptionMessage.FILE_UPLOAD_DIR_ERROR));
     }
     return !appSettingsPath.endsWith(File.separator)
         ? appSettingsPath + File.separator
