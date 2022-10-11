@@ -367,8 +367,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
-      this.generateMoves(bankOrder);
       bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      this.generateMoves(bankOrder);
     }
   }
 
@@ -390,8 +390,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      bankOrder = this.generateMoves(bankOrder);
       bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrderRepo.save(bankOrder);
@@ -444,8 +444,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
-      bankOrder = this.generateMoves(bankOrder);
       bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
