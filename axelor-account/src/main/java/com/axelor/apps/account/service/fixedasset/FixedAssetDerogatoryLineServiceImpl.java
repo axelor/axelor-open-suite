@@ -43,16 +43,16 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
 
-  protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineToolService fixedAssetLineToolService;
 
   @Inject
   public FixedAssetDerogatoryLineServiceImpl(
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetLineToolService fixedAssetLineToolService) {
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
-    this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetLineToolService = fixedAssetLineToolService;
   }
 
   @Override
@@ -103,7 +103,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   public List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(
       FixedAsset fixedAsset) {
     LinkedHashMap<LocalDate, List<FixedAssetLine>> dateFixedAssetLineGrouped =
-        fixedAssetLineService.groupAndSortByDateFixedAssetLine(fixedAsset);
+        fixedAssetLineToolService.groupAndSortByDateFixedAssetLine(fixedAsset);
 
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList = new ArrayList<>();
     FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine = null;
