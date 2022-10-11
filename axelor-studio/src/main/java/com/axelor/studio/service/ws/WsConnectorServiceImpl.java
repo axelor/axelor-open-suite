@@ -57,7 +57,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WsConnectoServiceImpl implements WsConnectorService {
+public class WsConnectorServiceImpl implements WsConnectorService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -211,9 +211,13 @@ public class WsConnectoServiceImpl implements WsConnectorService {
           if (!StringUtils.isBlank(value)
               && value.startsWith("Basic")
               && wsKeyValue.getWsKey().equals("Authorization")) {
+            String userPass = org.apache.commons.lang3.StringUtils.substringAfter(value, "Basic");
+            if (StringUtils.isBlank(userPass)) {
+              continue;
+            }
             headers.add(
                 wsKeyValue.getWsKey(),
-                "Basic " + new String(Base64.encodeBase64(value.getBytes())));
+                "Basic " + new String(Base64.encodeBase64(userPass.trim().getBytes())));
           } else {
             headers.add(wsKeyValue.getWsKey(), value);
           }
