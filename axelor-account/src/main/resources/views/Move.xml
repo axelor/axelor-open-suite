@@ -76,7 +76,7 @@
             canView="false"/>
           <field name="date"
             onChange="action-move-method-get-period,action-move-method-set-moveline-dates"
-            hideIf="statusSelect == 3" colSpan="3"/>
+            colSpan="3"/>
           <field name="originDate" colSpan="3"
             onChange="action-move-method-set-moveline-origin-dates"/>
           <field name="tradingName"
