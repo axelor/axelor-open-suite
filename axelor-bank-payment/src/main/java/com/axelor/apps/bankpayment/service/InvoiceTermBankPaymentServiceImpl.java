@@ -55,24 +55,24 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
 
   @Override
   public BankOrderLineOrigin getAwaitingBankOrderLineOrigin(InvoiceTerm invoiceTerm) {
-	  return bankOrderLineOriginRepository.all()
-		        .filter(
-		            "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2 "
-		                + "AND self.bankOrderLine.bankOrder IS NOT NULL "
-		                + "AND (self.bankOrderLine.bankOrder.statusSelect = ?3 "
-		                + "OR self.bankOrderLine.bankOrder.statusSelect = ?4 "
-		                + "OR self.bankOrderLine.bankOrder.statusSelect = ?5) "
-		                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?6 "
-		                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?7",
-		            BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM,
-		            invoiceTerm.getId(),
-		            BankOrderRepository.STATUS_DRAFT,
-		            BankOrderRepository.STATUS_AWAITING_SIGNATURE,
-		            BankOrderRepository.STATUS_VALIDATED,
-		            BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT,
-		            BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)
-		        .fetch().stream()
-		        .findAny()
-		        .orElse(null);
+    return bankOrderLineOriginRepository.all()
+        .filter(
+            "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2 "
+                + "AND self.bankOrderLine.bankOrder IS NOT NULL "
+                + "AND (self.bankOrderLine.bankOrder.statusSelect = ?3 "
+                + "OR self.bankOrderLine.bankOrder.statusSelect = ?4 "
+                + "OR self.bankOrderLine.bankOrder.statusSelect = ?5) "
+                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?6 "
+                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?7",
+            BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM,
+            invoiceTerm.getId(),
+            BankOrderRepository.STATUS_DRAFT,
+            BankOrderRepository.STATUS_AWAITING_SIGNATURE,
+            BankOrderRepository.STATUS_VALIDATED,
+            BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT,
+            BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)
+        .fetch().stream()
+        .findAny()
+        .orElse(null);
   }
 }
