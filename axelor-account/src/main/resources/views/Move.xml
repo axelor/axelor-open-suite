@@ -69,8 +69,7 @@
             onChange="action-move-method-journal-on-change"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false"/>
-          <field name="date" onChange="action-move-method-get-period"
-            hideIf="statusSelect == 3"/>
+          <field name="date" onChange="action-move-method-get-period"/>
           <field name="tradingName"
             if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
