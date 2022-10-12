@@ -25,8 +25,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -54,7 +54,6 @@ public class OpportunityServiceImpl implements OpportunityService {
   public void saveOpportunity(Opportunity opportunity) {
     opportunityRepo.save(opportunity);
   }
-
 
   @Override
   public void setSequence(Opportunity opportunity) throws AxelorException {

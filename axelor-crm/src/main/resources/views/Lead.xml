@@ -522,13 +522,8 @@
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
     title="Lead filters">
-<<<<<<< HEAD
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Leads">
-=======
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
     <filter title="My Leads" name="my-leads-filter">
->>>>>>> 117ba4ded8 (RM#38677: CRM Major changes)
       <domain>self.user = :__user__</domain>
     </filter>
     <filter title="Unassigned Leads" name="unassigned-leads-filter">

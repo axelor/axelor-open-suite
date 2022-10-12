@@ -26,8 +26,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.crm.db.repo.OpportunityTypeRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.LeadService;
