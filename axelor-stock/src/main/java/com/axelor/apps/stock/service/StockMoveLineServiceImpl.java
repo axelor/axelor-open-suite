@@ -501,15 +501,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
         if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-          // If it is a outcoming move
-          if (toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
-            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date);
 
-          } else {
+          if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            // We dont recompute average price for outgoing lines
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine);
+          }
+          if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             this.updateAveragePriceLocationLine(
                 toStockLocation, stockMoveLine, fromStatus, toStatus, date);
           }
-
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
       }
