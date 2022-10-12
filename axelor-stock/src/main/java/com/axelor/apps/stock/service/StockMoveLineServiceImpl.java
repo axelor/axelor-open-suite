@@ -504,7 +504,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
           if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             // We dont recompute average price for outgoing lines
-            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine);
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date);
           }
           if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             this.updateAveragePriceLocationLine(
