@@ -1,0 +1,6 @@
+---
+title: "Tracking number configuration : 'Auto select sale tracking Nbr.' is now correctly taken into account"
+type: fix
+description: |
+  'Auto select sale tracking Nbr.' configuration is now
+  correctly taken into account when creating a stock move from a sale order.
