@@ -283,7 +283,7 @@
 "LogisticalForm.date","Date :",,
 "LogisticalForm.item","Article",,
 "LogisticalForm.itemDescription","Désignation article",,
-"LogisticalForm.packagingNumber","Packaging number:",,
+"LogisticalForm.packagingNumber","Colisage n°",,
 "LogisticalForm.packingList","Liste de colisage",,
 "LogisticalForm.shippingComments","Détails de la livraison",,
 "LogisticalForm.totalNetMass","Poids total net",,
