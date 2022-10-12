@@ -472,4 +472,6 @@ public interface IExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+
+  public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
 }
