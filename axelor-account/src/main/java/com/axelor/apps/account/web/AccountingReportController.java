@@ -42,9 +42,9 @@ import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,15 +95,20 @@ public class AccountingReportController {
           return;
         }
 
-        List<BigInteger> paymentMoveLinedistributionIdList =
+        List<Long> paymentMoveLinedistributionIdList =
             accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
         actionViewBuilder.add("form", "payment-move-line-distribution-form");
-        actionViewBuilder.domain(
-            "self.id in (" + Joiner.on(",").join(paymentMoveLinedistributionIdList) + ")");
+        String domain = "self.id IN (0)";
+        if (CollectionUtils.isNotEmpty(paymentMoveLinedistributionIdList)) {
+          domain =
+              String.format(
+                  "self.id in ( %s )", Joiner.on(",").join(paymentMoveLinedistributionIdList));
+        }
+        actionViewBuilder.domain(domain);
 
         response.setReload(true);
         response.setView(actionViewBuilder.map());
