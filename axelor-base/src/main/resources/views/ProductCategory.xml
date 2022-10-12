@@ -77,7 +77,7 @@
 
   <action-attrs name="action-attrs-product-category-form-set-hidden">
     <attribute name="hidden" for="sequence"
-      expr="eval: __config__.app.getApp('base').getProductSequenceTypeSelect() != 'Per product category'
+      expr="eval: __config__.app.getApp('base')?.getProductSequenceTypeSelect() != 'Per product category'
 			|| id &amp;&amp; __repo__(ProductCategory).all().filter('self.parentProductCategory.id = ?', id).count() > 0"/>
   </action-attrs>
 

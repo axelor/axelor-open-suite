@@ -126,7 +126,7 @@
 
   <menuitem name="project-resource-booking" title="Resource bookings" order="35"
     parent="menu-project-root" action="project.resource.booking"
-    if="__config__.app.getApp('project').getResourceManagement()"/>
+    if="__config__.app.getApp('project')?.getResourceManagement()"/>
   <action-view name="project.resource.booking" title="Resource bookings"
     model="com.axelor.apps.project.db.ResourceBooking">
     <view type="grid" name="resource-booking-grid"/>
@@ -196,7 +196,7 @@
 
   <menuitem name="project-resource-type" parent="project-configurations"
     title="Resource types" action="project.resource.types"
-    if="__config__.app.getApp('project').getResourceManagement()"/>
+    if="__config__.app.getApp('project')?.getResourceManagement()"/>
   <action-view name="project.resource.types" title="Resource types"
     model="com.axelor.apps.project.db.ResourceType">
     <view type="grid" name="resource-type-grid"/>
@@ -205,7 +205,7 @@
 
   <menuitem name="project-resource" title="Project.Resource" order="32"
     parent="project-configurations" action="project.resource"
-    if="__config__.app.getApp('project').getResourceManagement()"/>
+    if="__config__.app.getApp('project')?.getResourceManagement()"/>
   <action-view name="project.resource" title="Resources"
     model="com.axelor.apps.project.db.Resource">
     <view type="grid" name="resource-grid"/>

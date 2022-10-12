@@ -6,7 +6,7 @@
   <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
     title="Deposit slips" orderBy="-depositDate,-depositNumber">
     <field name="depositNumber" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="companyBankDetails"/>
     <field name="depositDate"/>
     <field name="depositType"/>
@@ -256,7 +256,7 @@
   <search-filters name="cheque-deposit-slip-filters"
     model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

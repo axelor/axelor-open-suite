@@ -32,8 +32,8 @@
 
   <action-attrs name="action-extra-hours-line-attrs-title-project">
     <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
 

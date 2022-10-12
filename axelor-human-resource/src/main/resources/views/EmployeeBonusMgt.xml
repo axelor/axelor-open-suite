@@ -5,7 +5,7 @@
 
   <grid name="employee-bonus-mgt-grid" title="Employee bonus management"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="payPeriod" canEdit="false" canView="false"/>
     <field name="leavePeriod" canEdit="false" canView="false"/>
     <field name="employeeBonusType"/>
@@ -57,7 +57,7 @@
   <search-filters name="employee-bonus-mgt-filters"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt" title="Employee bonus management filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

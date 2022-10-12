@@ -25,7 +25,7 @@
         onClick="save,action-wkf-dmn-model-method-deploy" colSpan="3"/>
       <field name="description" colSpan="12"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <field name="metaModel"/>
       <field name="jsonModel"/>
       <field name="dmnTableList" colSpan="12" canNew="false">

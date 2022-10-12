@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()"
+    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
     hidden="false" order="-110" title="Messaging" icon="fa-users" icon-background="#84429f"/>
 
   <menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail"
@@ -30,14 +30,14 @@
   </action-view>
 
   <menuitem id="abs-menu-dms" name="menu-dms"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getDocument()"
+    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getDocument()"
     hidden="false" order="-109" title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
 
   <menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration"
     parent="menu-dms" order="-70" icon="fa-cog"/>
 
   <menuitem id="abs-menu-team" name="menu-team"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getTeamManagement()"
+    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getTeamManagement()"
     hidden="false" order="-110" title="Teamwork" icon="fa-user" icon-background="blue"/>
 
   <menuitem id="abs-menu-team-tasks-due" name="menu-team-tasks-due" hidden="true"
@@ -59,7 +59,7 @@
     title="All teams" parent="menu-team-teams" action="teams.all"/>
 
   <menuitem id="calendar.root.menu"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnableCalendars()"
+    if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnableCalendars()"
     name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
 
   <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events"
@@ -256,7 +256,7 @@
 
   <menuitem name="product-root-product-model" parent="referential-root-product-root"
     title="Products models" action="product.root.product.model"
-    if="__config__.app.getApp('base').getManageProductVariants()"/>
+    if="__config__.app.getApp('base')?.getManageProductVariants()"/>
 
   <action-view name="product.root.product.model" title="Products models"
     model="com.axelor.apps.base.db.Product">
@@ -384,7 +384,7 @@
 
   <menuitem name="referential-conf-product-variant-attr" parent="referential-conf"
     title="Products variant attributes" action="referential.conf.product.variant.attr" order="190"
-    if="__config__.app.getApp('base').manageProductVariants"/>
+    if="__config__.app.getApp('base')?.manageProductVariants"/>
 
   <action-view name="referential.conf.product.variant.attr"
     title="Product variant attributes" model="com.axelor.apps.base.db.ProductVariantAttr">
@@ -462,7 +462,7 @@
   <menuitem name="admin-root-organisation-territory-street"
     parent="admin-root-organisation-territory" title="Streets"
     action="admin.root.organisation.territory.street"
-    if="__config__.app.getApp('base').getStoreStreets()"/>
+    if="__config__.app.getApp('base')?.getStoreStreets()"/>
 
   <action-view name="admin.root.organisation.territory.street" title="Streets"
     model="com.axelor.apps.base.db.Street">
@@ -569,13 +569,13 @@
   <action-view name="admin.root.base.company" title="Companies"
     model="com.axelor.apps.base.db.Company">
     <view type="grid" name="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <view type="form" name="company-form"/>
     <view-param name="search-filters" value="company-filters"/>
     <context name="_showRecord" expr="eval:__repo__(Company).all().fetchOne()?.getId()"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <context name="_canNew"
-      expr="eval:__config__.app.getApp('base').getEnableMultiCompany()"/>
+      expr="eval:__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </action-view>
 
   <menuitem name="admin-root-user-configuration" parent="admin-root-user"
@@ -614,7 +614,7 @@
 
   <menuitem title="Trading names" name="admin-root-trading-name"
     parent="admin-root-user-configuration" action="action-view-trading-name"
-    if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
 
   <action-view name="action-view-trading-name" title="Trading names"
     model="com.axelor.apps.base.db.TradingName">

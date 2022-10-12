@@ -143,7 +143,7 @@
     <action name="action-quality-control-record-status-finish"/>
     <action name="save"/>
     <action name="action-quality-control-method-send-email"
-      if="__config__.app.getApp('quality').getAutomaticMail()"/>
+      if="__config__.app.getApp('quality')?.getAutomaticMail()"/>
   </action-group>
 
   <action-record name="action-quality-control-record-default"

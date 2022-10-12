@@ -99,29 +99,29 @@
 
   <action-attrs name="action-attrs-client-view-hide-modules">
     <attribute name="hidden" for="myQuotationsBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageSaleOrders())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageSaleOrders())"/>
     <attribute name="hidden" for="saleOrderPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageSaleOrders())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageSaleOrders())"/>
     <attribute name="hidden" for="myInvoicesBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageInvoices())"/>
     <attribute name="hidden" for="invoicePanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageInvoices())"/>
     <attribute name="hidden" for="dashletSumInvoices"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageInvoices())"/>
     <attribute name="hidden" for="myTicketsBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageTickets())"/>
     <attribute name="hidden" for="ticketPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageTickets())"/>
     <attribute name="hidden" for="myProjectsBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageProjects())"/>
     <attribute name="hidden" for="projectPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageProjects())"/>
     <attribute name="hidden" for="myDeliveriesBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageDelivery())"/>
     <attribute name="hidden" for="deliveryPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageDelivery())"/>
     <attribute name="hidden" for="myCatalogBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getShowCatalog())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getShowCatalog())"/>
   </action-attrs>
 
   <action-view name="wizard-client-form-open-my-catalog" title="Catalog"

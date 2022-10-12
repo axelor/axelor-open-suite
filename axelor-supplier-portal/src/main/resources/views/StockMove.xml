@@ -11,7 +11,7 @@
     <field name="estimatedDate"/>
     <field name="realDate"/>
     <field name="toAddress"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner"/>
     <field name="statusSelect"/>
   </grid>

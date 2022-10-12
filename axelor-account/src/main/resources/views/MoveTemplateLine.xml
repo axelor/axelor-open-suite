@@ -9,7 +9,7 @@
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
     <field name="analyticDistributionTemplate"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"/>
     <field name="debit"/>
@@ -23,7 +23,7 @@
     <field name="product" grid-view="product-grid" form-view="product-form"/>
     <field name="account" grid-view="account-grid" form-view="account-form"/>
     <field name="analyticDistributionTemplate"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"/>
     <field name="debitCreditSelect"/>
@@ -47,7 +47,7 @@
         form-view="account-form" onChange="action-move-template-line-record-account-onchange"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
       <field name="isValid" readonly="true" hidden="true"/>
@@ -72,7 +72,7 @@
       <field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
       <field name="isValid" readonly="true" hidden="true"/>

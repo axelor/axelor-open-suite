@@ -10,7 +10,7 @@
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
     <field name="date"/>
-    <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+    <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="hoursDuration" width="62%" min="0.01"/>
@@ -35,7 +35,7 @@
     orderBy="-date">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="date"/>
-    <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+    <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="hoursDuration" width="62%" min="0.01"/>
@@ -59,7 +59,7 @@
     onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
     <hilite color="danger" if="$moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
     <field name="timesheet.toDate" hidden="true"/>
-    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber"
+    <field name="sequence" if="__config__.app.getApp('timesheet')?.displayTimesheetLineNumber"
       width="90"/>
     <field name="project" width="200" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
@@ -68,7 +68,7 @@
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-method-set-default-to-invoice"/>
     <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
-    <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+    <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="duration" width="100"
@@ -105,7 +105,7 @@
     <field name="enableEditor"/>
     <field name="comments"/>
     <field name="timesheet.statusSelect"
-      if="__config__.app.getApp('timesheet').needValidation"/>
+      if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines"
@@ -116,7 +116,7 @@
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
       form-view="project-form" grid-view="project-grid"/>
     <field name="date" onChange="action-timesheet-line-validate-date"/>
-    <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+    <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="duration" width="62%"
@@ -138,7 +138,7 @@
     orderBy="date">
     <hilite color="danger" if="$moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
     <field name="timesheet.toDate" hidden="true"/>
-    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber"
+    <field name="sequence" if="__config__.app.getApp('timesheet')?.displayTimesheetLineNumber"
       width="90"/>
     <field name="project" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
@@ -147,7 +147,7 @@
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-method-set-default-to-invoice"/>
     <field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
-    <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+    <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="duration" width="62%"
@@ -170,7 +170,7 @@
         canNew="false" canEdit="false" canView="false"/>
       <field name="projectTask"/>
       <field name="date"/>
-      <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+      <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -205,7 +205,7 @@
         onSelect="action-timesheet-line-attrs-domain-project-task"
         onChange="action-timesheet-line-method-set-default-to-invoice"/>
       <field name="date"/>
-      <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+      <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -237,7 +237,7 @@
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
       <field name="timesheet.employee"/>
       <field name="timesheet.statusSelect"
-        if="__config__.app.getApp('timesheet').needValidation"/>
+        if="__config__.app.getApp('timesheet')?.needValidation"/>
     </panel>
     <panel-include view="timesheet-line-timesheet-form"/>
     <panel-mail name="panelMail">
@@ -256,7 +256,7 @@
         grid-view="project-grid"/>
       <field name="projectTask"/>
       <field name="date"/>
-      <field name="product" if="__config__.app.getApp('timesheet').enableActivity"
+      <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -330,8 +330,8 @@
 
   <action-attrs name="action-timesheet-line-attrs-title-project">
     <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-duration-label">

@@ -69,9 +69,9 @@
   <action-record name="action-hr-ts-timer-record-new"
     model="com.axelor.apps.hr.db.TSTimer">
     <field name="project" expr="eval:null"
-      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
+      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet')?.getKeepProject() "/>
     <field name="product" expr="eval:null"
-      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
+      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet')?.getKeepProject() "/>
     <field name="startDateTime" expr="eval:null"/>
     <field name="duration" expr="eval:null"/>
     <field name="timesheetLine" expr="eval:null"/>
@@ -102,7 +102,7 @@
 
   <action-attrs name="action-ts-timer-attrs-readonly-panel">
     <attribute name="readonly" for="startAndStop"
-      expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.app.getApp('timesheet').getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"/>
+      expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.app.getApp('timesheet')?.getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"/>
   </action-attrs>
 
 </object-views>

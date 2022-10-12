@@ -244,7 +244,9 @@ public class AccountingBatchController {
           }
         } else {
           if (Beans.get(AccountingReportToolService.class)
-              .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+                  .isThereAlreadyDraftReportInPeriod(accountingReport)
+              && accountingReport.getReportType().getTypeSelect()
+                  == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
             response.setError(
                 I18n.get(
                     "There is already an ongoing accounting report of this type in draft status for this same period."));

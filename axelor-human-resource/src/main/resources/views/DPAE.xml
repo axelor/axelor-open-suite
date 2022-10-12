@@ -5,7 +5,7 @@
 
   <grid name="dpae-grid" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
     <field name="employee"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="contractType"/>
   </grid>
 
@@ -43,6 +43,6 @@
   <search-filters name="dpae-filters" model="com.axelor.apps.hr.db.DPAE"
     title="DPAE filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

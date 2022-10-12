@@ -9,7 +9,7 @@
     <field name="actionSelect"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="createdOn"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
@@ -93,6 +93,6 @@
     model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch"
     title="Project invoicing assistant batch filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

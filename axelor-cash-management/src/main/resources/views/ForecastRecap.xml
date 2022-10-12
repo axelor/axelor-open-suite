@@ -5,8 +5,8 @@
 
   <grid name="forecast-recap-grid" title="Forecast Recaps"
     model="com.axelor.apps.cash.management.db.ForecastRecap">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="bankDetailsSet" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="bankDetailsSet" if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
   </grid>
@@ -28,7 +28,7 @@
         colSpan="4"/>
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" colSpan="4"/>
       <field name="toDate" onChange="action-forecast-recap-validate-dates" colSpan="4"/>
-      <field if="__config__.app.getApp('base').getManageMultiBanks()" name="bankDetailsSet"
+      <field if="__config__.app.getApp('base')?.getManageMultiBanks()" name="bankDetailsSet"
         colSpan="4" widget="TagSelect" canNew="false"
         onChange="action-forecast-recap-method-starting-balance"
         onSelect="action-forecast-recap-attrs-bank-details-domain"/>
@@ -63,7 +63,7 @@
   <grid name="forecast-report-grid" title="Forecast Reports"
     model="com.axelor.apps.cash.management.db.ForecastRecap">
     <field name="company"/>
-    <field name="bankDetailsSet" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+    <field name="bankDetailsSet" if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
   </grid>
@@ -77,7 +77,7 @@
         required="true"/>
       <field name="bankDetailsSet" onChange="action-forecast-recap-method-starting-balance"
         onSelect="action-forecast-recap-attrs-bank-details-domain" widget="tagSelect"
-        if="__config__.app.getApp('base').getManageMultiBanks()" colSpan="4" canNew="false"/>
+        if="__config__.app.getApp('base')?.getManageMultiBanks()" colSpan="4" canNew="false"/>
       <field name="salesMan" canNew="false" canEdit="false" canView="false" colSpan="4"/>
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" required="true"/>
       <field name="toDate" onChange="action-forecast-recap-validate-dates" required="true"/>
@@ -213,9 +213,9 @@
   <search-filters name="forecast-recap-filters"
     model="com.axelor.apps.cash.management.db.ForecastRecap" title="Forecast recap filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetailsSet" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </search-filters>
 
 </object-views>

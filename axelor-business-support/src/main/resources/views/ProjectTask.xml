@@ -126,11 +126,11 @@
           <field name="exTaxTotal" readonly="true" colSpan="4"/>
         </panel>
         <panel-dashlet name="validatedTimesheetLinesPanel"
-          if="__config__.app.getApp('timesheet').needValidation" showIf="invoicingType == 1"
+          if="__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
         <panel-dashlet name="allTimesheetLinesPanel"
-          if="!__config__.app.getApp('timesheet').needValidation" showIf="invoicingType == 1"
+          if="!__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
           colSpan="12" canSearch="true" readonly="true"/>
       </panel>

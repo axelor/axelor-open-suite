@@ -30,7 +30,7 @@
       </field>
       <field name="user" colSpan="6" showIf="team == null" canNew="false" canView="false"
         canEdit="false" form-view="user-form" grid-view="user-grid"/>
-      <field if="__config__.app.getApp('base').getTeamManagement()" colSpan="6" name="team"
+      <field if="__config__.app.getApp('base')?.getTeamManagement()" colSpan="6" name="team"
         showIf="user == null" canEdit="false" form-view="team-form" grid-view="team-grid"/>
       <static/>
     </panel>
@@ -64,6 +64,6 @@
 
   <search-filters name="target-configuration-filters"
     model="com.axelor.apps.crm.db.Target" title="Targer filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
   </search-filters>
 </object-views>

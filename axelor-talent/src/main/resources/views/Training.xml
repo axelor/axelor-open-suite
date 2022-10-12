@@ -6,7 +6,7 @@
   <grid name="training-grid" title="Trainings" model="com.axelor.apps.talent.db.Training">
     <field name="name"/>
     <field name="category"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="duration"/>
     <field name="mandatoryTraining"/>
   </grid>
@@ -45,6 +45,6 @@
   <search-filters name="training-filters" model="com.axelor.apps.talent.db.Training"
     title="Training filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

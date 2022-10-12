@@ -9,7 +9,7 @@
       <insert position="after">
         <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
           onSelect="action-stock-location-attrs-trading-name-domain"
-          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+          if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
       </insert>
     </extend>
   </form>

@@ -9,7 +9,7 @@
     <field name="name"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
     <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
     <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
@@ -418,7 +418,7 @@
   <search-filters name="bank-reconciliation-filters"
     model="com.axelor.apps.bankpayment.db.BankReconciliation" title="Bank reconciliation filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

@@ -500,7 +500,6 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setFiscalDegressiveCoef(degressiveCoef);
     fixedAsset.setIfrsDegressiveCoef(degressiveCoef);
 
-    fixedAsset.setIsEqualToFiscalDepreciation(true);
     fixedAsset.setIsIfrsEqualToFiscalDepreciation(true);
   }
 }

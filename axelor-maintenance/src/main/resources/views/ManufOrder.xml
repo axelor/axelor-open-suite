@@ -18,7 +18,7 @@
     <field name="manufOrderSeq"/>
     <field name="company" form-view="company-form" grid-view="company-grid"/>
     <field name="workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop()"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="machineType"/>
     <field name="billOfMaterial" grid-view="bill-of-material-grid"
       form-view="bill-of-material-form"/>

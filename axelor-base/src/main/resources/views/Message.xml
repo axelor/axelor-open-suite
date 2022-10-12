@@ -91,7 +91,7 @@
     <attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE"/>
     <attribute name="domain" for="mailAccount"
       expr="self.isValid IS TRUE AND self.user = :__user__"
-      if="eval: __config__.app.getApp('base').getEmailAccountByUser()"/>
+      if="eval: __config__.app.getApp('base')?.getEmailAccountByUser()"/>
   </action-attrs>
 
   <action-record model="com.axelor.apps.message.db.Message"

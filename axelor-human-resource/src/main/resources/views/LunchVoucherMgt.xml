@@ -5,7 +5,7 @@
 
   <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management"
     model="com.axelor.apps.hr.db.LunchVoucherMgt">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="payPeriod" canEdit="false" canView="false"/>
     <field name="leavePeriod" canEdit="false" canView="false"/>
     <field name="statusSelect"/>
@@ -179,6 +179,6 @@
   <search-filters name="lunch-voucher-mgt-filters"
     model="com.axelor.apps.hr.db.LunchVoucherMgt" title="Lunch voucher management filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

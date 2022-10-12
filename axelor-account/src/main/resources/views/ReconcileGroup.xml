@@ -8,7 +8,7 @@
     <field name="code" width="120"/>
     <field name="dateOfLettering"/>
     <field name="statusSelect"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="reconcile-group-form" title="Reconcile group"
@@ -70,7 +70,7 @@
   <search-filters name="reconcile-group-filters"
     model="com.axelor.apps.account.db.ReconcileGroup" title="Reconcile group filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

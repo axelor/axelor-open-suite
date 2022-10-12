@@ -108,7 +108,7 @@
     <action name="save"/>
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onnew">
@@ -318,7 +318,7 @@
   <action-record name="action-sale-order-record-update-timetable-amounts"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="timetableList"
-      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
+      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base')?.nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
       if="timetableList != null"/>
   </action-record>
 

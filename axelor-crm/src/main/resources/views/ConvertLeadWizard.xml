@@ -119,7 +119,7 @@
               <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
                 hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
               <field name="team" canEdit="false" colSpan="6" form-view="team-form"
-                grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"
+                grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
                 hideIf="isEmployee"/>
             </panel>
           </panel>

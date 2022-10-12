@@ -145,7 +145,7 @@
         grid-view="work-center-machine-grid" form-view="work-center-machine-form" colSpan="4"/>
       <field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form"
         grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4"
-        if="__config__.app.getApp('production').getEnableToolManagement()"/>
+        if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
       <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList"
         readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid"
         form-view="prod-human-resource-form"/>
@@ -196,7 +196,7 @@
     <panel-related name="operationOrderDurationListPanel"
       field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false"
       sidebar="true" showIf="id"
-      if="!__config__.app.getApp('production') || !__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+      if="!__config__.app.getApp('production') || !__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 
     <panel-related name="operationOrderDurationListPanel" field="timesheetLineList"
       grid-view="timesheet-line-timesheet-operation-order-grid"
@@ -328,7 +328,7 @@
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
     <field name="operationOrderDurationList" hidden="true"
-      if="__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+      if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <field name="timesheetLineList" hidden="true"
       if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <filter title="Draft Operations">

@@ -147,7 +147,16 @@
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
-      <field name="accountingMethodSelect"/>
+      <panel name="accountingMethodPanel" stacked="true">
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"/>
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
+          selection-in="[1,2]"/>
+      </panel>
+      <panel name="moveAccountingDatePanel" stacked="true">
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect == 3"
+          selection-in="[1,2]"/>
+      </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
         selection-in="[1,2,3,4]"/>
       <field name="daysMarginOnPaySession"
@@ -265,6 +274,7 @@
       if="paymentMode?.inOutSelect == __repo__(PaymentMode).OUT"/>
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
     <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
+    <field name="moveAccountingDateSelect" expr="eval: paymentMode?.moveAccountingDateSelect"/>
   </action-record>
 
   <action-record name="action-payment-session-record-set-session-total-amount-btn"

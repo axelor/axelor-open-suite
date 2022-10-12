@@ -24,7 +24,7 @@
     onLoad="action-studio-meta-select-attrs-onnew-onload">
     <panel name="appBuilderPanel">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <field name="isCustom" hidden="true"/>
     </panel>
     <panel-include view="meta-select-form" from="axelor-core"/>

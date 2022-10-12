@@ -22,9 +22,9 @@
     <field name="name" required="true"/>
     <field name="createdOn" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="opportunityLead" form-view="lead-form" grid-view="lead-grid"/>
     <field name="salesStageSelect"/>
@@ -56,9 +56,9 @@
     <field name="opportunitySeq"/>
     <field name="name" width="300"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="createdOn" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="opportunityLead" form-view="lead-form" grid-view="lead-grid"/>
@@ -81,9 +81,9 @@
     <field name="name"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="expectedCloseDate"/>
@@ -203,12 +203,12 @@
           form-view="user-form" grid-view="user-grid"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
           grid-view="company-grid"/>
-        <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
+        <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
           canEdit="false" form-view="team-form" grid-view="team-grid"/>
-        <field if="__config__.app.getApp('base').enableTradingNamesManagement"
+        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet"
           form-view="trading-name-form" grid-view="trading-name-grid"/>
-        <field if="__config__.app.getApp('base').getManageMultiBanks()"
+        <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
           if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox"
           onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form"
           grid-view="bank-details-grid"/>
@@ -386,14 +386,14 @@
     <field name="customerDescription" hidden="true"
       if="!__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity"/>
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="bankDetails" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
     <filter title="My opportunities">
       <domain>self.user.id = :_internalUserId</domain>

@@ -102,7 +102,7 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
@@ -153,7 +153,7 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"

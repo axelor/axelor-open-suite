@@ -6,7 +6,7 @@
   <grid name="forecast-grid" title="Forecasts"
     model="com.axelor.apps.cash.management.db.Forecast">
     <field name="forecastSeq"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails"/>
     <field name="amount" aggregate="sum"/>
     <field name="typeSelect"/>
@@ -23,7 +23,7 @@
     <panel name="mainPanel">
       <field name="company" canEdit="false" onChange="action-forecast-record-bank"/>
       <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"
-        if="__config__.app.getApp('base').getManageMultiBanks()"/>
+        if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       <field name="typeSelect"/>
       <field name="amount"/>
       <field name="estimatedDate"/>
@@ -37,7 +37,7 @@
     model="com.axelor.apps.base.db.Wizard" onNew="action-dashboard-forecast-attrs-set-defaults"
     width="large" canNew="false" canSave="false">
     <panel name="detailsPanel">
-      <field if="__config__.app.getApp('base').getManageMultiBanks()"
+      <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
         onSelect="action-dashboard-forecast-attrs-bank-details-domain" name="$bankDetails"
         title="Bank details" type="many-to-one"
         onChange="action-dashboard-forecast-refresh-dashlet-on-change"
@@ -72,7 +72,7 @@
   <search-filters name="forecast-filters"
     model="com.axelor.apps.cash.management.db.Forecast" title="Forecast filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
   <action-attrs name="action-dashboard-forecast-attrs-set-defaults">

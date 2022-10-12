@@ -6,7 +6,7 @@
   <grid name="stock-config-grid" title="Stock configurations"
     model="com.axelor.apps.stock.db.StockConfig">
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="stock-config-form" title="Stock configuration"
@@ -33,7 +33,7 @@
       <field name="virtualOutsourcingStockLocation"
         domain="self.isOutsourcingLocation = true AND self.typeSelect = 3 AND self.company = :company"
         colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
-        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
     </panel>
     <panel name="stockMoveInfoPanel" title="Stock move information">
       <panel colSpan="12" name="subStockMoveInfoPanel">
@@ -65,7 +65,7 @@
         <field name="outsourcingReceiptStockLocation"
           domain="self.isOutsourcingLocation = true AND self.typeSelect != 3 AND self.company = :company"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
       </panel>

@@ -22,7 +22,7 @@
     <field name="versionTag"/>
     <field name="statusSelect"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
   </grid>
 
   <form name="wkf-model-form" title="BPM Model" model="com.axelor.apps.bpm.db.WkfModel"
@@ -33,7 +33,7 @@
         readonlyIf="generatedFromCallActivity"/>
       <field name="name" required="true"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <field name="versionTag"/>
       <field name="wkfStatusColor" widget="SingleSelect"/>
     </panel>

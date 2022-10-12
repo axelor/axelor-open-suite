@@ -51,17 +51,32 @@ public class InventoryLineService {
       Product product,
       BigDecimal currentQty,
       String rack,
+      TrackingNumber trackingNumber)
+      throws AxelorException {
+
+    return createInventoryLine(
+        inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
+  }
+
+  public InventoryLine createInventoryLine(
+      Inventory inventory,
+      Product product,
+      BigDecimal currentQty,
+      String rack,
       TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      String description,
       StockLocation stockLocation,
       StockLocation detailsStockLocation)
       throws AxelorException {
-
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setRealQty(realQty);
+    inventoryLine.setDescription(description);
     inventoryLine.setStockLocation(stockLocation);
     if (stockLocation == null) {
       inventoryLine.setStockLocation(detailsStockLocation);
@@ -191,6 +206,8 @@ public class InventoryLineService {
             getCurrentQty(inventory.getStockLocation(), product),
             rack,
             trackingNumber,
+            null,
+            null,
             inventory.getStockLocation(),
             null);
     updateInventoryLine(inventoryLine, realQty, null);

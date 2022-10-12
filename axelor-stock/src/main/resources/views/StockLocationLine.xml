@@ -11,10 +11,10 @@
     <field name="currentQty" aggregate="sum" x-scale="2"/>
     <field name="futureQty" aggregate="sum" x-scale="2"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain"
-      if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       x-scale="2"/>
     <field name="reservedQty" if-module="axelor-supplychain"
-      if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="avgPrice" x-scale="2"/>
@@ -56,16 +56,16 @@
       <button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes"
         onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="4"
         widget="info-button" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       <panel name="simpleButtonPanel" colSpan="12">
         <button name="showDetailedStockBtn" title="Show detailed stock"
           onClick="action-stock-location-line-view-show-detailed-stock" colSpan="4"/>
         <button name="allocateAll" title="Allocate all"
           onClick="save,action-stock-location-line-allocate-all" colSpan="4"
-          if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+          if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
         <button name="deallocateAll" title="Deallocate all"
           onClick="save,action-stock-location-line-deallocate-all" colSpan="4"
-          if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+          if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       </panel>
     </panel>
     <panel-dashlet name="productQtyPanel"
@@ -167,7 +167,7 @@
       <button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes"
         onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3"
         widget="info-button" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       <button name="showDetailedStockBtn" title="Show detailed stock"
         onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
     </panel>
@@ -218,7 +218,7 @@
       <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="avgPrice" onChange="action-stock-location-line-group-avg-price-onchange"/>
       <field name="reservedQty" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       <field name="trackingNumber" domain="self.product = :product"/>
       <field name="rack"/>
       <field name="detailsStockLocation"/>
@@ -294,7 +294,7 @@
 
   <action-attrs name="action-stock-location-line-atts-avg-price-scale">
     <attribute name="scale" for="avgPrice"
-      expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
+      expr="eval: __config__.app.getApp('base')?.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="value" for="$isAvgPriceEditable" expr="eval:false"/>
   </action-attrs>
 
