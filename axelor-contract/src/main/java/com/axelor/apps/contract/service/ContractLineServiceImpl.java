@@ -152,7 +152,14 @@ public class ContractLineServiceImpl implements ContractLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (contractLine.getTaxLine() != null) {
-      taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
+      taxRate =
+          contractLine
+              .getTaxLine()
+              .getValue()
+              .divide(
+                  new BigDecimal(100),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP);
     }
 
     BigDecimal exTaxTotal =
