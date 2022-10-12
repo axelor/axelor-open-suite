@@ -18,8 +18,9 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AdvancedImport;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
@@ -27,7 +28,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -44,7 +44,7 @@ public class AdvancedImportController {
       if (isValid) {
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -60,7 +60,7 @@ public class AdvancedImportController {
 
       boolean isLog = Beans.get(ValidatorService.class).validate(advancedImport);
       if (isLog) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
         response.setReload(true);
       } else {
         response.setValue("statusSelect", 1);
@@ -78,12 +78,11 @@ public class AdvancedImportController {
         advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
       }
 
-      MetaFile logFile = Beans.get(DataImportService.class).importData(advancedImport);
-      if (logFile != null) {
-        response.setValue("errorLog", logFile);
+      ImportHistory importHistory = Beans.get(DataImportService.class).importData(advancedImport);
+      if (importHistory != null) {
+        response.setAttr("importHistoryList", "value:add", importHistory);
       } else {
-        response.setValue("errorLog", null);
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
         response.setSignal("refresh-app", true);
       }
 
@@ -101,10 +100,10 @@ public class AdvancedImportController {
 
       boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
       if (isReset) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_RESET));
         response.setSignal("refresh-app", true);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_RESET));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

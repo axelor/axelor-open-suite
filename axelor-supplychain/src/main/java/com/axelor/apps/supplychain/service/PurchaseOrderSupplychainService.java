@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -69,8 +68,6 @@ public interface PurchaseOrderSupplychainService {
 
   void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
 
-  void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException;
-
   void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 
   String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
@@ -83,4 +80,6 @@ public interface PurchaseOrderSupplychainService {
   String removeShipmentCostLine(PurchaseOrder purchaseOrder);
 
   BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
+
+  void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
 }

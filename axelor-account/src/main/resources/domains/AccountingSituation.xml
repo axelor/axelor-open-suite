@@ -62,8 +62,17 @@
       ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation"
       title="Reported balance lines"/>
 
+    <!-- Holdback -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Supplier account"/>
+
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
+
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.partner.select" default="0"/>
 
     <string name="name">
 			<![CDATA[
@@ -84,9 +93,22 @@
 			return name;
 	    ]]>
     </string>
+
+    <finder-method name="findByCompanyAndPartner" using="company,partner"/>
+
+    <extra-code><![CDATA[
+
+      	// VAT SYSTEM
+      	public static final int VAT_SYSTEM_DEFAULT = 0;
+      	public static final int VAT_COMMON_SYSTEM = 1;
+      	public static final int VAT_DELIVERY = 2;
+
+    ]]></extra-code>
+
     <track>
       <field name="defaultExpenseAccount"/>
       <field name="defaultIncomeAccount"/>
+      <field name="vatSystemSelect"/>
     </track>
 
   </entity>

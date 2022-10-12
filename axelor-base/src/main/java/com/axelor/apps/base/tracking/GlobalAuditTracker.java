@@ -26,8 +26,10 @@ import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -204,10 +206,23 @@ public class GlobalAuditTracker {
     log.setMetaModelName(entity.getClass().getSimpleName());
     log.setTypeSelect(type);
     log.setUser(AuthUtils.getUser());
-    log.setRelatedId((Long) entity.getId());
+    log.setRelatedId(entity.getId());
+    log.setRelatedReference(this.getRelatedReference(entity));
     log.setGlobalTrackingLogLineList(new ArrayList<>());
+
     this.addLog(log);
     return log;
+  }
+
+  protected String getRelatedReference(AuditableModel entity) {
+    Mapper classMapper = Mapper.of(EntityHelper.getEntityClass(entity));
+
+    if (classMapper.getNameField() != null && classMapper.getNameField().getName() != null) {
+      String fieldName = classMapper.getNameField().getName();
+      return (String) Mapper.toMap(entity).get(fieldName);
+    }
+
+    return "";
   }
 
   @SuppressWarnings("unchecked")

@@ -13,6 +13,8 @@
       <field name="paymentVouchersOnInvoice" widget="boolean-switch"/>
       <field name="activatePassedForPayment" widget="boolean-switch"/>
       <field name="manageFinancialDiscount" widget="boolean-switch"/>
+      <field name="manageCutOffPeriod" widget="boolean-switch"/>
+      <field name="partnerBalConfigSelect"/>
       <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
         colSpan="12">
         <field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid"
@@ -20,10 +22,18 @@
         <field name="chequeInterbankCode" grid-view="interbank-code-grid"
           form-view="interbank-code-form"/>
       </panel>
+      <panel name="trackingNumberBarCodePanel" title="Fixed Asset Tracking number"
+        colSpan="12">
+        <field name="activateFixedAssetBarCodeGeneration" widget="Boolean-switch"/>
+        <field name="editFixedAssetBarcodeType"
+          showIf="activateFixedAssetBarCodeGeneration == true" widget="boolean-switch"/>
+        <field name="fixedAssetBarcodeTypeConfig"
+          showIf="activateFixedAssetBarCodeGeneration == true"
+          requiredIf="activateFixedAssetBarCodeGeneration &amp;&amp; !editFixedAssetBarcodeType"/>
+      </panel>
       <panel name="accountingExportPanel" title="Accounting exports">
         <field name="dasActiveNorm"/>
       </panel>
-      <field name="partnerBalConfigSelect"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="accountConfigurationsPanel" title="Account configurations">

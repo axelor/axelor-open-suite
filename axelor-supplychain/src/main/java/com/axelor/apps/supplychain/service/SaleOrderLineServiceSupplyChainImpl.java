@@ -140,7 +140,10 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+            saleOrder.getClientPartner(),
+            saleOrderLine.getProduct(),
+            saleOrder.getCompany(),
+            false);
 
     saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
@@ -327,9 +330,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
     BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) < 0 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
-    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) < 0) {
       return deliveredQty;
     }
 

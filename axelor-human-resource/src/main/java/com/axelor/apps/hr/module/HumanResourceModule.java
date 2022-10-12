@@ -61,6 +61,8 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
+import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
@@ -136,5 +138,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectActivityDashboardServiceImpl.class).to(ProjectActivityDashboardServiceHRImpl.class);
     bind(AnalyticMoveLineGenerateRealServiceImpl.class)
         .to(AnalyticMoveLineGenerateRealServiceHrImpl.class);
+    bind(ExpenseFetchPeriodService.class).to(ExpenseFetchPeriodServiceImpl.class);
   }
 }

@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
-import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -43,9 +42,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -58,9 +56,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +112,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        "Creation of a purchase order : Company = {},  External reference = {}, Supplier = {}",
         company.getName(),
         externalReference,
         supplierPartner.getFullName());
@@ -195,12 +191,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getBudget() != null
+        Budget budget = purchaseOrderLine.getBudget();
+        if (purchaseOrder.getStatusSelect().equals(PurchaseOrderRepository.STATUS_REQUESTED)
+            && budget != null
             && (purchaseOrderLine.getBudgetDistributionList() == null
                 || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(purchaseOrderLine.getBudget());
+          budgetDistribution.setBudget(budget);
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
+          budgetDistribution.setBudgetAmountAvailable(
+              budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
@@ -220,19 +220,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PriceList priceList,
       TradingName tradingName)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
     for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
       }
-      numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+      numSeq.append(purchaseOrderLocal.getPurchaseOrderSeq());
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (purchaseOrderLocal.getExternalReference() != null) {
-        externalRef += purchaseOrderLocal.getExternalReference();
+        externalRef.append(purchaseOrderLocal.getExternalReference());
       }
     }
 
@@ -243,8 +243,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             contactPartner,
             currency,
             null,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             stockLocation,
             appBaseService.getTodayDate(company),
             priceList,
@@ -298,45 +298,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return;
     }
 
-    // budget control
-    if (appAccountService.isApp("budget")
-        && appAccountService.getAppBudget().getCheckAvailableBudget()) {
-      List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
-
-      Map<Budget, BigDecimal> amountPerBudget = new HashMap<>();
-      if (appAccountService.getAppBudget().getManageMultiBudget()) {
-        for (PurchaseOrderLine pol : purchaseOrderLines) {
-          if (pol.getBudgetDistributionList() != null) {
-            for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
-              Budget budget = bd.getBudget();
-
-              if (!amountPerBudget.containsKey(budget)) {
-                amountPerBudget.put(budget, bd.getAmount());
-              } else {
-                BigDecimal oldAmount = amountPerBudget.get(budget);
-                amountPerBudget.put(budget, oldAmount.add(bd.getAmount()));
-              }
-
-              isBudgetExceeded(budget, amountPerBudget.get(budget));
-            }
-          }
-        }
-      } else {
-        for (PurchaseOrderLine pol : purchaseOrderLines) {
-          // getting Budget associated to POL
-          Budget budget = pol.getBudget();
-
-          if (!amountPerBudget.containsKey(budget)) {
-            amountPerBudget.put(budget, pol.getExTaxTotal());
-          } else {
-            BigDecimal oldAmount = amountPerBudget.get(budget);
-            amountPerBudget.put(budget, oldAmount.add(pol.getExTaxTotal()));
-          }
-
-          isBudgetExceeded(budget, amountPerBudget.get(budget));
-        }
-      }
-    }
     super.requestPurchaseOrder(purchaseOrder);
     int intercoPurchaseCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
@@ -367,36 +328,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
-    if (budget == null) {
-      return;
-    }
-
-    // getting BudgetLine of the period
-    BudgetLine bl = null;
-    for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-      if (DateTool.isBetween(
-          budgetLine.getFromDate(),
-          budgetLine.getToDate(),
-          appAccountService.getTodayDate(budget.getCompany()))) {
-        bl = budgetLine;
-        break;
-      }
-    }
-
-    // checking budget excess
-    if (bl != null) {
-      if (amount.add(bl.getAmountCommitted()).compareTo(bl.getAmountExpected()) > 0) {
-        throw new AxelorException(
-            budget,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.PURCHASE_ORDER_2),
-            budget.getCode());
-      }
-    }
-  }
-
-  @Override
   public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder) {
 
     Budget budget = purchaseOrder.getBudget();
@@ -413,7 +344,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
@@ -482,14 +413,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     if (purchaseOrderLines == null) {
       return null;
     }
-    List<PurchaseOrderLine> linesToRemove = new ArrayList<PurchaseOrderLine>();
+    List<PurchaseOrderLine> linesToRemove = new ArrayList<>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
       if (purchaseOrderLine.getProduct() != null
           && purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
       }
     }
-    if (linesToRemove.size() == 0) {
+    if (linesToRemove.isEmpty()) {
       return null;
     }
     for (PurchaseOrderLine lineToRemove : linesToRemove) {
@@ -516,5 +447,23 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
     return exTaxTotal;
+  }
+
+  @Transactional
+  @Override
+  public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        List<BudgetDistribution> budgetDistributionList =
+            purchaseOrderLine.getBudgetDistributionList();
+        Budget budget = purchaseOrderLine.getBudget();
+        if (!budgetDistributionList.isEmpty() && budget != null) {
+          for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+            budgetDistribution.setBudgetAmountAvailable(
+                budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
+          }
+        }
+      }
+    }
   }
 }

@@ -65,7 +65,7 @@ public interface BankOrderService {
   public void validatePayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(BankOrder bankOrder) throws AxelorException;
+  public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;

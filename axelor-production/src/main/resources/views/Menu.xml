@@ -125,7 +125,7 @@
 
   <menuitem name="manufacturing-root-outsourcing" title="Outsourcing"
     parent="manufacturing-root" order="37"
-    if="__config__.app.getApp('production').getManageOutsourcing()"/>
+    if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors" title="Subcontractors"
     parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors"/>
@@ -211,7 +211,7 @@
 
   <action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
     model="com.axelor.apps.supplychain.db.Mrp">
-    <view type="grid" name="mrp-grid"/>
+    <view type="grid" name="mrp-manuf-order-grid"/>
     <view type="form" name="mrp-manuf-order-form"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self.mrpTypeSelect = 2</domain>
@@ -224,7 +224,7 @@
     model="com.axelor.apps.supplychain.db.MrpForecast">
     <view type="grid" name="mrp-forecast-grid"/>
     <view type="form" name="mrp-forecast-form"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration"
@@ -312,13 +312,13 @@
 
   <menuitem name="manufacturing-conf-machine-tool" parent="manufacturing-conf" title="Tool"
     action="manufacturing.conf.machine.tool"
-    if="__config__.app.getApp('production').getEnableToolManagement()"/>
+    if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
 
   <action-view name="manufacturing.conf.machine.tool" title="Tool"
     model="com.axelor.apps.production.db.MachineTool">
     <view type="grid" name="machine-tool-grid"/>
     <view type="form" name="machine-tool-form"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(null)"/>
   </action-view>
 
   <menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
@@ -332,7 +332,7 @@
 
   <menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"
     title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group"
-    if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+    if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
 
   <action-view name="manufacturing.conf.cost.sheet.group" title="Cost sheet group"
     model="com.axelor.apps.production.db.CostSheetGroup">
@@ -354,7 +354,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
-    title="Configurators" if="__config__.app.getApp('production').getEnableConfigurator()"/>
+    title="Configurators" if="__config__.app.getApp('production')?.getEnableConfigurator()"/>
 
   <menuitem name="manufacturing-conf-configurators-creator"
     parent="manufacturing-conf-configurators" order="10" title="Configurator creators"
@@ -467,7 +467,7 @@
   </action-view>
 
   <menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf"
-    action="manufacturing.conf.workshop" if="__config__.app.getApp('production').manageWorkshop"/>
+    action="manufacturing.conf.workshop" if="__config__.app.getApp('production')?.manageWorkshop"/>
 
   <action-view name="manufacturing.conf.workshop" title="Workshop"
     model="com.axelor.apps.stock.db.StockLocation">
@@ -542,7 +542,7 @@
 
   <menuitem name="manufacturing-conf-work-center-group-model" parent="manufacturing-conf"
     title="Models of work center group" action="manufacturing.conf.work.center.group.model"
-    if="__config__.app.getApp('production').getManageWorkCenterGroup()"/>
+    if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
 
   <action-view name="manufacturing.conf.work.center.group.model"
     title="Models of work center group" model="com.axelor.apps.production.db.WorkCenterGroup">

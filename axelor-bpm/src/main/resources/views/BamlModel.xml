@@ -15,7 +15,7 @@
     <panel name="mainPanel" colSpan="12">
       <field name="name"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <button name="generateCode" title="Generate code"
         onClick="save,action-baml-model-method-generate-code,save" colSpan="3"/>
       <button name="openEditor" title="Open editor"

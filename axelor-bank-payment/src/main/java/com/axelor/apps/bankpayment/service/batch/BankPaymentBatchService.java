@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -51,7 +51,7 @@ public class BankPaymentBatchService extends AbstractBatchService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             bankPaymentBatch.getActionSelect(),
             bankPaymentBatch.getCode());
     }

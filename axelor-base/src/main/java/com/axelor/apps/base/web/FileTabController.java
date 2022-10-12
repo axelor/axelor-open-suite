@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileTabRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallService;
@@ -111,7 +111,7 @@ public class FileTabController {
     if (!actionService.validate(fileTab.getActions())) {
       response.setError(
           String.format(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getMetaModel().getName()));
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getMetaModel().getName()));
     }
   }
 
@@ -123,7 +123,7 @@ public class FileTabController {
     if (!searchCallService.validate(fileTab.getSearchCall())) {
       response.setError(
           String.format(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getMetaModel().getName()));
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getMetaModel().getName()));
     }
   }
 }

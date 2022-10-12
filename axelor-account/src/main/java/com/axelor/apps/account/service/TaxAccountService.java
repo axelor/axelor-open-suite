@@ -19,26 +19,44 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
 public class TaxAccountService {
 
-  public Account getAccount(Tax tax, Company company, boolean isPurchase, boolean isFixedAssets) {
+  protected AccountManagementAccountService accountManagementAccountService;
+
+  @Inject
+  public TaxAccountService(AccountManagementAccountService accountManagementAccountService) {
+    this.accountManagementAccountService = accountManagementAccountService;
+  }
+
+  public Account getAccount(
+      Tax tax,
+      Company company,
+      Journal journal,
+      int vatSystemSelect,
+      boolean isFixedAssets,
+      int functionalOrigin)
+      throws AxelorException {
 
     AccountManagement accountManagement = this.getTaxAccount(tax, company);
 
-    if (accountManagement != null) {
-      if (isPurchase) {
-        if (isFixedAssets) {
-          return accountManagement.getPurchFixedAssetsAccount();
-        }
-        return accountManagement.getPurchaseAccount();
-      }
-      return accountManagement.getSaleAccount();
-    }
-
-    return null;
+    return accountManagementAccountService.getTaxAccount(
+        accountManagement,
+        tax,
+        company,
+        journal,
+        vatSystemSelect,
+        functionalOrigin,
+        isFixedAssets,
+        false);
   }
 
   protected AccountManagement getTaxAccount(Tax tax, Company company) {
@@ -54,5 +72,24 @@ public class TaxAccountService {
     }
 
     return null;
+  }
+
+  public Account getVatRegulationAccount(Tax tax, Company company, boolean isPurchase)
+      throws AxelorException {
+    AccountManagement accountManagement = this.getTaxAccount(tax, company);
+
+    if (accountManagement == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_TAX_CONFIG_MISSING),
+          tax.getCode(),
+          company.getCode());
+    } else if (isPurchase) {
+      return accountManagementAccountService.getPurchVatRegulationAccount(
+          accountManagement, tax, company);
+    } else {
+      return accountManagementAccountService.getSaleVatRegulationAccount(
+          accountManagement, tax, company);
+    }
   }
 }

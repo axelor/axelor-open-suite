@@ -10,8 +10,7 @@
    select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
- INNER JOIN User u ON t.user = u.id
- INNER JOIN Employee e ON u.employee = e.id
+ INNER JOIN Employee e ON t.employee = e.id
  WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
  GROUP BY p.id
   ]]>
@@ -27,8 +26,7 @@
    select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project , e.name as employee
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
- INNER JOIN User u ON t.user = u.id
- INNER JOIN Employee e ON u.employee = e.id
+ INNER JOIN Employee e ON t.employee = e.id
  WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
  GROUP BY p.id,e.id
   ]]>
@@ -44,8 +42,7 @@
    select avg(e.hourlyRate*t.plannedHours) as charge , e.name as employee
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
- INNER JOIN User u ON t.user = u.id
- INNER JOIN Employee e ON u.employee = e.id
+ INNER JOIN Employee e ON t.employee = e.id
  WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
  GROUP BY e.id
   ]]>

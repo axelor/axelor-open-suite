@@ -1,0 +1,7 @@
+---
+title: "CHEQUE DEPOSIT SLIP REPORT: report rework"
+type: feature
+description: |
+  Remove parter and due date columns,
+  Add currency, signature block and reminder text,
+  Change account number for iban.

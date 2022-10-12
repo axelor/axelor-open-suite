@@ -85,7 +85,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public List<Move> generateCloseAnnualAccount(
+  public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
       Account account,
       Partner partner,
@@ -105,7 +105,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (closeYear) {
       closeYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               endOfYearDate,
@@ -124,7 +124,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (openYear) {
       openYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               reportedBalanceDate,
@@ -148,7 +148,85 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  protected Move generateCloseAnnualAccountMove(
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateCloseAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      boolean closeYear,
+      boolean allocatePerPartner)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move closeYearMove = null;
+
+    if (closeYear) {
+      closeYearMove =
+          generateCloseOrOpenAnnualAccountMove(
+              year,
+              account,
+              endOfYearDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              false,
+              allocatePerPartner);
+
+      if (closeYearMove == null) {
+        return null;
+      }
+      moveList.add(closeYearMove);
+    }
+
+    return moveList;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateOpenAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      boolean openYear,
+      boolean allocatePerPartner)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move openYearMove = null;
+
+    if (openYear) {
+      openYearMove =
+          generateCloseOrOpenAnnualAccountMove(
+              year,
+              account,
+              reportedBalanceDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              true,
+              allocatePerPartner);
+
+      if (openYearMove == null) {
+        return null;
+      }
+      moveList.add(openYearMove);
+    }
+
+    return moveList;
+  }
+
+  protected Move generateCloseOrOpenAnnualAccountMove(
       Year year,
       Account account,
       LocalDate moveDate,
@@ -189,6 +267,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             originDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,
             false,
@@ -198,10 +277,10 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             moveDescription);
     counter = 0;
 
-    this.generateCloseAnnualMoveLine(
+    this.generateCloseOrOpenAnnualMoveLine(
         move, origin, account, moveDescription, originDate, balance.negate());
 
-    this.generateCloseAnnualMoveLine(
+    this.generateCloseOrOpenAnnualMoveLine(
         move,
         origin,
         getYearClosureOrOpeningAccount(accountConfig, isReverse),
@@ -210,7 +289,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;
@@ -229,7 +308,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     }
   }
 
-  protected MoveLine generateCloseAnnualMoveLine(
+  protected MoveLine generateCloseOrOpenAnnualMoveLine(
       Move move,
       String origin,
       Account account,
@@ -279,7 +358,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);
     q.setParameter(1, year);
     q.setParameter(2, account);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     if (partner != null) {
       q.setParameter(4, partner);
@@ -322,7 +401,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Long> accountIdList =
         accountService.getAllAccountsSubAccountIncluded(
             accountSet.stream().map(Account::getId).collect(Collectors.toList()));
-
     Query q =
         JPA.em()
             .createQuery(
@@ -332,7 +410,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountIdList);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 
@@ -368,7 +446,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountId);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 

@@ -18,20 +18,23 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -118,7 +121,7 @@ public class SaleOrderLineController {
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
             response.setFlash(
                 String.format(
-                    I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
+                    I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
                     defaultPricing.get().getName()));
           }
         }
@@ -296,7 +299,9 @@ public class SaleOrderLineController {
     try {
 
       BigDecimal price = saleOrderLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(saleOrderLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -397,6 +402,31 @@ public class SaleOrderLineController {
 
       response.setValues(saleOrderLine);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      Partner partner =
+          Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+
+      if (saleOrderLine.getProduct() != null && partner != null) {
+        String partnerLanguage = partner.getLanguage().getCode();
+        response.setValue(
+            "description",
+            internationalService.translate(
+                saleOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
+        response.setValue(
+            "productName",
+            internationalService.translate(
+                saleOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

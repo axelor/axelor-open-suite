@@ -26,26 +26,29 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveCreateServiceImpl implements MoveCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -110,6 +113,41 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         description);
   }
 
+  @Override
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      LocalDate originDate,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      String origin,
+      String description)
+      throws AxelorException {
+    return this.createMove(
+        journal,
+        company,
+        currency,
+        partner,
+        date,
+        originDate,
+        paymentMode,
+        fiscalPosition,
+        bankDetails,
+        technicalOriginSelect,
+        functionalOriginSelect,
+        false,
+        false,
+        false,
+        origin,
+        description);
+  }
+
   /**
    * create an account move
    *
@@ -148,6 +186,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         originDate,
         paymentMode,
         fiscalPosition,
+        null,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
@@ -183,6 +222,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate originDate,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -209,7 +249,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       if (move.getPeriod() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PERIOD_1),
+            I18n.get(ToolExceptionMessage.PERIOD_1),
             company.getName(),
             L10n.getInstance().format(date));
       }
@@ -225,7 +265,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     if (companyCurrency != null) {
       move.setCompanyCurrency(companyCurrency);
-      move.setCompanyCurrencyCode(companyCurrency.getCode());
+      move.setCompanyCurrencyCode(companyCurrency.getCodeISO());
     }
 
     if (currency == null) {
@@ -233,13 +273,14 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
     if (currency != null) {
       move.setCurrency(currency);
-      move.setCurrencyCode(currency.getCode());
+      move.setCurrencyCode(currency.getCodeISO());
     }
     move.setOrigin(origin);
     move.setDescription(description);
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setFiscalPosition(fiscalPosition);
+    move.setPartnerBankDetails(bankDetails);
     move.setTechnicalOriginSelect(technicalOriginSelect);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
@@ -322,6 +363,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             null,
             paymentMode,
             fiscalPosition,
+            null,
             technicalOriginSelect,
             functionalOriginSelect,
             ignoreInDebtRecoveryOk,

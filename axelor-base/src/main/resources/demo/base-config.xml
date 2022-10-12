@@ -197,10 +197,9 @@
       column="startDate"/>
     <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
       column="startDate"/>
-    <bind to="netMass" eval="1" if="productTypeSelect == 'storable'"/>
-    <bind to="grossMass" eval="1" if="productTypeSelect == 'storable'"/>
-    <bind to="massUnit" search="self.labelToPrinting = 'kg'"
-      if="productTypeSelect == 'storable'"/>
+    <bind to="netMass" eval="1" if="productTypeSelect == 'storable' &amp;&amp; netMass == null"/>
+    <bind to="grossMass" eval="1"
+      if="productTypeSelect == 'storable' &amp;&amp; grossMass == null"/>
     <bind to="isShippingCostsProduct" column="isShippingCostsProduct"
       eval="isShippingCostsProduct ? isShippingCostsProduct : 'false'"/>
   </input>
@@ -334,4 +333,3 @@
     type="com.axelor.apps.base.db.MainActivity" search="self.code= :code"/>
 
 </csv-inputs>
-

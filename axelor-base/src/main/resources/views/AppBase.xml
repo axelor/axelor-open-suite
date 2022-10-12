@@ -16,14 +16,15 @@
     </toolbar>
     <panel name="testingPanel" title="Testing"
       if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
-      <field name="today"/>
+      <field name="todayDateT"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="configurationPanel" title="Configuration" colSpan="12">
         <field name="defaultPartnerLanguage"/>
         <field name="enableTradingNamesManagement" widget="boolean-switch"/>
-        <field name="activateSendingEmail" widget="boolean-switch"/>
-        <field name="emailAccountByUser" widget="boolean-switch"/>
+        <field name="activateSendingEmail" widget="boolean-switch" colSpan="3"/>
+        <field name="emailAccountByUser" widget="boolean-switch" colSpan="3"/>
+        <field name="nbDecimalDigitForTaxRate"/>
         <field name="productInAtiSelect"/>
         <field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
         <field name="nbDecimalDigitForQty" colSpan="3"/>
@@ -146,7 +147,8 @@
         <panel-related title="Global tracking configuration lines"
           field="globalTrackingConfigurationLines" colSpan="12"
           form-view="global-tracking-configuration-line-form"
-          grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"/>
+          grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"
+          x-can-copy="true"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -32,13 +33,13 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.common.ObjectUtils;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -76,6 +77,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       MoveValidateService moveValidateService,
       PaymentModeService paymentModeService,
       AccountingSituationService accountingSituationService,
+      BankPaymentConfigService bankPaymentConfigService,
       MoveLineCreateService moveLineCreateService) {
 
     this.moveCreateService = moveCreateService;
@@ -95,7 +97,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
     paymentMode = bankOrder.getPaymentMode();
 
-    if (paymentMode == null || !paymentMode.getGenerateMoveAutoFromBankOrder()) {
+    if (bankOrder.getAccountingTriggerSelect() == PaymentModeRepository.ACCOUNTING_TRIGGER_NONE
+        || bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
       return;
     }
 
@@ -112,17 +116,12 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     isMultiDate = bankOrder.getIsMultiDate();
     isMultiCurrency = bankOrder.getIsMultiCurrency();
 
-    if (orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
-        || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER) {
-      isDebit = true;
-    } else {
-      isDebit = false;
-    }
+    isDebit =
+        orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
+            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER;
 
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      if (ObjectUtils.isEmpty(bankOrderLine.getBankOrderLineOriginList())) {
-        generateMoves(bankOrderLine);
-      }
+      generateMoves(bankOrderLine);
     }
   }
 
@@ -270,8 +269,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         throw new AxelorException(
             accountingSituation,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
     }
   }
 

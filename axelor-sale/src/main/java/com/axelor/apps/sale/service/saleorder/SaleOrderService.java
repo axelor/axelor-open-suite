@@ -32,11 +32,6 @@ public interface SaleOrderService {
 
   public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 
-  @Deprecated
-  public String getReportLink(
-      SaleOrder saleOrder, String name, String language, boolean proforma, String format)
-      throws AxelorException;
-
   /**
    * Fill {@link SaleOrder#mainInvoicingAddressStr} and {@link SaleOrder#deliveryAddressStr}
    *
@@ -120,7 +115,7 @@ public interface SaleOrderService {
    */
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException;
 
-  SaleOrder seperateInNewQuotation(
+  SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
 }

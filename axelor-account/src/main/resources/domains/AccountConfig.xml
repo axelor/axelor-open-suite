@@ -67,6 +67,10 @@
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
+    <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bill of exchange receivable account"/>
+    <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
+      selection="account.account.chart.code.nbr.char.select"/>
 
 
     <!-- Automatic account creation for partners -->
@@ -84,9 +88,6 @@
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
-
-    <many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax"
-      title="Tax for management fee"/>
 
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -171,7 +172,6 @@
     <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice"
       title="Allow cancelation of ventilated invoice"/>
-    <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
@@ -270,6 +270,7 @@
     <many-to-one ref="com.axelor.apps.account.db.JournalType"
       name="dasReportJournalType" title="DAS2 report journal type"/>
 
+    <!-- Discount accounts -->
     <many-to-one name="purchFinancialDiscountAccount"
       ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account"/>
     <many-to-one name="saleFinancialDiscountAccount"
@@ -279,6 +280,40 @@
     <many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
       title="Sale financial discount tax"/>
 
+    <!-- Holdback accounts -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+
+      title="Holdback Supplier account"/>
+
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="temporaryClosureAuthorizedRoleList" title="Temporary Closure Authorized Role"
+      help="Authorized roles for temporary closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role" name="closureAuthorizedRoleList"
+      title="Closure Authorized Role" help="Authorized roles for closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="moveOnTempClosureAuthorizedRoleList"
+      title="Creation / Edition of move on temporary closed period authorized role"
+      help="Authorized roles for creation or edition of move on temporary closed period"/>
+
+    <!-- Cut off accounts -->
+    <many-to-one name="prepaidExpensesAccount" title="Prepaid expenses account"
+      ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
+      ref="com.axelor.apps.account.db.Account"/>
+
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="resultProfitAccount"
+      title="Result account (profit)"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="resultLossAccount"
+      title="Result account (loss)"/>
+
+    <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
+      help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
+
+    <boolean name="accountAtPayment" title="Account at payment"
+      help="If this checkbox is ticked, daybook moves will be accounted in payment session"
+      default="false"/>
 
 
     <finder-method name="findByCompany" using="company"/>
@@ -330,6 +365,7 @@
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
+      <field name="billOfExchReceivAccount" on="UPDATE"/>
 
       <field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
       <field name="customerAccountPrefix" on="UPDATE"/>
@@ -343,8 +379,6 @@
 
       <field name="autoReconcileOnInvoice" on="UPDATE"/>
       <field name="autoReconcileOnPayment" on="UPDATE"/>
-
-      <field name="payingBackTax" on="UPDATE"/>
 
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>
@@ -389,7 +423,6 @@
 
 
       <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
-      <field name="allowRemovalValidatedMove" on="UPDATE"/>
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
@@ -421,6 +454,9 @@
       <field name="invoiceMessageTemplate" on="UPDATE"/>
 
       <field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
+
+      <field name="resultProfitAccount" on="UPDATE"/>
+      <field name="resultLossAccount" on="UPDATE"/>
     </track>
 
   </entity>

@@ -17,14 +17,16 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.util.Map;
@@ -34,21 +36,39 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stockMoveLineId = (Long) json.get("id");
-    StockMoveLine stockMoveLine = find(stockMoveLineId);
-    StockMove stockMove = stockMoveLine.getStockMove();
+    try {
+      Long stockMoveLineId = (Long) json.get("id");
+      StockMoveLine stockMoveLine = find(stockMoveLineId);
+      StockMove stockMove = stockMoveLine.getStockMove();
 
-    Map<String, Object> stockMoveLineMap = super.populate(json, context);
-    if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
-      Beans.get(StockMoveLineServiceSupplychain.class).setInvoiceStatus(stockMoveLine);
-      json.put(
-          "availableStatus",
-          stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
-              ? stockMoveLine.getAvailableStatus()
-              : null);
-      json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
+      if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
+        boolean isPurchase =
+            (int) context.get("_accountingCutOffTypeSelect")
+                == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES;
+        boolean ati = (boolean) context.get("_ati");
+        boolean recoveredTax = (boolean) context.get("_recoveredTax");
+
+        json.put(
+            "$notInvoicedAmount",
+            Beans.get(StockMoveLineServiceSupplychain.class)
+                .getAmountNotInvoiced(stockMoveLine, isPurchase, ati, recoveredTax));
+      }
+
+      if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
+        Beans.get(StockMoveLineServiceSupplychain.class).setInvoiceStatus(stockMoveLine);
+        json.put(
+            "availableStatus",
+            stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
+                ? stockMoveLine.getAvailableStatus()
+                : null);
+        json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
-    return stockMoveLineMap;
+
+    return super.populate(json, context);
   }
 
   @Override
@@ -58,7 +78,7 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
           .isAllocatedStockMoveLine(stockMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
+            I18n.get(SupplychainExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
       } else {
         super.remove(stockMoveLine);
       }

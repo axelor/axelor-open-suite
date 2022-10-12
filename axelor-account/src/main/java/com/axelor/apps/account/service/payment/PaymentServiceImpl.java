@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -52,16 +53,19 @@ public class PaymentServiceImpl implements PaymentService {
   protected MoveLineCreateService moveLineCreateService;
 
   protected AppAccountService appAccountService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PaymentServiceImpl(
       AppAccountService appAccountService,
+      AppBaseService appBaseService,
       ReconcileService reconcileService,
       MoveLineCreateService moveLineCreateService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -113,37 +117,36 @@ public class PaymentServiceImpl implements PaymentService {
     if (debitMoveLines != null && creditMoveLines != null) {
 
       log.debug(
-          "Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
+          "Overpayment usage (debit move lines : {}, credit move lines : {})",
           new Object[] {debitMoveLines.size(), creditMoveLines.size()});
 
       BigDecimal debitTotalRemaining = BigDecimal.ZERO;
       BigDecimal creditTotalRemaining = BigDecimal.ZERO;
       for (MoveLine creditMoveLine : creditMoveLines) {
 
-        log.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
+        log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
 
         log.debug(
-            "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
+            "Overpayment usage : credit move line (remaining to pay): {})",
             creditMoveLine.getAmountRemaining());
         creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
-        log.debug("Emploie du trop perçu : ligne en débit : {})", debitMoveLine);
+        log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
 
         log.debug(
-            "Emploie du trop perçu : ligne en débit (restant à payer): {})",
+            "Overpayment usage : debit move line (remaining to pay): {})",
             debitMoveLine.getAmountRemaining());
         debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
 
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
+        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
 
           for (MoveLine debitMoveLine : debitMoveLines) {
-            if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
-                && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
+            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
               try {
                 createReconcile(
                     debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
@@ -204,12 +207,12 @@ public class PaymentServiceImpl implements PaymentService {
     // End gestion du passage en 580
 
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
 
       debitTotalRemaining = debitTotalRemaining.subtract(amount);
       creditTotalRemaining = creditTotalRemaining.subtract(amount);
 
-      log.debug("Réconciliation : {}", reconcile);
+      log.debug("Reconcile : {}", reconcile);
     }
   }
 
@@ -302,7 +305,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     for (Reconcile reconcile : reconcileList) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     // Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -416,7 +419,7 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (Reconcile reconcile : reconcileList) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
     // Si il y a un restant à payer, alors on crée un dû.

@@ -34,8 +34,12 @@
     <decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
     <boolean name="testMode" title="Test mode"/>
     <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="Batch"/>
+    <integer name="accountingTriggerSelect" title="Accounting move trigger select"
+      selection="bank.order.accounting.trigger.select" default="0"/>
     <integer name="technicalOriginSelect" title="Technical Origin"
       selection="bankpayment.bank.order.technical.origin.select" default="0"/>
+    <integer name="functionalOriginSelect" title="Functional Origin"
+      selection="bank.order.functional.origin.select" default="1"/>
 
     <!-- Sender -->
     <many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company"
@@ -73,6 +77,7 @@
 		public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
 		public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
 		public static final int ORDER_TYPE_SEND_BANK_ORDER = 7;
+		public static final int ORDER_TYPE_BILL_OF_EXCHANGE = 8;
 
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -99,6 +104,16 @@
 		public static final int TECHNICAL_ORIGIN_ENTRY = 0;
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 1;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 2;
+
+		//FUNCTIONAL ORIGIN SELECT
+		public static final int FUNCTIONAL_ORIGIN_MANUAL = 1;
+		public static final int FUNCTIONAL_ORIGIN_INVOICE_PAYMENT = 10;
+		public static final int FUNCTIONAL_ORIGIN_EXPENSE = 20;
+		public static final int FUNCTIONAL_ORIGIN_PAYMENT_SESSION = 30;
+		public static final int FUNCTIONAL_ORIGIN_LCR = 40;
+		public static final int FUNCTIONAL_ORIGIN_BATCH = 50;
+		public static final int FUNCTIONAL_ORIGIN_BATCH_DEBIT = 51;
+		public static final int FUNCTIONAL_ORIGIN_BATCH_PAYBACK = 52;
 
 	]]></extra-code>
 

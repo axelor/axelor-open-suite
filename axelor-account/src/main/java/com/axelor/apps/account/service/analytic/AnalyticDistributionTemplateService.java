@@ -17,17 +17,28 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 
 public interface AnalyticDistributionTemplateService {
 
-  boolean validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate);
+  void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException;
+
+  public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
+      AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
+      throws AxelorException;
 
   public void checkAnalyticDistributionTemplateCompany(
       AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException;
 
-  AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
+  AnalyticDistributionTemplate createSpecificDistributionTemplate(Company company, String name)
+      throws AxelorException;
+
+  void checkAnalyticAccounts(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException;
+
+  void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
       throws AxelorException;
 }

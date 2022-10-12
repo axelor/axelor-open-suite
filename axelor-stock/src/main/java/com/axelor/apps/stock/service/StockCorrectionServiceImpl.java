@@ -21,15 +21,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockCorrection;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -64,6 +59,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
   }
+
+  @Inject private StockCorrectionRepository stockCorrectionRepository;
 
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
@@ -116,7 +113,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         || stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
     }
 
     StockMove stockMove = generateStockMove(stockCorrection);
@@ -215,7 +212,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       throw new AxelorException(
           stockCorrection,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_CORRECTION_1));
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_1));
     }
     if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
       stockMoveLine.setTrackingNumber(trackingNumber);
@@ -231,7 +228,50 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   public void getDefaultQtys(
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
+    stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("futureQty", stockLocationLine.getFutureQty());
+  }
+
+  @Override
+  @Transactional
+  public StockCorrection generateStockCorrection(
+      StockLocation stockLocation,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      StockCorrectionReason reason)
+      throws Exception {
+
+    StockCorrection stockCorrection = new StockCorrection();
+    stockCorrection.setStatusSelect(1);
+    stockCorrection.setStockLocation(stockLocation);
+    stockCorrection.setProduct(product);
+    if (product.getTrackingNumberConfiguration() != null && trackingNumber != null) {
+      stockCorrection.setTrackingNumber(trackingNumber);
+    }
+    stockCorrection.setRealQty(realQty);
+    stockCorrection.setStockCorrectionReason(reason);
+    this.stockCorrectionRepository.save(stockCorrection);
+
+    return stockCorrection;
+  }
+
+  @Override
+  @Transactional
+  public void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty) {
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
+      stockCorrection.setRealQty(realQty);
+      this.stockCorrectionRepository.save(stockCorrection);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason) {
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
+      stockCorrection.setStockCorrectionReason(reason);
+      this.stockCorrectionRepository.save(stockCorrection);
+    }
   }
 }
