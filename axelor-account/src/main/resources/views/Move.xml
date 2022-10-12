@@ -68,8 +68,7 @@
           <field name="period" readonlyIf="moveLineList.length &gt; 0" form-view="period-form"
             grid-view="period-grid" canEdit="false" canView="false"/>
           <field name="date"
-            onChange="action-move-method-get-period,action-move-method-update-lines"
-            hideIf="statusSelect == 3"/>
+            onChange="action-move-method-get-period,action-move-method-update-lines"/>
         </panel>
         <field name="partner" colSpan="12" canNew="false" canEdit="false"
           form-view="partner-form" grid-view="partner-grid"
