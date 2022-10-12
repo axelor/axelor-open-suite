@@ -325,8 +325,7 @@
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-        <panel name="functionPanel" colSpan="12"
-          showIf="isContact || partnerTypeSelect == 2">
+        <panel name="functionPanel" colSpan="12" showIf="isContact || partnerTypeSelect == 2">
           <field name="jobTitleFunction"
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>

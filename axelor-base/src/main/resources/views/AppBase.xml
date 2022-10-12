@@ -25,7 +25,7 @@
         <field name="activateSendingEmail" widget="boolean-switch" colSpan="4"/>
         <field name="emailAccountByUser" widget="boolean-switch" colSpan="4"/>
         <field name="emailAccountByCompany" widget="boolean-switch" colSpan="4"/>
-         <field name="nbDecimalDigitForTaxRate"/>
+        <field name="nbDecimalDigitForTaxRate"/>
         <field name="productInAtiSelect"/>
         <field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
         <field name="nbDecimalDigitForQty" colSpan="3"/>
