@@ -12,7 +12,6 @@
     <field name="trackDeletion"/>
     <field name="trackUpdate"/>
     <field name="trackExport"/>
-    <field name="trackReading"/>
     <field name="trackingCondition"/>
   </grid>
 
@@ -30,7 +29,6 @@
       <field name="trackDeletion" colSpan="4" widget="inline-checkbox"/>
       <field name="trackUpdate" colSpan="4" widget="inline-checkbox"/>
       <field name="trackExport" colSpan="4" widget="inline-checkbox"/>
-      <field name="trackReading" colSpan="4" widget="inline-checkbox"/>
       <field name="trackingCondition" colSpan="12" widget="code-editor" x-code-syntax="groovy"/>
 
     </panel>
