@@ -62,7 +62,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
         ++offset;
         try {
           stockHistoryLineList.addAll(
-              stockHistoryService.computeStockHistoryLineList(
+              stockHistoryService.computeAndSaveStockHistoryLineList(
                   product.getId(),
                   supplychainBatch.getCompany().getId(),
                   null,

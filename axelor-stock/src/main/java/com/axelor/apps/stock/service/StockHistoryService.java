@@ -45,4 +45,20 @@ public interface StockHistoryService {
       throws IOException;
 
   public String getStockHistoryLineExportName(String productName);
+
+  /**
+   * Same as {@link StockHistoryService#computeStockHistoryLineList(Long, Long, Long, LocalDate,
+   * LocalDate)} But, this method will save the computed stock history lines
+   *
+   * @param productId
+   * @param companyId
+   * @param stockLocationId
+   * @param beginDate
+   * @param endDate
+   * @return
+   * @throws AxelorException
+   */
+  List<StockHistoryLine> computeAndSaveStockHistoryLineList(
+      Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
+      throws AxelorException;
 }
