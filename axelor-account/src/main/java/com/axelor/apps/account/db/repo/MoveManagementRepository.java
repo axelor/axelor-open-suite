@@ -25,6 +25,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -208,6 +209,14 @@ public class MoveManagementRepository extends MoveRepository {
         throw new PersistenceException(e.getMessage(), e);
       }
     } else {
+      try {
+        if (entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+          Beans.get(MoveRemoveService.class).checkMoveBeforeRemove(entity);
+        }
+      } catch (Exception e) {
+        TraceBackService.traceExceptionFromSaveMethod(e);
+        throw new PersistenceException(e.getMessage(), e);
+      }
       super.remove(entity);
     }
   }

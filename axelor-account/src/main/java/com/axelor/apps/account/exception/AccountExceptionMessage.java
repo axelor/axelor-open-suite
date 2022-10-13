@@ -99,8 +99,12 @@ public final class AccountExceptionMessage {
       "Error in move deleting or archiving, please check the log" /*)*/;
   public static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move %s can not be archived because it is linked to another piece named %s." /*)*/;
+  public static final String MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move %s can not be removed because it is linked to another piece named %s." /*)*/;
   public static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
+  public static final String MOVE_LINE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move line %s can not be removed because it is linked to another piece named %s." /*)*/;
   public static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
   public static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
