@@ -33,7 +33,10 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.InternationalService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -397,6 +400,38 @@ public class InvoiceLineController {
       response.setValue(
           "analyticMoveLineList",
           invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice parent = this.getInvoice(context);
+      Partner partner = parent.getPartner();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = invoiceLine.getProduct();
+
+      if (product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
+
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

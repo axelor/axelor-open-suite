@@ -21,17 +21,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -127,37 +119,5 @@ public class InvoiceLineController {
 
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
-  }
-
-  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      InternationalService internationalService = Beans.get(InternationalService.class);
-      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-      Invoice parent = this.getInvoice(context);
-      Partner partner = parent.getPartner();
-      Company company = parent.getCompany();
-      String userLanguage = AuthUtils.getUser().getLanguage();
-      Product product = invoiceLine.getProduct();
-
-      if (product != null && partner != null && company != null) {
-        SupplierCatalog supplierCatalog =
-            Beans.get(SupplierCatalogService.class).getSupplierCatalog(product, partner, company);
-
-        if (supplierCatalog == null) {
-          String partnerLanguage = partner.getLanguage().getCode();
-          response.setValue(
-              "description",
-              internationalService.translate(
-                  invoiceLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-          response.setValue(
-              "productName",
-              internationalService.translate(
-                  invoiceLine.getProduct().getName(), userLanguage, partnerLanguage));
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 }

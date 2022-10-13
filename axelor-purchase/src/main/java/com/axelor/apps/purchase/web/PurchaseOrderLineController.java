@@ -421,23 +421,26 @@ public class PurchaseOrderLineController {
       String userLanguage = AuthUtils.getUser().getLanguage();
       Product product = purchaseOrderLine.getProduct();
 
-      if (product != null && partner != null && company != null) {
+      SupplierCatalog supplierCatalog =
+          Beans.get(SupplierCatalogService.class).getSupplierCatalog(product, partner, company);
 
-        SupplierCatalog supplierCatalog =
-            Beans.get(SupplierCatalogService.class).getSupplierCatalog(product, partner, company);
+      if (supplierCatalog == null && product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
 
-        if (supplierCatalog == null) {
-          String partnerLanguage = partner.getLanguage().getCode();
-          response.setValue(
-              "description",
-              internationalService.translate(
-                  purchaseOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-          response.setValue(
-              "productName",
-              internationalService.translate(
-                  purchaseOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
         }
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
