@@ -65,6 +65,9 @@
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form" grid-view="account-grid"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
+          <field name="appExtraordDepreciationExpenseAccount"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
+            form-view="account-form" grid-view="account-grid"/>
           <field name="depreciationAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form" grid-view="account-grid"

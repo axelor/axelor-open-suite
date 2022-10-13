@@ -36,6 +36,9 @@
       required="true"/>
     <many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account"
       title="Charge account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="appExtraordDepreciationExpenseAccount"
+      title="Account for appropriation to extraordinary depreciations"/>
     <many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account"
       title="Depreciation account"/>
 
