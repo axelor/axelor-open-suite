@@ -481,7 +481,7 @@
     <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
       WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
       related.relatedToSelectId =
-      :id) AND (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
+      :id) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
       self.toEmailAddressSet)))</domain>
     <context name="id" expr="eval: id"/>
     <context name="email" expr="eval: emailAddress?.address"/>
@@ -494,7 +494,7 @@
     <view type="form" name="message-form"/>
     <domain>self.mediaTypeSelect = 2 AND ((self.multiRelatedList.relatedToSelect =
       'com.axelor.apps.crm.db.Lead' AND self.multiRelatedList.relatedToSelectId = :id)
-      AND
+      OR
       (self.fromEmailAddress.address = :email))</domain>
     <context name="id" expr="eval: id"/>
     <context name="email" expr="eval: emailAddress?.address"/>

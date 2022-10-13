@@ -358,14 +358,14 @@ public class PartnerServiceImpl implements PartnerService {
       if (emailType == MessageRepository.TYPE_RECEIVED) {
         query =
             query.substring(0, query.length() - 1)
-                + " AND (email.fromEmailAddress.address = '"
+                + " OR (email.fromEmailAddress.address = '"
                 + partner.getEmailAddress().getAddress()
                 + "'))";
 
       } else {
         query =
             query.substring(0, query.length() - 1)
-                + " AND (:emailAddress IN (SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet)))";
+                + " OR (:emailAddress IN (SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet)))";
         return JPA.em()
             .createQuery(query)
             .setParameter("emailAddress", partner.getEmailAddress().getAddress())
