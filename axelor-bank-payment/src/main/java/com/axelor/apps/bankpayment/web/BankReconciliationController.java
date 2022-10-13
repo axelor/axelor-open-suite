@@ -88,9 +88,12 @@ public class BankReconciliationController {
     try {
       Context context = request.getContext();
       BankReconciliation bankReconciliation = context.asType(BankReconciliation.class);
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
       bankReconciliation =
           Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
       Beans.get(BankReconciliationService.class).reconcileSelected(bankReconciliation);
+      bankReconciliationService.computeBalances(bankReconciliation);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -227,7 +230,6 @@ public class BankReconciliationController {
       BankReconciliationLine bankReconciliationLine =
           Beans.get(BankReconciliationLineRepository.class)
               .find(((Integer) selectedBankReconciliationLineContext.get("id")).longValue());
-
       Beans.get(BankReconciliationValidateService.class)
           .validateMultipleBankReconciles(
               bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
@@ -486,6 +488,47 @@ public class BankReconciliationController {
           "$selectedMoveLineTotal",
           Beans.get(BankReconciliationService.class)
               .getSelectedMoveLineTotal(bankReconciliation, toReconcileMoveLineSet));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void correctButtonVisible(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      response.setAttr(
+          "correctBtn",
+          "hidden",
+          Beans.get(BankReconciliationService.class).getIsCorrectButtonHidden(bankReconciliation));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void correctedLabelFill(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      if (bankReconciliation.getHasBeenCorrected()) {
+        response.setAttr(
+            "correctedLabel",
+            "title",
+            Beans.get(BankReconciliationService.class)
+                .getCorrectedLabel(
+                    bankReconciliation.getCorrectedDateTime(),
+                    bankReconciliation.getCorrectedUser()));
+        ;
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void correct(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      Beans.get(BankReconciliationService.class).correct(bankReconciliation, request.getUser());
+      response.setAttr("correctBtn", "hidden", true);
+      response.setValues(bankReconciliation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
