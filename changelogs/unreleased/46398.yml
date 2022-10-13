@@ -1,0 +1,5 @@
+---
+title: "Accounting batch : change the currency to the company one for some action in batch."
+type: fix
+description: |
+  Change for the actions : Reimbursement, Direct Debit and Credit Transfer.
