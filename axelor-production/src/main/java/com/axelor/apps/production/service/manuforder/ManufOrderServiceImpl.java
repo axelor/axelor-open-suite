@@ -621,6 +621,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (consumedStockMoveLineList == null) {
       return;
     }
+    updateStockMoveFromManufOrder(
+        consumedStockMoveLineList, getConsumedStockMoveFromManufOrder(manufOrder));
+  }
+
+  public StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
@@ -634,13 +640,22 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrder.addInStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
-    updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
+    return stockMove;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
+    if (producedStockMoveLineList == null) {
+      return;
+    }
+    updateStockMoveFromManufOrder(
+        producedStockMoveLineList, getProducedStockMoveFromManufOrder(manufOrder));
+  }
+
+  public StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
@@ -654,8 +669,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrder.addOutStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
-
-    updateStockMoveFromManufOrder(producedStockMoveLineList, stockMove);
+    return stockMove;
   }
 
   @Override
