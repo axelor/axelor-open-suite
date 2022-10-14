@@ -97,8 +97,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
   protected ManufOrder getProductSubManufOrder(ManufOrder manufOrder, Product product) {
     List<ManufOrder> childrenManufOrder = manufOrderService.getChildrenManufOrder(manufOrder);
-    ManufOrder childManufOrder = getChildManufOrder(childrenManufOrder, product);
-    return childManufOrder;
+    return getChildManufOrder(childrenManufOrder, product);
   }
 
   @Override
@@ -244,14 +243,10 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
   }
 
   protected ManufOrder getChildManufOrder(List<ManufOrder> childrenManufOrder, Product product) {
-    ManufOrder childManufOrder = null;
-    if (!childrenManufOrder.isEmpty()) {
-      childManufOrder =
-          childrenManufOrder.stream()
-              .filter(manufOrder -> manufOrder.getProduct().equals(product))
-              .findAny()
-              .orElse(null);
-    }
-    return childManufOrder;
+
+    return childrenManufOrder.stream()
+        .filter(manufOrder -> product.equals(manufOrder.getProduct()))
+        .findAny()
+        .orElse(null);
   }
 }
