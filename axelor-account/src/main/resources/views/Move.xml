@@ -77,24 +77,23 @@
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false" readonly="true"/>
-          <field name="date"
-            readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+          <field name="date" readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-group-move-date-onchange" hideIf="statusSelect == 3" colSpan="3"/>
           <field name="originDate" colSpan="3"
             onChange="action-move-method-set-moveline-origin-dates"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"/>
           <field name="tradingName"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             form-view="partner-form" grid-view="partner-grid"
             onSelect="action-move-group-partner-on-select"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod"/>
