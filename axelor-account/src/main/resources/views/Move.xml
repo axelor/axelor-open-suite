@@ -602,6 +602,7 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
     <action name="action-move-method-update-partner" if="id != null"/>
+    <action name="action-move-method-check-term-in-payment"/>
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
@@ -716,6 +717,10 @@
 
   <action-method name="action-account-move-method-check-duplicated-move-origin">
     <call class="com.axelor.apps.account.web.MoveController" method="checkDuplicatedMoveOrigin"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-term-in-payment">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkTermsInPayment"/>
   </action-method>
 
   <!-- ACTION RECORD -->
