@@ -343,11 +343,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankPaymentConfigService
-        .getBankPaymentConfig(bankOrder.getSenderCompany())
-        .getGenerateMoveOnBankOrderValidation()) {
-      bankOrderMoveService.generateMoves(bankOrder);
-      validatePayment(bankOrder);
+    if (!bankOrder.getAreMovesGenerated()
+        && bankPaymentConfigService
+            .getBankPaymentConfig(bankOrder.getSenderCompany())
+            .getGenerateMoveOnBankOrderValidation()) {
+      generateMovesAndValidatePayment(bankOrder);
     }
 
     bankOrderRepo.save(bankOrder);
@@ -370,7 +370,9 @@ public class BankOrderServiceImpl implements BankOrderService {
             I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
       }
 
-      sendBankOrderFile(bankOrder);
+      if (!bankOrder.getHasBeenSentToBank()) {
+        sendBankOrderFile(bankOrder);
+      }
     }
     realizeBankOrder(bankOrder);
   }
@@ -393,16 +395,22 @@ public class BankOrderServiceImpl implements BankOrderService {
     dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 
     sendFile(bankOrder, dataFileToSend, signatureFileToSend);
+    markAsSent(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void markAsSent(BankOrder bankOrder) {
+    bankOrder.setHasBeenSentToBank(true);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (!bankPaymentConfigService
-        .getBankPaymentConfig(bankOrder.getSenderCompany())
-        .getGenerateMoveOnBankOrderValidation()) {
-      bankOrderMoveService.generateMoves(bankOrder);
-      validatePayment(bankOrder);
+    if (!bankOrder.getAreMovesGenerated()
+        && !bankPaymentConfigService
+            .getBankPaymentConfig(bankOrder.getSenderCompany())
+            .getGenerateMoveOnBankOrderValidation()) {
+      generateMovesAndValidatePayment(bankOrder);
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
@@ -413,6 +421,12 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrderRepo.save(bankOrder);
+  }
+
+  protected void generateMovesAndValidatePayment(BankOrder bankOrder) throws AxelorException {
+    bankOrderMoveService.generateMoves(bankOrder);
+    validatePayment(bankOrder);
+    bankOrder.setAreMovesGenerated(true);
   }
 
   protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend)
