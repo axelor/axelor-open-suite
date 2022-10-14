@@ -41,6 +41,11 @@
         requiredIf="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
       <field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
       <field name="hidden" showIf="ruleTypeSelect == 2 || ruleTypeSelect == 3"/>
+      <panel name="splitConfigPanel" colSpan="12" itemSpan="4" showIf="ruleTypeSelect == 2">
+        <field name="splitByAccountType"/>
+        <field name="splitByAccount"/>
+        <field name="splitByAnalyticAccount"/>
+      </panel>
       <field name="$helpCode" title="Account code" readonly="true"
         showIf="ruleTypeSelect == 2" colSpan="12">
         <viewer depends="ruleTypeSelect">
