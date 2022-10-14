@@ -3,11 +3,20 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -22,17 +31,23 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected InvoiceTermService invoiceTermService;
   protected MoveRepository moveRepo;
   protected InvoiceTermRepository invoiceTermRepo;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepository;
+  protected PayVoucherDueElementRepository payVoucherDueElementRepository;
 
   @Inject
   public MoveInvoiceTermServiceImpl(
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       InvoiceTermService invoiceTermService,
       MoveRepository moveRepo,
-      InvoiceTermRepository invoiceTermRepo) {
+      InvoiceTermRepository invoiceTermRepo,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepository,
+      PayVoucherDueElementRepository payVoucherDueElementRepository) {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
     this.moveRepo = moveRepo;
     this.invoiceTermRepo = invoiceTermRepo;
+    this.payVoucherElementToPayRepository = payVoucherElementToPayRepository;
+    this.payVoucherDueElementRepository = payVoucherDueElementRepository;
   }
 
   @Override
@@ -172,5 +187,72 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         .flatMap(Collection::stream)
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  public void checkIfInvoiceTermInPayment(Move move) throws AxelorException {
+    if (move != null
+        && (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED))
+        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+      List<InvoiceTerm> invoiceTermList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getInvoiceTermList)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(invoiceTermList)) {
+        this.checkInvoiceTermInPaymentVoucher(invoiceTermList);
+        this.checkInvoiceTermInPaymentSession(invoiceTermList);
+        for (InvoiceTerm invoiceTerm : invoiceTermList) {
+          if (!invoiceTermService.isNotReadonlyExceptPfp(invoiceTerm)) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE));
+          }
+        }
+      }
+    }
+  }
+
+  public void checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException {
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      List<String> paymentVoucherRefList =
+          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+              .map(PayVoucherElementToPay::getPaymentVoucher)
+              .map(PaymentVoucher::getRef)
+              .collect(Collectors.toList());
+      paymentVoucherRefList =
+          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+              .map(PayVoucherDueElement::getPaymentVoucher)
+              .map(PaymentVoucher::getRef)
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(paymentVoucherRefList)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE),
+            paymentVoucherRefList.toString());
+      }
+    }
+  }
+
+  public void checkInvoiceTermInPaymentSession(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException {
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      List<String> paymentSessionSeqList =
+          invoiceTermList.stream()
+              .filter(it -> it.getPaymentSession() != null)
+              .map(InvoiceTerm::getPaymentSession)
+              .map(PaymentSession::getSequence)
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(paymentSessionSeqList)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_SESSION_CHANGE),
+            paymentSessionSeqList.toString());
+      }
+    }
   }
 }
