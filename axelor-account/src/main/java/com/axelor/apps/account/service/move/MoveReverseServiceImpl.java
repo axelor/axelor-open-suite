@@ -78,6 +78,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       LocalDate dateOfReversion)
       throws AxelorException {
 
+    String origin = move.getOrigin();
+    if (move.getJournal().getHasDuplicateDetectionOnOrigin()
+        && move.getJournal().getPrefixOrigin() != null) {
+      origin = move.getJournal().getPrefixOrigin() + origin;
+    }
+
     Move newMove =
         moveCreateService.createMove(
             move.getJournal(),
@@ -92,7 +98,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove(),
-            move.getOrigin(),
+            origin,
             move.getDescription(),
             null,
             null);
