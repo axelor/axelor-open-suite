@@ -1285,7 +1285,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   /** Create new stock line, then set product infos and compute prices (API AOS) */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void createStockMoveLine(
+  public StockMoveLine createStockMoveLine(
       StockMove stockMove,
       Product product,
       TrackingNumber trackingNumber,
@@ -1313,6 +1313,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     line.setRealQty(realQty);
     line.setConformitySelect(conformitySelect);
     stockMoveLineRepository.save(line);
+    return line;
   }
 
   /** Update stock move line realQty and conformity (API AOS) */

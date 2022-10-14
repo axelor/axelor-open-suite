@@ -375,11 +375,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   isReverse
                       != (accountingCutOffTypeSelect
                           == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES),
-                  originDate,
+                  cutOffMove.getDate(),
                   ++counter,
                   origin,
                   moveDescription);
           cutOffMoveLine.setTaxLine(moveLine.getTaxLine());
+          cutOffMoveLine.setOriginDate(originDate);
 
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
         }
@@ -531,7 +532,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               taxAccount,
               currencyTaxAmount,
               productMoveLine.getDebit().signum() > 0,
-              productMoveLine.getOriginDate(),
+              move.getDate(),
               ++counter,
               origin,
               moveDescription);
@@ -543,8 +544,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         taxMoveLine.setVatSystemSelect(vatSystem);
       }
 
-      taxMoveLine.setDate(move.getDate());
-      taxMoveLine.setDueDate(move.getDate());
+      taxMoveLine.setOriginDate(productMoveLine.getOriginDate());
 
       move.addMoveLineListItem(taxMoveLine);
     }

@@ -5,8 +5,11 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -23,13 +26,16 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
   protected ProductStockLocationService productStockLocationService;
   protected ManufOrderService manufOrderService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public ManufOrderProductRestServiceImpl(
       ProductStockLocationService productStockLocationService,
-      ManufOrderService manufOrderService) {
+      ManufOrderService manufOrderService,
+      StockMoveLineService stockMoveLineService) {
     this.productStockLocationService = productStockLocationService;
     this.manufOrderService = manufOrderService;
+    this.stockMoveLineService = stockMoveLineService;
   }
 
   public List<ProdProduct> getProdProductsOfProduct(
@@ -240,6 +246,64 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     if (prodProduct != null && qty != null) {
       prodProduct.setQty(qty);
     }
+  }
+
+  /**
+   * Add consumed or produced product in manuf order.
+   *
+   * @param product
+   * @param qty
+   * @param trackingNumber
+   * @param manufOrder
+   * @param productType
+   * @return
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public StockMoveLine addManufOrderProduct(
+      Product product,
+      BigDecimal qty,
+      TrackingNumber trackingNumber,
+      ManufOrder manufOrder,
+      String productType)
+      throws AxelorException {
+
+    StockMove stockMove = getManufOrderStockMove(manufOrder, productType);
+
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            stockMove, product, trackingNumber, qty, BigDecimal.ZERO, null, null);
+
+    addProductInManufOrder(manufOrder, stockMoveLine, productType);
+
+    return stockMoveLine;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void addProductInManufOrder(
+      ManufOrder manufOrder, StockMoveLine stockMoveLine, String productType)
+      throws AxelorException {
+    if (manufOrder != null && stockMoveLine != null && PRODUCT_TYPE_PRODUCED.equals(productType)) {
+      manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      manufOrderService.updateProducedStockMoveFromManufOrder(manufOrder);
+    }
+    if (manufOrder != null && stockMoveLine != null && PRODUCT_TYPE_CONSUMED.equals(productType)) {
+      manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+      manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
+    }
+  }
+
+  protected StockMove getManufOrderStockMove(ManufOrder manufOrder, String productType)
+      throws AxelorException {
+    StockMove stockMove = null;
+    if (manufOrder != null && PRODUCT_TYPE_PRODUCED.equals(productType)) {
+      stockMove = manufOrderService.getProducedStockMoveFromManufOrder(manufOrder);
+    }
+
+    if (manufOrder != null && PRODUCT_TYPE_CONSUMED.equals(productType)) {
+      stockMove = manufOrderService.getConsumedStockMoveFromManufOrder(manufOrder);
+    }
+    return stockMove;
   }
 
   protected ManufOrder getChildManufOrder(List<ManufOrder> childrenManufOrder, Product product) {
