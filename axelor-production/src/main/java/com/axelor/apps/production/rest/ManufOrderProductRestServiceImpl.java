@@ -248,14 +248,10 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     if (!childrenManufOrder.isEmpty()) {
       childManufOrder =
           childrenManufOrder.stream()
-              .filter(manufOrder -> productAreEqual(manufOrder.getProduct(), product))
+              .filter(manufOrder -> manufOrder.getProduct().equals(product))
               .findAny()
               .orElse(null);
     }
     return childManufOrder;
-  }
-
-  protected boolean productAreEqual(Product product1, Product product2) {
-    return product1.equals(product2);
   }
 }
