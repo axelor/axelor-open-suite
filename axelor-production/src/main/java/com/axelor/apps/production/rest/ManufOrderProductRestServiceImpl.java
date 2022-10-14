@@ -21,15 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.ws.rs.BadRequestException;
 
 public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestService {
 
   protected ProductStockLocationService productStockLocationService;
   protected ManufOrderService manufOrderService;
   protected StockMoveLineService stockMoveLineService;
-  static final String PRODUCT_TYPE_CONSUMED = "consumed";
-  static final String PRODUCT_TYPE_PRODUCED = "produced";
 
   @Inject
   public ManufOrderProductRestServiceImpl(
@@ -262,17 +259,6 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       ManufOrder manufOrder,
       String productType)
       throws AxelorException {
-
-    if (productType == null
-        || productType.isEmpty()
-        || (!PRODUCT_TYPE_CONSUMED.equals(productType)
-            && !PRODUCT_TYPE_PRODUCED.equals(productType))) {
-      throw new BadRequestException(
-          "Please, indicate the productType in the body : "
-              + PRODUCT_TYPE_CONSUMED
-              + " or "
-              + PRODUCT_TYPE_PRODUCED);
-    }
 
     StockMove stockMove = getManufOrderStockMove(manufOrder, productType);
 

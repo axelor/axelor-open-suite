@@ -12,6 +12,9 @@ import java.util.List;
 
 public interface ManufOrderProductRestService {
 
+  String PRODUCT_TYPE_CONSUMED = "consumed";
+  String PRODUCT_TYPE_PRODUCED = "produced";
+
   List<ManufOrderProductResponse> getConsumedProductList(ManufOrder manufOrder)
       throws AxelorException;
 

@@ -1,12 +1,14 @@
 package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.production.rest.ManufOrderProductRestService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class ManufOrderProductPostRequest extends RequestStructure {
 
@@ -21,6 +23,13 @@ public class ManufOrderProductPostRequest extends RequestStructure {
   @Min(0)
   private BigDecimal qty;
 
+  @NotNull
+  @Pattern(
+      regexp =
+          ManufOrderProductRestService.PRODUCT_TYPE_PRODUCED
+              + "|"
+              + ManufOrderProductRestService.PRODUCT_TYPE_CONSUMED,
+      flags = Pattern.Flag.CASE_INSENSITIVE)
   private String productType;
 
   public ManufOrderProductPostRequest() {};
