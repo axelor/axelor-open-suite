@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -144,7 +145,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
             || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
       errorMessage +=
           String.format(
-              I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
               move.getReference(),
               moveModelError);
     }
@@ -164,22 +165,17 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
-      if (!modelName.equals("Move")
-          && !modelName.equals("Reconcile")
-          && !modelName.equals("InvoiceTerm")
-          && !modelName.equals("AnalyticMoveLine")
-          && !modelName.equals("TaxPaymentMoveLine")
+      List<String> modelsToIgnore =
+          Lists.newArrayList(
+              "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+      if (!modelsToIgnore.contains(modelName)
           && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
         errorMessage +=
             String.format(
                 I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
                 moveLine.getName(),
                 modelName);
-      } else if (!modelName.equals("Move")
-          && !modelName.equals("Reconcile")
-          && !modelName.equals("InvoiceTerm")
-          && !modelName.equals("AnalyticMoveLine")
-          && !modelName.equals("TaxPaymentMoveLine")
+      } else if (!modelsToIgnore.contains(modelName)
           && (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_NEW
               || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
         errorMessage +=
