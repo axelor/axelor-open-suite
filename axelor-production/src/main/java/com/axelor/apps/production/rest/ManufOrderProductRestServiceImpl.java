@@ -87,6 +87,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       missingQty = BigDecimal.ZERO.max(plannedQty.subtract(availableQty));
     }
 
+    ManufOrder subManufOrder = getProductSubManufOrder(manufOrder, product);
+
     return new ManufOrderProductResponse(
         product,
         stockMoveLine,
@@ -95,7 +97,13 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
         missingQty,
         availableQty,
         stockMoveLine.getTrackingNumber(),
-        stockMoveLine.getUnit());
+        stockMoveLine.getUnit(),
+        subManufOrder);
+  }
+
+  protected ManufOrder getProductSubManufOrder(ManufOrder manufOrder, Product product) {
+    List<ManufOrder> childrenManufOrder = manufOrderService.getChildrenManufOrder(manufOrder);
+    return getChildManufOrder(childrenManufOrder, product);
   }
 
   @Override
@@ -296,5 +304,13 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       stockMove = manufOrderService.getConsumedStockMoveFromManufOrder(manufOrder);
     }
     return stockMove;
+  }
+
+  protected ManufOrder getChildManufOrder(List<ManufOrder> childrenManufOrder, Product product) {
+
+    return childrenManufOrder.stream()
+        .filter(manufOrder -> product.equals(manufOrder.getProduct()))
+        .findAny()
+        .orElse(null);
   }
 }

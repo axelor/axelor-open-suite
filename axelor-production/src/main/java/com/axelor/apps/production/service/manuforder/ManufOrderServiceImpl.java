@@ -1158,6 +1158,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  public List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder) {
+    return manufOrderRepo
+        .all()
+        .filter("self.parentMO = :manufOrder")
+        .bind("manufOrder", manufOrder)
+        .fetch();
+  }
+
+  @Override
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
