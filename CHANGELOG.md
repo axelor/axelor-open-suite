@@ -1,3 +1,23 @@
+## [6.1.22] (2022-10-17)
+
+#### Changes
+
+* Fiscal year: improve UX to create new period.
+
+#### Fixed
+
+* Interco: fixed an error occurring when generating a sale order from a purchase order.
+* Invoice report: invoice lines will now correctly display the currency when the invoice in ati option is activated.
+* Helpdesk: fixed typo in french translation for cancel button.
+* Supplychain: fixed error when importing purchase order from supplychain.
+* Logistical form: fixed a translation issue when printing packing list.
+* Invoice: fixed company bank details when partner is factorized.
+* Accounting batch: fill the selected currency with the default company currency.
+* Prod process report: fixed ordering of prod process lines in the report, they are now correctly sorted by priority.
+* Bill of materials: added an error message when company is missing during cost price computation.
+* Supplychain: fixed error occurring in while importing demo data.
+* Bank order: add verification to avoid sending twice the same file to the bank on user mistake.
+
 ## [6.1.21] (2022-09-29)
 
 #### Fixed
@@ -770,6 +790,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.22]: https://github.com/axelor/axelor-open-suite/compare/v6.1.21...v6.1.22
 [6.1.21]: https://github.com/axelor/axelor-open-suite/compare/v6.1.20...v6.1.21
 [6.1.20]: https://github.com/axelor/axelor-open-suite/compare/v6.1.19...v6.1.20
 [6.1.19]: https://github.com/axelor/axelor-open-suite/compare/v6.1.18...v6.1.19
