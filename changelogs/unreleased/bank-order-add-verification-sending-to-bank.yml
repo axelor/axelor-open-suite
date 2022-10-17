@@ -1,3 +1,0 @@
----
-title: "Bank order: add verification to avoid sending twice the same file to the bank on user mistake."
-type: fix

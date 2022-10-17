@@ -1,3 +1,0 @@
----
-title: "ACCOUNTING REPORT: Correct issue (duplicate warning) causing impossibility to print an accounting report when an already same type of report was already existing in status Draft."
-type: fix
