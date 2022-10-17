@@ -47,6 +47,14 @@ public class MoveLineManagementRepository extends MoveLineRepository {
   }
 
   @Override
+  public MoveLine copy(MoveLine entity, boolean deep) {
+    MoveLine copy = super.copy(entity, deep);
+
+    copy.setPostedNbr(null);
+    return copy;
+  }
+
+  @Override
   public MoveLine save(MoveLine entity) {
     List<AnalyticMoveLine> analyticMoveLineList = entity.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
