@@ -44,4 +44,6 @@ public interface PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException;
 
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
+
+  public void retrieveEligibleTerms(PaymentSession paymentSession);
 }

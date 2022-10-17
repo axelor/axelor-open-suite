@@ -295,7 +295,7 @@
   </action-method>
 
   <action-method name="action-method-payment-session-search-eligible-terms">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="searchEligibleTerms"/>
   </action-method>
 

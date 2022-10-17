@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -260,8 +259,6 @@ public interface InvoiceTermService {
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
-
-  public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 

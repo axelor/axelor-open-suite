@@ -21,11 +21,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -219,17 +217,6 @@ public class InvoiceTermController {
                     Beans.get(InvoiceTermService.class)
                         .getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany())));
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
