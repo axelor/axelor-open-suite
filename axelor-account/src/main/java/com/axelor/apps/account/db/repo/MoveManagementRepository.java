@@ -55,6 +55,12 @@ public class MoveManagementRepository extends MoveRepository {
       Period period =
           Beans.get(PeriodService.class)
               .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+      String origin = entity.getOrigin();
+      if (entity.getJournal().getHasDuplicateDetectionOnOrigin()
+          && entity.getJournal().getPrefixOrigin() != null) {
+        origin = entity.getJournal().getPrefixOrigin() + origin;
+      }
+
       copy.setStatusSelect(STATUS_NEW);
       copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
       copy.setReference(null);
@@ -69,6 +75,7 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setRejectOk(false);
       copy.setInvoice(null);
       copy.setPaymentSession(null);
+      copy.setOrigin(origin);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 

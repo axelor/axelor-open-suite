@@ -177,7 +177,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
       boolean automaticReverse,
-      boolean automaticReconcile)
+      boolean automaticReconcile,
+      String prefixOrigin)
       throws AxelorException {
     List<Move> cutOffMoveList = new ArrayList<>();
 
@@ -190,7 +191,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             moveDescription,
             accountingCutOffTypeSelect,
             cutOffMoveStatusSelect,
-            false);
+            false,
+            prefixOrigin);
 
     if (cutOffMove == null) {
       return null;
@@ -208,7 +210,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               reverseMoveDescription,
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
-              true);
+              true,
+              prefixOrigin);
 
       if (reverseCutOffMove == null) {
         return null;
@@ -237,12 +240,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       String moveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
-      boolean isReverse)
+      boolean isReverse,
+      String prefixOrigin)
       throws AxelorException {
     Company company = move.getCompany();
     Partner partner = move.getPartner();
     LocalDate originDate = move.getOriginDate();
-    String origin = move.getReference();
+    String origin = prefixOrigin + move.getReference();
 
     Move cutOffMove =
         moveCreateService.createMove(

@@ -134,6 +134,10 @@ public class BatchAccountingCutOff extends BatchStrategy {
       int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
       boolean automaticReverse = accountingBatch.getAutomaticReverse();
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
+      String prefixOrigin =
+          accountingBatch.getPrefixOrigin() != null
+              ? accountingBatch.getPrefixOrigin()
+              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
 
       List<Move> moveList =
           cutOffService.generateCutOffMovesFromMove(
@@ -146,7 +150,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
               automaticReverse,
-              automaticReconcile);
+              automaticReconcile,
+              prefixOrigin);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateAccountMove(move, true);

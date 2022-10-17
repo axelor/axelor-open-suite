@@ -197,6 +197,7 @@
           <field name="includeNotStockManagedProduct"
             showIf="accountingCutOffTypeSelect &lt;= 2"/>
         </panel>
+        <field name="prefixOrigin"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
