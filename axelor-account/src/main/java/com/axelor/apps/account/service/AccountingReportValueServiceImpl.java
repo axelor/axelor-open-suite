@@ -1,5 +1,7 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportType;
@@ -12,28 +14,37 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
-public class AccountingReportValueServiceImpl {
+public class AccountingReportValueServiceImpl implements AccountingReportValueService {
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected MoveLineRepository moveLineRepo;
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void computeReportValues(AccountingReport accountingReport) throws AxelorException {
     AccountingReportType accountingReportType = accountingReport.getReportType();
+    Map<String, Map<String, AccountingReportValue>> valuesMapByColumn = new HashMap<>();
+    Map<String, Map<String, AccountingReportValue>> valuesMapByLine = new HashMap<>();
 
     this.checkAccountingReportType(accountingReportType);
-    this.initAccountingReportTypeLinesAndColumns(accountingReportType);
 
-    while (!this.areAllValuesComputed(accountingReportType)) {
-      this.createReportValues(accountingReport, accountingReportType);
+    while (!this.areAllValuesComputed(valuesMapByColumn)) {
+      this.createReportValues(
+          accountingReport, accountingReportType, valuesMapByColumn, valuesMapByLine);
     }
   }
 
@@ -52,27 +63,21 @@ public class AccountingReportValueServiceImpl {
     }
   }
 
-  protected void initAccountingReportTypeLinesAndColumns(
-      AccountingReportType accountingReportType) {
-    accountingReportType.getAccountingReportConfigLineList().forEach(it -> it.setComputed(true));
-    accountingReportType
-        .getAccountingReportConfigLineColumnList()
-        .forEach(it -> it.setComputed(true));
-  }
-
-  protected boolean areAllValuesComputed(AccountingReportType accountingReportType) {
-    return accountingReportType.getAccountingReportConfigLineList().stream()
-            .allMatch(AccountingReportConfigLine::getComputed)
-        && accountingReportType.getAccountingReportConfigLineColumnList().stream()
-            .allMatch(AccountingReportConfigLine::getComputed);
+  protected boolean areAllValuesComputed(
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn) {
+    return valuesMapByColumn.values().stream()
+        .map(Map::values)
+        .flatMap(Collection::stream)
+        .noneMatch(Objects::isNull);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void createReportValues(
-      AccountingReport accountingReport, AccountingReportType accountingReportType) {
-    Map<String, Map<String, AccountingReportValue>> valuesMapByColumn = new HashMap<>();
-    Map<String, Map<String, AccountingReportValue>> valuesMapByLine = new HashMap<>();
-
+      AccountingReport accountingReport,
+      AccountingReportType accountingReportType,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
+      throws AxelorException {
     for (AccountingReportConfigLine column :
         accountingReportType.getAccountingReportConfigLineColumnList()) {
       valuesMapByColumn.put(column.getCode(), new HashMap<>());
@@ -81,47 +86,83 @@ public class AccountingReportValueServiceImpl {
           accountingReportType.getAccountingReportConfigLineList()) {
         valuesMapByLine.put(line.getCode(), new HashMap<>());
 
-        this.createReportValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
+        this.fillReportValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
       }
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createReportValue(
+  protected void fillReportValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
-      Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {}
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
+      throws AxelorException {
+    AccountingReportValue value =
+        this.getValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
 
-  protected BigDecimal getResult(
+    valuesMapByColumn.get(column.getCode()).put(line.getCode(), value);
+    valuesMapByLine.get(line.getCode()).put(column.getCode(), value);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected AccountingReportValue getValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
-      AccountingReportConfigLine line)
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
       throws AxelorException {
     if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
         || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
-      return null;
+      return this.createReportValue(accountingReport, column, line, null, null);
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       if (line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
       } else {
-        return this.getResultFromCustomRule();
+        return this.getValueFromCustomRule(
+            accountingReport, column, line, valuesMapByLine.get(line.getCode()));
       }
     } else if (line.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      return this.getResultFromCustomRule();
+      return this.getValueFromCustomRule(
+          accountingReport, column, line, valuesMapByColumn.get(column.getCode()));
     } else {
-      return this.getResultFromMoveLines(accountingReport, column, line);
+      return this.getValueFromMoveLines(accountingReport, column, line);
     }
   }
 
-  protected BigDecimal getResultFromCustomRule() {
-    return null;
+  @Transactional(rollbackOn = {Exception.class})
+  protected AccountingReportValue getValueFromCustomRule(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, AccountingReportValue> valuesMap) {
+    AccountingReportConfigLine configLine =
+        column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+            ? column
+            : line;
+    Map<String, Object> contextMap = new HashMap<>();
+
+    for (String code : valuesMap.keySet()) {
+      contextMap.put(code, valuesMap.get(code).getResult());
+    }
+
+    Context scriptContext = new Context(contextMap, Object.class);
+    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+    BigDecimal result = (BigDecimal) scriptHelper.eval(configLine.getRule());
+
+    if (result == null) {
+      return null;
+    }
+
+    return this.createReportValue(accountingReport, column, line, result, null);
   }
 
-  protected BigDecimal getResultFromMoveLines(
+  @Transactional(rollbackOn = {Exception.class})
+  protected AccountingReportValue getValueFromMoveLines(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line)
@@ -130,13 +171,25 @@ public class AccountingReportValueServiceImpl {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
     }
 
+    Set<Account> accountSet = new HashSet<>(column.getAccountSet());
+    accountSet.retainAll(line.getAccountSet());
+
+    Set<AccountType> accountTypeSet = new HashSet<>(column.getAccountTypeSet());
+    accountTypeSet.retainAll(line.getAccountTypeSet());
+
     List<MoveLine> moveLineResultList =
         moveLineRepo
             .all()
             .filter(
-                "self.date >= :dateFrom AND self.date <= :dateTo AND self.move.journal = :journal "
-                    + "AND self.move.paymentMode = :paymentMode AND self.move.currency = :currency "
-                    + "AND self.move.company = :company AND self.move.statusSelect IN :statusList")
+                "(self.date IS NULL OR :dateFrom IS NULL OR self.date >= :dateFrom) "
+                    + "AND (self.date IS NULL OR :dateTo IS NULL OR self.date <= :dateTo) "
+                    + "AND (self.move.journal IS NULL OR :journal IS NULL OR self.move.journal = :journal) "
+                    + "AND (self.move.paymentMode IS NULL OR :paymentMode IS NULL OR self.move.paymentMode = :paymentMode) "
+                    + "AND (self.move.currency IS NULL OR :currency IS NULL OR self.move.currency = :currency) "
+                    + "AND (self.move.company IS NULL OR :company IS NULL OR self.move.company = :company) "
+                    + "AND self.move.statusSelect IN :statusList "
+                    + "AND (self.account IS NULL OR :accountSet IS NULL OR self.account IN :accountSet) "
+                    + "AND (self.account IS NULL OR :accountType IS NULL OR self.account.accountType IN :accountTypeSet)")
             .bind("dateFrom", accountingReport.getDateFrom())
             .bind("dateTo", accountingReport.getDateTo())
             .bind("journal", accountingReport.getJournal())
@@ -144,12 +197,17 @@ public class AccountingReportValueServiceImpl {
             .bind("currency", accountingReport.getCurrency())
             .bind("company", accountingReport.getCompany())
             .bind("statusList", this.getMoveLineStatusList(accountingReport))
+            .bind("accountSet", accountSet.isEmpty() ? null : accountSet)
+            .bind("accountTypeSet", accountTypeSet.isEmpty() ? null : accountTypeSet)
             .fetch();
 
-    return moveLineResultList.stream()
-        .map(it -> this.getMoveLineAmount(it, column.getResultSelect()))
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    BigDecimal result =
+        moveLineResultList.stream()
+            .map(it -> this.getMoveLineAmount(it, column.getResultSelect()))
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    return this.createReportValue(accountingReport, column, line, result, null);
   }
 
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
@@ -172,18 +230,21 @@ public class AccountingReportValueServiceImpl {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createReportValue(
+  protected AccountingReportValue createReportValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
-      int columnNumber,
-      int lineNumber,
       BigDecimal result,
       BigDecimal previousResult) {
+    int columnNumber =
+        accountingReport.getReportType().getAccountingReportConfigLineColumnList().indexOf(column);
+    int lineNumber =
+        accountingReport.getReportType().getAccountingReportConfigLineList().indexOf(line);
+
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
             columnNumber, lineNumber, result, previousResult, accountingReport, line, column);
 
-    accountingReportValueRepo.save(accountingReportValue);
+    return accountingReportValueRepo.save(accountingReportValue);
   }
 }
