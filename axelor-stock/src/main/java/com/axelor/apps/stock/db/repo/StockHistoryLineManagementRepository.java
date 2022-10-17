@@ -15,16 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import java.util.Map;
+import com.axelor.apps.stock.db.StockHistoryLine;
+import com.google.inject.persist.Transactional;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-public interface InternationalService {
+public class StockHistoryLineManagementRepository extends StockHistoryLineRepository {
 
-  String translate(String source, String sourceLanguage, String targetLanguage);
+  @Transactional
+  public List<StockHistoryLine> save(List<StockHistoryLine> stockHistoryLineList) {
+    Objects.requireNonNull(stockHistoryLineList);
 
-  Map<String, String> getProductDescriptionAndNameTranslation(
-      Product product, Partner partner, String userLanguage);
+    return stockHistoryLineList.stream().map(this::save).collect(Collectors.toList());
+  }
 }

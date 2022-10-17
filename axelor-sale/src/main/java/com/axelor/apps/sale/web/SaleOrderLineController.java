@@ -415,17 +415,23 @@ public class SaleOrderLineController {
       Partner partner =
           Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = saleOrderLine.getProduct();
 
-      if (saleOrderLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                saleOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                saleOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+      if (product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
+
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
