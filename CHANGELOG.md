@@ -1,3 +1,20 @@
+## [5.4.26] (2022-10-17)
+
+#### Changes
+
+* Fiscal year: improve UX to create new period.
+
+#### Fixed
+
+* Interco: fixed an error occurring when generating a sale order from a purchase order.
+* Invoice report: invoice lines will now correctly display the currency when the invoice in ati option is activated.
+* Logistical form: fixed a translation issue when printing packing list.
+* Invoice: fixed company bank details when partner is factorized.
+* Accounting batch: fill the selected currency with the default company currency.
+* Prod process report: fixed ordering of prod process lines in the report, they are now correctly sorted by priority.
+* Bill of materials: added an error message when company is missing during cost price computation.
+* Bank order: add verification to avoid sending the same file twice to the bank on user mistake.
+
 ## [5.4.25] (2022-09-29)
 
 #### Fixed
@@ -697,6 +714,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.26]: https://github.com/axelor/axelor-open-suite/compare/v5.4.25...v5.4.26
 [5.4.25]: https://github.com/axelor/axelor-open-suite/compare/v5.4.24...v5.4.25
 [5.4.24]: https://github.com/axelor/axelor-open-suite/compare/v5.4.23...v5.4.24
 [5.4.23]: https://github.com/axelor/axelor-open-suite/compare/v5.4.22...v5.4.23
