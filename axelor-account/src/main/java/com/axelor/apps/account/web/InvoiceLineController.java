@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -46,6 +47,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -613,6 +615,23 @@ public class InvoiceLineController {
             }
           }
         }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateTaxEquiv(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Invoice invoice = this.getInvoice(context);
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      TaxLine taxLine = invoiceLine.getTaxLine();
+      if (taxLine != null) {
+        TaxEquiv taxEquiv =
+            Beans.get(FiscalPositionService.class)
+                .getTaxEquivForReverse(invoice.getFiscalPosition(), taxLine.getTax());
+        invoiceLine.setTaxEquiv(taxEquiv);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

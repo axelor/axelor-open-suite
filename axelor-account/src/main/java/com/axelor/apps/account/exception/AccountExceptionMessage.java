@@ -1478,4 +1478,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
       "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
+
+  public static final String REVERSE_CHARGE_TAX_IS_MISSING = /*$$(*/
+      "The tax %s used or which has been replaced on at least one of the invoice lines should come along with a reverse charge tax which is not configured in the tax equivalence table in the fiscal position %s. Please configure this missing tax properly to avoid any accounting issue." /*)*/;
 }

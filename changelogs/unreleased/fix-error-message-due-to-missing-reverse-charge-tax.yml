@@ -1,0 +1,3 @@
+---
+title: "INVOICE / INVOICELINE / TAXLINE / FISCALPOSITION / TAXEQUIV : Error message on taxes due to missing counterpart tax in fiscal position"
+type: fix
