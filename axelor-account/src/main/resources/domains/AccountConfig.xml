@@ -315,6 +315,9 @@
       help="If this checkbox is ticked, daybook moves will be accounted in payment session"
       default="false"/>
 
+    <boolean name="retrieveDaybookMovesInPaymentSession"
+      title="Include terms attached to 'Daybook' accounting move"/>
+
 
     <finder-method name="findByCompany" using="company"/>
 

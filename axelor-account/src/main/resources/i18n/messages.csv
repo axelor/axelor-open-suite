@@ -1727,6 +1727,7 @@
 "Include not stock managed product",,,
 "Include on payment sessions ?",,,
 "Include other bank accounts",,,
+"Include terms attached to 'Daybook' accounting move",,,
 "Income",,,
 "Income Depreciation Amount",,,
 "Income Depreciation Derogatory Account",,,
