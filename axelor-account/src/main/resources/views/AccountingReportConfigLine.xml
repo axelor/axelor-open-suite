@@ -25,8 +25,7 @@
   </grid>
 
   <form title="Config line" name="accounting-report-config-line-form"
-    model="com.axelor.apps.account.db.AccountingReportConfigLine"
-    onNew="action-accounting-report-config-line-record-default-on-new">
+    model="com.axelor.apps.account.db.AccountingReportConfigLine">
     <panel name="accountingReportConfigLineMainPanel">
       <field name="reportType" colSpan="12" form-view="accounting-report-type-form"
         grid-view="accounting-report-type-grid" readonlyIf="$popup()"/>
@@ -89,12 +88,6 @@
 
   </form>
 
-  <action-record name="action-accounting-report-config-line-record-default-on-new"
-    model="com.axelor.apps.account.db.AccountingReportConfigLine">
-    <field name="reportType" expr="eval: _parent"
-      if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.AccountingReportType'"/>
-  </action-record>
-
   <action-record
     name="action-accounting-report-config-line-record-type-select-onchange"
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
@@ -112,7 +105,8 @@
 
   <action-attrs name="action-accounting-report-config-line-attrs-account-set-domain">
     <attribute for="accountSet" name="domain"
-      expr="eval: &quot; self.company = ${reportType?.company?.id} &quot;"/>
+      expr="eval: &quot; self.company = ${__parent__.company?.id} &quot;"
+      if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.AccountingReportType'"/>
   </action-attrs>
 
   <action-view name="action-move-line-view-open-report-config-line" title="Config lines"

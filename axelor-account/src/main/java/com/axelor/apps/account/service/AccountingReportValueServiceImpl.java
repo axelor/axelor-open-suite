@@ -12,15 +12,19 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,21 +34,40 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportValueServiceImpl implements AccountingReportValueService {
+  protected AppBaseService appBaseService;
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected MoveLineRepository moveLineRepo;
+
+  @Inject
+  public AccountingReportValueServiceImpl(
+      AppBaseService appBaseService,
+      AccountingReportValueRepository accountingReportValueRepo,
+      MoveLineRepository moveLineRepo) {
+    this.appBaseService = appBaseService;
+    this.accountingReportValueRepo = accountingReportValueRepo;
+    this.moveLineRepo = moveLineRepo;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void computeReportValues(AccountingReport accountingReport) throws AxelorException {
-    AccountingReportType accountingReportType = accountingReport.getReportType();
     Map<String, Map<String, AccountingReportValue>> valuesMapByColumn = new HashMap<>();
     Map<String, Map<String, AccountingReportValue>> valuesMapByLine = new HashMap<>();
 
+    AccountingReportType accountingReportType = accountingReport.getReportType();
     this.checkAccountingReportType(accountingReportType);
 
-    while (!this.areAllValuesComputed(valuesMapByColumn)) {
-      this.createReportValues(
-          accountingReport, accountingReportType, valuesMapByColumn, valuesMapByLine);
+    boolean isAllComputed = false;
+    int timeoutCounter = 0;
+
+    while (!isAllComputed) {
+      isAllComputed =
+          this.createReportValues(
+              accountingReport, accountingReportType, valuesMapByColumn, valuesMapByLine);
+
+      if (timeoutCounter++ > appBaseService.getProcessTimeout()) {
+        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+      }
     }
   }
 
@@ -72,7 +95,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createReportValues(
+  protected boolean createReportValues(
       AccountingReport accountingReport,
       AccountingReportType accountingReportType,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
@@ -80,15 +103,24 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       throws AxelorException {
     for (AccountingReportConfigLine column :
         accountingReportType.getAccountingReportConfigLineColumnList()) {
-      valuesMapByColumn.put(column.getCode(), new HashMap<>());
+      if (!valuesMapByColumn.containsKey(column.getCode())) {
+        valuesMapByColumn.put(column.getCode(), new HashMap<>());
+      }
 
       for (AccountingReportConfigLine line :
           accountingReportType.getAccountingReportConfigLineList()) {
-        valuesMapByLine.put(line.getCode(), new HashMap<>());
+        if (!valuesMapByLine.containsKey(line.getCode())) {
+          valuesMapByLine.put(line.getCode(), new HashMap<>());
+        }
 
-        this.fillReportValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
+        if (!valuesMapByColumn.get(column.getCode()).containsKey(line.getCode())
+            || valuesMapByColumn.get(column.getCode()).get(line.getCode()) == null) {
+          this.fillReportValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
+        }
       }
     }
+
+    return this.areAllValuesComputed(valuesMapByColumn);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -147,12 +179,20 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     Map<String, Object> contextMap = new HashMap<>();
 
     for (String code : valuesMap.keySet()) {
-      contextMap.put(code, valuesMap.get(code).getResult());
+      if (valuesMap.get(code) != null) {
+        contextMap.put(code, valuesMap.get(code).getResult());
+      }
     }
 
     Context scriptContext = new Context(contextMap, Object.class);
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-    BigDecimal result = (BigDecimal) scriptHelper.eval(configLine.getRule());
+    BigDecimal result;
+
+    try {
+      result = (BigDecimal) scriptHelper.eval(configLine.getRule());
+    } catch (Exception e) {
+      return null;
+    }
 
     if (result == null) {
       return null;
@@ -180,16 +220,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     List<MoveLine> moveLineResultList =
         moveLineRepo
             .all()
-            .filter(
-                "(self.date IS NULL OR :dateFrom IS NULL OR self.date >= :dateFrom) "
-                    + "AND (self.date IS NULL OR :dateTo IS NULL OR self.date <= :dateTo) "
-                    + "AND (self.move.journal IS NULL OR :journal IS NULL OR self.move.journal = :journal) "
-                    + "AND (self.move.paymentMode IS NULL OR :paymentMode IS NULL OR self.move.paymentMode = :paymentMode) "
-                    + "AND (self.move.currency IS NULL OR :currency IS NULL OR self.move.currency = :currency) "
-                    + "AND (self.move.company IS NULL OR :company IS NULL OR self.move.company = :company) "
-                    + "AND self.move.statusSelect IN :statusList "
-                    + "AND (self.account IS NULL OR :accountSet IS NULL OR self.account IN :accountSet) "
-                    + "AND (self.account IS NULL OR :accountType IS NULL OR self.account.accountType IN :accountTypeSet)")
+            .filter(this.buildQuery(accountingReport, accountSet, accountTypeSet))
             .bind("dateFrom", accountingReport.getDateFrom())
             .bind("dateTo", accountingReport.getDateTo())
             .bind("journal", accountingReport.getJournal())
@@ -197,8 +228,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .bind("currency", accountingReport.getCurrency())
             .bind("company", accountingReport.getCompany())
             .bind("statusList", this.getMoveLineStatusList(accountingReport))
-            .bind("accountSet", accountSet.isEmpty() ? null : accountSet)
-            .bind("accountTypeSet", accountTypeSet.isEmpty() ? null : accountTypeSet)
+            .bind("accountSet", accountSet)
+            .bind("accountTypeSet", accountTypeSet)
             .fetch();
 
     BigDecimal result =
@@ -208,6 +239,46 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .orElse(BigDecimal.ZERO);
 
     return this.createReportValue(accountingReport, column, line, result, null);
+  }
+
+  protected String buildQuery(
+      AccountingReport accountingReport, Set<Account> accountSet, Set<AccountType> accountTypeSet) {
+    List<String> queryList =
+        new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
+
+    if (accountingReport.getDateFrom() != null) {
+      queryList.add("(self.date IS NULL OR self.date >= :dateFrom)");
+    }
+
+    if (accountingReport.getDateTo() != null) {
+      queryList.add("(self.date IS NULL OR self.date <= :dateTo)");
+    }
+
+    if (accountingReport.getJournal() != null) {
+      queryList.add("(self.move.journal IS NULL OR self.move.journal >= :journal)");
+    }
+
+    if (accountingReport.getJournal() != null) {
+      queryList.add("(self.move.paymentMode IS NULL OR self.move.paymentMode >= :paymentMode)");
+    }
+
+    if (accountingReport.getJournal() != null) {
+      queryList.add("(self.move.currency IS NULL OR self.move.currency >= :currency)");
+    }
+
+    if (accountingReport.getJournal() != null) {
+      queryList.add("(self.move.company IS NULL OR self.move.company >= :company)");
+    }
+
+    if (CollectionUtils.isNotEmpty(accountSet)) {
+      queryList.add("(self.account IS NULL OR self.account IN :accountSet)");
+    }
+
+    if (CollectionUtils.isNotEmpty(accountTypeSet)) {
+      queryList.add("(self.account IS NULL OR self.account.accountType IN :accountTypeSet)");
+    }
+
+    return String.join(" AND ", queryList);
   }
 
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
