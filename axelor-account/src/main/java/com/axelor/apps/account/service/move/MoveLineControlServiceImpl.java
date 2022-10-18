@@ -305,10 +305,10 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         && !optMovePartner.equals(optMoveLinePartner)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(
-              AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER,
-              optMoveLinePartner.get().getName(),
-              optMovePartner.get().getName()));
+          I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
+          optMoveLinePartner.get().getName(),
+          optMovePartner.get().getName());
     }
   }
 }
+
