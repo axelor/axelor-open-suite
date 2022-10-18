@@ -763,7 +763,8 @@ public class BankReconciliationService {
         "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
             + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
             + " AND self.move.statusSelect != :statusSelect"
-            + " AND self.move.company = :company";
+            + " AND self.move.company = :company"
+            + " AND self.account.accountType.technicalTypeSelect = :accountType";
 
     if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
       query =
@@ -781,10 +782,6 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
-    } else {
-      if (bankReconciliation.getJournal() != null) {
-        query = query + " AND self.account.accountType.technicalTypeSelect = :accountType";
-      }
     }
     return query;
   }
@@ -799,13 +796,12 @@ public class BankReconciliationService {
     params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     params.put("company", bankReconciliation.getCompany());
+    params.put("accountType", AccountTypeRepository.TYPE_CASH);
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
     }
     if (bankReconciliation.getCashAccount() != null) {
       params.put("cashAccount", bankReconciliation.getCashAccount());
-    } else if (bankReconciliation.getJournal() != null) {
-      params.put("accountType", AccountTypeRepository.TYPE_CASH);
     }
     return params;
   }
