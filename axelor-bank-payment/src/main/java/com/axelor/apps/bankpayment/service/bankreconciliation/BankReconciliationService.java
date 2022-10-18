@@ -726,7 +726,7 @@ public class BankReconciliationService {
             + " AND self.move.statusSelect != :statusSelect"
             + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
             + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))"
-    + " AND self.account.accountType.technicalTypeSelect = :accountType";
+            + " AND self.account.accountType.technicalTypeSelect = :accountType";
     if (bankReconciliation.getJournal() != null) {
       query = query + " AND self.move.journal = :journal";
     }
