@@ -88,7 +88,6 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setAmountPaid(BigDecimal.ZERO);
     moveLine.setTaxPaymentMoveLineList(null);
     moveLine.setTaxAmount(BigDecimal.ZERO);
-    moveLine.setPostedNbr(null);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
