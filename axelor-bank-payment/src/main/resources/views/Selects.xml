@@ -294,9 +294,9 @@
 
   <selection name="bankpayment.bank.order.daily.code.select">
     <option value="0">No indication</option>
-    <option value="1">Deposit to be processed assignment of receivables by law Dailly</option>
-    <option value="2">Deposit to be processed agreement pledging of receivables</option>
-    <option value="3">Deposit to be processed in</option>
+    <option value="1">Discounted transfer under a Dailly agreement</option>
+    <option value="2">Pledge of receivables under a Dailly agreement</option>
+    <option value="3">Assignment or pledge outside Dailly agreement</option>
   </selection>
 
   <selection name="bankpayment.bank.order.accept.per.line.code.select">

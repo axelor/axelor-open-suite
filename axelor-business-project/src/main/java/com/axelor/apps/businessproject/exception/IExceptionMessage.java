@@ -20,8 +20,10 @@ package com.axelor.apps.businessproject.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BusinessProjectExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;

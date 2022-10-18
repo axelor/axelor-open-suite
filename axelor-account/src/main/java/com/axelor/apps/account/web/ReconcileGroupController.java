@@ -29,6 +29,25 @@ import com.axelor.rpc.ActionResponse;
 
 public class ReconcileGroupController {
 
+  public void letter(ActionRequest request, ActionResponse response) {
+
+    ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
+    ReconcileGroup reconcileGroup =
+        reconcileGroupRepo.find(request.getContext().asType(ReconcileGroup.class).getId());
+
+    if (reconcileGroup != null) {
+      try {
+        ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+        reconcileGroupService.letter(reconcileGroup);
+        reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());
+        reconcileGroupService.updateStatus(reconcileGroup);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      }
+    }
+    response.setReload(true);
+  }
+
   public void unletter(ActionRequest request, ActionResponse response) {
 
     ReconcileGroup reconcileGroup =

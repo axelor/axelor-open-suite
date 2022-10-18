@@ -34,7 +34,7 @@
             widget="info-button" onClick="action-supplychain-stock-move-line-product-reserved"/>
           <button name="$requestedReservedQty" title="Requested reserved quantity"
             icon="fa-building-o" widget="info-button"
-            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
             onClick="action-method-suppplychain-stock-location-line-view-requested-reserved"/>
         </panel>
         <panel name="supplychainIndicators" colSpan="12" itemSpan="3">

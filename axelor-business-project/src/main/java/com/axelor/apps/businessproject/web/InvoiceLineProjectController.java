@@ -19,7 +19,7 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -58,7 +58,7 @@ public class InvoiceLineProjectController {
         (List<Map<String, Object>>) request.getContext().get("customerInvoiceLineSet");
 
     if (customerInvoiceLineSet == null || customerInvoiceLineSet.isEmpty()) {
-      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           customerInvoiceLineSet.stream()
@@ -117,7 +117,7 @@ public class InvoiceLineProjectController {
         (List<Map<String, Object>>) request.getContext().get("supplierInvoiceLineSet");
 
     if (supplierInvoiceLineSet == null || supplierInvoiceLineSet.isEmpty()) {
-      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+      response.setFlash(BusinessProjectExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
           supplierInvoiceLineSet.stream()

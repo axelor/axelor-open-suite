@@ -63,11 +63,9 @@ public interface MoveValidateService {
    */
   List<Partner> getPartnerOfMoveBeforeUpdate(Move move);
 
-  String accountingMultiple(List<? extends Move> moveList);
+  String accountingMultiple(List<Integer> moveIds);
 
   void freezeAccountAndPartnerFieldsOnMoveLines(Move move);
-
-  void simulateMultiple(List<? extends Move> moveList) throws AxelorException;
 
   void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
 }

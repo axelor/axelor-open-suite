@@ -18,10 +18,14 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAxis;
+import java.util.List;
 
 public interface AnalyticAxisService {
 
   public boolean checkCompanyOnMoveLine(AnalyticAxis analyticAxis);
 
   public Long getAnalyticGroupingId(AnalyticAxis analyticAxis, Integer position);
+
+  public List<Integer> getSameAnalyticGroupingValues(
+      AnalyticAxis analyticAxis, String analyticGroupingChanged);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -2867,12 +2867,49 @@ from base_app_base]]></xml-property>
                                 </structure>
                             </list-property>
                             <cell id="4385">
+                                <text id="5492">
+                                    <property name="fontSize">9pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["end_of_validity_date"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'SaleOrder.endOfValidityDate'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                </text>
                                 <data id="5410">
                                     <property name="fontSize">9pt</property>
                                     <structure name="dateTimeFormat">
                                         <property name="category">Short Date</property>
                                         <property name="pattern">Short Date</property>
                                     </structure>
+                                    <property name="display">inline</property>
                                     <property name="resultSetColumn">EndValidityDate</property>
                                 </data>
                             </cell>
@@ -3201,12 +3238,49 @@ from base_app_base]]></xml-property>
                         </row>
                         <row id="3864">
                             <cell id="3865">
+                                <text id="5489">
+                                    <property name="fontSize">9pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["ShipmentDate"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'SaleOrder.shipmentDate'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                </text>
                                 <data id="5411">
                                     <property name="fontSize">9pt</property>
                                     <structure name="dateTimeFormat">
                                         <property name="category">Short Date</property>
                                         <property name="pattern">Short Date</property>
                                     </structure>
+                                    <property name="display">inline</property>
                                     <property name="resultSetColumn">ShipmentDate</property>
                                 </data>
                             </cell>
@@ -3856,12 +3930,49 @@ row["message_key"]
                                 </structure>
                             </list-property>
                             <cell id="5454">
+                                <text id="5493">
+                                    <property name="fontSize">9pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["end_of_validity_date"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'SaleOrder.endOfValidityDate'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                </text>
                                 <data id="5455">
                                     <property name="fontSize">9pt</property>
                                     <structure name="dateTimeFormat">
                                         <property name="category">Short Date</property>
                                         <property name="pattern">Short Date</property>
                                     </structure>
+                                    <property name="display">inline</property>
                                     <property name="resultSetColumn">EndValidityDate</property>
                                 </data>
                             </cell>
@@ -4190,12 +4301,49 @@ row["message_key"]
                         </row>
                         <row id="5480">
                             <cell id="5481">
+                                <text id="5491">
+                                    <property name="fontSize">9pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["ShipmentDate"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'SaleOrder.shipmentDate'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                </text>
                                 <data id="5482">
                                     <property name="fontSize">9pt</property>
                                     <structure name="dateTimeFormat">
                                         <property name="category">Short Date</property>
                                         <property name="pattern">Short Date</property>
                                     </structure>
+                                    <property name="display">inline</property>
                                     <property name="resultSetColumn">ShipmentDate</property>
                                 </data>
                             </cell>

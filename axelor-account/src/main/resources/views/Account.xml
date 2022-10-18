@@ -16,7 +16,7 @@
     <field name="reconcileOk"/>
     <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="defaultTax" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
@@ -60,8 +60,10 @@
     </panel>
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
-        <field name="name" colSpan="9" css="bold"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
+          readonlyIf="$isReadOnly"/>
+        <field name="name" colSpan="9" css="bold" readonlyIf="$isReadOnly"/>
+        <field name="$isReadOnly" hidden="true" readonly="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
@@ -72,12 +74,12 @@
           grid-view="account-type-grid"/>
         <field name="commonPosition"/>
         <field name="company" required="true" canEdit="false" widget="SuggestBox"
-          onChange="action-account-validate" readonlyIf="parentAccount != null"
+          onChange="action-account-group-company-onChange" readonlyIf="parentAccount != null"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
           domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
-        <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
+        <field name="reconcileOk" widget="boolean-switch" colSpan="3" readonlyIf="$isReadOnly"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
@@ -88,7 +90,8 @@
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+            onChange="action-account-group-on-change-analytic-distribution-authorized"
+            readonlyIf="$isReadOnly"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
@@ -224,6 +227,11 @@
     <action name="action-account-account-method-new-analytic-dist-template"/>
   </action-group>
 
+  <action-group name="action-account-group-company-onChange">
+    <action name="action-account-record-clean-analytic"/>
+    <action name="action-account-validate"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -231,7 +239,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="serviceType"
-      expr="eval:__config__.app.getApp('account').defaultServiceTypeTypology"/>
+      expr="eval:__config__.app.getApp('account')?.defaultServiceTypeTypology"/>
   </action-record>
 
   <action-validate name="action-account-validate">
@@ -289,6 +297,11 @@
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
   </action-record>
 
+  <action-record name="action-account-record-clean-analytic"
+    model="com.axelor.apps.account.db.Account">
+    <field name="analyticDistributionTemplate" expr="eval:null"/>
+  </action-record>
+
   <action-method name="action-account-method-compute-balance">
     <call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
   </action-method>
@@ -306,7 +319,7 @@
   <search-filters name="account-filters" model="com.axelor.apps.account.db.Account"
     title="Account filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
   <action-method name="action-on-change-distribution-template-account">
@@ -337,7 +350,7 @@
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
-    <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
+    <attribute name="value" for="$isReadOnly"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
   </action-attrs>
 

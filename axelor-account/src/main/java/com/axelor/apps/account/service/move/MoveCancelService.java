@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.exception.AxelorException;
@@ -57,7 +57,7 @@ public class MoveCancelService {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_CANCEL_1));
+            I18n.get(AccountExceptionMessage.MOVE_CANCEL_1));
       }
     }
 
@@ -66,14 +66,14 @@ public class MoveCancelService {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_2));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_2));
     }
 
     if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_4));
     }
 
     try {
@@ -90,7 +90,7 @@ public class MoveCancelService {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_3));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_3));
     }
   }
 }

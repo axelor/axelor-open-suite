@@ -20,8 +20,10 @@ package com.axelor.apps.base.exceptions;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link BaseExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;
@@ -92,10 +94,6 @@ public interface IExceptionMessage {
 
   String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
   String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/ "Error when closing period %s" /*)*/;
-
-  public static final String PERIOD_CLOSED_AND_NO_PERMISSIONS =
-      /*$$(*/ "This period is closed and you do not have the necessary permissions to create entries" /*)*/;
-
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
@@ -184,6 +182,8 @@ public interface IExceptionMessage {
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
   public static final String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
+
+  public static final String TAX_DATE_MISSING = /*$$(*/ "Date is missing." /*)*/;
 
   /** Template rule service */
   public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
@@ -452,8 +452,10 @@ public interface IExceptionMessage {
 
   /* Geonames import */
   public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
-  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
-      "Please fill in GeoNames URL in Base application configuration." /*)*/;
+  public static final String GEONAMES_DUMP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
+  public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/

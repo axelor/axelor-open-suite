@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -310,7 +310,7 @@ public class PriceListService {
     if (beginDate.compareTo(endDate) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRICE_LIST_DATE_WRONG_ORDER));
+          I18n.get(BaseExceptionMessage.PRICE_LIST_DATE_WRONG_ORDER));
     }
   }
 }

@@ -23,10 +23,10 @@
     <field name="endOfValidityDate" hidden="true"/>
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
@@ -60,10 +60,10 @@
     <field name="endOfValidityDate" hidden="true"/>
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="confirmationDateTime"/>
@@ -94,9 +94,9 @@
     </menubar>
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
@@ -307,7 +307,7 @@
       <panel name="detailsPanel" colSpan="10">
         <field name="saleOrderTypeSelect" colSpan="3" css="label-bold bold" showTitle="false"
           readonlyIf="statusSelect >= 2"
-          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()"
+          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder()"
           if-module="axelor-supplychain">
           <viewer><![CDATA[
 	          <div>
@@ -378,7 +378,7 @@
         <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null"
           widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company"
           form-view="company-form" grid-view="company-grid" colSpan="3"/>
-        <field if="__config__.app.getApp('base').enableTradingNamesManagement"
+        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2"
           canEdit="false"
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
@@ -388,7 +388,7 @@
           hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
           hidden="true"/>
         <label name="tradingNameLabel"
-          if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
+          if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" required="true"
           readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false"
           form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
@@ -420,7 +420,7 @@
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 
-        <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()"
+        <field if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
           name="versionNumber" colSpan="3"/>
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
@@ -579,7 +579,7 @@
       </panel>
 
       <panel
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"
         if-module="axelor-supplychain" name="timetablePanel" title="Timetable"
         onTabSelect="action-sale-order-attrs-readonly-timetable">
         <field name="expectedRealisationDate" colSpan="12" width="50%"/>
@@ -594,7 +594,7 @@
           onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
       </panel>
       <panel-related name="advancePaymentListPanel"
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
         if-module="axelor-supplychain" readonly="true" colSpan="12" field="advancePaymentList"
         form-view="advance-payment-form" grid-view="advance-payment-grid"/>
       <panel name="advancePaymentNeededPanel" title="Advance payments"
@@ -603,17 +603,17 @@
         <field name="advancePaymentAmountNeeded" showIf="advancePaymentNeeded"
           readonlyIf="statusSelect &gt; 1"/>
       </panel>
-      <panel if="__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"
+      <panel if="__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"
         name="printingPanel" title="Printing">
         <field name="printingSettings" canEdit="false"
           onSelect="action-sale-method-filter-printing-settings"/>
         <field name="groupProductsOnPrintings"
-          if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
+          if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="hideDiscount"/>
         <field name="specificNotes" readonly="true" showIf="specificNotes" colSpan="12"/>
       </panel>
       <panel-include
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder()"
         if-module="axelor-supplychain" view="incl-sale-order-subscrption-form"/>
       <panel-dashlet if="__config__.app.isApp('supplychain')"
         name="generatedPurchaseOrderPanel" title="Generated purchase orders"
@@ -635,10 +635,10 @@
         showIf="statusSelect == 3"
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
         colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
-      <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()"
+      <button if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
         name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12"
         onClick="save,action-sale-record-newVersion,save"/>
-      <button if="__config__.app.getApp('sale').allowPendingOrderModification"
+      <button if="__config__.app.getApp('sale')?.allowPendingOrderModification"
         name="editOrderBtn" title="Edit order"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
         onClick="action-sale-order-method-edit-order"/>
@@ -646,7 +646,7 @@
         showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12"
         onClick="action-group-sale-order-validate-changes"/>
       <button
-        if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
+        if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
         readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12"
@@ -660,12 +660,12 @@
         colSpan="12" onClick="save,action-sale-order-view-invoicing-advance-payment-wizard"
         if-module="axelor-supplychain"/>
       <button
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
         if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
         onClick="action-supplychain-sale-order-group-generate-invoice"/>
       <button
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain')?.getPurchaseOrderGenerationAuto()"
         name="generatePOBtn" title="Generate purchase order"
         showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12"
         onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
@@ -678,7 +678,7 @@
         showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12"
         onClick="save,action-sale-order-view-cancel"/>
       <button
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
         if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit"
         showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12"
         onClick="save,action-sale-order-view-register-advance-payment"/>
@@ -689,14 +689,14 @@
         onClick="save,action-sale-order-method-set-status-to-confirmed"/>
       <field name="message" hidden="true" type="string"/>
       <field name="amountInvoiced" hidden="true"/>
-      <button if="__config__.app.getApp('sale').getEnableConfigurator()"
+      <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
-      <button name="seperateInNewQuotationBtn" title="Separate in a new quotation"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
-        if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
+        if="__config__.app.getApp('sale')?.getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -725,7 +725,7 @@
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
       <field name="salespersonUser" canNew="false" canView="false" canEdit="false"
         form-view="user-form" grid-view="user-grid"/>
-      <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
+      <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
         canEdit="false" onSelect="action-sale-order-domain-on-team" form-view="team-form"
         grid-view="team-grid"/>
     </panel>
@@ -810,7 +810,7 @@
       <field name="lastReminderDate" colSpan="6"/>
       <field name="lastReminderComments"/>
       <field
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"
         name="expectedRealisationDate" colSpan="6"/>
       <field name="cancelReason" hidden="true"/>
       <field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true"
@@ -833,7 +833,7 @@
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <field name="title" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
@@ -993,7 +993,7 @@
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
@@ -1425,7 +1425,7 @@
   <action-record name="action-sale-order-record-get-trading-names-management-config"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="$enableTradingNamesManagement"
-      expr="eval: __config__.app.getApp('base').enableTradingNamesManagement"/>
+      expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-record>
 
   <action-group name="action-group-sale-saleorder-onload">
@@ -1448,7 +1448,7 @@
     <action name="action-sale-order-validate-check-on-confirm"/>
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
   <action-group name="action-sale-order-line-change-group">
@@ -1541,7 +1541,7 @@
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="groupProductsOnPrintings"
       expr="eval: clientPartner?.groupProductsOnPrintings"
-      if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
+      if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"/>
   </action-record>
 
   <action-record name="action-sale-order-record-in-ati"
@@ -1623,8 +1623,8 @@
       method="handleComplementaryProducts"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-seperate-in-new-quotation">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="seperateInNewQuotation"/>
+  <action-method name="action-sale-order-method-separate-in-new-quotation">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="separateInNewQuotation"/>
   </action-method>
 
   <action-method
@@ -1704,12 +1704,12 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="salespersonUser" expr="eval:__user__"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
     <field name="salespersonUser" expr="eval: clientPartner?.getUser()"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 2"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
     <field name="template" expr="eval:_template"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
@@ -1749,19 +1749,19 @@
     <field name="isNeedingConformityCertificate"
       expr="eval: clientPartner?.isNeedingConformityCertificate"/>
     <field name="salespersonUser" expr="eval:__user__"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
     <field name="salespersonUser" expr="eval: clientPartner?.getUser()"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 2"/>
     <field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
     <field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
     <field name="description" expr="eval: clientPartner?.saleOrderComments"/>
     <field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
     <field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
     <field name="team" expr="eval: clientPartner?.team"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 2"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
-      if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
@@ -1820,7 +1820,7 @@
 
   <action-attrs name="action-sale-order-attrs-hidden-bank-details">
     <attribute for="companyBankDetails" name="hidden"
-      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-compute-tax-number-domain">
@@ -1844,40 +1844,40 @@
   <search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder"
     title="Sales Order filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="saleOrderTypeSelect" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder())"/>
     <field name="versionNumber" hidden="true"
-      if="!__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
+      if="!__config__.app.getApp('sale')?.getManageSaleOrderVersion()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="toInvoiceViaTask" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="timetableTemplate" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
     <field name="computationDate" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
     <field name="timetableList" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
     <field name="amountToBeSpreadOverTheTimetable" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
     <field name="advancePaymentList" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice())"/>
+      if="!(__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice())"/>
     <field name="advancePaymentNeeded" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
     <field name="advancePaymentAmountNeeded" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
     <field name="printingSettings" hidden="true"
-      if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+      if="!__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"/>
     <field name="hideDiscount" hidden="true"
-      if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+      if="!__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"/>
     <field name="specificNotes" hidden="true"
-      if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+      if="!__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="expectedRealisationDate" hidden="true"
-      if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+      if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2076,13 +2076,17 @@
     <alert message="The total amount of quotation is zero. Do you want to proceed ?"
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
-      if="__config__.app.isApp('supplychain') &amp;&amp; incoterm == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != &quot;FR&quot;"/>
+      if="__config__.app.isApp('supplychain')
+          &amp;&amp; incoterm == null
+          &amp;&amp; (
+          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="tradingName" expr="eval: null"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="printingSettings" expr="eval: company?.printingSettings"/>
     <field name="incoterm"
       expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
@@ -2194,7 +2198,7 @@
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-stock-location"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    model="com.axelor.apps.sale.db.SaleOrder">
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>

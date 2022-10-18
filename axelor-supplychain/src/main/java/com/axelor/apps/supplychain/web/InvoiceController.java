@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.exception.AxelorException;
@@ -48,9 +49,7 @@ public class InvoiceController {
           Beans.get(SubscriptionInvoiceService.class).generateSubscriptionInvoices();
       response.setFlash(
           String.format(
-              I18n.get(
-                  com.axelor.apps.supplychain.exception.IExceptionMessage
-                      .TOTAL_SUBSCRIPTION_INVOICE_GENERATED),
+              I18n.get(SupplychainExceptionMessage.TOTAL_SUBSCRIPTION_INVOICE_GENERATED),
               invoices.size()));
 
       if (!CollectionUtils.isEmpty(invoices)) {
@@ -59,9 +58,7 @@ public class InvoiceController {
     } catch (Exception e) {
       response.setFlash(
           String.format(
-              I18n.get(
-                  com.axelor.apps.supplychain.exception.IExceptionMessage
-                      .SUBSCRIPTION_INVOICE_GENERATION_ERROR),
+              I18n.get(SupplychainExceptionMessage.SUBSCRIPTION_INVOICE_GENERATION_ERROR),
               e.getMessage()));
       TraceBackService.trace(e);
     }

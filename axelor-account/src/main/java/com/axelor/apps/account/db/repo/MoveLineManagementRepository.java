@@ -19,7 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -37,7 +37,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
+            I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e.getMessage(), e);
@@ -45,6 +45,14 @@ public class MoveLineManagementRepository extends MoveLineRepository {
     } else {
       super.remove(entity);
     }
+  }
+
+  @Override
+  public MoveLine copy(MoveLine entity, boolean deep) {
+    MoveLine copy = super.copy(entity, deep);
+
+    copy.setPostedNbr(null);
+    return copy;
   }
 
   @Override

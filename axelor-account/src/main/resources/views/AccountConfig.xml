@@ -6,7 +6,7 @@
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="account-config-form" title="Account configuration"
@@ -108,7 +108,7 @@
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
           </panel>
           <panel name="accountFactorPanel"
-            if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
+            if="__config__.app.getApp('account')?.getManageFactors()" colSpan="12">
             <field name="factorDebitAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
@@ -162,9 +162,6 @@
           <field name="irrecoverableReasonPassage"/>
           <field name="irrecoverableStandardRateTax" grid-view="tax-grid" form-view="tax-form"/>
         </panel>
-        <panel name="taxPaymentPanel" title="Tax payment" colSpan="12">
-          <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
-        </panel>
         <panel name="defaultPaymentModesPanel" title="Default Payment Modes" colSpan="12">
           <field name="inPaymentMode" grid-view="payment-mode-grid"
             form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
@@ -200,7 +197,7 @@
           showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 
         <panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()">
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <field name="isManagePassedForPayment" widget="boolean-switch"/>
           <field name="isManagePFPInRefund" widget="boolean-switch"
             showIf="isManagePassedForPayment"/>
@@ -398,7 +395,7 @@
           grid-view="account-grid" form-view="account-form"/>
       </panel>
       <panel name="analyticPanel"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()" title="Analytic">
         <field name="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"/>
         <field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting"

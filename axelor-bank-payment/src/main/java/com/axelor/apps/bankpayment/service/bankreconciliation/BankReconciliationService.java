@@ -55,7 +55,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
@@ -236,8 +236,16 @@ public class BankReconciliationService {
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
-            move = generateMove(bankReconciliationLine, bankStatementRule);
-            moveValidateService.accounting(move);
+            if (bankReconciliationLine.getBankStatementLine() != null
+                && bankReconciliationLine.getBankStatementLine().getMoveLine() != null) {
+              bankReconciliationLineService.reconcileBRLAndMoveLine(
+                  bankReconciliationLine,
+                  bankReconciliationLine.getBankStatementLine().getMoveLine());
+              move = bankReconciliationLine.getBankStatementLine().getMoveLine().getMove();
+            } else {
+              move = generateMove(bankReconciliationLine, bankStatementRule);
+              moveValidateService.accounting(move);
+            }
             if (bankStatementRule.getLetterToInvoice()) {
               letterToInvoice(bankStatementRule, bankReconciliationLine, move);
             }
@@ -340,7 +348,7 @@ public class BankReconciliationService {
       if (account == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
             bankStatementRule.getSearchLabel());
       }
     } else {
@@ -350,7 +358,7 @@ public class BankReconciliationService {
       if (account == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING),
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING),
             bankStatementRule.getSearchLabel());
       }
     }
@@ -755,10 +763,20 @@ public class BankReconciliationService {
         "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
             + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
             + " AND self.move.statusSelect != :statusSelect"
-            + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
-            + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
+
+    if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
+      query =
+          query
+              + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
+    } else {
+      query =
+          query
+              + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
+              + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))";
+    }
+
     if (bankReconciliation.getJournal() != null) {
       query = query + " AND self.move.journal = :journal";
     }
@@ -887,7 +905,7 @@ public class BankReconciliationService {
   public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
     bankReconciliationLine.setBankStatementQuery(null);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
-    bankReconciliationLine.getBankStatementLine().setMoveLine(null);
+
     String query = "self.postedNbr LIKE '%%s%'";
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
@@ -1044,7 +1062,8 @@ public class BankReconciliationService {
       if (bankDetails == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL));
       }
       if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
         uniqueBankDetails = false;
@@ -1077,7 +1096,7 @@ public class BankReconciliationService {
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
-                IExceptionMessage
+                BankPaymentExceptionMessage
                     .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
       } else if (br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
@@ -1086,12 +1105,13 @@ public class BankReconciliationService {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
       } else if (moveLines.size() == 0) {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     } else if (br.getBankReconciliationLineList().stream()
                 .filter(line -> line.getIsSelectedBankReconciliation())
@@ -1107,7 +1127,7 @@ public class BankReconciliationService {
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
-                IExceptionMessage
+                BankPaymentExceptionMessage
                     .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
       } else if (br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
@@ -1116,12 +1136,13 @@ public class BankReconciliationService {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
       } else if (moveLines.size() > 1) {
         throw new AxelorException(
             br,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     }
   }
@@ -1146,6 +1167,7 @@ public class BankReconciliationService {
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
+    computeBalances(bankReconciliation);
   }
 
   public String getDomainForWizard(
@@ -1157,14 +1179,20 @@ public class BankReconciliationService {
         && bankStatementCredit != null
         && bankStatementDebit != null) {
       String query =
-          "(self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)"
-              + " AND self.move.company.id = "
+          "self.move.company.id = "
               + bankReconciliation.getCompany().getId()
               + " AND (self.move.statusSelect = "
               + MoveRepository.STATUS_ACCOUNTED
               + " OR self.move.statusSelect = "
               + MoveRepository.STATUS_DAYBOOK
               + ")";
+      if (!BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
+        query =
+            query.concat(
+                " AND (self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)");
+      } else {
+        query = query.concat(" AND self.bankReconciledAmount < self.currencyAmount ");
+      }
       if (bankStatementCredit.signum() > 0) {
         query = query.concat(" AND self.debit > 0");
       }
@@ -1195,7 +1223,8 @@ public class BankReconciliationService {
     return "self id in (0)";
   }
 
-  public BigDecimal getSelectedMoveLineTotal(List<LinkedHashMap> toReconcileMoveLineSet) {
+  public BigDecimal getSelectedMoveLineTotal(
+      BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet) {
     BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
     List<MoveLine> moveLineList = new ArrayList<>();
     toReconcileMoveLineSet.forEach(
@@ -1204,8 +1233,12 @@ public class BankReconciliationService {
                 moveLineRepository.find(
                     Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
     for (MoveLine moveLine : moveLineList) {
-      selectedMoveLineTotal =
-          selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
+      if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
+        selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount());
+      } else {
+        selectedMoveLineTotal =
+            selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
+      }
     }
     return selectedMoveLineTotal;
   }

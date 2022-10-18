@@ -20,7 +20,7 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -93,7 +93,7 @@ public class StockMoveLineController {
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
+              ProductionExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
         }
       } else {
         company = stockMove.getCompany();

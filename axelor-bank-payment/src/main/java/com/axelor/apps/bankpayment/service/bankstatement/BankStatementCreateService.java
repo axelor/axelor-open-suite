@@ -52,7 +52,7 @@ public class BankStatementCreateService {
     return bankStatement;
   }
 
-  protected String computeName(BankStatement bankStatement) {
+  public String computeName(BankStatement bankStatement) {
 
     String name = "";
 

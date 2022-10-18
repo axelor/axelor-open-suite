@@ -43,15 +43,13 @@ public final class ObjectTool {
   public static Field getField(String fieldName, @SuppressWarnings("rawtypes") Class classGotten) {
     Field field = null;
     try {
-      LOG.debug("Classe traitée - {}", classGotten);
+      LOG.debug("Processed class - {}", classGotten);
       field = classGotten.getDeclaredField(fieldName);
 
-    } catch (SecurityException e) {
-      TraceBackService.trace(e);
-    } catch (NoSuchFieldException e) {
+    } catch (SecurityException | NoSuchFieldException e) {
       TraceBackService.trace(e);
     }
-    LOG.debug("Champ récupéré : {}", field);
+    LOG.debug("Found class : {}", field);
     return field;
   }
 
@@ -69,23 +67,17 @@ public final class ObjectTool {
       @SuppressWarnings("rawtypes")
       Class[] paramTypes = null;
       m = obj.getClass().getMethod("get" + StringTool.capitalizeFirstLetter(fieldName), paramTypes);
-    } catch (SecurityException e) {
-      return null;
-    } catch (NoSuchMethodException e) {
+    } catch (SecurityException | NoSuchMethodException e) {
       return null;
     }
-    LOG.debug("Méthode récupéré : {}", m);
+    LOG.debug("Found method : {}", m);
     try {
       Object[] args = null;
       obj = m.invoke(obj, args);
-    } catch (IllegalArgumentException e) {
-      return null;
-    } catch (IllegalAccessException e) {
-      return null;
-    } catch (InvocationTargetException e) {
+    } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
       return null;
     }
-    LOG.debug("Objet récupéré", obj);
+    LOG.debug("Found object : {}", obj);
     return obj;
   }
 

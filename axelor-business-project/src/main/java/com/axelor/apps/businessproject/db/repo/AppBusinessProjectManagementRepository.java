@@ -19,7 +19,7 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -40,7 +40,8 @@ public class AppBusinessProjectManagementRepository extends AppBusinessProjectRe
       return super.save(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(I18n.get(IExceptionMessage.INVALID_EXCLUDE_TASK_FILTER));
+      throw new PersistenceException(
+          I18n.get(BusinessProjectExceptionMessage.INVALID_EXCLUDE_TASK_FILTER));
     }
   }
 }

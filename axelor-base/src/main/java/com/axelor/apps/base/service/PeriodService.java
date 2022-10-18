@@ -84,4 +84,11 @@ public interface PeriodService {
   public void validateTempClosure(Period period) throws AxelorException;
 
   public void validateClosure(Period period) throws AxelorException;
+
+  /**
+   * Method thats open the period
+   *
+   * @param period
+   */
+  void openPeriod(Period period);
 }

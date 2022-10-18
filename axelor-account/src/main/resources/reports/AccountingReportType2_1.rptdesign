@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -282,8 +282,8 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT data.account_id,data.account_code,data.account_name,data.parent_account_id,SUM(data.debit) as debit,SUM(data.credit) as credit,SUM(data.balance) as balance,SUM(data.prev_year_balance) as prev_year_balance,SUM(data.balance) - SUM(data.prev_year_balance) as variation,
 (CASE
-    WHEN COALESCE(SUM(data.balance), 0) = 0 THEN -1
-    ELSE (((SUM(data.balance) - COALESCE(SUM(data.prev_year_balance),0))/SUM(data.balance))*100)
+    WHEN COALESCE(SUM(data.prev_year_balance), 0) = 0 THEN -1
+    ELSE (((SUM(data.balance) - COALESCE(SUM(data.prev_year_balance),0))/SUM(data.prev_year_balance)))
 END) as variation_balance
 FROM
 ((select Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
@@ -387,30 +387,6 @@ order by account_code
 GROUP BY account_id,data.account_code,account_name,parent_account_id
 ORDER BY data.account_code
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -2321,7 +2297,7 @@ else  {  0.00 }</expression>
                         <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
                         <column id="4147">
-                            <property name="width">0.5in</property>
+                            <property name="width">0.6in</property>
                         </column>
                         <column id="4090">
                             <property name="width">3.5in</property>
@@ -2811,26 +2787,35 @@ else  {  0.00 }</expression>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="4255">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4321">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="resultSetColumn">balance</property>
+                                    </data>
                                 </cell>
                                 <cell id="4080">
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="4257">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["prev_year_balance"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4322">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="resultSetColumn">prev_year_balance</property>
+                                    </data>
                                 </cell>
                                 <cell id="4230">
                                     <property name="textAlign">right</property>
-                                    <text id="4248">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["variation"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4323">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="resultSetColumn">variation</property>
+                                    </data>
                                 </cell>
                                 <cell id="4235">
                                     <property name="borderLeftStyle">solid</property>
@@ -2838,16 +2823,13 @@ else  {  0.00 }</expression>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="4247">
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["variation_balance"] == -1</expression>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["variation_balance"]</VALUE-OF>&amp;nbsp;&amp;nbsp;<VALUE-OF>"%"</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4324">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00%</property>
+                                        </structure>
+                                        <property name="resultSetColumn">variation_balance</property>
+                                    </data>
                                 </cell>
                             </row>
                         </detail>
@@ -2919,7 +2901,7 @@ else  {  0.00 }</expression>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["Aggregation_1"] == 0 ? 0 : row["Aggregation_3"]/row["Aggregation_1"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["Aggregation_2"] == 0 ? 0 : row["Aggregation_3"]/row["Aggregation_2"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

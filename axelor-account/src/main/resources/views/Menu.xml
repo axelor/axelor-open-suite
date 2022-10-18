@@ -50,25 +50,23 @@
 
   <menuitem name="invoice-root-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
     order="16"/>
 
   <menuitem name="invoice-root-pfp" title="PFP" parent="invoice-root"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
     order="16"/>
 
   <menuitem name="invoice-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <action-view name="invoice.root.my.awaiting.pfp" title="My awaiting PFP"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3) and
+    <domain>self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3) and
       self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
@@ -76,16 +74,14 @@
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
     action="invoice.root.pfp.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
 
   <action-view name="invoice.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3)</domain>
+    <domain>self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3)</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
@@ -200,7 +196,7 @@
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <context name="_pfpStatus"
-      expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
+      expr="eval:__config__.app.getApp('account')?.getActivatePassedForPayment()?[2]:[1,2,3]"/>
   </action-view>
 
   <menuitem name="account-root-periodic-processing" parent="account-root"
@@ -621,7 +617,7 @@
   </action-view>
 
   <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
-    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+    if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
     title="Analytic journals" action="account.conf.analytic.journal"/>
@@ -867,11 +863,11 @@
   </action-view>
 
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50"
-    icon="fa-cog" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    icon="fa-cog" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
     title="Reason of refusal" action="invoice.conf.refusalreason"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <action-view name="invoice.conf.refusalreason" title="Reason of refusal"
     model="com.axelor.apps.base.db.CancelReason">

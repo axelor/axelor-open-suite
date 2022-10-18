@@ -42,7 +42,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorAlertException;
 import com.axelor.exception.AxelorException;
@@ -286,7 +286,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
+          I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
@@ -307,7 +307,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
       }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
@@ -475,9 +475,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
-            && toStatus == StockMoveRepository.STATUS_REALIZED) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+        if (toStatus == StockMoveRepository.STATUS_REALIZED) {
+
+          if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            // We dont recompute average price for outgoing lines
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine);
+          }
+          if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateAveragePriceLocationLine(
+                toStockLocation, stockMoveLine, fromStatus, toStatus);
+          }
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
       }
@@ -496,11 +503,26 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-      this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+      BigDecimal avgPrice =
+          this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+
+      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
     }
   }
 
-  protected void computeNewAveragePriceLocationLine(
+  protected void updateWapStockMoveLine(StockLocation stockLocation, StockMoveLine stockMoveLine) {
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocation, stockMoveLine.getProduct());
+    if (stockLocationLine == null) {
+      return;
+    }
+    BigDecimal avgPrice =
+        Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO);
+    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine);
+  }
+
+  protected BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     // avgPrice in stock move line is a bigdecimal but is nullable.
@@ -555,7 +577,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       newAvgPrice = oldAvgPrice;
     }
-    stockLocationLineService.updateWap(stockLocationLine, newAvgPrice, stockMoveLine);
+    return newAvgPrice;
   }
 
   @Override
@@ -576,7 +598,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throw new AxelorException(
           stockMoveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
           product.getName());
     }
   }
@@ -610,7 +632,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throw new AxelorException(
           stockMove,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
           productsWithErrorStr);
     }
   }
@@ -650,7 +672,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           new AxelorAlertException(
               stockMove,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
               errorStr));
     }
   }
@@ -685,7 +707,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String productWithErrorsStr = productsWithErrors.stream().collect(Collectors.joining(", "));
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
           productWithErrorsStr);
     }
   }
@@ -1040,7 +1062,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
+          I18n.get(StockExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
           product.getName());
     }
 
