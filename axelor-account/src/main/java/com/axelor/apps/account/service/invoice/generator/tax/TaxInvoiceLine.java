@@ -24,10 +24,13 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -97,22 +100,31 @@ public class TaxInvoiceLine extends TaxGenerator {
       throws AxelorException {
     TaxLine taxLine = invoiceLine.getTaxLine();
     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
     TaxLine taxLineRC = null;
 
-    if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+    if (fiscalPosition != null && taxEquiv != null && taxEquiv.getReverseCharge()) {
+      Tax reverseChargeTax = taxEquiv.getReverseChargeTax();
+      if (reverseChargeTax == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.REVERSE_CHARGE_TAX_IS_MISSING),
+            taxEquiv.getToTax().getName(),
+            fiscalPosition.getName());
+      }
+
       // We get active tax line if it exist, else we fetch one in taxLine list of reverse charge tax
-      taxLineRC =
-          Optional.ofNullable(taxEquiv.getReverseChargeTax())
-              .map(Tax::getActiveTaxLine)
-              .orElse(
-                  Beans.get(TaxService.class)
-                      .getTaxLine(
-                          taxEquiv.getReverseChargeTax(),
-                          Beans.get(AppBaseService.class)
-                              .getTodayDate(
-                                  Optional.ofNullable(invoiceLine.getInvoice())
-                                      .map(Invoice::getCompany)
-                                      .orElse(null))));
+      taxLineRC = reverseChargeTax.getActiveTaxLine();
+      if (taxLineRC == null) {
+        Beans.get(TaxService.class)
+            .getTaxLine(
+                reverseChargeTax,
+                Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        Optional.ofNullable(invoiceLine.getInvoice())
+                            .map(Invoice::getCompany)
+                            .orElse(null)));
+      }
     }
 
     if (taxLine != null) {
@@ -120,7 +132,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     if (taxLineRC != null) {
-      createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, taxEquiv, map);
+      createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, map);
     }
   }
 
@@ -140,12 +152,9 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected void createOrUpdateInvoiceLineTaxRc(
-      InvoiceLine invoiceLine,
-      TaxLine taxLineRC,
-      TaxEquiv taxEquiv,
-      Map<TaxLine, InvoiceLineTax> map) {
+      InvoiceLine invoiceLine, TaxLine taxLineRC, Map<TaxLine, InvoiceLineTax> map) {
     if (map.containsKey(taxLineRC)) {
-      InvoiceLineTax invoiceLineTaxRC = map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
+      InvoiceLineTax invoiceLineTaxRC = map.get(taxLineRC);
       updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC);
       invoiceLineTaxRC.setReverseCharged(true);
     } else {

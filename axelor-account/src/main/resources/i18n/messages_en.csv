@@ -2585,6 +2585,7 @@
 "The selected date is out of the accounting period.",,,
 "The selected moves have been successfully, if activated set to daybook, or else accounted.",,,
 "The sum of line amounts (%s) must match the amount of the payment schedule (%s).",,,
+"The tax %s used or which has been replaced on at least one of the invoice lines should come along with a reverse charge tax which is not configured in the tax equivalence table in the fiscal position %s. Please configure this missing tax properly to avoid any accounting issue.",,,
 "The to date is incorrect",,,
 "The total amount is greater than the budget distribution total.",,,
 "Their is at least one invoice selected that it is not validated to pay",,,

@@ -1156,4 +1156,7 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
+
+  public static final String REVERSE_CHARGE_TAX_IS_MISSING = /*$$(*/
+      "The tax %s used or which has been replaced on at least one of the invoice lines should come along with a reverse charge tax which is not configured in the tax equivalence table in the fiscal position %s. Please configure this missing tax properly to avoid any accounting issue." /*)*/;
 }

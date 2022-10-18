@@ -115,7 +115,7 @@
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
         <field name="taxLine" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
+          onChange="action-invoice-line-method-update-tax-equiv,action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
@@ -246,7 +246,7 @@
           grid-view="unit-grid"/>
         <field name="priceDiscounted" hidden="true"/>
         <field name="taxLine" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
+          onChange="action-invoice-line-method-update-tax-equiv,action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
@@ -636,4 +636,8 @@
     <attribute for="$partnerLanguage" name="value"
       expr="eval: invoice?.partner?.language?.code?.toUpperCase()" if="invoice"/>
   </action-attrs>
+
+  <action-method name="action-invoice-line-method-update-tax-equiv">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="updateTaxEquiv"/>
+  </action-method>
 </object-views>
