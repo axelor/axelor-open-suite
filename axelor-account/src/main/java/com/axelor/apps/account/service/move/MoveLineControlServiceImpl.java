@@ -311,4 +311,3 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     }
   }
 }
-
