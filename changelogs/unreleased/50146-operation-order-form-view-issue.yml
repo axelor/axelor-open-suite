@@ -1,0 +1,5 @@
+---
+title: "Operation Order : Can not be created manually anymore and cannot change machine"
+type: fix
+description: |
+  Changing machine can now only be done by changing the work center.
