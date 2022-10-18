@@ -87,8 +87,7 @@ public class PaymentVoucherControlService {
 
     // Si on a des lignes à payer (dans le deuxième tableau)
     if (!paymentVoucher.getHasAutoInput()
-        && (paymentVoucher.getPayVoucherElementToPayList() == null
-            || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
+        && CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -129,19 +128,6 @@ public class PaymentVoucherControlService {
       return true;
     }
     return false;
-  }
-
-  public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
-    if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
-      for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
-        if (!elementToPay
-            .getRemainingAmount()
-            .equals(elementToPay.getMoveLine().getAmountRemaining())) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   public boolean isReceiptDisplayed(PaymentVoucher paymentVoucher) {
