@@ -35,6 +35,8 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -98,9 +100,12 @@ public class AccountService {
             .createQuery(
                 String.format(
                     "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
-                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect = "
-                        + MoveRepository.STATUS_ACCOUNTED
-                        + "%s",
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
+                        + Joiner.on(',')
+                            .join(
+                                Lists.newArrayList(
+                                    MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK))
+                        + ") %s",
                     account == null ? ".accountType" : "",
                     year != null ? " and self.move.period.year = :year" : ""));
 
