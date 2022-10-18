@@ -523,25 +523,34 @@ public class BankReconciliationService {
   protected BigDecimal computeStatementOngoingReconciledLineBalance(
       BigDecimal statementOngoingReconciledBalance, BankReconciliationLine brl) {
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
-      statementOngoingReconciledBalance =
-          statementOngoingReconciledBalance.subtract(brl.getDebit());
-      statementOngoingReconciledBalance = statementOngoingReconciledBalance.add(brl.getCredit());
+      List<BankReconciliationLine> bankReconciliationLines =
+          bankReconciliationLineRepository
+              .all()
+              .filter("self.moveLine.id = ?1", brl.getMoveLine().getId())
+              .fetch();
+      for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+        statementOngoingReconciledBalance =
+            statementOngoingReconciledBalance.subtract(bankReconciliationLine.getDebit());
+        statementOngoingReconciledBalance =
+            statementOngoingReconciledBalance.add(bankReconciliationLine.getCredit());
+      }
     }
     return statementOngoingReconciledBalance;
   }
 
   protected BigDecimal computeMovesOngoingReconciledLineBalance(
       BigDecimal movesOngoingReconciledBalance, BankReconciliationLine brl) {
-    MoveLine tempMoveLine;
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
-      tempMoveLine = brl.getMoveLine();
-      if (tempMoveLine != null) {
-        if (tempMoveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+      String query = "self.postedNbr LIKE '%%s%'";
+      query = query.replace("%s", brl.getPostedNbr());
+      List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
+      for (MoveLine moveLine : moveLines) {
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
           movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.add(brl.getCredit().add(brl.getDebit()));
+              movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));
         } else {
           movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.subtract(brl.getCredit().add(brl.getDebit()));
+              movesOngoingReconciledBalance.subtract(moveLine.getCredit().add(moveLine.getDebit()));
         }
       }
     }
