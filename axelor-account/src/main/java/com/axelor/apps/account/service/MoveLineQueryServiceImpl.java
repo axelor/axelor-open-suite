@@ -3,13 +3,13 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.MoveLineQuery;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public class MoveLineQueryServiceImpl implements MoveLineQueryService {
@@ -57,11 +57,16 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       query += "AND self.amountRemaining != debit + credit ";
     }
 
+    query +=
+        " AND self.move.statusSelect in ("
+            + MoveRepository.STATUS_ACCOUNTED
+            + ","
+            + MoveRepository.STATUS_DAYBOOK
+            + ")";
+
     return query;
   }
 
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void ureconcileMoveLinesWithCacheManagement(List<Reconcile> reconcileList)
       throws AxelorException {
     for (Reconcile reconcile : reconcileList) {

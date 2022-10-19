@@ -94,6 +94,7 @@ public class MoveLineQueryController {
       }
       if (!moveLineList.isEmpty()) {
         Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -127,6 +128,7 @@ public class MoveLineQueryController {
       }
       if (!reconcileList.isEmpty()) {
         Beans.get(MoveLineQueryService.class).ureconcileMoveLinesWithCacheManagement(reconcileList);
+        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

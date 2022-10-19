@@ -38,7 +38,7 @@
     </panel>
     <panel name="btnPanel" itemSpan="4">
       <button name="filterMoveLineBtn" title="Filter move lines"
-        onClick="save,action-move-line-query-method-show-filtered-lines"
+        onClick="save,action-move-line-query-method-show-filtered-lines,save"
         readonlyIf="!company || !fromDate || !toDate || !account || !partner"/>
     </panel>
     <panel name="moveLineQueryLinesPanel">
