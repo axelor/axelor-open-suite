@@ -212,7 +212,7 @@ public class BankReconciliationLineService {
     }
   }
 
-  protected void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
+  public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
 
     bankReconciliationLine.setIsPosted(true);
 
