@@ -84,8 +84,18 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     Map<String, Object> stockCorrectionQtys = new HashMap<>();
 
-    StockLocationLine stockLocationLine;
+    StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
 
+    if (stockLocationLine != null) {
+      getDefaultQtys(stockLocationLine, stockCorrectionQtys);
+    } else {
+      stockCorrectionQtys.put("realQty", BigDecimal.ZERO);
+    }
+    return stockCorrectionQtys;
+  }
+
+  protected StockLocationLine getProductStockLocationLine(StockCorrection stockCorrection) {
+    StockLocationLine stockLocationLine;
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
           stockLocationLineService.getStockLocationLine(
@@ -97,13 +107,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
               stockCorrection.getProduct(),
               stockCorrection.getTrackingNumber());
     }
-
-    if (stockLocationLine != null) {
-      getDefaultQtys(stockLocationLine, stockCorrectionQtys);
-    } else {
-      stockCorrectionQtys.put("realQty", BigDecimal.ZERO);
-    }
-    return stockCorrectionQtys;
+    return stockLocationLine;
   }
 
   @Override
@@ -244,7 +248,21 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       throws Exception {
 
     StockCorrection stockCorrection = new StockCorrection();
-    stockCorrection.setStatusSelect(1);
+    setNewStockCorrectionInformation(
+        stockLocation, product, trackingNumber, realQty, reason, stockCorrection);
+    this.stockCorrectionRepository.save(stockCorrection);
+
+    return stockCorrection;
+  }
+
+  protected void setNewStockCorrectionInformation(
+      StockLocation stockLocation,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      StockCorrectionReason reason,
+      StockCorrection stockCorrection) {
+    stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_DRAFT);
     stockCorrection.setStockLocation(stockLocation);
     stockCorrection.setProduct(product);
     if (product.getTrackingNumberConfiguration() != null && trackingNumber != null) {
@@ -252,9 +270,13 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     }
     stockCorrection.setRealQty(realQty);
     stockCorrection.setStockCorrectionReason(reason);
-    this.stockCorrectionRepository.save(stockCorrection);
 
-    return stockCorrection;
+    stockCorrection.setBaseQty(getProductBaseQty(stockCorrection));
+  }
+
+  protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
+    StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
+    return stockLocationLine.getCurrentQty();
   }
 
   @Override

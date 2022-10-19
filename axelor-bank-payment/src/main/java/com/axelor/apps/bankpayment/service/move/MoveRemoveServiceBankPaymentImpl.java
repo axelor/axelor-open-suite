@@ -61,9 +61,9 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
   }
 
   @Override
-  protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
+  public String checkMoveLineBeforeRemove(MoveLine moveLine) throws AxelorException {
     removeMoveLineFromBankStatements(moveLine);
-    String errorMessage = super.checkDaybookMoveLine(moveLine);
+    String errorMessage = super.checkMoveLineBeforeRemove(moveLine);
 
     if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
         && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {

@@ -24,13 +24,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 public interface AccountingReportMoveLineService {
 
   public void createAccountingReportMoveLines(
-      List<BigInteger> paymentMoveLineDistributionIds, AccountingReport accountingReport);
+      List<Long> paymentMoveLineDistributionIds, AccountingReport accountingReport);
 
   public void createAccountingReportMoveLine(
       PaymentMoveLineDistribution paymentMoveLineDistribution, AccountingReport accountingReport);
