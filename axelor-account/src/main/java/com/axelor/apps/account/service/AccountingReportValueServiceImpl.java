@@ -219,6 +219,68 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     Set<AccountType> accountTypeSet = new HashSet<>(column.getAccountTypeSet());
     accountTypeSet.retainAll(line.getAccountTypeSet());
 
+    if (line.getDetailByAccount()) {
+      valuesMapByLine.remove(line.getCode());
+      int counter = 1;
+
+      for (Account account : accountSet) {
+        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+        valuesMapByLine.put(lineCode, new HashMap<>());
+
+        this.createValueFromMoveLine(
+            accountingReport,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            new HashSet<>(Collections.singletonList(account)),
+            accountTypeSet,
+            lineCode);
+        lineOffset++;
+      }
+    } else if (line.getDetailByAccountType()) {
+      valuesMapByLine.remove(line.getCode());
+      int counter = 1;
+
+      for (AccountType accountType : accountTypeSet) {
+        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+        valuesMapByLine.put(lineCode, new HashMap<>());
+
+        this.createValueFromMoveLine(
+            accountingReport,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            accountSet,
+            new HashSet<>(Collections.singletonList(accountType)),
+            lineCode);
+
+        lineOffset++;
+      }
+    } else {
+      this.createValueFromMoveLine(
+          accountingReport,
+          column,
+          line,
+          valuesMapByColumn,
+          valuesMapByLine,
+          accountSet,
+          accountTypeSet,
+          line.getCode());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createValueFromMoveLine(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Account> accountSet,
+      Set<AccountType> accountTypeSet,
+      String lineCode) {
     List<MoveLine> moveLineResultList =
         moveLineRepo
             .all()
@@ -241,7 +303,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .orElse(BigDecimal.ZERO);
 
     this.createReportValue(
-        accountingReport, column, line, result, null, valuesMapByColumn, valuesMapByLine);
+        accountingReport, column, line, result, null, valuesMapByColumn, valuesMapByLine, lineCode);
   }
 
   protected String buildQuery(
@@ -312,6 +374,27 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       BigDecimal previousResult,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {
+    this.createReportValue(
+        accountingReport,
+        column,
+        line,
+        result,
+        previousResult,
+        valuesMapByColumn,
+        valuesMapByLine,
+        line.getCode());
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createReportValue(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      BigDecimal result,
+      BigDecimal previousResult,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      String lineCode) {
     int columnNumber =
         accountingReport.getReportType().getAccountingReportConfigLineColumnList().indexOf(column);
     int lineNumber =
@@ -329,7 +412,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     accountingReportValueRepo.save(accountingReportValue);
 
-    valuesMapByColumn.get(column.getCode()).put(line.getCode(), accountingReportValue);
-    valuesMapByLine.get(line.getCode()).put(column.getCode(), accountingReportValue);
+    valuesMapByColumn.get(column.getCode()).put(lineCode, accountingReportValue);
+    valuesMapByLine.get(lineCode).put(column.getCode(), accountingReportValue);
   }
 }
