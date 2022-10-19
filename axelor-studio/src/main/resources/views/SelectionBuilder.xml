@@ -8,7 +8,7 @@
     <field name="name"
       onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
   </grid>
 
   <grid name="selection-option-grid" title="Selection" model="com.axelor.apps.base.db.Wizard">
@@ -35,7 +35,7 @@
         domain="self.isCustom = false and self.priority = (select min(ms.priority) from MetaSelect ms where ms.name = self.name)"
         onChange="action-selection-builder-method-fill-selection-text"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <field name="name"
         onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"
         readonlyIf="metaSelect != null"/>

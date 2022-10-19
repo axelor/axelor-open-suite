@@ -7,9 +7,9 @@
     model="com.axelor.meta.db.MetaJsonField">
     <panel name="overviewPanel" title="Overview">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <spacer name="appBuilderSpacer"
-        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <field name="name"
         onChange="action-studio-meta-json-model-name-onchange-record,action-studio-meta-json-field-record-name"/>
       <field name="title"/>
@@ -35,9 +35,9 @@
     <extend target="//field[@name='modelField']">
       <insert position="after">
         <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-          if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+          if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
         <spacer name="appBuilderSpacer"
-          if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+          if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       </insert>
     </extend>
     <extend target="panel-include[last()]">
@@ -112,7 +112,7 @@
     <field name="title"/>
     <field name="type"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
   </grid>
 
   <grid id="studio-json-field-grid" name="json-field-grid" title="Custom fields"
@@ -127,7 +127,7 @@
     </extend>
     <extend target="//field[@name='modelField']">
       <insert position="after">
-        <field name="appBuilder" if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        <field name="appBuilder" if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       </insert>
     </extend>
   </grid>
