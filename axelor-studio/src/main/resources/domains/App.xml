@@ -26,6 +26,8 @@
 
     <one-to-one ref="com.axelor.apps.base.db.AppBpm" name="appBpm" mappedBy="app"/>
 
+    <one-to-one ref="com.axelor.apps.base.db.AppStudio" name="appStudio" mappedBy="app"/>
+
     <boolean name="isInAppView" title="Add the application to the App Management"/>
 
     <finder-method name="findByCode" using="code" cacheable="true"/>

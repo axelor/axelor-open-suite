@@ -1,2 +1,2 @@
 "importId";"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-50;"BPM";"bpm";28;"Business Process Modeling";"app-bpm.png";"axelor-studio";;29
+51;"BPM";"bpm";35;"Business Process Modeling";;"axelor-studio";"studio";105
