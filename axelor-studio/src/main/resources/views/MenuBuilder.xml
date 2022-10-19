@@ -9,7 +9,7 @@
     <field name="actionBuilder.model" title="Model"/>
     <field name="order"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <button name="recordsBtn" onClick="action-studio-method-menu-builder-show-records"
       icon="fa-list" title="Show records"/>
   </grid>
@@ -22,9 +22,14 @@
         onChange="action-menubuilder-method-fetch-menu"/>
       <spacer colSpan="12" hideIf="id"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
+<<<<<<< HEAD
         if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <field name="name" required="true"
         onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
+=======
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
+      <field name="name" required="true"/>
+>>>>>>> 492fcbc1b7 (Feature #55315 : Merge Studio and BPM module)
       <field name="title"/>
       <field name="xmlId"
         onChange="action-studio-menu-builder-attrs-xml-id-onchange,action-studio-menu-builder-attrs-check-generate-id"
