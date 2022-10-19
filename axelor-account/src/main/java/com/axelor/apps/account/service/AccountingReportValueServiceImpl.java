@@ -38,6 +38,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected MoveLineRepository moveLineRepo;
 
+  protected int lineOffset = 0;
+
   @Inject
   public AccountingReportValueServiceImpl(
       AppBaseService appBaseService,
@@ -115,7 +117,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
         if (!valuesMapByColumn.get(column.getCode()).containsKey(line.getCode())
             || valuesMapByColumn.get(column.getCode()).get(line.getCode()) == null) {
-          this.fillReportValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
+          this.createValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
         }
       }
     }
@@ -124,22 +126,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void fillReportValue(
-      AccountingReport accountingReport,
-      AccountingReportConfigLine column,
-      AccountingReportConfigLine line,
-      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
-      Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
-      throws AxelorException {
-    AccountingReportValue value =
-        this.getValue(accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
-
-    valuesMapByColumn.get(column.getCode()).put(line.getCode(), value);
-    valuesMapByLine.get(line.getCode()).put(column.getCode(), value);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected AccountingReportValue getValue(
+  protected void createValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
@@ -148,30 +135,44 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       throws AxelorException {
     if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
         || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
-      return this.createReportValue(accountingReport, column, line, null, null);
+      this.createReportValue(
+          accountingReport, column, line, null, null, valuesMapByColumn, valuesMapByLine);
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       if (line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
       } else {
-        return this.getValueFromCustomRule(
-            accountingReport, column, line, valuesMapByLine.get(line.getCode()));
+        this.createValueFromCustomRule(
+            accountingReport,
+            column,
+            line,
+            valuesMapByLine.get(line.getCode()),
+            valuesMapByColumn,
+            valuesMapByLine);
       }
     } else if (line.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      return this.getValueFromCustomRule(
-          accountingReport, column, line, valuesMapByColumn.get(column.getCode()));
+      this.createValueFromCustomRule(
+          accountingReport,
+          column,
+          line,
+          valuesMapByColumn.get(column.getCode()),
+          valuesMapByColumn,
+          valuesMapByLine);
     } else {
-      return this.getValueFromMoveLines(accountingReport, column, line);
+      this.createValueFromMoveLines(
+          accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected AccountingReportValue getValueFromCustomRule(
+  protected void createValueFromCustomRule(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
-      Map<String, AccountingReportValue> valuesMap) {
+      Map<String, AccountingReportValue> valuesMap,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {
     AccountingReportConfigLine configLine =
         column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
             ? column
@@ -191,21 +192,22 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     try {
       result = (BigDecimal) scriptHelper.eval(configLine.getRule());
     } catch (Exception e) {
-      return null;
+      valuesMapByColumn.get(column.getCode()).put(line.getCode(), null);
+      valuesMapByLine.get(line.getCode()).put(column.getCode(), null);
+      return;
     }
 
-    if (result == null) {
-      return null;
-    }
-
-    return this.createReportValue(accountingReport, column, line, result, null);
+    this.createReportValue(
+        accountingReport, column, line, result, null, valuesMapByColumn, valuesMapByLine);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected AccountingReportValue getValueFromMoveLines(
+  protected void createValueFromMoveLines(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
-      AccountingReportConfigLine line)
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
       throws AxelorException {
     if (!Objects.equals(column.getResultSelect(), line.getResultSelect())) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
@@ -238,7 +240,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
-    return this.createReportValue(accountingReport, column, line, result, null);
+    this.createReportValue(
+        accountingReport, column, line, result, null, valuesMapByColumn, valuesMapByLine);
   }
 
   protected String buildQuery(
@@ -301,12 +304,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected AccountingReportValue createReportValue(
+  protected void createReportValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       BigDecimal result,
-      BigDecimal previousResult) {
+      BigDecimal previousResult,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {
     int columnNumber =
         accountingReport.getReportType().getAccountingReportConfigLineColumnList().indexOf(column);
     int lineNumber =
@@ -314,8 +319,17 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
-            columnNumber, lineNumber, result, previousResult, accountingReport, line, column);
+            columnNumber,
+            lineNumber + lineOffset,
+            result,
+            previousResult,
+            accountingReport,
+            line,
+            column);
 
-    return accountingReportValueRepo.save(accountingReportValue);
+    accountingReportValueRepo.save(accountingReportValue);
+
+    valuesMapByColumn.get(column.getCode()).put(line.getCode(), accountingReportValue);
+    valuesMapByLine.get(line.getCode()).put(column.getCode(), accountingReportValue);
   }
 }

@@ -40,10 +40,11 @@
         requiredIf="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
       <field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
       <field name="hidden" showIf="ruleTypeSelect == 2 || ruleTypeSelect == 3"/>
-      <panel name="splitConfigPanel" colSpan="12" itemSpan="4" showIf="ruleTypeSelect == 2">
-        <field name="detailByAccountType"/>
-        <field name="detailByAccount"/>
-        <field name="detailByAnalyticAccount"/>
+      <panel name="splitConfigPanel" colSpan="12" itemSpan="4"
+        showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null">
+        <field name="detailByAccountType" hideIf="detailByAccount || detailByAnalyticAccount"/>
+        <field name="detailByAccount" hideIf="detailByAccountType || detailByAnalyticAccount"/>
+        <field name="detailByAnalyticAccount" hideIf="detailByAccountType || detailByAccount"/>
       </panel>
       <field name="$helpCode" title="Account code" readonly="true"
         showIf="ruleTypeSelect == 2" colSpan="12">
