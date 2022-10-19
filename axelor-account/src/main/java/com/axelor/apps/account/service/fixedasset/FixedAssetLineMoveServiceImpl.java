@@ -533,7 +533,17 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           }
           chargeAccount = fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount();
         } else {
-          chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
+          if (fixedAsset.getFixedAssetCategory().getApproExtraordDepreciationExpenseAccount()
+              == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(
+                    AccountExceptionMessage
+                        .IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING),
+                I18n.get("Account for appropriation to extraordinary depreciations"));
+          }
+          chargeAccount =
+              fixedAsset.getFixedAssetCategory().getApproExtraordDepreciationExpenseAccount();
         }
         MoveLine chargeAccountDebitMoveLine =
             moveLineCreateService.createMoveLine(
