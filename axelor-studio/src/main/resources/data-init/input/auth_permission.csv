@@ -1,2 +1,3 @@
 "name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
 "perm.studio.all";"com.axelor.studio.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.bpm.all";"com.axelor.apps.bpm.db.*";"x";"x";"x";"x";"x";;;"Admin"

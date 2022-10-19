@@ -8,16 +8,16 @@
     <field name="viewType"/>
     <field name="name"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
   </grid>
 
   <form name="dashlet-builder-form" title="Dashlet builder"
     model="com.axelor.studio.db.DashletBuilder">
     <panel name="mainPanel">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <spacer name="appBuilderSpacer"
-        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <field name="viewType" selection-in="['chart','grid', 'custom']"/>
       <field name="name"/>
       <field name="metaView" requiredIf="action == null" domain="self.type = :viewType"

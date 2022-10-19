@@ -4,10 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <menuitem name="app-builder-root" title="App builder" order="-70"
-    icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')"/>
+    icon="fa-pencil-square-o" icon-background="purple"
+    if="__config__.app.isApp('bpm') || __config__.app.isApp('studio')"/>
 
   <menuitem name="app-builder-studio" title="Studio" parent="app-builder-root"
-    action="action.studio.view" order="10"/>
+    action="action.studio.view" order="10" if="__config__.app.isApp('studio')"/>
 
   <action-view name="action.studio.view" title="Studio">
     <view type="html" name="studio/custom-model"/>
@@ -16,7 +17,7 @@
   <!-- Reporting menu -->
 
   <menuitem name="app-builder-reporting" title="Reporting" parent="app-builder-root"
-    order="30"/>
+    order="30" if="__config__.app.isApp('studio')"/>
 
   <menuitem name="app-builder-chart-builders" title="Chart builders"
     parent="app-builder-reporting" action="action.chart.builders.view" order="31"/>
@@ -39,11 +40,11 @@
   <!-- Configuration menu -->
 
   <menuitem name="app-builder-config" title="Configuration" parent="app-builder-root"
-    order="40"/>
+    order="40" if="__config__.app.isApp('studio')"/>
 
   <menuitem name="app-builder-app-builders" title="App builders"
     parent="app-builder-config" order="5" action="action.app.builders.view"
-    if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+    if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
 
   <action-view name="action.app.builders.view" title="App builders"
     model="com.axelor.studio.db.AppBuilder">
@@ -57,9 +58,9 @@
   <action-view id="studio.custom.models.all" name="custom.models.all"
     title="Custom Models" model="com.axelor.meta.db.MetaJsonModel">
     <view type="grid" name="json-model-grid"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <view type="grid" name="json-model-disable-appbuilder-grid"
-      if="!__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="!__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <view type="form" name="json-model-form"/>
   </action-view>
 
@@ -91,9 +92,9 @@
   <action-view name="action.studio.meta.select.view" title="Selections"
     model="com.axelor.meta.db.MetaSelect">
     <view name="studio-meta-select-grid" type="grid"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <view name="studio-meta-select-disable-appbuilder-grid" type="grid"
-      if="!__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="!__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <view name="meta-select-form" type="form"/>
     <domain>self.isCustom = true</domain>
     <context name="_fromStudio" expr="eval:true"/>
@@ -114,9 +115,9 @@
   <action-view name="action.studio.meta.action.view" title="Actions"
     model="com.axelor.meta.db.MetaAction">
     <view type="grid" name="studio-meta-action-grid"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <view type="grid" name="studio-meta-action-disable-appbuild-grid"
-      if="!__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="!__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
     <view type="form" name="meta-action-form"/>
     <domain>self.isCustom = true</domain>
     <context name="_fromStudio" expr="eval:true"/>
@@ -133,7 +134,7 @@
 
   <menuitem name="app-builder-app-loaders" title="App Loaders" parent="app-builder-config"
     order="55" action="action.app.loaders.view"
-    if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+    if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
 
   <action-view name="action.app.loaders.view" title="App Loaders"
     model="com.axelor.studio.db.AppLoader">
@@ -143,7 +144,7 @@
   </action-view>
 
   <menuitem name="studio-web-service" title="Web service" parent="app-builder-root"
-    order="90"/>
+    order="90" if="__config__.app.isApp('studio')"/>
 
   <menuitem name="studio-web-service-ws-request" title="Request" order="5"
     parent="studio-web-service" action="studio.web.service.ws.request"/>
@@ -172,15 +173,6 @@
     <view type="form" name="ws-authenticator-form"/>
   </action-view>
 
-  <action-view name="admin.root.app.management" title="Apps management"
-    model="com.axelor.apps.base.db.App" id="admin.root.custom.app.management">
-    <view type="cards" name="app-cards"/>
-    <view type="grid" name="app-grid"/>
-    <view type="form" name="app-form"/>
-    <domain>self.isCustom = null OR self.isCustom = false OR (self.isCustom = true AND
-      self.isInAppView = true)</domain>
-  </action-view>
-
   <menuitem name="admin-root-app-management" parent="admin-root" order="5"
     title="Apps management" action="admin.root.app.management"/>
 
@@ -189,7 +181,60 @@
     <view type="cards" name="app-cards"/>
     <view type="grid" name="app-grid"/>
     <view type="form" name="app-form"/>
-    <domain>self.isCustom = null OR self.isCustom = false</domain>
+    <domain>self.isCustom = null OR self.isCustom = false OR (self.isCustom = true AND
+      self.isInAppView = true)</domain>
+  </action-view>
+
+  <menuitem title="BPM Studio" name="menu-wkf-bpm-studio" parent="app-builder-root"
+    action="action-wkf-view-open-editor" order="19" if="__config__.app.isApp('bpm')"/>
+
+  <menuitem title="BPM Manager" name="menu-wkf-bpm-manager" parent="app-builder-root"
+    action="action.wkf.bpm.manager" order="20" if="__config__.app.isApp('bpm')"/>
+  <action-view name="action.wkf.bpm.manager" title="BPM Manager"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="bpm-manager-dashboard-form"/>
+    <context name="_user_id" expr="eval:__user__.id"/>
+  </action-view>
+
+  <menuitem title="BPM Config" name="menu-wkf-root" parent="app-builder-root" order="21"
+    if="__config__.app.isApp('bpm')"/>
+
+  <menuitem title="BPM Model" name="menu-wkf-model" parent="menu-wkf-root"
+    action="wkf.model.all" order="5"/>
+
+  <action-view name="wkf.model.all" title="BPM Model"
+    model="com.axelor.apps.bpm.db.WkfModel">
+    <view type="grid" name="wkf-model-grid"/>
+    <view type="form" name="wkf-model-form"/>
+    <domain>self.isActive is true</domain>
+    <context name="__check_version" expr="eval: true"/>
+  </action-view>
+
+  <menuitem title="BPM Instance" name="menu-wkf-instance" parent="menu-wkf-root"
+    action="wkf.instance.all" order="10"/>
+
+  <action-view name="wkf.instance.all" title="BPM Instance"
+    model="com.axelor.apps.bpm.db.WkfInstance">
+    <view type="grid" name="wkf-instance-grid"/>
+    <view type="form" name="wkf-instance-form"/>
+  </action-view>
+
+  <menuitem title="DMN Models" name="menu-wkf-dmn-model" parent="menu-wkf-root"
+    action="wkf.dmn.model.all" order="15" if="__config__.app.isApp('bpm')"/>
+
+  <action-view name="wkf.dmn.model.all" title="DMN Models"
+    model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <view type="grid" name="wkf-dmn-model-grid"/>
+    <view type="form" name="wkf-dmn-model-form"/>
+  </action-view>
+
+  <menuitem title="BAML Models" name="menu-baml-model" parent="menu-wkf-root"
+    action="baml.model.all" order="20" if="__config__.app.isApp('bpm')"/>
+
+  <action-view name="baml.model.all" title="BAML Models"
+    model="com.axelor.apps.bpm.db.BamlModel">
+    <view type="grid" name="baml-model-grid"/>
+    <view type="form" name="baml-model-form"/>
   </action-view>
 
 </object-views>

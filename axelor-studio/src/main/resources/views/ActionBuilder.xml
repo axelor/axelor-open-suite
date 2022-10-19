@@ -9,7 +9,7 @@
     <field name="model"/>
     <field name="typeSelect"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
   </grid>
 
   <form name="action-builder-form" title="Action builder"
@@ -19,9 +19,9 @@
         onChange="action-action-builder-method-set-views,action-action-builder-type-select-change"
         colSpan="2"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <spacer name="appBuilderSpacer"
-        if="!__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+        if="!__config__.app.getApp('studio')?.getEnableAppBuilder()"/>
       <field name="name" required="true"/>
       <field name="xmlId" colSpan="3" required="true"/>
       <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
