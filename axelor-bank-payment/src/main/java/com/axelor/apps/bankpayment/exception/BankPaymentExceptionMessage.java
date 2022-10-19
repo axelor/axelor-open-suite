@@ -294,4 +294,11 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
       "Please select a counterpart account in the bank statement rule %s" /*)*/;
+
+  /** Move Reverse */
+  public static final String MOVE_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
+      "The move %s can't be reversed because it is linked to a bank reconciliation with status validated" /*)*/;
+
+  public static final String MOVES_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
+      "The moves %s couldn't be reversed because these are linked to a bank reconciliation with status validated" /*)*/;
 }
