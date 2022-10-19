@@ -1,4 +1,4 @@
-"importId";"name";"company.importId";"fixedAssetType.importId";"journal.importId";"chargeAccount.importId";"depreciationAccount.importId";"numberOfDepreciation";"durationInMonth";"isProrataTemporis";"computationMethodSelect";"degressiveCoef";"appExtraordDepreciationExpenseAccount.importId"
+"importId";"name";"company.importId";"fixedAssetType.importId";"journal.importId";"chargeAccount.importId";"depreciationAccount.importId";"numberOfDepreciation";"durationInMonth";"isProrataTemporis";"computationMethodSelect";"degressiveCoef";"approExtraordDepreciationExpenseAccount.importId"
 1;"Equipment (L)";1;2;3;818;269;7;84;"false";"linear";;"835"
 2;"Tooling";1;2;3;818;269;6;72;"false";"linear";;"835"
 3;"Transportation equipment";1;2;3;818;269;5;60;"false";"linear";;"835"
