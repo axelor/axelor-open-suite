@@ -215,6 +215,9 @@ public class BankReconciliationController {
     try {
       Context context = request.getContext();
 
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+
       Map<String, Object> bankReconciliationContext =
           (Map<String, Object>) context.get("_bankReconciliation");
 
@@ -233,6 +236,9 @@ public class BankReconciliationController {
       Beans.get(BankReconciliationValidateService.class)
           .validateMultipleBankReconciles(
               bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
+
+      bankReconciliationService.computeBalances(bankReconciliation);
+
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
