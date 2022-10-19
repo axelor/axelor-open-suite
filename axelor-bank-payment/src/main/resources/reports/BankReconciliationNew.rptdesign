@@ -1172,35 +1172,30 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">account_balance</property>
-                    <property name="alias">account_balance</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">account_balance</text-property>
                     <text-property name="heading">account_balance</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">code</property>
-                    <property name="alias">code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">code</text-property>
                     <text-property name="heading">code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">origin_date</property>
-                    <property name="alias">origin_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">origin_date</text-property>
                     <text-property name="heading">origin_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">move_date</property>
-                    <property name="alias">move_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_date</text-property>
                     <text-property name="heading">move_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">posted_nbr</property>
-                    <property name="alias">posted_nbr</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">posted_nbr</text-property>
                     <text-property name="heading">posted_nbr</text-property>
@@ -1213,28 +1208,24 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="columnName">to_date</property>
-                    <property name="alias">to_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_date</text-property>
                     <text-property name="heading">to_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reference</property>
-                    <property name="alias">reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reference</text-property>
                     <text-property name="heading">reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
-                    <property name="alias">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">type</property>
-                    <property name="alias">type</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">type</text-property>
                     <text-property name="heading">type</text-property>
@@ -1247,21 +1238,18 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
-                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
-                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
-                    <property name="alias">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
                     <text-property name="heading">amount</text-property>
@@ -1473,7 +1461,7 @@ FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
 LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON moveLine.account=bankReconciliation.cash_account
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
-WHERE bankReconciliation.id = ? AND (((moveLine.posted_nbr is null OR moveLine.posted_nbr='') AND (moveLine.date_val >= bankReconciliation.from_date AND moveLine.date_val <= bankReconciliation.to_date)) OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
+WHERE bankReconciliation.id = ? AND move.status_select != 4  AND NOT (moveLine.bank_reconciled_amount = (moveLine.debit + moveLine.credit) AND bankReconciliationLine IS NULL ) AND (((moveLine.posted_nbr is null OR moveLine.posted_nbr='') AND (moveLine.date_val >= bankReconciliation.from_date AND moveLine.date_val <= bankReconciliation.to_date)) OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
 ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
