@@ -36,7 +36,7 @@
         <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
         <field name="teamManagement" widget="boolean-switch"/>
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-        <panel name="productBarCodePanel" title="Product BarCode">
+        <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
             widget="boolean-switch"/>
@@ -44,6 +44,7 @@
             requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
         </panel>
         <field name="generatePartnerSequence" widget="boolean-switch"/>
+        <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
         <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
           <field name="generateProductSequence" widget="boolean-switch"/>
