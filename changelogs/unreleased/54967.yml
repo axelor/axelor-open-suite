@@ -1,3 +1,0 @@
----
-title: "Purchase Order Line : now correctly takes the product name of the supplier catalog if there is one."
-type: fix

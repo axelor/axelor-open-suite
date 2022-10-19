@@ -1,3 +1,0 @@
----
-title: "Stock history: Fixed a bug where stock history lines were not persisted when using the batch to update the stock history"
-type: fix
