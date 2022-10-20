@@ -50,7 +50,11 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
   private void setDepositNumber(DepositSlip entity) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String depositNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.DEPOSIT_SLIP, entity.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.DEPOSIT_SLIP,
+            entity.getCompany(),
+            DepositSlip.class,
+            "depositNumber");
 
     if (Strings.isNullOrEmpty(depositNumber)) {
       throw new AxelorException(

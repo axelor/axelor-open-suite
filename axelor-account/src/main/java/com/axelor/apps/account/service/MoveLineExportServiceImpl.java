@@ -218,7 +218,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getSaleExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.SALES_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -232,9 +233,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public String getRefundExportNumber(Company company) throws AxelorException {
-
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.REFUND_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -250,7 +251,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getTreasuryExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.TREASURY_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "export_number");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -266,7 +268,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getPurchaseExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,

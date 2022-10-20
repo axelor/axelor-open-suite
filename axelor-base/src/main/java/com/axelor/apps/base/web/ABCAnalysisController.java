@@ -58,7 +58,11 @@ public class ABCAnalysisController {
 
   public void setSequence(ActionRequest request, ActionResponse response) {
     ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
-    Beans.get(ABCAnalysisServiceImpl.class).setSequence(abcAnalysis);
+    try {
+      Beans.get(ABCAnalysisServiceImpl.class).setSequence(abcAnalysis);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
     response.setValue("abcAnalysisSeq", abcAnalysis.getAbcAnalysisSeq());
   }
 

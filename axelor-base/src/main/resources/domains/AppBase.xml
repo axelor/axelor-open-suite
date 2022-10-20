@@ -90,6 +90,9 @@
     <boolean name="generatePartnerSequence" title="Generate sequence for partners"
       default="true"/>
 
+    <boolean name="checkExistingSequenceOnGeneration"
+      title="Check existing sequence on generation" default="true"/>
+
     <boolean name="checkRegistrationCode" title="Check registration code" default="true"/>
 
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
@@ -207,6 +210,7 @@
       <field name="enableCalendars" on="UPDATE"/>
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
+      <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
       <field name="checkRegistrationCode" on="UPDATE"/>
       <!-- 31 fields -->
     </track>

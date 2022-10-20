@@ -48,7 +48,9 @@ public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
   }
 
   protected void setCode(EquipementMaintenance entity) throws AxelorException {
-    String code = sequenceService.getSequenceNumber(Imaintenance.SEQ_MAINTENANCE);
+    String code =
+        sequenceService.getSequenceNumber(
+            Imaintenance.SEQ_MAINTENANCE, EquipementMaintenance.class, "code");
 
     if (Strings.isNullOrEmpty(code)) {
       throw new AxelorException(

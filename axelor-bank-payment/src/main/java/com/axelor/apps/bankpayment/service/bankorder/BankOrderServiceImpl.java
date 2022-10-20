@@ -781,7 +781,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       date = appBaseService.getTodayDate(bankOrder.getSenderCompany());
     }
 
-    bankOrder.setBankOrderSeq((sequenceService.getSequenceNumber(sequence, date)));
+    bankOrder.setBankOrderSeq(
+        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq")));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;

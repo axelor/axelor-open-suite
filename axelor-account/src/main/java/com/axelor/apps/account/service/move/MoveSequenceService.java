@@ -63,6 +63,8 @@ public class MoveSequenceService {
       return;
     }
 
-    move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), move.getDate()));
+    move.setReference(
+        sequenceService.getSequenceNumber(
+            journal.getSequence(), move.getDate(), Move.class, "reference"));
   }
 }
