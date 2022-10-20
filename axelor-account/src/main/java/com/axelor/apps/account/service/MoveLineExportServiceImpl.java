@@ -48,6 +48,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -426,7 +427,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                   ? partner.getName()
                   : "";
         }
-        items[8] = moveLine.getOrigin();
+        String origin = moveLine.getOrigin();
+        items[8] = Strings.isNullOrEmpty(origin) ? "NA" : origin;
         if (moveLine.getOriginDate() != null) {
           items[9] =
               moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
