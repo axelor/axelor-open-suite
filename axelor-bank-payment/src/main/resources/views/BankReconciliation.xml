@@ -34,8 +34,8 @@
         <field name="validatedByUser" colSpan="2"/>
         <field name="validatedDate" colSpan="2"/>
         <button name="validateBtn" title="Validate reconciliation"
-          readonlyIf="!(bankReconciliationLineList.length > 0)" hideIf="statusSelect == 2"
-          colSpan="2" onClick="action-group-bankreconciliation-validate-click"/>
+          hideIf="statusSelect == 2 || !(bankReconciliationLineList.length > 0)" colSpan="2"
+          onClick="action-group-bankreconciliation-validate-click"/>
         <field name="name" readonlyIf="bankReconciliationLineList.length > 0"/>
         <field name="bankStatement" colSpan="4"
           readonlyIf="bankReconciliationLineList.length > 0"
@@ -66,41 +66,42 @@
       </panel>
       <panel name="actionsPanel" colSpan="12">
         <button name="loadBankStatementBtn" title="Load bank statements"
-          readonlyIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)"
-          colSpan="3" onClick="save,action-bank-reconciliation-method-load-bank-statement"/>
+          hideIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)" colSpan="3"
+          onClick="save,action-bank-reconciliation-method-load-bank-statement"/>
         <button name="loadOtherBankStatementBtn" title="Load other bank statements"
-          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements"
-          readonlyIf="statusSelect == 2" colSpan="3"
-          onClick="save,action-bank-reconciliation-method-load-other-bank-statement"/>
-        <button name="autoAccounting" title="Auto accounting" readonlyIf="statusSelect == 2"
-          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
-          onClick="action-bank-reconciliation-method-auto-accounting"/>
+          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements &amp;&amp; statusSelect != 2"
+          colSpan="3" onClick="save,action-bank-reconciliation-method-load-other-bank-statement"/>
+        <button name="autoAccounting" title="Auto accounting"
+          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; statusSelect != 2"
+          colSpan="3" onClick="action-bank-reconciliation-method-auto-accounting"/>
         <button name="showReconciledMoveLineBtn" title="Show reconciled move lines"
           showIf="statusSelect == 2" colSpan="3"
           onClick="action-bank-reconciliation-view-show-reconciled-move-lines"/>
       </panel>
     </panel>
-    <panel name="bankReconciliationPanel" title="Bank reconciliation"
-      readonlyIf="statusSelect == 2" colSpan="12" showIf="bankReconciliationLineList.length > 0">
-      <panel name="balancePanel" title="Balance" colSpan="12">
+    <panel name="bankReconciliationPanel" title="Bank reconciliation" colSpan="12"
+      showIf="bankReconciliationLineList.length > 0">
+      <panel name="balancePanel" title="Balance" colSpan="12" readonlyIf="statusSelect == 2">
         <field name="totalPaid" colSpan="3"/>
         <field name="totalCashed" colSpan="3"/>
         <field name="startingBalance" readonlyIf="bankStatement" colSpan="3"/>
         <field name="endingBalance" colSpan="3"/>
       </panel>
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
-        field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
-        grid-view="bank-reconciliation-line-grid" editable="true"
-        onChange="action-group-bankreconciliation-compute-click" x-can-copy="true"
+        readonlyIf="statusSelect == 2" field="bankReconciliationLineList"
+        form-view="bank-reconciliation-line-form" grid-view="bank-reconciliation-line-grid"
+        editable="true" onChange="action-group-bankreconciliation-compute-click" x-can-copy="true"
         orderBy="effectDate" height="12"/>
       <button name="autoReconcileBtn" title="Auto reconcile"
-        showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
-        onClick="action-bank-reconciliation-method-automatic-reconciliation"/>
+        showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; statusSelect != 2"
+        colSpan="3" onClick="action-bank-reconciliation-method-automatic-reconciliation"/>
       <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
+        hideIf="statusSelect == 2"
         onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
       <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
-        onClick="save,action-bank-reconciliation-method-unreconcile"/>
+        hideIf="statusSelect == 2" onClick="save,action-bank-reconciliation-method-unreconcile"/>
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
+        hideIf="statusSelect == 2"
         onClick="save,action-bank-reconciliation-method-reconcile-selected"/>
       <panel-dashlet name="showUnreconciledMoveLinesPanel"
         title="Accounting Move Line(s) to reconcile" colSpan="12" canSearch="true" height="380"
@@ -111,7 +112,7 @@
       <panel name="balancesPanel" colSpan="6">
         <button name="computeBalances" title="Compute balances" colSpan="12"
           onClick="save,action-bank-reconciliation-method-compute-balances"
-          readonlyIf="bankDetails == null || cashAccount == null"/>
+          hideIf="bankDetails == null || cashAccount == null"/>
         <label name="bankStatementLabel" title="Bank statement" colSpan="4"/>
         <spacer colSpan="4"/>
         <label name="accountingLabel" title="Accounting" colSpan="4"/>
