@@ -46,7 +46,11 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
         if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumberSeq())) {
           String sequenceNumber =
               Beans.get(SequenceService.class)
-                  .getSequenceNumber("logisticalForm", logisticalForm.getCompany());
+                  .getSequenceNumber(
+                      "logisticalForm",
+                      logisticalForm.getCompany(),
+                      LogisticalForm.class,
+                      "deliveryNumberSeq");
           if (Strings.isNullOrEmpty(sequenceNumber)) {
             throw new AxelorException(
                 Sequence.class,

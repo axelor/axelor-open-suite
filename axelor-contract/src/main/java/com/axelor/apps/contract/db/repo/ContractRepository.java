@@ -51,7 +51,10 @@ public class ContractRepository extends AbstractContractRepository {
       String seq =
           Beans.get(SequenceService.class)
               .getSequenceNumber(
-                  type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
+                  type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE,
+                  company,
+                  Contract.class,
+                  "contractId");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
