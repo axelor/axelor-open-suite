@@ -10,11 +10,13 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.rpc.Context;
@@ -147,6 +149,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           line,
           null,
           null,
+          null,
           valuesMapByColumn,
           valuesMapByLine,
           line.getCode());
@@ -221,6 +224,44 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       String lineCode) {
+    BigDecimal result =
+        this.getResultFromCustomRule(
+            column, line, valuesMap, valuesMapByColumn, valuesMapByLine, 0);
+    BigDecimal resultn1 = null;
+    BigDecimal resultn2 = null;
+
+    if (accountingReport.getReportType().getComparison()
+        != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
+      resultn1 =
+          this.getResultFromCustomRule(
+              column, line, valuesMap, valuesMapByColumn, valuesMapByLine, 1);
+
+      if (accountingReport.getReportType().getNoOfPeriods() == 2) {
+        resultn2 =
+            this.getResultFromCustomRule(
+                column, line, valuesMap, valuesMapByColumn, valuesMapByLine, 2);
+      }
+    }
+
+    this.createReportValue(
+        accountingReport,
+        column,
+        line,
+        result,
+        resultn1,
+        resultn2,
+        valuesMapByColumn,
+        valuesMapByLine,
+        lineCode);
+  }
+
+  protected BigDecimal getResultFromCustomRule(
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, AccountingReportValue> valuesMap,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      int periodOffset) {
     AccountingReportConfigLine configLine =
         column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
             ? column
@@ -229,24 +270,33 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
-        contextMap.put(code, valuesMap.get(code).getResult());
+        contextMap.put(code, this.getResultFromPeriodOffset(code, valuesMap, periodOffset));
       }
     }
 
     Context scriptContext = new Context(contextMap, Object.class);
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-    BigDecimal result;
 
     try {
-      result = (BigDecimal) scriptHelper.eval(configLine.getRule());
+      return (BigDecimal) scriptHelper.eval(configLine.getRule());
     } catch (Exception e) {
       valuesMapByColumn.get(column.getCode()).put(line.getCode(), null);
       valuesMapByLine.get(line.getCode()).put(column.getCode(), null);
-      return;
+      return null;
     }
+  }
 
-    this.createReportValue(
-        accountingReport, column, line, result, null, valuesMapByColumn, valuesMapByLine, lineCode);
+  protected BigDecimal getResultFromPeriodOffset(
+      String code, Map<String, AccountingReportValue> valuesMap, int periodOffset) {
+    AccountingReportValue accountingReportValue = valuesMap.get(code);
+
+    if (periodOffset == 0) {
+      return accountingReportValue.getResult();
+    } else if (periodOffset == 1) {
+      return accountingReportValue.getResultn1();
+    } else {
+      return accountingReportValue.getResultn2();
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -363,43 +413,68 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
       String lineCode) {
-    List<MoveLine> moveLineResultList =
-        moveLineRepo
-            .all()
-            .filter(
-                this.buildQuery(
-                    accountingReport,
-                    accountSet,
-                    accountTypeSet,
-                    analyticAccountSet,
-                    column.getAccountCode(),
-                    line.getAccountCode(),
-                    column.getAnalyticAccountCode(),
-                    line.getAnalyticAccountCode()))
-            .bind("dateFrom", accountingReport.getDateFrom())
-            .bind("dateTo", accountingReport.getDateTo())
-            .bind("journal", accountingReport.getJournal())
-            .bind("paymentMode", accountingReport.getPaymentMode())
-            .bind("currency", accountingReport.getCurrency())
-            .bind("company", accountingReport.getCompany())
-            .bind("statusList", this.getMoveLineStatusList(accountingReport))
-            .bind("accountSet", accountSet)
-            .bind("columnAccountFilter", column.getAccountCode())
-            .bind("lineAccountFilter", line.getAccountCode())
-            .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
-            .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
-            .bind("accountTypeSet", accountTypeSet)
-            .bind("analyticAccountSet", analyticAccountSet)
-            .fetch();
+    Query<MoveLine> moveLineQuery =
+        this.getMoveLineQuery(
+            accountingReport, column, line, accountSet, accountTypeSet, analyticAccountSet);
 
-    BigDecimal result =
-        moveLineResultList.stream()
-            .map(it -> this.getMoveLineAmount(it, column.getResultSelect()))
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
+    BigDecimal result = this.getResultFromMoveLine(moveLineQuery, 0, column.getResultSelect());
+    BigDecimal resultn1 = null;
+    BigDecimal resultn2 = null;
+
+    if (accountingReport.getReportType().getComparison()
+        != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
+      resultn1 = this.getResultFromMoveLine(moveLineQuery, 1, column.getResultSelect());
+
+      if (accountingReport.getReportType().getNoOfPeriods() == 2) {
+        resultn2 = this.getResultFromMoveLine(moveLineQuery, 2, column.getResultSelect());
+      }
+    }
 
     this.createReportValue(
-        accountingReport, column, line, result, null, valuesMapByColumn, valuesMapByLine, lineCode);
+        accountingReport,
+        column,
+        line,
+        result,
+        resultn1,
+        resultn2,
+        valuesMapByColumn,
+        valuesMapByLine,
+        lineCode);
+  }
+
+  protected Query<MoveLine> getMoveLineQuery(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Set<Account> accountSet,
+      Set<AccountType> accountTypeSet,
+      Set<AnalyticAccount> analyticAccountSet) {
+    return moveLineRepo
+        .all()
+        .filter(
+            this.buildQuery(
+                accountingReport,
+                accountSet,
+                accountTypeSet,
+                analyticAccountSet,
+                column.getAccountCode(),
+                line.getAccountCode(),
+                column.getAnalyticAccountCode(),
+                line.getAnalyticAccountCode()))
+        .bind("dateFrom", accountingReport.getDateFrom())
+        .bind("dateTo", accountingReport.getDateTo())
+        .bind("journal", accountingReport.getJournal())
+        .bind("paymentMode", accountingReport.getPaymentMode())
+        .bind("currency", accountingReport.getCurrency())
+        .bind("company", accountingReport.getCompany())
+        .bind("statusList", this.getMoveLineStatusList(accountingReport))
+        .bind("accountSet", accountSet)
+        .bind("columnAccountFilter", column.getAccountCode())
+        .bind("lineAccountFilter", line.getAccountCode())
+        .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
+        .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
+        .bind("accountTypeSet", accountTypeSet)
+        .bind("analyticAccountSet", analyticAccountSet);
   }
 
   protected String buildQuery(
@@ -415,7 +490,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
 
     if (accountingReport.getDateFrom() != null) {
-      queryList.add("(self.date IS NULL OR self.date >= :dateFrom)");
+      queryList.add("(self.date IS NULL OR self.date >= :dateFrom - INTERVAL '2 year')");
     }
 
     if (accountingReport.getDateTo() != null) {
@@ -472,6 +547,22 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     return String.join(" AND ", queryList);
   }
 
+  protected BigDecimal getResultFromMoveLine(
+      Query<MoveLine> moveLineQuery, int periodOffset, int resultSelect) {
+    String periodAdd =
+        periodOffset == 0 ? "" : String.format(" - INTERVAL '%d year'", periodOffset);
+
+    List<MoveLine> resultList =
+        moveLineQuery
+            .filter(String.format("self.date BETWEEN :dateFrom%1$s AND :dateTo%1$s", periodAdd))
+            .fetch();
+
+    return resultList.stream()
+        .map(it -> this.getMoveLineAmount(it, resultSelect))
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
+  }
+
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
     List<Integer> statusList =
         Arrays.asList(MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
@@ -497,7 +588,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       BigDecimal result,
-      BigDecimal previousResult,
+      BigDecimal resultn1,
+      BigDecimal resultn2,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       String lineCode) {
@@ -511,7 +603,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             columnNumber,
             lineNumber + lineOffset,
             result,
-            previousResult,
+            resultn1,
+            resultn2,
             accountingReport,
             line,
             column);
