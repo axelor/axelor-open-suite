@@ -27,8 +27,13 @@
   <form title="Config line" name="accounting-report-config-line-form"
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
     <panel name="accountingReportConfigLineMainPanel">
-      <field name="reportType" colSpan="12" form-view="accounting-report-type-form"
-        grid-view="accounting-report-type-grid" readonlyIf="$popup()"/>
+      <panel name="reportTypePanel" stacked="true" colSpan="12" itemSpan="12"
+        readonlyIf="$popup()">
+        <field name="reportType" showIf="reportType != null"
+          form-view="accounting-report-type-form" grid-view="accounting-report-type-grid"/>
+        <field name="reportTypeColumn" showIf="reportTypeColumn != null"
+          form-view="accounting-report-type-form" grid-view="accounting-report-type-grid"/>
+      </panel>
       <field name="typeSelect" validIf="typeSelect > 0"
         onChange="action-accounting-report-config-line-record-type-select-onchange"/>
       <field name="ruleTypeSelect" validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3"

@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.AccountingReportValue;
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
@@ -13,11 +14,13 @@ import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -151,7 +154,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       if (line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
-      } else if (line.getDetailByAccount() || line.getDetailByAccountType()) {
+      } else if (line.getDetailByAccount()
+          || line.getDetailByAccountType()
+          || line.getDetailByAnalyticAccount()) {
         for (String lineCode :
             valuesMapByLine.keySet().stream()
                 .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
@@ -256,14 +261,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
     }
 
-    Set<Account> accountSet = new HashSet<>(column.getAccountSet());
-    accountSet.retainAll(line.getAccountSet());
-
-    Set<AccountType> accountTypeSet = new HashSet<>(column.getAccountTypeSet());
-    accountTypeSet.retainAll(line.getAccountTypeSet());
+    Set<Account> accountSet = this.mergeSets(column.getAccountSet(), line.getAccountSet());
+    Set<AccountType> accountTypeSet =
+        this.mergeSets(column.getAccountTypeSet(), line.getAccountTypeSet());
+    Set<AnalyticAccount> analyticAccountSet =
+        this.mergeSets(column.getAnalyticAccountSet(), line.getAnalyticAccountSet());
 
     if (line.getDetailByAccount()) {
-      valuesMapByLine.remove(line.getCode());
       int counter = 1;
 
       for (Account account : accountSet) {
@@ -278,11 +282,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             valuesMapByLine,
             new HashSet<>(Collections.singletonList(account)),
             accountTypeSet,
+            analyticAccountSet,
             lineCode);
         lineOffset++;
       }
     } else if (line.getDetailByAccountType()) {
-      valuesMapByLine.remove(line.getCode());
       int counter = 1;
 
       for (AccountType accountType : accountTypeSet) {
@@ -297,6 +301,27 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             valuesMapByLine,
             accountSet,
             new HashSet<>(Collections.singletonList(accountType)),
+            analyticAccountSet,
+            lineCode);
+
+        lineOffset++;
+      }
+    } else if (line.getDetailByAnalyticAccount()) {
+      int counter = 1;
+
+      for (AnalyticAccount analyticAccount : analyticAccountSet) {
+        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+        valuesMapByLine.put(lineCode, new HashMap<>());
+
+        this.createValueFromMoveLine(
+            accountingReport,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            accountSet,
+            accountTypeSet,
+            new HashSet<>(Collections.singletonList(analyticAccount)),
             lineCode);
 
         lineOffset++;
@@ -310,7 +335,20 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           valuesMapByLine,
           accountSet,
           accountTypeSet,
+          analyticAccountSet,
           line.getCode());
+    }
+  }
+
+  protected <T extends Model> Set<T> mergeSets(Set<T> set1, Set<T> set2) {
+    if (CollectionUtils.isEmpty(set1)) {
+      return set2;
+    } else if (CollectionUtils.isEmpty(set2)) {
+      return set1;
+    } else {
+      Set<T> finalSet = new HashSet<>(set1);
+      finalSet.retainAll(set2);
+      return finalSet;
     }
   }
 
@@ -323,11 +361,21 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
+      Set<AnalyticAccount> analyticAccountSet,
       String lineCode) {
     List<MoveLine> moveLineResultList =
         moveLineRepo
             .all()
-            .filter(this.buildQuery(accountingReport, accountSet, accountTypeSet))
+            .filter(
+                this.buildQuery(
+                    accountingReport,
+                    accountSet,
+                    accountTypeSet,
+                    analyticAccountSet,
+                    column.getAccountCode(),
+                    line.getAccountCode(),
+                    column.getAnalyticAccountCode(),
+                    line.getAnalyticAccountCode()))
             .bind("dateFrom", accountingReport.getDateFrom())
             .bind("dateTo", accountingReport.getDateTo())
             .bind("journal", accountingReport.getJournal())
@@ -336,7 +384,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .bind("company", accountingReport.getCompany())
             .bind("statusList", this.getMoveLineStatusList(accountingReport))
             .bind("accountSet", accountSet)
+            .bind("columnAccountFilter", column.getAccountCode())
+            .bind("lineAccountFilter", line.getAccountCode())
+            .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
+            .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
             .bind("accountTypeSet", accountTypeSet)
+            .bind("analyticAccountSet", analyticAccountSet)
             .fetch();
 
     BigDecimal result =
@@ -350,7 +403,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   protected String buildQuery(
-      AccountingReport accountingReport, Set<Account> accountSet, Set<AccountType> accountTypeSet) {
+      AccountingReport accountingReport,
+      Set<Account> accountSet,
+      Set<AccountType> accountTypeSet,
+      Set<AnalyticAccount> analyticAccountSet,
+      String columnAccountFilter,
+      String lineAccountFilter,
+      String columnAnalyticAccountFilter,
+      String lineAnalyticAccountFilter) {
     List<String> queryList =
         new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
 
@@ -382,8 +442,31 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       queryList.add("(self.account IS NULL OR self.account IN :accountSet)");
     }
 
+    if (!Strings.isNullOrEmpty(columnAccountFilter)) {
+      queryList.add("self.account.code SIMILAR TO :columnAccountFilter");
+    }
+
+    if (!Strings.isNullOrEmpty(lineAccountFilter)) {
+      queryList.add("self.account.code SIMILAR TO :lineAccountFilter");
+    }
+
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
       queryList.add("(self.account IS NULL OR self.account.accountType IN :accountTypeSet)");
+    }
+
+    if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
+      queryList.add(
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
+    }
+
+    if (!Strings.isNullOrEmpty(columnAnalyticAccountFilter)) {
+      queryList.add(
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code SIMILAR TO :columnAnalyticAccountFilter AND aml.moveLine = self)");
+    }
+
+    if (!Strings.isNullOrEmpty(lineAnalyticAccountFilter)) {
+      queryList.add(
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code SIMILAR TO :lineAnalyticAccountFilter AND aml.moveLine = self)");
     }
 
     return String.join(" AND ", queryList);
