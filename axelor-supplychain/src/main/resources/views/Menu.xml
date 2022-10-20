@@ -85,7 +85,8 @@
   </action-view>
 
   <menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
-    parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"/>
+    parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"
+    order="8"/>
 
   <action-view name="supplychain.declarations.of.exchanges"
     title="Declarations of exchanges" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">

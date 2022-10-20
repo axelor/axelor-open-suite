@@ -780,6 +780,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .all()
             .filter(retrieveEligibleTermsQuery())
             .bind("company", paymentSession.getCompany())
+            .bind("accountedStatus", MoveRepository.STATUS_ACCOUNTED)
+            .bind("daybookStatus", MoveRepository.STATUS_DAYBOOK)
             .bind("paymentMode", paymentSession.getPaymentMode())
             .bind(
                 "paymentDatePlusMargin",
@@ -816,6 +818,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected String retrieveEligibleTermsQuery() {
     String generalCondition =
         "self.moveLine.move.company = :company "
+            + " AND (self.moveLine.move.statusSelect = :accountedStatus"
+            + " OR (self.moveLine.move.company.accountConfig.retrieveDaybookMovesInPaymentSession IS TRUE"
+            + " AND self.moveLine.move.company.accountConfig.accountingDaybook IS TRUE"
+            + " AND self.moveLine.move.statusSelect = :daybookStatus))"
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "

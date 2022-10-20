@@ -2542,7 +2542,6 @@
 "This period is temporarily closed and you do not have the necessary permissions to create entries",,,
 "This regular expression must be of the SQL syntax. The most useful terms are :",,,
 "This state allows to create a custom rule to be shown in the report.",,,
-"This value is already selected in another field, please select another value",,,
 "Timetable line %s","Fahrplanzeile %s",,
 "Timetable's reject move's creation %s","Zeitplan's reject move's creation %s",,
 "Title","Titel",,

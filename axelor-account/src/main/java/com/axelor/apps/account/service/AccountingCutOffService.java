@@ -42,7 +42,8 @@ public interface AccountingCutOffService {
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
       boolean automaticReverse,
-      boolean automaticReconcile)
+      boolean automaticReconcile,
+      String prefixOrigin)
       throws AxelorException;
 
   Move generateCutOffMoveFromMove(
@@ -53,6 +54,7 @@ public interface AccountingCutOffService {
       String moveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
-      boolean isReverse)
+      boolean isReverse,
+      String prefixOrigin)
       throws AxelorException;
 }

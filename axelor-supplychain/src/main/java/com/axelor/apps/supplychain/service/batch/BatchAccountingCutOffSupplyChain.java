@@ -160,6 +160,10 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
       Account forecastedInvCustAccount = accountingBatch.getForecastedInvCustAccount();
       Account forecastedInvSuppAccount = accountingBatch.getForecastedInvSuppAccount();
+      String prefixOrigin =
+          accountingBatch.getPrefixOrigin() != null
+              ? accountingBatch.getPrefixOrigin()
+              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
 
       List<Move> moveList =
           cutOffSupplyChainService.generateCutOffMovesFromStockMove(
@@ -177,7 +181,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
               automaticReverse,
               automaticReconcile,
               forecastedInvCustAccount,
-              forecastedInvSuppAccount);
+              forecastedInvSuppAccount,
+              prefixOrigin);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateStockMove(stockMove);

@@ -156,7 +156,8 @@ public class MoveController {
   @SuppressWarnings("unchecked")
   public void massReverseMove(ActionRequest request, ActionResponse response) {
     try {
-      List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      Context context = request.getContext();
+      List<Long> moveIds = (List<Long>) context.get("_ids");
 
       if (CollectionUtils.isNotEmpty(moveIds)) {
         List<Move> moveList =
@@ -170,7 +171,7 @@ public class MoveController {
         if (CollectionUtils.isNotEmpty(moveList)) {
           Map<String, Object> assistantMap =
               Beans.get(ExtractContextMoveService.class)
-                  .getMapFromMoveWizardMassReverseForm(request.getContext());
+                  .getMapFromMoveWizardMassReverseForm(context);
 
           String reverseMoveIds =
               Beans.get(MoveReverseService.class).massReverse(moveList, assistantMap).stream()

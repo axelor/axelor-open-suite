@@ -82,6 +82,7 @@
           <panel name="originControlSettings" showTitle="false" colSpan="12">
             <field name="hasDuplicateDetectionOnOrigin"/>
             <field name="hasRequiredOrigin"/>
+            <field name="prefixOrigin" requiredIf="hasDuplicateDetectionOnOrigin"/>
           </panel>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
