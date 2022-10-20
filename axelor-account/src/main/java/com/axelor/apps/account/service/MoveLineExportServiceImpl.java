@@ -252,7 +252,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "export_number");
+            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
