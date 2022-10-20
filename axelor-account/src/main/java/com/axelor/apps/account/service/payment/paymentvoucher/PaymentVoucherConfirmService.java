@@ -407,6 +407,7 @@ public class PaymentVoucherConfirmService {
       setMove(paymentVoucher, move, valueForCollection);
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
+      BigDecimal financialDiscountAmount = BigDecimal.ZERO;
       int moveLineNo = 1;
 
       boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
@@ -454,6 +455,9 @@ public class PaymentVoucherConfirmService {
                     moveLineNo,
                     isDebitToPay,
                     financialDiscountVat);
+
+            financialDiscountAmount =
+                financialDiscountAmount.add(payVoucherElementToPay.getFinancialDiscountAmount());
           }
         }
       }
@@ -470,6 +474,8 @@ public class PaymentVoucherConfirmService {
               .map(it -> isDebitToPay ? it.getCredit() : it.getDebit())
               .reduce(BigDecimal::add)
               .orElse(paymentVoucher.getPaidAmount());
+      companyPaidAmount = companyPaidAmount.subtract(financialDiscountAmount);
+
       BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
 
       if (paymentVoucher.getMoveLine() != null) {
