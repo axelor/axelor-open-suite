@@ -586,6 +586,8 @@
 "The currency is required and must be the same for all sale orders",,,
 "The customer account is blocked because he has late payments.",,,
 "The execution of MRP n°%s is now finished, you can click above to see the results.",,,
+"The fiscal position must be the same for all purchase orders",,,
+"The fiscal position must be the same for all sale orders",,,
 "The invoice for the stock move %s can't be generated because of this following error : %s",,,
 "The invoice has already been generated.",,,
 "The invoice's unit is different and inconvertible into the stock move's unit.",,,
