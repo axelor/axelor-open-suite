@@ -847,14 +847,9 @@ public class MoveController {
   }
 
   public void checkTermsInPayment(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
     try {
-      Move move = request.getContext().asType(Move.class);
-      if (move.getPaymentCondition() != null
-          && move.getId() != null
-          && !move.getPaymentCondition()
-              .equals(Beans.get(MoveRepository.class).find(move.getId()))) {
-        Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
-      }
+      Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

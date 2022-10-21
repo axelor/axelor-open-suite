@@ -602,7 +602,6 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
     <action name="action-move-method-update-partner" if="id != null"/>
-    <action name="action-move-method-check-term-in-payment"/>
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
@@ -692,6 +691,7 @@
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
+    <action name="action-move-method-check-term-in-payment"/>
     <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-account-move-group-onsave"/>
   </action-group>
