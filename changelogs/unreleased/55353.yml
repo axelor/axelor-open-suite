@@ -1,3 +1,0 @@
----
-title: "Stock move merge: When merging stock moves to a single invoice, the fiscal position is now correctly filled and must be the same for all orders"
-type: fix

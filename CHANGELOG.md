@@ -1,3 +1,29 @@
+## [6.2.11] (2022-10-21)
+
+#### Fixed
+
+* Studio Editor: Fix UI issues
+  * Save with the shortcut Ctrl+S.
+  * Automatically switch to the properties panel when inserting a new field.
+  * Hide delete button on classic view.
+  * Scroll to attrs field on select of model, view and custom field.
+  * Add title like "Overview" in white color.
+  * Add same typeface in studio and in the rest of the application.
+  * Add same save and delete icon.
+  * Panel title change to attribute.
+  * Fix issue to remove actions from the studio.
+  * Fix no value of the showTitle in the widget attrs for the panel.
+* Analytic axis: improve groupings management.
+* Move line: fixed an issue when copying a move line used in a bank reconciliation session.
+* Sale Order and Invoice: now correctly filter selectable partner if a line is already present.
+* Bank Reconciliation: fix ongoing reconciled balances computation.
+* Move: fixed an error preventing to select a parte with an empty journal while creating new move.
+* Stock move merge: When merging stock moves to a single invoice, the fiscal position is now correctly filled and must be the same for all orders.
+* Project: reset sequence on project duplication.
+* Move: the date is now displayed even if the move is accounted.
+* Bank Reconciliation: help move line selection by filtering on account type.
+* Accounting report: fix missing french translation in general balance printing.
+
 ## [6.2.10] (2022-10-17)
 
 #### Changes
@@ -646,6 +672,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.11]: https://github.com/axelor/axelor-open-suite/compare/v6.2.10...v6.2.11
 [6.2.10]: https://github.com/axelor/axelor-open-suite/compare/v6.2.9...v6.2.10
 [6.2.9]: https://github.com/axelor/axelor-open-suite/compare/v6.2.8...v6.2.9
 [6.2.8]: https://github.com/axelor/axelor-open-suite/compare/v6.2.7...v6.2.8
