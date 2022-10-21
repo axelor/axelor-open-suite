@@ -417,16 +417,19 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         this.getMoveLineQuery(
             accountingReport, column, line, accountSet, accountTypeSet, analyticAccountSet);
 
-    BigDecimal result = this.getResultFromMoveLine(moveLineQuery, 0, column.getResultSelect());
+    int comparisonType = accountingReport.getReportType().getComparison();
+    BigDecimal result =
+        this.getResultFromMoveLine(moveLineQuery, 0, column.getResultSelect(), comparisonType);
     BigDecimal resultn1 = null;
     BigDecimal resultn2 = null;
 
-    if (accountingReport.getReportType().getComparison()
-        != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
-      resultn1 = this.getResultFromMoveLine(moveLineQuery, 1, column.getResultSelect());
+    if (comparisonType != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
+      resultn1 =
+          this.getResultFromMoveLine(moveLineQuery, 1, column.getResultSelect(), comparisonType);
 
       if (accountingReport.getReportType().getNoOfPeriods() == 2) {
-        resultn2 = this.getResultFromMoveLine(moveLineQuery, 2, column.getResultSelect());
+        resultn2 =
+            this.getResultFromMoveLine(moveLineQuery, 2, column.getResultSelect(), comparisonType);
       }
     }
 
@@ -548,19 +551,42 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   protected BigDecimal getResultFromMoveLine(
-      Query<MoveLine> moveLineQuery, int periodOffset, int resultSelect) {
+      Query<MoveLine> moveLineQuery, int periodOffset, int resultSelect, int comparisonType) {
     String periodAdd =
         periodOffset == 0 ? "" : String.format(" - INTERVAL '%d year'", periodOffset);
 
     List<MoveLine> resultList =
         moveLineQuery
-            .filter(String.format("self.date BETWEEN :dateFrom%1$s AND :dateTo%1$s", periodAdd))
+            .filter(
+                String.format(
+                    "self.date BETWEEN %2$s%1$s AND %3$s%1$s",
+                    periodAdd,
+                    this.getDateFilter("from", comparisonType),
+                    this.getDateFilter("to", comparisonType)))
             .fetch();
 
     return resultList.stream()
         .map(it -> this.getMoveLineAmount(it, resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
+  }
+
+  protected String getDateFilter(String type, int comparisonType) {
+    String dateFilter =
+        comparisonType == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR
+            ? "DATEFROMPARTS(YEAR(:date%s), %d, %d)"
+            : ":date%s";
+    dateFilter = String.format(dateFilter, type);
+
+    if (comparisonType == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR) {
+      if (type.equals("from")) {
+        dateFilter = String.format(dateFilter, 1, 1);
+      } else {
+        dateFilter = String.format(dateFilter, 12, 31);
+      }
+    }
+
+    return dateFilter;
   }
 
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
