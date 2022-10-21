@@ -106,7 +106,7 @@ public class PaymentVoucherLoadService {
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
             + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
             + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
-            + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
+            + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency) ";
 
     if (Beans.get(AccountConfigService.class)
                 .getAccountConfig(paymentVoucher.getCompany())
@@ -120,9 +120,26 @@ public class PaymentVoucherLoadService {
     }
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
-      query += " and self.moveLine.debit > 0 ";
+      query += "and self.moveLine.debit > 0 ";
     } else {
-      query += " and self.moveLine.credit > 0 ";
+      query += "and self.moveLine.credit > 0 ";
+    }
+
+    int functionalOriginSelect = 0;
+    if (paymentVoucher.getOperationTypeSelect()
+            == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND
+        || paymentVoucher.getOperationTypeSelect()
+            == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      functionalOriginSelect = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+    } else if (paymentVoucher.getOperationTypeSelect()
+            == PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND
+        || paymentVoucher.getOperationTypeSelect()
+            == PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE) {
+      functionalOriginSelect = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
+    }
+    if (functionalOriginSelect != 0) {
+      query +=
+          "and (self.moveLine.move.functionalOriginSelect = :functionalOriginSelect OR self.invoice.operationTypeSelect = :operationTypeSelect)";
     }
 
     return invoiceTermService.filterNotAwaitingPayment(
@@ -138,6 +155,8 @@ public class PaymentVoucherLoadService {
             .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
             .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
             .bind("currency", paymentVoucher.getCurrency())
+            .bind("functionalOriginSelect", functionalOriginSelect)
+            .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
             .fetch());
   }
 
