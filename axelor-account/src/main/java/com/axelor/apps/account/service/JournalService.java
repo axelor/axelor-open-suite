@@ -18,26 +18,14 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 public class JournalService {
-  protected final PartnerService partnerService;
-
-  @Inject
-  public JournalService(PartnerService partnerService) {
-    this.partnerService = partnerService;
-  }
 
   /**
    * Compute the balance of the journal, depending of the account type and balance type
@@ -69,27 +57,5 @@ public class JournalService {
     resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
 
     return resultMap;
-  }
-
-  public String filterJournalPartnerCompatibleType(Move move) {
-    Journal journal = move.getJournal();
-    if (journal.getCompatiblePartnerTypeSelect() != null) {
-      StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
-      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
-      Set<Long> compatiblePartnerIds = new HashSet<>();
-      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
-        compatiblePartnerIds.addAll(partnerService.getPartnerIdsByType(compatiblePartnerType));
-      }
-      if (compatiblePartnerIds.size() > 0) {
-        compatiblePartnerDomain.append(
-            compatiblePartnerIds.stream().map(Object::toString).collect(Collectors.joining(",")));
-        compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
-        compatiblePartnerDomain.append(")");
-        return compatiblePartnerDomain.toString();
-      } else {
-        return null;
-      }
-    }
-    return null;
   }
 }

@@ -58,7 +58,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -768,18 +767,5 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return siren;
-  }
-
-  @Override
-  public List<Long> getPartnerIdsByType(String type) {
-    StringBuilder query = new StringBuilder();
-    query.append("self.");
-    query.append(type);
-    query.append("=true");
-    return (!StringUtils.isEmpty(type))
-        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
-            .map(m -> (long) m.get("id"))
-            .collect(Collectors.toList())
-        : new ArrayList<>();
   }
 }

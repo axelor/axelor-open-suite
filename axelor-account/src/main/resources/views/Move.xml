@@ -85,7 +85,7 @@
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-move-group-partner-on-select"
+            onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency" colSpan="3" onChange="action-move-record-set-currency-code"
             required="true"/>
@@ -645,16 +645,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
 
   </action-method>
-  <action-method
-    name="action-account-move-method-filter-journal-partner-compatible-type">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="filterJournalPartnerCompatibleType"/>
-  </action-method>
-
-  <action-group name="action-move-group-partner-on-select">
-    <action name="action-account-move-method-filter-partner"/>
-    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
-  </action-group>
 
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
