@@ -1,3 +1,10 @@
+## [5.4.27] (2022-10-21)
+
+#### Fixed
+
+* Project: reset sequence on project duplication.
+* Move: the date is now displayed even if the move is accounted.
+
 ## [5.4.26] (2022-10-17)
 
 #### Changes
@@ -714,6 +721,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.27]: https://github.com/axelor/axelor-open-suite/compare/v5.4.26...v5.4.27
 [5.4.26]: https://github.com/axelor/axelor-open-suite/compare/v5.4.25...v5.4.26
 [5.4.25]: https://github.com/axelor/axelor-open-suite/compare/v5.4.24...v5.4.25
 [5.4.24]: https://github.com/axelor/axelor-open-suite/compare/v5.4.23...v5.4.24
