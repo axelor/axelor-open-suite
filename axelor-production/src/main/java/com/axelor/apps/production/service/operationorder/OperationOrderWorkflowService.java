@@ -230,7 +230,7 @@ public class OperationOrderWorkflowService {
 
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    LocalDateTime lastOPerationDate = this.getLastOperationOrder(operationOrder);
+    LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
     operationOrder.setPlannedStartDateT(maxDate);
 
@@ -314,7 +314,7 @@ public class OperationOrderWorkflowService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder replan(OperationOrder operationOrder) throws AxelorException {
 
-    operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+    operationOrder.setPlannedStartDateT(this.getLastOperationDate(operationOrder));
 
     operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
@@ -343,47 +343,42 @@ public class OperationOrderWorkflowService {
     return operationOrderList;
   }
 
-  public LocalDateTime getLastOperationOrder(OperationOrder operationOrder) {
-
+  protected LocalDateTime getLastOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
     OperationOrder lastOperationOrder =
         operationOrderRepo
             .all()
             .filter(
-                "self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
-                operationOrder.getManufOrder(),
-                operationOrder.getPriority(),
-                operationOrder.getId())
+                "self.manufOrder = :manufOrder AND self.priority <= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")
             .fetchOne();
 
-    if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority() != null
-          && lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
-        if (lastOperationOrder.getPlannedStartDateT() != null
-            && lastOperationOrder
-                .getPlannedStartDateT()
-                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine())) {
-            return lastOperationOrder.getPlannedEndDateT();
-          }
-          return lastOperationOrder.getPlannedStartDateT();
-        } else {
-          return operationOrder.getManufOrder().getPlannedStartDateT();
-        }
-      } else {
-        if (lastOperationOrder.getPlannedEndDateT() != null
-            && lastOperationOrder
-                .getPlannedEndDateT()
-                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          return lastOperationOrder.getPlannedEndDateT();
-        } else {
-          return operationOrder.getManufOrder().getPlannedStartDateT();
-        }
-      }
+    LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
+    if (lastOperationOrder == null) {
+      return manufOrderPlannedStartDateT;
     }
 
-    return operationOrder.getManufOrder().getPlannedStartDateT();
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+
+    if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
+      if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
+      }
+
+    } else if (plannedEndDateT != null && plannedEndDateT.isAfter(manufOrderPlannedStartDateT)) {
+      return plannedEndDateT;
+    }
+
+    return manufOrderPlannedStartDateT;
   }
 
   /**
