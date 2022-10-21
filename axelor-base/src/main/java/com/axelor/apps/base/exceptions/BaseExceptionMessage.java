@@ -191,6 +191,9 @@ public final class BaseExceptionMessage {
 
   public static final String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
 
+  public static final String TAX_DATE_MISSING = /*$$(*/
+      "There is no date to determine which rate to take for the tax. Please define a tax active version for : %s." /*)*/;
+
   /** Template rule service */
   public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
 
@@ -499,4 +502,6 @@ public final class BaseExceptionMessage {
       "Error: The type of the field %s does not match the type of the value %s" /*)*/;
   public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
+
+  public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
 }

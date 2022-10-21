@@ -1,3 +1,63 @@
+## [6.3.2] (2022-10-17)
+
+#### Changes
+
+* Fiscal year: improve UX to create new period.
+
+#### Fixed
+
+* Outcoming stock move: when realized, outcoming stock move will now generate a line on the wap history.
+* Interco: fixed an error occurring when generating a sale order from a purchase order.
+* Invoice report: invoice lines will now correctly display the currency when the invoice in ati option is activated.
+* Helpdesk: fixed typo in french translation for cancel button.
+* Supplychain: fixed error when importing purchase order from supplychain.
+* Logistical form: fixed a translation issue when printing packing list.
+* Inventory: trying to import a inventory line with a product that does not exist will now result in a explicit error.
+* Invoice: fixed company bank details when partner is factorized.
+* Bank reconciliation: move line is now saved in bank statement line to avoid unlimited auto accounting on a same bank statement line.
+* Accounting batch: fill the selected currency with the default company currency.
+* Prod process report: fixed ordering of prod process lines in the report, they are now correctly sorted by priority.
+* Bill of materials: added an error message when company is missing during cost price computation.
+* Bank reconciliation: fixed an issue where balance was not recomputed when lines are selected or unselected.
+* Stock history: fixed an error occurring when updating stock history in batch if product does not have a stock location.
+* Sale order report: now correctly display the title of shipment and end of validity dates.
+* Analytic rules: prevent account from being saved if there are unauthorized analytic accounts.
+* Supplychain: fixed error occurring while importing demo data.
+* Bank order: add verification to avoid sending twice the same file to the bank on user mistake.
+* DAS2 preview: fixed year filter on move in DAS2 preview process.
+* Add missing french translation on error message in PFP process.
+
+## [6.3.1] (2022-09-29)
+
+#### Fixed
+
+* Sale order: fixed an issue allowing users to invoice too much quantities when invoicing partially.
+* Sale order: fixed an error preventing users from invoicing partially a sale order after refunding it.
+* Sale quotation template: Fix NPE error when saving a new sale quotation template.
+* Bank Statement: corrected wrong behaviors of check bank statement on import.
+* Account type: Update demo data by checking, on the designated technical account types, the checkbox that exports the partner associated to the move line.
+* Move: fixed an issue where simulate button was not displayed on grid view after deleting move from form view.
+* Move: fixed error message when trying to remove a move.
+* Move: fixed an issue where the period field was not emptied on company change, causing inconsistencies.
+* Move: duplicating a move with status simulated will now correctly reset the status to new instead of simulated.
+* Move: prevent the accounting of a move that contains move lines out of the move period.
+* Move: optimize performance when reconciling multiple move lines.
+* Journal: complete "allow accounting daybook" in journal demo data.
+* Debt recovery: removed error message when there is no email address for a mail type message.
+* Purchase Order: fixed an issue where "amount available" in budget tab was not correctly computed.
+* DAS2: fix mandatory infos null checks for DAS2 export
+* Invoice: generating an invoice from a sale order or a stock move now correctly sets the project.
+* Invoice: fixed an issue where project was not filled on a partial invoice generated from a purchase order.
+* Invoice line: fix error message when opening an invoice line not from an invoice.
+* Bank Payment: added bank statement demo data.
+* Contract: remove duplicate duration values on contract templates and fix french translation in form view.
+* MRP: fixed MRP calculation for manufacturing order partially finished, the remaining amount to produce is now used in the computation.
+* Stock move line: fixed an issue allowing the user to fill quantity in a title line, causing inconsistencies.
+* Tracking number: fixed an issue where the product was missing in a tracking number created from inventory lines.
+* Tax: fixed an error occurring when choosing a product for a sale or a purchase order if the creation date was not filled.
+* Accounting Report: corrected numbers exported as text in general comparative balance report in excel format.
+* Accounting Batch: fixed NPE error on bank order creation when expense payment date is null.
+
 ## [6.3.0] (2022-09-15)
 
 #### Features
@@ -113,4 +173,6 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.2]: https://github.com/axelor/axelor-open-suite/compare/v6.3.1...v6.3.2
+[6.3.1]: https://github.com/axelor/axelor-open-suite/compare/v6.3.0...v6.3.1
 [6.3.0]: https://github.com/axelor/axelor-open-suite/compare/v6.2.8...v6.3.0

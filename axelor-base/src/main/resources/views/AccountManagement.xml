@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.AccountManagement">
     <field name="typeSelect"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="saleAccount" if-module="axelor-account" form-view="account-form"
       canEdit="false" grid-view="account-grid" if="__config__.app.isApp('account')"/>
     <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
@@ -24,7 +24,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fixedAssetCategory" if-module="axelor-account"
       if="__config__.app.isApp('account')" domain="self.company = :company"
       form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" canEdit="false"/>
@@ -156,7 +156,7 @@
         <field name="financialDiscountAccount"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFinancialDiscount()"
           canEdit="false"/>
       </panel>
     </panel>
@@ -216,7 +216,7 @@
   <search-filters name="account-management-filters"
     model="com.axelor.apps.account.db.AccountManagement" title="Account management filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="saleAccount" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="purchaseAccount" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="cashAccount" hidden="true" if="!__config__.app.isApp('account')"/>

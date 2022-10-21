@@ -27,7 +27,7 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
   @Override
   public SequenceVersion createNewSequenceVersion(Sequence sequence, LocalDate refDate) {
     SequenceVersion sequenceVersion;
-    SequenceVersion lastSeqVersion = lastActiveSequenceVersion(sequence);
+    SequenceVersion lastSeqVersion = lastActiveSequenceVersion(sequence, refDate);
     LocalDate newStartDate = null;
 
     if (lastSeqVersion != null && lastSeqVersion.getEndDate() != null) {
@@ -64,7 +64,10 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
   protected SequenceVersion createMonthlySequenceVersion(
       Sequence sequence, LocalDate refDate, LocalDate startDate) {
     SequenceVersion sequenceVersion;
-    if (startDate == null) {
+
+    if (startDate == null
+        || startDate.getYear() != refDate.getYear()
+        || startDate.getMonthValue() != refDate.getMonthValue()) {
       sequenceVersion =
           new SequenceVersion(
               sequence,
@@ -90,10 +93,11 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
     return sequenceVersion;
   }
 
-  protected SequenceVersion lastActiveSequenceVersion(Sequence sequence) {
+  protected SequenceVersion lastActiveSequenceVersion(Sequence sequence, LocalDate refDate) {
     return Query.of(SequenceVersion.class)
-        .filter("self.sequence = :sequence")
+        .filter("self.sequence = :sequence AND self.startDate <= :refDate")
         .bind("sequence", sequence)
+        .bind("refDate", refDate)
         .order("-endDate")
         .fetchOne();
   }

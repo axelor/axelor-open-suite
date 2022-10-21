@@ -73,7 +73,10 @@ public class BankReconciliationController {
       if (bankReconciliationLines.isEmpty()) {
         response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
+        BankReconciliationService bankReconciliationService =
+            Beans.get(BankReconciliationService.class);
+        bankReconciliationService.unreconcileLines(bankReconciliationLines);
+        bankReconciliationService.computeBalances(br);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -209,6 +212,9 @@ public class BankReconciliationController {
     try {
       Context context = request.getContext();
 
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+
       Map<String, Object> bankReconciliationContext =
           (Map<String, Object>) context.get("_bankReconciliation");
 
@@ -228,6 +234,9 @@ public class BankReconciliationController {
       Beans.get(BankReconciliationValidateService.class)
           .validateMultipleBankReconciles(
               bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
+
+      bankReconciliationService.computeBalances(bankReconciliation);
+
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

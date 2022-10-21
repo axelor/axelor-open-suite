@@ -411,20 +411,28 @@ public class InvoiceLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-      Partner partner = this.getInvoice(context).getPartner();
+      Invoice parent = this.getInvoice(context);
+      Partner partner = parent.getPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = invoiceLine.getProduct();
 
-      if (invoiceLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                invoiceLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                invoiceLine.getProduct().getName(), userLanguage, partnerLanguage));
+      if (product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
+
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

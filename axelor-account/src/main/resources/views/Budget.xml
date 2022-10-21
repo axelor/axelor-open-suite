@@ -8,7 +8,7 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="inChargeUser"/>
     <field name="totalAmountExpected" aggregate="sum"/>
     <field name="statusSelect"/>
@@ -182,7 +182,7 @@
   <search-filters name="budget-filters" model="com.axelor.apps.account.db.Budget"
     title="Budget filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="totalAmountCommitted" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
 

@@ -57,7 +57,7 @@
 	  ]]>
     </extra-code>
     <track>
-      <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+      <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     </track>
   </entity>
 

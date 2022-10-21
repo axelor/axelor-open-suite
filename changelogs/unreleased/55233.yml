@@ -1,0 +1,3 @@
+---
+title: "Sale Order and Invoice : now correctly filter selectable partner if a line is already present"
+type: fix

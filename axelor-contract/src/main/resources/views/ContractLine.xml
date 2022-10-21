@@ -41,7 +41,7 @@
         <field name="contractVersion" hidden="true"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
@@ -119,7 +119,7 @@
         <field name="description" colSpan="12" widget="html"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
