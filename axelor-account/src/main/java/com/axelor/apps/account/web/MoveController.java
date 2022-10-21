@@ -26,14 +26,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
-import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -585,27 +584,18 @@ public class MoveController {
     }
   }
 
-  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      String journalPartnerCompatibleDomain =
-          Beans.get(JournalService.class).filterJournalPartnerCompatibleType(move);
-      if (journalPartnerCompatibleDomain != null) {
-        response.setAttr("partner", "domain", journalPartnerCompatibleDomain);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void onChangeJournal(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       if (move.getPartner() != null) {
-        boolean isPartnerNotCompatible =
-            Beans.get(MoveCreateFromInvoiceService.class).isPartnerNotCompatible(move);
-        if (isPartnerNotCompatible) {
+        boolean isPartnerCompatible =
+            Beans.get(JournalCheckPartnerTypeService.class)
+                .isPartnerCompatible(move.getJournal(), move.getPartner());
+        if (!isPartnerCompatible) {
           response.setValue("partner", null);
+          response.setNotify(
+              I18n.get(
+                  AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
         }
       }
     } catch (Exception e) {
