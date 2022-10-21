@@ -1,3 +1,38 @@
+## [6.3.3] (2022-10-21)
+
+#### Changes
+
+* Add missing config for extraordinary depreciation account on fixed assets category and modify disposal move generation process to include this new config account.
+
+#### Fixed
+
+* Studio Editor: Fix UI issues
+  * Save with the shortcut Ctrl+S.
+  * Automatically switch to the properties panel when inserting a new field.
+  * Hide delete button on classic view.
+  * Scroll to attrs field on select of model, view and custom field.
+  * Add title like "Overview" in white color.
+  * Add same typeface in studio and in the rest of the application.
+  * Add same save and delete icon.
+  * Panel title change to attribute.
+  * Fix issue to remove actions from the studio.
+  * Fix no value of the showTitle in the widget attrs for the panel.
+* Menu builder: add help attribute in domainCondition field of MenuBuilder form.
+* Bank reconciliation report: Made adjustements (fonts, size, etc..) in the report.
+* Analytic axis: improve groupings management.
+* Move line: fixed an issue when copying a move line used in a bank reconciliation session.
+* Sale Order and Invoice: now correctly filter selectable partner if a line is already present.
+* Bank reconciliation printing: fixed an issue where the printing was showing canceled and already reconciled moves.
+* Fixed asset: fixed an issue in UI where the button to update depreciation settings was shown while it shoulde have been hidden.
+* Bank Reconciliation: fix ongoing reconciled balances computation.
+* Move: fixed an error preventing to select a parte with an empty journal while creating new move.
+* Sequence version: fixed an issue when generating a new sequence version by year/month.
+* Stock move merge: When merging stock moves to a single invoice, the fiscal position is now correctly filled and must be the same for all orders.
+* Project: reset sequence on project duplication.
+* Move: the date is now displayed even if the move is accounted.
+* Bank Reconciliation: help move line selection by filtering on account type.
+* Accounting report: fix missing french translation in general balance printing.
+
 ## [6.3.2] (2022-10-17)
 
 #### Changes
@@ -173,6 +208,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.3]: https://github.com/axelor/axelor-open-suite/compare/v6.3.2...v6.3.3
 [6.3.2]: https://github.com/axelor/axelor-open-suite/compare/v6.3.1...v6.3.2
 [6.3.1]: https://github.com/axelor/axelor-open-suite/compare/v6.3.0...v6.3.1
 [6.3.0]: https://github.com/axelor/axelor-open-suite/compare/v6.2.8...v6.3.0
