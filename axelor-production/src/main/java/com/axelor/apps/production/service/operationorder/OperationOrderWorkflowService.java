@@ -48,6 +48,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderWorkflowService {
@@ -162,9 +163,8 @@ public class OperationOrderWorkflowService {
             && lastOperationOrder
                 .getPlannedStartDateT()
                 .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (lastOperationOrder
-              .getMachineWorkCenter()
-              .equals(operationOrder.getMachineWorkCenter())) {
+          if (Objects.equals(
+              lastOperationOrder.getMachineWorkCenter(), operationOrder.getMachineWorkCenter())) {
             return lastOperationOrder.getPlannedEndDateT();
           }
           return lastOperationOrder.getPlannedStartDateT();
