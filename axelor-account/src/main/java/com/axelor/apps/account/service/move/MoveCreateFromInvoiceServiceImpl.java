@@ -432,38 +432,4 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     }
     return oDmove;
   }
-
-  @Override
-  public boolean isPartnerNotCompatible(Move move) {
-    Journal journal = move.getJournal();
-    Partner partner = move.getPartner();
-    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null) {
-      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
-      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
-        switch (compatiblePartnerType) {
-          case JournalRepository.IS_PROSPECT:
-            if (partner.getIsProspect()) {
-              return false;
-            }
-            break;
-          case JournalRepository.IS_CUSTOMER:
-            if (partner.getIsCustomer()) {
-              return false;
-            }
-            break;
-          case JournalRepository.IS_SUPPLIER:
-            if (partner.getIsSupplier()) {
-              return false;
-            }
-            break;
-          case JournalRepository.IS_FACTOR:
-            if (!partner.getIsFactor()) {
-              return false;
-            }
-            break;
-        }
-      }
-    }
-    return true;
-  }
 }
