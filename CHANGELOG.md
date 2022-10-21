@@ -1,3 +1,21 @@
+## [6.1.23] (2022-10-21)
+
+#### Fixed
+
+* Studio Editor: Fix UI issues
+  * Save with the shortcut Ctrl+S.
+  * Automatically switch to the properties panel when inserting a new field.
+  * Hide delete button on classic view.
+  * Scroll to attrs field on select of model, view and custom field.
+  * Add title like "Overview" in white color.
+  * Add same typeface in studio and in the rest of the application.
+  * Add same save and delete icon.
+  * Panel title change to attribute.
+  * Fix issue to remove actions from the studio.
+  * Fix no value of the showTitle in the widget attrs for the panel.
+* Project: reset sequence on project duplication.
+* Move: the date is now displayed even if the move is accounted.
+
 ## [6.1.22] (2022-10-17)
 
 #### Changes
@@ -790,6 +808,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.23]: https://github.com/axelor/axelor-open-suite/compare/v6.1.22...v6.1.23
 [6.1.22]: https://github.com/axelor/axelor-open-suite/compare/v6.1.21...v6.1.22
 [6.1.21]: https://github.com/axelor/axelor-open-suite/compare/v6.1.20...v6.1.21
 [6.1.20]: https://github.com/axelor/axelor-open-suite/compare/v6.1.19...v6.1.20
