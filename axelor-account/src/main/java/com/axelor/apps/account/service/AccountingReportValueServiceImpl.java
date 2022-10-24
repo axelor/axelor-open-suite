@@ -1,5 +1,8 @@
 package com.axelor.apps.account.service;
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
+import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingReport;
@@ -26,6 +29,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -413,23 +417,24 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
       String lineCode) {
-    Query<MoveLine> moveLineQuery =
+    List<MoveLine> moveLineList =
         this.getMoveLineQuery(
-            accountingReport, column, line, accountSet, accountTypeSet, analyticAccountSet);
+                accountingReport, column, line, accountSet, accountTypeSet, analyticAccountSet)
+            .fetch();
 
-    int comparisonType = accountingReport.getReportType().getComparison();
     BigDecimal result =
-        this.getResultFromMoveLine(moveLineQuery, 0, column.getResultSelect(), comparisonType);
+        this.getResultFromMoveLine(accountingReport, moveLineList, 0, column.getResultSelect());
     BigDecimal resultn1 = null;
     BigDecimal resultn2 = null;
 
-    if (comparisonType != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
+    if (accountingReport.getReportType().getComparison()
+        != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
       resultn1 =
-          this.getResultFromMoveLine(moveLineQuery, 1, column.getResultSelect(), comparisonType);
+          this.getResultFromMoveLine(accountingReport, moveLineList, 1, column.getResultSelect());
 
       if (accountingReport.getReportType().getNoOfPeriods() == 2) {
         resultn2 =
-            this.getResultFromMoveLine(moveLineQuery, 2, column.getResultSelect(), comparisonType);
+            this.getResultFromMoveLine(accountingReport, moveLineList, 2, column.getResultSelect());
       }
     }
 
@@ -464,7 +469,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 line.getAccountCode(),
                 column.getAnalyticAccountCode(),
                 line.getAnalyticAccountCode()))
-        .bind("dateFrom", accountingReport.getDateFrom())
+        .bind("dateFrom", accountingReport.getDateFrom().minusYears(2))
         .bind("dateTo", accountingReport.getDateTo())
         .bind("journal", accountingReport.getJournal())
         .bind("paymentMode", accountingReport.getPaymentMode())
@@ -493,7 +498,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
 
     if (accountingReport.getDateFrom() != null) {
-      queryList.add("(self.date IS NULL OR self.date >= :dateFrom - INTERVAL '2 year')");
+      queryList.add("(self.date IS NULL OR self.date >= :dateFrom)");
     }
 
     if (accountingReport.getDateTo() != null) {
@@ -551,42 +556,32 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   protected BigDecimal getResultFromMoveLine(
-      Query<MoveLine> moveLineQuery, int periodOffset, int resultSelect, int comparisonType) {
-    String periodAdd =
-        periodOffset == 0 ? "" : String.format(" - INTERVAL '%d year'", periodOffset);
+      AccountingReport accountingReport,
+      List<MoveLine> moveLineList,
+      int periodOffset,
+      int resultSelect) {
+    LocalDate dateFrom = accountingReport.getDateFrom();
+    LocalDate dateTo = accountingReport.getDateTo();
 
-    List<MoveLine> resultList =
-        moveLineQuery
-            .filter(
-                String.format(
-                    "self.date BETWEEN %2$s%1$s AND %3$s%1$s",
-                    periodAdd,
-                    this.getDateFilter("from", comparisonType),
-                    this.getDateFilter("to", comparisonType)))
-            .fetch();
+    if (accountingReport.getReportType().getComparison()
+        == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR) {
+      dateFrom = dateFrom.with(firstDayOfYear());
+      dateTo = dateTo.with(lastDayOfYear());
+    }
 
-    return resultList.stream()
+    if (periodOffset > 0) {
+      dateFrom = dateFrom.minusYears(periodOffset);
+      dateTo = dateTo.minusYears(periodOffset);
+    }
+
+    final LocalDate finalDateFrom = dateFrom;
+    final LocalDate finalDateTo = dateTo;
+
+    return moveLineList.stream()
+        .filter(it -> !it.getDate().isBefore(finalDateFrom) && !it.getDate().isAfter(finalDateTo))
         .map(it -> this.getMoveLineAmount(it, resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
-  }
-
-  protected String getDateFilter(String type, int comparisonType) {
-    String dateFilter =
-        comparisonType == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR
-            ? "DATEFROMPARTS(YEAR(:date%s), %d, %d)"
-            : ":date%s";
-    dateFilter = String.format(dateFilter, type);
-
-    if (comparisonType == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR) {
-      if (type.equals("from")) {
-        dateFilter = String.format(dateFilter, 1, 1);
-      } else {
-        dateFilter = String.format(dateFilter, 12, 31);
-      }
-    }
-
-    return dateFilter;
   }
 
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
