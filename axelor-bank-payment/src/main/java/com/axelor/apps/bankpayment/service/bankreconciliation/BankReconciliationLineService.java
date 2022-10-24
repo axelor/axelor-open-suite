@@ -120,20 +120,10 @@ public class BankReconciliationLineService {
     BigDecimal moveLineCredit;
 
     if (isDebit) {
-      if (BankReconciliationToolService.isForeignCurrency(
-          bankReconciliationLine.getBankReconciliation())) {
-        moveLineCredit = moveLine.getCurrencyAmount();
-      } else {
-        moveLineCredit = moveLine.getCredit();
-      }
+      moveLineCredit = moveLine.getCurrencyAmount();
       moveLineDebit = moveLine.getDebit();
     } else {
-      if (BankReconciliationToolService.isForeignCurrency(
-          bankReconciliationLine.getBankReconciliation())) {
-        moveLineDebit = moveLine.getCurrencyAmount();
-      } else {
-        moveLineDebit = moveLine.getDebit();
-      }
+      moveLineDebit = moveLine.getCurrencyAmount();
       moveLineCredit = moveLine.getCredit();
     }
 

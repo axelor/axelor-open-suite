@@ -185,15 +185,13 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
     reverseMoveLine.setBankReconciledAmount(
-        reverseMoveLine
-            .getDebit()
-            .add(reverseMoveLine.getCredit().subtract(orgineMoveLine.getBankReconciledAmount())));
+        reverseMoveLine.getCurrencyAmount().subtract(orgineMoveLine.getBankReconciledAmount()));
     return reverseMoveLine;
   }
 
   protected Move updateBankAmountReconcile(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setBankReconciledAmount(moveLine.getDebit().add(moveLine.getCredit()));
+      moveLine.setBankReconciledAmount(moveLine.getCurrencyAmount());
     }
     return move;
   }
