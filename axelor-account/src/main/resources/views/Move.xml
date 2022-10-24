@@ -121,6 +121,7 @@
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
+          <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" type="boolean" hidden="true"/>
           <field name="paymentCondition.isFree"/>
         </panel>
@@ -602,7 +603,6 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
     <action name="action-move-method-update-partner" if="id != null"/>
-    <action name="action-move-method-check-term-in-payment"/>
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
     <action name="action-move-method-round-invoice-term-percentages"/>
@@ -692,6 +692,7 @@
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
+    <action name="action-move-group-check-term-in-payment"/>
     <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-account-move-group-onsave"/>
   </action-group>
@@ -704,6 +705,11 @@
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-account-move-group-onsave"/>
+  </action-group>
+
+  <action-group name="action-move-group-check-term-in-payment">
+    <action name="action-move-method-check-term-in-payment"/>
+    <action name="action-move-validate-check-term-in-payment"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
@@ -722,6 +728,11 @@
   <action-method name="action-move-method-check-term-in-payment">
     <call class="com.axelor.apps.account.web.MoveController" method="checkTermsInPayment"/>
   </action-method>
+
+  <action-validate name="action-move-validate-check-term-in-payment">
+    <error message="$paymentConditionChangeError"
+      if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
+  </action-validate>
 
   <!-- ACTION RECORD -->
   <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
