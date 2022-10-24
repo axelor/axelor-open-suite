@@ -363,6 +363,11 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       // Cette donnée est obligatoire pour les remises mono-date (zone 19 de l'"Entête" = "1" ou
       // "2"), pour les autres remises, elle ne doit pas être renseignée.
       if (!isMultiDates) {
+        if (bankOrderDate == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NO_BANK_ORDER_DATE));
+        }
         senderRecord +=
             cfonbToolService.createZone(
                 I18n.get("20 - Bank order date"),

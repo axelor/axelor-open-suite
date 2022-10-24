@@ -114,6 +114,12 @@ public final class BankPaymentExceptionMessage {
       "Bank orders can only be deleted at draft or canceled status." /*)*/;
   public static final String BANK_ORDER_NO_SENDER_CURRENCY = /*$$(*/
       "Please set a currency in the sender bank details : %s." /*)*/;
+  public static final String BANK_ORDER_NO_BANK_ORDER_DATE = /*$$(*/
+      "Please set a bank order date." /*)*/;
+  public static final String BANK_ORDER_NO_BANK_ORDER_DATE_NO_MULTI_DATE = /*$$(*/
+      "The bank order date is not filled while it should be. Indeed, the configured bank order file format is not a multi date format thus the bank order date is required to go on into the process of the bank order %s." /*)*/;
+  public static final String BANK_ORDER_NO_BANK_ORDER_DATE_MULTI_DATE = /*$$(*/
+      "The bank order file format is configured as multi date format thus the bank order date on each bank order line is required to continue processing the bank order %s." /*)*/;
 
   public static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
