@@ -1460,4 +1460,13 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE = /*$$(*/
+      "At least one of the invoice terms is selected in the payment voucher %s, it is not possible to modify them." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_IN_PAYMENT_SESSION_CHANGE = /*$$(*/
+      "At least one of the invoice terms is selected in the payment session %s, it is not possible to modify them." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
+      "At least one of the invoice terms is paid or partially paid, it is not possible to modify them." /*)*/;
 }

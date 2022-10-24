@@ -21,5 +21,5 @@ public interface MoveInvoiceTermService {
 
   void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate);
 
-  void checkIfInvoiceTermInPayment(Move move) throws AxelorException;
+  String checkIfInvoiceTermInPayment(Move move);
 }
