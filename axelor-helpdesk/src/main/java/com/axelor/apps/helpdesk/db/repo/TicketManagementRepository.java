@@ -20,6 +20,8 @@ package com.axelor.apps.helpdesk.db.repo;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class TicketManagementRepository extends TicketRepository {
@@ -30,7 +32,11 @@ public class TicketManagementRepository extends TicketRepository {
   @Override
   public Ticket save(Ticket ticket) {
 
-    ticketService.computeSeq(ticket);
+    try {
+      ticketService.computeSeq(ticket);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+    }
     ticketService.computeSLA(ticket);
     ticketService.checkSLAcompleted(ticket);
     return super.save(ticket);

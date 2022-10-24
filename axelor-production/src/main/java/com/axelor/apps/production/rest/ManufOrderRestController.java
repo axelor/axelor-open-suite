@@ -4,6 +4,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderProductListResponse;
+import com.axelor.apps.production.rest.dto.ManufOrderProductPostRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderProductPutRequest;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderPutRequest;
@@ -158,5 +159,32 @@ public class ManufOrderRestController {
         Response.Status.OK,
         "Wasted product quantity successfully updated.",
         new WastedProductResponse(prodProduct));
+  }
+
+  @Path("/{manufOrderId}/add-product/")
+  @POST
+  @HttpExceptionHandler
+  public Response addProduct(
+      @PathParam("manufOrderId") long manufOrderId, ManufOrderProductPostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(ManufOrder.class).createAccess(StockMoveLine.class).check();
+
+    ManufOrder manufOrder =
+        ObjectFinder.find(ManufOrder.class, manufOrderId, requestBody.getVersion());
+
+    StockMoveLine stockMoveLine =
+        Beans.get(ManufOrderProductRestService.class)
+            .addManufOrderProduct(
+                requestBody.fetchProduct(),
+                requestBody.getQty(),
+                requestBody.fetchTrackingNumber(),
+                manufOrder,
+                requestBody.getProductType());
+
+    return ResponseConstructor.build(
+        Response.Status.CREATED,
+        "Product successfully added to manufacturing order.",
+        new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }

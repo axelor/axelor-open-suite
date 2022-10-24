@@ -169,7 +169,8 @@ public class AccountClearanceService {
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
     accountClearance.setDateTime(appBaseService.getTodayDateTime());
     accountClearance.setName(
-        sequenceService.getSequenceNumber(SequenceRepository.ACCOUNT_CLEARANCE, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.ACCOUNT_CLEARANCE, company, AccountClearance.class, "name"));
     accountClearanceRepo.save(accountClearance);
   }
 

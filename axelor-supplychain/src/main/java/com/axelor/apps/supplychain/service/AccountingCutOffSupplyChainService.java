@@ -53,7 +53,8 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
       boolean automaticReverse,
       boolean automaticReconcile,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException;
 
   public Move generateCutOffMoveFromStockMove(
@@ -70,7 +71,8 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
       boolean includeNotStockManagedProduct,
       boolean isReverse,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException;
 
   @CallMethod
