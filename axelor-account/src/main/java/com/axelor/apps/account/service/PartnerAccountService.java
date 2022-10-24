@@ -18,9 +18,19 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.db.Partner;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PartnerAccountService {
+
+  protected MoveLineRepository moveLineRepository;
+
+  @Inject
+  public PartnerAccountService(MoveLineRepository moveLineRepository) {
+    this.moveLineRepository = moveLineRepository;
+  }
 
   public String getDefaultSpecificTaxNote(Partner partner) {
     FiscalPosition fiscalPosition = partner.getFiscalPosition();
@@ -30,5 +40,14 @@ public class PartnerAccountService {
     }
 
     return fiscalPosition.getCustomerSpecificNoteText();
+  }
+
+  @Transactional
+  public void updateMoveLineDas2Activity(Partner partner) {
+    moveLineRepository
+        .all()
+        .filter("self.partner = :partner")
+        .bind("partner", partner)
+        .update("das2Activity", partner.getDas2Activity());
   }
 }

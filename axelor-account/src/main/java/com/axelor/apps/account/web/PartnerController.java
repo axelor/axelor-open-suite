@@ -182,4 +182,16 @@ public class PartnerController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateMoveLineDas2Activity(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (partner.getId() == null) {
+        return;
+      }
+      Beans.get(PartnerAccountService.class).updateMoveLineDas2Activity(partner);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

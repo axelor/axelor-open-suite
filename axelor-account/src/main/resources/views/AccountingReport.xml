@@ -48,7 +48,7 @@
 
     <panel sidebar="true" name="infoPanel" title="Info">
       <button name="searchBtn" title="Search"
-        hideIf="([12,15,16,17,2000,2001,18,20,21,22].indexOf(reportType.typeSelect) != -1)"
+        hideIf="([12,15,16,17,2000,2001,18,21,22].indexOf(reportType.typeSelect) != -1)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
       <button name="exportBtn" title="Print" icon="fa-print"
         onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"/>

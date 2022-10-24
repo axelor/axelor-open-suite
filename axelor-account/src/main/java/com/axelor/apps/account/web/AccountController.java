@@ -223,4 +223,16 @@ public class AccountController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateMoveLineServiceType(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (account.getId() == null) {
+        return;
+      }
+      Beans.get(AccountService.class).updateMoveLineServiceType(account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

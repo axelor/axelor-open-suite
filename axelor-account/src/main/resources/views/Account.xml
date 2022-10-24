@@ -49,8 +49,7 @@
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" width="large"
     onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
-    onLoad="action-group-account-account-onload"
-    onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
+    onLoad="action-group-account-account-onload" onSave="action-account-group-onSave">
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
@@ -207,6 +206,12 @@
     <action name="action-attrs-account-account-status-show-title"/>
   </action-group>
 
+  <action-group name="action-account-group-onSave">
+    <action name="action-account-method-check-if-code-already-exist-for-company"/>
+    <action name="action-on-change-distribution-template-account"/>
+    <action name="action-account-method-update-move-line-service-type"/>
+  </action-group>
+
   <action-group name="action-account-group-new-customer-account">
     <action name="action-account-record-new-from-partner"/>
     <action name="action-account-record-new-customer-account"/>
@@ -347,6 +352,11 @@
 
   <action-method name="action-method-wizard-mass-update-all">
     <call class="com.axelor.apps.account.web.AccountController" method="massUpdateAll"/>
+  </action-method>
+
+  <action-method name="action-account-method-update-move-line-service-type">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="updateMoveLineServiceType"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -50,15 +51,18 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
+  protected MoveLineRepository moveLineRepository;
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigService accountConfigService;
 
   @Inject
   public AccountService(
       AccountRepository accountRepository,
+      MoveLineRepository moveLineRepository,
       AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AccountConfigService accountConfigService) {
     this.accountRepository = accountRepository;
+    this.moveLineRepository = moveLineRepository;
     this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.accountConfigService = accountConfigService;
   }
@@ -206,5 +210,14 @@ public class AccountService {
   protected Account desactivate(Account account) {
     account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
     return account;
+  }
+
+  @Transactional
+  public void updateMoveLineServiceType(Account account) {
+    moveLineRepository
+        .all()
+        .filter("self.account = :account")
+        .bind("account", account)
+        .update("serviceType", account.getServiceType());
   }
 }
