@@ -526,11 +526,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     }
 
     if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.add("self.account.code SIMILAR TO :columnAccountFilter");
+      queryList.add("self.account.code LIKE :columnAccountFilter");
     }
 
     if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.add("self.account.code SIMILAR TO :lineAccountFilter");
+      queryList.add("self.account.code LIKE :lineAccountFilter");
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
@@ -544,12 +544,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     if (!Strings.isNullOrEmpty(columnAnalyticAccountFilter)) {
       queryList.add(
-          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code SIMILAR TO :columnAnalyticAccountFilter AND aml.moveLine = self)");
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code LIKE :columnAnalyticAccountFilter AND aml.moveLine = self)");
     }
 
     if (!Strings.isNullOrEmpty(lineAnalyticAccountFilter)) {
       queryList.add(
-          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code SIMILAR TO :lineAnalyticAccountFilter AND aml.moveLine = self)");
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code LIKE :lineAnalyticAccountFilter AND aml.moveLine = self)");
     }
 
     return String.join(" AND ", queryList);
