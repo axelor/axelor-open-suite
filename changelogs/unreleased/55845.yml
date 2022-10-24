@@ -1,0 +1,3 @@
+---
+title: "Leave request : fix an issue occurring when validating a leave request and if the employee didn't have an user"
+type: fix

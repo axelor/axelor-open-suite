@@ -18,7 +18,6 @@
 package com.axelor.apps.hr.web.leave;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -180,22 +179,18 @@ public class LeaveController {
 
       ActionViewBuilder actionView =
           ActionView.define(I18n.get("Leaves calendar"))
-              .model(ICalendarEvent.class.getName())
+              .model(LeaveRequest.class.getName())
               .add("calendar", "calendar-event-leave-request")
-              .add("grid", "calendar-event-grid")
-              .add("form", "calendar-event-form");
+              .add("grid", "leave-request-grid")
+              .add("form", "leave-request-form");
 
-      actionView.domain(
-          "self.typeSelect = 4 AND self.id IN (SELECT leaveRequest.icalendarEvent FROM LeaveRequest leaveRequest WHERE leaveRequest.statusSelect = 3");
-
-      if (employee == null || !employee.getHrManager()) {
-        actionView
-            .domain(
-                actionView.get().getDomain()
-                    + " AND leaveRequest.employee.managerUser.id = :_userId")
-            .context("_userId", user.getId());
+      if (employee != null && employee.getHrManager()) {
+        actionView.domain("self.employee.managerUser.id = :userId");
+      } else {
+        actionView.domain("self.employee.user.id = :userId");
       }
-      actionView.domain(actionView.get().getDomain() + ")");
+
+      actionView.context("userId", user.getId());
       response.setView(actionView.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
