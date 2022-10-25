@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
@@ -59,6 +60,7 @@ public class ImportMove {
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
   @Inject private MoveValidateService moveValidateService;
+  @Inject private MoveLineToolService moveLineToolService;
   @Inject private AppAccountService appAccountService;
   @Inject private PeriodService periodService;
   @Inject private FECImportRepository fecImportRepository;
@@ -218,6 +220,11 @@ public class ImportMove {
       }
 
       move.addMoveLineListItem(moveLine);
+
+      if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
+        moveLine.setMove(move);
+        moveLineToolService.setCurrencyAmount(moveLine);
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       throw e;
