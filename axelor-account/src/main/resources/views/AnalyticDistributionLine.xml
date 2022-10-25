@@ -43,7 +43,7 @@
     onNew="action-group-analytic-distribution-line-set-on-new">
     <panel name="mainPanel">
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-attrs-domain-axis-distribution-line"
+        onSelect="action-analytic-distribution-line-method-set-analytic-axis-domain"
         onChange="action-axis-change-remove-account" required="true"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
@@ -87,13 +87,11 @@
     <action name="action-record-set-journal-by-default-distribution-line"/>
   </action-group>
 
-  <action-attrs name="action-attrs-domain-axis-distribution-line">
-    <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} &quot;"
-      if="__parent__ &amp;&amp; __parent__.company"/>
-    <attribute name="domain" for="analyticAxis" expr="eval: null"
-      if="!(__parent__ &amp;&amp; __parent__.company)"/>
-  </action-attrs>
+  <action-method
+    name="action-analytic-distribution-line-method-set-analytic-axis-domain">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="setAnalyticAxisDomain"/>
+  </action-method>
 
   <action-attrs name="action-attrs-domain-journal-distribution-line">
     <attribute name="domain" for="analyticJournal"

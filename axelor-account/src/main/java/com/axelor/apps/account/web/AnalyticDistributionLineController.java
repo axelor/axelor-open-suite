@@ -17,17 +17,21 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -87,6 +91,26 @@ public class AnalyticDistributionLineController {
                 .getAnalyticAmountFromParent(parent, analyticMoveLine));
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Context context = request.getContext();
+      AnalyticDistributionLine analyticDistributionLine =
+          context.asType(AnalyticDistributionLine.class);
+      Company company = null;
+      if (context.getParent() != null && context.getParent().get("company") != null) {
+        company = (Company) context.getParent().get("company");
+      }
+      response.setAttr(
+          "analyticAxis",
+          "domain",
+          Beans.get(AnalyticDistributionLineService.class)
+              .getAxisDomain(analyticDistributionLine, company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

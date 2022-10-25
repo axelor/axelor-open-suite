@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticJournal;
+import com.axelor.apps.base.db.Company;
 import java.math.BigDecimal;
 
 public interface AnalyticDistributionLineService {
@@ -29,4 +30,6 @@ public interface AnalyticDistributionLineService {
       AnalyticAccount analyticAccount,
       AnalyticJournal analyticJournal,
       BigDecimal percentage);
+
+  String getAxisDomain(AnalyticDistributionLine analyticDistributionLine, Company company);
 }
