@@ -29,4 +29,6 @@ public interface BankOrderLineOriginService {
   public boolean existBankOrderLineOrigin(BankOrder bankOrder, Model model);
 
   public Map<String, Object> getRelatedDataMap(BankOrderLineOrigin bankOrderLineOrigin);
+
+  boolean dmsFilePresent(BankOrderLineOrigin bankOrderLineOrigin);
 }

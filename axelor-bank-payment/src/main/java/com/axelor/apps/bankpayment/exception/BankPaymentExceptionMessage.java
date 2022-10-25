@@ -150,6 +150,8 @@ public final class BankPaymentExceptionMessage {
       "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
   public static final String BANK_ORDER_LINE_NO_RECEIVER_ADDRESS = /*$$(*/
       "No address has been defined in the receiver %s" /*)*/;
+  public static final String BANK_ORDER_LINE_ORIGIN_NO_DMS_FILE = /*$$(*/
+      "There is no file linked to this origin." /*)*/;
 
   /** BankOrder merge */
   public static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/

@@ -947,6 +947,7 @@
 "The sender bank details currency is not compatible with the currency in bank order.","La devise du compte bancaire émetteur n'est pas compatible avec la devise de l'ordre bancaire",,
 "The validation of this payment session is supposed to generate a bank order with multiple execution dates while the file format associated with the payment mode does not support the multidate. Please select an adequate file format within the payment mode settings or change the parameter for the accounting date selection.","La validation de la session de paiement est supposée générer un ordre bancaire avec dates d'exécutions multiples alors que le format de fichier associé avec le mode de paiement ne supporte pas le multidate. Veuillez sélectionner un format de fichier approprié dans les paramètres du mode de paiement ou alors modifier le paramètre sélectionné de date de comptabilisation.",,
 "There is at least one incomplete bank reconciliation. Are you sure you want to continue?","Il y a au moins un rapprochement bancaire incomplet. Voulez-vous continuer?",,
+"There is no file linked to this origin.","Il n'y a pas de fichier lié à cette origine.",,
 "This action is irreversible, do you want to continue ?","Cette action est irréversible, êtes-vous sûr de continuer?",,
 "This move line %s can not be archived because its bank reconciliation amount is superior to 0.","Cette ligne d' écriture %s ne peut pas être archivée car son montant de rapprochement bancaire est supérieur à 0.",,
 "To",,,

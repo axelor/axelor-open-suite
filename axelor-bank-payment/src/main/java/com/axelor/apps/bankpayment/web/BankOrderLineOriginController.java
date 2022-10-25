@@ -18,8 +18,10 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.dms.db.DMSFile;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -47,5 +49,33 @@ public class BankOrderLineOriginController {
             .context("relatedId", relatedDataMap.get("relatedId"))
             .context("_showSingle", true)
             .map());
+
+    if (request.getContext().get("_source") != null) {
+      response.setCanClose(true);
+    }
+  }
+
+  public void displayDmsFileButton(ActionRequest request, ActionResponse response) {
+    try {
+      BankOrderLineOrigin bankOrderLineOrigin =
+          request.getContext().asType(BankOrderLineOrigin.class);
+      if (!Beans.get(BankOrderLineOriginService.class).dmsFilePresent(bankOrderLineOrigin)) {
+        response.setAttr("displayInvoiceBtn", "hidden", true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void alertNoDmsFile(ActionRequest request, ActionResponse response) {
+    try {
+      BankOrderLineOrigin bankOrderLineOrigin =
+          request.getContext().asType(BankOrderLineOrigin.class);
+      if (!Beans.get(BankOrderLineOriginService.class).dmsFilePresent(bankOrderLineOrigin)) {
+        response.setError(I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_ORIGIN_NO_DMS_FILE));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
