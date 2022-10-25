@@ -3,12 +3,14 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -29,6 +31,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected MoveRepository moveRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepository;
+  protected PayVoucherDueElementRepository payVoucherDueElementRepository;
 
   @Inject
   public MoveInvoiceTermServiceImpl(
@@ -36,12 +39,14 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
       InvoiceTermService invoiceTermService,
       MoveRepository moveRepo,
       InvoiceTermRepository invoiceTermRepo,
-      PayVoucherElementToPayRepository payVoucherElementToPayRepository) {
+      PayVoucherElementToPayRepository payVoucherElementToPayRepository,
+      PayVoucherDueElementRepository payVoucherDueElementRepository) {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
     this.moveRepo = moveRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.payVoucherElementToPayRepository = payVoucherElementToPayRepository;
+    this.payVoucherDueElementRepository = payVoucherDueElementRepository;
   }
 
   @Override
@@ -218,9 +223,9 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
       paymentVoucherRefList =
-          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
               .bind("invoiceTermList", invoiceTermList).fetch().stream()
-              .map(PayVoucherElementToPay::getPaymentVoucher)
+              .map(PayVoucherDueElement::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
       if (!CollectionUtils.isEmpty(paymentVoucherRefList)) {
