@@ -54,6 +54,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -412,8 +413,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
 
-    // Correctly divide budget distribution
-    divideBudgetDistribution(invoiceLineList);
+    setComputedBudgetLinesAmount(invoiceLineList);
 
     return invoiceLineList;
   }
@@ -677,15 +677,33 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     return isRefundInvoice != isReversionStockMove;
   }
 
-  protected List<InvoiceLine> divideBudgetDistribution(List<InvoiceLine> invoiceLineList) {
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        BigDecimal amount = budgetDistribution.getAmount();
-        budgetDistribution.setAmount(
-            amount.divide(new BigDecimal(invoiceLineList.size()), BigDecimal.ROUND_HALF_UP));
-      }
-    }
-    return invoiceLineList;
+  protected void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList) {
+    invoiceLineList.forEach(invoiceLine -> computeBudgetLineAmount(invoiceLineList, invoiceLine));
+  }
+
+  protected void computeBudgetLineAmount(
+      List<InvoiceLine> invoiceLineList, InvoiceLine invoiceLine) {
+    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    Product product = invoiceLine.getProduct();
+    budgetDistributionList.forEach(
+        budgetDistribution ->
+            budgetDistribution.setAmount(
+                divideBudgetDistributionAmount(budgetDistribution, product, invoiceLineList)));
+  }
+
+  protected BigDecimal divideBudgetDistributionAmount(
+      BudgetDistribution budgetDistribution, Product product, List<InvoiceLine> invoiceLineList) {
+    return budgetDistribution
+        .getAmount()
+        .divide(
+            new BigDecimal(countInvoiceLineWithSameProduct(product, invoiceLineList)),
+            RoundingMode.HALF_UP);
+  }
+
+  protected long countInvoiceLineWithSameProduct(
+      Product product, List<InvoiceLine> invoiceLineList) {
+    return invoiceLineList.stream()
+        .filter(invoiceLine -> product.equals(invoiceLine.getProduct()))
+        .count();
   }
 }
