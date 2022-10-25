@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -207,7 +208,7 @@ public class InvoiceToolService {
    *
    * @param copy a copy of an invoice
    */
-  public static void resetInvoiceStatusOnCopy(Invoice copy) {
+  public static void resetInvoiceStatusOnCopy(Invoice copy) throws AxelorException {
     copy.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
     copy.setInvoiceId(null);
     copy.setInvoiceDate(null);
@@ -240,7 +241,6 @@ public class InvoiceToolService {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
-    copy.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     copy.setDecisionPfpTakenDate(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
@@ -250,6 +250,7 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingReason(null);
     copy.setBillOfExchangeBlockingToDate(null);
     copy.setBillOfExchangeBlockingByUser(null);
+    setPfpStatus(copy);
   }
 
   /**
@@ -267,5 +268,19 @@ public class InvoiceToolService {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
     }
     return functionalOrigin;
+  }
+
+  public static void setPfpStatus(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+
+    if (accountConfig.getIsManagePassedForPayment()
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                && accountConfig.getIsManagePFPInRefund()))) {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    } else {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);
+    }
   }
 }
