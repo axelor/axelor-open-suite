@@ -184,13 +184,12 @@ public class LeaveController {
               .add("grid", "leave-request-grid")
               .add("form", "leave-request-form");
 
-      if (employee != null && employee.getHrManager()) {
-        actionView.domain("self.employee.managerUser.id = :userId");
-      } else {
-        actionView.domain("self.employee.user.id = :userId");
+      if (employee == null || !employee.getHrManager()) {
+        actionView.domain(
+            "self.employee.managerUser.id = :userId OR self.employee.user.id = :userId");
+        actionView.context("userId", user.getId());
       }
 
-      actionView.context("userId", user.getId());
       response.setView(actionView.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
