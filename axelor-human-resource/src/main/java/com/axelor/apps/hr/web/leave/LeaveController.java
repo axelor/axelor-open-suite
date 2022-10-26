@@ -173,10 +173,7 @@ public class LeaveController {
 
   public void leaveCalendar(ActionRequest request, ActionResponse response) {
     try {
-
       User user = AuthUtils.getUser();
-      Employee employee = user.getEmployee();
-
       ActionViewBuilder actionView =
           ActionView.define(I18n.get("Leaves calendar"))
               .model(LeaveRequest.class.getName())
@@ -184,12 +181,8 @@ public class LeaveController {
               .add("grid", "leave-request-grid")
               .add("form", "leave-request-form");
 
-      if (employee == null || !employee.getHrManager()) {
-        actionView.domain(
-            "self.employee.managerUser.id = :userId OR self.employee.user.id = :userId");
-        actionView.context("userId", user.getId());
-      }
-
+      actionView.domain(Beans.get(LeaveService.class).getLeaveCalendarDomain(user));
+      actionView.context("userId", user.getId());
       response.setView(actionView.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

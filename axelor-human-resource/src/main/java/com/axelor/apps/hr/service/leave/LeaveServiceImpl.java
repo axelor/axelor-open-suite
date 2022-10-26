@@ -962,6 +962,20 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
+  public String getLeaveCalendarDomain(User user) {
+
+    StringBuilder domain = new StringBuilder("self.statusSelect = 3");
+    Employee employee = user.getEmployee();
+
+    if (employee == null || !employee.getHrManager()) {
+      domain.append(
+          " AND (self.employee.managerUser.id = :userId OR self.employee.user.id = :userId)");
+    }
+
+    return domain.toString();
+  }
+
+  @Override
   public LeaveLine getLeaveLine(LeaveRequest leaveRequest) {
 
     if (leaveRequest.getEmployee() == null) {
