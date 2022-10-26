@@ -2,6 +2,7 @@ package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.tool.api.ResponseStructure;
@@ -26,6 +27,9 @@ public class ManufOrderProductResponse extends ResponseStructure {
   private final TrackingNumberResponse trackingNumber;
   private final UnitResponse unit;
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private final Long subManufOrderId;
+
   public ManufOrderProductResponse(
       Product product,
       StockMoveLine stockMoveLine,
@@ -34,7 +38,8 @@ public class ManufOrderProductResponse extends ResponseStructure {
       BigDecimal missingQty,
       BigDecimal availableStock,
       TrackingNumber trackingNumber,
-      Unit unit) {
+      Unit unit,
+      ManufOrder subManufOrder) {
     super(product.getVersion());
     this.productId = product.getId();
     this.productName = product.getName();
@@ -49,6 +54,11 @@ public class ManufOrderProductResponse extends ResponseStructure {
       this.trackingNumber = new TrackingNumberResponse(trackingNumber);
     } else {
       this.trackingNumber = null;
+    }
+    if (subManufOrder != null) {
+      this.subManufOrderId = subManufOrder.getId();
+    } else {
+      this.subManufOrderId = null;
     }
   }
 
@@ -90,5 +100,9 @@ public class ManufOrderProductResponse extends ResponseStructure {
 
   public UnitResponse getUnit() {
     return unit;
+  }
+
+  public Long getSubManufOrderId() {
+    return subManufOrderId;
   }
 }

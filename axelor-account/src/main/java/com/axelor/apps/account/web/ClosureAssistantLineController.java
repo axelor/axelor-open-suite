@@ -126,13 +126,16 @@ public class ClosureAssistantLineController {
               incomeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
       BigDecimal charge =
           accountService.computeBalance(
-              chargeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
-      BigDecimal profit = income.add(charge);
+              chargeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+      BigDecimal profit = income.subtract(charge);
 
       response.setAttr("year", "value", year);
       response.setAttr("income", "value", income);
       response.setAttr("charge", "value", charge);
       response.setAttr("profit", "value", profit);
+      if (profit.signum() < 0) {
+        response.setAttr("profit", "title", I18n.get("Loss"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

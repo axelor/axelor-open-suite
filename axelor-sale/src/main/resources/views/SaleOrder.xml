@@ -427,7 +427,7 @@
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
           onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
-          readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
+          readonlyIf="saleOrderLineList.length > 0 || (statusSelect > 1 &amp;&amp; !orderBeingEdited)"
           onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
           onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <panel name="otherInfoPanel" colSpan="3">

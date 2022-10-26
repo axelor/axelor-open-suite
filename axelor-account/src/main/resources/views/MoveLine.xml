@@ -397,8 +397,10 @@
       <field name="description" colSpan="12"/>
       <field name="taxAmount" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
-      <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
-      <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
+      <field name="account.serviceType" form-view="service-type-form"
+        grid-view="service-type-grid"/>
+      <field name="move.partner.das2Activity" form-view="das2-activity-form"
+        grid-view="das2-activity-grid"/>
       <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -612,10 +614,10 @@
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
       <field name="origin" colSpan="6" onChange="action-move-line-method-update-invoice-terms"/>
-      <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"
-        colSpan="3"/>
-      <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
-        colSpan="3"/>
+      <field name="account.serviceType" form-view="service-type-form"
+        grid-view="service-type-grid" colSpan="3"/>
+      <field name="move.partner.das2Activity" form-view="das2-activity-form"
+        grid-view="das2-activity-grid" colSpan="3"/>
       <field name="taxAmount" hidden="true"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>

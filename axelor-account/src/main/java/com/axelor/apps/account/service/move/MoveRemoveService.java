@@ -12,4 +12,6 @@ public interface MoveRemoveService {
   int deleteMultiple(List<? extends Move> moveList);
 
   void deleteMove(Move move) throws Exception;
+
+  void checkMoveBeforeRemove(Move move) throws Exception;
 }

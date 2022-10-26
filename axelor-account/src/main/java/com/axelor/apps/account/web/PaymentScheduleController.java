@@ -83,7 +83,10 @@ public class PaymentScheduleController {
         String num =
             Beans.get(SequenceService.class)
                 .getSequenceNumber(
-                    SequenceRepository.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
+                    SequenceRepository.PAYMENT_SCHEDULE,
+                    paymentSchedule.getCompany(),
+                    PaymentSchedule.class,
+                    "paymentScheduleSeq");
 
         if (Strings.isNullOrEmpty(num)) {
           response.setError(

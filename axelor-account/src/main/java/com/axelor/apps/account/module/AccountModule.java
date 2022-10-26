@@ -105,6 +105,8 @@ import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.InvoiceVisibilityServiceImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
+import com.axelor.apps.account.service.MoveLineQueryService;
+import com.axelor.apps.account.service.MoveLineQueryServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.apps.account.service.NotificationServiceImpl;
 import com.axelor.apps.account.service.PaymentModeControlService;
@@ -225,6 +227,8 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveComputeService;
@@ -526,6 +530,8 @@ public class AccountModule extends AxelorModule {
 
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
 
+    bind(JournalCheckPartnerTypeService.class).to(JournalCheckPartnerTypeServiceImpl.class);
+
     bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
 
     bind(AnalyticAxisControlService.class).to(AnalyticAxisControlServiceImpl.class);
@@ -606,5 +612,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
 
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
+
+    bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
   }
 }

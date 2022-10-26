@@ -22,8 +22,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"
-        onChange="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
+        grid-view="company-grid" onChange="action-accounting-batch-group-company-on-change"/>
       <field name="bankDetails"
         hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21,26].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
         widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"
@@ -197,6 +196,7 @@
           <field name="includeNotStockManagedProduct"
             showIf="accountingCutOffTypeSelect &lt;= 2"/>
         </panel>
+        <field name="prefixOrigin"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -291,6 +291,12 @@
   <action-group name="action-accounting-batch-group-move-date-onchange">
     <action name="action-accounting-batch-attrs-show-label"/>
     <action name="action-record-accounting-batch-movedate-onchange"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-company-on-change">
+    <action name="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
+    <action name="action-accounting-batch-attrs-set-company-currency"
+      if="[11,12,19].contains(actionSelect)"/>
   </action-group>
 
   <!-- ACTION RECORD -->
@@ -529,6 +535,10 @@
       message="The batch has already been running for this move date. Are you sure to continue ?"
       if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null"/>
   </action-validate>
+
+  <action-attrs name="action-accounting-batch-attrs-set-company-currency">
+    <attribute for="currency" name="value" expr="eval: company?.currency"/>
+  </action-attrs>
 
   <search-filters name="accounting-batch-filters"
     model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">
