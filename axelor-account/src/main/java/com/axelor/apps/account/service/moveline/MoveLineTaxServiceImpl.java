@@ -242,7 +242,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         continue;
       }
 
-      if (taxLine != null) {
+      if (taxLine != null && !BigDecimal.ZERO.equals(taxLine.getValue())) {
 
         String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
