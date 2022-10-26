@@ -14,6 +14,7 @@ import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -202,7 +203,13 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .collect(Collectors.toList());
       if (!CollectionUtils.isEmpty(invoiceTermList)) {
         errorMessage = this.checkInvoiceTermInPaymentVoucher(invoiceTermList);
+        if (!StringUtils.isEmpty(errorMessage)) {
+          return errorMessage;
+        }
         errorMessage = this.checkInvoiceTermInPaymentSession(invoiceTermList);
+        if (!StringUtils.isEmpty(errorMessage)) {
+          return errorMessage;
+        }
         for (InvoiceTerm invoiceTerm : invoiceTermList) {
           if (!invoiceTermService.isNotReadonlyExceptPfp(invoiceTerm)) {
             errorMessage =
@@ -222,12 +229,12 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .map(PayVoucherElementToPay::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
-      paymentVoucherRefList =
+      paymentVoucherRefList.addAll(
           payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
               .bind("invoiceTermList", invoiceTermList).fetch().stream()
               .map(PayVoucherDueElement::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
-              .collect(Collectors.toList());
+              .collect(Collectors.toList()));
       if (!CollectionUtils.isEmpty(paymentVoucherRefList)) {
         return String.format(
             I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE),
