@@ -3006,6 +3006,7 @@
 "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation.","Le Compte tiers ne peut être déterminé. Veuillez configurer le compte tiers dans la facture ou configurer la situation comptable du tiers.",,
 "The partner is blocked for invoicing.","Le tiers est bloqué pour la facturation.",,
 "The partner is required and must be the same for all invoices","Le tiers est obligatoire et doit être le même pour l'ensemble des factures",,
+"The partner which was already selected is not compatible with the selected journal. Please reselect a compatible partner or modify the journal settings accordingly.","Le tiers qui était déjà sélectionné n'est pas compatible avec le journal sélectionné. Veuillez resélectionner un tiers compatible ou modifier les paramètres du journal en conséquence.",,
 "The partner's language is different from the current language. Description and product name are in :","La langue du tiers est différente de la langue actuelle. La description et le nom du produit est en :",,
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.","Le paiement ne peut pas être réalisé car le montant restant sur la facture %s est inférieur ou égale à 0.",,
 "The payment mode is not in adequacy with the invoice type","Le paiement n'est pas en adéquation avec le type de facture",,
