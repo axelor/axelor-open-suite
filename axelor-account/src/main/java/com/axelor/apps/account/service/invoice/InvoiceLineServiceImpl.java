@@ -225,14 +225,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
               2,
               BigDecimal.ROUND_HALF_UP);
     } else {
-      price =
-          price.add(
-              price
-                  .multiply(taxLine.getValue())
-                  .divide(
-                      new BigDecimal(100),
-                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                      RoundingMode.HALF_UP));
+      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }
     return price;
   }
