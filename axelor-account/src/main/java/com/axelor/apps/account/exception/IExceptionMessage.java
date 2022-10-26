@@ -1168,13 +1168,4 @@ public interface IExceptionMessage {
 
   static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
       "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
-
-  static final String MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE = /*$$(*/
-      "At least one of the invoice terms is selected in the payment voucher %s, it is not possible to modify them." /*)*/;
-
-  static final String MOVE_INVOICE_TERM_IN_PAYMENT_SESSION_CHANGE = /*$$(*/
-      "At least one of the invoice terms is selected in the payment session %s, it is not possible to modify them." /*)*/;
-
-  static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
-      "At least one of the invoice terms is paid or partially paid, it is not possible to modify them." /*)*/;
 }

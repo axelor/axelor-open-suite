@@ -1462,11 +1462,11 @@ public final class AccountExceptionMessage {
       "You must configure an account for cashier regulation." /*)*/;
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE = /*$$(*/
-      "At least one of the invoice terms is selected in the payment voucher %s, it is not possible to modify them." /*)*/;
+      "At least one of the invoice term is selected in at least one payment voucher process %s. Thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms (only)." /*)*/;
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_SESSION_CHANGE = /*$$(*/
-      "At least one of the invoice terms is selected in the payment session %s, it is not possible to modify them." /*)*/;
+      "At least one of the invoice term is selected in at least one payment session process %s. Thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms (only)." /*)*/;
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
-      "At least one of the invoice terms is paid or partially paid, it is not possible to modify them." /*)*/;
+      "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
 }
