@@ -160,10 +160,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           moveLine.setOriginDate(date);
         }
       }
-
-      if (partner != null) {
-        moveLine.setPartner(partner);
-      }
       moveLine.setCounter(counter);
       counter++;
     }

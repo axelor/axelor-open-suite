@@ -1,3 +1,0 @@
----
-title: "Fixed asset : Hide updateDepreciationSettingsBtn when toUpdateValuesPanel is in readonly"
-type: fix

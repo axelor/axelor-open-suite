@@ -34,11 +34,15 @@ public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
             String.format(
                 " AND %d IN self.salePartnerPriceList.priceListSet.id",
                 pricedOrder.getPriceList().getId()));
+      } else {
+        newDomain.append(" AND self.salePartnerPriceList is NULL");
       }
       if (pricedOrder.getFiscalPosition() != null) {
         newDomain.append(
             String.format(
                 " AND self.fiscalPosition.id = %s", pricedOrder.getFiscalPosition().getId()));
+      } else {
+        newDomain.append(" AND self.fiscalPosition is NULL");
       }
     }
     return newDomain.toString();

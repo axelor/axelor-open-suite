@@ -96,9 +96,8 @@
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-move-group-partner-on-select"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
+            grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-move-group-partner-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -595,6 +594,7 @@
     <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-hide-move-line-partner"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
@@ -682,6 +682,7 @@
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-hide-move-line-partner"/>
   </action-group>
 
   <action-group name="action-move-group-move-line-list-onchange">
@@ -1104,16 +1105,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
 
   </action-method>
-  <action-method
-    name="action-account-move-method-filter-journal-partner-compatible-type">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="filterJournalPartnerCompatibleType"/>
-  </action-method>
-
-  <action-group name="action-move-group-partner-on-select">
-    <action name="action-account-move-method-filter-partner"/>
-    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
-  </action-group>
 
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
@@ -1122,4 +1113,8 @@
   <action-method name="action-move-method-update-invoice-terms">
     <call class="com.axelor.apps.account.web.MoveController" method="updateInvoiceTerms"/>
   </action-method>
+
+  <action-attrs name="action-move-attrs-hide-move-line-partner">
+    <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
+  </action-attrs>
 </object-views>

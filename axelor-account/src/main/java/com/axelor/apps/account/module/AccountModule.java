@@ -229,6 +229,8 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveComputeService;
@@ -529,6 +531,8 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceMergingService.class).to(InvoiceMergingServiceImpl.class);
 
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
+
+    bind(JournalCheckPartnerTypeService.class).to(JournalCheckPartnerTypeServiceImpl.class);
 
     bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
 

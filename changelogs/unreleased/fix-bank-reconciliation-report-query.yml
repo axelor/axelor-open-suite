@@ -1,3 +1,0 @@
----
-title: "Bank reconciliation printing: fixed an issue where the printing was showing canceled and already reconciled moves."
-type: fix

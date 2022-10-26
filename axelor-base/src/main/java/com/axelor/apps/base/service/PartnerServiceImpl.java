@@ -822,17 +822,4 @@ public class PartnerServiceImpl implements PartnerService {
     }
     return sum % 10 == 0;
   }
-
-  @Override
-  public List<Long> getPartnerIdsByType(String type) {
-    StringBuilder query = new StringBuilder();
-    query.append("self.");
-    query.append(type);
-    query.append("=true");
-    return (!StringUtils.isEmpty(type))
-        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
-            .map(m -> (long) m.get("id"))
-            .collect(Collectors.toList())
-        : new ArrayList<>();
-  }
 }
