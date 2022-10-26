@@ -28,10 +28,8 @@ import com.axelor.apps.account.service.AccountingReportDas2Service;
 import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
-import com.axelor.apps.account.service.AccountingReportValueService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -306,15 +304,5 @@ public class AccountingReportController {
     actionViewBuilder.context("_accountingReportId", accountingReport.getId());
 
     response.setView(actionViewBuilder.map());
-  }
-
-  public void testValues(ActionRequest request, ActionResponse response) {
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
-    try {
-      Beans.get(AccountingReportValueService.class).computeReportValues(accountingReport);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
   }
 }

@@ -26,16 +26,11 @@
     <field name="publicationDateTime"/>
   </grid>
 
-  <action-method name="test-values">
-    <call class="com.axelor.apps.account.web.AccountingReportController" method="testValues"/>
-  </action-method>
-
   <form name="accounting-report-form" title="Accounting report"
     model="com.axelor.apps.account.db.AccountingReport"
     onNew="action-accounting-report-group-on-new">
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
-      <button name="test" title="TEST" colSpan="12" onClick="test-values"/>
       <field name="ref" readonly="true" hideIf="[23,24].includes(reportType.typeSelect)"/>
       <field name="date" readonlyIf="statusSelect == 2 &amp;&amp; reportType.typeSelect != 18"
         onChange="action-accounting-report-date-change-validate"/>

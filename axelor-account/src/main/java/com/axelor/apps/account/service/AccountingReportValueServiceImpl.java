@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +59,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     this.appBaseService = appBaseService;
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.moveLineRepo = moveLineRepo;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void clearReportValues(AccountingReport accountingReport) {
+    accountingReportValueRepo.findByAccountingReport(accountingReport).remove();
   }
 
   @Override
@@ -115,14 +122,21 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
       throws AxelorException {
-    for (AccountingReportConfigLine column :
-        accountingReportType.getAccountingReportConfigLineColumnList()) {
+    List<AccountingReportConfigLine> columnList =
+        accountingReport.getReportType().getAccountingReportConfigLineColumnList().stream()
+            .sorted(Comparator.comparing(AccountingReportConfigLine::getSequence))
+            .collect(Collectors.toList());
+    List<AccountingReportConfigLine> lineList =
+        accountingReport.getReportType().getAccountingReportConfigLineList().stream()
+            .sorted(Comparator.comparing(AccountingReportConfigLine::getSequence))
+            .collect(Collectors.toList());
+
+    for (AccountingReportConfigLine column : columnList) {
       if (!valuesMapByColumn.containsKey(column.getCode())) {
         valuesMapByColumn.put(column.getCode(), new HashMap<>());
       }
 
-      for (AccountingReportConfigLine line :
-          accountingReportType.getAccountingReportConfigLineList()) {
+      for (AccountingReportConfigLine line : lineList) {
         if (!valuesMapByLine.containsKey(line.getCode())) {
           valuesMapByLine.put(line.getCode(), new HashMap<>());
         }

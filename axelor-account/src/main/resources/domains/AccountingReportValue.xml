@@ -17,5 +17,7 @@
       ref="com.axelor.apps.account.db.AccountingReportConfigLine" initParam="true"/>
     <many-to-one name="accountingReportConfigLineColumn"
       ref="com.axelor.apps.account.db.AccountingReportConfigLine" initParam="true"/>
+
+    <finder-method name="findByAccountingReport" using="accountingReport" all="true"/>
   </entity>
 </domain-models>
