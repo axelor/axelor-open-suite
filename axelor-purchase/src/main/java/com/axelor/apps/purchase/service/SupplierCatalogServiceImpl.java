@@ -40,6 +40,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public Map<String, String> getProductSupplierInfos(
       Partner partner, Company company, Product product) throws AxelorException {
     if (product == null) {
-      return null;
+      return Collections.emptyMap();
     }
 
     Map<String, String> productSupplierInfo = new HashMap<>();

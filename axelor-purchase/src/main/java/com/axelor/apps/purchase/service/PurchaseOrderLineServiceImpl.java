@@ -237,6 +237,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       line.setQty(supplierCatalogService.getQty(product, supplierPartner, company));
     }
     line.setProductCode(productSupplierInfos.get("productCode"));
+
+    if (line.getProductName() == null || line.getProductName().isEmpty()) {
+      line.setProductName(product.getName());
+    }
+
+    if (line.getProductCode() == null || line.getProductCode().isEmpty()) {
+      line.setProductCode(product.getCode());
+    }
+
     line.setUnit(getPurchaseUnit(line));
 
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
