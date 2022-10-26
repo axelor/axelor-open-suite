@@ -1464,4 +1464,16 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
+
+  public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
+      "Custom report %s couldn't be computed (timeout)." /*)*/;
+
+  public static final String REPORT_TYPE_NOT_CUSTOM = /*$$(*/
+      "Report type %s is not of a custom type and thus cannot be computed as such." /*)*/;
+
+  public static final String REPORT_TYPE_NO_COLUMN = /*$$(*/
+      "Report type %s doesn't have any column." /*)*/;
+
+  public static final String REPORT_TYPE_NO_LINE = /*$$(*/
+      "Report type %s doesn't have any line." /*)*/;
 }

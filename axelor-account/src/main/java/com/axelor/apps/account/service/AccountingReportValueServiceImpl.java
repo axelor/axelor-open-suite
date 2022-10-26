@@ -17,6 +17,7 @@ import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -85,25 +86,35 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               accountingReport, accountingReportType, valuesMapByColumn, valuesMapByLine);
 
       if (timeoutCounter++ > appBaseService.getProcessTimeout()) {
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
+            accountingReport.getRef());
       }
     }
-
-    int a = 1;
   }
 
   protected void checkAccountingReportType(AccountingReportType accountingReportType)
       throws AxelorException {
     if (accountingReportType.getTypeSelect() != AccountingReportRepository.REPORT_CUSTOM_STATE) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_NOT_CUSTOM,
+          accountingReportType.getName());
     }
 
     if (CollectionUtils.isEmpty(accountingReportType.getAccountingReportConfigLineColumnList())) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_NO_COLUMN,
+          accountingReportType.getName());
     }
 
     if (CollectionUtils.isEmpty(accountingReportType.getAccountingReportConfigLineList())) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_NO_LINE,
+          accountingReportType.getName());
     }
   }
 
