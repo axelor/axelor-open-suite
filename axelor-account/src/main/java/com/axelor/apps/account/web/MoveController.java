@@ -53,6 +53,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -833,6 +834,22 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkTermsInPayment(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      String errorMessage =
+          Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
+      if (move.getId() != null && !StringUtils.isEmpty(errorMessage)) {
+        response.setValue(
+            "paymentCondition",
+            Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+      }
+      response.setValue("$paymentConditionChangeError", errorMessage);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
