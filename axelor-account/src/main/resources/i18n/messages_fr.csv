@@ -2176,6 +2176,7 @@
 "On due date of the origin document","A la date d'échéance de la pièce d'origine",,
 "On payment date","A la date du paiement (date de session)",,
 "One id is null","Un id est null",,
+"One of the move line has the partner %s whereas the partner in the header is %s.","Une des lignes a comme tiers %s alors que le tiers de l'entête est %s.",,
 "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?","Une ou plusieurs échéances présentent un calcul d’escompte qui n’est plus applicable. Souhaitez-vous continuer ?",,
 "One time global period","Une seule période globale",,
 "Ongoing Cession","Sortie d'immobilisation en cours",,

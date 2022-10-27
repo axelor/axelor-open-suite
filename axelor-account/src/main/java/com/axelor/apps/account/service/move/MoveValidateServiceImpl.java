@@ -770,4 +770,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
     return false;
   }
+
+  public void checkMoveLinesPartner(Move move) throws AxelorException {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLineControlService.checkPartner(moveLine);
+    }
+  }
 }

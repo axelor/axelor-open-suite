@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
@@ -291,5 +292,22 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
                 .allMatch(invoiceTermService::isNotAwaitingPayment));
+  }
+
+  @Override
+  public void checkPartner(MoveLine moveLine) throws AxelorException {
+    Optional<Partner> optMovePartner =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getPartner);
+    Optional<Partner> optMoveLinePartner = Optional.ofNullable(moveLine.getPartner());
+
+    if (optMovePartner.isPresent()
+        && optMoveLinePartner.isPresent()
+        && !optMovePartner.equals(optMoveLinePartner)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
+          optMoveLinePartner.get().getName(),
+          optMovePartner.get().getName());
+    }
   }
 }
