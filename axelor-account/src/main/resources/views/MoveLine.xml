@@ -896,6 +896,7 @@
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
     <action name="action-move-line-record-set-partner"/>
     <action name="action-move-line-method-generate-invoice-terms"/>
+    <action name="action-move-line-attrs-change-focus"/>
   </action-group>
 
   <action-group name="action-account-move-line-move-form-account-group-on-change">
@@ -1082,8 +1083,15 @@
 
   <action-record name="action-move-line-record-set-currencyAmount"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="currencyAmount" expr="eval: (debit + credit) / currencyRate"
-      if="debit + credit != 0"/>
+    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
+    <field name="currencyAmount" expr="eval: -(credit / currencyRate)" if="credit != 0"/>
+    <field name="currencyAmount" expr="eval: 0" if="(debit == 0 &amp;&amp; credit == 0)"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-set-amount"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0"/>
+    <field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0"/>
   </action-record>
 
   <action-attrs name="action-move-line-attrs-hidden-reconcileLists">
@@ -1121,10 +1129,10 @@
 
   <action-record name="action-move-line-record-set-debitcredit"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="eval: currencyAmount * currencyRate"
-      if="account?.commonPosition == 2"/>
-    <field name="credit" expr="eval: currencyAmount * currencyRate"
-      if="account?.commonPosition == 1"/>
+    <field name="debit" expr="eval: Math.abs(currencyAmount * currencyRate)"
+      if="currencyAmount &gt; 0"/>
+    <field name="credit" expr="eval: Math.abs(currencyAmount * currencyRate)"
+      if="currencyAmount &lt; 0"/>
   </action-record>
 
   <action-record name="action-move-line-record-set-cut-off-dates"
@@ -1315,4 +1323,12 @@
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
 
+  <action-attrs name="action-move-line-attrs-change-focus">
+    <attribute for="credit" name="focus" expr="eval: true"
+      if="account?.commonPosition == 1 &amp;&amp; __parent__?.company?.currency == __parent__?.currency"/>
+    <attribute for="debit" name="focus" expr="eval: true"
+      if="account?.commonPosition == 2 &amp;&amp; __parent__?.company?.currency == __parent__?.currency"/>
+    <attribute for="currencyAmount" name="focus" expr="eval: true"
+      if="__parent__?.company?.currency != __parent__?.currency"/>
+  </action-attrs>
 </object-views>

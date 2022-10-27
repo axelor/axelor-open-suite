@@ -605,6 +605,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
+    <action name="action-move-line-validate-currency-amount-sum-zero"/>
     <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
@@ -632,6 +633,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-accounting-click">
+    <action name="action-move-line-validate-currency-amount-sum-zero"/>
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
     <action name="action-account-move-group-onsave"/>
@@ -1162,4 +1164,9 @@
   <action-attrs name="action-move-attrs-hide-move-line-partner">
     <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
   </action-attrs>
+
+  <action-validate name="action-move-line-validate-currency-amount-sum-zero">
+    <error message="The sum of the currency amounts is not 0."
+      if="eval: !moveLineList?.isEmpty() &amp;&amp;  moveLineList.collect{new BigDecimal(it.currencyAmount)}.sum() != 0"/>
+  </action-validate>
 </object-views>

@@ -270,6 +270,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
+    if (!isDebit) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.negate();
+    }
+
     MoveLine moveLine =
         new MoveLine(
             move,
