@@ -53,8 +53,12 @@ public class WapHistoryServiceImpl implements WapHistoryService {
   @Override
   @Transactional
   public WapHistory saveWapHistory(
-      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, LocalDate date) {
-    return wapHistoryRepository.save(createWapHistory(stockLocationLine, stockMoveLine, date));
+      StockLocationLine stockLocationLine,
+      StockMoveLine stockMoveLine,
+      LocalDate date,
+      String origin) {
+    return wapHistoryRepository.save(
+        createWapHistory(stockLocationLine, stockMoveLine, date, origin));
   }
 
   @Override
@@ -80,8 +84,11 @@ public class WapHistoryServiceImpl implements WapHistoryService {
   }
 
   protected WapHistory createWapHistory(
-      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, LocalDate date) {
-    WapHistory wapHistory = createWapHistory(stockLocationLine, stockMoveLine);
+      StockLocationLine stockLocationLine,
+      StockMoveLine stockMoveLine,
+      LocalDate date,
+      String origin) {
+    WapHistory wapHistory = createWapHistory(stockLocationLine, stockMoveLine, origin);
     wapHistory.setDate(date);
 
     return wapHistory;

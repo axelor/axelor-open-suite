@@ -775,8 +775,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine,
       BigDecimal wap,
       StockMoveLine stockMoveLine,
-      LocalDate date) {
+      LocalDate date,
+      String origin) {
     stockLocationLine.setAvgPrice(wap);
-    wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine, date);
+    wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine, date, origin);
   }
 }

@@ -50,7 +50,7 @@ public interface WapHistoryService {
 
   /**
    * Same as {@link #saveWapHistory(StockLocationLine, StockMoveLine)}, but with a personalized date
-   * instead of today date
+   * instead of today date and origin
    *
    * @param stockLocationLine
    * @param stockMoveLine
@@ -58,5 +58,8 @@ public interface WapHistoryService {
    * @return
    */
   WapHistory saveWapHistory(
-      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, LocalDate date);
+      StockLocationLine stockLocationLine,
+      StockMoveLine stockMoveLine,
+      LocalDate date,
+      String origin);
 }

@@ -459,6 +459,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLineList,
         lastFutureStockMoveDate,
         realQty,
+        null,
         null);
   }
 
@@ -471,7 +472,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       List<StockMoveLine> stockMoveLineList,
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
-      LocalDate date)
+      LocalDate date,
+      String origin)
       throws AxelorException {
 
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
@@ -504,11 +506,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
           if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             // We dont recompute average price for outgoing lines
-            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date);
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date, origin);
           }
           if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             this.updateAveragePriceLocationLine(
-                toStockLocation, stockMoveLine, fromStatus, toStatus, date);
+                toStockLocation, stockMoveLine, fromStatus, toStatus, date, origin);
           }
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
@@ -522,7 +524,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine,
       int fromStatus,
       int toStatus,
-      LocalDate date)
+      LocalDate date,
+      String origin)
       throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
@@ -535,12 +538,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal avgPrice =
           this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 
-      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date);
+      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date, origin);
     }
   }
 
   protected void updateWapStockMoveLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, LocalDate date) {
+      StockLocation stockLocation, StockMoveLine stockMoveLine, LocalDate date, String origin) {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
@@ -559,7 +562,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                       .orElse(null));
     }
 
-    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date);
+    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date, origin);
   }
 
   protected BigDecimal computeNewAveragePriceLocationLine(

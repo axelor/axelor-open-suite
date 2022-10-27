@@ -258,8 +258,8 @@ public interface StockLocationLineService {
   void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
 
   /**
-   * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date can be
-   * personalized.
+   * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date and origin
+   * can be personalized.
    *
    * @param stockLocationLine
    * @param wap
@@ -270,5 +270,6 @@ public interface StockLocationLineService {
       StockLocationLine stockLocationLine,
       BigDecimal wap,
       StockMoveLine stockMoveLine,
-      LocalDate date);
+      LocalDate date,
+      String origin);
 }

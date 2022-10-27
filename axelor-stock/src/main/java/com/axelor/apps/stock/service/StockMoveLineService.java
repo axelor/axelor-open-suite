@@ -152,7 +152,8 @@ public interface StockMoveLineService {
       StockMoveLine stockMoveLine,
       int fromStatus,
       int toStatus,
-      LocalDate date)
+      LocalDate date,
+      String origin)
       throws AxelorException;
 
   /**
@@ -289,8 +290,8 @@ public interface StockMoveLineService {
 
   /**
    * Same as {@link #updateLocations(StockLocation, StockLocation, int, int, List, LocalDate,
-   * boolean)} But instead of creating wap history at with today date. They will be created at date
-   * specified.
+   * boolean)} But instead of creating wap history at with today date,they will be created at date
+   * specified and the origin specified. If origin is null, the behavior will be the same.
    *
    * @param fromStockLocation
    * @param toStockLocation
@@ -310,6 +311,7 @@ public interface StockMoveLineService {
       List<StockMoveLine> stockMoveLineList,
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
-      LocalDate date)
+      LocalDate date,
+      String origin)
       throws AxelorException;
 }

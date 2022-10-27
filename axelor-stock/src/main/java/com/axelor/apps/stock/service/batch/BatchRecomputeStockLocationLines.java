@@ -3,13 +3,13 @@ package com.axelor.apps.stock.service.batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.batch.model.StockMoveGroup;
+import com.axelor.apps.stock.service.batch.model.StockMoveLineOrigin;
 import com.axelor.apps.stock.service.batch.model.TrackProduct;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -19,10 +19,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
@@ -123,48 +124,62 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
     }
   }
 
+  protected String getOrigin(StockMove stockMove) {
+    return Optional.ofNullable(stockMove).map(StockMove::getStockMoveSeq).orElse("");
+  }
+
   protected void recomputeStockMoves(StockMoveGroup group) throws AxelorException {
     List<StockMove> stockMoves;
     Query<StockMove> query = buildQueryFetchStockMoveFromGroup(group).order("id");
-    HashMap<TrackProduct, StockMoveLine> stockMoveLinesMap = new HashMap<>();
+    HashMap<TrackProduct, StockMoveLineOrigin> stockMoveLinesMap = new HashMap<>();
     int offSet = 0;
 
     while (!(stockMoves = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
 
       stockMoves.stream()
-          .flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
           .forEach(
-              stockMoveLine -> {
-                TrackProduct trackProduct =
-                    new TrackProduct(stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
-                if (!stockMoveLinesMap.containsKey(trackProduct)) {
-                  stockMoveLinesMap.put(
-                      trackProduct, stockMoveLineRepository.copy(stockMoveLine, false));
-                } else {
-                  stockMoveLinesMap.merge(trackProduct, stockMoveLine, this::merge);
-                }
+              stockMove -> {
+                stockMove.getStockMoveLineList().stream()
+                    .forEach(
+                        stockMoveLine -> {
+                          TrackProduct trackProduct =
+                              new TrackProduct(
+                                  stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
+                          if (!stockMoveLinesMap.containsKey(trackProduct)) {
+                            stockMoveLinesMap.put(
+                                trackProduct,
+                                new StockMoveLineOrigin(
+                                    stockMoveLineRepository.copy(stockMoveLine, false),
+                                    getOrigin(stockMove)));
+                          } else {
+                            stockMoveLinesMap.merge(
+                                trackProduct,
+                                new StockMoveLineOrigin(stockMoveLine, getOrigin(stockMove)),
+                                this::merge);
+                          }
+                        });
               });
 
       offSet += FETCH_LIMIT;
     }
 
-    stockMoveLineService.updateLocations(
-        stockLocationRepository.find(group.getFromStockLocation()),
-        stockLocationRepository.find(group.getToStockLocation()),
-        StockMoveRepository.STATUS_PLANNED,
-        StockMoveRepository.STATUS_REALIZED,
-        stockMoveLinesMap.entrySet().stream().map(Entry::getValue).collect(Collectors.toList()),
-        null,
-        false,
-        group.getRealDate());
+    for (Entry<TrackProduct, StockMoveLineOrigin> entry : stockMoveLinesMap.entrySet()) {
+      stockMoveLineService.updateLocations(
+          stockLocationRepository.find(group.getFromStockLocation()),
+          stockLocationRepository.find(group.getToStockLocation()),
+          StockMoveRepository.STATUS_PLANNED,
+          StockMoveRepository.STATUS_REALIZED,
+          Collections.singletonList(entry.getValue().getStockMoveLine()),
+          null,
+          false,
+          group.getRealDate(),
+          entry.getValue().getOrigin());
+    }
   }
 
-  protected StockMoveLine merge(StockMoveLine sml1, StockMoveLine sml2) {
+  protected StockMoveLineOrigin merge(StockMoveLineOrigin sml1, StockMoveLineOrigin sml2) {
 
-    sml1.setQty(sml1.getQty().add(sml2.getQty()));
-    sml1.setRealQty(sml1.getRealQty().add(sml2.getRealQty()));
-
-    return sml1;
+    return sml1.merge(sml2);
   }
 
   protected void clearWapHistoryLines() {
