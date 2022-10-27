@@ -1452,7 +1452,7 @@ public final class AccountExceptionMessage {
       "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
 
   public static final String PAYMENT_SESSION_INVOICE_TERM_WITH_IN_ACTIVE_BANK_DETAILS = /*$$(*/
-      "The payment session comprises at least one term associated to bank details which is inactive. Please unselect this/those term(s) from the session or set the following bankdetails record(s) as active to proceed : %s" /*)*/;
+      "The payment session comprises at least one term associated to bank details which is inactive. Please unselect this/those term(s) from the session or change bankdetails on this/those term(s) or set the following bankdetails record(s) as active to proceed : %s" /*)*/;
 
   public static final String MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY = /*$$(*/
       "Inconsistency detected as the company defined on the move %s is different from the company associated to the journal %s." /*)*/;
