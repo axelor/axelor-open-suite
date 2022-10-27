@@ -81,10 +81,11 @@
           <field name="multipleUsers" colSpan="12" hidden="true"
             onChange="action-expense-attrs-multiple-users"/>
           <field name="company" canEdit="false" form-view="company-form"
-            grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+            grid-view="company-grid" onChange="action-expense-record-company-onchange"
+            required="true"/>
           <field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain"
             grid-view="user-grid" canNew="false" canEdit="false" canView="false"
-            onChange="action-expense-record-user-onchange"/>
+            onChange="action-expense-record-user-onchange" required="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
