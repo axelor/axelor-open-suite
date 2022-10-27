@@ -31,6 +31,8 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -54,18 +56,21 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
+  protected MoveComputeService moveComputeService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
       CurrencyService currencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      MoveComputeService moveComputeService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
+    this.moveComputeService = moveComputeService;
   }
 
   /**
@@ -106,14 +111,14 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       throws AxelorException {
 
     LocalDate paymentDate = paymentMove.getDate();
-    BigDecimal amountConverted =
-        currencyService.getAmountCurrencyConvertedAtDate(
-            paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
+
     int typePaymentMove = this.determineType(paymentMove);
     Currency currency = paymentMove.getCurrency();
     if (currency == null) {
       currency = paymentMove.getCompanyCurrency();
     }
+    BigDecimal amountConverted =
+        convertAmount(invoice, amount, paymentMove, currency, typePaymentMove);
     PaymentMode paymentMode;
     InvoicePayment invoicePayment;
     if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE
@@ -140,6 +145,66 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePaymentRepository.save(invoicePayment);
 
     return invoicePayment;
+  }
+
+  protected BigDecimal convertAmount(
+      Invoice invoice, BigDecimal amount, Move paymentMove, Currency currency, int typePaymentMove)
+      throws AxelorException {
+
+    Currency companyCurrency = paymentMove.getCompanyCurrency();
+    if (currency.equals(companyCurrency)) {
+      return amount;
+    }
+    if (invoice.getCurrency().equals(companyCurrency)) {
+      return amount
+          .multiply(paymentMove.getMoveLineList().get(0).getCurrencyRate())
+          .setScale(typePaymentMove);
+    }
+    if (!invoice.getMove().getCurrency().equals(companyCurrency)
+        && !paymentMove.getCurrency().equals(companyCurrency)) {
+      BigDecimal currencyRate = fetchCurrencyRate(typePaymentMove, paymentMove, invoice.getMove());
+      return amount.multiply(currencyRate);
+    }
+
+    return amount;
+  }
+
+  protected BigDecimal fetchCurrencyRate(int typePaymentMove, Move paymentMove, Move invoiceMove) {
+    switch (typePaymentMove) {
+      case InvoicePaymentRepository.TYPE_PAYMENT:
+        return fetchReversedSmallestCurrencyRate(paymentMove, invoiceMove);
+      case InvoicePaymentRepository.TYPE_REFUND_INVOICE:
+      case InvoicePaymentRepository.TYPE_INVOICE:
+        return fetchReversedGreatestCurrencyRate(paymentMove, invoiceMove);
+      default:
+        return BigDecimal.ONE;
+    }
+  }
+
+  protected BigDecimal fetchReversedGreatestCurrencyRate(Move paymentMove, Move invoiceMove) {
+    // Doesn't matter which move line we take.
+    BigDecimal greatestCurrencyRate = paymentMove.getMoveLineList().get(0).getCurrencyRate();
+
+    if (greatestCurrencyRate.compareTo(invoiceMove.getMoveLineList().get(0).getCurrencyRate())
+        < 0) {
+      greatestCurrencyRate = invoiceMove.getMoveLineList().get(0).getCurrencyRate();
+    }
+
+    return BigDecimal.ONE.divide(
+        greatestCurrencyRate, MoveLineToolServiceImpl.CURRENCY_RATE_SCALE, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal fetchReversedSmallestCurrencyRate(Move paymentMove, Move invoiceMove) {
+    // Doesn't matter which move line we take.
+    BigDecimal smallestCurrencyRate = paymentMove.getMoveLineList().get(0).getCurrencyRate();
+
+    if (smallestCurrencyRate.compareTo(invoiceMove.getMoveLineList().get(0).getCurrencyRate())
+        > 0) {
+      smallestCurrencyRate = invoiceMove.getMoveLineList().get(0).getCurrencyRate();
+    }
+
+    return BigDecimal.ONE.divide(
+        smallestCurrencyRate, MoveLineToolServiceImpl.CURRENCY_RATE_SCALE, RoundingMode.HALF_UP);
   }
 
   protected int determineType(Move move) {

@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
-  protected static final int RETURNED_SCALE = 2;
-  protected static final int CURRENCY_RATE_SCALE = 5;
+  public static final int RETURNED_SCALE = 2;
+  public static final int CURRENCY_RATE_SCALE = 5;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
