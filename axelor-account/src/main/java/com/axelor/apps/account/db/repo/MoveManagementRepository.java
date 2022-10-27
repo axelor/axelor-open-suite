@@ -25,6 +25,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -54,6 +55,12 @@ public class MoveManagementRepository extends MoveRepository {
       Period period =
           Beans.get(PeriodService.class)
               .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+      String origin = entity.getOrigin();
+      if (entity.getJournal().getHasDuplicateDetectionOnOrigin()
+          && entity.getJournal().getPrefixOrigin() != null) {
+        origin = entity.getJournal().getPrefixOrigin() + origin;
+      }
+
       copy.setStatusSelect(STATUS_NEW);
       copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
       copy.setReference(null);
@@ -68,6 +75,7 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setRejectOk(false);
       copy.setInvoice(null);
       copy.setPaymentSession(null);
+      copy.setOrigin(origin);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 
@@ -102,6 +110,7 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setAmountPaid(BigDecimal.ZERO);
     moveLine.setTaxPaymentMoveLineList(null);
     moveLine.setTaxAmount(BigDecimal.ZERO);
+    moveLine.setPostedNbr(null);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
@@ -208,6 +217,14 @@ public class MoveManagementRepository extends MoveRepository {
         throw new PersistenceException(e.getMessage(), e);
       }
     } else {
+      try {
+        if (entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+          Beans.get(MoveRemoveService.class).checkMoveBeforeRemove(entity);
+        }
+      } catch (Exception e) {
+        TraceBackService.traceExceptionFromSaveMethod(e);
+        throw new PersistenceException(e.getMessage(), e);
+      }
       super.remove(entity);
     }
   }

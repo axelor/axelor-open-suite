@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -49,6 +51,8 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -370,8 +374,17 @@ public class MoveLineController {
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
+        TaxEquiv taxEquiv = null;
+        FiscalPosition fiscalPosition = move.getFiscalPosition();
+        if (fiscalPosition != null) {
+          taxEquiv =
+              Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
+        }
 
         response.setValue("taxLine", taxLine);
+        if (taxEquiv != null) {
+          response.setValue("taxEquiv", taxEquiv);
+        }
       }
 
     } catch (Exception e) {
@@ -773,6 +786,33 @@ public class MoveLineController {
       return (LocalDate) dueDateObj;
     } else {
       return LocalDate.parse((String) dueDateObj);
+    }
+  }
+
+  public void updateTaxEquiv(ActionRequest request, ActionResponse response) {
+    try {
+      Context parentContext = request.getContext().getParent();
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        TaxLine taxLine = moveLine.getTaxLine();
+        TaxEquiv taxEquiv = null;
+        FiscalPosition fiscalPosition = move.getFiscalPosition();
+        if (fiscalPosition != null) {
+          taxEquiv =
+              Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
+
+          if (taxEquiv != null) {
+            response.setValue("taxLineBeforeReverse", taxLine);
+            taxLine =
+                Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+            response.setValue("taxLine", taxLine);
+            response.setValue("taxEquiv", taxEquiv);
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

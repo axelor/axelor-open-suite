@@ -304,17 +304,23 @@ public class StockMoveLineController {
         StockMove stockMove = parentContext.asType(StockMove.class);
         Partner partner = stockMove.getPartner();
         String userLanguage = AuthUtils.getUser().getLanguage();
+        Product product = stockMoveLine.getProduct();
 
-        if (stockMoveLine.getProduct() != null && partner != null) {
-          String partnerLanguage = partner.getLanguage().getCode();
-          response.setValue(
-              "description",
-              internationalService.translate(
-                  stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-          response.setValue(
-              "productName",
-              internationalService.translate(
-                  stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+        if (product != null) {
+          Map<String, String> translation =
+              internationalService.getProductDescriptionAndNameTranslation(
+                  product, partner, userLanguage);
+
+          String description = translation.get("description");
+          String productName = translation.get("productName");
+
+          if (description != null
+              && !description.isEmpty()
+              && productName != null
+              && !productName.isEmpty()) {
+            response.setValue("description", description);
+            response.setValue("productName", productName);
+          }
         }
       }
     } catch (Exception e) {

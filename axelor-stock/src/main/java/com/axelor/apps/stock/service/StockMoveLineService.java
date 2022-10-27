@@ -273,7 +273,7 @@ public interface StockMoveLineService {
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine);
 
   /** Add a new line in a stock move (API AOS) */
-  void createStockMoveLine(
+  StockMoveLine createStockMoveLine(
       StockMove stockMove,
       Product product,
       TrackingNumber trackingNumber,

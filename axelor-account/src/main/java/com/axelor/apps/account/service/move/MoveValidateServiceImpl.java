@@ -160,10 +160,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           moveLine.setOriginDate(date);
         }
       }
-
-      if (partner != null) {
-        moveLine.setPartner(partner);
-      }
       moveLine.setCounter(counter);
       counter++;
     }
@@ -570,9 +566,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLine.setAccountId(account.getId());
       moveLine.setAccountCode(account.getCode());
       moveLine.setAccountName(account.getName());
-      moveLine.setServiceType(account.getServiceType());
-      moveLine.setServiceTypeCode(
-          account.getServiceType() != null ? account.getServiceType().getCode() : null);
 
       Partner partner = moveLine.getPartner();
 
@@ -580,9 +573,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setPartnerId(partner.getId());
         moveLine.setPartnerFullName(partner.getSimpleFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
-        moveLine.setDas2Activity(partner.getDas2Activity());
-        moveLine.setDas2ActivityName(
-            partner.getDas2Activity() != null ? partner.getDas2Activity().getName() : null);
       }
       if (moveLine.getTaxLine() != null) {
         moveLine.setTaxRate(moveLine.getTaxLine().getValue());

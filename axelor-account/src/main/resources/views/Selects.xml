@@ -793,4 +793,14 @@
     <option value="4">Deferred incomes</option>
   </selection>
 
+  <selection name="payment.mode.move.accounting.date.select">
+    <option value="1">On payment date</option>
+    <option value="2">On due date of the origin document</option>
+    <option value="3">On accounting trigger date</option>
+  </selection>
+
+  <selection name="account.move.line.query.process.select">
+    <option value="0">Reconcile</option>
+    <option value="1">Unreconcile</option>
+  </selection>
 </object-views>

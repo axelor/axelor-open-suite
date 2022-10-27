@@ -898,7 +898,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     if (sequence != null) {
       expense.setExpenseSeq(
-          Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(sequence, expense.getSentDate(), Expense.class, "expenseSeq"));
       if (expense.getExpenseSeq() != null) {
         return;
       }

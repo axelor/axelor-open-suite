@@ -321,8 +321,10 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine =
         Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
             .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
-    for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
-      obj.setSaleOrderLine(saleOrderLine);
+    if (saleOrderLine.getAnalyticMoveLineList() != null) {
+      for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
+        obj.setSaleOrderLine(saleOrderLine);
+      }
     }
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);

@@ -62,10 +62,13 @@ public class PaymentVoucherSequenceService {
 
     return sequenceService.getSequenceNumber(
         paymentModeService.getPaymentModeSequence(
-            paymentMode, company, paymentVoucher.getCompanyBankDetails()));
+            paymentMode, company, paymentVoucher.getCompanyBankDetails()),
+        PaymentVoucher.class,
+        "ref");
   }
 
-  public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal) {
+  public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)
+      throws AxelorException {
 
     if (journal.getEditReceiptOk()) {
 
@@ -73,10 +76,14 @@ public class PaymentVoucherSequenceService {
     }
   }
 
-  public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal) {
+  public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)
+      throws AxelorException {
 
     return sequenceService.getSequenceNumber(
-        SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
+        SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER,
+        company,
+        PaymentVoucher.class,
+        "receiptNo");
   }
 
   public void checkReceipt(PaymentVoucher paymentVoucher) throws AxelorException {
