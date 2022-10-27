@@ -769,11 +769,16 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
-            + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
-            + " AND self.move.statusSelect != :statusSelect"
+        "self.move.statusSelect != :statusSelect"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
+
+    if (!bankReconciliation.getIncludeOtherBankStatements()) {
+      query =
+          query
+              + " AND (self.date >= :fromDate OR self.dueDate >= :fromDate)"
+              + " AND (self.date <= :toDate OR self.dueDate <= :toDate)";
+    }
 
     if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
       query =
@@ -792,6 +797,7 @@ public class BankReconciliationService {
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
     }
+
     return query;
   }
 
@@ -800,12 +806,15 @@ public class BankReconciliationService {
     Map<String, Object> params = new HashMap<>();
     BankPaymentConfig bankPaymentConfig =
         bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
-    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
-    params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
-    params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
+
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     params.put("company", bankReconciliation.getCompany());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
+    if (!bankReconciliation.getIncludeOtherBankStatements()) {
+      int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
+      params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
+      params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
+    }
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
     }
