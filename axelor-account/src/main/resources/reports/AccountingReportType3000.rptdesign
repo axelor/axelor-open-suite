@@ -282,6 +282,24 @@
                     <text-property name="displayName">display_delta_year_percentage</text-property>
                     <text-property name="heading">display_delta_year_percentage</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">reportyear</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">reportyear</text-property>
+                    <text-property name="heading">reportyear</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">reportn1year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">reportn1year</text-property>
+                    <text-property name="heading">reportn1year</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">reportn2year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">reportn2year</text-property>
+                    <text-property name="heading">reportn2year</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -376,6 +394,21 @@
                         <property name="position">16</property>
                         <property name="name">display_delta_year_percentage</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">reportyear</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">reportn1year</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">reportn2year</property>
+                        <property name="dataType">float</property>
                     </structure>
                 </list-property>
             </structure>
@@ -493,6 +526,27 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">reportyear</property>
+                    <property name="nativeName">reportyear</property>
+                    <property name="dataType">float</property>
+                    <property name="nativeDataType">8</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">reportn1year</property>
+                    <property name="nativeName">reportn1year</property>
+                    <property name="dataType">float</property>
+                    <property name="nativeDataType">8</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">reportn2year</property>
+                    <property name="nativeName">reportn2year</property>
+                    <property name="dataType">float</property>
+                    <property name="nativeDataType">8</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	Report.ref as ref,
@@ -510,7 +564,10 @@
 	Period.name as period,
 	MetaFile.file_path as logo_path,
 	Report.display_delta_year,
-	Report.display_delta_year_percentage
+	Report.display_delta_year_percentage,
+	EXTRACT(year from Report.date_from) AS reportYear,
+	EXTRACT(year from Report.date_from) - 1 AS reportN1Year,
+	EXTRACT(year from Report.date_from) - 2 AS reportN2Year
 	
 FROM account_accounting_report as Report
 
@@ -683,10 +740,46 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">columnName</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">columnRuleType</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnRuleType</text-property>
+                    <text-property name="heading">columnRuleType</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnHidden</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnHidden</text-property>
+                    <text-property name="heading">columnHidden</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnNotCompute</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnNotCompute</text-property>
+                    <text-property name="heading">columnNotCompute</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">lineName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">lineName</text-property>
                     <text-property name="heading">lineName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineHidden</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineHidden</text-property>
+                    <text-property name="heading">lineHidden</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineNotCompute</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineNotCompute</text-property>
+                    <text-property name="heading">lineNotCompute</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineRuleType</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineRuleType</text-property>
+                    <text-property name="heading">lineRuleType</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -736,8 +829,38 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">columnRuleType</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">columnHidden</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">columnNotCompute</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">lineName</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">lineHidden</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">lineNotCompute</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">lineRuleType</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -787,10 +910,52 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">columnRuleType</property>
+                    <property name="nativeName">columnRuleType</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">columnHidden</property>
+                    <property name="nativeName">columnHidden</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">columnNotCompute</property>
+                    <property name="nativeName">columnNotCompute</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">lineName</property>
                     <property name="nativeName">lineName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">lineHidden</property>
+                    <property name="nativeName">lineHidden</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">lineNotCompute</property>
+                    <property name="nativeName">lineNotCompute</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">lineRuleType</property>
+                    <property name="nativeName">lineRuleType</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -800,7 +965,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ReportValue.accounting_report_config_line_column AS "column",
 	ReportValue.accounting_report_config_line AS "line",
 	ConfigColumn.label AS "columnName",
-	ConfigLine.label AS "lineName"
+	ConfigColumn.rule_type_select AS "columnRuleType",
+	ConfigColumn.hidden AS "columnHidden",
+	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
+	ReportValue.line_title AS "lineName",
+	ConfigLine.hidden AS "lineHidden",
+	ConfigLine.not_computed_if_intersect AS "lineNotCompute",
+	ConfigLine.rule_type_select AS "lineRuleType"
 	
 FROM account_accounting_report AS AccountingReport
 
@@ -818,6 +989,13 @@ WHERE AccountingReport.id = ?]]></xml-property>
     </data-sets>
     <cubes>
         <tabular-cube name="ReportValues" id="5594">
+            <list-property name="filter">
+                <structure>
+                    <property name="operator">is-false</property>
+                    <expression name="expr" type="javascript">dataSetRow["columnHidden"] || dataSetRow["lineHidden"]</expression>
+                    <property name="updateAggregation">true</property>
+                </structure>
+            </list-property>
             <property name="dimensions">
                 <tabular-dimension name="Line" id="5641">
                     <property name="defaultHierarchy">NewTabularHierarchy</property>
@@ -864,6 +1042,22 @@ WHERE AccountingReport.id = ?]]></xml-property>
                         <tabular-measure name="resultn2" id="5952">
                             <expression name="measureExpression" type="javascript">dataSetRow["resultn2"]</expression>
                             <property name="dataType">decimal</property>
+                        </tabular-measure>
+                        <tabular-measure name="lineNotCompute" id="5969">
+                            <expression name="measureExpression" type="javascript">dataSetRow["lineNotCompute"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="columnNotCompute" id="5970">
+                            <expression name="measureExpression" type="javascript">dataSetRow["columnNotCompute"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="columnRuleType" id="5971">
+                            <expression name="measureExpression" type="javascript">dataSetRow["columnRuleType"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="lineRuleType" id="5972">
+                            <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
+                            <property name="dataType">integer</property>
                         </tabular-measure>
                     </property>
                 </tabular-measure-group>
@@ -1129,6 +1323,36 @@ WHERE AccountingReport.id = ?]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_delta_year_1</property>
+                    <text-property name="displayName">display_delta_year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_delta_year_percentage_1</property>
+                    <text-property name="displayName">display_delta_year_percentage</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">reportyear</property>
+                    <text-property name="displayName">reportyear</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reportyear"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">reportn1year</property>
+                    <text-property name="displayName">reportn1year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reportn1year"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">reportn2year</property>
+                    <text-property name="displayName">reportn2year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reportn2year"]</expression>
+                    <property name="dataType">float</property>
                 </structure>
             </list-property>
             <column id="5455"/>
@@ -1857,6 +2081,12 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                         <property name="aggregationOnColumn">Column/column</property>
                                         <property name="content">
                                             <data id="5853">
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="resultSetColumn">result_Line/line_Column/column</property>
                                             </data>
                                         </property>
@@ -1865,9 +2095,10 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                 <property name="header">
                                     <extended-item extensionName="CrosstabCell" id="5854">
                                         <property name="content">
-                                            <label id="5855">
-                                                <text-property name="text">Année N</text-property>
-                                            </label>
+                                            <text id="5966">
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row._outer["reportyear"]</VALUE-OF>]]></text-property>
+                                            </text>
                                         </property>
                                     </extended-item>
                                 </property>
@@ -1879,6 +2110,12 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                         <property name="aggregationOnColumn">Column/column</property>
                                         <property name="content">
                                             <data name="resultn11" id="5957">
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="resultSetColumn">resultn1</property>
                                             </data>
                                         </property>
@@ -1887,9 +2124,10 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                 <property name="header">
                                     <extended-item extensionName="CrosstabCell" id="5955">
                                         <property name="content">
-                                            <label id="5956">
-                                                <text-property name="text">Année N-1</text-property>
-                                            </label>
+                                            <text id="5973">
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row._outer["reportn1year"]</VALUE-OF>]]></text-property>
+                                            </text>
                                         </property>
                                     </extended-item>
                                 </property>
@@ -1901,6 +2139,12 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                         <property name="aggregationOnColumn">Column/column</property>
                                         <property name="content">
                                             <data name="resultn21" id="5962">
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="resultSetColumn">resultn2</property>
                                             </data>
                                         </property>
@@ -1909,9 +2153,10 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                 <property name="header">
                                     <extended-item extensionName="CrosstabCell" id="5960">
                                         <property name="content">
-                                            <label id="5961">
-                                                <text-property name="text">Année N-2</text-property>
-                                            </label>
+                                            <text id="5974">
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row._outer["reportn2year"]</VALUE-OF>]]></text-property>
+                                            </text>
                                         </property>
                                     </extended-item>
                                 </property>
@@ -1964,32 +2209,8 @@ WHERE AccountingReport.id = ?]]></xml-property>
                             </extended-item>
                         </property>
                         <property name="header">
-                            <extended-item extensionName="CrosstabCell" id="5856">
-                                <property name="content">
-                                    <label id="5857">
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">true</expression>
-                                            </structure>
-                                        </list-property>
-                                        <text-property name="text">column</text-property>
-                                    </label>
-                                </property>
-                            </extended-item>
-                            <extended-item extensionName="CrosstabCell" id="5839">
-                                <property name="content">
-                                    <label id="5845">
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">true</expression>
-                                            </structure>
-                                        </list-property>
-                                        <text-property name="text">line</text-property>
-                                    </label>
-                                </property>
-                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="5856"/>
+                            <extended-item extensionName="CrosstabCell" id="5839"/>
                         </property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -2021,6 +2242,26 @@ WHERE AccountingReport.id = ?]]></xml-property>
                                 <property name="name">resultn2</property>
                                 <expression name="expression" type="javascript">measure["resultn2"]</expression>
                                 <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">columnNotCompute</property>
+                                <expression name="expression" type="javascript">measure["columnNotCompute"]</expression>
+                                <property name="dataType">boolean</property>
+                            </structure>
+                            <structure>
+                                <property name="name">lineNotCompute</property>
+                                <expression name="expression" type="javascript">measure["lineNotCompute"]</expression>
+                                <property name="dataType">boolean</property>
+                            </structure>
+                            <structure>
+                                <property name="name">columnRuleType</property>
+                                <expression name="expression" type="javascript">measure["columnRuleType"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">lineRuleType</property>
+                                <expression name="expression" type="javascript">measure["lineRuleType"]</expression>
+                                <property name="dataType">integer</property>
                             </structure>
                         </list-property>
                     </extended-item>

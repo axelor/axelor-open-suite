@@ -81,9 +81,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     int timeoutCounter = 0;
 
     while (!isAllComputed) {
-      isAllComputed =
-          this.createReportValues(
-              accountingReport, accountingReportType, valuesMapByColumn, valuesMapByLine);
+      isAllComputed = this.createReportValues(accountingReport, valuesMapByColumn, valuesMapByLine);
 
       if (timeoutCounter++ > appBaseService.getProcessTimeout()) {
         throw new AxelorException(
@@ -129,7 +127,6 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   @Transactional(rollbackOn = {Exception.class})
   protected boolean createReportValues(
       AccountingReport accountingReport,
-      AccountingReportType accountingReportType,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
       throws AxelorException {
@@ -170,12 +167,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine)
       throws AxelorException {
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
+    if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
+        || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
         || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
       this.createReportValue(
           accountingReport,
           column,
           line,
+          line.getLabel(),
           null,
           null,
           null,
@@ -276,6 +275,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountingReport,
         column,
         line,
+        valuesMap.values().stream()
+            .map(AccountingReportValue::getLineTitle)
+            .findAny()
+            .orElse(line.getLabel()),
         result,
         resultn1,
         resultn2,
@@ -362,6 +365,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             new HashSet<>(Collections.singletonList(account)),
             accountTypeSet,
             analyticAccountSet,
+            account.getLabel(),
             lineCode);
         lineOffset++;
       }
@@ -381,6 +385,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountSet,
             new HashSet<>(Collections.singletonList(accountType)),
             analyticAccountSet,
+            accountType.getName(),
             lineCode);
 
         lineOffset++;
@@ -401,6 +406,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountSet,
             accountTypeSet,
             new HashSet<>(Collections.singletonList(analyticAccount)),
+            analyticAccount.getFullName(),
             lineCode);
 
         lineOffset++;
@@ -415,6 +421,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountSet,
           accountTypeSet,
           analyticAccountSet,
+          line.getLabel(),
           line.getCode());
     }
   }
@@ -441,6 +448,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
+      String lineTitle,
       String lineCode) {
     List<MoveLine> moveLineList =
         this.getMoveLineQuery(
@@ -467,6 +475,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountingReport,
         column,
         line,
+        lineTitle,
         result,
         resultn1,
         resultn2,
@@ -633,6 +642,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      String lineTitle,
       BigDecimal result,
       BigDecimal resultn1,
       BigDecimal resultn2,
@@ -651,6 +661,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             result,
             resultn1,
             resultn2,
+            lineTitle,
             accountingReport,
             line,
             column);

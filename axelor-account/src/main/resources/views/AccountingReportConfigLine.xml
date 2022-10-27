@@ -44,7 +44,10 @@
         showIf="(typeSelect == 1 || typeSelect == 2) &amp;&amp; ruleTypeSelect != 1"
         requiredIf="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
       <field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
-      <field name="hidden" showIf="ruleTypeSelect == 2 || ruleTypeSelect == 3"/>
+      <panel name="configPanel" colSpan="12">
+        <field name="hidden" showIf="ruleTypeSelect == 2 || ruleTypeSelect == 3"/>
+        <field name="notComputedIfIntersect" showIf="ruleTypeSelect != 1"/>
+      </panel>
       <panel name="splitConfigPanel" colSpan="12" itemSpan="4"
         showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null">
         <field name="detailByAccountType" hideIf="detailByAccount || detailByAnalyticAccount"/>
