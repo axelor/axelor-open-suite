@@ -165,7 +165,7 @@
   </form>
 
   <calendar name="calendar-event-leave-request" model="com.axelor.apps.hr.db.LeaveRequest"
-    title="Calendar" eventStart="fromDateT" eventStop="toDateT" colorBy="user" editable="false">
+    title="Calendar" eventStart="fromDateT" eventStop="toDateT" colorBy="employee" editable="false">
     <field name="employee"/>
   </calendar>
 
