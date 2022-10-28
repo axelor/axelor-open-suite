@@ -9,6 +9,8 @@
 
     <string name="label" title="Label"/>
     <string name="code" title="Code"/>
+    <string name="percentageTotalLine" title="Line to be aggregated with"/>
+    <string name="percentageBaseColumn" title="Column to be aggregated"/>
     <integer name="sequence"
       help="Field used to define the sequencing order for automatic reconcile. Rules will be applied in ascending order"/>
     <integer name="typeSelect" title="Type"
@@ -27,8 +29,9 @@
       ref="com.axelor.apps.account.db.AccountType"/>
     <many-to-many name="accountSet" title="Accounts"
       ref="com.axelor.apps.account.db.Account"/>
-    <many-to-one name="reportType" ref="com.axelor.apps.account.db.AccountingReportType"/>
-    <many-to-one name="reportTypeColumn"
+    <many-to-one name="reportType" title="Report type"
+      ref="com.axelor.apps.account.db.AccountingReportType"/>
+    <many-to-one name="reportTypeColumn" title="Report type"
       ref="com.axelor.apps.account.db.AccountingReportType"/>
     <string name="rule" title="Rule" large="true"/>
     <string name="accountCode" title="Account code"/>
@@ -42,6 +45,7 @@
       public static final int RULE_TYPE_NO_VALUE = 1;
       public static final int RULE_TYPE_SUM_OF_ACCOUNTS = 2;
       public static final int RULE_TYPE_CUSTOM_RULE = 3;
+      public static final int RULE_TYPE_PERCENTAGE = 4;
 
       // RESULT SELECT
       public static final int RESULT_DEBIT_MINUS_CREDIT = 1;

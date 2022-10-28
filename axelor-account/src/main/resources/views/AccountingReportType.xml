@@ -43,11 +43,11 @@
         <panel-related
           name="accountingReportTypeAccountingReportConfigLineColumnListPanel"
           field="accountingReportConfigLineColumnList" height="15" x-row-height="29"
-          form-view="accounting-report-config-line-form" colSpan="12"
+          form-view="accounting-report-config-line-column-rule-form" colSpan="12"
           grid-view="accounting-report-config-line-grid"/>
         <panel-related name="accountingReportTypeAccountingReportConfigLineListPanel"
           field="accountingReportConfigLineList" height="15" x-row-height="29"
-          form-view="accounting-report-config-line-form" colSpan="12"
+          form-view="accounting-report-config-line-line-rule-form" colSpan="12"
           grid-view="accounting-report-config-line-grid"/>
       </panel>
     </panel>

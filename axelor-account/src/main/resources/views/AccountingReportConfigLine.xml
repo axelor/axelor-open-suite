@@ -24,6 +24,18 @@
       onClick="action-move-line-view-open-report-config-line"/>
   </grid>
 
+  <form title="Column rule" name="accounting-report-config-line-column-rule-form"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine"
+    onNew="action-accounting-report-config-line-record-column-rule">
+    <panel-include view="accounting-report-config-line-form"/>
+  </form>
+
+  <form title="Line rule" name="accounting-report-config-line-line-rule-form"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine"
+    onNew="action-accounting-report-config-line-record-line-rule">
+    <panel-include view="accounting-report-config-line-form"/>
+  </form>
+
   <form title="Config line" name="accounting-report-config-line-form"
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
     <panel name="accountingReportConfigLineMainPanel">
@@ -36,17 +48,26 @@
       </panel>
       <field name="typeSelect" validIf="typeSelect > 0"
         onChange="action-accounting-report-config-line-record-type-select-onchange"/>
-      <field name="ruleTypeSelect" validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3"
-        onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
-      <field name="label" showIf="(typeSelect == 1 || typeSelect == 2)"
-        requiredIf="typeSelect != 3"/>
-      <field name="code"
-        showIf="(typeSelect == 1 || typeSelect == 2) &amp;&amp; ruleTypeSelect != 1"
+      <panel name="ruleTypePanel" stacked="true" itemSpan="12">
+        <field name="ruleTypeSelect" showIf="reportTypeColumn == null"
+          validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3" selection-in="[1,2,3]"
+          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
+        <field name="ruleTypeSelect" showIf="reportTypeColumn != null"
+          validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3"
+          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
+      </panel>
+      <field name="label" showIf="[1,2].includes(typeSelect)" requiredIf="typeSelect != 3"/>
+      <field name="code" showIf="[1,2].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"
         requiredIf="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
       <field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
-      <panel name="configPanel" colSpan="12">
-        <field name="hidden" showIf="ruleTypeSelect == 2 || ruleTypeSelect == 3"/>
-        <field name="notComputedIfIntersect" showIf="ruleTypeSelect != 1"/>
+      <panel name="percentagePanel" stacked="true" showIf="[2,3,4].includes(ruleTypeSelect)">
+        <field name="percentageTotalLine" showIf="reportType != null"/>
+        <field name="percentageBaseColumn"
+          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"/>
+      </panel>
+      <panel name="configPanel" colSpan="12" showIf="[2,3,4].includes(ruleTypeSelect)">
+        <field name="hidden"/>
+        <field name="notComputedIfIntersect"/>
       </panel>
       <panel name="splitConfigPanel" colSpan="12" itemSpan="4"
         showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null">
@@ -110,6 +131,16 @@
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
     <field name="code" expr="eval: null" if="ruleTypeSelect == 1"/>
     <field name="label" expr="eval: null" if="ruleTypeSelect == 1"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-config-line-record-column-rule"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine">
+    <field name="reportTypeColumn" expr="eval: __parent__"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-config-line-record-line-rule"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine">
+    <field name="reportType" expr="eval: __parent__"/>
   </action-record>
 
   <action-attrs name="action-accounting-report-config-line-attrs-account-set-domain">

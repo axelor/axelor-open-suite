@@ -19,6 +19,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -30,6 +31,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +43,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -219,6 +223,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           valuesMapByColumn.get(column.getCode()),
           valuesMapByColumn,
           valuesMapByLine);
+    } else if (column.getRuleTypeSelect()
+        == AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
+      this.createPercentageValue(
+          accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
     } else {
       this.createValueFromMoveLines(
           accountingReport, column, line, valuesMapByColumn, valuesMapByLine);
@@ -312,8 +320,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     try {
       return (BigDecimal) scriptHelper.eval(configLine.getRule());
     } catch (Exception e) {
-      valuesMapByColumn.get(column.getCode()).put(line.getCode(), null);
-      valuesMapByLine.get(line.getCode()).put(column.getCode(), null);
+      this.addNullValue(column, line, valuesMapByColumn, valuesMapByLine);
       return null;
     }
   }
@@ -618,6 +625,131 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         .orElse(BigDecimal.ZERO);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createPercentageValue(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {
+    Map<String, AccountingReportValue> valuesMap =
+        valuesMapByColumn.get(column.getPercentageBaseColumn());
+
+    if (valuesMap == null) {
+      this.addNullValue(column, line, valuesMapByColumn, valuesMapByLine);
+    } else {
+      this.createPercentageValue(
+          accountingReport, column, line, valuesMap, valuesMapByColumn, valuesMapByLine);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createPercentageValue(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, AccountingReportValue> valuesMap,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {
+    AccountingReportValue totalValue = null;
+    List<String> linesCodeList = Collections.singletonList(line.getCode());
+    BigDecimal result = BigDecimal.valueOf(100);
+    BigDecimal resultn1 = BigDecimal.valueOf(100);
+    BigDecimal resultn2 = BigDecimal.valueOf(100);
+
+    if (StringUtils.notEmpty(line.getPercentageTotalLine())) {
+      totalValue = valuesMap.get(line.getPercentageTotalLine());
+
+      if (valuesMap.get(line.getCode()) == null) {
+        linesCodeList =
+            valuesMap.keySet().stream()
+                .filter(it -> Pattern.matches(String.format("%s_[0-9]+", line.getCode()), it))
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(linesCodeList)) {
+          this.addNullValue(column, line, valuesMapByColumn, valuesMapByLine);
+          return;
+        }
+      }
+    }
+
+    for (String code : linesCodeList) {
+      this.createPercentageValue(
+          accountingReport,
+          column,
+          line,
+          valuesMapByColumn,
+          valuesMapByLine,
+          valuesMap.get(code),
+          totalValue,
+          code,
+          result,
+          resultn1,
+          resultn2);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createPercentageValue(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      AccountingReportValue baseValue,
+      AccountingReportValue totalValue,
+      String lineCode,
+      BigDecimal result,
+      BigDecimal resultn1,
+      BigDecimal resultn2) {
+    if (baseValue != null && totalValue != null && totalValue.getResult().signum() != 0) {
+      result =
+          baseValue
+              .getResult()
+              .multiply(result)
+              .divide(
+                  totalValue.getResult(),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP);
+
+      if (totalValue.getResultn1().signum() != 0) {
+        resultn1 =
+            baseValue
+                .getResultn1()
+                .multiply(resultn1)
+                .divide(
+                    totalValue.getResultn1(),
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    RoundingMode.HALF_UP);
+      }
+
+      if (totalValue.getResultn2().signum() != 0) {
+        resultn2 =
+            baseValue
+                .getResultn2()
+                .multiply(resultn2)
+                .divide(
+                    totalValue.getResultn2(),
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    RoundingMode.HALF_UP);
+      }
+    }
+
+    this.createReportValue(
+        accountingReport,
+        column,
+        line,
+        Optional.ofNullable(baseValue)
+            .map(AccountingReportValue::getLineTitle)
+            .orElse(line.getLabel()),
+        result,
+        resultn1,
+        resultn2,
+        valuesMapByColumn,
+        valuesMapByLine,
+        lineCode);
+  }
+
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
     List<Integer> statusList =
         Arrays.asList(MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
@@ -670,5 +802,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     valuesMapByColumn.get(column.getCode()).put(lineCode, accountingReportValue);
     valuesMapByLine.get(lineCode).put(column.getCode(), accountingReportValue);
+  }
+
+  protected void addNullValue(
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine) {
+    valuesMapByColumn.get(column.getCode()).put(line.getCode(), null);
+    valuesMapByLine.get(line.getCode()).put(column.getCode(), null);
   }
 }
