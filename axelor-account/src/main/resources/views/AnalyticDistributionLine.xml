@@ -60,8 +60,8 @@
 
   <action-attrs name="action-attrs-domain-axis-distribution-line">
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} &quot;"
-      if="__parent__ &amp;&amp; __parent__.company"/>
+      expr="eval: &quot; self.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList"/>
     <attribute name="domain" for="analyticAxis" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
   </action-attrs>
