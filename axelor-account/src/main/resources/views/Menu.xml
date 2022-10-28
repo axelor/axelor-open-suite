@@ -184,7 +184,7 @@
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <context name="_pfpStatus"
-      expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
+      expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[0]"/>
   </action-view>
 
   <menuitem name="account-root-periodic-processing" parent="account-root"
