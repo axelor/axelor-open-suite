@@ -1,3 +1,12 @@
+## [5.4.28] (2022-10-28)
+
+#### Fixed
+
+* Invoice: generated stock move invoices now correctly copy budget distribution on product with tracking number.
+* Expense: company and employee now correctly appear as mandatory in form view.
+* Payment voucher: company bank details is now required if multi banks is activated.
+* Invoice payment: fixed a bug where payments were pending even when without bank order.
+
 ## [5.4.27] (2022-10-21)
 
 #### Fixed
@@ -721,6 +730,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.28]: https://github.com/axelor/axelor-open-suite/compare/v5.4.27...v5.4.28
 [5.4.27]: https://github.com/axelor/axelor-open-suite/compare/v5.4.26...v5.4.27
 [5.4.26]: https://github.com/axelor/axelor-open-suite/compare/v5.4.25...v5.4.26
 [5.4.25]: https://github.com/axelor/axelor-open-suite/compare/v5.4.24...v5.4.25
