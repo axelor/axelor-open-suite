@@ -523,7 +523,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
 
     BigDecimal inTaxPriceComputed =
-        invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice());
+        invoiceLineService
+            .convertUnitPrice(false, line.getTaxLine(), line.getPrice())
+            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,

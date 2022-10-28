@@ -1,0 +1,7 @@
+---
+title: "Move : partner not automatically filled in move line list on move validation and on FEC import"
+type: fix
+description: |
+  On FEC import, created move partner header is not filled anymore.
+  If Move Partner header is filled, hide partner column in move line list.
+  If there is a move line, Partner Move header will no be editable anymore.

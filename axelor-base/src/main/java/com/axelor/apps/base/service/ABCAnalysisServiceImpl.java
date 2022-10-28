@@ -351,7 +351,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   @Override
-  public void setSequence(ABCAnalysis abcAnalysis) {
+  public void setSequence(ABCAnalysis abcAnalysis) throws AxelorException {
     String abcAnalysisSequence = abcAnalysis.getAbcAnalysisSeq();
 
     if (abcAnalysisSequence != null && !abcAnalysisSequence.isEmpty()) {
@@ -365,7 +365,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
       return;
     }
 
-    abcAnalysis.setAbcAnalysisSeq(sequenceService.getSequenceNumber(sequence));
+    abcAnalysis.setAbcAnalysisSeq(
+        sequenceService.getSequenceNumber(sequence, ABCAnalysis.class, "abcAnalysisSeq"));
   }
 
   @Override

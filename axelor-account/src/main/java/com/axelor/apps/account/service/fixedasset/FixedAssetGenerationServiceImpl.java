@@ -381,7 +381,11 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
           fixedAsset.getCompany().getName());
     }
     String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.FIXED_ASSET,
+            fixedAsset.getCompany(),
+            FixedAsset.class,
+            "fixedAssetSeq");
     return seq;
   }
 
@@ -500,7 +504,6 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setFiscalDegressiveCoef(degressiveCoef);
     fixedAsset.setIfrsDegressiveCoef(degressiveCoef);
 
-    fixedAsset.setIsEqualToFiscalDepreciation(true);
     fixedAsset.setIsIfrsEqualToFiscalDepreciation(true);
   }
 }

@@ -1129,7 +1129,9 @@ public class IrrecoverableService {
 
   public String getSequence(Company company) throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.IRRECOVERABLE, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

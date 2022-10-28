@@ -56,7 +56,7 @@
   <action-attrs name="action-sale-attrs-set-hidden"
     model="com.axelor.apps.base.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
-      expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 
 </object-views>

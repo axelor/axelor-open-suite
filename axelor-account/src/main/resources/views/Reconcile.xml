@@ -5,7 +5,7 @@
 
   <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
     <field name="reconcileSeq" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
     <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
@@ -100,7 +100,7 @@
   <search-filters name="reconcile-filters"
     model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Draft">
       <domain>self.statusSelect = 1</domain>
     </filter>

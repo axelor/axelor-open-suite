@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
@@ -299,7 +300,14 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       Product product, int componentsValuationMethod, Company company) throws AxelorException {
 
     BigDecimal price = null;
-    Currency companyCurrency = company.getCurrency();
+    Currency companyCurrency;
+
+    if (company != null) {
+      companyCurrency = company.getCurrency();
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(BaseExceptionMessage.COMPANY_MISSING));
+    }
 
     if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE) {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);

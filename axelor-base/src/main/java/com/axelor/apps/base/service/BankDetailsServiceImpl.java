@@ -213,14 +213,14 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     if (label != null && !label.isEmpty()) {
-      if (stringBuilder.toString().isEmpty() || stringBuilder == null) {
+      if (stringBuilder.toString().isEmpty()) {
         stringBuilder.append(label);
       } else {
-        stringBuilder.append(" - " + label);
+        stringBuilder.append(" - ").append(label);
       }
     }
 
-    if (!stringBuilder.toString().isEmpty() && stringBuilder != null) {
+    if (!stringBuilder.toString().isEmpty()) {
       stringBuilder.append(" - ");
     }
 
@@ -229,7 +229,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     if (bankFullName != null && !bankFullName.isEmpty()) {
-      stringBuilder.append(" - " + bankFullName);
+      stringBuilder.append(" - ").append(bankFullName);
     }
 
     return stringBuilder.toString();

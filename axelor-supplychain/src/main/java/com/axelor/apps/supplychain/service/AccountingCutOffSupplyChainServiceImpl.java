@@ -193,7 +193,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       boolean automaticReverse,
       boolean automaticReconcile,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -216,7 +217,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             includeNotStockManagedProduct,
             false,
             forecastedInvCustAccount,
-            forecastedInvSuppAccount);
+            forecastedInvSuppAccount,
+            prefixOrigin);
 
     if (move == null) {
       return null;
@@ -240,7 +242,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
               includeNotStockManagedProduct,
               true,
               forecastedInvCustAccount,
-              forecastedInvSuppAccount);
+              forecastedInvSuppAccount,
+              prefixOrigin);
 
       if (reverseMove == null) {
         return null;
@@ -277,7 +280,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       boolean includeNotStockManagedProduct,
       boolean isReverse,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException {
 
     if (moveDate == null
@@ -324,7 +328,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       }
     }
 
-    String origin = stockMove.getStockMoveSeq();
+    String origin = prefixOrigin + stockMove.getStockMoveSeq();
 
     Move move =
         moveCreateService.createMove(
@@ -463,7 +467,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
     boolean isDebit =
         (isPurchase && amountInCurrency.signum() > 0)
-            || !isPurchase && amountInCurrency.signum() < 0;
+            || (!isPurchase && amountInCurrency.signum() < 0);
     if (isReverse) {
       isDebit = !isDebit;
     }

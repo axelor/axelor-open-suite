@@ -17,9 +17,9 @@
     <field name="prioritySelect" hidden="true"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop()"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="qty" x-scale="2"/>
     <field name="unit"/>
@@ -57,7 +57,7 @@
     <field name="productionOrder" width="120"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="billOfMaterial" grid-view="bill-of-material-grid"
       form-view="bill-of-material-form"/>
@@ -89,7 +89,7 @@
     <field name="productionOrder" width="120"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     <field name="plannedStartDateT"/>
@@ -103,7 +103,7 @@
     <field name="productionOrder" width="120"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     <field name="plannedEndDateT"/>
@@ -139,7 +139,7 @@
         <field name="workshopStockLocation" required="true" form-view="stock-location-form"
           grid-view="stock-location-grid" colSpan="2" canEdit="false"
           onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1"
-          if="__config__.app.getApp('production').getManageWorkshop()"
+          if="__config__.app.getApp('production')?.getManageWorkshop()"
           domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
           showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
@@ -194,9 +194,9 @@
         <field name="isConsProOnOperation" hidden="true"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"
           if-module="axelor-business-production"
-          showIf="__config__.app.getApp('production').getManageBusinessProduction()"/>
+          showIf="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"
-          if="__config__.app.getApp('production').getManageBusinessProduction()"/>
+          if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
           hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0"
           onClick="save,action-manuf-order-method-pre-fill-operations"/>
@@ -226,7 +226,7 @@
     <panel-tabs name="mainPanelTab" colSpan="4">
       <panel-related name="operationOrderListPanel" field="operationOrderList"
         readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
-        grid-view="operation-order-grid"/>
+        grid-view="operation-order-grid" canNew="false"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -385,7 +385,7 @@
       </panel>
       <panel name="residualProductsPanel" title="Residual products"
         showIf="billOfMaterial != null &amp;&amp; billOfMaterial.prodResidualProductList.length > 0"
-        if="__config__.app.getApp('production').getManageResidualProductOnBom()">
+        if="__config__.app.getApp('production')?.getManageResidualProductOnBom()">
         <field name="billOfMaterial.prodResidualProductList" title="Residual products"
           colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
       </panel>
@@ -623,7 +623,7 @@
       expr="eval: _createPermanent ? __repo__(ManufOrder).TYPE_PERMANENT : __repo__(ManufOrder).TYPE_PRODUCTION"/>
     <field name="qty" expr="eval: 0" if="_createPermanent"/>
     <field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
   </action-record>
 
   <action-record name="action-manuf-order-record-update-qty-from-prod-process"
@@ -957,13 +957,13 @@
   <search-filters name="manuf-order-filters"
     model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="isToInvoice" hidden="true"
-      if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
+      if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <field name="invoiced" hidden="true"
-      if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
+      if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <filter title="Draft MOs">
       <domain>self.statusSelect = 1</domain>
     </filter>

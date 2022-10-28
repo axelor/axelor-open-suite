@@ -230,7 +230,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
     }
 
-    if (accountingReport.getYear() != null) {
+    if (accountingReport.getYear() != null
+        && accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
     }
 
@@ -385,7 +388,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         || accountingReportTypeSelect == 3000) {
       String seq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
+              SequenceRepository.ACCOUNTING_REPORT,
+              accountingReport.getCompany(),
+              AccountingReport.class,
+              "sequence");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -397,7 +403,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     } else if (accountingReportTypeSelect >= 1000 && accountingReportTypeSelect < 2000) {
       String seq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.MOVE_LINE_EXPORT, accountingReport.getCompany());
+              SequenceRepository.MOVE_LINE_EXPORT,
+              accountingReport.getCompany(),
+              AccountingReport.class,
+              "sequence");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -409,7 +418,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     } else if (accountingReportTypeSelect >= 2000 && accountingReportTypeSelect < 3000) {
       String seq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.ANALYTIC_REPORT, accountingReport.getCompany());
+              SequenceRepository.ANALYTIC_REPORT,
+              accountingReport.getCompany(),
+              AccountingReport.class,
+              "sequence");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -123,7 +123,7 @@ public class ClosureAssistantLineController {
       AccountService accountService = Beans.get(AccountService.class);
       BigDecimal income =
           accountService.computeBalance(
-              incomeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+              incomeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
       BigDecimal charge =
           accountService.computeBalance(
               chargeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
@@ -133,6 +133,9 @@ public class ClosureAssistantLineController {
       response.setAttr("income", "value", income);
       response.setAttr("charge", "value", charge);
       response.setAttr("profit", "value", profit);
+      if (profit.signum() < 0) {
+        response.setAttr("profit", "title", I18n.get("Loss"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

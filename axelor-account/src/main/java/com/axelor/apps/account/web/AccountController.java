@@ -105,7 +105,7 @@ public class AccountController {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class).checkAnalyticAxis(account);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

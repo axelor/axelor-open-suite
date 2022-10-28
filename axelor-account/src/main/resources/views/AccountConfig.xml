@@ -6,7 +6,7 @@
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="account-config-form" title="Account configuration"
@@ -29,9 +29,11 @@
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="4"/>
-      <field name="accountingDaybook" colSpan="4"/>
-      <field name="isActivateSimulatedMove" colSpan="4"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3"/>
+      <field name="isActivateSimulatedMove" colSpan="3"/>
+      <field name="accountingDaybook" colSpan="3"
+        onChange="action-account-config-attrs-accounting-daybook-onchange"/>
+      <field name="accountAtPayment" colSpan="3" showIf="accountingDaybook"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -120,7 +122,7 @@
               form-view="account-form"/>
           </panel>
           <panel name="accountFactorPanel" title="Factor"
-            if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
+            if="__config__.app.getApp('account')?.getManageFactors()" colSpan="12">
             <field name="factorDebitAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
@@ -164,6 +166,8 @@
           <field name="dasContactPartner"
             domain="self.isEmployee = true AND :company member of self.companySet"
             form-view="partner-form" grid-view="partner-grid"/>
+          <field name="dasReportJournalType" form-view="journal-type-form"
+            grid-view="journal-type-grid"/>
           <!-- <field name="exportFileName"/> -->
         </panel>
         <panel name="holdBackPanel" title="Holdback" colSpan="12">
@@ -189,6 +193,9 @@
           <field name="defPaymentCondition" grid-view="payment-condition-grid"
             form-view="payment-condition-form"/>
         </panel>
+        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook">
+          <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"/>
+        </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
           <field name="expenseTaxAccount"
             domain="self.statusSelect = 1 AND self.company = :company"
@@ -213,7 +220,7 @@
           showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 
         <panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()">
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <field name="isManagePassedForPayment" widget="boolean-switch"/>
           <field name="isManagePFPInRefund" widget="boolean-switch"
             showIf="isManagePassedForPayment"/>
@@ -411,7 +418,7 @@
           grid-view="account-grid" form-view="account-form"/>
       </panel>
       <panel name="analyticPanel"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()" title="Analytic">
         <field name="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"/>
         <field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting"
@@ -494,6 +501,11 @@
     <attribute name="value" for="$isCanNew"
       expr="eval: analyticAxisByCompanyList.size() &lt; nbrOfAnalyticAxisSelect"
       if="analyticAxisByCompanyList != null &amp;&amp; manageAnalyticAccounting"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-config-attrs-accounting-daybook-onchange">
+    <attribute name="value" for="retrieveDaybookMovesInPaymentSession"
+      expr="eval: accoutingDaybook ? retrieveDaybookMovesInPaymentSession : false"/>
   </action-attrs>
 
   <action-method name="action-method-check-account-config-changes-in-analytic">

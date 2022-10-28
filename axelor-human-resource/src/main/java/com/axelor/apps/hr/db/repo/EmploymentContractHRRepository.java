@@ -20,6 +20,8 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class EmploymentContractHRRepository extends EmploymentContractRepository {
@@ -29,9 +31,17 @@ public class EmploymentContractHRRepository extends EmploymentContractRepository
   @Override
   public EmploymentContract save(EmploymentContract employmentContract) {
     if (employmentContract.getRef() == null) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.EMPLOYMENT_CONTRACT, employmentContract.getPayCompany());
+      String seq = null;
+      try {
+        seq =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.EMPLOYMENT_CONTRACT,
+                employmentContract.getPayCompany(),
+                EmploymentContract.class,
+                "ref");
+      } catch (AxelorException e) {
+        TraceBackService.traceExceptionFromSaveMethod(e);
+      }
       employmentContract.setRef(seq);
     }
 

@@ -5,7 +5,6 @@
 
   <form id="bank-payment-payment-session-form" name="payment-session-form"
     title="Payment session" model="com.axelor.apps.account.db.PaymentSession" extension="true">
-
     <extend target="//panel[@name='emailPanel']">
       <insert position="after">
         <panel name="bankOrderPanel" sidebar="true" title="Bank order"
@@ -15,7 +14,20 @@
         </panel>
       </insert>
     </extend>
-
+    <extend target="//button[@name='validateBtn']">
+      <attribute name="onClick" value="bank-payment-action-payment-session-group-validate"/>
+    </extend>
   </form>
+
+  <action-group name="bank-payment-action-payment-session-group-validate">
+    <action name="action-payment-session-validate-check-multi-date"/>
+    <action name="action-payment-session-group-validate"/>
+  </action-group>
+
+  <action-validate name="action-payment-session-validate-check-multi-date">
+    <error
+      message="The validation of this payment session is supposed to generate a bank order with multiple execution dates while the file format associated with the payment mode does not support the multidate. Please select an adequate file format within the payment mode settings or change the parameter for the accounting date selection."
+      if="paymentMode?.generateBankOrder &amp;&amp; !paymentMode?.bankOrderFileFormat?.isMultiDate &amp;&amp; moveAccountingDateSelect == 2"/>
+  </action-validate>
 
 </object-views>

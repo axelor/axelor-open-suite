@@ -7,7 +7,7 @@
     <field name="name"/>
     <field name="codeSelect"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="prefixe"/>
     <field name="suffixe"/>
     <field name="padding"/>
@@ -157,6 +157,6 @@
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
     title="Sequence filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

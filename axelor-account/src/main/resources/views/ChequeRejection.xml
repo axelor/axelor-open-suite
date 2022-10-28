@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.ChequeRejection">
     <field name="name" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="dateTime"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="move"/>
@@ -126,7 +126,7 @@
   <search-filters name="cheque-rejection-filters"
     model="com.axelor.apps.account.db.ChequeRejection" title="Cheque rejection filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Recent rejects">
       <domain>self.rejectionDate &gt;= :_newDate1</domain>
     </filter>

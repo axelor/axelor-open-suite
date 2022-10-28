@@ -70,7 +70,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
   public String getProductionOrderSeq() throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCTION_ORDER);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PRODUCTION_ORDER, ProductionOrder.class, "productionOrderSeq");
 
     if (seq == null) {
       throw new AxelorException(

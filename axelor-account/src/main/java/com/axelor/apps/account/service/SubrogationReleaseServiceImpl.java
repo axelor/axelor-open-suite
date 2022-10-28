@@ -130,7 +130,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
-        sequenceService.getSequenceNumber("subrogationRelease", subrogationRelease.getCompany());
+        sequenceService.getSequenceNumber(
+            "subrogationRelease",
+            subrogationRelease.getCompany(),
+            SubrogationRelease.class,
+            "sequenceNumber");
     if (Strings.isNullOrEmpty(sequenceNumber)) {
       throw new AxelorException(
           Sequence.class,

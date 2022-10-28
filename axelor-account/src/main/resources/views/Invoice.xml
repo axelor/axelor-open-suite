@@ -19,7 +19,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
           action="action-invoice-mergecustinvoices"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
@@ -34,9 +34,9 @@
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
@@ -69,7 +69,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
           action="action-invoice-mergecustinvoices"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
@@ -80,9 +80,9 @@
     <hilite color="danger" if="billOfExchangeBlockingOk"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="operationTypeSelect"/>
@@ -115,7 +115,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
           action="action-invoice-mergecustinvoices"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
@@ -130,9 +130,9 @@
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
@@ -167,7 +167,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
           action="action-invoice-mergecustinvoices"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
@@ -184,9 +184,9 @@
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
@@ -219,7 +219,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="paySelectedInvoicesItem" title="Pay selected invoices"
           action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
@@ -238,7 +238,7 @@
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="operationSubTypeSelect" width="160"/>
@@ -253,13 +253,13 @@
     <field name="statusSelect"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" title="PFP val."
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -281,7 +281,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="paySelectedInvoicesItem" title="Pay selected invoices"
           action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
@@ -300,7 +300,7 @@
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
@@ -313,9 +313,9 @@
     <field name="amountRemaining" aggregate="sum"/>
     <field name="currency"/>
     <field name="statusSelect"/>
-    <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+    <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidateStatusSelect" title="PFP"/>
-    <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+    <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -338,7 +338,7 @@
         <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices"
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
-          if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+          if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
         <item name="generateSubscriptionsInvoicesItem" title="Generate subscriptions invoices"
@@ -434,7 +434,7 @@
           </viewer>
         </field>
         <field name="$pfpViewerTags" showTitle="false" readonly="true" showIf="$readonly()"
-          colSpan="3" if="__config__.app.getApp('account').getActivatePassedForPayment()">
+          colSpan="3" if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <viewer>
 	                    <![CDATA[
 	                        <h4 class="text-right">
@@ -474,12 +474,13 @@
         readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"
         form-view="currency-form" grid-view="currency-grid"/>
       <field name="priceList" colSpan="3" canEdit="false"
-        onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1"
+        onChange="action-invoice-record-hide-discount"
+        readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"
         onSelect="action-invoice-method-domain-priceList" form-view="price-list-form"
         grid-view="price-list-grid"/>
       <field name="tradingName" canEdit="false" grid-view="trading-name-grid"
         form-view="trading-name-form"
-        if="__config__.app.getApp('base').enableTradingNamesManagement"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"
         requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
         readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet"
         onChange="action-invoice-method-printing-settings-default-values"/>
@@ -488,7 +489,7 @@
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="fiscalPosition" grid-view="fiscal-position-grid"
         form-view="fiscal-position-form" canNew="false" canEdit="false"
-        readonlyIf="statusSelect > 2"
+        readonlyIf="statusSelect > 2 || invoiceLineList.length > 0"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
@@ -601,7 +602,7 @@
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()">
         <panel name="deliveryAddressPanel" colSpan="12" hidden="true"
           showIf="operationTypeSelect == 3">
           <field name="deliveryAddress" hideIf="$readonly() || statusSelect &gt; 1"
@@ -699,7 +700,7 @@
       <panel name="advancePaymentPanel" title="Advance payments"
         showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
 InvoiceSet.length > 0))"
-        if="__config__.app.getApp('account').getManageAdvancePaymentInvoice()">
+        if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
         <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
           canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
           readonlyIf="statusSelect == 3" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -708,7 +709,7 @@ InvoiceSet.length > 0))"
         <field name="printingSettings"
           onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
-          if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
+          if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
         <field name="hideDiscount" colSpan="6"/>
         <field name="headOfficeAddress"
@@ -736,7 +737,7 @@ InvoiceSet.length > 0))"
             showTitle="false"/>
         </panel>
         <panel name="legalNoticePanel" title="Legal Notice" colSpan="12"
-          if="__config__.app.getApp('account').getManageFinancialDiscount()">
+          if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
             showTitle="false"/>
         </panel>
@@ -795,7 +796,7 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
         <panel name="pfpValidationPanel" colSpan="12"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()"
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           showIf="pfpValidateStatusSelect > 0">
           <field name="pfpValidateStatusSelect" hidden="true" colSpan="4"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"
@@ -821,7 +822,7 @@ InvoiceSet.length > 0))"
         <field name="amountPaid" hidden="true"/>
       </panel>
       <panel name="pfpAccountConfigPanel"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
+        if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
         <field name="$isValidPfpValidatorUser" type="boolean"/>
         <field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator"/>
         <field name="$isInvoiceTermAwaiting" type="boolean"/>
@@ -862,10 +863,10 @@ InvoiceSet.length > 0))"
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
           title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
         <button name="refusalToPayBtn" css="btn-danger" hidden="true" title="Refusal to pay"
           onClick="save,action-invoice-view-refusal-to-pay"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
         <button name="cancelBtn" css="btn-warning" hidden="true" title="Cancel"
           onClick="save,action-invoice-method-cancel,save"
           prompt="Are you sure you want to cancel the invoice ?"/>
@@ -873,19 +874,19 @@ InvoiceSet.length > 0))"
           onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
         <button name="addPaymentBtn" title="Register payment" colSpan="12"
           onClick="action-invoice-group-add-invoice-payment" hidden="true"
-          if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+          if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
         <button name="registerPaymentBtn" title="Register payment" colSpan="12"
           onClick="save,action-invoice-view-register-payment-voucher" hidden="true"
-          if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+          if="__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
         <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
         <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
         <field name="pfpValidatorUser" hidden="true"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()"
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
           onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
           onChange="action-invoice-group-pfp-validator-user-onchange" canEdit="false"/>
         <panel name="pfpEmailPanel"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()" colSpan="6">
           <field name="decisionPfpTakenDate" colSpan="12" hidden="true"/>
           <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
             hidden="true" onClick="save,action-send-by-email-with-template"/>
@@ -1203,11 +1204,11 @@ InvoiceSet.length > 0))"
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="action-invoice-group-add-invoice-payment"
-          if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+          if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
-          if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+          if="__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
         <field name="amountRemaining" hidden="true"/>
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
@@ -1499,7 +1500,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-payment-visibility"/>
     <action name="action-invoice-attrs-selection-in-operation-type-select"/>
     <action name="action-invoice-record-set-pfp-status"
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1516,11 +1517,11 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
-      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
     <action name="action-invoice-attrs-is-valid-invoice-term-pfp-validate-status"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
     <action name="action-invoice-method-hide-send-email-pfp-btn"
-      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-payment-visibility"/>
   </action-group>
@@ -1561,13 +1562,13 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-method-set-pfp-validator-user"
-      if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount()"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
@@ -1609,7 +1610,7 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-pfp-validate">
     <action name="save"/>
     <action name="action-invoice-validate-pfp-stock-move"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <action name="action-method-account-invoice-validate-pfp"/>
   </action-group>
 
@@ -1794,7 +1795,7 @@ InvoiceSet.length > 0))"
     name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$paymentVouchersOnInvoice"
-      expr="eval: __config__.app.getApp('account').paymentVouchersOnInvoice"/>
+      expr="eval: __config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"
@@ -1903,7 +1904,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-method-set-default-group-products-on-printings"
     model="com.axelor.apps.account.db.Invoice">
     <field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings"
-      if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
+      if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"/>
   </action-record>
 
   <action-record name="action-invoice-record-set-payment-condition"
@@ -1967,7 +1968,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hidden-bank-details">
     <attribute for="companyBankDetails" name="hidden"
-      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-interco-supplychain"
@@ -1980,10 +1981,10 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-show-validate-button">
     <attribute name="hidden"
-      expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || __config__.app.getApp('invoice').getIsVentilationSkipped()"
+      expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || __config__.app.getApp('invoice')?.getIsVentilationSkipped()"
       for="validateBtn"/>
     <attribute name="hidden"
-      expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice').getIsVentilationSkipped()"
+      expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice')?.getIsVentilationSkipped()"
       for="validateAndVentilateBtn"/>
   </action-attrs>
 
@@ -2195,7 +2196,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-update-info-company"
     model="com.axelor.apps.account.db.Invoice">
     <field name="tradingName" expr="eval: null"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="printingSettings" expr="eval: company?.printingSettings"/>
   </action-record>
 
@@ -2384,29 +2385,29 @@ InvoiceSet.length > 0))"
   <search-filters name="customer-invoices-filters"
     model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="pfpValidateStatusSelect" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDate" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="advancePaymentInvoiceSet" hidden="true"
-      if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+      if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
     <field name="stockMoveSet" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2448,29 +2449,29 @@ InvoiceSet.length > 0))"
   <search-filters name="customer-refunds-filters"
     model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="pfpValidateStatusSelect" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDate" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="advancePaymentInvoiceSet" hidden="true"
-      if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+      if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
     <field name="stockMoveSet" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2503,29 +2504,29 @@ InvoiceSet.length > 0))"
   <search-filters name="supplier-invoices-filters"
     model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="pfpValidateStatusSelect" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDate" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
-      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="advancePaymentInvoiceSet" hidden="true"
-      if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+      if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
     <field name="stockMoveSet" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2561,29 +2562,29 @@ InvoiceSet.length > 0))"
   <search-filters name="supplier-refunds-filters"
     model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="pfpValidateStatusSelect" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDate" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="advancePaymentInvoiceSet" hidden="true"
-      if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+      if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
     <field name="stockMoveSet" hidden="true"
-      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove())"/>
     <field name="reasonOfRefusalToPay" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
-      if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2655,26 +2656,26 @@ InvoiceSet.length > 0))"
   <action-record name="action-record-invoice-set-financial-discount-informations"
     model="com.axelor.apps.account.db.Invoice">
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountTotalAmount"
       expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="remainingAmountAfterFinDiscount"
       expr="eval: inTaxTotal - (financialDiscount.discountRate * inTaxTotal / 100)"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="legalNotice" expr="eval: null"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountTotalAmount" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="remainingAmountAfterFinDiscount" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
   </action-record>
 
   <action-method

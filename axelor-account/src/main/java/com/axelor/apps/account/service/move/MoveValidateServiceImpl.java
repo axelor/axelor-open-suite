@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -77,6 +78,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineControlService moveLineControlService;
+  protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
@@ -95,6 +97,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Inject
   public MoveValidateServiceImpl(
       MoveLineControlService moveLineControlService,
+      MoveLineToolService moveLineToolService,
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
@@ -111,6 +114,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveControlService moveControlService) {
 
     this.moveLineControlService = moveLineControlService;
+    this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
@@ -155,10 +159,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         } else {
           moveLine.setOriginDate(date);
         }
-      }
-
-      if (partner != null) {
-        moveLine.setPartner(partner);
       }
       moveLine.setCounter(counter);
       counter++;
@@ -286,6 +286,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
+
+        moveLineToolService.checkDateInPeriod(move, moveLine);
       }
 
       moveLineTaxService.checkTaxMoveLines(move);
@@ -564,9 +566,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLine.setAccountId(account.getId());
       moveLine.setAccountCode(account.getCode());
       moveLine.setAccountName(account.getName());
-      moveLine.setServiceType(account.getServiceType());
-      moveLine.setServiceTypeCode(
-          account.getServiceType() != null ? account.getServiceType().getCode() : null);
 
       Partner partner = moveLine.getPartner();
 
@@ -574,9 +573,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setPartnerId(partner.getId());
         moveLine.setPartnerFullName(partner.getSimpleFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
-        moveLine.setDas2Activity(partner.getDas2Activity());
-        moveLine.setDas2ActivityName(
-            partner.getDas2Activity() != null ? partner.getDas2Activity().getName() : null);
       }
       if (moveLine.getTaxLine() != null) {
         moveLine.setTaxRate(moveLine.getTaxLine().getValue());
@@ -773,5 +769,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
     }
     return false;
+  }
+
+  public void checkMoveLinesPartner(Move move) throws AxelorException {
+    if (CollectionUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLineControlService.checkPartner(moveLine);
+    }
   }
 }
