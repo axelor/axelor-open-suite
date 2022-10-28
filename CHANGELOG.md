@@ -1,3 +1,22 @@
+## [6.3.4] (2022-10-28)
+
+#### Fixed
+
+* Invoice: generated stock move invoices now correctly copy budget distribution on product with tracking number.
+* Invoice: fixed an issue where a copied invoice could not be paid.
+* Invoice payment: fixed a bug where payments were pending even when without bank order.
+* Stock move: fixed an error preventing "Generate invoice" button from appearing.
+* Advanced export: fixed JNPE displaying when selecting "target" field.
+* Expense: company and employee now correctly appear as mandatory in form view.
+* FEC Import: fix imported move daybooking and accounting.
+* Payment voucher: company bank details is now required if multi banks is activated.
+* Leave request: fix an issue occurring when validating a leave request and with the employee not linked to an user.
+* Business project: fixed an issue preventing the creation of a business project.
+* Accounting report configuration line: fix import '-' sign issues.
+* Operation order: prevent creation of operation order without manufacturing order and prevent machine change.
+* Analytic distribution line: use the company analytic axis configuration to filter the analytic axis on an analytic distribution line.
+* Bank reconciliation: prevent dates edition when including other bank statements.
+
 ## [6.3.3] (2022-10-21)
 
 #### Changes
@@ -208,6 +227,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.4]: https://github.com/axelor/axelor-open-suite/compare/v6.3.3...v6.3.4
 [6.3.3]: https://github.com/axelor/axelor-open-suite/compare/v6.3.2...v6.3.3
 [6.3.2]: https://github.com/axelor/axelor-open-suite/compare/v6.3.1...v6.3.2
 [6.3.1]: https://github.com/axelor/axelor-open-suite/compare/v6.3.0...v6.3.1
