@@ -1,3 +1,20 @@
+## [6.2.12] (2022-10-28)
+
+#### Fixed
+
+* Invoice: generated stock move invoices now correctly copy budget distribution on product with tracking number.
+* Invoice: fixed an issue where a copied invoice could not be paid.
+* Invoice payment: fixed a bug where payments were pending even when without bank order.
+* Stock move: fixed an error preventing "generate invoice button" from appearing.
+* Advanced export: fixed JNPE displaying when selecting "target" field.
+* Expense: company and employee now correctly appear as mandatory in form view.
+* FEC Import: fix imported move daybooking and accounting.
+* Payment voucher: company bank details is now required if multi banks is activated.
+* Business project: fixed an issue preventing the creation of a business project.
+* Operation order: prevent creation of operation order without manufacturing order and prevent machine change.
+* Analytic distribution line: use the company analytic axis configuration to filter the analytic axis on an analytic distribution line.
+* Bank reconciliation: prevent dates edition when including other bank statements.
+
 ## [6.2.11] (2022-10-21)
 
 #### Fixed
@@ -672,6 +689,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.12]: https://github.com/axelor/axelor-open-suite/compare/v6.2.11...v6.2.12
 [6.2.11]: https://github.com/axelor/axelor-open-suite/compare/v6.2.10...v6.2.11
 [6.2.10]: https://github.com/axelor/axelor-open-suite/compare/v6.2.9...v6.2.10
 [6.2.9]: https://github.com/axelor/axelor-open-suite/compare/v6.2.8...v6.2.9
