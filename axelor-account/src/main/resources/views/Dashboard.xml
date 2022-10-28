@@ -73,7 +73,7 @@
       height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.amount"
       height="350" canSearch="true"/>
-    <dashlet action="dashlet.invoice.terms.moveLines.revenues.vs.expenses" height="350"/>
+    <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
     <dashlet colSpan="6" height="350"
       action="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"/>
     <dashlet colSpan="6" height="350"
@@ -296,15 +296,6 @@
   <action-view name="dashlet.moveLines.revenues.vs.expenses"
     title="Revenues vs Expenses" model="com.axelor.apps.account.db.MoveLine">
     <view type="chart" name="chart.moveLines.revenues.vs.expenses"/>
-    <context name="active_company" expr="eval:__user__.activeCompany"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
-  </action-view>
-
-  <action-view name="dashlet.invoice.terms.moveLines.revenues.vs.expenses"
-    title="Revenues vs Expenses" model="com.axelor.apps.account.db.MoveLine">
-    <view type="chart" name="chart.invoice.terms.moveLines.revenues.vs.expenses"/>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>

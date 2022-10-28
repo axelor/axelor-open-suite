@@ -30,12 +30,13 @@
   </dashboard>
 
   <dashboard title="Accounting Dashboard with invoice terms"
-    name="accounting.dashboard.invoice.terms.sample" width="large">
+    name="accounting.dashboard.invoice.terms.sample"
+    id="bank.payment.accounting.dashboard.invoice.terms.sample" width="large">
     <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.nbr"
       height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.amount"
       height="350" canSearch="true"/>
-    <dashlet action="dashlet.invoice.terms.moveLines.revenues.vs.expenses" height="350"/>
+    <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
     <dashlet colSpan="6" height="350"
       action="accounting-dashboard-company-bank-details-action" canSearch="true"/>
     <dashlet colSpan="6" height="350"
