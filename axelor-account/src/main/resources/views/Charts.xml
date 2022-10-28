@@ -764,9 +764,9 @@
 	  self.invoice.operationTypeSelect = 3) or (self.moveLine.move.statusSelect IN (2,3) and
 	  self.moveLine.account.accountType.technicalTypeSelect = 'receivable' and self.moveLine.credit = 0))
 			AND
-				self.estimatedPaymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
+				self.dueDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
 			AND
-				self.estimatedPaymentDate <= DATE(:todayDate)
+				self.dueDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 
@@ -840,9 +840,9 @@
 			  self.invoice.operationTypeSelect = 3) or (self.moveLine.move.statusSelect IN (2,3) and
 			  self.moveLine.account.accountType.technicalTypeSelect = 'receivable' and self.moveLine.credit = 0))
 			AND
-				self.estimatedPaymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
+				self.dueDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND
-				self.estimatedPaymentDate <= DATE(:todayDate)
+				self.dueDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 
