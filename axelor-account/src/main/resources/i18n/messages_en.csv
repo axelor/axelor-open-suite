@@ -2627,6 +2627,7 @@
 "Rejected wire transfer operation code",,,
 "Rejection",,,
 "Rejection date",,,
+"Rejection date can't be in the future",,,
 "Rejection move",,,
 "Rejection move line",,,
 "Rejection reason",,,
