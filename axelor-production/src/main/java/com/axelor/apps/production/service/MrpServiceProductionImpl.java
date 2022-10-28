@@ -472,8 +472,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       if (manufProposalNeedMrpLineType == null) {
         return;
       }
-      
-      Long duration = 0l; //TODO
 
       for (BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialSet()) {
 
