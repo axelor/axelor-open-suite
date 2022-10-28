@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherToolService;
@@ -38,8 +37,6 @@ public class ImportPaymentVoucher {
   @Inject PaymentVoucherToolService paymentVoucherToolService;
 
   @Inject PaymentVoucherConfirmService paymentVoucherConfirmService;
-
-  @Inject PaymentVoucherCancelService paymentVoucherCancelService;
 
   public Invoice getInvoice(String orderType_orderImportId) {
     if (!Strings.isNullOrEmpty(orderType_orderImportId)) {
