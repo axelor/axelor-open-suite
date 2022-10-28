@@ -93,6 +93,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Partner partner,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails companyBankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -107,6 +108,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         null,
         paymentMode,
         fiscalPosition,
+        companyBankDetails,
         technicalOriginSelect,
         functionalOriginSelect,
         origin,
@@ -124,6 +126,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
       BankDetails bankDetails,
+      BankDetails companyBankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -139,6 +142,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         paymentMode,
         fiscalPosition,
         bankDetails,
+        companyBankDetails,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
@@ -172,6 +176,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate originDate,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails companyBankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -187,6 +192,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         paymentMode,
         fiscalPosition,
         null,
+        companyBankDetails,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
@@ -223,6 +229,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
       BankDetails bankDetails,
+      BankDetails companyBankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -281,6 +288,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setPaymentMode(paymentMode);
     move.setFiscalPosition(fiscalPosition);
     move.setPartnerBankDetails(bankDetails);
+    move.setCompanyBankDetails(companyBankDetails);
     move.setTechnicalOriginSelect(technicalOriginSelect);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
@@ -311,6 +319,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails companyBankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -326,6 +335,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             null,
             paymentMode,
             fiscalPosition,
+            companyBankDetails,
             technicalOriginSelect,
             functionalOriginSelect,
             origin,
@@ -343,6 +353,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails companyBankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -364,6 +375,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             paymentMode,
             fiscalPosition,
             null,
+            companyBankDetails,
             technicalOriginSelect,
             functionalOriginSelect,
             ignoreInDebtRecoveryOk,

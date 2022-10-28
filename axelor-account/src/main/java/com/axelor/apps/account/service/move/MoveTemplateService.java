@@ -31,8 +31,10 @@ import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -62,6 +64,7 @@ public class MoveTemplateService {
   protected PartnerRepository partnerRepo;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected TaxService taxService;
+  protected BankDetailsService bankDetailsService;
 
   @Inject protected MoveTemplateRepository moveTemplateRepo;
 
@@ -74,7 +77,8 @@ public class MoveTemplateService {
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
       TaxService taxService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      BankDetailsService bankDetailsService) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
@@ -83,6 +87,7 @@ public class MoveTemplateService {
     this.analyticMoveLineService = analyticMoveLineService;
     this.taxService = taxService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Transactional
@@ -153,6 +158,14 @@ public class MoveTemplateService {
                   .mapToInt(Integer::parseInt)
                   .toArray();
         }
+        BankDetails companyBankDetails = null;
+        if (moveTemplate != null
+            && moveTemplate.getJournal() != null
+            && moveTemplate.getJournal().getCompany() != null) {
+          companyBankDetails =
+              bankDetailsService.getDefaultCompanyBankDetails(
+                  moveTemplate.getJournal().getCompany(), null, partner, null);
+        }
         Move move =
             moveCreateService.createMove(
                 moveTemplate.getJournal(),
@@ -163,6 +176,7 @@ public class MoveTemplateService {
                 moveDate,
                 null,
                 partner != null ? partner.getFiscalPosition() : null,
+                companyBankDetails,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
@@ -257,6 +271,16 @@ public class MoveTemplateService {
                   .mapToInt(Integer::parseInt)
                   .toArray();
         }
+
+        BankDetails companyBankDetails = null;
+        if (moveTemplate != null
+            && moveTemplate.getJournal() != null
+            && moveTemplate.getJournal().getCompany() != null) {
+          companyBankDetails =
+              bankDetailsService.getDefaultCompanyBankDetails(
+                  moveTemplate.getJournal().getCompany(), null, null, null);
+        }
+
         Move move =
             moveCreateService.createMove(
                 moveTemplate.getJournal(),
@@ -267,10 +291,12 @@ public class MoveTemplateService {
                 moveDate,
                 null,
                 null,
+                companyBankDetails,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
                 null);
+
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {

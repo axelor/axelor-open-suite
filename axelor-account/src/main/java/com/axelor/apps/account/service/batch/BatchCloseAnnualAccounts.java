@@ -405,6 +405,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             null,
             null,
             null,
+            accountingBatch.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
             false,
@@ -412,6 +413,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             false,
             null,
             description);
+
     Account accountCredit = null;
     Account accountDebit = null;
     if (amount.compareTo(BigDecimal.ZERO) < 0) {

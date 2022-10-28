@@ -43,11 +43,13 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -83,6 +85,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected StockMoveLineServiceSupplychain stockMoveLineService;
+  protected BankDetailsService bankDetailsService;
   protected int counter = 0;
 
   @Inject
@@ -109,7 +112,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
       CurrencyService currencyService,
-      TaxAccountToolService taxAccountToolService) {
+      TaxAccountToolService taxAccountToolService,
+      BankDetailsService bankDetailsService) {
 
     super(
         moveCreateService,
@@ -135,6 +139,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveLineService = stockMoveLineService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -330,6 +335,12 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
     String origin = prefixOrigin + stockMove.getStockMoveSeq();
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     Move move =
         moveCreateService.createMove(
             miscOpeJournal,
@@ -340,6 +351,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             originDate,
             null,
             fiscalPosition,
+            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,

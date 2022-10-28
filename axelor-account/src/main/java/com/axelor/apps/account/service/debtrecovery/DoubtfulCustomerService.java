@@ -172,6 +172,7 @@ public class DoubtfulCustomerService {
             invoice != null
                 ? invoice.getFiscalPosition()
                 : (partner != null ? partner.getFiscalPosition() : null),
+            invoice != null ? invoice.getCompanyBankDetails() : move.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             move.getOrigin(),
@@ -270,6 +271,7 @@ public class DoubtfulCustomerService {
             partner,
             moveLine.getMove().getPaymentMode(),
             partner != null ? partner.getFiscalPosition() : null,
+            moveLine.getMove().getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             moveLine.getName(),

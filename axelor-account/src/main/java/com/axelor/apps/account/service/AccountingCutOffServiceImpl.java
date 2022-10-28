@@ -258,6 +258,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             originDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            move.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,

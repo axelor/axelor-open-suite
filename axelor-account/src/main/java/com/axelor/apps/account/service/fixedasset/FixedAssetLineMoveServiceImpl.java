@@ -36,10 +36,12 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -83,6 +85,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected BatchRepository batchRepository;
 
+  protected BankDetailsService bankDetailsService;
+
   private Batch batch;
 
   @Inject
@@ -97,7 +101,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       FixedAssetLineService fixedAssetLineService,
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
-      BatchRepository batchRepository) {
+      BatchRepository batchRepository,
+      BankDetailsService bankDetailsService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
@@ -110,6 +115,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.moveLineCreateService = moveLineCreateService;
     this.fixedAssetRepo = fixedAssetRepo;
     this.batchRepository = batchRepository;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -284,6 +290,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         && impairmentValue != null
         && (impairmentValue.signum() != 0)) {
 
+      BankDetails companyBankDetails = null;
+      if (company != null) {
+        companyBankDetails =
+            bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+      }
+
       // Creating move
       Move move =
           moveCreateService.createMove(
@@ -295,6 +307,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               date,
               null,
               partner != null ? partner.getFiscalPosition() : null,
+              companyBankDetails,
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
               origin,
@@ -398,6 +411,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         company.getName(),
         journal.getCode());
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     // Creating move
     Move move =
         moveCreateService.createMove(
@@ -409,6 +428,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -493,6 +513,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             : fixedAsset.getReference();
     int moveLineSequenceCounter = 0;
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     // Creating move
     Move move =
         moveCreateService.createMove(
@@ -504,6 +530,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             disposalDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -626,6 +653,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             ? fixedAsset.getFixedAssetSeq()
             : fixedAsset.getReference();
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     // Creating move
     Move move =
         moveCreateService.createMove(
@@ -637,6 +670,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             disposalDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,

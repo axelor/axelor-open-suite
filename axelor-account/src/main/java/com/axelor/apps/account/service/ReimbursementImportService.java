@@ -30,8 +30,10 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -58,6 +60,7 @@ public class ReimbursementImportService {
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public ReimbursementImportService(
@@ -67,7 +70,8 @@ public class ReimbursementImportService {
       MoveLineCreateService moveLineCreateService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo) {
+      ReimbursementRepository reimbursementRepo,
+      BankDetailsService bankDetailsService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -76,6 +80,7 @@ public class ReimbursementImportService {
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -183,6 +188,11 @@ public class ReimbursementImportService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Move createMoveReject(Company company, LocalDate date) throws AxelorException {
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, null, null);
+    }
     return moveRepo.save(
         moveCreateService.createMove(
             company.getAccountConfig().getRejectJournal(),
@@ -193,6 +203,7 @@ public class ReimbursementImportService {
             date,
             null,
             null,
+            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_IMPORT,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             null,

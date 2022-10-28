@@ -140,6 +140,7 @@ public class BankReconciliationValidateService {
             effectDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            bankReconciliation.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,

@@ -163,6 +163,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification.getPaymentDate(),
             null,
             invoice.getFiscalPosition(),
+            invoice.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,

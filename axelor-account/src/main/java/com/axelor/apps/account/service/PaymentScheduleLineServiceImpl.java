@@ -209,6 +209,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
             partner,
             paymentMode,
             partner != null ? partner.getFiscalPosition() : null,
+            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
