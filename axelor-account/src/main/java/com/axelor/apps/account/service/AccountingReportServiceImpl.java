@@ -391,7 +391,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.ACCOUNTING_REPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "sequence");
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -406,7 +406,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.MOVE_LINE_EXPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "sequence");
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -421,7 +421,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.ANALYTIC_REPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "sequence");
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
