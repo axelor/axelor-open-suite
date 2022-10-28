@@ -1,3 +1,15 @@
+## [6.1.24] (2022-10-28)
+
+#### Fixed
+
+* Invoice: generated stock move invoices now correctly copy budget distribution on product with tracking number.
+* Stock move: fixed an error preventing "generate invoice button" from appearing.
+* Advanced export: fixed JNPE displaying when selecting "target" field.
+* Expense: company and employee now correctly appear as mandatory in form view.
+* Payment voucher: company bank details is now required if multi banks is activated.
+* Operation order: prevent creation of operation order without manufacturing order and prevent machine change.
+* Invoice payment: fixed a bug where payments were pending even when without bank order.
+
 ## [6.1.23] (2022-10-21)
 
 #### Fixed
@@ -808,6 +820,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.24]: https://github.com/axelor/axelor-open-suite/compare/v6.1.23...v6.1.24
 [6.1.23]: https://github.com/axelor/axelor-open-suite/compare/v6.1.22...v6.1.23
 [6.1.22]: https://github.com/axelor/axelor-open-suite/compare/v6.1.21...v6.1.22
 [6.1.21]: https://github.com/axelor/axelor-open-suite/compare/v6.1.20...v6.1.21
