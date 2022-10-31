@@ -759,7 +759,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (moveCount > 0) {
       flashMessage.append(
           String.format(
-              I18n.get(AccountExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+                  I18n.get(AccountExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount)
+              + " ");
     }
 
     return flashMessage;
