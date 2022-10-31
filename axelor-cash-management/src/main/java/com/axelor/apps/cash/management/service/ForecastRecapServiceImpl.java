@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
@@ -188,10 +187,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
 
     while (!(forecastRecapLineTypeList = forecastRecapLineTypeQuery.fetch(FETCH_LIMIT, offset))
         .isEmpty()) {
-        boolean manageMultiBanks =
-                appBaseService.getAppBase() != null
-                    ? appBaseService.getAppBase().getManageMultiBanks()
-                    : false;
+      boolean manageMultiBanks =
+          appBaseService.getAppBase() != null
+              ? appBaseService.getAppBase().getManageMultiBanks()
+              : false;
       for (ForecastRecapLineType forecastRecapLineType : forecastRecapLineTypeList) {
         offset++;
         populateWithTimetables(forecastRecap, forecastRecapLineType, manageMultiBanks);
