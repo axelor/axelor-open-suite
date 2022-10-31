@@ -150,11 +150,11 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             null,
             paymentMode,
             partner != null ? partner.getFiscalPosition() : null,
-            bankOrderLine.getBankOrder().getSenderBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankOrderLine.getReceiverReference(),
-            bankOrderLine.getReceiverLabel());
+            bankOrderLine.getReceiverLabel(),
+            bankOrderLine.getBankOrder().getSenderBankDetails());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -207,11 +207,11 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             null,
             paymentMode,
             partner != null ? partner.getFiscalPosition() : null,
-            bankOrderLine.getBankOrder().getSenderBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankOrderLine.getReceiverReference(),
-            bankOrderLine.getReceiverLabel());
+            bankOrderLine.getReceiverLabel(),
+            bankOrderLine.getBankOrder().getSenderBankDetails());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(

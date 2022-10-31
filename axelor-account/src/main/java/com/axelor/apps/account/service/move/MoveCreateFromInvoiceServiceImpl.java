@@ -144,11 +144,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
               invoice.getFiscalPosition(),
-              invoice.getCompanyBankDetails(),
+              invoice.getBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
               origin,
-              description);
+              description,
+              invoice.getCompanyBankDetails());
 
       if (move != null) {
 
@@ -305,11 +306,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                 invoice.getInvoiceDate(),
                 null,
                 invoice.getFiscalPosition(),
-                invoice.getCompanyBankDetails(),
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                 MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                 origin,
-                null);
+                null,
+                invoice.getCompanyBankDetails());
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -389,11 +390,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             invoice.getInvoiceDate(),
             null,
             invoice.getFiscalPosition(),
-            invoice.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            invoice.getCompanyBankDetails());
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);

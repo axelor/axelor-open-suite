@@ -284,11 +284,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
               date,
               null,
               invoice.getFiscalPosition(),
-              invoice.getCompanyBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               origin,
-              description);
+              description,
+              invoice.getCompanyBankDetails());
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =

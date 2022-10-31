@@ -394,11 +394,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             moveDate,
             partner.getInPaymentMode(),
             partner.getFiscalPosition(),
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
             origin,
-            description);
+            description,
+            companyBankDetails);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -637,11 +637,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             paymentDate,
             paymentMode,
             partner != null ? partner.getFiscalPosition() : null,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            companyBankDetails);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(

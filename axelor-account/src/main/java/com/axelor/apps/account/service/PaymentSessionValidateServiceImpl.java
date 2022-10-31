@@ -388,11 +388,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
-            paymentSession.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
-            "");
+            "",
+            paymentSession.getBankDetails());
 
     move.setPaymentSession(paymentSession);
 

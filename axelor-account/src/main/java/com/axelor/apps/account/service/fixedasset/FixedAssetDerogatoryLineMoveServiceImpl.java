@@ -233,11 +233,11 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             date,
             null,
             partner != null ? partner.getFiscalPosition() : null,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
-            fixedAsset.getName());
+            fixedAsset.getName(),
+            companyBankDetails);
 
     if (move != null) {
 

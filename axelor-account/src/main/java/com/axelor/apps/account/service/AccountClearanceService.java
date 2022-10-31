@@ -204,11 +204,11 @@ public class AccountClearanceService {
             partner,
             null,
             partner != null ? partner.getFiscalPosition() : null,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            companyBankDetails);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

@@ -172,11 +172,11 @@ public class DoubtfulCustomerService {
             invoice != null
                 ? invoice.getFiscalPosition()
                 : (partner != null ? partner.getFiscalPosition() : null),
-            invoice != null ? invoice.getCompanyBankDetails() : move.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             move.getOrigin(),
-            debtPassReason);
+            debtPassReason,
+            invoice != null ? invoice.getCompanyBankDetails() : move.getCompanyBankDetails());
     newMove.setOriginDate(move.getOriginDate());
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
@@ -271,11 +271,11 @@ public class DoubtfulCustomerService {
             partner,
             moveLine.getMove().getPaymentMode(),
             partner != null ? partner.getFiscalPosition() : null,
-            moveLine.getMove().getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             moveLine.getName(),
-            debtPassReason);
+            debtPassReason,
+            moveLine.getMove().getCompanyBankDetails());
 
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
 

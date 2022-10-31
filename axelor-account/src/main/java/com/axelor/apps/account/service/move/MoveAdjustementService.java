@@ -87,11 +87,11 @@ public class MoveAdjustementService {
             partner,
             null,
             partner != null ? partner.getFiscalPosition() : null,
-            debitMove.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             debitMove.getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            debitMove.getCompanyBankDetails());
 
     // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
@@ -152,11 +152,11 @@ public class MoveAdjustementService {
             partner,
             null,
             partner != null ? partner.getFiscalPosition() : null,
-            debitMove.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             debitMove.getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            debitMove.getCompanyBankDetails());
 
     // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
@@ -224,11 +224,11 @@ public class MoveAdjustementService {
             partnerDebit,
             null,
             null,
-            debitMoveLineToReconcile.getMove().getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             debitMoveLineToReconcile.getMove().getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            debitMoveLineToReconcile.getMove().getCompanyBankDetails());
 
     MoveLine debitMoveLine =
         moveLineCreateService.createMoveLine(

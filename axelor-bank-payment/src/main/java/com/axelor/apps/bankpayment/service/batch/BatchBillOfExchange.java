@@ -235,11 +235,11 @@ public class BatchBillOfExchange extends AbstractBatch {
             invoice.getPartner(),
             invoice.getPaymentMode(),
             invoice.getFiscalPosition(),
-            invoice.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_SALE,
             invoice.getInvoiceId(),
-            null);
+            null,
+            invoice.getCompanyBankDetails());
     if (move != null) {
 
       LocalDate todayDate = this.appBaseService.getTodayDate(invoice.getCompany());

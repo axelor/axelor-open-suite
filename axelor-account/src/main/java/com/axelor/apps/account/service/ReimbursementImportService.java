@@ -203,11 +203,11 @@ public class ReimbursementImportService {
             date,
             null,
             null,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_IMPORT,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             null,
-            null));
+            null,
+            companyBankDetails));
     // TODO determine origin
   }
 

@@ -200,11 +200,11 @@ public class ReimbursementExportService {
                     partner,
                     null,
                     partner != null ? partner.getFiscalPosition() : null,
-                    moveLine.getMove().getCompanyBankDetails(),
                     MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                     MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                     reimbursement.getRef(),
-                    reimbursement.getDescription());
+                    reimbursement.getDescription(),
+                    moveLine.getMove().getCompanyBankDetails());
             first = false;
           }
           // Création d'une ligne au débit

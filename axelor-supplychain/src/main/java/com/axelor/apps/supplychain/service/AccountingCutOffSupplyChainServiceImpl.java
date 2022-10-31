@@ -351,11 +351,11 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             originDate,
             null,
             fiscalPosition,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,
-            moveDescription);
+            moveDescription,
+            companyBankDetails);
 
     counter = 0;
 

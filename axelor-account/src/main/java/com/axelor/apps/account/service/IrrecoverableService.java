@@ -868,11 +868,11 @@ public class IrrecoverableService {
             payerPartner,
             null,
             invoice.getFiscalPosition(),
-            invoice.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
-            invoice.getInvoiceId());
+            invoice.getInvoiceId(),
+            invoice.getCompanyBankDetails());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
 
@@ -1015,11 +1015,11 @@ public class IrrecoverableService {
             payerPartner,
             null,
             payerPartner != null ? payerPartner.getFiscalPosition() : null,
-            moveLine.getMove().getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             originStr,
-            moveLine.getDescription());
+            moveLine.getDescription(),
+            moveLine.getMove().getCompanyBankDetails());
     move.setOriginDate(moveLine.getMove().getDate());
 
     int seq = 1;

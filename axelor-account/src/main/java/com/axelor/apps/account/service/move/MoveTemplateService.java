@@ -176,11 +176,11 @@ public class MoveTemplateService {
                 moveDate,
                 null,
                 partner != null ? partner.getFiscalPosition() : null,
-                companyBankDetails,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
-                null);
+                null,
+                companyBankDetails);
 
         int counter = 1;
 
@@ -291,11 +291,11 @@ public class MoveTemplateService {
                 moveDate,
                 null,
                 null,
-                companyBankDetails,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
-                null);
+                null,
+                companyBankDetails);
 
         int counter = 1;
 

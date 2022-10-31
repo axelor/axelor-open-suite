@@ -405,14 +405,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             null,
             null,
             null,
-            accountingBatch.getBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
             false,
             false,
             false,
             null,
-            description);
+            description,
+            accountingBatch.getBankDetails());
 
     Account accountCredit = null;
     Account accountDebit = null;

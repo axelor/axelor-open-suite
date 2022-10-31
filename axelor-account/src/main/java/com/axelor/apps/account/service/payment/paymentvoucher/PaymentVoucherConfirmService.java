@@ -270,11 +270,11 @@ public class PaymentVoucherConfirmService {
             date,
             paymentVoucher.getPaymentMode(),
             null,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentVoucher.getRef(),
-            journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null);
+            journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
+            companyBankDetails);
 
     move.setPaymentVoucher(paymentVoucher);
     move.setTradingName(paymentVoucher.getTradingName());
@@ -398,11 +398,11 @@ public class PaymentVoucherConfirmService {
               paymentDate,
               paymentVoucher.getPaymentMode(),
               null,
-              paymentVoucher.getCompanyBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               paymentVoucher.getRef(),
-              journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null);
+              journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
+              paymentVoucher.getCompanyBankDetails());
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());

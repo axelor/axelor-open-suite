@@ -163,11 +163,11 @@ public class NotificationServiceImpl implements NotificationService {
             notification.getPaymentDate(),
             null,
             invoice.getFiscalPosition(),
-            invoice.getCompanyBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            invoice.getInvoiceId());
+            invoice.getInvoiceId(),
+            invoice.getCompanyBankDetails());
     MoveLine partnerMoveLine, notificationMoveLine;
 
     Account account = getAccount(accountConfig, notificationItem);

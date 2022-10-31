@@ -279,14 +279,14 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             null,
             partner != null ? partner.getFiscalPosition() : null,
             null,
-            companyBankDetails,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,
             false,
             false,
             !isReverse,
             origin,
-            moveDescription);
+            moveDescription,
+            companyBankDetails);
     counter = 0;
 
     this.generateCloseOrOpenAnnualMoveLine(
