@@ -166,7 +166,6 @@
             showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct"
             if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
           <field name="procurementMethodSelect" colSpan="6"
-            requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsSet().isEmpty()"
             onChange="action-product-record-tick-checkbox-purchasable"
             hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
           <field name="standardDelay" colSpan="12"
@@ -612,6 +611,7 @@
     <action name="action-product-attrs-enable-product-company-list"/>
     <action name="action-product-record-service-stock-managed"/>
     <action name="action-product-attrs-set-cost-type-select"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
   <action-group name="action-group-base-product-producttype-onchange">
@@ -619,6 +619,7 @@
     <action name="action-product-validate-sale-supply-select"/>
     <action name="action-product-record-product-sub-type-select"/>
     <action name="action-product-record-service-stock-managed"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
   <action-record name="action-product-record-set-barcode-type-config"
@@ -651,6 +652,7 @@
     <action name="action-product-attrs-set-required-productCategory"/>
     <action name="action-product-attrs-enable-product-company-list"/>
     <action name="action-product-attrs-set-cost-type-select"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
   <action-group name="action-product-group-cost-type-select-onchange">
@@ -993,5 +995,10 @@
   <action-method name="action-product-method-set-anomaly">
     <call class="com.axelor.apps.base.web.ProductController" method="setPriceListLineAnomaly"/>
   </action-method>
+
+  <action-attrs name="action-product-attrs-set-required-procurement-method-select">
+    <attribute name="required" for="procurementMethodSelect"
+      expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
+  </action-attrs>
 
 </object-views>
