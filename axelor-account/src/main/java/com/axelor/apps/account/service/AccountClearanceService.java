@@ -32,10 +32,12 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -71,6 +73,7 @@ public class AccountClearanceService {
   protected AppBaseService appBaseService;
   protected User user;
   protected MoveLineCreateService moveLineCreateService;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public AccountClearanceService(
@@ -84,7 +87,8 @@ public class AccountClearanceService {
       TaxService taxService,
       TaxAccountService taxAccountService,
       AccountClearanceRepository accountClearanceRepo,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BankDetailsService bankDetailsService) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
@@ -97,6 +101,7 @@ public class AccountClearanceService {
     this.taxAccountService = taxAccountService;
     this.accountClearanceRepo = accountClearanceRepo;
     this.moveLineCreateService = moveLineCreateService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -186,6 +191,11 @@ public class AccountClearanceService {
     Partner partner = moveLine.getPartner();
 
     // Move
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
     Move move =
         moveCreateService.createMove(
             journal,
@@ -197,7 +207,8 @@ public class AccountClearanceService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            companyBankDetails);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

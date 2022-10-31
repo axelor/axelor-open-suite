@@ -212,7 +212,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            companyBankDetails);
 
     MoveLine creditMoveLine =
         moveLineCreateService.createMoveLine(

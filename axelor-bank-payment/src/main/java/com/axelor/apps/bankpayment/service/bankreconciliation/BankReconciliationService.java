@@ -323,7 +323,8 @@ public class BankReconciliationService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankReconciliationLine.getBankStatementLine().getOrigin(),
-            description);
+            description,
+            bankReconciliationLine.getBankReconciliation().getBankDetails());
 
     MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);

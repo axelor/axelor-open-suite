@@ -101,7 +101,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             origin,
             move.getDescription(),
             null,
-            null);
+            null,
+            move.getCompanyBankDetails());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
