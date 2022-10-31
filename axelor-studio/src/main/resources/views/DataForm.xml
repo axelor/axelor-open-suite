@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="data-form-form" title="Data Form" model="com.axelor.studio.db.DataForm"
+    onNew="action-attrs-studio-dataform-onnew" width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" colSpan="4"/>
+      <field name="code" colSpan="4"/>
+      <field name="language" required="true" colSpan="4"/>
+      <field name="redirectUrl" widget="url"/>
+      <field name="custom" onChange="action-data-form-attrs-custom-change"/>
+      <panel name="modelPanel" itemSpan="12">
+        <field name="metaModel" hideIf="custom" form-view="meta-model-form"
+          grid-view="meta-model-grid" onChange="action-data-form-attrs-meta-model-change"/>
+        <field name="metaJsonModel" showIf="custom" form-view="json-model-form"
+          grid-view="json-model-grid" onChange="action-data-form-attrs-meta-json-model-change"/>
+      </panel>
+      <panel name="modelFormPanel" showIf="metaModel" itemSpan="12">
+        <field name="modelFormView" onSelect="action-data-form-method-form-view-domain"
+          onChange="action-data-form-attrs-form-view-change"/>
+      </panel>
+      <panel name="dataFormLineListPanel" colSpan="12">
+        <panel-related name="dataFormLineList" colSpan="12" field="dataFormLineList"
+          hideIf="custom" grid-view="data-form-line-grid-meta-field" form-view="data-form-line-form"
+          canNew="false"/>
+        <panel-related name="dataFormLineList" colSpan="12" field="dataFormLineList"
+          showIf="custom" grid-view="data-form-line-grid-meta-json-field"
+          form-view="data-form-line-form" canNew="false"/>
+      </panel>
+      <panel name="resultPanel" colSpan="12">
+        <field name="formText" widget="CodeEditor" x-code-syntax="xml" colSpan="12"/>
+      </panel>
+    </panel>
+
+    <panel name="actionsPanel" sidebar="true">
+      <button name="generateFieldsBtn" readonlyIf="!(metaModel || metaJsonModel)"
+        title="Generate Fields" onClick="save,action-data-form-method-generate-fields,save"/>
+      <button readonlyIf="(!metaModel &amp;&amp; !metaJsonModel)" name="generateHtmlFormBtn"
+        title="Generate HTML Form" colSpan="12"
+        onClick="save,action-data-form-method-generate-html-form,save"/>
+    </panel>
+  </form>
+
+  <grid name="data-form-grid" title="Data Form" model="com.axelor.studio.db.DataForm">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="language"/>
+    <field name="redirectUrl"/>
+    <field name="custom"/>
+    <field name="metaModel" title="MetaModel"/>
+    <field name="modelFormView"/>
+    <field name="metaJsonModel" title="MetaJsonModel"/>
+  </grid>
+
+  <action-attrs name="action-data-form-attrs-custom-change"
+    model="com.axelor.studio.db.DataForm">
+    <attribute name="value" for="metaModel" expr="eval: null"/>
+    <attribute name="value" for="metaJsonModel" expr="eval: null"/>
+    <attribute name="value" for="modelFormView" expr="eval: null"/>
+    <attribute name="value" for="dataFormLineList" expr="eval: null"/>
+    <attribute name="value" for="formText" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-data-form-attrs-meta-model-change"
+    model="com.axelor.studio.db.DataForm">
+    <attribute name="value" for="modelFormView" expr="eval: null"/>
+    <attribute name="value" for="dataFormLineList" expr="eval: null"/>
+    <attribute name="value" for="formText" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-data-form-attrs-meta-json-model-change"
+    model="com.axelor.studio.db.DataForm">
+    <attribute name="value" for="dataFormLineList" expr="eval: null"/>
+    <attribute name="value" for="formText" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-data-form-attrs-form-view-change">
+    <attribute name="value" for="dataFormLineList" expr="eval: null"/>
+    <attribute name="value" for="formText" expr="eval: null"/>
+  </action-attrs>
+
+  <action-method name="action-data-form-method-generate-html-form">
+    <call class="com.axelor.studio.web.DataFormController" method="generateHtmlForm"/>
+  </action-method>
+
+  <action-method name="action-data-form-method-form-view-domain">
+    <call class="com.axelor.studio.web.DataFormController" method="setModelFormViewDomain"/>
+  </action-method>
+
+  <action-method name="action-data-form-method-generate-fields">
+    <call class="com.axelor.studio.web.DataFormController" method="generateFields"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-studio-dataform-onnew">
+    <attribute name="value" for="language" expr="eval:__user__.language"/>
+  </action-attrs>
+
+</object-views>

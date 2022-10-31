@@ -30,4 +30,19 @@ public interface IExceptionMessage {
 
   static final String CANNOT_ALTER_NODES = /*$$(*/
       "Can't alter nodes for real existing selection field" /*)*/;
+
+  static final String O2O_ASSOCIATION_EXCEED = /*$$(*/
+      "An object that is already associated with O2O mapping should not be associated once again" /*)*/;
+
+  static final String NAMED_PARAMETER_EXCEPTION = /*$$(*/
+      "The Query Filter of %s should not contain any string that resembles a Named Parameter" /*)*/;
+
+  static final String NAMED_PARAMETER_BOUND_EXCEPTION = /*$$(*/
+      "Named Parameter %s is not bound in %s " /*)*/;
+
+  static final String DATAFORM_NOT_EXIST = /*$$(*/
+      "DataForm with the given code %s does not exists" /*)*/;
+
+  static final String DATAFORM_MODEL_MISMATCH = /*$$(*/
+      "The Model associated with the DataForm is %s. Cannot create a record of %s" /*)*/;
 }

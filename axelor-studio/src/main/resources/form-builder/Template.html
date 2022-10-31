@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+
+<title>Axelor</title>
+<style>
+	.top-buffer {
+		margin-top:20px;
+		padding-left:1%
+	}
+
+	select:invalid,input:invalid {
+		border: 1px solid red;
+	}
+
+	.img-input {
+		width: 150px;
+		height: 100px;
+		display: inline;
+	}
+
+	.rightLogo {
+        display: block;
+        margin-left: 100%;
+    }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+	var loadFile = function(event) {
+	    var fileElement = document.getElementsByName(event.target.name)[0];
+	    if(fileElement.accept == 'image/*') {
+		var preview = document.getElementById(event.target.name);
+		preview.src = URL.createObjectURL(event.target.files[0]);
+		preview.style.display = "inline";
+		preview.onload = function() {
+			URL.revokeObjectURL(preview.src)
+		}
+	    }
+	};
+	
+	var fileCheck = function(event) {
+	    const file = event.target.files[0];
+	    const allowedFormat = [".jpeg", ".jpg", ".png", ".bmp", ".ico", ".jpe", ".svg", ".wbmp", ".webp", ".apng", ".tiff", ".avif", ".gif"];
+	    const fileExtension = file?.name?.match(/\.[^.]+$/)?.[0];
+	    var fileElement = document.getElementsByName(event.target.name)[0];
+	    if (fileElement.accept == 'image/*') {
+	        if (allowedFormat.includes(fileExtension)) {
+	            loadFile(event);
+	        } else {
+	            fileElement.value = null;
+	            var preview = document.getElementById(event.target.name);
+	            preview.src = '';
+	            preview.style.display = "none";
+	            alert("Select Only Image Format");
+	        }
+	    }
+	}
+
+	var showEntityForm = function(event) {
+		var entityForm = document.getElementById(event.target.name);
+	  if (entityForm.style.display === "none") {
+		  entityForm.style.display = "block";
+	  } else {
+	    entityForm.style.display = "none";
+		var inputs = document.getElementById(event.target.name).getElementsByTagName('input');
+		for(var i=0;i<inputs.length;i++){
+			inputs[i].value = "";
+		}
+		var selects = document.getElementById(event.target.name).getElementsByTagName('select');
+		for(var i=0;i<selects.length;i++){
+			selects[i].value = "";
+		}
+	  }
+	}
+
+	function startup() {
+		var divs = document.querySelectorAll('*[id^="$#"]');
+		for(var i=0;i<divs.length;i++){
+			var inputs = divs[i].getElementsByTagName('input');
+			for(var j=0;j<inputs.length;j++){
+				inputs[j].required = false;
+			}
+		}
+	}
+
+	var code;
+	function createCaptcha() {
+		var captcha = document.getElementById('captcha');
+		if(!captcha){
+			return;
+		}
+		captcha.innerHTML = "";
+		var charsArray = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!#$&*";
+		var lengthOtp = 6;
+		var captcha = [];
+		for (var i = 0; i < lengthOtp; i++) {
+			var index = Math.floor(Math.random() * charsArray.length + 1);
+			if (captcha.indexOf(charsArray[index]) == -1)
+			captcha.push(charsArray[index]);
+			else
+				i--;
+		}
+
+		var canv = document.createElement("canvas");
+		canv.id = "captcha";
+		canv.width = 125;
+		canv.height = 60;
+		var ctx = canv.getContext("2d");
+		var rotations = [10,0,-10];
+		ctx.rotate(rotations[Math.floor(Math.random()*3)] * Math.PI / 180);
+		ctx.font = "24px Georgia";
+		ctx.strokeText(captcha.join(""), 15, 33);
+		code = captcha.join("");
+		document.getElementById("captcha").appendChild(canv);
+		var drawingContext = canv.getContext("2d");
+		var colors = ["#75EB00",   "#53BBF4",   "#FF85CB",   "#FF432E",   "#FFAC00",];
+		for (var i=0;i<6;i++){
+			drawingContext.beginPath();
+			drawingContext.strokeStyle = colors[i%colors.length];
+			drawingContext.lineWidth = 2
+			drawingContext.moveTo(Math.random()*canv.width,Math.random()*canv.height);
+			drawingContext.lineTo(Math.random()*canv.width,Math.random()*canv.height);
+			drawingContext.stroke();
+		}
+	}
+
+	function validateCaptcha(event) {
+		var captchaTextBox = document.getElementById("captchaTextBox");
+		if(!captchaTextBox){
+			return true;
+		}
+		var captchaDiv = document.getElementById("captcha-error-msg");
+		if(captchaTextBox.value.length == 0){
+			captchaDiv.focus();
+			captchaDiv.innerHTML = '<p style="color:red;">*ATTEMPT_CAPTCHA*</p>';
+			event.preventDefault();
+			return false;
+		}
+		else if (captchaTextBox.value != code) {
+			captchaDiv.focus();
+			captchaDiv.innerHTML = '<p style="color:red;">*WRONG_CAPTCHA*</p>';
+			event.preventDefault();
+			return false;
+		}
+		captchaDiv.innerHTML = '';
+		return true;
+	}
+
+	$(document).ready(function () {
+
+		$("#btnSubmit").click(function (event) {
+
+			var form = $('#main-form-id')[0];
+			var validator = form.checkValidity();
+			if(validator==false){
+				return ;
+			} else if(!validateCaptcha(event)){
+				return ;
+			}
+			event.preventDefault();
+
+			var data = new FormData(form);
+
+			$("#btnSubmit").prop("disabled", true);
+
+			$.ajax({
+				type: "POST",
+				enctype: 'multipart/form-data',
+				url: '*FORM_ACTION*',
+				data: data,
+				processData: false,
+				contentType: false,
+				cache: false,
+				timeout: 6000000,
+				success: function (data) {
+					console.log("SUCCESS : ", data);
+					$("#btnSubmit").prop("disabled", false);
+					alert(data.message);
+					if(data.redirectUrl){
+						window.location.href = data.redirectUrl;
+					}
+					createCaptcha();
+				},
+				error: function (e) {
+					console.log("ERROR : ", e);
+					$("#btnSubmit").prop("disabled", false);
+					alert(e.responseJSON.message);
+					createCaptcha();
+				}
+			});
+
+		});
+
+	});
+
+</script>
+</head>
+<body onload="startup();createCaptcha()">
+	<nav class='navbar bg-light'>
+		<div class='container'>
+			<img
+				src='https://axelor.com/assets/Logo Axelor.png' class='rightLogo' alt="Axelor Logo" width="148"
+				height="48">
+		</div>
+	</nav>
+	<div class="container">
+		<h1><center>*FORM_NAME*</center></h1>
+		<br>
+		<form id='main-form-id' method='post' enctype="multipart/form-data">
+		<div class='row g-0'>
+			*FORM_CONTENT*
+		</div>
+			<input type='hidden' name='modelCode' value='*MODEL_CODE*'></input>
+			<input type='hidden' name='recordToCreate' value='*RECORD_TO_CREATE*'></input>
+			*CAPTCHA_BOX*
+			<div><br><button id='btnSubmit' class='btn btn-primary' type='submit' value='Submit'>Submit</button></div>
+		</form>
+		<br>
+	</div>
+</body>
+</html>

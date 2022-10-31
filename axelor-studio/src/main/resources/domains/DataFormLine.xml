@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="DataFormLine" cacheable="true">
+    <many-to-one ref="com.axelor.meta.db.MetaField" name="metaField" title="Field"
+      readonly="true"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="metaJsonField"
+      title="Field" readonly="true"/>
+    <string name="queryFilter" title="Query Filter"/>
+    <boolean name="canSelect" title="Allow selection/query filter?" default="false"/>
+    <many-to-one ref="com.axelor.studio.db.DataForm" name="dataForm" title="Data Form"/>
+    <integer name="sequence" default="0" title="Sequence"/>
+  </entity>
+
+</domain-models>

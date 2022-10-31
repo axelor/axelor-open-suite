@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="DataForm" cacheable="true">
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="formText" large="true" multiline="true" title="HTML Form"/>
+    <boolean name="custom" title="Custom"/>
+    <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" title="Model"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonModel" name="metaJsonModel"
+      title="Model"/>
+    <many-to-one ref="com.axelor.meta.db.MetaView" name="modelFormView"
+      title="Form View"/>
+    <string name="redirectUrl" title="Redirect URL"/>
+    <string name="language" title="Language" selection="select.language"/>
+    <one-to-many ref="com.axelor.studio.db.DataFormLine" name="dataFormLineList"
+      mappedBy="dataForm" title="Data Form Lines"/>
+  </entity>
+
+</domain-models>

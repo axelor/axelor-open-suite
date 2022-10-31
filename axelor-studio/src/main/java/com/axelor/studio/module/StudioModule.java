@@ -40,6 +40,12 @@ import com.axelor.studio.db.repo.WsConnectorRepo;
 import com.axelor.studio.db.repo.WsConnectorRepository;
 import com.axelor.studio.service.ChartRecordViewService;
 import com.axelor.studio.service.ChartRecordViewServiceImpl;
+import com.axelor.studio.service.DataFormJsonModelService;
+import com.axelor.studio.service.DataFormJsonModelServiceImpl;
+import com.axelor.studio.service.DataFormMetaModelService;
+import com.axelor.studio.service.DataFormMetaModelServiceImpl;
+import com.axelor.studio.service.DataFormService;
+import com.axelor.studio.service.DataFormServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderExportService;
 import com.axelor.studio.service.loader.AppLoaderExportServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderImportService;
@@ -71,5 +77,8 @@ public class StudioModule extends AxelorModule {
     bind(WsAuthenticatorService.class).to(WsAuthenticatorServiceImpl.class);
     bind(WsConnectorRepository.class).to(WsConnectorRepo.class);
     bind(WsAuthenticatorRepository.class).to(WsAuthenticatorRepo.class);
+    bind(DataFormService.class).to(DataFormServiceImpl.class);
+    bind(DataFormMetaModelService.class).to(DataFormMetaModelServiceImpl.class);
+    bind(DataFormJsonModelService.class).to(DataFormJsonModelServiceImpl.class);
   }
 }

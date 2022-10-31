@@ -13,6 +13,15 @@
     <view type="html" name="studio/custom-model"/>
   </action-view>
 
+  <menuitem name="app-builder-data-form" title="Data Form" action="action.data.form.view"
+    parent="app-builder-root" order="24"/>
+
+  <action-view name="action.data.form.view" title="Data Form"
+    model="com.axelor.studio.db.DataForm">
+    <view type="grid" name="data-form-grid"/>
+    <view type="form" name="data-form-form"/>
+  </action-view>
+
   <!-- Reporting menu -->
 
   <menuitem name="app-builder-reporting" title="Reporting" parent="app-builder-root"
