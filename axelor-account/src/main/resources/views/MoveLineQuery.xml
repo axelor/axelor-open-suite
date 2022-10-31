@@ -33,12 +33,13 @@
       </panel>
       <field name="processSelect"/>
       <field name="account" required="true"
-        domain="self.company = :company AND self.reconcileOk = true"/>
-      <field name="partner" required="true"/>
+        domain="self.company = :company AND self.reconcileOk = true AND self.statusSelect = 1"/>
+      <field name="partner" required="true"
+        domain=":company MEMBER OF self.companySet OR self.companySet IS EMPTY"/>
     </panel>
     <panel name="btnPanel" itemSpan="4">
       <button name="filterMoveLineBtn" title="Filter move lines"
-        onClick="save,action-move-line-query-method-show-filtered-lines,save"
+        onClick="action-move-line-query-group-filter-move-lines"
         readonlyIf="!company || !fromDate || !toDate || !account || !partner"/>
     </panel>
     <panel name="moveLineQueryLinesPanel">
@@ -51,11 +52,9 @@
       <field name="$selectedBalance" title="Balance" type="decimal" readonly="true"
         colSpan="4"/>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
-        onClick="save,action-method-accounting-move-line-query-reconcile"
-        showIf="processSelect == 0" colSpan="6"/>
+        onClick="action-move-line-query-group-reconcile" showIf="processSelect == 0" colSpan="6"/>
       <button name="accountingUnreconcileBtn" title="Accounting Unreconcile"
-        onClick="save,action-method-accounting-move-line-query-unreconcile"
-        showIf="processSelect == 1" colSpan="6"/>
+        onClick="action-move-line-query-group-unreconcile" showIf="processSelect == 1" colSpan="6"/>
     </panel>
   </form>
 
@@ -65,6 +64,25 @@
 
   <action-group name="action-move-line-query-group-on-load">
     <action name="action-move-line-query-method-compute-selected-total"/>
+  </action-group>
+
+  <action-group name="action-move-line-query-group-filter-move-lines">
+    <action name="save"/>
+    <action name="action-move-line-query-method-show-filtered-lines"/>
+    <action name="save"/>
+    <action name="action-move-line-query-method-compute-selected-total"/>
+  </action-group>
+
+  <action-group name="action-move-line-query-group-reconcile">
+    <action name="save"/>
+    <action name="action-method-accounting-move-line-query-reconcile"/>
+    <action name="action-move-line-query-group-filter-move-lines"/>
+  </action-group>
+
+  <action-group name="action-move-line-query-group-unreconcile">
+    <action name="save"/>
+    <action name="action-method-accounting-move-line-query-unreconcile"/>
+    <action name="action-move-line-query-group-filter-move-lines"/>
   </action-group>
 
   <action-attrs name="action-move-line-query-attrs-set-trading-name-domain">
@@ -82,6 +100,7 @@
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
     <field name="tradingName" expr="eval: null"/>
     <field name="account" expr="eval: null"/>
+    <field name="partner" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-move-line-query-record-default"

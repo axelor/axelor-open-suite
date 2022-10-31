@@ -6,6 +6,7 @@
   <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
     name="move-line-query-line-grid" editable="true">
     <field name="isSelected"/>
+    <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>
     <field name="moveLine.name" width="135"/>
     <field name="moveLine.date" width="90"/>
@@ -24,7 +25,6 @@
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"/>
     <field name="moveLine.move.statusSelect" width="90"/>
-    <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine.origin" width="120"/>
     <field name="moveLine.description"/>
     <field name="moveLine.dueDate"/>

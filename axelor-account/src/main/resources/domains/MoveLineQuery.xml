@@ -11,9 +11,9 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="MoveLineQuery.tradingName"/>
     <date name="fromDate" title="From Date" required="true"
-      help="First day included of the period in which moveLines will be retrieved."/>
+      help="First day included of the period in which moveLines will be retrieved"/>
     <date name="toDate" title="AnalyticMoveLineQuery.toDate" required="true"
-      help="Last day included of the period in which moveLines will be retrieved."/>
+      help="Last day included of the period in which moveLines will be retrieved"/>
     <integer name="processSelect" title="Process" required="true"
       selection="account.move.line.query.process.select" default="0"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"

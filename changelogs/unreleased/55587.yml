@@ -1,0 +1,3 @@
+---
+title: "Move : add an error if the header partner is different from the move lines"
+type: fix

@@ -22,8 +22,7 @@
     onNew="action-account-payment-voucher-onnew-group"
     onLoad="action-account-payment-voucher-onload-group"
     onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
-
-    <panel name="mainPanel" readonlyIf="statusSelect == 2" itemSpan="12">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
         onChange="action-payment-voucher-hidden-fields-if-purchase"/>
@@ -52,7 +51,7 @@
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
       <field name="statusSelect"/>
-      <panel hidden="true" showIf="statusSelect == 2" itemSpan="12">
+      <panel hidden="true" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
           showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
@@ -106,7 +105,8 @@
         onClick="action-payment-voucher-group-search-elements-to-pay,save" colSpan="6"/>
     </panel>
 
-    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2" colSpan="12">
+    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2 || statusSelect == 3"
+      colSpan="12">
       <field name="paidAmount" colSpan="4"
         onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
