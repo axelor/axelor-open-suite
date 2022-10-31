@@ -292,7 +292,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   @Override
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
-    if (move.getMoveLineList().size() == 0) {
+    if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
             currencyService
