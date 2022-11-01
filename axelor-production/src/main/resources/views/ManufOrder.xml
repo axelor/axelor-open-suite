@@ -194,7 +194,7 @@
         <field name="isConsProOnOperation" hidden="true"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"
           if-module="axelor-business-production"
-          showIf="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
+          if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"
           if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
