@@ -694,7 +694,7 @@
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
     <column name="assignedTo" type="reference"/>
-    <column name="openTask" type="button"/>
+    <column name="openTaskBtn" type="button"/>
     <column name="deleteTaskBtn" type="button"/>
 
     <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
