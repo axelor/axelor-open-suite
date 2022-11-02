@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -884,21 +885,40 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Override
-  public List<Long> getAllowedMoveLines(Reconcile reconcile, boolean isDebit) {
-    MoveLine otherMoveLine = isDebit ? reconcile.getDebitMoveLine() : reconcile.getCreditMoveLine();
-    StringBuilder moveLineQueryStr =
-        new StringBuilder(
-            "self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+  public String getStringAllowedCreditMoveLines(Reconcile reconcile) {
+    return getAllowedCreditMoveLines(reconcile).stream()
+        .map(Objects::toString)
+        .collect(Collectors.joining(","));
+  }
 
-    if (isDebit) {
-      moveLineQueryStr.append(" AND self.debit > 0");
-    } else {
-      moveLineQueryStr.append(" AND self.credit > 0");
-    }
+  @Override
+  public String getStringAllowedDebitMoveLines(Reconcile reconcile) {
+    return getAllowedDebitMoveLines(reconcile).stream()
+        .map(Objects::toString)
+        .collect(Collectors.joining(","));
+  }
 
-    if (otherMoveLine != null) {
-      moveLineQueryStr.append(" AND self.partner = :partner");
-    }
+  @Override
+  public List<Long> getAllowedCreditMoveLines(Reconcile reconcile) {
+    StringBuilder moveLineQueryStr = new StringBuilder("self.credit > 0");
+    return getMoveLineIds(
+        reconcile, moveLineQueryStr, reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine());
+  }
+
+  @Override
+  public List<Long> getAllowedDebitMoveLines(Reconcile reconcile) {
+
+    StringBuilder moveLineQueryStr = new StringBuilder("self.debit > 0");
+    return getMoveLineIds(
+        reconcile, moveLineQueryStr, reconcile.getDebitMoveLine(), reconcile.getCreditMoveLine());
+  }
+
+  protected List<Long> getMoveLineIds(
+      Reconcile reconcile,
+      StringBuilder moveLineQueryStr,
+      MoveLine currentMoveLine,
+      MoveLine otherMoveLine) {
+    computeMoveLineDomain(moveLineQueryStr, currentMoveLine, otherMoveLine);
 
     Query<MoveLine> moveLineQuery =
         moveLineRepo
@@ -906,13 +926,62 @@ public class ReconcileServiceImpl implements ReconcileService {
             .filter(moveLineQueryStr.toString())
             .bind("company", reconcile.getCompany());
 
-    if (otherMoveLine != null) {
-      moveLineQuery = moveLineQuery.bind("partner", otherMoveLine.getPartner());
-    }
+    moveLineQuery = setQueryBindings(moveLineQuery, currentMoveLine, otherMoveLine);
 
     return moveLineQuery.fetch().stream()
         .filter(moveLineControlService::canReconcile)
         .map(MoveLine::getId)
         .collect(Collectors.toList());
+  }
+
+  protected void computeMoveLineDomain(
+      StringBuilder moveLineQueryStr, MoveLine currentMoveLine, MoveLine otherMoveLine) {
+
+    Optional<MoveLine> optCurrentMoveLine = Optional.ofNullable(currentMoveLine);
+    Optional<MoveLine> optOtherMoveLine = Optional.ofNullable(otherMoveLine);
+
+    moveLineQueryStr.append(
+        " AND self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+
+    if (optCurrentMoveLine.isPresent() && !optOtherMoveLine.isPresent()) {
+      moveLineQueryStr.append(" AND self.account = :account");
+    }
+
+    if (optOtherMoveLine
+            .map(MoveLine::getAccount)
+            .map(Account::getUseForPartnerBalance)
+            .orElse(false)
+        && optOtherMoveLine.map(MoveLine::getPartner).isPresent()) {
+      addPartnerAndAccountToDomain(moveLineQueryStr);
+    }
+  }
+
+  protected Query<MoveLine> setQueryBindings(
+      Query<MoveLine> moveLineQuery, MoveLine currentMoveLine, MoveLine otherMoveLine) {
+
+    Optional<MoveLine> optCurrentMoveLine = Optional.ofNullable(currentMoveLine);
+    Optional<MoveLine> optOtherMoveLine = Optional.ofNullable(otherMoveLine);
+
+    if (optCurrentMoveLine.isPresent() && !optOtherMoveLine.isPresent()) {
+      moveLineQuery = moveLineQuery.bind("account", optCurrentMoveLine.get().getAccount());
+      return moveLineQuery;
+    }
+
+    if (optOtherMoveLine
+            .map(MoveLine::getAccount)
+            .map(Account::getUseForPartnerBalance)
+            .orElse(false)
+        && optOtherMoveLine.map(MoveLine::getPartner).isPresent()) {
+      moveLineQuery.bind("partner", optOtherMoveLine.get().getPartner());
+      moveLineQuery.bind("account", optOtherMoveLine.get().getAccount());
+      return moveLineQuery;
+    }
+
+    return moveLineQuery;
+  }
+
+  protected void addPartnerAndAccountToDomain(StringBuilder moveLineQueryStr) {
+    moveLineQueryStr.append(" AND self.partner = :partner");
+    moveLineQueryStr.append(" AND self.account = :account");
   }
 }
