@@ -16,7 +16,7 @@ buildscript {
     }
     maven { url 'https://repository.axelor.com/nexus/public/' }
   }
-  ext.openPlatformVersion = '5.4.16'
+  ext.openPlatformVersion = '5.4.17'
   ext.appVersion = '6.3.4'
   repositories repos
   dependencies {
