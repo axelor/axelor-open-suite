@@ -984,7 +984,9 @@ ON ReportValue.accounting_report_config_line = ConfigLine.id
 LEFT JOIN account_accounting_report_config_line AS ConfigColumn
 ON ReportValue.accounting_report_config_line_column = ConfigColumn.id
 
-WHERE AccountingReport.id = ?]]></xml-property>
+WHERE AccountingReport.id = ?
+
+ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
         </oda-data-set>
     </data-sets>
     <cubes>
