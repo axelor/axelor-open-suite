@@ -162,6 +162,10 @@
     </panel>
 
     <panel-tabs name="mainPanelTab">
+      <panel name="descriptionPanel" title="Description">
+        <field name="description" showTitle="false"
+          readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" colSpan="12" widget="html"/>
+      </panel>
       <panel name="recurrentPanel" title="Recurrent"
         if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
         readonlyIf="$get('opportunityStatus.typeSelect') != 0">
@@ -169,10 +173,6 @@
         <field name="expectedDurationOfRecurringRevenue"/>
         <field name="startDate" onChange="action-method-opportunity-fill-end-date"/>
         <field name="endDate"/>
-      </panel>
-      <panel name="descriptionPanel" title="Description">
-        <field name="description" showTitle="false"
-          readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" colSpan="12" widget="html"/>
       </panel>
       <panel name="customerDescriptionPanel" title="Customer Description"
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
@@ -274,12 +274,12 @@
                     <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</dd>
                     <dt ng-show="record.probability" x-translate>Probability</dt><dd ng-show="record.probability">{{record.probability}}</dd>
                     <dt><i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span></dt>
-                    <dt x-translate>Score</dt> <dd ng-show="!record.opportunityRating"<i class='fa fa-star-o' style='color:#FF7722;'></i><span><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star' style='color:#FF7722;'></i><span><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star' style='color:#FF7722;'></i><span><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star' style='color:#FF7722;'></i><span><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 4.00"><i class='fa fa-star' style='color:#FF7722;'></i><span><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:#FF7722;'></i><span><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i></span></dd>
+                    <dt x-translate>Score</dt> <dd ng-show="!record.opportunityRating"<i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
                 </dl>
             </div>
 			<div class="card-summary popover">

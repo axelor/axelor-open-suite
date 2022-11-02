@@ -217,7 +217,7 @@
   </action-view>
 
   <menuitem name="crm-conf-opportunity-status" parent="crm-conf" title="Opportunity status"
-    action="crm.conf.opportunity.status"/>
+    action="crm.conf.opportunity.status" order="12"/>
 
   <action-view name="crm.conf.opportunity.status" title="Opportunity status"
     model="com.axelor.apps.crm.db.OpportunityStatus">
