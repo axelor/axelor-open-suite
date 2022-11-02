@@ -2,7 +2,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
 import com.axelor.exception.service.TraceBackService;
@@ -45,7 +45,7 @@ public class ClosureAssistantController {
         response.setError(
             I18n.get(
                 String.format(
-                    IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR,
+                    AccountExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR,
                     closureAssistant.getFiscalYear().getCode(),
                     closureAssistant.getCompany().getCode())));
       }

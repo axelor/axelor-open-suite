@@ -7,14 +7,14 @@
     name="print-sale-invoices-details-grid">
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <grid model="com.axelor.apps.account.db.AssistantReportInvoice"
     title="Purchase Invoices Details" name="print-purchase-invoices-details-grid">
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details"
@@ -117,6 +117,6 @@
     model="com.axelor.apps.account.db.AssistantReportInvoice"
     title="Accounting report invoice filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

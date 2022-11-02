@@ -21,7 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.RawMaterialRequirement;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
@@ -59,11 +59,14 @@ public class RawMaterialRequirementServiceImpl implements RawMaterialRequirement
     String seq =
         Beans.get(SequenceService.class)
             .getSequenceNumber(
-                SequenceRepository.RAW_MATERIAL_REQUIREMENT, rawMaterialRequirement.getCompany());
+                SequenceRepository.RAW_MATERIAL_REQUIREMENT,
+                rawMaterialRequirement.getCompany(),
+                RawMaterialRequirement.class,
+                "code");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE),
+          I18n.get(ProductionExceptionMessage.RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE),
           rawMaterialRequirement.getCompany().getName());
     }
 

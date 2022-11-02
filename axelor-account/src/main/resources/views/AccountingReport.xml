@@ -10,7 +10,7 @@
     <field name="ref" width="120"/>
     <field name="date"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="currency"/>
     <field name="exportTypeSelect"/>
     <field name="reportType"/>
@@ -158,6 +158,10 @@
           onChange="action-accounting-report-record-global-by-partner"/>
         <field name="detailed" hideIf="reportType.typeSelect != 4"
           onChange="action-accounting-report-record-detailed"/>
+        <field name="displayDeltaYear"
+          showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 1"/>
+        <field name="displayDeltaYearPercentage"
+          showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 1"/>
         <field name="displaySimulatedMove"
           showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
@@ -450,9 +454,10 @@
 
   <action-record name="action-accounting-report-record-default"
     model="com.axelor.apps.account.db.AccountingReport">
-    <field name="createdOn" expr="eval:__config__.date"/>
     <field name="createdOn"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
@@ -538,7 +543,7 @@
   <search-filters name="accounting-report-filters"
     model="com.axelor.apps.account.db.AccountingReport" title="Accounting report filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="journalSet" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
     <field name="bankDetailsSet" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
   </search-filters>

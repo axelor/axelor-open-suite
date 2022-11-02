@@ -30,7 +30,7 @@
         <button name="closeBtn" title="Close period" colSpan="6"
           onClick="save,action-method-period-close" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
         <button name="reopenBtn" title="Reopen period" colSpan="6"
-          onClick="save,action-period-record-status-open"
+          onClick="save,action-method-period-status-open"
           showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
       </panel>
       <field name="statusSelect"/>
@@ -55,7 +55,7 @@
         <button name="closeBtn" title="Close period" colSpan="6"
           onClick="save,action-method-period-close" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
         <button name="reopenBtn" title="Reopen period" colSpan="6"
-          onClick="save,action-period-record-status-open"
+          onClick="save,action-method-period-status-open"
           showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
       </panel>
       <field name="statusSelect"/>

@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -51,7 +51,7 @@ public class YearControlServiceImpl implements YearControlService {
           && isLinkedToMove(year)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED));
+            I18n.get(AccountExceptionMessage.FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED));
       }
     }
   }

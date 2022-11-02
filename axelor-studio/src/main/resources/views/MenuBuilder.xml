@@ -9,7 +9,7 @@
     <field name="actionBuilder.model" title="Model"/>
     <field name="order"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
     <button name="recordsBtn" onClick="action-studio-method-menu-builder-show-records"
       icon="fa-list" title="Show records"/>
   </grid>
@@ -22,7 +22,7 @@
         onChange="action-menubuilder-method-fetch-menu"/>
       <spacer colSpan="12" hideIf="id"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <field name="name" required="true"/>
       <field name="title"/>
       <field name="xmlId" required="true"/>
@@ -47,7 +47,8 @@
             grid-view="action-builder-line-simple-grid" form-view="action-builder-line-simple-form"/>
           <field name="lines" title="Context" colSpan="12"
             grid-view="action-builder-line-simple-grid" form-view="action-builder-line-simple-form"/>
-          <field name="domainCondition" colSpan="12"/>
+          <field name="domainCondition" colSpan="12"
+            help="The domain must not contains any escaped HTML characters"/>
           <field name="model" hidden="true"/>
           <field name="typeSelect" hidden="true"/>
         </editor>

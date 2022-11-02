@@ -8,7 +8,7 @@
     <field name="tracking"/>
     <field name="deliveryNumberSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="deliverToCustomerPartner" form-view="partner-customer-form"
       grid-view="partner-customer-grid" canEdit="false"/>
     <field name="carrierPartner"/>
@@ -217,7 +217,7 @@
   <search-filters name="logistical-form-filters"
     model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

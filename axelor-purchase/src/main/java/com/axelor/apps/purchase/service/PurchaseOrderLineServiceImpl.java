@@ -37,7 +37,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
@@ -102,7 +102,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (purchaseOrderLine.getTaxLine() != null) {
-      taxRate = purchaseOrderLine.getTaxLine().getValue();
+      taxRate = purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
     if (!purchaseOrder.getInAti()) {
@@ -150,7 +150,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     LOG.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of amount W.T. with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -284,7 +284,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (price == null || inTaxPrice == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
     TaxEquiv taxEquiv =
@@ -560,9 +560,13 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
 
     if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
     } else {
-      price = price.add(price.multiply(taxLine.getValue()));
+      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }
     return price;
   }
@@ -634,7 +638,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
 
     if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
-      String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+      String msg =
+          String.format(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
 
       if (request.getAction().endsWith("onchange")) {
         response.setFlash(msg);
@@ -688,7 +693,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (supplierOnPurchaseOrder != defaultSupplierOnProduct) {
 
-      String message = String.format(I18n.get(IExceptionMessage.DIFFERENT_SUPPLIER));
+      String message = String.format(I18n.get(PurchaseExceptionMessage.DIFFERENT_SUPPLIER));
       String title =
           String.format(
               "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
@@ -703,32 +708,39 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+
     if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
       return null;
-    } else {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    }
 
-        FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
-        purchaseOrderLine.setTaxLine(taxLine);
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
-
-        purchaseOrderLine.setTaxEquiv(taxEquiv);
-
-        purchaseOrderLine.setInTaxTotal(
-            purchaseOrderLine
-                .getExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        purchaseOrderLine.setCompanyInTaxTotal(
-            purchaseOrderLine
-                .getCompanyExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
+      // Skip line update if product is not filled
+      if (purchaseOrderLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+
+      TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
+      purchaseOrderLine.setTaxLine(taxLine);
+
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
+              purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
+
+      purchaseOrderLine.setTaxEquiv(taxEquiv);
+
+      purchaseOrderLine.setInTaxTotal(
+          purchaseOrderLine
+              .getExTaxTotal()
+              .multiply(purchaseOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
+      purchaseOrderLine.setCompanyInTaxTotal(
+          purchaseOrderLine
+              .getCompanyExTaxTotal()
+              .multiply(purchaseOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
     }
     return purchaseOrderLineList;
   }

@@ -18,7 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -63,7 +63,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
       response.setView(
           ActionView.define("Message " + message.getSubject()).add("html", pdfPath).map());
 
-    } else response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
+    } else response.setFlash(I18n.get(BaseExceptionMessage.MESSAGE_1));
   }
 
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -108,7 +108,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.MESSAGE_2));
+      response.setFlash(I18n.get(BaseExceptionMessage.MESSAGE_2));
     }
   }
 }

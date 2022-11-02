@@ -175,7 +175,8 @@ public class DoubtfulCustomerService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             move.getOrigin(),
-            debtPassReason);
+            debtPassReason,
+            invoice != null ? invoice.getCompanyBankDetails() : move.getCompanyBankDetails());
     newMove.setOriginDate(move.getOriginDate());
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
@@ -257,7 +258,7 @@ public class DoubtfulCustomerService {
       MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {
 
-    log.debug("Ecriture concernée : {} ", moveLine.getName());
+    log.debug("Concerned move : {} ", moveLine.getName());
     Company company = moveLine.getMove().getCompany();
     Partner partner = moveLine.getPartner();
     LocalDate todayDate = appBaseService.getTodayDate(company);
@@ -273,7 +274,8 @@ public class DoubtfulCustomerService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             moveLine.getName(),
-            debtPassReason);
+            debtPassReason,
+            moveLine.getMove().getCompanyBankDetails());
 
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
@@ -439,7 +441,7 @@ public class DoubtfulCustomerService {
         break;
     }
 
-    log.debug("Date de créance prise en compte : {} ", date);
+    log.debug("Debt date taken into account : {} ", date);
 
     String request =
         "SELECT DISTINCT m "
@@ -459,7 +461,7 @@ public class DoubtfulCustomerService {
             + date.toString()
             + "'";
 
-    log.debug("Requete : {} ", request);
+    log.debug("Query : {} ", request);
 
     Query query = JPA.em().createQuery(request);
 
@@ -537,7 +539,7 @@ public class DoubtfulCustomerService {
         break;
     }
 
-    log.debug("Date de créance prise en compte : {} ", date);
+    log.debug("Debt date taken into account : {} ", date);
 
     return moveLineList;
   }

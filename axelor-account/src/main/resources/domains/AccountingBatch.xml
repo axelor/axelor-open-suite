@@ -112,6 +112,8 @@
       selection="iaccount.move.status.select" default="1"/>
     <boolean name="previewRecordsToProcess" title="Preview records to process"/>
 
+    <string name="prefixOrigin" title="Prefix for accounting voucher"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE

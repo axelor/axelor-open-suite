@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -48,6 +49,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -153,6 +155,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
+    int i = 0;
+
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
@@ -161,7 +165,10 @@ public class MoveLineServiceImpl implements MoveLineService {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
       } finally {
-        JPA.clear();
+        i++;
+        if (i % 20 == 0) {
+          JPA.clear();
+        }
       }
     }
   }
@@ -294,11 +301,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    if (moveDate == null
+        || moveLine.getCutOffStartDate() == null
+        || moveLine.getCutOffEndDate() == null) {
+      return BigDecimal.ZERO;
+    }
     BigDecimal daysProrata =
         BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
             ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+    if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
+    }
     BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
@@ -378,5 +393,11 @@ public class MoveLineServiceImpl implements MoveLineService {
     batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
 
     return batchAccountingCutOff.getBatch();
+  }
+
+  public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
+    moveLineList.stream()
+        .filter(it -> Objects.equals(it.getPartner(), previousPartner))
+        .forEach(it -> it.setPartner(partner));
   }
 }

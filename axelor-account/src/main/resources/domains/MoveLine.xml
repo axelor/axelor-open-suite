@@ -42,8 +42,13 @@
     <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-one name="taxLineBeforeReverse" ref="com.axelor.apps.account.db.TaxLine"
+      title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Source Tax"/>
+
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax Equiv"/>
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
@@ -88,7 +93,7 @@
     <long name="partnerId"/>
     <long name="accountId"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
 
     <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
@@ -106,12 +111,6 @@
       mappedBy="moveLine" title="Invoice terms"/>
 
     <!-- DAS2 -->
-    <many-to-one name="serviceType" ref="ServiceType" title="Service type"
-      readonly="true"/>
-    <string name="serviceTypeCode" title="Service type code" readonly="true"/>
-    <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity"
-      title="DAS2 activity" readonly="true"/>
-    <string name="das2ActivityName" title="DAS2 activity name" readonly="true"/>
 
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[

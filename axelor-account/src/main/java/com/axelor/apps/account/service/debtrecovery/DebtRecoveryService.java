@@ -34,7 +34,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TradingNameRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.apps.tool.date.DateTool;
@@ -485,8 +486,8 @@ public class DebtRecoveryService {
               + " %s, "
               + I18n.get("Company")
               + " %s : "
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName(),
           company.getName());
     }
@@ -524,8 +525,8 @@ public class DebtRecoveryService {
               + " %s, "
               + I18n.get("Company")
               + " %s : "
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName(),
           company.getName());
     }
@@ -635,7 +636,7 @@ public class DebtRecoveryService {
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
 
         if (referenceDate != null) {
-          log.debug("date de référence : {} ", referenceDate);
+          log.debug("reference date : {} ", referenceDate);
           debtRecovery.setReferenceDate(referenceDate);
         } else {
           throw new AxelorException(
@@ -649,8 +650,8 @@ public class DebtRecoveryService {
                           + tradingName
                       != null
                   ? I18n.get("Trading name") + " %s : "
-                  : "" + I18n.get(IExceptionMessage.DEBT_RECOVERY_2),
-              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+                  : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
+              I18n.get(BaseExceptionMessage.EXCEPTION),
               partner.getName(),
               company.getName());
         }
@@ -672,8 +673,8 @@ public class DebtRecoveryService {
                             + tradingName
                         != null
                     ? I18n.get("Trading name") + " %s : "
-                    : "" + I18n.get(IExceptionMessage.DEBT_RECOVERY_3),
-                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+                    : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+                I18n.get(BaseExceptionMessage.EXCEPTION),
                 partner.getName(),
                 company.getName());
           }
@@ -702,7 +703,7 @@ public class DebtRecoveryService {
           }
         } else {
           log.debug(
-              "Tiers {}, Société {} - Niveau de relance en attente ",
+              "Partner {}, Company {} - Reminder level : on hold",
               partner.getName(),
               company.getName());
           // TODO Alarm ?
@@ -715,8 +716,8 @@ public class DebtRecoveryService {
                       + " %s, "
                       + I18n.get("Company")
                       + " %s : "
-                      + I18n.get(IExceptionMessage.DEBT_RECOVERY_4),
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+                      + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_4),
+                  I18n.get(BaseExceptionMessage.EXCEPTION),
                   partner.getName(),
                   company.getName()));
         }

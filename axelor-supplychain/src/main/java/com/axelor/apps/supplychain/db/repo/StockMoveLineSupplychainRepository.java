@@ -22,7 +22,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -78,7 +78,7 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
           .isAllocatedStockMoveLine(stockMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
+            I18n.get(SupplychainExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
       } else {
         super.remove(stockMoveLine);
       }

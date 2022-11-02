@@ -18,11 +18,13 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface StockLocationService {
@@ -56,6 +58,9 @@ public interface StockLocationService {
   public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
       throws AxelorException;
 
+  public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
+      throws AxelorException;
+
   @CallMethod
   public List<Long> getBadStockLocationLineId();
 
@@ -71,4 +76,7 @@ public interface StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude);
 
   public boolean isConfigMissing(StockLocation stockLocation, int printType);
+
+  void changeProductLocker(StockLocation stockLocation, Product product, String newLocker)
+      throws AxelorException;
 }

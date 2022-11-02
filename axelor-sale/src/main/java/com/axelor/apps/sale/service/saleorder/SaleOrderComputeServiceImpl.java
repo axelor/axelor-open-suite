@@ -95,7 +95,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     }
 
     logger.debug(
-        "Peupler un devis => lignes de devis: {} ",
+        "Populate a sale order => sale order lines : {}",
         new Object[] {saleOrder.getSaleOrderLineList().size()});
 
     // create Tva lines
@@ -144,7 +144,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
     saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
     logger.debug(
-        "Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
+        "Invoice's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {
           saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal()
         });

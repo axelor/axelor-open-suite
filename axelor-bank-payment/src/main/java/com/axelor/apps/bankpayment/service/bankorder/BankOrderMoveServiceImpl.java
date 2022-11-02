@@ -33,12 +33,13 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -152,7 +153,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankOrderLine.getReceiverReference(),
-            bankOrderLine.getReceiverLabel());
+            bankOrderLine.getReceiverLabel(),
+            bankOrderLine.getBankOrder().getSenderBankDetails());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -208,7 +210,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankOrderLine.getReceiverReference(),
-            bankOrderLine.getReceiverLabel());
+            bankOrderLine.getReceiverLabel(),
+            bankOrderLine.getBankOrder().getSenderBankDetails());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -268,8 +271,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         throw new AxelorException(
             accountingSituation,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
     }
   }
 

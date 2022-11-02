@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.service.TranslationService;
@@ -47,6 +47,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/map")
+@Deprecated
 public class MapRest {
 
   @Inject private MapRestService mapRestService;
@@ -62,6 +63,7 @@ public class MapRest {
   @Path("/partner")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getPartners() {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -122,6 +124,7 @@ public class MapRest {
   @Path("/partner/{id}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getPartner(@PathParam("id") long id) {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -132,7 +135,7 @@ public class MapRest {
         throw new AxelorException(
             Partner.class,
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.PARTNER_NOT_FOUND));
+            I18n.get(BaseExceptionMessage.PARTNER_NOT_FOUND));
       }
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
@@ -189,6 +192,7 @@ public class MapRest {
   @Path("/customer")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getCustomers() {
 
     ObjectNode mainNode = nodeFactory.objectNode();
@@ -237,6 +241,7 @@ public class MapRest {
   @Path("/prospect")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getProspects() {
 
     ObjectNode mainNode = nodeFactory.objectNode();
@@ -285,6 +290,7 @@ public class MapRest {
   @Path("/supplier")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getSuppliers() {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -332,6 +338,7 @@ public class MapRest {
   @Path("translation/{key}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getTranslation(@PathParam("key") String key) {
 
     ObjectNode mainNode = nodeFactory.objectNode();

@@ -20,7 +20,7 @@ package com.axelor.apps.purchase.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -36,11 +36,15 @@ public class PurchaseRequestManagementRepository extends PurchaseRequestReposito
       if (entity.getPurchaseRequestSeq() == null) {
         String seq =
             Beans.get(SequenceService.class)
-                .getSequenceNumber(SequenceRepository.PURCHASE_REQUEST, entity.getCompany());
+                .getSequenceNumber(
+                    SequenceRepository.PURCHASE_REQUEST,
+                    entity.getCompany(),
+                    PurchaseRequest.class,
+                    "purchaseRequestSeq");
         if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PURCHASE_REQUEST_1),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_1),
               entity.getCompany().getName());
         }
         entity.setPurchaseRequestSeq(seq);

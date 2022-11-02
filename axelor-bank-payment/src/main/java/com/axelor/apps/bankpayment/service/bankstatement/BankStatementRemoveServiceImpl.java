@@ -1,6 +1,6 @@
 package com.axelor.apps.bankpayment.service.bankstatement;
 
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
@@ -80,7 +80,8 @@ public class BankStatementRemoveServiceImpl implements BankStatementRemoveServic
     if (!ObjectUtils.isEmpty(bankReconciliationList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION),
+          I18n.get(
+              AccountExceptionMessage.BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION),
           bankReconciliationList.stream().map(it -> it.getName()).collect(Collectors.joining(",")));
     }
 
@@ -99,7 +100,7 @@ public class BankStatementRemoveServiceImpl implements BankStatementRemoveServic
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(
-                  IExceptionMessage
+                  AccountExceptionMessage
                       .BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE),
               bankReconciliationLineList.stream()
                   .map(it -> it.getName())

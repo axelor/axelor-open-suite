@@ -155,6 +155,7 @@
     <view type="chart" name="chart.moveLines.revenues.vs.expenses"/>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
     <context name="todayDate" expr="eval:__config__.date"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view title="Invoice Sale by month (tax excl.)"

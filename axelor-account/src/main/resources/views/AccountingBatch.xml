@@ -8,7 +8,7 @@
     <field name="actionSelect"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="createdOn"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
@@ -22,8 +22,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"
-        onChange="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
+        grid-view="company-grid" onChange="action-accounting-batch-group-company-on-change"/>
       <field name="bankDetails"
         hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21,26].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
         widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"
@@ -32,11 +31,11 @@
       <field name="isDebtRecoveryByTradingName"
         readonlyIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
         onChange="action-attrs-accounting-batch-hide-trading-name-set" hidden="true"
-        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         showIf="actionSelect == 14"/>
       <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
         form-view="trading-name-form" domain=":company member of self.companySet" canNew="false"
-        if="__config__.app.getApp('base').getEnableTradingNamesManagement()" hidden="true"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" hidden="true"
         canEdit="false"/>
       <field name="archived" title="Archived"/>
     </panel>
@@ -56,7 +55,7 @@
         <field name="dueDate"/>
         <field name="currency"/>
         <field name="includeOtherBankAccounts"
-          if="__config__.app.getApp('base').getManageMultiBanks()"/>
+          if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       </panel>
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
@@ -74,7 +73,7 @@
         <field name="dueDate"/>
         <field name="currency"/>
         <field name="includeOtherBankAccounts"
-          if="__config__.app.getApp('base').getManageMultiBanks()"/>
+          if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       </panel>
 
       <panel name="creditTransferPagePanel" title="Credit Transfer configuration"
@@ -91,7 +90,7 @@
         <field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)"/>
         <field name="includeOtherBankAccounts"
           showIf="$contains([1, 2, 3], creditTransferTypeSelect)"
-          if="__config__.app.getApp('base').getManageMultiBanks()"/>
+          if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       </panel>
 
       <panel name="debtRecoveryPagePanel" title="Debt recovery configuration"
@@ -163,7 +162,7 @@
         <field name="moveDescription" requiredIf="actionSelect == 26"/>
         <panel colSpan="6" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 26"
-            validIf="$moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
+            validIf="actionSelect != 26 || $moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
             help="Please, enter only dates with the last day of month"
             onChange="action-accounting-batch-group-move-date-onchange"/>
           <label name="adviseUser"
@@ -197,6 +196,7 @@
           <field name="includeNotStockManagedProduct"
             showIf="accountingCutOffTypeSelect &lt;= 2"/>
         </panel>
+        <field name="prefixOrigin"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -293,12 +293,19 @@
     <action name="action-record-accounting-batch-movedate-onchange"/>
   </action-group>
 
+  <action-group name="action-accounting-batch-group-company-on-change">
+    <action name="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
+    <action name="action-accounting-batch-attrs-set-company-currency"
+      if="[11,12,19].contains(actionSelect)"/>
+  </action-group>
+
   <!-- ACTION RECORD -->
   <action-record name="action-accounting-batch-record-on-new"
     model="com.axelor.apps.account.db.AccountingBatch">
-    <field name="createdOn" expr="eval: __config__.date"/>
     <field name="createdOn"
-      expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"/>
+    <field name="createdOn"
+      expr="eval: __config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -483,6 +490,8 @@
   </action-attrs>
 
   <action-attrs name="action-attrs-accounting-batch-set-journal-domain">
+    <attribute name="domain" expr="eval: &quot;self.company = :company&quot;"
+      for="researchJournal"/>
     <attribute name="domain"
       expr="eval: &quot;self.journalType.technicalTypeSelect = 1 AND self.company = :company AND self.statusSelect = 1&quot;"
       for="researchJournal" if="accountingCutOffTypeSelect == 3"/>
@@ -504,18 +513,15 @@
       :_researchJournal)
       OR (:_researchJournal = 0 AND
       self.move.journal.journalType.technicalTypeSelect = :_journalType))
-      AND
-      YEAR(self.move.date) =
-      :_year
+      AND DATE(:_moveDate) >=
+      self.move.date
       AND self.move.statusSelect IN (2, 3, 5)
-      AND YEAR(self.cutOffEndDate) > :_year
-      AND
-      self.move.company.id = :_company
+      AND self.cutOffEndDate > DATE(:_moveDate)
+      AND self.move.company.id = :_company
     </domain>
     <context name="_researchJournal"
       expr="eval: researchJournal != null ? researchJournal.id : 0"/>
     <context name="_journalType" expr="eval: accountingCutOffTypeSelect == 3 ? 1 : 2"/>
-    <context name="_year" expr="eval: moveDate.getYear()"/>
     <context name="_moveDate" expr="eval: moveDate"/>
     <context name="_company" expr="eval: company.id"/>
     <context name="_cutOffPreview" expr="eval: true"/>
@@ -528,12 +534,16 @@
       if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null"/>
   </action-validate>
 
+  <action-attrs name="action-accounting-batch-attrs-set-company-currency">
+    <attribute for="currency" name="value" expr="eval: company?.currency"/>
+  </action-attrs>
+
   <search-filters name="accounting-batch-filters"
     model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="includeOtherBankAccounts" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </search-filters>
 
 </object-views>

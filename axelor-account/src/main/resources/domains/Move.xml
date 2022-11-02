@@ -42,6 +42,9 @@
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
       title="Company currency"/>
     <string name="companyCurrencyCode" title="Company currency code"/>
+    <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Company bank"
+      help="The reference to the bankDetails for moves is mainly destinated to be able to establish treasury forecasts and doesn't replace the move lines of payment on the treasury journals who are usually associated to treasury accounts which are linked to a real bank account. On purchase or sales accounting moves, those are purely indicative."/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
@@ -60,7 +63,7 @@
       title="Trading name"/>
     <date name="originDate" title="Origin date"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
-    <string name="origin" title="Origin"
+    <string name="origin" title="Accounting voucher"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>

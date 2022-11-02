@@ -310,7 +310,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
-    line.setSelectedComplementaryProductList(null);
+    line.clearSelectedComplementaryProductList();
     return line;
   }
 
@@ -343,7 +343,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (saleOrderLine.getTaxLine() != null) {
-      taxRate = saleOrderLine.getTaxLine().getValue();
+      taxRate = saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
     if (!saleOrder.getInAti()) {
@@ -412,7 +412,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of W.T. amount with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -536,9 +536,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
     } else {
-      price = price.add(price.multiply(taxLine.getValue()));
+      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }
     return price;
   }
@@ -1077,7 +1081,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       complementarySOLine = new SaleOrderLine();
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
-      saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+      complementarySOLine.setMainSaleOrderLine(saleOrderLine);
       newComplementarySOLines.add(complementarySOLine);
     }
     return complementarySOLine;
@@ -1086,31 +1090,37 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return null;
-    } else {
-      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    }
 
-        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-        saleOrderLine.setTaxLine(taxLine);
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
-
-        saleOrderLine.setTaxEquiv(taxEquiv);
-
-        saleOrderLine.setTaxEquiv(taxEquiv);
-
-        saleOrderLine.setInTaxTotal(
-            saleOrderLine
-                .getExTaxTotal()
-                .multiply(saleOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        saleOrderLine.setCompanyInTaxTotal(
-            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+      // Skip line update if product is not filled
+      if (saleOrderLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+      TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+      saleOrderLine.setTaxLine(taxLine);
+
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
+              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+
+      saleOrderLine.setTaxEquiv(taxEquiv);
+
+      saleOrderLine.setInTaxTotal(
+          saleOrderLine
+              .getExTaxTotal()
+              .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100)))
+              .setScale(2, RoundingMode.HALF_UP));
+      saleOrderLine.setCompanyInTaxTotal(
+          saleOrderLine
+              .getCompanyExTaxTotal()
+              .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
     }
     return saleOrderLineList;
   }

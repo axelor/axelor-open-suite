@@ -164,6 +164,8 @@ public interface ManufOrderService {
    */
   void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
+  StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
   /**
    * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
    *
@@ -171,6 +173,8 @@ public interface ManufOrderService {
    * @throws AxelorException
    */
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Check the realized consumed stock move lines in manuf order has not changed.
@@ -265,4 +269,6 @@ public interface ManufOrderService {
    * @return
    */
   public void createBarcode(ManufOrder manufOrder);
+
+  List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 }

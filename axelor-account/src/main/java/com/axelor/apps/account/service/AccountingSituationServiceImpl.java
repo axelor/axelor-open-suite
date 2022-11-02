@@ -230,4 +230,24 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
           TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
     }
   }
+
+  @Override
+  public int determineVatSystemSelect(AccountingSituation accountingSituation, int vatSystem)
+      throws AxelorException {
+    int vatSystemSelect = 0;
+    if (accountingSituation != null) {
+      if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+        vatSystemSelect = vatSystem;
+      } else if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_DELIVERY) {
+        vatSystemSelect = 1;
+      } else {
+        vatSystemSelect = vatSystem;
+      }
+    } else {
+      vatSystemSelect = vatSystem;
+    }
+    return vatSystemSelect;
+  }
 }

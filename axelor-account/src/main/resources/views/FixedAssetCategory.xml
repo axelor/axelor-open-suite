@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="fixedAssetType"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="computationMethodSelect"/>
     <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
     <field name="chargeAccount" form-view="account-form" grid-view="account-grid"/>
@@ -25,8 +25,8 @@
       <field name="fixedAssetType" form-view="fixed-asset-type-form"
         grid-view="fixed-asset-type-grid"
         onChange="action-fixed-asset-category-group-onchange-fixed-asset-type"/>
-      <field name="fixedAssetType.technicalTypeSelect" hidden="true"/>
       <field name="isValidateFixedAsset"/>
+      <field name="fixedAssetType.technicalTypeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="depreciationPanel" title="Depreciation method" colspan="12">
@@ -36,9 +36,6 @@
             onChange="action-attrs-account-fixed-asset-category-depreciation-plan-override-if-none"/>
           <field name="computationMethodSelect"
             onChange="action-fixed-asset-attrs-set-degressive-coef" colspan="6"
-            requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"
-            showIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
-          <field name="firstDepreciationDateInitSelect"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"
             showIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
@@ -68,6 +65,9 @@
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form" grid-view="account-grid"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
+          <field name="approExtraordDepreciationExpenseAccount"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
+            form-view="account-form" grid-view="account-grid"/>
           <field name="depreciationAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form" grid-view="account-grid"
@@ -115,7 +115,7 @@
         </panel>
       </panel>
       <panel
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         name="analyticPanel" title="Analytic">
         <field name="analyticDistributionTemplate" canEdit="false"
           domain="self.company = :company" form-view="analytic-distribution-template-form"
@@ -164,8 +164,8 @@
   <search-filters name="fixed-asset-category-filters"
     model="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="analyticDistributionTemplate" hidden="true"
-      if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </search-filters>
 </object-views>

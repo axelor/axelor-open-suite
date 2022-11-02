@@ -1,0 +1,3 @@
+---
+title: Accounting Report - set default value "NA" in origin field when origin is null or empty
+type: fix

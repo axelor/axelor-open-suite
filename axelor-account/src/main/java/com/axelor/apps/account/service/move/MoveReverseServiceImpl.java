@@ -78,6 +78,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       LocalDate dateOfReversion)
       throws AxelorException {
 
+    String origin = move.getOrigin();
+    if (move.getJournal().getHasDuplicateDetectionOnOrigin()
+        && move.getJournal().getPrefixOrigin() != null) {
+      origin = move.getJournal().getPrefixOrigin() + origin;
+    }
+
     Move newMove =
         moveCreateService.createMove(
             move.getJournal(),
@@ -92,10 +98,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove(),
-            move.getOrigin(),
+            origin,
             move.getDescription(),
             null,
-            null);
+            null,
+            move.getCompanyBankDetails());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
@@ -184,7 +191,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             dateOfReversion,
             originMoveLine.getCounter(),
             originMoveLine.getName(),
-            null);
+            null,
+            originMoveLine.getCutOffStartDate(),
+            originMoveLine.getCutOffEndDate());
     reverseMoveLine.setVatSystemSelect(originMoveLine.getVatSystemSelect());
 
     return reverseMoveLine;

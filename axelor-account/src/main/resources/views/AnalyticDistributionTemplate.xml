@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
     <field name="name"/>
     <field name="company" massUpdate="true"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isSpecific"/>
   </grid>
 
@@ -93,7 +93,7 @@
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
     title="Analytic distribution template filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
   <action-method name="action-method-parent-fixed-asset-calculate-analytic">

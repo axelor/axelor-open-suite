@@ -27,7 +27,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.TimetableTemplateLine;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -64,7 +64,7 @@ public class TimetableServiceImpl implements TimetableService {
         throw new AxelorException(
             timetable,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.SO_INVOICE_6),
+            I18n.get(SupplychainExceptionMessage.SO_INVOICE_6),
             saleOrder.getSaleOrderSeq());
       }
       List<Long> timetableId = new ArrayList<>();
@@ -86,7 +86,7 @@ public class TimetableServiceImpl implements TimetableService {
         throw new AxelorException(
             timetable,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.SO_INVOICE_6),
+            I18n.get(SupplychainExceptionMessage.SO_INVOICE_6),
             purchaseOrder.getPurchaseOrderSeq());
       }
       List<Long> timetableId = new ArrayList<>();

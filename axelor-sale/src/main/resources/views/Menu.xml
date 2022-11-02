@@ -241,11 +241,11 @@
   </action-view>
 
   <menuitem name="sale-conf-configurators" parent="sc-root-sale-conf" order="20"
-    title="Configurators" if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+    title="Configurators" if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
 
   <menuitem name="sale-conf-configurators-creator" parent="sale-conf-configurators"
     title="Configurator creators" action="sale.conf.configurator.creator"
-    if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+    if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
 
   <action-view name="sale.conf.configurator.creator" title="Configurator creators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
@@ -256,7 +256,7 @@
 
   <menuitem name="sale-conf-configurators-configurators" parent="sale-conf-configurators"
     title="Configurators" action="sale.conf.configurator.configurators"
-    if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+    if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
 
   <action-view name="sale.conf.configurator.configurators" title="Configurators"
     model="com.axelor.apps.sale.db.Configurator">

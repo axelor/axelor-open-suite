@@ -12,7 +12,6 @@
   </selection>
 
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
-    <option value="1">Accounting cut-off</option>
     <option value="2">Invoice outgoing stock moves</option>
     <option value="3">Invoice orders</option>
     <option value="4">Update stock history</option>
@@ -57,6 +56,7 @@
 
   <selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
     <option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+    <option value="com.axelor.apps.supplychain.job.MrpJob">com.axelor.apps.supplychain.job.MrpJob</option>
   </selection>
 
   <selection name="meta.schedule.batch.service.select"

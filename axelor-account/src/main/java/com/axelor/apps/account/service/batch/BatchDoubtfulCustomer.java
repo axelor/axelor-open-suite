@@ -22,10 +22,11 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -99,15 +100,11 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
       // FACTURES
       List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);
-      log.debug(
-          "Nombre d'écritures de facture concernées (Créance de + 6 mois) au 411 : {} ",
-          moveList.size());
+      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveList.size());
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
       moveList = doubtfulCustomerService.getMove(1, doubtfulCustomerAccount, company);
-      log.debug(
-          "Nombre d'écritures de facture concernées (Créance de + 3 mois) au 411 : {} ",
-          moveList.size());
+      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveList.size());
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 
       // FACTURES REJETES
@@ -115,7 +112,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           (List<MoveLine>)
               doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
       log.debug(
-          "Nombre de lignes d'écriture de rejet concernées (Créance de + 6 mois) au 411 : {} ",
+          "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
           moveLineList.size());
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
@@ -124,7 +121,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           (List<MoveLine>)
               doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
       log.debug(
-          "Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",
+          "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
           moveLineList.size());
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
@@ -146,6 +143,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
   public void createDoubtFulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
 
+    int i = 0;
     for (Move move : moveList) {
       try {
 
@@ -156,6 +154,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         Move myMove = moveRepo.find(move.getId());
         if (myMove.getInvoice() != null) {
           updateInvoice(myMove.getInvoice());
+          i++;
         }
 
       } catch (AxelorException e) {
@@ -175,7 +174,15 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
         incrementAnomaly();
 
-        log.error("Bug(Anomalie) généré(e) pour la pièce {}", move.getOrigin());
+        log.error(
+            "Anomaly generated for the invoice {}",
+            moveRepo.find(move.getId()).getInvoice().getInvoiceId());
+
+      } finally {
+
+        if (i % 10 == 0) {
+          JPA.clear();
+        }
       }
     }
   }
@@ -230,7 +237,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour la facture {}",
+            "Anomaly generated for the invoice {}",
             moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 
       } finally {
@@ -251,13 +258,13 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
     AccountingService.setUpdateCustomerAccount(true);
 
-    String comment = I18n.get(IExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
-    comment +=
-        String.format("\t" + I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+    String comment = I18n.get(AccountExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(AccountExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+    comment +=
+        String.format(
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     comment += String.format("\t* ------------------------------- \n");
     comment += String.format("\t* %s ", updateCustomerAccountLog);

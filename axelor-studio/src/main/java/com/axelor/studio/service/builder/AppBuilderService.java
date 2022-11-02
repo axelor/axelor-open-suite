@@ -23,7 +23,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBuilder;
-import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.exception.StudioExceptionMessage;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
@@ -70,7 +70,7 @@ public class AppBuilderService {
     if (app != null && app != appBuilder.getGeneratedApp()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.APP_BUILDER_1),
+          I18n.get(StudioExceptionMessage.APP_BUILDER_1),
           appBuilder.getCode());
     }
   }

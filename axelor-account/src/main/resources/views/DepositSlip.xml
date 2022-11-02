@@ -6,7 +6,7 @@
   <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
     title="Deposit slips" orderBy="-depositDate,-depositNumber">
     <field name="depositNumber" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="companyBankDetails"/>
     <field name="depositDate"/>
     <field name="depositType"/>
@@ -35,7 +35,7 @@
           <field name="companyBankDetails"
             requiredIf="!companyBankDetails &amp;&amp; !valueForCollectionAccount"
             readonlyIf="valueForCollectionAccount" canEdit="false" canNew="false"
-            onChange="action-deposit-slip-attrs-payment-voucher-list-hide-column"
+            onChange="action-deposit-slip-group-bank-details-account-onchange"
             onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4"/>
           <panel name="subCompanyBankDetailsPanel" hidden="true" showIf="companyBankDetails"
             colSpan="8">
@@ -45,7 +45,7 @@
         </panel>
         <field name="valueForCollectionAccount"
           domain="self.accountType.technicalTypeSelect = 'cash' AND self.company = :company"
-          onChange="action-deposit-slip-attrs-payment-voucher-list-hide-column"
+          onChange="action-deposit-slip-group-bank-details-account-onchange"
           requiredIf="!companyBankDetails &amp;&amp; !valueForCollectionAccount"
           readonlyIf="companyBankDetails" colSpan="4"/>
       </panel>
@@ -88,7 +88,8 @@
           onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,save"
           name="updateDepositDatesBtn" title="Update deposit dates" readonlyIf="!__depositDate"/>
       </panel>
-      <panel colSpan="3" colOffset="4" itemSpan="12" readonlyIf="isBankDepositMoveGenerated">
+      <panel colSpan="3" colOffset="4" itemSpan="12"
+        readonlyIf="isBankDepositMoveGenerated || !paymentVoucherList || paymentVoucherList.length == 0">
         <button onClick="save,action-deposit-slip-publish" name="updatePublishDepositSlipBtn"
           title="Publish deposit slip" css="btn-success"/>
         <button onClick="save,action-deposit-slip-method-validate"
@@ -115,6 +116,11 @@
     <action name="action-cheque-deposit-slip-defaults"/>
     <action name="action-deposit-slip-defaults"/>
     <action name="action-deposit-slip-company-onchange"/>
+  </action-group>
+
+  <action-group name="action-deposit-slip-group-bank-details-account-onchange">
+    <action name="action-deposit-slip-attrs-payment-voucher-list-hide-column"/>
+    <action name="action-deposit-slip-load-payment-voucher-due-list"/>
   </action-group>
 
   <action-record name="action-cheque-deposit-slip-defaults"
@@ -250,7 +256,7 @@
   <search-filters name="cheque-deposit-slip-filters"
     model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

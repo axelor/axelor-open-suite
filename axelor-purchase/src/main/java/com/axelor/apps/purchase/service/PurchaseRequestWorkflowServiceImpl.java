@@ -19,7 +19,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -34,7 +34,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
         || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_REQUEST_REQUEST_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_REQUEST_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_REQUESTED);
   }
@@ -46,7 +46,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
         || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_REQUESTED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_REQUEST_ACCEPT_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_ACCEPT_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_ACCEPTED);
   }
@@ -58,7 +58,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
         || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_ACCEPTED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_REQUEST_PURCHASE_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_PURCHASE_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_PURCHASED);
   }
@@ -70,7 +70,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
         || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_REQUESTED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_REQUEST_REFUSE_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_REFUSE_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_REFUSED);
   }
@@ -82,7 +82,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
         || purchaseRequest.getStatusSelect() == PurchaseRequestRepository.STATUS_CANCELED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_REQUEST_CANCEL_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_CANCEL_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_CANCELED);
   }
@@ -94,7 +94,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
         || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_CANCELED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_REQUEST_DRAFT_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_DRAFT_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_DRAFT);
   }

@@ -8,6 +8,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,6 +21,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected PaymentVoucherToolService paymentVoucherToolService;
 
   private final int RETURN_SCALE = 2;
 
@@ -29,31 +31,38 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      PaymentVoucherToolService paymentVoucherToolService) {
     this.payVoucherDueElementRepository = payVoucherDueElementRepository;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.paymentVoucherToolService = paymentVoucherToolService;
   }
 
   @Override
   @Transactional
   public PayVoucherDueElement updateDueElementWithFinancialDiscount(
-      PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher) {
+      PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher)
+      throws AxelorException {
     payVoucherDueElement.setPaymentVoucher(paymentVoucher);
     InvoiceTerm invoiceTerm = payVoucherDueElement.getInvoiceTerm();
 
-    if (this.applyFinancialDiscount(invoiceTerm, paymentVoucher)) {
+    if (this.applyFinancialDiscount(invoiceTerm, paymentVoucher)
+        && !paymentVoucherToolService.isMultiCurrency(paymentVoucher)) {
       payVoucherDueElement.setApplyFinancialDiscount(true);
       payVoucherDueElement.setFinancialDiscount(invoiceTerm.getFinancialDiscount());
 
-      BigDecimal ratioPaid =
-          payVoucherDueElement
-              .getInvoiceTerm()
-              .getAmountRemaining()
-              .divide(payVoucherDueElement.getInvoiceTerm().getAmount(), 10, RoundingMode.HALF_UP);
-
+      BigDecimal ratioPaid = BigDecimal.ONE;
+      if (payVoucherDueElement.getInvoiceTerm().getAmount().compareTo(BigDecimal.ZERO) > 0) {
+        ratioPaid =
+            payVoucherDueElement
+                .getInvoiceTerm()
+                .getAmountRemaining()
+                .divide(
+                    payVoucherDueElement.getInvoiceTerm().getAmount(), 10, RoundingMode.HALF_UP);
+      }
       payVoucherDueElement.setFinancialDiscountTotalAmount(
           invoiceTerm
               .getFinancialDiscountAmount()
@@ -84,7 +93,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   }
 
   @Override
-  public PayVoucherDueElement updateAmounts(PayVoucherDueElement payVoucherDueElement) {
+  public PayVoucherDueElement updateAmounts(PayVoucherDueElement payVoucherDueElement)
+      throws AxelorException {
     if (payVoucherDueElement != null && !payVoucherDueElement.getApplyFinancialDiscount()) {
       payVoucherDueElement.setFinancialDiscountAmount(BigDecimal.ZERO);
       payVoucherDueElement.setFinancialDiscountTaxAmount(BigDecimal.ZERO);

@@ -6,7 +6,7 @@
   <grid name="account-management-bank-statement-rule-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" edit-icon="true">
     <field name="bankDetails"/>
-    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="company"
+    <field if="__config__.app.getApp('base')?.getEnableMultiCompany()" name="company"
       form-view="company-form" grid-view="company-grid"/>
     <field name="paymentMode"/>
     <field name="interbankCodeLine"/>
