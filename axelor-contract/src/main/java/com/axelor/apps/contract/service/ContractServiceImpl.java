@@ -528,7 +528,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     BigDecimal inTaxPriceComputed =
         taxService
-            .convertUnitPrice(false, line.getTaxLine(), line.getPrice())
+            .convertUnitPrice(
+                false, line.getTaxLine(), line.getPrice(), AppBaseService.COMPUTATION_SCALING)
             .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(

@@ -26,6 +26,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Singleton
@@ -83,7 +84,8 @@ public class TaxService {
         tax.getName());
   }
 
-  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
+  public BigDecimal convertUnitPrice(
+      Boolean priceIsAti, TaxLine taxLine, BigDecimal price, int scale) {
 
     if (taxLine == null) {
       return price;
@@ -93,8 +95,8 @@ public class TaxService {
       price =
           price.divide(
               taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
-              2,
-              BigDecimal.ROUND_HALF_UP);
+              scale,
+              RoundingMode.HALF_UP);
     } else {
       price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
     }

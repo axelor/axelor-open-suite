@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -127,6 +128,8 @@ public class PurchaseOrderLineController {
 
     Context context = request.getContext();
 
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
     PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
     PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
@@ -194,7 +197,8 @@ public class PurchaseOrderLineController {
               taxService.convertUnitPrice(
                   purchaseOrderLine.getProduct().getInAti(),
                   purchaseOrderLine.getTaxLine(),
-                  (BigDecimal) discounts.get("discountAmount")));
+                  (BigDecimal) discounts.get("discountAmount"),
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("discountAmount", discounts.get("discountAmount"));
         }
@@ -209,12 +213,21 @@ public class PurchaseOrderLineController {
         if (purchaseOrderLine.getProduct().getInAti()) {
           response.setValue("inTaxPrice", price);
           response.setValue(
-              "price", taxService.convertUnitPrice(true, purchaseOrderLine.getTaxLine(), price));
+              "price",
+              taxService.convertUnitPrice(
+                  true,
+                  purchaseOrderLine.getTaxLine(),
+                  price,
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("price", price);
           response.setValue(
               "inTaxPrice",
-              taxService.convertUnitPrice(false, purchaseOrderLine.getTaxLine(), price));
+              taxService.convertUnitPrice(
+                  false,
+                  purchaseOrderLine.getTaxLine(),
+                  price,
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         }
       }
 
@@ -239,7 +252,13 @@ public class PurchaseOrderLineController {
       TaxLine taxLine = purchaseOrderLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(TaxService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -261,7 +280,13 @@ public class PurchaseOrderLineController {
       TaxLine taxLine = purchaseOrderLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice", Beans.get(TaxService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }

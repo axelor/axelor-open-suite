@@ -250,7 +250,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal price =
         (inAti == resultInAti)
             ? purchasePrice
-            : taxService.convertUnitPrice(inAti, taxLine, purchasePrice);
+            : taxService.convertUnitPrice(
+                inAti, taxLine, purchasePrice, AppBaseService.COMPUTATION_SCALING);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
@@ -304,10 +305,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         BigDecimal discountPrice = (BigDecimal) discounts.get("price");
         if (product.getInAti()) {
           inTaxPrice = discountPrice;
-          price = taxService.convertUnitPrice(true, line.getTaxLine(), discountPrice);
+          price =
+              taxService.convertUnitPrice(
+                  true,
+                  line.getTaxLine(),
+                  discountPrice,
+                  appBaseService.getNbDecimalDigitForUnitPrice());
         } else {
           price = discountPrice;
-          inTaxPrice = taxService.convertUnitPrice(false, line.getTaxLine(), discountPrice);
+          inTaxPrice =
+              taxService.convertUnitPrice(
+                  false,
+                  line.getTaxLine(),
+                  discountPrice,
+                  appBaseService.getNbDecimalDigitForUnitPrice());
         }
       }
       if (product.getInAti() != purchaseOrder.getInAti()
@@ -317,7 +328,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             taxService.convertUnitPrice(
                 product.getInAti(),
                 line.getTaxLine(),
-                (BigDecimal) discounts.get("discountAmount")));
+                (BigDecimal) discounts.get("discountAmount"),
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         line.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
@@ -392,7 +404,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                             ? BigDecimal.ONE
                             : product.getManagPriceCoef(),
                         appBaseService.getNbDecimalDigitForUnitPrice(),
-                        RoundingMode.HALF_UP));
+                        RoundingMode.HALF_UP),
+                AppBaseService.COMPUTATION_SCALING);
       } else {
         price =
             ((BigDecimal)
