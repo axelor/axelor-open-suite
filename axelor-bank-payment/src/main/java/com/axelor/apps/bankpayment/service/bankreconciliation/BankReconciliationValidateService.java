@@ -143,7 +143,8 @@ public class BankReconciliationValidateService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            description);
+            description,
+            bankReconciliation.getBankDetails());
 
     MoveLine partnerMoveLine =
         moveLineCreateService.createMoveLine(

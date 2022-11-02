@@ -56,6 +56,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -115,6 +116,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected PaymentModeService paymentModeService;
   protected KilometricService kilometricService;
   protected PeriodRepository periodRepository;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public ExpenseServiceImpl(
@@ -133,7 +135,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService,
-      KilometricService kilometricService) {
+      KilometricService kilometricService,
+      BankDetailsService bankDetailsService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -151,6 +154,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.periodRepository = periodRepository;
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.kilometricService = kilometricService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -373,6 +377,13 @@ public class ExpenseServiceImpl implements ExpenseService {
           expense.getEmployee().getName());
     }
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(
+              company, partner.getInPaymentMode(), partner, null);
+    }
+
     Move move =
         moveCreateService.createMove(
             accountConfigService.getExpenseJournal(accountConfig),
@@ -386,7 +397,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
             origin,
-            description);
+            description,
+            companyBankDetails);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -628,7 +640,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            companyBankDetails);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(

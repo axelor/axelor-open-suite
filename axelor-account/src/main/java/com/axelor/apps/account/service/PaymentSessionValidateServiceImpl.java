@@ -388,11 +388,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getPaymentDate(),
             paymentSession.getPaymentMode(),
             null,
-            partner != null ? partnerService.getDefaultBankDetails(partner) : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
-            "");
+            "",
+            paymentSession.getBankDetails());
 
     move.setPaymentSession(paymentSession);
 
@@ -759,7 +759,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (moveCount > 0) {
       flashMessage.append(
           String.format(
-              I18n.get(AccountExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+                  I18n.get(AccountExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount)
+              + " ");
     }
 
     return flashMessage;

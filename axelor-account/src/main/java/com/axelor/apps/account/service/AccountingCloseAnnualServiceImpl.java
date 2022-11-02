@@ -27,9 +27,11 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -61,6 +63,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   protected ReconcileService reconcileService;
   protected AccountService accountService;
   protected AccountRepository accountRepository;
+  protected BankDetailsService bankDetailsService;
   protected int counter = 0;
 
   @Inject
@@ -72,7 +75,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       ReconcileService reconcileService,
       AccountService accountService,
       AccountRepository accountRepository,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BankDetailsService bankDetailsService) {
 
     this.moveCreateService = moveCreateService;
     this.accountConfigService = accountConfigService;
@@ -82,6 +86,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.accountService = accountService;
     this.accountRepository = accountRepository;
     this.moveLineCreateService = moveLineCreateService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -257,6 +262,12 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       functionalOriginSelect = MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE;
     }
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     Move move =
         moveCreateService.createMove(
             accountConfigService.getReportedBalanceJournal(accountConfig),
@@ -274,7 +285,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             false,
             !isReverse,
             origin,
-            moveDescription);
+            moveDescription,
+            companyBankDetails);
     counter = 0;
 
     this.generateCloseOrOpenAnnualMoveLine(

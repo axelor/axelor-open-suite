@@ -59,4 +59,6 @@ public interface MoveLineControlService {
   void checkJournalCompany(MoveLine moveLine) throws AxelorException;
 
   boolean canReconcile(MoveLine moveLine);
+
+  void checkPartner(MoveLine moveLine) throws AxelorException;
 }

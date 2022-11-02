@@ -261,7 +261,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,
-            moveDescription);
+            moveDescription,
+            move.getCompanyBankDetails());
 
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       this.generateMoveLinesFromMove(

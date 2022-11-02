@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.MoveLineQueryLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.MoveLineQueryService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -114,13 +115,15 @@ public class MoveLineQueryController {
                 .collect(Collectors.toList());
         for (MoveLine moveLine : moveLineSelectedList) {
           for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-            if (!reconcileList.contains(reconcile)) {
+            if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
+                && !reconcileList.contains(reconcile)) {
               reconcileList.add(reconcile);
             }
           }
 
           for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-            if (!reconcileList.contains(reconcile)) {
+            if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
+                && !reconcileList.contains(reconcile)) {
               reconcileList.add(reconcile);
             }
           }

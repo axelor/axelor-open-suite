@@ -54,7 +54,8 @@ public interface MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException;
 
   public Move createMove(
@@ -70,7 +71,8 @@ public interface MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException;
 
   /**
@@ -98,7 +100,8 @@ public interface MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException;
 
   /**
@@ -132,7 +135,8 @@ public interface MoveCreateService {
       boolean ignoreInAccountingOk,
       boolean autoYearClosureMove,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException;
 
   /**
@@ -159,7 +163,8 @@ public interface MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException;
 
   /**
@@ -193,6 +198,7 @@ public interface MoveCreateService {
       String origin,
       String description,
       Invoice invoice,
-      PaymentVoucher paymentVoucher)
+      PaymentVoucher paymentVoucher,
+      BankDetails companyBankDetails)
       throws AxelorException;
 }
