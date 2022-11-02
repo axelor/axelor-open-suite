@@ -103,7 +103,7 @@
   <action-record name="action-analytic-move-line-query-record-default"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
     <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany"/>
-    <field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="toDate" expr="eval:__config__.date"/>
   </action-record>
 
   <action-record name="action-analytic-move-line-query-record-company-onchange"

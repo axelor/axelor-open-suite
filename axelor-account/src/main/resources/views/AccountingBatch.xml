@@ -302,10 +302,8 @@
   <!-- ACTION RECORD -->
   <action-record name="action-accounting-batch-record-on-new"
     model="com.axelor.apps.account.db.AccountingBatch">
-    <field name="createdOn" expr="__config__.app.getTodayDateTime(null)"/>
     <field name="createdOn"
-      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"/>
     <field name="createdOn"
       expr="eval: __config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
@@ -332,12 +330,12 @@
     <field name="moveDate"
       expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
     <field name="moveDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
+      expr="eval: __config__.date.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
       if="__user__.activeCompany != null"/>
     <field name="reverseMoveDate"
       expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"/>
     <field name="reverseMoveDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
+      expr="eval: __config__.date.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
       if="__user__.activeCompany != null"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_ACCOUNTED"/>
     <field name="researchJournal" expr="eval: null"/>

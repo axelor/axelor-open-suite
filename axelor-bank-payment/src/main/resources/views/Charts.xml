@@ -180,8 +180,7 @@
     <domain>self.operationTypeSelect in (1,2) and self.statusSelect in (2,3) and
       self.pfpValidateStatusSelect = 3 AND self.reasonOfRefusalToPay.name =
       :_reasonOfRefusalToPayName AND (:_company is null OR self.company = :_company)</domain>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_chart" expr="eval: _chart"/>
     <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
     <context name="_company" expr="eval: _company"/>
