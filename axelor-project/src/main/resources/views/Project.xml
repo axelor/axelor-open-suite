@@ -31,6 +31,12 @@
     <field name="projectStatus"/>
   </grid>
 
+  <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
+    orderBy="projectStatus, name">
+    <field name="name"/>
+    <field name="code"/>
+  </grid>
+
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility">
@@ -352,7 +358,8 @@
         <field name="isInvoicingPurchases" colSpan="3"/>
         <field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice"
           selection-in="[1,2]" colSpan="6"/>
-        <field name="consolidatePhaseWhenInvoicing" colSpan="4"/>
+        <field name="consolidatePhaseWhenInvoicing"
+          title="Consolidate sub project when invoicing" colSpan="4"/>
         <spacer name="invoicingSequenceSelectSpacer" colSpan="2"/>
         <button name="showInvoicingProjectsBtn" title="Create invoicing project"
           css="btn-custom" icon="fa-file-text-o"
@@ -560,6 +567,9 @@
       <panel name="projectPanel" colSpan="12">
         <field name="parentProject" canEdit="false" form-view="project-form"
           grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
+        <spacer name="childProjectSpacer" colSpan="6"/>
+        <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
+          grid-view="project-child-grid" showIf="isShowPhasesElements"/>
       </panel>
     </panel>
     <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
@@ -631,6 +641,45 @@
 		]]>
     </template>
   </kanban>
+
+  <tree name="project-tree" title="Projects">
+    <column name="name" type="string"/>
+    <column name="code" type="string"/>
+    <column name="parentProject" type="reference"/>
+    <column name="clientPartner" type="reference"/>
+    <column name="assignedTo" type="reference"/>
+    <column name="fromDate" type="date"/>
+    <column name="toDate" type="date"/>
+    <column name="imputable" type="boolean"/>
+    <column name="projectStatus" type="reference"/>
+
+    <node model="com.axelor.apps.project.db.Project" domain="self.parentProject is null"
+      onClick="action-project-view-project">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+      <field name="parentProject" as="parentProject"/>
+      <field name="clientPartner" as="clientPartner"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="fromDate" as="fromDate"/>
+      <field name="toDate" as="toDate"/>
+      <field name="imputable" as="imputable"/>
+      <field name="projectStatus" as="projectStatus"/>
+    </node>
+
+    <node model="com.axelor.apps.project.db.Project" parent="parentProject"
+      onClick="action-project-view-project">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+      <field name="parentProject" as="parentProject"/>
+      <field name="clientPartner" as="clientPartner"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="fromDate" as="fromDate"/>
+      <field name="toDate" as="toDate"/>
+      <field name="imputable" as="imputable"/>
+      <field name="projectStatus" as="projectStatus"/>
+    </node>
+
+  </tree>
 
   <action-view name="action-view-show-project-task-tree" title="Project Task Tree"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -860,6 +909,15 @@
   <action-view name="action-project-open-task-editor" title="Task editor">
     <view name="project/task-editor?id={{id}}" type="html"/>
     <context name="id" expr="eval:id"/>
+  </action-view>
+
+  <action-view name="action-project-view-project" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="form" name="project-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <action-record name="action-project-record-bind-customer-project"

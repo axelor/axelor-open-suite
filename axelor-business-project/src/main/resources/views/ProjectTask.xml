@@ -9,7 +9,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress"/>
+    <field name="progressSelect" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="toInvoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
