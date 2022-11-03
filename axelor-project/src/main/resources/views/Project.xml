@@ -5,11 +5,6 @@
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
-    <toolbar>
-      <button name="projectPlanningBtn" title="Project planning"
-        onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')"
-        if-module="axelor-human-resource"/>
-    </toolbar>
     <menubar>
       <menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="ganttWithUserItem" title="Gantt with user"
@@ -176,40 +171,37 @@
         <button name="importMemberBtn" title="Import all members" showIf="team != null"
           readonlyIf="extendsMembersFromParent" colSpan="3"
           onClick="action-project-method-import-members"/>
-        <panel title="Planning" name="planningPanel" colSpan="12"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-          <field name="totalPlannedHrs" readonly="true">
-            <viewer><![CDATA[
+      </panel>
+      <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
+        if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+        <field name="totalPlannedHrs" readonly="true">
+          <viewer><![CDATA[
 		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
 		       			]]></viewer>
-          </field>
-          <spacer name="totalPlannedHrsSpacer" colSpan="6"/>
-          <button name="planPlanningBtn" title="Plan project" css="btn-custom text-left"
-            onClick="save,action-project-view-project-planning-wizard" hideIf="$popup()" colSpan="3"/>
-          <button name="addMultipleLinesBtn" title="Add multiple lines"
-            css="btn-custom text-left"
-            onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"
-            hideIf="$popup()"/>
-          <button name="addProjectPlanningTimeLineBtn" title="New line"
-            css="btn-custom text-left" colSpan="3"
-            onClick="save,action-project-view-project-planning-time-add-new,save"/>
-          <button name="removeProjectPlanningTimeLineBtn" title="Remove lines"
-            css="btn-custom text-left" colSpan="3"
-            onClick="save,action-project-attrs-project-planning-time-remove,save"/>
-          <field name="$projectPlanningTimeSet" hidden="true" type="many-to-many"
-            widget="TagSelect" title="Planned Time Planning" colSpan="12"
-            target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
-            grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
-          <button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"
-            title="Remove selected lines"
-            onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
-          <button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel"
-            onClick="action-project-attrs-project-planning-time-cancel-remove"/>
-          <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-            action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
-        </panel>
+        </field>
+        <spacer name="totalPlannedHrsSpacer" colSpan="6"/>
+        <button name="addMultipleLinesBtn" title="Add multiple lines"
+          css="btn-custom text-left"
+          onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="4"
+          hideIf="$popup()"/>
+        <button name="addProjectPlanningTimeLineBtn" title="New line"
+          css="btn-custom text-left" colSpan="4"
+          onClick="save,action-project-view-project-planning-time-add-new,save"/>
+        <button name="removeProjectPlanningTimeLineBtn" title="Remove lines"
+          css="btn-custom text-left" colSpan="4"
+          onClick="save,action-project-attrs-project-planning-time-remove,save"/>
+        <field name="$projectPlanningTimeSet" hidden="true" type="many-to-many"
+          widget="TagSelect" title="Planned Time Planning" colSpan="12"
+          target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
+          grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
+        <button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"
+          title="Remove selected lines"
+          onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
+        <button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel"
+          onClick="action-project-attrs-project-planning-time-cancel-remove"/>
+        <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+          action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
       </panel>
-
       <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
         <field name="timeSpent" title="Time Spent" readonly="true" colSpan="3"/>
@@ -477,7 +469,6 @@
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
           if-module="axelor-human-resource"/>
-        <field name="excludePlanning" if-module="axelor-business-project"/>
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
@@ -981,15 +972,6 @@
   <action-validate name="action-wizard-validate-project-select">
     <error message="Please select project" if="eval: projectSet == null || projectSet  == 0"/>
   </action-validate>
-
-  <action-view name="action-project-view-project-planning-wizard"
-    title="Project planning" model="com.axelor.apps.base.db.Wizard">
-    <view type="form" name="project-planning-user-select-wizard-form"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="popup" value="reload"/>
-    <context name="_project" expr="eval:__this__"/>
-  </action-view>
 
   <action-attrs name="action-business-support-attrs-project-default">
     <attribute name="hidden" for="project" expr="eval:true"
