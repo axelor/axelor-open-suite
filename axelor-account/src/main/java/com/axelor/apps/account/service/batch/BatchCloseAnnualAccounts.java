@@ -411,7 +411,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             false,
             false,
             null,
-            description);
+            description,
+            accountingBatch.getBankDetails());
+
     Account accountCredit = null;
     Account accountDebit = null;
     if (amount.compareTo(BigDecimal.ZERO) < 0) {

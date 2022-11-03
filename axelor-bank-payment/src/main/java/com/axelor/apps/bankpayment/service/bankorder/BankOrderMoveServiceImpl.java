@@ -153,7 +153,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankOrderLine.getReceiverReference(),
-            bankOrderLine.getReceiverLabel());
+            bankOrderLine.getReceiverLabel(),
+            bankOrderLine.getBankOrder().getSenderBankDetails());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -209,7 +210,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankOrderLine.getReceiverReference(),
-            bankOrderLine.getReceiverLabel());
+            bankOrderLine.getReceiverLabel(),
+            bankOrderLine.getBankOrder().getSenderBankDetails());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(

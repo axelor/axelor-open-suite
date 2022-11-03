@@ -86,8 +86,7 @@
     <view type="form" name="invoice-form"/>
     <domain>self.amountRemaining &gt; 0 AND self.dueDate &lt; :todayDate AND self.statusSelect
       = 3</domain>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 </object-views>

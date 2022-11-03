@@ -115,7 +115,7 @@
 10120;2;2;"Autres charges";"autcha";1;;;"651%|653%|654%|658%";101;19
 10121;1;3;"Charges d'exploitation (II)";"chadex";;"rules[""acdem""] + rules[""vdsdm""] + rules[""acdemp""] + rules[""vadest""] + rules[""auchex""] + rules[""iteva""] + rules[""saetr""] + rules[""chasoc""] + rules[""doaad""] + rules[""doaupr""] + rules[""autcha""]";;;101;20
 10122;3;1;;;;;;;101;21
-10123;1;3;"RESULTAT D’EXPLOITATION (I-II)";"resdex";;"rules[""prodex""] – rules[""chadex""]";;;101;22
+10123;1;3;"RESULTAT D’EXPLOITATION (I-II)";"resdex";;"rules[""prodex""] - rules[""chadex""]";;;101;22
 10124;3;1;;;;;;;101;23
 10125;2;2;"Bénéfice attribué ou perte transférée (III)";"baopt";2;;;"755%";101;24
 10126;2;2;"Perte supportée ou bénéfice transféré (IV)";"psobt";1;;;"655%";101;25
@@ -149,7 +149,7 @@
 10154;2;2;"Dotations aux amortissements, dépréciations, provisions";"daadp2";1;;;"687%";101;53
 10155;1;3;"Charges exceptionnelles (VIII)";"chaexc";;"rules[""cesodg""] + rules[""cesodc""] + rules[""daadp2""]";;;101;54
 10156;3;1;;;;;;;101;55
-10157;1;3;"RESULTAT EXCEPTIONNEL (VII-VIII)";"resexc";;"rules[""proexc""] – rules[""chaexc""]";;;101;56
+10157;1;3;"RESULTAT EXCEPTIONNEL (VII-VIII)";"resexc";;"rules[""proexc""] - rules[""chaexc""]";;;101;56
 10158;3;1;;;;;;;101;57
 10159;2;2;"Participation des salariés aux résultats (IX)";"padesa";2;;;"691%";101;58
 10160;3;1;;;;;;;101;59
@@ -158,7 +158,7 @@
 10163;1;3;"TOTAL DES PRODUITS (I+III+V+VII)";"totprod";;"rules[""prodex""] + rules[""baopt""] + rules[""profin""] + rules[""proexc""]";;;101;62
 10164;1;3;"TOTAL DES CHARGES (II+IV+VI+VIII+IX+X)";"totcha";;"rules[""chadex""] + rules[""psobt""] + rules[""chafin""] + rules[""chaexc""]";;;101;63
 10165;3;1;;;;;;;101;64
-10166;1;3;"RESULTAT NET COMPTABLE (Total Produits – Total Charges)";"resntcpt";;"rules[""totprod""] – rules[""totcha""]";;;101;65
+10166;1;3;"RESULTAT NET COMPTABLE (Total Produits – Total Charges)";"resntcpt";;"rules[""totprod""] - rules[""totcha""]";;;101;65
 10001;2;2;"Ventes de marchandises (707)";"707-ventesDeMarchandises";2;;;"707%";102;0
 10002;2;2;"Rabais, remise, ristourne sur ventes de marchandises (7097)";"7097-RRR-ventes-de-marchandises";1;;;"7097%";102;1
 10003;1;3;"Ventes de marchandises (I)";"ventes-marchandises";;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;102;2

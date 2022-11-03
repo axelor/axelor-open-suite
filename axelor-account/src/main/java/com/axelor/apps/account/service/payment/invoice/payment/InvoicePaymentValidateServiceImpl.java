@@ -240,7 +240,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             getOriginFromInvoicePayment(invoicePayment),
-            description);
+            description,
+            invoice.getCompanyBankDetails());
 
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());

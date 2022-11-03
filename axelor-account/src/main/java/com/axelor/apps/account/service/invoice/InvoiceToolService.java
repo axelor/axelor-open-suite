@@ -301,7 +301,6 @@ public class InvoiceToolService {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
-    copy.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     copy.setDecisionPfpTakenDate(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
@@ -317,8 +316,7 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingReason(null);
     copy.setBillOfExchangeBlockingToDate(null);
     copy.setBillOfExchangeBlockingByUser(null);
-
-    InvoiceToolService.setPfpStatus(copy);
+    setPfpStatus(copy);
   }
 
   /**
