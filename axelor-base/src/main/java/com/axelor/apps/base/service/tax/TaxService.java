@@ -98,7 +98,10 @@ public class TaxService {
               scale,
               RoundingMode.HALF_UP);
     } else {
-      price = price.add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))));
+      price =
+          price
+              .add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))))
+              .setScale(scale, RoundingMode.HALF_UP);
     }
     return price;
   }
