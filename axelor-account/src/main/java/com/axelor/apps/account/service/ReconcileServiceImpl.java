@@ -482,7 +482,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")) {
+    if ((purchaseMove.getJournal().getJournalType() != null
+            && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH"))
+        || purchaseMove.getPartner() == null) {
       return;
     }
     paymentMoveLineDistributionService.generatePaymentMoveLineDistributionList(
