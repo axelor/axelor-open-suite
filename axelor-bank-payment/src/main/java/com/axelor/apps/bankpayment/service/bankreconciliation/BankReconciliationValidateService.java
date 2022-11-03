@@ -88,6 +88,7 @@ public class BankReconciliationValidateService {
             && bankReconciliationLine.getAccount() != null) {
           this.validate(bankReconciliationLine);
         } else if (bankReconciliationLine.getMoveLine() != null) {
+          bankReconciliationLine.setIsPosted(true);
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
@@ -254,6 +255,7 @@ public class BankReconciliationValidateService {
           bankReconciliation.addBankReconciliationLineListItem(bankReconciliationLine);
         }
         if (isUnderCorrection) {
+          bankReconciliationLine.setIsPosted(true);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));

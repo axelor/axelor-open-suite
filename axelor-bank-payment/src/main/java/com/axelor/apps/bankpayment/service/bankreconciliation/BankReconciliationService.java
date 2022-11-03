@@ -885,6 +885,7 @@ public class BankReconciliationService {
                 bankReconciliation.getStatusSelect()
                     == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
             if (isUnderCorrection) {
+              bankReconciliationLine.setIsPosted(true);
               bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
             }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
@@ -954,6 +955,8 @@ public class BankReconciliationService {
             bankStatementLine.getAmountRemainToReconcile().add(moveLine.getBankReconciledAmount()));
       }
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
+      moveLineRepository.save(moveLine);
+      bankReconciliationLine.setIsPosted(false);
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
@@ -1216,6 +1219,7 @@ public class BankReconciliationService {
         bankReconciliation.getStatusSelect()
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
+      bankReconciliationLine.setIsPosted(true);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;

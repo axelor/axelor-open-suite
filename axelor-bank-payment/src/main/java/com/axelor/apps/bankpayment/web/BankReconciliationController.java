@@ -203,8 +203,10 @@ public class BankReconciliationController {
   public void validate(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      Beans.get(BankReconciliationValidateService.class)
-          .validate(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
+      bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
+      Beans.get(BankReconciliationValidateService.class).validate(bankReconciliation);
+      Beans.get(BankReconciliationService.class).computeBalances(bankReconciliation);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
