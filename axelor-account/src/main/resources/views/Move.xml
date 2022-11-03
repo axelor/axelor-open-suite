@@ -89,12 +89,11 @@
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-account-move-method-filter-partner"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
+            grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod"/>
