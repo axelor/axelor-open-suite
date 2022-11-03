@@ -376,12 +376,12 @@ public class MoveLineController {
                 .getTaxLine(move, moveLine, accountingAccount);
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (fiscalPosition != null) {
+        if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
+          response.setValue("taxLine", taxLine);
         }
 
-        response.setValue("taxLine", taxLine);
         if (taxEquiv != null) {
           response.setValue("taxEquiv", taxEquiv);
         }
