@@ -255,18 +255,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) {
-    BigDecimal companyAmount = invoiceTerm.getAmount();
-    BigDecimal companyAmountRemaining = invoiceTerm.getAmountRemaining();
+    BigDecimal invoiceTermAmount = invoiceTerm.getAmount();
+    BigDecimal invoiceTermAmountRemaining = invoiceTerm.getAmountRemaining();
+    BigDecimal companyAmount = invoiceTermAmount;
+    BigDecimal companyAmountRemaining = invoiceTermAmountRemaining;
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    Invoice invoice = invoiceTerm.getInvoice();
 
-    if (this.isMultiCurrency(invoiceTerm)) {
+    if (invoiceTermAmount.signum() != 0 && this.isMultiCurrency(invoiceTerm)) {
       BigDecimal companyTotal =
-          invoiceTerm.getInvoice() != null
-              ? invoiceTerm.getInvoice().getCompanyInTaxTotal()
-              : invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+          invoice != null
+              ? invoice.getCompanyInTaxTotal()
+              : moveLine.getDebit().max(moveLine.getCredit());
       BigDecimal ratioPaid =
-          invoiceTerm
-              .getAmountRemaining()
-              .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+          invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
 
       companyAmount =
           companyTotal
