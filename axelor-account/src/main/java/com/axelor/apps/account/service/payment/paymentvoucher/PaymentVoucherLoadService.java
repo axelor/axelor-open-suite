@@ -322,8 +322,6 @@ public class PaymentVoucherLoadService {
   }
 
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
-    paymentVoucher.getPayVoucherElementToPayList().clear();
-
     paymentVoucher.setPayVoucherDueElementList(searchDueElements(paymentVoucher));
 
     this.computeFinancialDiscount(paymentVoucher);
