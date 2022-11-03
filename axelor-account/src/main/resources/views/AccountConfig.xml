@@ -11,8 +11,9 @@
 
   <form name="account-config-form" title="Account configuration"
     model="com.axelor.apps.account.db.AccountConfig"
-    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
-    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
+    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new,action-account-config-attrs-set-required-fields"
+    onSave="action-account-config-group-on-save"
+    onLoad="action-attrs-account-config-set-is-can-new,action-account-config-attrs-set-required-fields"
     width="large">
 
     <panel name="mainPanel">
@@ -88,15 +89,11 @@
           <panel name="discountPanel" title="Discount Accounts" colSpan="12"
             if="__config__.app.getApp('account').getManageFinancialDiscount()">
             <field name="purchFinancialDiscountAccount"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"
               domain="self.statusSelect = 1 AND self.company = :company"/>
             <field name="saleFinancialDiscountAccount"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"
               domain="self.statusSelect = 1 AND self.company = :company"/>
-            <field name="purchFinancialDiscountTax"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
-            <field name="saleFinancialDiscountTax"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+            <field name="purchFinancialDiscountTax"/>
+            <field name="saleFinancialDiscountTax"/>
           </panel>
           <panel title="AccountConfig.Employees" colSpan="12">
             <field name="employeeAccount"
@@ -512,4 +509,10 @@
     <call class="com.axelor.apps.account.web.AccountConfigController"
       method="checkChangesInAnalytic"/>
   </action-method>
+
+  <action-attrs name="action-account-config-attrs-set-required-fields">
+    <attribute name="required"
+      for="purchFinancialDiscountAccount,saleFinancialDiscountAccount,purchFinancialDiscountTax,saleFinancialDiscountTax"
+      expr="eval: __config__.app.getApp('account')?.manageFinancialDiscount"/>
+  </action-attrs>
 </object-views>
