@@ -241,8 +241,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         moveLineItr.remove();
         continue;
       }
-
-      if (taxLine != null && !BigDecimal.ZERO.equals(taxLine.getValue())) {
+      if (taxLine != null && taxLine.getValue().signum() > 0) {
 
         String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
