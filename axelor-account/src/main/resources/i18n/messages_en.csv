@@ -1450,6 +1450,8 @@
 "Email sent",,,
 "Email template for invoice and payment schedule rejections",,,
 "Email to use",,,
+"Email(s) not sent",,,
+"Email(s) sent",,,
 "Emails",,,
 "Employee",,,
 "Employee account",,,

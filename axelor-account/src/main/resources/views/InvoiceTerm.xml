@@ -146,19 +146,7 @@
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" orderBy="moveLine.partner.name,dueDate"
     groupBy="moveLine.partner" edit-icon="true">
-    <field name="paymentSession.name" hidden="true"/>
-    <field name="$statusSelectPaymentSession" hidden="true"/>
-    <field name="moveLine.partner"/>
-    <field name="moveLine.move.reference"/>
-    <field name="invoice"/>
-    <field name="moveLine.origin"/>
-    <field name="dueDate"/>
-    <field name="moveLine.move.statusSelect"/>
-    <field name="isSelectedOnPaymentSession"/>
-    <field name="paymentAmount"/>
-    <field name="applyFinancialDiscountOnPaymentSession"/>
-    <field name="financialDiscountAmount"/>
-    <field name="amountPaid" aggregate="sum"/>
+    <hilite color="primary" if="isSelectedOnPaymentSession"/>
     <button name="selectBtn" title="Select"
       onClick="action-invoice-term-method-select-terms-btn,action-invoice-term-method-compute-total-payment-session"
       icon="fa-plus-circle"
@@ -175,7 +163,19 @@
       icon="fa-user-times"
       onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
+    <field name="paymentSession.name" hidden="true"/>
+    <field name="$statusSelectPaymentSession" hidden="true"/>
+    <field name="moveLine.partner"/>
+    <field name="moveLine.move.reference"/>
+    <field name="invoice"/>
+    <field name="moveLine.origin"/>
+    <field name="dueDate"/>
+    <field name="paymentAmount"/>
+    <field name="applyFinancialDiscountOnPaymentSession"/>
+    <field name="financialDiscountAmount"/>
+    <field name="amountPaid" aggregate="sum"/>
     <field name="moveLine.partner.name" hidden="true"/>
+    <field name="isSelectedOnPaymentSession" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-debt-recovery-grid" model="com.axelor.apps.account.db.InvoiceTerm"
