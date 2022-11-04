@@ -37,7 +37,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
       Invoice copy = super.copy(entity, deep);
 
       InvoiceToolService.resetInvoiceStatusOnCopy(copy);
-
       return copy;
     } catch (Exception e) {
       throw new PersistenceException(e);

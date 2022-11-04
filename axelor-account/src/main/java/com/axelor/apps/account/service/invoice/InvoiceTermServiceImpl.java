@@ -255,18 +255,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) {
-    BigDecimal companyAmount = invoiceTerm.getAmount();
-    BigDecimal companyAmountRemaining = invoiceTerm.getAmountRemaining();
+    BigDecimal invoiceTermAmount = invoiceTerm.getAmount();
+    BigDecimal invoiceTermAmountRemaining = invoiceTerm.getAmountRemaining();
+    BigDecimal companyAmount = invoiceTermAmount;
+    BigDecimal companyAmountRemaining = invoiceTermAmountRemaining;
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    Invoice invoice = invoiceTerm.getInvoice();
 
-    if (this.isMultiCurrency(invoiceTerm)) {
+    if (invoiceTermAmount.signum() != 0 && this.isMultiCurrency(invoiceTerm)) {
       BigDecimal companyTotal =
-          invoiceTerm.getInvoice() != null
-              ? invoiceTerm.getInvoice().getCompanyInTaxTotal()
-              : invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+          invoice != null
+              ? invoice.getCompanyInTaxTotal()
+              : moveLine.getDebit().max(moveLine.getCredit());
       BigDecimal ratioPaid =
-          invoiceTerm
-              .getAmountRemaining()
-              .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+          invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
 
       companyAmount =
           companyTotal
@@ -780,6 +782,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .all()
             .filter(retrieveEligibleTermsQuery())
             .bind("company", paymentSession.getCompany())
+            .bind("accountedStatus", MoveRepository.STATUS_ACCOUNTED)
+            .bind("daybookStatus", MoveRepository.STATUS_DAYBOOK)
             .bind("paymentMode", paymentSession.getPaymentMode())
             .bind(
                 "paymentDatePlusMargin",
@@ -816,6 +820,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected String retrieveEligibleTermsQuery() {
     String generalCondition =
         "self.moveLine.move.company = :company "
+            + " AND (self.moveLine.move.statusSelect = :accountedStatus"
+            + " OR (self.moveLine.move.company.accountConfig.retrieveDaybookMovesInPaymentSession IS TRUE"
+            + " AND self.moveLine.move.company.accountConfig.accountingDaybook IS TRUE"
+            + " AND self.moveLine.move.statusSelect = :daybookStatus))"
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "

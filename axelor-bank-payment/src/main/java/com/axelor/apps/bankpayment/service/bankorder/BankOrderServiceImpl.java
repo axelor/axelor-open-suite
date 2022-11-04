@@ -77,6 +77,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -328,6 +329,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         // TODO other cases
       default:
         bankOrderMoveService.generateMoves(bankOrder);
+        bankOrder.setAreMovesGenerated(true);
         validatePayment(bankOrder);
     }
 
@@ -338,6 +340,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(BankOrder bankOrder)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    checkMultiDate(bankOrder);
     checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
 
     if (bankOrder.getGeneratedMetaFile() == null) {
@@ -367,8 +370,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
-      this.generateMoves(bankOrder);
       bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      this.generateMoves(bankOrder);
     }
   }
 
@@ -388,10 +391,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      bankOrder = this.generateMoves(bankOrder);
+    if (!bankOrder.getAreMovesGenerated()
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
       bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrderRepo.save(bankOrder);
@@ -414,7 +418,9 @@ public class BankOrderServiceImpl implements BankOrderService {
             I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
       }
 
-      sendBankOrderFile(bankOrder);
+      if (!bankOrder.getHasBeenSentToBank()) {
+        sendBankOrderFile(bankOrder);
+      }
     }
     realizeBankOrder(bankOrder);
   }
@@ -437,15 +443,22 @@ public class BankOrderServiceImpl implements BankOrderService {
     dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 
     sendFile(bankOrder, dataFileToSend, signatureFileToSend);
+    markAsSent(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void markAsSent(BankOrder bankOrder) {
+    bankOrder.setHasBeenSentToBank(true);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
-      bankOrder = this.generateMoves(bankOrder);
+    if (!bankOrder.getAreMovesGenerated()
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
       bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
@@ -572,6 +585,26 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     return candidateBankDetails;
+  }
+
+  @Override
+  public void checkMultiDate(BankOrder bankOrder) throws AxelorException {
+    if (!bankOrder.getIsMultiDate() && Objects.isNull(bankOrder.getBankOrderDate())) {
+      throw new AxelorException(
+          bankOrder,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NO_BANK_ORDER_DATE_NO_MULTI_DATE),
+          bankOrder.getBankOrderSeq());
+
+    } else if (bankOrder.getIsMultiDate()
+        && bankOrder.getBankOrderLineList().stream()
+            .anyMatch(bankOrderLine -> Objects.isNull(bankOrderLine.getBankOrderDate()))) {
+      throw new AxelorException(
+          bankOrder,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NO_BANK_ORDER_DATE_MULTI_DATE),
+          bankOrder.getBankOrderSeq());
+    }
   }
 
   @Override
@@ -770,7 +803,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       date = appBaseService.getTodayDate(bankOrder.getSenderCompany());
     }
 
-    bankOrder.setBankOrderSeq((sequenceService.getSequenceNumber(sequence, date)));
+    bankOrder.setBankOrderSeq(
+        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq")));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;

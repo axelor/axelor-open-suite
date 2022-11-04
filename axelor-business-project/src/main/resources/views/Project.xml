@@ -19,6 +19,18 @@
     <field name="clientPartner"/>
   </grid>
 
+  <form id="business-project-project-form" name="project-form" title="Project"
+    model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-business-project-project-group-on-new"/>
+    </extend>
+  </form>
+
+  <action-group name="action-business-project-project-group-on-new">
+    <action name="action-project-group-on-new-project"/>
+    <action name="action-business-project-project-attrs-defaults"/>
+  </action-group>
+
   <action-method name="action-project-method-generate-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="generateQuotation"/>
@@ -51,8 +63,8 @@
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
   </action-attrs>
 
-  <action-attrs id="business-project-action-project-defaults"
-    name="action-project-defaults" model="com.axelor.apps.project.db.Project">
+  <action-attrs name="action-business-project-project-attrs-defaults"
+    model="com.axelor.apps.project.db.Project">
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>

@@ -221,4 +221,21 @@ public interface StockMoveService {
   void updateStocks(StockMove stockMove) throws AxelorException;
 
   void updateProductNetMass(StockMove stockMove) throws AxelorException;
+
+  /**
+   * Update locations from a planned stock move, by copying stock move lines in the stock move then
+   * updating locations.
+   *
+   * @param stockMove
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @param initialStatus the initial status of the stock move.
+   * @throws AxelorException
+   */
+  void updateLocations(
+      StockMove stockMove,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int initialStatus)
+      throws AxelorException;
 }

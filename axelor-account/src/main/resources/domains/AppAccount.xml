@@ -28,7 +28,8 @@
 
     <boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice"
       default="true"/>
-    <boolean name="paymentVouchersOnInvoice"/>
+    <boolean name="paymentVouchersOnSupplierInvoice"/>
+    <boolean name="paymentVouchersOnCustomerInvoice"/>
 
     <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
     <boolean name="manageFinancialDiscount" title="Manage financial discount"
@@ -66,7 +67,8 @@
       <field name="manageFactors" on="UPDATE"/>
       <field name="partnerBalConfigSelect" on="UPDATE"/>
       <field name="manageAdvancePaymentInvoice" on="UPDATE"/>
-      <field name="paymentVouchersOnInvoice" on="UPDATE"/>
+      <field name="paymentVouchersOnSupplierInvoice" on="UPDATE"/>
+      <field name="paymentVouchersOnCustomerInvoice" on="UPDATE"/>
       <field name="manageFinancialDiscount" on="UPDATE"/>
     </track>
   </entity>

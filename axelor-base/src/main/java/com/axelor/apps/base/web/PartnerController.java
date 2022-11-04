@@ -79,7 +79,9 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     if (partner.getPartnerSeq() == null) {
-      String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
       if (seq == null)
         throw new AxelorException(
             partner,

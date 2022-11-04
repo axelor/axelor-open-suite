@@ -162,7 +162,8 @@
       <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
         <field name="bankOrderSeq" css="label-bold bold" colSpan="12" readonly="true"/>
         <field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true"
-          hideIf="isMultiDate" readonlyIf="technicalOriginSelect == 1"/>
+          hideIf="isMultiDate"
+          readonlyIf="technicalOriginSelect == 1 &amp;&amp; bankOrderDate != null"/>
         <field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="paymentMode" css="label-bold bold" colSpan="6" canView="false"
@@ -250,7 +251,6 @@
       <field name="senderLabel"/>
     </panel>
     <panel name="bankOrderLinesPanel" title="Bank Order Lines"
-      readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1"
       showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
       <field name="bankOrderLineList" showTitle="false" colSpan="12"
         canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10">
@@ -258,8 +258,10 @@
           onNew="action-bank-order-line-onnew">
           <field name="sequence" css="label-bold bold" readonly="true"
             hideIf="sequence == null"/>
-          <field name="bankOrderDate" hidden="true"/>
-          <panel name="receiverCompanyPanel" itemSpan="12">
+          <field name="bankOrderDate" hidden="true"
+            readonlyIf="(bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1) &amp;&amp; bankOrderDate != null"/>
+          <panel name="receiverCompanyPanel" itemSpan="12"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1">
             <field name="receiverCompany" canEdit="false" form-view="company-form"
               grid-view="company-grid" css="label-bold bold"
               onChange="action-bank-order-line-group-receiver-company-onchange"/>
@@ -268,7 +270,8 @@
               onSelect="action-bank-order-line-attrs-partner-domain"
               onChange="action-bank-order-line-group-partner-onchange"/>
           </panel>
-          <panel name="receiverBankDetailsPanel" itemSpan="12">
+          <panel name="receiverBankDetailsPanel" itemSpan="12"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1">
             <field name="receiverBankDetails" showIf="receiverCompany" canView="false"
               onSelect="action-bank-order-line-method-set-bank-details-domain" required="true"
               onChange="action-bank-order-line-record-receiver-bank-details-onchange"
@@ -279,20 +282,26 @@
               form-view="bank-details-form" grid-view="bank-details-bank-order-grid"/>
           </panel>
           <field name="bankOrderAmount" colSpan="4" min="0.00" required="true"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"
             onChange="action-bank-order-line-method-compute-company-currency-amount"/>
-          <panel name="bankOrderCurrencyPanel" stacked="true" colSpan="2" itemSpan="12">
+          <panel name="bankOrderCurrencyPanel" stacked="true" colSpan="2" itemSpan="12"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1">
             <field name="bankOrder.bankOrderCurrency" canView="false" hidden="true"/>
             <field name="bankOrderCurrency" canView="false" hidden="true"
               onChange="action-bank-order-line-method-compute-company-currency-amount"/>
           </panel>
-          <panel name="companyCurrencyPanel">
+          <panel name="companyCurrencyPanel"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1">
             <field name="companyCurrencyAmount" canView="false" colSpan="8" readonly="true"/>
             <field name="bankOrder.companyCurrency" canView="false" colSpan="4"/>
           </panel>
-          <field name="receiverReference"/>
-          <field name="receiverLabel"/>
+          <field name="receiverReference"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"/>
+          <field name="receiverLabel"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"/>
 
           <panel name="additionnalInformationPanel" title="Additional information"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"
             colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
             <field name="bankOrderEconomicReason" canEdit="false"/>
             <field name="receiverCountry" canView="false" colSpan="4"/>
@@ -303,6 +312,7 @@
           </panel>
 
           <panel name="furtherInformationPanel" title="Further information" colSpan="12"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"
             canCollapse="true" collapseIf="true" hidden="true">
             <panel name="paymentReasonPanel" title="Payment Reason" css="label-small"
               itemSpan="12">
@@ -313,6 +323,7 @@
               <field name="paymentReasonLine4" showTitle="false"/>
             </panel>
             <panel name="specialInstructionPanel" title="Special instructions" css="small"
+              readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"
               itemSpan="12">
               <field name="specialInstructionsLine1" showTitle="false"/>
               <field name="specialInstructionsLine2" showTitle="false"/>
@@ -326,6 +337,7 @@
               readonly="true"/>
           </panel>
           <panel name="accountingInfoPanel" title="Accounting information" colSpan="12"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"
             hidden="true"
             showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)">
             <field name="senderMove" form-view="move-form" grid-view="move-grid"/>
@@ -334,6 +346,7 @@
           </panel>
 
           <panel name="rejectInfoPanel" title="Reject information" colSpan="12" hidden="true"
+            readonlyIf="bankOrder.statusSelect &gt;= 2 || bankOrder.technicalOriginSelect == 1"
             showIf="isRejected">
             <field name="rejectDate"/>
             <field name="rejectMove" hidden="true" showIf="isRejected == true"
@@ -347,6 +360,8 @@
           <field name="bankOrder.isMultiDate" hidden="true"/>
           <field name="bankOrder.isMultiCurrency" hidden="true"/>
           <field name="counter" hidden="true"/>
+          <field name="bankOrder.statusSelect" hidden="true"/>
+          <field name="bankOrder.technicalOriginSelect" hidden="true"/>
         </editor>
       </field>
     </panel>
@@ -459,6 +474,26 @@
         </field>
       </panel>
     </panel>
+
+    <panel name="otherTagsPanel" sidebar="true"
+      showIf="hasBeenSentToBank || areMovesGenerated" itemSpan="12" readonly="true">
+      <field name="ptherTags" showTitle="false" readonlyIf="true">
+        <viewer depends="areMovesGenerated"><![CDATA[
+          <h4 class="text-left">
+            <span class="label label-success" ng-show="record.areMovesGenerated" x-translate>Moves generated</span>
+          </h4>
+        ]]></viewer>
+      </field>
+
+      <field name="patherTags" showTitle="false" readonlyIf="true">
+        <viewer depends="hasBeenSentToBank"><![CDATA[
+          <h4 class="text-left">
+            <span class="label label-success" ng-show="record.hasBeenSentToBank" x-translate>Sent to bank</span>
+          </h4>
+        ]]></viewer>
+      </field>
+    </panel>
+
     <panel name="actionPanel" title="Action" itemSpan="12" sidebar="true"
       hideIf="statusSelect == 4 || statusSelect == 5">
       <button name="confirmBtn" title="Confirm" showIf="statusSelect == 1"
@@ -527,11 +562,14 @@
   </action-group>
 
   <action-group name="action-bank-order-group-confirm">
+    <action name="action-bank-order-record-update-bank-order-parameter"/>
     <action name="save"/>
     <action name="action-bank-order-method-confirm"/>
   </action-group>
 
   <action-group name="action-bank-order-group-on-load">
+    <action name="action-bank-order-record-update-bank-order-parameter"
+      if="statusSelect == 1"/>
     <action name="action-bank-order-attrs-show-partner-or-receiver-company"/>
     <action name="action-bank-order-attrs-on-load"/>
   </action-group>
@@ -673,8 +711,7 @@
     <field name="orderTypeSelect" expr="eval: _orderTypeSelect" if="_orderTypeSelect != null"/>
     <field name="partnerTypeSelect" expr="eval: _partnerTypeSelect"
       if="_partnerTypeSelect != null"/>
-    <field name="bankOrderDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="bankOrderDate" expr="eval:__config__.date"/>
     <field name="senderCompany" expr="eval:__user__.activeCompany"/>
   </action-record>
 

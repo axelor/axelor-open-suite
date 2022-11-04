@@ -59,7 +59,10 @@ public class RawMaterialRequirementServiceImpl implements RawMaterialRequirement
     String seq =
         Beans.get(SequenceService.class)
             .getSequenceNumber(
-                SequenceRepository.RAW_MATERIAL_REQUIREMENT, rawMaterialRequirement.getCompany());
+                SequenceRepository.RAW_MATERIAL_REQUIREMENT,
+                rawMaterialRequirement.getCompany(),
+                RawMaterialRequirement.class,
+                "code");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

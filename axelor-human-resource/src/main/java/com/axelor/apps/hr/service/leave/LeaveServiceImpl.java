@@ -40,6 +40,7 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -495,6 +496,11 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException {
+    User user = leave.getEmployee().getUser();
+    if (user == null) {
+      return null;
+    }
+
     Employee employee = leave.getEmployee();
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
@@ -520,7 +526,7 @@ public class LeaveServiceImpl implements LeaveService {
         icalendarService.createEvent(
             fromDateTime,
             toDateTime,
-            leave.getEmployee().getUser(),
+            user,
             leave.getComments(),
             4,
             leave.getLeaveReason().getName() + " " + leave.getEmployee().getName());
@@ -934,12 +940,10 @@ public class LeaveServiceImpl implements LeaveService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.user = :user")
+                "self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.employee = :employee")
             .bind("statusSelect", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
             .bind("leaveReason", leaveLine.getLeaveReason())
-            .bind(
-                "user",
-                Optional.ofNullable(leaveLine.getEmployee()).map(Employee::getUser).orElse(null))
+            .bind("employee", leaveLine.getEmployee())
             .fetch();
 
     BigDecimal daysToValidate = BigDecimal.ZERO;
@@ -953,6 +957,20 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     leaveLine.setDaysToValidate(daysToValidate);
+  }
+
+  @Override
+  public String getLeaveCalendarDomain(User user) {
+
+    StringBuilder domain = new StringBuilder("self.statusSelect = 3");
+    Employee employee = user.getEmployee();
+
+    if (employee == null || !employee.getHrManager()) {
+      domain.append(
+          " AND (self.employee.managerUser.id = :userId OR self.employee.user.id = :userId)");
+    }
+
+    return domain.toString();
   }
 
   @Override

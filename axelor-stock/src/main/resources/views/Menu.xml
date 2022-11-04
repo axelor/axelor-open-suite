@@ -383,14 +383,14 @@
   <!-- ADMINISTRATION -->
 
 
-  <!-- <menuitem name="admin-root-batch-stock" parent="admin-root-batch" -->
-  <!-- title="Stock batches" action="admin.root.batch.stock" /> -->
+  <menuitem name="admin-root-batch-stock" parent="admin-root-batch" title="Stock batches"
+    action="admin.root.batch.stock"/>
 
-  <!-- <action-view name="admin.root.batch.stock" title="Stock batches" -->
-  <!-- model="com.axelor.apps.stock.db.StockBatch" > -->
-  <!-- <view type="grid" name="stock-batch-grid"/> -->
-  <!-- <view type="form" name="stock-batch-form"/> -->
-  <!-- </action-view> -->
+  <action-view name="admin.root.batch.stock" title="Stock batches"
+    model="com.axelor.apps.stock.db.StockBatch">
+    <view type="grid" name="stock-batch-grid"/>
+    <view type="form" name="stock-batch-form"/>
+  </action-view>
 
   <menuitem name="menu-stock-dashboard-1" parent="stock-root-report" title="General"
     action="stock.dashboard.one.view"/>

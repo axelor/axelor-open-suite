@@ -95,8 +95,7 @@
   <action-view name="dashlet.customers.with.first.sale.order"
     model="com.axelor.apps.base.db.Partner" title="New customers with first sale order">
     <view type="chart" name="chart.customers.with.first.sale.order"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.batch.batch.history" title="Batches"

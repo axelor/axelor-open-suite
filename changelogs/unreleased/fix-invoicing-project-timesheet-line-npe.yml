@@ -1,0 +1,3 @@
+---
+title: "InvoicingProject : Fix npe when timesheetLine.product is empty"
+type: fix

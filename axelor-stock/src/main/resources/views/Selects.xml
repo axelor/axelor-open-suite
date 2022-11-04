@@ -162,4 +162,8 @@
     <option value="2">Stock location content</option>
   </selection>
 
+  <selection name="stock.batch.action.select">
+    <option value="1">Recompute stock location lines</option>
+  </selection>
+
 </object-views>

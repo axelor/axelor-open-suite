@@ -101,7 +101,9 @@ public class OpportunityServiceImpl implements OpportunityService {
   public void setSequence(Opportunity opportunity) throws AxelorException {
     Company company = opportunity.getCompany();
     String seq =
-        Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.OPPORTUNITY, company);
+        Beans.get(SequenceService.class)
+            .getSequenceNumber(
+                SequenceRepository.OPPORTUNITY, company, Opportunity.class, "opportunitySeq");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

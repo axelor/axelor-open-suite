@@ -242,7 +242,7 @@
         showIf="statusSelect > 1 &amp;&amp; statusSelect != 4"
         onClick="save,action-fixed-asset-group-disposal-click" hidden="true"/>
       <button name="updateDepreciationSettingsBtn" title="Update depreciation settings"
-        showIf="statusSelect == 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0 &amp;&amp; !$canUpdateDepreciation)"
+        showIf="statusSelect == 2 &amp;&amp; fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0 &amp;&amp; !$canUpdateDepreciation &amp;&amp; accountingValue != null &amp;&amp; accountingValue &gt; 0 &amp;&amp; !isEqualToFiscalDepreciation"
         onClick="action-attrs-account-fixed-asset-set-can-update-depreciation" hidden="true"/>
       <button name="updateDepreciationBtn" title="Update depreciation"
         showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation"

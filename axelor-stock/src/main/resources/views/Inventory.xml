@@ -191,7 +191,7 @@
     <field name="formatSelect" expr="pdf"/>
     <field name="stockLocation" expr="eval:_location"/>
     <field name="company"
-      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
+      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company :__user__.activeCompany"/>
   </action-record>
 
   <action-method name="action-inventory-method-show-inventory">

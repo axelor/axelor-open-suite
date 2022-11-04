@@ -959,12 +959,9 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
-        InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
-        }
-        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+        Beans.get(InvoiceLineService.class).updateLinesAfterFiscalPositionChange(invoice);
       }
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -996,6 +993,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       User user = request.getUser();
       InvoiceVisibilityService invoiceVisibilityService = Beans.get(InvoiceVisibilityService.class);
+      boolean paymentBtnVisible = invoiceVisibilityService.isPaymentButtonVisible(invoice);
+      boolean paymentVouchersStatus = invoiceVisibilityService.getPaymentVouchersStatus(invoice);
 
       response.setAttr(
           "passedForPaymentValidationBtn",
@@ -1008,12 +1007,14 @@ public class InvoiceController {
           !invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
 
       response.setAttr(
-          "addPaymentBtn", "hidden", !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+          "addPaymentBtn",
+          "hidden",
+          (paymentBtnVisible) ? paymentVouchersStatus : !paymentBtnVisible);
 
       response.setAttr(
           "registerPaymentBtn",
           "hidden",
-          !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+          (paymentBtnVisible) ? !paymentVouchersStatus : !paymentBtnVisible);
 
       response.setAttr(
           "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
@@ -1027,6 +1028,8 @@ public class InvoiceController {
           "sendPfpNotifyEmailBtn",
           "hidden",
           !invoiceVisibilityService.isSendNotifyVisible(invoice));
+
+      response.setValue("$paymentVouchersOnInvoice", paymentBtnVisible);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

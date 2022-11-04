@@ -242,7 +242,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   public String getSequence(Company company) throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PURCHASE_ORDER, company, PurchaseOrder.class, "purchaseOrderSeq");
     if (seq == null) {
       throw new AxelorException(
           company,

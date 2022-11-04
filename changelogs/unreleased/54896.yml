@@ -1,0 +1,3 @@
+---
+title: "Stock Batch: add a batch to recompute all quantities and WAP history in stock location lines. In WAP history, removed link to stock move line."
+type: feature

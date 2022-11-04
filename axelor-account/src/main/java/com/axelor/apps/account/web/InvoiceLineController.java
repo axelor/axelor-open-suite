@@ -46,6 +46,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -227,7 +228,7 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(InvoiceLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price", Beans.get(TaxService.class).convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -249,8 +250,7 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice",
-          Beans.get(InvoiceLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice", Beans.get(TaxService.class).convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -543,20 +543,28 @@ public class InvoiceLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-      Partner partner = this.getInvoice(context).getPartner();
+      Invoice parent = this.getInvoice(context);
+      Partner partner = parent.getPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = invoiceLine.getProduct();
 
-      if (invoiceLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                invoiceLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                invoiceLine.getProduct().getName(), userLanguage, partnerLanguage));
+      if (product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
+
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

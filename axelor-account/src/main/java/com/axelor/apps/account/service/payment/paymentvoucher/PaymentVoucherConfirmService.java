@@ -273,7 +273,8 @@ public class PaymentVoucherConfirmService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentVoucher.getRef(),
-            journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null);
+            journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
+            companyBankDetails);
 
     move.setPaymentVoucher(paymentVoucher);
     move.setTradingName(paymentVoucher.getTradingName());
@@ -400,13 +401,15 @@ public class PaymentVoucherConfirmService {
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               paymentVoucher.getRef(),
-              journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null);
+              journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
+              paymentVoucher.getCompanyBankDetails());
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());
       setMove(paymentVoucher, move, valueForCollection);
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
+      BigDecimal financialDiscountAmount = BigDecimal.ZERO;
       int moveLineNo = 1;
 
       boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
@@ -454,6 +457,9 @@ public class PaymentVoucherConfirmService {
                     moveLineNo,
                     isDebitToPay,
                     financialDiscountVat);
+
+            financialDiscountAmount =
+                financialDiscountAmount.add(payVoucherElementToPay.getFinancialDiscountAmount());
           }
         }
       }
@@ -470,6 +476,8 @@ public class PaymentVoucherConfirmService {
               .map(it -> isDebitToPay ? it.getCredit() : it.getDebit())
               .reduce(BigDecimal::add)
               .orElse(paymentVoucher.getPaidAmount());
+      companyPaidAmount = companyPaidAmount.subtract(financialDiscountAmount);
+
       BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
 
       if (paymentVoucher.getMoveLine() != null) {

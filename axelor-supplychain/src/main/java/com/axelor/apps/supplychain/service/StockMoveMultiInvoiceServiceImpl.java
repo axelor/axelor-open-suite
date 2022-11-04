@@ -216,6 +216,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
+
+      if ((firstDummyInvoice.getFiscalPosition() == null
+              && dummyInvoice.getFiscalPosition() != null)
+          || (firstDummyInvoice.getFiscalPosition() != null
+              && !firstDummyInvoice.getFiscalPosition().equals(dummyInvoice.getFiscalPosition()))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
+      }
     }
   }
 
@@ -313,6 +322,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
+
+      if ((firstDummyInvoice.getFiscalPosition() == null
+              && dummyInvoice.getFiscalPosition() != null)
+          || (firstDummyInvoice.getFiscalPosition() != null
+              && !firstDummyInvoice.getFiscalPosition().equals(dummyInvoice.getFiscalPosition()))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
+      }
     }
   }
 
@@ -394,6 +412,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
     invoice.setIncoterm(dummyInvoice.getIncoterm());
+    invoice.setFiscalPosition(dummyInvoice.getFiscalPosition());
 
     StringBuilder deliveryAddressStr = new StringBuilder();
     AddressService addressService = Beans.get(AddressService.class);
@@ -506,6 +525,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
     invoice.setIncoterm(dummyInvoice.getIncoterm());
+    invoice.setFiscalPosition(dummyInvoice.getFiscalPosition());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -616,6 +636,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setInAti(saleOrder.getInAti());
       dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
       dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+      dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -650,10 +671,13 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setContactPartner(purchaseOrder.getContactPartner());
       dummyInvoice.setPriceList(purchaseOrder.getPriceList());
       dummyInvoice.setInAti(purchaseOrder.getInAti());
+      dummyInvoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     } else {
       if (stockMove.getOriginId() != null
           && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        dummyInvoice.setIncoterm(saleOrderRepository.find(stockMove.getOriginId()).getIncoterm());
+        SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+        dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+        dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
       }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -788,6 +812,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     if (dummyInvoice.getPriceList() != null
         && !dummyInvoice.getPriceList().equals(comparedDummyInvoice.getPriceList())) {
       dummyInvoice.setPriceList(null);
+    }
+
+    if (dummyInvoice.getFiscalPosition() != null
+        && !dummyInvoice.getFiscalPosition().equals(comparedDummyInvoice.getFiscalPosition())) {
+      dummyInvoice.setFiscalPosition(null);
     }
   }
 

@@ -27,12 +27,15 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -63,7 +66,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       PurchaseProductService purchaseProductService,
-      SupplierCatalogService supplierCatalogService) {
+      SupplierCatalogService supplierCatalogService,
+      TaxService taxService) {
     super(
         currencyService,
         priceListService,
@@ -73,7 +77,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         invoiceLineRepo,
         appBaseService,
         accountConfigService,
-        invoiceLineAnalyticService);
+        invoiceLineAnalyticService,
+        taxService);
     this.purchaseProductService = purchaseProductService;
     this.supplierCatalogService = supplierCatalogService;
   }
@@ -157,6 +162,13 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
+
+    if (supplierCatalogService.getSupplierCatalog(
+            invoiceLine.getProduct(), invoice.getPartner(), invoice.getCompany())
+        != null) {
+      setSupplierCatalogProductInfo(invoice, invoiceLine);
+    }
+
     productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));
 
     return productInformation;
@@ -182,5 +194,40 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       }
     }
     invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
+  }
+
+  protected void setSupplierCatalogProductInfo(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Product product = invoiceLine.getProduct();
+    Partner supplierPartner = invoice.getPartner();
+    Company company = invoice.getCompany();
+
+    Map<String, String> productSupplierInfos =
+        supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
+    if (!productSupplierInfos.get("productName").isEmpty()) {
+      invoiceLine.setProductName(productSupplierInfos.get("productName"));
+    }
+    if (!productSupplierInfos.get("productCode").isEmpty()) {
+      invoiceLine.setProductCode(productSupplierInfos.get("productCode"));
+    }
+    invoiceLine.setQty(supplierCatalogService.getQty(product, supplierPartner, company));
+    invoiceLine.setPrice(
+        supplierCatalogService.getUnitPrice(
+            product,
+            supplierPartner,
+            company,
+            invoice.getCurrency(),
+            invoice.getInvoiceDate(),
+            invoiceLine.getTaxLine(),
+            false));
+    invoiceLine.setInTaxPrice(
+        supplierCatalogService.getUnitPrice(
+            product,
+            supplierPartner,
+            company,
+            invoice.getCurrency(),
+            invoice.getInvoiceDate(),
+            invoiceLine.getTaxLine(),
+            true));
   }
 }

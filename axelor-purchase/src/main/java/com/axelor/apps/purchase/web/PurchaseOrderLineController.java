@@ -27,9 +27,12 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -134,6 +137,7 @@ public class PurchaseOrderLineController {
 
     try {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+      TaxService taxService = Beans.get(TaxService.class);
 
       BigDecimal price =
           purchaseOrderLine.getProduct().getInAti()
@@ -187,7 +191,7 @@ public class PurchaseOrderLineController {
                 != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           response.setValue(
               "discountAmount",
-              purchaseOrderLineService.convertUnitPrice(
+              taxService.convertUnitPrice(
                   purchaseOrderLine.getProduct().getInAti(),
                   purchaseOrderLine.getTaxLine(),
                   (BigDecimal) discounts.get("discountAmount")));
@@ -205,15 +209,12 @@ public class PurchaseOrderLineController {
         if (purchaseOrderLine.getProduct().getInAti()) {
           response.setValue("inTaxPrice", price);
           response.setValue(
-              "price",
-              purchaseOrderLineService.convertUnitPrice(
-                  true, purchaseOrderLine.getTaxLine(), price));
+              "price", taxService.convertUnitPrice(true, purchaseOrderLine.getTaxLine(), price));
         } else {
           response.setValue("price", price);
           response.setValue(
               "inTaxPrice",
-              purchaseOrderLineService.convertUnitPrice(
-                  false, purchaseOrderLine.getTaxLine(), price));
+              taxService.convertUnitPrice(false, purchaseOrderLine.getTaxLine(), price));
         }
       }
 
@@ -238,8 +239,7 @@ public class PurchaseOrderLineController {
       TaxLine taxLine = purchaseOrderLine.getTaxLine();
 
       response.setValue(
-          "price",
-          Beans.get(PurchaseOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price", Beans.get(TaxService.class).convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       response.setInfo(e.getMessage());
     }
@@ -261,8 +261,7 @@ public class PurchaseOrderLineController {
       TaxLine taxLine = purchaseOrderLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice",
-          Beans.get(PurchaseOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice", Beans.get(TaxService.class).convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
       response.setInfo(e.getMessage());
     }
@@ -342,10 +341,16 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
 
-      service.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
-      service.checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(SupplierCatalogService.class)
+          .checkMinQty(
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany(),
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -416,20 +421,32 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-      Partner partner = this.getPurchaseOrder(context).getSupplierPartner();
+      PurchaseOrder parent = this.getPurchaseOrder(context);
+      Partner partner = parent.getSupplierPartner();
+      Company company = parent.getCompany();
       String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = purchaseOrderLine.getProduct();
 
-      if (purchaseOrderLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                purchaseOrderLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                purchaseOrderLine.getProduct().getName(), userLanguage, partnerLanguage));
+      SupplierCatalog supplierCatalog =
+          Beans.get(SupplierCatalogService.class).getSupplierCatalog(product, partner, company);
+
+      if (supplierCatalog == null && product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
+
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

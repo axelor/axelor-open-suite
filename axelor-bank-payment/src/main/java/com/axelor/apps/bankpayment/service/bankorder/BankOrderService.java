@@ -77,6 +77,8 @@ public interface BankOrderService {
 
   public BankDetails getDefaultBankDetails(BankOrder bankOrder);
 
+  void checkMultiDate(BankOrder bankOrder) throws AxelorException;
+
   public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException;
 
   public boolean checkBankDetailsTypeCompatible(

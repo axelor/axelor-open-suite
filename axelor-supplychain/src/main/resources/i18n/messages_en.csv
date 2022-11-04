@@ -618,6 +618,8 @@
 "The customer account is blocked because he has late payments.",,,
 "The delivered partner must be the same for all sale orders",,,
 "The execution of MRP n°%s is now finished, you can click above to see the results.",,,
+"The fiscal position must be the same for all purchase orders",,,
+"The fiscal position must be the same for all sale orders",,,
 "The incoterm must be the same for all sale orders",,,
 "The incoterm must be the same for all sale orders.",,,
 "The invoice for the stock move %s can't be generated because of this following error : %s",,,

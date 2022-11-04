@@ -100,7 +100,9 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
 
     switch (stockMoveType) {
       case StockMoveRepository.TYPE_INTERNAL:
-        ref = sequenceService.getSequenceNumber(SequenceRepository.INTERNAL, company);
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq");
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -110,7 +112,9 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
         break;
 
       case StockMoveRepository.TYPE_INCOMING:
-        ref = sequenceService.getSequenceNumber(SequenceRepository.INCOMING, company);
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq");
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -120,7 +124,9 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
         break;
 
       case StockMoveRepository.TYPE_OUTGOING:
-        ref = sequenceService.getSequenceNumber(SequenceRepository.OUTGOING, company);
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq");
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

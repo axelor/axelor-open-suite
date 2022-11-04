@@ -77,38 +77,6 @@ public class OperationOrderController {
         .setRealDates(operationOrder, realStartDateT, realEndDateT);
   }
 
-  public void machineChange(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
-      OperationOrderWorkflowService operationOrderWorkflowService =
-          Beans.get(OperationOrderWorkflowService.class);
-
-      operationOrder = operationOrderRepo.find(operationOrder.getId());
-      if (operationOrder != null
-          && operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
-        operationOrder = operationOrderWorkflowService.replan(operationOrder);
-        List<OperationOrder> operationOrderList =
-            operationOrderRepo
-                .all()
-                .filter(
-                    "self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
-                    operationOrder.getManufOrder(),
-                    operationOrder.getPriority(),
-                    operationOrder.getId())
-                .order("priority")
-                .order("plannedEndDateT")
-                .fetch();
-        for (OperationOrder operationOrderIt : operationOrderList) {
-          operationOrderWorkflowService.replan(operationOrderIt);
-        }
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void plan(ActionRequest request, ActionResponse response) {
     try {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);

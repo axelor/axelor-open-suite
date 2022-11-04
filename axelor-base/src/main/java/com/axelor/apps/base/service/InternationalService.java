@@ -17,7 +17,14 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import java.util.Map;
+
 public interface InternationalService {
 
   String translate(String source, String sourceLanguage, String targetLanguage);
+
+  Map<String, String> getProductDescriptionAndNameTranslation(
+      Product product, Partner partner, String userLanguage);
 }

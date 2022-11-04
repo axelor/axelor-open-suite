@@ -43,11 +43,13 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -83,6 +85,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
   protected SaleOrderRepository saleOrderRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected StockMoveLineServiceSupplychain stockMoveLineService;
+  protected BankDetailsService bankDetailsService;
   protected int counter = 0;
 
   @Inject
@@ -109,7 +112,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
       CurrencyService currencyService,
-      TaxAccountToolService taxAccountToolService) {
+      TaxAccountToolService taxAccountToolService,
+      BankDetailsService bankDetailsService) {
 
     super(
         moveCreateService,
@@ -135,6 +139,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveLineService = stockMoveLineService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -193,7 +198,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       boolean automaticReverse,
       boolean automaticReconcile,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -216,7 +222,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             includeNotStockManagedProduct,
             false,
             forecastedInvCustAccount,
-            forecastedInvSuppAccount);
+            forecastedInvSuppAccount,
+            prefixOrigin);
 
     if (move == null) {
       return null;
@@ -240,7 +247,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
               includeNotStockManagedProduct,
               true,
               forecastedInvCustAccount,
-              forecastedInvSuppAccount);
+              forecastedInvSuppAccount,
+              prefixOrigin);
 
       if (reverseMove == null) {
         return null;
@@ -277,7 +285,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       boolean includeNotStockManagedProduct,
       boolean isReverse,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException {
 
     if (moveDate == null
@@ -324,7 +333,13 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       }
     }
 
-    String origin = stockMove.getStockMoveSeq();
+    String origin = prefixOrigin + stockMove.getStockMoveSeq();
+
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
 
     Move move =
         moveCreateService.createMove(
@@ -339,7 +354,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,
-            moveDescription);
+            moveDescription,
+            companyBankDetails);
 
     counter = 0;
 

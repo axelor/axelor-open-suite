@@ -575,13 +575,11 @@ public class PurchaseOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
-        for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineService.updateLinesAfterFiscalPositionChange(purchaseOrder);
-        }
-        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+        Beans.get(PurchaseOrderLineService.class)
+            .updateLinesAfterFiscalPositionChange(purchaseOrder);
       }
+      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

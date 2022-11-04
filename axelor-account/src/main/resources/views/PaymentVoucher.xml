@@ -22,8 +22,7 @@
     onNew="action-account-payment-voucher-onnew-group"
     onLoad="action-account-payment-voucher-onload-group"
     onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
-
-    <panel name="mainPanel" readonlyIf="statusSelect == 2" itemSpan="12">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
         onChange="action-payment-voucher-hidden-fields-if-purchase"/>
@@ -52,7 +51,7 @@
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
       <field name="statusSelect"/>
-      <panel hidden="true" showIf="statusSelect == 2" itemSpan="12">
+      <panel hidden="true" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
           showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
@@ -106,7 +105,8 @@
         onClick="action-payment-voucher-group-search-elements-to-pay,save" colSpan="6"/>
     </panel>
 
-    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2" colSpan="12">
+    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2 || statusSelect == 3"
+      colSpan="12">
       <field name="paidAmount" colSpan="4"
         onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
@@ -157,7 +157,7 @@
     <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
-    <action name="action-attrs-payment-voucher-readonly-bank-details"/>
+    <action name="action-attrs-payment-voucher-manage-bank-details"/>
     <action name="action-pv-attrs-auto-imputation"/>
     <action name="action-payment-voucher-from-invoice" if="_invoice"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
@@ -172,7 +172,7 @@
     <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
-    <action name="action-attrs-payment-voucher-readonly-bank-details"/>
+    <action name="action-attrs-payment-voucher-manage-bank-details"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
   </action-group>
 
@@ -241,9 +241,11 @@
       expr="eval: &quot;self.account.useForPartnerBalance = 't' and self.partner.id = ${partner?.id?: 0} and (self.move.statusSelect = 2 or self.move.statusSelect = 3) and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-payment-voucher-readonly-bank-details">
-    <attribute name="readonly"
+  <action-attrs name="action-attrs-payment-voucher-manage-bank-details">
+    <attribute name="hidden"
       expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()" for="companyBankDetails"/>
+    <attribute name="required"
+      expr="eval: __config__.app.getApp('base')?.getManageMultiBanks()" for="companyBankDetails"/>
   </action-attrs>
 
   <action-record name="action-record-payment-voucher-default-record"
@@ -263,7 +265,7 @@
 
   <action-record name="action-payment-voucher-getDate"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="paymentDate" expr="eval: __config__.date"/>
   </action-record>
 
   <action-record name="action-payment-voucher-record-cheque-due-date"
@@ -301,7 +303,7 @@
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
     </filter>
     <filter title="Customer payments waiting for deposit slip"
-      if="__config__.app.getApp('account')?.paymentVouchersOnInvoice">
+      if="__config__.app.getApp('account').paymentVouchersOnCustomerInvoice">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
     </filter>
     <filter title="Confirmed Customer payments">

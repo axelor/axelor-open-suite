@@ -376,11 +376,8 @@
         <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2"
           prompt="Are you sure you want to realize this stock move?"
           onClick="action-group-stock-stockmove-realize-click"/>
-        <button
-          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"
-          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice"
-          showIf="statusSelect == 3 &amp;&amp; typeSelect > 1 &amp;&amp; (!__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() || invoicingStatusSelect != 3)"
-          icon="fa-file-o"
+        <button if-module="axelor-supplychain" name="generateInvoiceBtn"
+          title="Generate invoice" hidden="true" icon="fa-file-o"
           onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
           onClick="save,action-stock-move-method-generate-reversion"
@@ -851,6 +848,7 @@
 
   <action-group name="action-group-stock-stockmove-onload">
     <action name="action-stock-move-attrs-typeselect-change"/>
+    <action name="action-stock-move-attrs-display-generate-invoice-btn"/>
     <action name="action-stock-move-generate-invoice-button"/>
     <action name="action-stock-move-hide-reserved-qty"/>
     <action name="action-stock-move-attrs-hide-avg-price"/>
@@ -1017,8 +1015,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="statusSelect" expr="eval: 1"/>
-    <field name="estimatedDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="estimatedDate" expr="eval:__config__.date"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
     <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
@@ -1507,5 +1504,10 @@
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : fromStockLocation"
       if="typeSelect == 2"/>
   </action-record>
+
+  <action-attrs name="action-stock-move-attrs-display-generate-invoice-btn">
+    <attribute for="generateInvoiceBtn" name="hidden"
+      expr="statusSelect != 3 || typeSelect == 1 || (__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() &amp;&amp; invoicingStatusSelect != 4)"/>
+  </action-attrs>
 
 </object-views>
