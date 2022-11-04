@@ -11,6 +11,10 @@
     <field name="status"/>
     <field name="progressSelect" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
+    <field name="invoicingType"/>
+    <field name="taskDuration" if="isShowTimeSpent"/>
+    <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
+      if="isShowTimeSpent"/>
     <field name="toInvoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" readonly="true"
