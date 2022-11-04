@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -46,6 +47,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -777,7 +779,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin) {
+    if (origin == null) {
+      origin =
+          Optional.ofNullable(stockMoveLine)
+              .map(StockMoveLine::getStockMove)
+              .map(StockMove::getStockMoveSeq)
+              .orElse("");
+    }
     stockLocationLine.setAvgPrice(wap);
-    wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine, date, origin);
+    wapHistoryService.saveWapHistory(stockLocationLine, date, origin);
   }
 }

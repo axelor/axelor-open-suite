@@ -57,9 +57,5 @@ public interface WapHistoryService {
    * @param date
    * @return
    */
-  WapHistory saveWapHistory(
-      StockLocationLine stockLocationLine,
-      StockMoveLine stockMoveLine,
-      LocalDate date,
-      String origin);
+  WapHistory saveWapHistory(StockLocationLine stockLocationLine, LocalDate date, String origin);
 }
