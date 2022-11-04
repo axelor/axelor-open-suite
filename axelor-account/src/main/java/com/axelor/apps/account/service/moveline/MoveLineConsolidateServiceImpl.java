@@ -136,12 +136,12 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
             "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
             moveLine.getDebit(),
             moveLine.getCredit(),
-            moveLine.getCurrencyAmount());
+            moveLine.getCurrencyAmount().abs());
         log.debug(
             "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
             consolidateMoveLine.getDebit(),
             consolidateMoveLine.getCredit(),
-            consolidateMoveLine.getCurrencyAmount());
+            consolidateMoveLine.getCurrencyAmount().abs());
 
         if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
             != consolidateMoveLine
@@ -149,10 +149,13 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
                 .subtract(consolidateMoveLine.getCredit())
                 .compareTo(BigDecimal.ZERO)) {
           consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().subtract(moveLine.getCurrencyAmount());
+              consolidateMoveLine
+                  .getCurrencyAmount()
+                  .abs()
+                  .subtract(moveLine.getCurrencyAmount().abs());
         } else {
           consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().add(moveLine.getCurrencyAmount());
+              consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
         }
         consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount.abs());
         consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));

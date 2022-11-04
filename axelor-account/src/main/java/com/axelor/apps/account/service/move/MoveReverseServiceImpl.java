@@ -216,12 +216,16 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveLine generateReverseMoveLine(
       Move reverseMove, MoveLine originMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
+
+    BigDecimal currencyAmount = originMoveLine.getCurrencyAmount();
+    currencyAmount = isDebit ? currencyAmount.abs() : currencyAmount.negate();
+
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(
             reverseMove,
             originMoveLine.getPartner(),
             originMoveLine.getAccount(),
-            originMoveLine.getCurrencyAmount(),
+            currencyAmount,
             originMoveLine.getTaxLine(),
             originMoveLine.getDebit().add(originMoveLine.getCredit()),
             originMoveLine.getCurrencyRate(),

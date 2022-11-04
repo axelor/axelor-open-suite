@@ -351,7 +351,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             moveLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.DATE_NOT_IN_PERIOD_MOVE),
-            moveLine.getCurrencyAmount(),
+            moveLine.getCurrencyAmount().abs(),
             move.getCurrency().getSymbol(),
             moveLine.getAccount().getCode());
       } else {

@@ -515,6 +515,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal currencyTaxAmount =
         InvoiceLineManagement.computeAmount(
             productMoveLine.getCurrencyAmount(), taxLine.getValue().divide(new BigDecimal(100)));
+    boolean isDebit = productMoveLine.getDebit().signum() > 0;
+    currencyTaxAmount = isDebit ? currencyTaxAmount.abs() : currencyTaxAmount.negate();
     Integer vatSystem =
         taxAccountToolService.calculateVatSystem(
             move.getPartner(),
@@ -536,7 +538,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               move.getPartner(),
               taxAccount,
               currencyTaxAmount,
-              productMoveLine.getDebit().signum() > 0,
+              isDebit,
               move.getDate(),
               ++counter,
               origin,

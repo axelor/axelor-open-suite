@@ -362,9 +362,9 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
-        balance = balance.add(moveLine.getCurrencyAmount());
+        balance = balance.add(moveLine.getCurrencyAmount().abs());
       } else {
-        balance = balance.subtract(moveLine.getCurrencyAmount());
+        balance = balance.subtract(moveLine.getCurrencyAmount().abs());
       }
     }
     return balance;

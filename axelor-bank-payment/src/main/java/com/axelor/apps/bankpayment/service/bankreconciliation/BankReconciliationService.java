@@ -1363,7 +1363,7 @@ public class BankReconciliationService {
                     Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
     for (MoveLine moveLine : moveLineList) {
       if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
-        selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount());
+        selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount().abs());
       } else {
         selectedMoveLineTotal =
             selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
