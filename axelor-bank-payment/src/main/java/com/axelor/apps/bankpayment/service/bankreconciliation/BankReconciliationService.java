@@ -201,7 +201,8 @@ public class BankReconciliationService {
     List<BankStatementRule> bankStatementRules;
     while (bankReconciliationLines.size() > 0) {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-        if (bankReconciliationLine.getMoveLine() != null) {
+        if (bankReconciliationLine.getMoveLine() != null
+            || bankReconciliationLine.getBankStatementLine() == null) {
           continue;
         }
         scriptContext =
@@ -295,9 +296,11 @@ public class BankReconciliationService {
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
     String description = "";
-    description =
-        description.concat(bankReconciliationLine.getBankStatementLine().getDescription());
+    if (bankStatementLine != null) {
+      description = description.concat(bankStatementLine.getDescription());
+    }
     description = StringTool.cutTooLongString(description);
 
     if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
@@ -314,7 +317,7 @@ public class BankReconciliationService {
         moveCreateService.createMove(
             accountManagement.getJournal(),
             accountManagement.getCompany(),
-            bankReconciliationLine.getBankStatementLine().getCurrency(),
+            bankStatementLine != null ? bankStatementLine.getCurrency() : null,
             partner,
             bankReconciliationLine.getEffectDate(),
             bankReconciliationLine.getEffectDate(),
@@ -322,8 +325,9 @@ public class BankReconciliationService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankReconciliationLine.getBankStatementLine().getOrigin(),
-            description);
+            bankStatementLine != null ? bankStatementLine.getOrigin() : null,
+            description,
+            bankReconciliationLine.getBankReconciliation().getBankDetails());
 
     MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
@@ -773,11 +777,16 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
-            + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
-            + " AND self.move.statusSelect != :statusSelect"
+        "self.move.statusSelect != :statusSelect"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
+
+    if (!bankReconciliation.getIncludeOtherBankStatements()) {
+      query =
+          query
+              + " AND (self.date >= :fromDate OR self.dueDate >= :fromDate)"
+              + " AND (self.date <= :toDate OR self.dueDate <= :toDate)";
+    }
 
     if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
       query =
@@ -796,6 +805,7 @@ public class BankReconciliationService {
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
     }
+
     return query;
   }
 
@@ -804,12 +814,15 @@ public class BankReconciliationService {
     Map<String, Object> params = new HashMap<>();
     BankPaymentConfig bankPaymentConfig =
         bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
-    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
-    params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
-    params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
+
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     params.put("company", bankReconciliation.getCompany());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
+    if (!bankReconciliation.getIncludeOtherBankStatements()) {
+      int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
+      params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
+      params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
+    }
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
     }
@@ -855,15 +868,14 @@ public class BankReconciliationService {
     Context scriptContext;
     for (BankStatementQuery bankStatementQuery : bankStatementQueries) {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-        if (bankReconciliationLine.getMoveLine() != null) {
+        BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+        if (bankReconciliationLine.getMoveLine() != null || bankStatementLine == null) {
           continue;
         }
         for (MoveLine moveLine : moveLines) {
-          bankReconciliationLine.getBankStatementLine().setMoveLine(moveLine);
+          bankStatementLine.setMoveLine(moveLine);
           scriptContext =
-              new Context(
-                  Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
-                  BankStatementLineAFB120.class);
+              new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
           String query =
               computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
@@ -879,7 +891,7 @@ public class BankReconciliationService {
             moveLines.remove(moveLine);
             break;
           }
-          bankReconciliationLine.getBankStatementLine().setMoveLine(null);
+          bankStatementLine.setMoveLine(null);
         }
         if (bankReconciliationLine.getMoveLine() != null) {
           continue;

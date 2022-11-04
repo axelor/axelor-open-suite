@@ -33,6 +33,7 @@
         <field name="accountingCutOffTypeSelect"/>
       </insert>
     </extend>
+
   </form>
 
   <action-group name="action-batch-traceback-btn-group">

@@ -238,7 +238,8 @@ public class BatchBillOfExchange extends AbstractBatch {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_SALE,
             invoice.getInvoiceId(),
-            null);
+            null,
+            invoice.getCompanyBankDetails());
     if (move != null) {
 
       LocalDate todayDate = this.appBaseService.getTodayDate(invoice.getCompany());

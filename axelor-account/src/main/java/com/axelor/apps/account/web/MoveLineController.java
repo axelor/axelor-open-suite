@@ -376,17 +376,19 @@ public class MoveLineController {
                 .getTaxLine(move, moveLine, accountingAccount);
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (fiscalPosition != null) {
-          taxEquiv =
-              Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
-        }
+        if (taxLine != null) {
+          if (fiscalPosition != null) {
+            taxEquiv =
+                Beans.get(FiscalPositionService.class)
+                    .getTaxEquiv(fiscalPosition, taxLine.getTax());
+          }
 
-        response.setValue("taxLine", taxLine);
-        if (taxEquiv != null) {
-          response.setValue("taxEquiv", taxEquiv);
+          response.setValue("taxLine", taxLine);
+          if (taxEquiv != null) {
+            response.setValue("taxEquiv", taxEquiv);
+          }
         }
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

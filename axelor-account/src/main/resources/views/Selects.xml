@@ -10,6 +10,7 @@
     <option value='1'>Draft</option>
     <!-- Delete #47990 <option value='2'>Waiting for deposit slip</option> -->
     <option value='2'>Confirmed</option>
+    <option value='3'>Canceled</option>
   </selection>
 
   <selection name='account.account.technical.type.select'>

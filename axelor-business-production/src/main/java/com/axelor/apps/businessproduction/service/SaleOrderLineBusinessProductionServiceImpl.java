@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -54,7 +55,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      PricingService pricingService) {
+      PricingService pricingService,
+      TaxService taxService) {
     super(
         currencyService,
         priceListService,
@@ -68,7 +70,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         appSupplychainService,
         accountConfigService,
         saleOrderService,
-        pricingService);
+        pricingService,
+        taxService);
   }
 
   @Override
