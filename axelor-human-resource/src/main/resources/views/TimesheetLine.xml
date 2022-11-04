@@ -38,7 +38,7 @@
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-    <field name="hoursDuration" width="62%" min="0.01"/>
+    <field name="hoursDuration" width="62%" min="0.01" title="TimesheetLine.duration"/>
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
@@ -163,8 +163,7 @@
   <form name="timesheet-line-project-form" title="Log Time"
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title"
-    width="large">
+    onLoad="action-timesheet-line-attrs-set-duration-label" width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
@@ -195,7 +194,7 @@
   <form name="timesheet-line-timesheet-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
@@ -230,7 +229,7 @@
 
   <form name="timesheet-line-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine" canNew="false"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     onSave="action-timesheet-line-method-update-operation-order">
     <panel name="mainPanel">
       <field name="timesheet.company"/>
@@ -287,7 +286,6 @@
 
   <action-group name="action-timesheet-line-group-onload">
     <action name="action-timesheet-line-attrs-set-duration-label"/>
-    <action name="action-timesheet-line-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-line-attrs-title-project"/>
     <action name="action-timesheet-line-atts-overview-readonly"/>
   </action-group>
@@ -337,13 +335,10 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-duration-label">
-    <attribute name="title" for="durationLabel"
+    <attribute name="title" for="durationLabel" if="__parent__"
       expr="eval: __parent__?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __parent__?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-  </action-attrs>
-
-  <action-attrs name="action-timesheet-line-attrs-set-visible-duration-title">
-    <attribute name="title" for="durationLabel"
-      expr="eval: __parent__?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __parent__?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+    <attribute name="title" for="durationLabel" if="!__parent__"
+      expr="eval: timesheet?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timesheet?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
   </action-attrs>
 
   <action-record name="action-hr-default-timesheet-line-project"
