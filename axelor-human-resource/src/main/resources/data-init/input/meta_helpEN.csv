@@ -30,3 +30,4 @@
 "axelor-human-resource";"AppTimesheet";"app-timesheet-config-form";"keepProject";"When this option is enabled, the project that was used when the start & stop was last used will automatically resume when you start the start & stop again."
 "axelor-human-resource";"AppTimesheet";"app-timesheet-config-form";"defaultEndFormat";"Allows to define if by default the end date of a timesheet will be automatically at the end of the week or at the end of the month."
 "axelor-human-resource";"AppTimesheet";"app-timesheet-config-form";"timesheetEditor";"This option allows to activate on the timesheets a ""graphical"" editor that will allow to enter his time directly on a schedule."
+"axelor-human-resource";"Project";"project-form";"excludeTimesheetEditor";"When the checkbox is true, it enables to choose the project when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app."
