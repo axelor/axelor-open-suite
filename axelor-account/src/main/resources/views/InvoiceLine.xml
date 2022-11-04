@@ -54,7 +54,7 @@
     <panel name="titlePanel" showIf="typeSelect > 0">
       <field name="productName" title="Title" requiredIf="typeSelect != 0" colSpan="9"/>
       <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line"/>
-      <field name="qty" colSpan="6"/>
+      <field name="qty" colSpan="6" onChange="action-invoice-line-group-qty-onchange"/>
       <field name="isShowTotal" colSpan="3"
         if="__config__.app.getApp('sale')?.enablePackManagement"
         onChange="action-invoice-line-record-reset-is-hide-unit-amounts" showIf="typeSelect == 3"/>
@@ -403,6 +403,7 @@
     <action name="action-invoice-line-method-compute"/>
     <action name="action-invoice-line-method-compute-analytic-distribution"/>
     <action name="action-budget-validate-exceed-line-amount"/>
+    <action name="action-invoice-line-method-check-qty"/>
   </action-group>
   <action-group name="action-group-invoice-line-menu-form-onload">
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
@@ -599,5 +600,14 @@
     <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
+
+
+  <action-group name="action-invoice-line-group-qty-onchange">
+    <action name="action-invoice-line-method-check-qty"/>
+  </action-group>
+
+  <action-method name="action-invoice-line-method-check-qty">
+    <call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="checkQty"/>
+  </action-method>
 
 </object-views>
