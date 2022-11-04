@@ -271,7 +271,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 saleOrderLine.getProduct().getInAti(),
                 saleOrderLine.getTaxLine(),
                 (BigDecimal) discounts.get("discountAmount"),
-                AppBaseService.COMPUTATION_SCALING));
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
@@ -918,7 +918,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(
             taxService.convertUnitPrice(
-                true, saleOrderLine.getTaxLine(), inTaxPrice, AppBaseService.COMPUTATION_SCALING));
+                true,
+                saleOrderLine.getTaxLine(),
+                inTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
@@ -929,7 +932,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
             taxService.convertUnitPrice(
-                false, saleOrderLine.getTaxLine(), exTaxPrice, AppBaseService.COMPUTATION_SCALING));
+                false,
+                saleOrderLine.getTaxLine(),
+                exTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       }
     }
   }
