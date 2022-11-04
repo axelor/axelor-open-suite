@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
@@ -333,10 +334,16 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
 
-      service.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
-      service.checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(SupplierCatalogService.class)
+          .checkMinQty(
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany(),
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
