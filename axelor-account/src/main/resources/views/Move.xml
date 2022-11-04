@@ -125,7 +125,7 @@
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" type="boolean" hidden="true"/>
-          <field name="paymentCondition.isFree"/>
+          <field name="paymentCondition.isFree" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
