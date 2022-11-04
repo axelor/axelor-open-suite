@@ -666,9 +666,11 @@ public class DataBackupCreateService {
     if (anonymizeData) {
       for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
           dataBackupConfigAnonymizeLineList) {
+        String metaFieldName =
+            dataBackupConfigAnonymizeLine.getMetaField().getName(); // Fix proxy initialization
         if (metaModelName.equals(dataBackupConfigAnonymizeLine.getMetaModel().getName())
             && dataBackupConfigAnonymizeLine.getMetaField() != null
-            && property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
+            && property.getName().equals(metaFieldName)) {
           return anonymizeService
               .anonymizeValue(
                   value,
