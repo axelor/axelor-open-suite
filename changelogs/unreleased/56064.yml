@@ -1,0 +1,3 @@
+---
+title: "Invoice : fix an error preventing any payment on a duplicated invoice"
+type: fix
