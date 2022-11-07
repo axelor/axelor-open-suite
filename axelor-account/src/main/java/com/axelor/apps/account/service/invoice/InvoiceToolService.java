@@ -244,6 +244,7 @@ public class InvoiceToolService {
     copy.setInternalReference(null);
     copy.setExternalReference(null);
     setPfpStatus(copy);
+    copy.setHasPendingPayments(false);
   }
 
   public static void setPfpStatus(Invoice invoice) throws AxelorException {
