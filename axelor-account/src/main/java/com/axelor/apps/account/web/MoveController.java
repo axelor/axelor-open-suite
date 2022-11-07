@@ -502,10 +502,10 @@ public class MoveController {
     }
   }
 
-  public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
+  public void setOriginOnLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
+      Beans.get(MoveToolService.class).setOriginOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -523,11 +523,11 @@ public class MoveController {
     }
   }
 
-  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
+  public void validateOrigin(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      if (move.getOrigin() == null && move.getDescription() == null) {
-        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      if (move.getOrigin() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

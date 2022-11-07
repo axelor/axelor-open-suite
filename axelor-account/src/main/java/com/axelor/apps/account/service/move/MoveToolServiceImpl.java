@@ -452,10 +452,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public void setOriginAndDescriptionOnMoveLineList(Move move) {
+  public void setOriginOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine != null) {
-        moveLine.setDescription(move.getDescription());
         moveLine.setOrigin(move.getOrigin());
       }
     }

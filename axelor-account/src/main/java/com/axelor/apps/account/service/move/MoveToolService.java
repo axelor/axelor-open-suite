@@ -159,7 +159,7 @@ public interface MoveToolService {
 
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
-  void setOriginAndDescriptionOnMoveLineList(Move move);
+  void setOriginOnMoveLineList(Move move);
 
   @CallMethod
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;

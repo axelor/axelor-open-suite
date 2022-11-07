@@ -102,10 +102,9 @@
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
-          <field name="description" colSpan="6" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+          <field name="description" colSpan="6" readonlyIf="$validatePeriod"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+            onChange="action-account-move-group-set-origin-on-lines"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
         </panel>
         <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
@@ -335,8 +334,7 @@
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
-        <field name="description" colSpan="6"
-          onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+        <field name="description" colSpan="6"/>
         <field name="origin" colSpan="3"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
         <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
@@ -555,9 +553,9 @@
     <action name="action-move-method-accounting"/>
   </action-group>
 
-  <action-group name="action-account-move-group-set-origin-and-description-on-lines">
-    <action name="action-account-move-method-origin-description-is-empty"/>
-    <action name="action-account-move-method-set-origin-description-on-lines"/>
+  <action-group name="action-account-move-group-set-origin-on-lines">
+    <action name="action-account-move-method-origin-is-empty"/>
+    <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
 
   <action-group name="action-move-account-group-simulate">
@@ -590,8 +588,8 @@
       if="dateOfReversionSelect==4 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
   </action-validate>
 
-  <action-method name="action-account-move-method-origin-description-is-empty">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateOriginDescription"/>
+  <action-method name="action-account-move-method-origin-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateOrigin"/>
   </action-method>
 
   <!-- ACTION RECORD -->
@@ -758,9 +756,8 @@
       method="isHiddenMoveLineListViewer"/>
   </action-method>
 
-  <action-method name="action-account-move-method-set-origin-description-on-lines">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="setOriginAndDescriptionOnLines"/>
+  <action-method name="action-account-move-method-set-origin-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setOriginOnLines"/>
   </action-method>
 
   <action-method name="action-move-method-set-moveline-dates">
