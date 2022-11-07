@@ -631,6 +631,7 @@
 "The requested quantity must not be greater than the quantity in the stock move line %s.",,,
 "The reservation for an availability requested stock move cannot be lowered.",,,
 "The sale order %s invoiced amount cannot be greater than its total amount.",,,
+"The sum's amount of the budget distributions of the line %s does not match its company ex tax total",,,
 "The supplier is required and must be the same for all purchase orders",,,
 "The trading name must be the same for all purchase orders.",,,
 "The trading name must be the same for all sale orders.",,,

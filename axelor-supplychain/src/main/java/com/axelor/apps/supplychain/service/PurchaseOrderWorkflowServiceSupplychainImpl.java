@@ -84,6 +84,8 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
     if (!appAccountService.getAppBudget().getManageMultiBudget()) {
       purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+    } else {
+      purchaseOrderSupplychainService.checkBudgetDistributionAmount(purchaseOrder);
     }
   }
 

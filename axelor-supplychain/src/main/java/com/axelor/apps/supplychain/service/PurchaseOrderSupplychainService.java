@@ -85,4 +85,11 @@ public interface PurchaseOrderSupplychainService {
   BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
 
   void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
+
+  /**
+   * Check if budget distributions of the purchase order lines are correctly setted.
+   *
+   * @param purchaseOrder
+   */
+  void checkBudgetDistributionAmount(PurchaseOrder purchaseOrder) throws AxelorException;
 }
