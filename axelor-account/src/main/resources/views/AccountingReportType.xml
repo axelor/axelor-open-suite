@@ -39,7 +39,7 @@
       <panel name="customReportTypePanel" colSpan="12" showIf="typeSelect == 3000">
         <field name="comparison" requiredIf="typeSelect == 3000"
           onChange="action-accounting-report-type-attrs-comparison-onchange"/>
-        <field name="noOfPeriods" showIf="comparison != 1"/>
+        <field name="noOfPeriods" showIf="[2,3].includes(comparison)"/>
         <panel-related
           name="accountingReportTypeAccountingReportConfigLineColumnListPanel"
           field="accountingReportConfigLineColumnList" height="15" x-row-height="29"

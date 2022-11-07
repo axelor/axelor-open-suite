@@ -398,17 +398,17 @@
                     <structure>
                         <property name="position">17</property>
                         <property name="name">reportyear</property>
-                        <property name="dataType">float</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
                         <property name="name">reportn1year</property>
-                        <property name="dataType">float</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
                         <property name="name">reportn2year</property>
-                        <property name="dataType">float</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -530,22 +530,22 @@
                     <property name="position">17</property>
                     <property name="name">reportyear</property>
                     <property name="nativeName">reportyear</property>
-                    <property name="dataType">float</property>
-                    <property name="nativeDataType">8</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">reportn1year</property>
                     <property name="nativeName">reportn1year</property>
-                    <property name="dataType">float</property>
-                    <property name="nativeDataType">8</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">reportn2year</property>
                     <property name="nativeName">reportn2year</property>
-                    <property name="dataType">float</property>
-                    <property name="nativeDataType">8</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -565,9 +565,29 @@
 	MetaFile.file_path as logo_path,
 	Report.display_delta_year,
 	Report.display_delta_year_percentage,
-	EXTRACT(year from Report.date_from) AS reportYear,
-	EXTRACT(year from Report.date_from) - 1 AS reportN1Year,
-	EXTRACT(year from Report.date_from) - 2 AS reportN2Year
+	CONCAT(
+		TO_CHAR(Report.date_from, 'dd/mm/yyyy'), 
+		' - ', 
+		TO_CHAR(Report.date_to, 'dd/mm/yyyy')
+	) AS reportYear,
+	CASE WHEN ReportType.comparison = 2 THEN CONCAT(
+		TO_CHAR(DATE_TRUNC('YEAR', Report.date_from), 'dd/mm/yyyy'), 
+		' - ', 
+		TO_CHAR(DATE_TRUNC('YEAR', Report.date_TO + INTERVAL '1 YEAR') - INTERVAL '1 DAY', 'dd/mm/yyyy')
+	) WHEN ReportType.comparison = 4 THEN CONCAT(
+		TO_CHAR(Report.other_date_from, 'dd/mm/yyyy'), 
+		' - ', 
+		TO_CHAR(Report.other_date_to, 'dd/mm/yyyy')
+	) ELSE CONCAT(
+		TO_CHAR(Report.date_from - INTERVAL '1 year', 'dd/mm/yyyy'), 
+		' - ', 
+		TO_CHAR(Report.date_to - INTERVAL '1 year', 'dd/mm/yyyy')
+	) END AS reportN1Year,
+	CONCAT(
+		TO_CHAR(Report.date_from - INTERVAL '2 year', 'dd/mm/yyyy'), 
+		' - ', 
+		TO_CHAR(Report.date_to - INTERVAL '2 year', 'dd/mm/yyyy')
+	) AS reportN2Year
 	
 FROM account_accounting_report as Report
 
@@ -758,6 +778,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">columnNotCompute</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">previousYear</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">previousYear</text-property>
+                    <text-property name="heading">previousYear</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">lineName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">lineName</text-property>
@@ -844,21 +870,26 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">10</property>
+                        <property name="name">previousYear</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
                         <property name="name">lineName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">lineHidden</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">lineNotCompute</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">lineRuleType</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -931,27 +962,34 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">10</property>
+                    <property name="name">previousYear</property>
+                    <property name="nativeName">previousYear</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
                     <property name="name">lineName</property>
                     <property name="nativeName">lineName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">lineHidden</property>
                     <property name="nativeName">lineHidden</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">13</property>
                     <property name="name">lineNotCompute</property>
                     <property name="nativeName">lineNotCompute</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">lineRuleType</property>
                     <property name="nativeName">lineRuleType</property>
                     <property name="dataType">integer</property>
@@ -968,6 +1006,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	ConfigColumn.hidden AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
+	ConfigColumn.compute_previous_year AS "previousYear",
 	ReportValue.line_title AS "lineName",
 	ConfigLine.hidden AS "lineHidden",
 	ConfigLine.not_computed_if_intersect AS "lineNotCompute",
@@ -1059,6 +1098,10 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                         </tabular-measure>
                         <tabular-measure name="lineRuleType" id="5972">
                             <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="previousYear" id="5975">
+                            <expression name="measureExpression" type="javascript">dataSetRow["previousYear"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
                     </property>
@@ -1342,19 +1385,22 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                     <property name="name">reportyear</property>
                     <text-property name="displayName">reportyear</text-property>
                     <expression name="expression" type="javascript">dataSetRow["reportyear"]</expression>
-                    <property name="dataType">float</property>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">reportn1year</property>
                     <text-property name="displayName">reportn1year</text-property>
                     <expression name="expression" type="javascript">dataSetRow["reportn1year"]</expression>
-                    <property name="dataType">float</property>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">reportn2year</property>
                     <text-property name="displayName">reportn2year</text-property>
                     <expression name="expression" type="javascript">dataSetRow["reportn2year"]</expression>
-                    <property name="dataType">float</property>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="5455"/>
@@ -2264,6 +2310,11 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                 <property name="name">lineRuleType</property>
                                 <expression name="expression" type="javascript">measure["lineRuleType"]</expression>
                                 <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">previousYear</property>
+                                <expression name="expression" type="javascript">measure["previousYear"]</expression>
+                                <property name="dataType">boolean</property>
                             </structure>
                         </list-property>
                     </extended-item>

@@ -34,6 +34,7 @@
 		public static final int COMPARISON_NO_COMPARISON = 1;
 		public static final int COMPARISON_PREVIOUS_YEAR = 2;
 		public static final int COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR = 3;
+		public static final int COMPARISON_OTHER_PERIOD = 4;
 
 	]]></extra-code>
 

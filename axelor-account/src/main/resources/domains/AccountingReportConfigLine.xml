@@ -22,6 +22,7 @@
       selection="accounting.report.config.line.sum.of.account.select"/>
     <boolean name="hidden" title="Hidden"/>
     <boolean name="notComputedIfIntersect" title="Do not compute intersection"/>
+    <boolean name="computePreviousYear" title="Compute previous year"/>
     <boolean name="detailByAccountType" title="Detail by account type"/>
     <boolean name="detailByAccount" title="Detail by account"/>
     <boolean name="detailByAnalyticAccount" title="Detail by analytic account"/>

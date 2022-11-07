@@ -462,19 +462,29 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 accountingReport, column, line, accountSet, accountTypeSet, analyticAccountSet)
             .fetch();
 
+    int periodOffset = column.getComputePreviousYear() ? 1 : 0;
+
     BigDecimal result =
-        this.getResultFromMoveLine(accountingReport, moveLineList, 0, column.getResultSelect());
+        this.getResultFromMoveLine(
+            accountingReport, moveLineList, periodOffset, column.getResultSelect(), false);
     BigDecimal resultn1 = null;
     BigDecimal resultn2 = null;
 
     if (accountingReport.getReportType().getComparison()
         != AccountingReportTypeRepository.COMPARISON_NO_COMPARISON) {
       resultn1 =
-          this.getResultFromMoveLine(accountingReport, moveLineList, 1, column.getResultSelect());
+          this.getResultFromMoveLine(
+              accountingReport,
+              moveLineList,
+              periodOffset + 1,
+              column.getResultSelect(),
+              accountingReport.getReportType().getComparison()
+                  == AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD);
 
       if (accountingReport.getReportType().getNoOfPeriods() == 2) {
         resultn2 =
-            this.getResultFromMoveLine(accountingReport, moveLineList, 2, column.getResultSelect());
+            this.getResultFromMoveLine(
+                accountingReport, moveLineList, periodOffset + 2, column.getResultSelect(), false);
       }
     }
 
@@ -498,6 +508,21 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet) {
+    AccountingReportType reportType = accountingReport.getReportType();
+
+    int offset = column.getComputePreviousYear() ? 1 : 0;
+    LocalDate dateFrom = accountingReport.getDateFrom().minusYears(offset);
+    LocalDate dateTo = accountingReport.getDateTo().minusYears(offset);
+
+    if (reportType.getComparison() == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR
+        || reportType.getComparison()
+            == AccountingReportTypeRepository.COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR) {
+      dateFrom = dateFrom.minusYears(reportType.getNoOfPeriods());
+    } else if (reportType.getComparison()
+        == AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD) {
+      dateFrom = accountingReport.getOtherDateFrom().minusYears(offset);
+    }
+
     return moveLineRepo
         .all()
         .filter(
@@ -510,8 +535,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 line.getAccountCode(),
                 column.getAnalyticAccountCode(),
                 line.getAnalyticAccountCode()))
-        .bind("dateFrom", accountingReport.getDateFrom().minusYears(2))
-        .bind("dateTo", accountingReport.getDateTo())
+        .bind("dateFrom", dateFrom)
+        .bind("dateTo", dateTo)
         .bind("journal", accountingReport.getJournal())
         .bind("paymentMode", accountingReport.getPaymentMode())
         .bind("currency", accountingReport.getCurrency())
@@ -600,7 +625,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       List<MoveLine> moveLineList,
       int periodOffset,
-      int resultSelect) {
+      int resultSelect,
+      boolean otherPeriod) {
     LocalDate dateFrom = accountingReport.getDateFrom();
     LocalDate dateTo = accountingReport.getDateTo();
 
@@ -608,6 +634,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         == AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR) {
       dateFrom = dateFrom.with(firstDayOfYear());
       dateTo = dateTo.with(lastDayOfYear());
+    } else if (otherPeriod) {
+      dateFrom = accountingReport.getOtherDateFrom();
+      dateTo = accountingReport.getOtherDateTo();
+    }
+
+    if (otherPeriod) {
+      periodOffset -= 1;
     }
 
     if (periodOffset > 0) {

@@ -408,6 +408,7 @@
     <option value="1">No comparison</option>
     <option value="2">Previous year</option>
     <option value="3">Same period on previous year</option>
+    <option value="4">Other period</option>
   </selection>
 
   <selection name="accounting.report.type.no.of.periods.select">
