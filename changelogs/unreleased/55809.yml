@@ -1,0 +1,6 @@
+---
+title: "Stock Move : Changing the real quantity of a line won't reset the discounted price to the original price anymore."
+type: fix
+description: |
+  When generating a Stock move from a Purchase order, if a line had a discount,
+  changing the real quantity of a discounted line would set the price to the original one.
