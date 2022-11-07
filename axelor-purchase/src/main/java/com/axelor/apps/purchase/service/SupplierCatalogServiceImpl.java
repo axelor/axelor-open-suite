@@ -210,7 +210,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     BigDecimal price =
         (inAti == resultInAti)
             ? purchasePrice
-            : taxService.convertUnitPrice(inAti, taxLine, purchasePrice);
+            : taxService.convertUnitPrice(
+                inAti, taxLine, purchasePrice, AppBaseService.COMPUTATION_SCALING);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)
