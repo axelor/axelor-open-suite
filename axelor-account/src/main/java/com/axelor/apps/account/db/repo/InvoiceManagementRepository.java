@@ -35,7 +35,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   public Invoice copy(Invoice entity, boolean deep) {
     try {
       Invoice copy = super.copy(entity, deep);
-      copy.setNextDueDate(Beans.get(InvoiceToolService.class).getNextDueDate(copy));
       InvoiceToolService.resetInvoiceStatusOnCopy(copy);
       return copy;
     } catch (Exception e) {
