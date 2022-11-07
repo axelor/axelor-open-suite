@@ -52,8 +52,6 @@ public final class AccountExceptionMessage {
       /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
-  public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
-      /*$$(*/ "The input failover date is not conforme compare with the dates and configured depreciation duration." /*)*/;
   public static final String
       IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE =
           /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
