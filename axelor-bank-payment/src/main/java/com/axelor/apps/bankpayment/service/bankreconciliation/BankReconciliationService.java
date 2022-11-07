@@ -772,7 +772,7 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "self.move.statusSelect != :statusSelect"
+        "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
 
@@ -810,7 +810,8 @@ public class BankReconciliationService {
     BankPaymentConfig bankPaymentConfig =
         bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
 
-    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
