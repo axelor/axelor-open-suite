@@ -34,3 +34,7 @@
 "menu-stock-dashboard-2";"Admin"
 "stock-root-logistical-forms";"Admin"
 "stock-root-conf-cancel-reason";"Admin"
+"stock-root-custshipprep";"Admin"
+"stock-root-stock-correction";"Admin"
+"stock-root-abc-analysis";"Admin"
+"stock-root-conf-stock-correction-reason";"Admin"
