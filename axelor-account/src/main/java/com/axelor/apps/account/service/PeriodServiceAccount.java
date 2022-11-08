@@ -36,4 +36,7 @@ public interface PeriodServiceAccount {
 
   @CallMethod
   public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException;
+
+  @CallMethod
+  public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException;
 }
