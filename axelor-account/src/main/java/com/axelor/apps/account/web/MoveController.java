@@ -190,7 +190,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -609,8 +609,7 @@ public class MoveController {
       User user = AuthUtils.getUser();
       response.setValue(
           "$validatePeriod",
-          !Beans.get(PeriodServiceAccount.class)
-              .isAuthorizedToAccountOnPeriod(move.getPeriod(), user));
+          !Beans.get(PeriodServiceAccount.class).isAuthorizedToAccountOnPeriod(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

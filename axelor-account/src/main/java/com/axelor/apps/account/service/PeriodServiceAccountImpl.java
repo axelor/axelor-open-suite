@@ -129,4 +129,13 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     }
     return false;
   }
+
+  @Override
+  public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException {
+    if (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE) {
+      return true;
+    }
+    return isAuthorizedToAccountOnPeriod(move.getPeriod(), user);
+  }
 }
