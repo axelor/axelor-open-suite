@@ -43,9 +43,7 @@
             JOIN
                 auth_user AS _user
                 ON _user.id = :__user__
-            WHERE
-            	status.technical_type_select != 6
-			GROUP BY
+            GROUP BY
 				status.name,status.sequence
 			ORDER BY
 			   status.sequence
@@ -69,9 +67,7 @@
             JOIN
                 auth_user AS _user
                 ON _user.id = :__user__
-            WHERE
-            	status.technical_type_select not in (5,6)
-			GROUP BY
+            GROUP BY
 				status.name,status.sequence
 			ORDER BY
 			   status.sequence
@@ -115,8 +111,6 @@
     			base_source as Source ON self.source = Source.id
 			INNER JOIN
     			crm_opportunity_status as status ON status.id = self.opportunity_status
-			WHERE
-			status.technical_type_select = 5
 			GROUP BY
     			_source
 			ORDER BY
@@ -235,8 +229,6 @@
                 ON _user.id = :__user__
 			WHERE
 				self.expected_close_date < current_date+ interval '90 day'
-			AND
-				status.technical_type_select not in (5,6)
 			GROUP BY
 				status.name,status.sequence,pipeline
 			ORDER BY
@@ -306,7 +298,6 @@
                 auth_user AS _user
                 ON _user.id = :__user__
 			WHERE
-				selection_item.value = cast(self.status_select as char)	AND
 				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
                 AND message_key = selection_item.title AND meta_translation.language = _user.language
 	    	GROUP BY
@@ -347,7 +338,7 @@
                 auth_user AS _user
                 ON _user.id = :__user__
 			WHERE
-				selection_item.value = cast(self.status_select as char)	and sale_man.full_name != '' AND
+				sale_man.full_name != '' AND
 				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
                 AND message_key = selection_item.title AND meta_translation.language = _user.language
 	    	GROUP BY
