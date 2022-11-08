@@ -901,32 +901,23 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Override
   public List<Long> getAllowedCreditMoveLines(Reconcile reconcile) {
     StringBuilder moveLineQueryStr = new StringBuilder("self.credit > 0");
-    return getMoveLineIds(
-        reconcile, moveLineQueryStr, reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine());
+    return getMoveLineIds(reconcile, moveLineQueryStr, reconcile.getDebitMoveLine());
   }
 
   @Override
   public List<Long> getAllowedDebitMoveLines(Reconcile reconcile) {
 
     StringBuilder moveLineQueryStr = new StringBuilder("self.debit > 0");
-    return getMoveLineIds(
-        reconcile, moveLineQueryStr, reconcile.getDebitMoveLine(), reconcile.getCreditMoveLine());
+    return getMoveLineIds(reconcile, moveLineQueryStr, reconcile.getCreditMoveLine());
   }
 
   protected List<Long> getMoveLineIds(
-      Reconcile reconcile,
-      StringBuilder moveLineQueryStr,
-      MoveLine currentMoveLine,
-      MoveLine otherMoveLine) {
-    computeMoveLineDomain(moveLineQueryStr, currentMoveLine, otherMoveLine);
+      Reconcile reconcile, StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
+    computeMoveLineDomain(moveLineQueryStr, otherMoveLine);
 
-    Query<MoveLine> moveLineQuery =
-        moveLineRepo
-            .all()
-            .filter(moveLineQueryStr.toString())
-            .bind("company", reconcile.getCompany());
+    Query<MoveLine> moveLineQuery = getMoveLineQuery(reconcile, moveLineQueryStr);
 
-    moveLineQuery = setQueryBindings(moveLineQuery, currentMoveLine, otherMoveLine);
+    moveLineQuery = setQueryBindings(moveLineQuery, otherMoveLine);
 
     return moveLineQuery.fetch().stream()
         .filter(moveLineControlService::canReconcile)
@@ -934,54 +925,49 @@ public class ReconcileServiceImpl implements ReconcileService {
         .collect(Collectors.toList());
   }
 
-  protected void computeMoveLineDomain(
-      StringBuilder moveLineQueryStr, MoveLine currentMoveLine, MoveLine otherMoveLine) {
+  protected Query<MoveLine> getMoveLineQuery(Reconcile reconcile, StringBuilder moveLineQueryStr) {
+    return moveLineRepo
+            .all()
+            .filter(moveLineQueryStr.toString())
+            .bind("company", reconcile.getCompany());
+  }
 
-    Optional<MoveLine> optCurrentMoveLine = Optional.ofNullable(currentMoveLine);
-    Optional<MoveLine> optOtherMoveLine = Optional.ofNullable(otherMoveLine);
+  protected void computeMoveLineDomain(StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
 
     moveLineQueryStr.append(
         " AND self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
 
-    if (optCurrentMoveLine.isPresent() && !optOtherMoveLine.isPresent()) {
-      moveLineQueryStr.append(" AND self.account = :account");
+    if (otherMoveLine == null) {
+      return;
     }
 
-    if (optOtherMoveLine
-            .map(MoveLine::getAccount)
-            .map(Account::getUseForPartnerBalance)
-            .orElse(false)
-        && optOtherMoveLine.map(MoveLine::getPartner).isPresent()) {
-      addPartnerAndAccountToDomain(moveLineQueryStr);
+    moveLineQueryStr.append(" AND self.account = :account");
+
+    if (otherMoveLine.getAccount().getUseForPartnerBalance()
+        && otherMoveLine.getPartner() != null) {
+      moveLineQueryStr.append(" AND self.partner = :partner");
     }
   }
 
   protected Query<MoveLine> setQueryBindings(
-      Query<MoveLine> moveLineQuery, MoveLine currentMoveLine, MoveLine otherMoveLine) {
+      Query<MoveLine> moveLineQuery, MoveLine otherMoveLine) {
 
-    Optional<MoveLine> optCurrentMoveLine = Optional.ofNullable(currentMoveLine);
-    Optional<MoveLine> optOtherMoveLine = Optional.ofNullable(otherMoveLine);
+    Account account = null;
+    Partner partner = null;
 
-    if (optCurrentMoveLine.isPresent() && !optOtherMoveLine.isPresent()) {
-      moveLineQuery = moveLineQuery.bind("account", optCurrentMoveLine.get().getAccount());
-      return moveLineQuery;
+    if (otherMoveLine != null){
+      account = otherMoveLine.getAccount();
+      partner = otherMoveLine.getPartner();
     }
 
-    if (optOtherMoveLine
-            .map(MoveLine::getAccount)
-            .map(Account::getUseForPartnerBalance)
-            .orElse(false)
-        && optOtherMoveLine.map(MoveLine::getPartner).isPresent()) {
-      moveLineQuery.bind("partner", optOtherMoveLine.get().getPartner());
-      moveLineQuery.bind("account", optOtherMoveLine.get().getAccount());
-      return moveLineQuery;
+    if (account != null) {
+      moveLineQuery = moveLineQuery.bind("account", account);
+
+      if (account.getUseForPartnerBalance() && partner != null) {
+        moveLineQuery.bind("partner", partner);
+      }
     }
 
     return moveLineQuery;
-  }
-
-  protected void addPartnerAndAccountToDomain(StringBuilder moveLineQueryStr) {
-    moveLineQueryStr.append(" AND self.partner = :partner");
-    moveLineQueryStr.append(" AND self.account = :account");
   }
 }
