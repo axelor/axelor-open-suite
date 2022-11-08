@@ -3,10 +3,13 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import org.apache.commons.collections.CollectionUtils;
@@ -126,6 +129,14 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
             && accountConfigService
                 .getAccountConfig(invoice.getCompany())
                 .getIsManagePFPInRefund());
+  }
+
+  @Override
+  public boolean getPaymentVouchersStatus(Invoice invoice) throws AxelorException {
+    AppAccountService appAccount = Beans.get(AppAccountService.class);
+    return (InvoiceToolService.isPurchase(invoice))
+        ? appAccount.getAppAccount().getPaymentVouchersOnSupplierInvoice()
+        : appAccount.getAppAccount().getPaymentVouchersOnCustomerInvoice();
   }
 
   protected boolean _getUserCondition(Invoice invoice, User user) {

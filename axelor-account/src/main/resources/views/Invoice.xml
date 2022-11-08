@@ -873,11 +873,9 @@ InvoiceSet.length > 0))"
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
           onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
         <button name="addPaymentBtn" title="Register payment" colSpan="12"
-          onClick="action-invoice-group-add-invoice-payment" hidden="true"
-          if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
+          onClick="action-invoice-group-add-invoice-payment" hidden="true"/>
         <button name="registerPaymentBtn" title="Register payment" colSpan="12"
-          onClick="save,action-invoice-view-register-payment-voucher" hidden="true"
-          if="__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
+          onClick="save,action-invoice-view-register-payment-voucher" hidden="true"/>
         <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
         <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
         <field name="pfpValidatorUser" hidden="true"
@@ -1203,12 +1201,10 @@ InvoiceSet.length > 0))"
           onClick="save,action-invoice-record-draft,save"/>
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
-          colSpan="12" onClick="action-invoice-group-add-invoice-payment"
-          if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
+          colSpan="12" onClick="action-invoice-group-add-invoice-payment"/>
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
-          colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
-          if="__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
+          colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"/>
         <field name="amountRemaining" hidden="true"/>
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
@@ -1492,7 +1488,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-invoice-record-printing-fields"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-display-stock-move-on-invoice-printing"
@@ -1512,7 +1507,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-attrs-change-create-refund-title"/>
-    <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
@@ -1789,13 +1783,6 @@ InvoiceSet.length > 0))"
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
-  </action-record>
-
-  <action-record
-    name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="$paymentVouchersOnInvoice"
-      expr="eval: __config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"

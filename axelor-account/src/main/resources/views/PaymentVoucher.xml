@@ -265,7 +265,7 @@
 
   <action-record name="action-payment-voucher-getDate"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="paymentDate" expr="eval: __config__.date"/>
   </action-record>
 
   <action-record name="action-payment-voucher-record-cheque-due-date"
@@ -303,7 +303,7 @@
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
     </filter>
     <filter title="Customer payments waiting for deposit slip"
-      if="__config__.app.getApp('account')?.paymentVouchersOnInvoice">
+      if="__config__.app.getApp('account').paymentVouchersOnCustomerInvoice">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
     </filter>
     <filter title="Confirmed Customer payments">

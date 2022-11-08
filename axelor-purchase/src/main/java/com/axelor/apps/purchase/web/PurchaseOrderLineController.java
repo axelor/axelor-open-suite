@@ -26,7 +26,9 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -126,6 +128,8 @@ public class PurchaseOrderLineController {
 
     Context context = request.getContext();
 
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
     PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
     PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
@@ -136,6 +140,7 @@ public class PurchaseOrderLineController {
 
     try {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+      TaxService taxService = Beans.get(TaxService.class);
 
       BigDecimal price =
           purchaseOrderLine.getProduct().getInAti()
@@ -189,10 +194,11 @@ public class PurchaseOrderLineController {
                 != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           response.setValue(
               "discountAmount",
-              purchaseOrderLineService.convertUnitPrice(
+              taxService.convertUnitPrice(
                   purchaseOrderLine.getProduct().getInAti(),
                   purchaseOrderLine.getTaxLine(),
-                  (BigDecimal) discounts.get("discountAmount")));
+                  (BigDecimal) discounts.get("discountAmount"),
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("discountAmount", discounts.get("discountAmount"));
         }
@@ -208,14 +214,20 @@ public class PurchaseOrderLineController {
           response.setValue("inTaxPrice", price);
           response.setValue(
               "price",
-              purchaseOrderLineService.convertUnitPrice(
-                  true, purchaseOrderLine.getTaxLine(), price));
+              taxService.convertUnitPrice(
+                  true,
+                  purchaseOrderLine.getTaxLine(),
+                  price,
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("price", price);
           response.setValue(
               "inTaxPrice",
-              purchaseOrderLineService.convertUnitPrice(
-                  false, purchaseOrderLine.getTaxLine(), price));
+              taxService.convertUnitPrice(
+                  false,
+                  purchaseOrderLine.getTaxLine(),
+                  price,
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         }
       }
 
@@ -241,7 +253,12 @@ public class PurchaseOrderLineController {
 
       response.setValue(
           "price",
-          Beans.get(PurchaseOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -264,7 +281,12 @@ public class PurchaseOrderLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(PurchaseOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -344,10 +366,16 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
 
-      service.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
-      service.checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(SupplierCatalogService.class)
+          .checkMinQty(
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany(),
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

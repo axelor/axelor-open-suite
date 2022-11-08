@@ -201,7 +201,8 @@ public class BankReconciliationService {
     List<BankStatementRule> bankStatementRules;
     while (bankReconciliationLines.size() > 0) {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-        if (bankReconciliationLine.getMoveLine() != null) {
+        if (bankReconciliationLine.getMoveLine() != null
+            || bankReconciliationLine.getBankStatementLine() == null) {
           continue;
         }
         scriptContext =
@@ -295,9 +296,11 @@ public class BankReconciliationService {
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
     String description = "";
-    description =
-        description.concat(bankReconciliationLine.getBankStatementLine().getDescription());
+    if (bankStatementLine != null) {
+      description = description.concat(bankStatementLine.getDescription());
+    }
     description = StringTool.cutTooLongString(description);
 
     if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
@@ -314,7 +317,7 @@ public class BankReconciliationService {
         moveCreateService.createMove(
             accountManagement.getJournal(),
             accountManagement.getCompany(),
-            bankReconciliationLine.getBankStatementLine().getCurrency(),
+            bankStatementLine != null ? bankStatementLine.getCurrency() : null,
             partner,
             bankReconciliationLine.getEffectDate(),
             bankReconciliationLine.getEffectDate(),
@@ -322,7 +325,7 @@ public class BankReconciliationService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankReconciliationLine.getBankStatementLine().getOrigin(),
+            bankStatementLine != null ? bankStatementLine.getOrigin() : null,
             description,
             bankReconciliationLine.getBankReconciliation().getBankDetails());
 
@@ -865,15 +868,14 @@ public class BankReconciliationService {
     Context scriptContext;
     for (BankStatementQuery bankStatementQuery : bankStatementQueries) {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-        if (bankReconciliationLine.getMoveLine() != null) {
+        BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+        if (bankReconciliationLine.getMoveLine() != null || bankStatementLine == null) {
           continue;
         }
         for (MoveLine moveLine : moveLines) {
-          bankReconciliationLine.getBankStatementLine().setMoveLine(moveLine);
+          bankStatementLine.setMoveLine(moveLine);
           scriptContext =
-              new Context(
-                  Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
-                  BankStatementLineAFB120.class);
+              new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
           String query =
               computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
@@ -889,7 +891,7 @@ public class BankReconciliationService {
             moveLines.remove(moveLine);
             break;
           }
-          bankReconciliationLine.getBankStatementLine().setMoveLine(null);
+          bankStatementLine.setMoveLine(null);
         }
         if (bankReconciliationLine.getMoveLine() != null) {
           continue;

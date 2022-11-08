@@ -159,8 +159,7 @@
         showIf="actionSelect == 26" colSpan="12">
         <field name="accountingCutOffTypeSelect"
           onChange="action-group-accounting-batch-onchange-accounting-type"/>
-        <field name="moveDescription" requiredIf="actionSelect == 26"/>
-        <panel colSpan="6" itemSpan="12">
+        <panel colSpan="3" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 26"
             validIf="actionSelect != 26 || $moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
             help="Please, enter only dates with the last day of month"
@@ -169,6 +168,8 @@
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
         </panel>
+        <field name="moveDescription" requiredIf="actionSelect == 26" colSpan="3"/>
+
         <panel name="expensesIncomesPanel" colSpan="12" itemSpan="3"
           showIf="actionSelect == 26">
           <field name="automaticReverse"/>
@@ -189,7 +190,7 @@
             onSelect="action-attrs-accounting-batch-set-journal-domain"
             hideIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="cutOffMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
-          <field name="previewRecordsToProcess" colSpan="6"/>
+          <spacer colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="ati"
             showIf="!recoveredTax &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
@@ -247,6 +248,9 @@
         onClick="save,action-accounting-batch-method-moves-consistency-control"/>
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
         showIf="actionSelect == 26" onClick="action-accounting-batch-group-accounting-cut-off"/>
+      <field name="previewRecordsToProcess" colSpan="6" widget="boolean-switch"
+        showIf="actionSelect == 26"/>
+
     </panel>
   </form>
   <action-method name="action-method-accounting-batch-invoice-to-be-processed">
@@ -302,10 +306,8 @@
   <!-- ACTION RECORD -->
   <action-record name="action-accounting-batch-record-on-new"
     model="com.axelor.apps.account.db.AccountingBatch">
-    <field name="createdOn" expr="__config__.app.getTodayDateTime(null)"/>
     <field name="createdOn"
-      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"/>
     <field name="createdOn"
       expr="eval: __config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
@@ -332,12 +334,12 @@
     <field name="moveDate"
       expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
     <field name="moveDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
+      expr="eval: __config__.date.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
       if="__user__.activeCompany != null"/>
     <field name="reverseMoveDate"
       expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"/>
     <field name="reverseMoveDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
+      expr="eval: __config__.date.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
       if="__user__.activeCompany != null"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_ACCOUNTED"/>
     <field name="researchJournal" expr="eval: null"/>

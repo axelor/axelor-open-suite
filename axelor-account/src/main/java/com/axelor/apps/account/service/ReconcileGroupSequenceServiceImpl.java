@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -43,7 +42,8 @@ public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequence
     }
     String code =
         Beans.get(SequenceService.class)
-            .getSequenceNumber(sequenceCode, reconcileGroup.getCompany(), Reconcile.class, "code");
+            .getSequenceNumber(
+                sequenceCode, reconcileGroup.getCompany(), ReconcileGroup.class, "code");
 
     if (code == null) {
       throw new AxelorException(

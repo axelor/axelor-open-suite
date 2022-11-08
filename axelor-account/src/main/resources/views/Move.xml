@@ -125,7 +125,7 @@
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" type="boolean" hidden="true"/>
-          <field name="paymentCondition.isFree"/>
+          <field name="paymentCondition.isFree" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
@@ -754,9 +754,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
-    <field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
-    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="date == null &amp;&amp; __user__.activeCompany != null"/>
+    <field name="date" expr="eval:__config__.date" if="date == null"/>
     <field name="date"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
       if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>

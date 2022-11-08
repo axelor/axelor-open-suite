@@ -1,0 +1,5 @@
+---
+title: "ACCOUNT CONFIG : split paymentVouchersOnInvoice boolean into two new booleans."
+type: feature
+description: |
+  New booleans are paymentVouchersOnSupplierInvoice and paymentVouchersOnCustomerInvoice

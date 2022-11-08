@@ -316,6 +316,7 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingReason(null);
     copy.setBillOfExchangeBlockingToDate(null);
     copy.setBillOfExchangeBlockingByUser(null);
+    copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
   }
 

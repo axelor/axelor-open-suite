@@ -16,13 +16,18 @@
     <extend target="//field[@name='miscOpeJournal']">
       <insert position="before">
         <field name="forecastedInvCustAccount"
-          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"
-          domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-          form-view="account-form" colSpan="6" showIf="accountingCutOffTypeSelect &lt;= 2"/>
+          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect == 2"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
+          grid-view="account-grid" form-view="account-form" colSpan="6"
+          showIf="accountingCutOffTypeSelect == 2" hidden="true"/>
+        <spacer colSpan="6" showIf="accountingCutOffTypeSelect == 2" hidden="true"/>
         <field name="forecastedInvSuppAccount"
-          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"
-          domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-          form-view="account-form" colSpan="6" showIf="accountingCutOffTypeSelect &lt;= 2"/>
+          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect == 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'payable'"
+          grid-view="account-grid" form-view="account-form" colSpan="6"
+          showIf="accountingCutOffTypeSelect == 1" hidden="true"/>
+        <spacer colSpan="6" showIf="accountingCutOffTypeSelect == 1" hidden="true"/>
+
       </insert>
     </extend>
   </form>
