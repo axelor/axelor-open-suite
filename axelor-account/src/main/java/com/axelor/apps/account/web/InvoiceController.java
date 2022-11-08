@@ -101,7 +101,7 @@ public class InvoiceController {
       invoice = Beans.get(InvoiceService.class).compute(invoice);
       response.setValues(invoice);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
