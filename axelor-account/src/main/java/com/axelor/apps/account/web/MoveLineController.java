@@ -800,7 +800,7 @@ public class MoveLineController {
         TaxLine taxLine = moveLine.getTaxLine();
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (fiscalPosition != null) {
+        if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
 
