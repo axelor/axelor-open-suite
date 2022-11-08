@@ -544,6 +544,7 @@
 "F3 - Sender bank siren number","F3 - SIREN du cédant",,
 "F3 - Sender company siren number","F3 - SIREN du tireur",,
 "F3-4 - SIREN number","F3-4 - Numéro de SIREN",,
+"Failed to create a move for the invoice payment.","Échec lors de la création d'écriture pour la facture de paiement",,
 "Failed to create bank order from invoice payment","Échec lors de la création de l'ordre bancaire provenant du paiement de facture",,
 "Fax","Fax",,
 "Fees imputation","Mode d'imputation des frais",,
