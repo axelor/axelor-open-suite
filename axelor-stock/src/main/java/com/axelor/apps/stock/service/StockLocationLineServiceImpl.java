@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -31,7 +32,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -46,6 +47,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +145,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (stockLocationLineUnit == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_MISSING_UNIT),
           stockLocation.getName(),
           product.getFullName());
     }
@@ -154,7 +156,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {} ",
+        "Stock update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {}, Future quantity? {}, Is increment? {}, Date? {} ",
         stockLocation.getName(),
         product.getCode(),
         qty,
@@ -251,7 +253,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_3),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_3),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
     }
@@ -283,7 +285,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (stockLocationLineUnit == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DETAIL_LOCATION_LINE_MISSING_UNIT),
+          I18n.get(StockExceptionMessage.DETAIL_LOCATION_LINE_MISSING_UNIT),
           trackingNumber.getTrackingNumberSeq(),
           stockLocation.getName(),
           product.getFullName());
@@ -295,7 +297,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
+        "Stock detail update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {}, Future quantity? {}, Is increment? {}, Date? {}, Tracking number? {} ",
         stockLocation.getName(),
         product.getCode(),
         qty,
@@ -331,7 +333,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_1),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
 
@@ -352,7 +354,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_2),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_2),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode(),
           trackingNumber);
@@ -373,7 +375,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_1),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
     }
@@ -421,7 +423,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Récupération ligne de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {} ",
+        "Get stock line: Stock location? {}, Product? {}, Current quantity? {}, Future quantity? {}, Date? {} ",
         stockLocationLine.getStockLocation().getName(),
         product.getCode(),
         stockLocationLine.getCurrentQty(),
@@ -444,7 +446,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     LOG.debug(
-        "Récupération ligne de détail de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {}, Variante? {}, Num de suivi? {} ",
+        "Get stock line detail: Stock location? {}, Product? {}, Current quantity? {}, Future quantity? {}, Date? {}, Num de suivi? {} ",
         detailLocationLine.getDetailsStockLocation().getName(),
         product.getCode(),
         detailLocationLine.getCurrentQty(),
@@ -503,7 +505,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   public StockLocationLine createLocationLine(StockLocation stockLocation, Product product) {
 
     LOG.debug(
-        "Création d'une ligne de stock : Entrepot? {}, Produit? {} ",
+        "Stock line creation : Stock location? {}, Product? {} ",
         stockLocation.getName(),
         product.getCode());
 
@@ -524,7 +526,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber) {
 
     LOG.debug(
-        "Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Num de suivi? {} ",
+        "Stock line detail creation : Stock location? {}, Product? {}, Tracking number? {} ",
         stockLocation.getName(),
         product.getCode(),
         trackingNumber.getTrackingNumberSeq());
@@ -631,7 +633,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (stockLocationLine.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_MISSING_UNIT),
           stockLocationLine.getStockLocation().getName(),
           product.getFullName());
     }
@@ -768,5 +770,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine) {
     stockLocationLine.setAvgPrice(wap);
     wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine);
+  }
+
+  @Override
+  public void updateWap(
+      StockLocationLine stockLocationLine,
+      BigDecimal wap,
+      StockMoveLine stockMoveLine,
+      LocalDate date,
+      String origin) {
+    if (origin == null) {
+      origin =
+          Optional.ofNullable(stockMoveLine)
+              .map(StockMoveLine::getStockMove)
+              .map(StockMove::getStockMoveSeq)
+              .orElse("");
+    }
+    stockLocationLine.setAvgPrice(wap);
+    wapHistoryService.saveWapHistory(stockLocationLine, date, origin);
   }
 }

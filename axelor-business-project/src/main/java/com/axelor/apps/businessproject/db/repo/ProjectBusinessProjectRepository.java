@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.project.db.Project;
@@ -45,13 +45,14 @@ public class ProjectBusinessProjectRepository extends ProjectHRRepository {
         Company company = project.getCompany();
         String seq =
             Beans.get(SequenceService.class)
-                .getSequenceNumber(SequenceRepository.PROJECT_SEQUENCE, company);
+                .getSequenceNumber(
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code");
 
         if (seq == null) {
           throw new AxelorException(
               company,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PROJECT_SEQUENCE_ERROR),
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_SEQUENCE_ERROR),
               company.getName());
         }
 

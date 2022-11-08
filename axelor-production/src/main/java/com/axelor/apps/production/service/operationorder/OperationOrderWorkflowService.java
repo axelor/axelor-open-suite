@@ -33,7 +33,8 @@ import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -50,7 +51,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,6 +65,7 @@ public class OperationOrderWorkflowService {
   protected AppProductionService appProductionService;
   protected MachineToolRepository machineToolRepo;
   protected WeeklyPlanningService weeklyPlanningService;
+  protected ProdProcessLineService prodProcessLineService;
 
   @Inject
   public OperationOrderWorkflowService(
@@ -73,13 +74,15 @@ public class OperationOrderWorkflowService {
       OperationOrderDurationRepository operationOrderDurationRepo,
       AppProductionService appProductionService,
       MachineToolRepository machineToolRepo,
-      WeeklyPlanningService weeklyPlanningService) {
+      WeeklyPlanningService weeklyPlanningService,
+      ProdProcessLineService prodProcessLineService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
     this.appProductionService = appProductionService;
     this.machineToolRepo = machineToolRepo;
     this.weeklyPlanningService = weeklyPlanningService;
+    this.prodProcessLineService = prodProcessLineService;
   }
 
   @Transactional
@@ -291,7 +294,7 @@ public class OperationOrderWorkflowService {
         throw new AxelorException(
             workCenter,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
       duration += machine.getStartingDuration();
@@ -525,8 +528,11 @@ public class OperationOrderWorkflowService {
                 "self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL",
                 operationOrder.getId())
             .fetchOne();
-    duration.setStoppedBy(AuthUtils.getUser());
-    duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+
+    if (duration != null) {
+      duration.setStoppedBy(AuthUtils.getUser());
+      duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+    }
 
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
@@ -537,7 +543,9 @@ public class OperationOrderWorkflowService {
       }
     }
 
-    operationOrderDurationRepo.save(duration);
+    if (duration != null) {
+      operationOrderDurationRepo.save(duration);
+    }
   }
 
   /**
@@ -651,53 +659,7 @@ public class OperationOrderWorkflowService {
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
-    long duration = 0;
-    if (prodProcessLine.getWorkCenter() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
-          prodProcessLine.getProdProcess() != null
-              ? prodProcessLine.getProdProcess().getCode()
-              : "null",
-          prodProcessLine.getName());
-    }
-
-    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
-
-    BigDecimal nbCycles;
-    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-      nbCycles = qty;
-    } else {
-      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
-    }
-
-    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      Machine machine = workCenter.getMachine();
-      if (machine == null) {
-        throw new AxelorException(
-            workCenter,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
-            workCenter.getName());
-      }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
-      duration +=
-          nbCycles
-              .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(machine.getSetupDuration()))
-              .longValue();
-    }
-
-    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
-    duration += nbCycles.multiply(durationPerCycle).longValue();
-
-    return duration;
+    return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
   }
 
   private void calculateHoursOfUse(OperationOrder operationOrder) {

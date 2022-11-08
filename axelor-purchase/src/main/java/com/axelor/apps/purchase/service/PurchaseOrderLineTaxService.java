@@ -27,7 +27,12 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +65,7 @@ public class PurchaseOrderLineTaxService {
 
     if (purchaseOrderLineList != null && !purchaseOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de commande fournisseur.");
+      LOG.debug("Creation of tax lines for purchase order lines.");
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
@@ -74,7 +79,7 @@ public class PurchaseOrderLineTaxService {
                 : null;
 
         if (taxLine != null) {
-          LOG.debug("TVA {}", taxLine);
+          LOG.debug("VAT {}", taxLine);
 
           if (map.containsKey(taxLine)) {
 
@@ -100,7 +105,7 @@ public class PurchaseOrderLineTaxService {
         }
 
         if (taxLineRC != null) {
-          LOG.debug("TVA {}", taxLineRC);
+          LOG.debug("VAT {}", taxLineRC);
 
           if (map.containsKey(taxLineRC)) {
 
@@ -144,14 +149,15 @@ public class PurchaseOrderLineTaxService {
       if (purchaseOrderLineTax.getTaxLine() != null)
         taxTotal =
             purchaseOrderToolService.computeAmount(
-                exTaxBase, purchaseOrderLineTax.getTaxLine().getValue());
+                exTaxBase,
+                purchaseOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
       purchaseOrderLineTax.setTaxTotal(taxTotal);
       purchaseOrderLineTax.setInTaxTotal(purchaseOrderLineTax.getExTaxBase().add(taxTotal));
 
       purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "Tax line : Tax total => {}, Total W.T. => {}",
           new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
     }
 

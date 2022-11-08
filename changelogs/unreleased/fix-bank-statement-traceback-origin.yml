@@ -1,0 +1,3 @@
+---
+title: "BankStatement : Fix bank statement related traced exception not having an origin"
+type: fix

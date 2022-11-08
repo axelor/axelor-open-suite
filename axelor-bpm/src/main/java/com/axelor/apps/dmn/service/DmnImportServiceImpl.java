@@ -19,7 +19,7 @@ package com.axelor.apps.dmn.service;
 
 import com.axelor.apps.bpm.db.WkfDmnModel;
 import com.axelor.apps.bpm.db.repo.WkfDmnModelRepository;
-import com.axelor.apps.bpm.exception.IExceptionMessage;
+import com.axelor.apps.bpm.exception.BpmExceptionMessage;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.exception.AxelorException;
@@ -61,7 +61,8 @@ public class DmnImportServiceImpl implements DmnImportService {
     String extension = Files.getFileExtension(dataFile.getFileName());
     if (extension == null || (!extension.equals("xlsx") && !extension.equals("xls"))) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.INVALID_IMPORT_FILE);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          BpmExceptionMessage.INVALID_IMPORT_FILE);
     }
 
     DataReaderService reader = dataReaderFactory.getDataReader(extension);
@@ -116,7 +117,7 @@ public class DmnImportServiceImpl implements DmnImportService {
         if (rule.getOutputEntries().isEmpty()) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              IExceptionMessage.EMPTY_OUTPUT_COLUMN);
+              BpmExceptionMessage.EMPTY_OUTPUT_COLUMN);
         }
         table.getRules().add(rule);
       }
@@ -142,7 +143,7 @@ public class DmnImportServiceImpl implements DmnImportService {
 
     if (StringUtils.isBlank(headerRow[cellIndex])) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.INVALID_HEADER);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, BpmExceptionMessage.INVALID_HEADER);
     }
 
     String header = headerRow[cellIndex].trim();
@@ -175,7 +176,7 @@ public class DmnImportServiceImpl implements DmnImportService {
     }
 
     throw new AxelorException(
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.INVALID_HEADER);
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, BpmExceptionMessage.INVALID_HEADER);
   }
 
   private Rule createEntries(

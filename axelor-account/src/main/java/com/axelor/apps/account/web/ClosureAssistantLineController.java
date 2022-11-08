@@ -6,7 +6,7 @@ import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
@@ -86,7 +86,7 @@ public class ClosureAssistantLineController {
         response.setError(
             I18n.get(
                 String.format(
-                    IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR,
+                    AccountExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR,
                     closureAssistant.getFiscalYear().getCode(),
                     closureAssistant.getCompany().getCode())));
       }
@@ -123,7 +123,7 @@ public class ClosureAssistantLineController {
       AccountService accountService = Beans.get(AccountService.class);
       BigDecimal income =
           accountService.computeBalance(
-              incomeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+              incomeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
       BigDecimal charge =
           accountService.computeBalance(
               chargeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
@@ -133,6 +133,9 @@ public class ClosureAssistantLineController {
       response.setAttr("income", "value", income);
       response.setAttr("charge", "value", charge);
       response.setAttr("profit", "value", profit);
+      if (profit.signum() < 0) {
+        response.setAttr("profit", "title", I18n.get("Loss"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

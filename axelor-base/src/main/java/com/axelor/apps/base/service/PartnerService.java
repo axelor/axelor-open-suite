@@ -151,8 +151,6 @@ public interface PartnerService {
 
   String computeCompanyStr(Partner partner);
 
-  String getPartnerDomain(Partner partner);
-
   String getTaxNbrFromRegistrationCode(Partner partner);
 
   String getNicFromRegistrationCode(Partner partner);
@@ -160,6 +158,4 @@ public interface PartnerService {
   String getSirenFromRegistrationCode(Partner partner);
 
   boolean isRegistrationCodeValid(Partner partner);
-
-  List<Long> getPartnerIdsByType(String type);
 }

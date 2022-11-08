@@ -19,7 +19,7 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,7 +38,7 @@ public class BankDetailsListener {
               && details.getActive()) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(IExceptionMessage.DUPLICATE_ACTIVE_BANK_DETAILS));
+                I18n.get(BaseExceptionMessage.DUPLICATE_ACTIVE_BANK_DETAILS));
           }
         }
       }

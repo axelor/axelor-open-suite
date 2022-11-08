@@ -48,10 +48,6 @@ public class FixedAssetLineEconomicComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return fixedAsset.getFailoverDate();
     }
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAssetDateService.computeLastDayOfPeriodicity(
-          fixedAsset, fixedAsset.getFirstServiceDate());
-    }
     return fixedAsset.getFirstDepreciationDate();
   }
 
@@ -73,19 +69,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAssetDateService.computeLastDayOfPeriodicity(
-          fixedAsset, fixedAsset.getFirstServiceDate());
-    }
-    return fixedAsset.getFirstDepreciationDate();
-  }
 
-  @Override
-  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAsset.getFirstServiceDate();
-    }
-    return fixedAsset.getAcquisitionDate();
+    return fixedAsset.getFirstDepreciationDate();
   }
 
   @Override
@@ -94,8 +79,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation();
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation());
   }
 
   @Override
@@ -140,8 +125,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -164,5 +149,10 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+    return fixedAsset.getFirstDepreciationDateInitSelect();
   }
 }

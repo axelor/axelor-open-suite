@@ -29,6 +29,7 @@
       public static final int ELEMENT_FORECAST = 5;  // Forecast
       public static final int ELEMENT_OPPORTUNITY = 6;  // Opportunity
       public static final int ELEMENT_SALARY = 7;  // Salary
+      public static final int ELEMENT_MOVE = 8;  // Move
 
   ]]></extra-code>
     <track>

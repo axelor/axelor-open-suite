@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder.pricing;
 
 import com.axelor.apps.base.db.Pricing;
@@ -7,6 +24,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import java.util.Objects;
 
 public class SaleOrderLinePricingObserver implements PricingObserver {
@@ -20,6 +38,9 @@ public class SaleOrderLinePricingObserver implements PricingObserver {
 
   @Override
   public void updatePricing(Pricing pricing) {
+    if (logs.length() > 0) {
+      logs.append("\n");
+    }
     logs.append(
         String.format(
             I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_IDENTIFIED_PRICING), pricing.getName()));
@@ -74,5 +95,14 @@ public class SaleOrderLinePricingObserver implements PricingObserver {
     } else {
       this.saleOrderLine.setPricingScaleLogs(logs.toString());
     }
+  }
+
+  @Override
+  public void updateMetaJsonFieldToPopulate(MetaJsonField field) {
+    logs.append(
+        String.format(
+            I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_POPULATED_CUSTOM_FIELD),
+            field != null ? field.getName() : "null"));
+    logs.append("\n");
   }
 }

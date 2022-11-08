@@ -9,7 +9,7 @@ import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -82,7 +82,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
     if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null) == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+          I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
     }
     AccountingBatch accountingBatch = new AccountingBatch();
     switch (closureAssistantLine.getActionSelect()) {

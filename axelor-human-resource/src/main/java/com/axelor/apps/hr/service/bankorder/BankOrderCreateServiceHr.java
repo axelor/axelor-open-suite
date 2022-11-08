@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.bankorder;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -70,7 +71,12 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
     Currency currency = company.getCurrency();
-    LocalDate paymentDate = Beans.get(AppBaseService.class).getTodayDate(company);
+    LocalDate paymentDate =
+        expense.getPaymentDate() != null
+            ? expense.getPaymentDate()
+            : Beans.get(AppBaseService.class)
+                .getTodayDate(
+                    company); // Take into consideration today's date if paymentDate is null
 
     BankOrder bankOrder =
         super.createBankOrder(
@@ -82,7 +88,9 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             currency,
             expense.getFullName(),
             expense.getFullName(),
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE,
+            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(

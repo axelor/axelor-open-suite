@@ -20,7 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -64,11 +64,11 @@ public class AnalyticAxisControlServiceImpl implements AnalyticAxisControlServic
       if (analyticAxis.getCompany() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-            I18n.get(IExceptionMessage.NOT_UNIQUE_CODE_ANALYTIC_AXIS_NULL_COMPANY));
+            I18n.get(AccountExceptionMessage.NOT_UNIQUE_CODE_ANALYTIC_AXIS_NULL_COMPANY));
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-          I18n.get(IExceptionMessage.NOT_UNIQUE_CODE_ANALYTIC_AXIS_WITH_COMPANY),
+          I18n.get(AccountExceptionMessage.NOT_UNIQUE_CODE_ANALYTIC_AXIS_WITH_COMPANY),
           analyticAxis.getCompany().getName());
     }
   }

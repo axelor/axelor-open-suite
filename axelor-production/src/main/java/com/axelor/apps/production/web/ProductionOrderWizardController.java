@@ -18,7 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
@@ -52,7 +52,7 @@ public class ProductionOrderWizardController {
       if (ChronoUnit.MINUTES.between(
               Beans.get(AppProductionService.class).getTodayDateTime(), startDateT)
           < 0) {
-        response.setError(I18n.get(IExceptionMessage.PRODUCTION_ORDER_5));
+        response.setError(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_5));
       }
     }
 
@@ -66,15 +66,15 @@ public class ProductionOrderWizardController {
           || ChronoUnit.MINUTES.between(
                   Beans.get(AppProductionService.class).getTodayDateTime(), endDateT)
               < 0) {
-        response.setError(I18n.get(IExceptionMessage.PRODUCTION_ORDER_5));
+        response.setError(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_5));
       }
     }
 
     if (context.get("qty") == null
         || new BigDecimal((String) context.get("qty")).compareTo(BigDecimal.ZERO) <= 0) {
-      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3) + " !");
+      response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_3) + " !");
     } else if (context.get("billOfMaterial") == null) {
-      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4) + " !");
+      response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_4) + " !");
     } else {
       response.setView(
           ActionView.define(I18n.get("Production order generated"))

@@ -44,7 +44,7 @@
     <field name="realDate"/>
     <field name="fromAddressStr" hidden="true"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="statusSelect"/>
     <field name="availableStatusSelect">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -61,6 +61,27 @@
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
+
+  <form id="supplychain-stock-move-form" name="stock-move-form" title="Stock move"
+    model="com.axelor.apps.stock.db.StockMove" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-stock-stockmove-onnew, action-stock-move-attrs-fill-ctx"/>
+      <attribute name="onLoad"
+        value="action-group-stock-stockmove-onload, action-stock-move-attrs-fill-ctx"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']">
+      <insert position="after">
+        <panel name="hiddenPanel" hidden="true">
+          <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-stock-move-attrs-fill-ctx">
+    <attribute name="value" for="$_xFillProductAvailableQty" expr="eval: true"/>
+  </action-attrs>
 
   <form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove"
     title="Mass Cust. Stock Move Invoicing">

@@ -19,7 +19,7 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
@@ -29,7 +29,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
@@ -45,9 +44,6 @@ public class SupplychainBatchService extends AbstractBatchService {
     SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
     switch (supplychainBatch.getActionSelect()) {
-      case SupplychainBatchRepository.ACTION_ACCOUNTING_CUT_OFF:
-        batch = accountingCutOff(supplychainBatch);
-        break;
       case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
         batch = invoiceOutgoingStockMoves(supplychainBatch);
         break;
@@ -60,16 +56,12 @@ public class SupplychainBatchService extends AbstractBatchService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             supplychainBatch.getActionSelect(),
             supplychainBatch.getCode());
     }
 
     return batch;
-  }
-
-  public Batch accountingCutOff(SupplychainBatch supplychainBatch) {
-    return Beans.get(BatchAccountingCutOff.class).run(supplychainBatch);
   }
 
   public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
@@ -86,17 +78,6 @@ public class SupplychainBatchService extends AbstractBatchService {
         throw new IllegalArgumentException(
             String.format(
                 "Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
-    }
-  }
-
-  public void checkDates(SupplychainBatch supplychainBatch) throws AxelorException {
-    LocalDate date = supplychainBatch.getMoveDate();
-    if (date != null
-        && date.getDayOfMonth()
-            != date.plusMonths(1).withDayOfMonth(1).minusDays(1).getDayOfMonth()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.BATCH_MOVE_DATE_ERROR));
     }
   }
 

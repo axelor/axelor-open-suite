@@ -219,7 +219,7 @@
         colSpan="6"/>
       <field name="team" canEdit="false" onSelect="action-event-attrs-team-domain"
         form-view="team-form" grid-view="team-grid"
-        if="__config__.app.getApp('base').getTeamManagement()"/>
+        if="__config__.app.getApp('base')?.getTeamManagement()"/>
     </panel>
 
     <panel sidebar="true" title="Characteristics" name="meetingAttributesPanel"
@@ -641,7 +641,7 @@
 
   <search-filters name="crm-tasks-filters" model="com.axelor.apps.crm.db.Event"
     title="Tasks filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Tasks">
       <domain>self.user = :__user__</domain>
     </filter>
@@ -659,7 +659,7 @@
 
   <search-filters name="meeting-filters" model="com.axelor.apps.crm.db.Event"
     title="Meeting filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Meetings">
       <domain>self.user = :__user__</domain>
     </filter>
@@ -673,7 +673,7 @@
 
   <search-filters name="call-filters" model="com.axelor.apps.crm.db.Event"
     title="Call filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Calls">
       <domain>self.user = :__user__</domain>
     </filter>
@@ -687,7 +687,7 @@
 
   <search-filters name="event-filters" model="com.axelor.apps.crm.db.Event"
     title="Event filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My upcoming events">
       <domain>self.user = :__user__ AND self.startDateTime &gt;= :_currentDate</domain>
     </filter>

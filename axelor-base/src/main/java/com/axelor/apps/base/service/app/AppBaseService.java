@@ -31,6 +31,8 @@ public interface AppBaseService extends AppService {
 
   public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
 
+  public static final int COMPUTATION_SCALING = 20;
+
   public AppBase getAppBase();
 
   // Date du jour
@@ -52,16 +54,6 @@ public interface AppBaseService extends AppService {
    * @return
    */
   public ZonedDateTime getTodayDateTime(Company company);
-
-  /**
-   * This method is deprecated. Please use the
-   * com.axelor.apps.base.service.app.AppBaseService#getTodayDate(com.axelor.apps.base.db.Company)
-   * method instead.
-   *
-   * @return
-   */
-  @Deprecated
-  public LocalDate getTodayDate();
 
   /**
    * Retrieve the current date according to the timezone entered in the given company. Returns the

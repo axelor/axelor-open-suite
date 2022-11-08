@@ -243,7 +243,7 @@
         form-view="user-form" grid-view="user-grid"
         readonlyIf="statusSelect == 4 || statusSelect == 5"/>
       <field name="team" canEdit="false" colSpan="6" form-view="team-form"
-        grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"
+        grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
         readonlyIf="statusSelect == 4 || statusSelect == 5"/>
       <field name="contactDate" colSpan="6"
         readonlyIf="statusSelect == 4 || statusSelect == 5"/>
@@ -364,8 +364,7 @@
   <action-record name="action-lead-default-record-new"
     model="com.axelor.apps.crm.db.Lead">
     <field name="statusSelect" expr="1"/>
-    <field name="contactDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="contactDate == null"/>
+    <field name="contactDate" expr="eval:__config__.date" if="contactDate == null"/>
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -457,7 +456,7 @@
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
     title="Lead filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Leads">
       <domain>self.user = :__user__</domain>
     </filter>

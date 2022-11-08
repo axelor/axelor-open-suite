@@ -15,8 +15,6 @@
     <string name="bankOrderExportFolderPath"/>
     <many-to-one name="bankOrderFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
-    <boolean name="generateMoveAutoFromBankOrder"
-      title="Generate account move from the bank order"/>
     <boolean name="consoBankOrderLinePerPartner"
       title="Consolidate bank order lines per partner"/>
 
@@ -27,6 +25,10 @@
         public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 4;
         public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
         public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
+
+        public static final int ACCOUNTING_TRIGGER_CONFIRMATION = 2;
+        public static final int ACCOUNTING_TRIGGER_VALIDATION = 3;
+        public static final int ACCOUNTING_TRIGGER_REALIZATION = 4;
     ]]></extra-code>
 
   </entity>

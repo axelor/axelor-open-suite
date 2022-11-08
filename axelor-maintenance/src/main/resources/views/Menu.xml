@@ -27,7 +27,7 @@
     <view type="form" name="maintenance-request-form"/>
     <view-param name="kanban-hide-columns" value="2,3"/>
     <domain>self.statusSelect in (0,1)</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="maintenance-root-my-maintenance-requests" parent="maintenance-root"
@@ -40,7 +40,7 @@
     <view type="form" name="maintenance-request-form"/>
     <view-param name="kanban-hide-columns" value="2,3"/>
     <domain>self.statusSelect in (0,1) and self.assignedTo = :__user__</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="maintenance-root-machine-unavailable" parent="maintenance-root"
@@ -50,7 +50,7 @@
     model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     <view type="calendar" name="maintenance-request-calendar-per-machine"/>
     <domain>self.statusSelect in (0,1,2) and self.equipementMaintenance.machine is not null</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="maintenance-root-maintenance-request-history" parent="maintenance-root"
@@ -62,7 +62,7 @@
     <view type="kanban" name="maintenance-request-kanban"/>
     <view type="calendar" name="maintenance-request-calendar-per-user"/>
     <view type="form" name="maintenance-request-form"/>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="maintenance-root-manuf-order" parent="maintenance-root" order="33"

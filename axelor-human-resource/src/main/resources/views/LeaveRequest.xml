@@ -9,7 +9,7 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="leaveReason"/>
     <field name="requestDate"/>
@@ -31,7 +31,7 @@
     <hilite background="warning"
       if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"
       onChange="action-leave-request-validate-dates"/>
     <field name="leaveReason"/>
@@ -163,6 +163,11 @@
     <button name="editLeaveRequestSelectedBtn" title="Edit Leave Request Selected"
       onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
   </form>
+
+  <calendar name="calendar-event-leave-request" model="com.axelor.apps.hr.db.LeaveRequest"
+    title="Calendar" eventStart="fromDateT" eventStop="toDateT" colorBy="employee" editable="false">
+    <field name="employee"/>
+  </calendar>
 
   <action-group name="action-leave-request-group-send">
     <action name="action-leave-request-validate-dates-on-save"/>
@@ -347,7 +352,7 @@
   <search-filters name="leave-request-filters"
     model="com.axelor.apps.hr.db.LeaveRequest" title="Leave request filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

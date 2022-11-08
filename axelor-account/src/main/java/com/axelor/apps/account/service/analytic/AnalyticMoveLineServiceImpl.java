@@ -37,7 +37,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -111,7 +110,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException {
+      Partner partner, Product product, Company company, boolean isPurchase)
+      throws AxelorException {
 
     if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
@@ -121,7 +121,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     } else if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
         && company != null) {
-      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
+      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
+          product, company, isPurchase);
     }
     return null;
   }
@@ -285,60 +286,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
           .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmountFromParent(Context parent, AnalyticMoveLine analyticMoveLine) {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (analyticMoveLine != null && line != null) {
-        return getAnalyticAmount(line, analyticMoveLine);
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (analyticMoveLine != null && line != null) {
-        return getAnalyticAmount(line, analyticMoveLine);
-      }
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public AnalyticJournal getAnalyticJournalFromParent(Context parent) throws AxelorException {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return accountConfigService
-            .getAccountConfig(line.getAccount().getCompany())
-            .getAnalyticJournal();
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return accountConfigService
-            .getAccountConfig(line.getAccount().getCompany())
-            .getAnalyticJournal();
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public LocalDate getDateFromParent(Context parent) {
-    if (MoveLine.class.equals(parent.getContextClass())) {
-      MoveLine line = parent.asType(MoveLine.class);
-      if (line.getDate() != null) {
-        return line.getDate();
-      } else if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return appBaseService.getTodayDate(line.getAccount().getCompany());
-      }
-    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
-      InvoiceLine line = parent.asType(InvoiceLine.class);
-      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
-        return appBaseService.getTodayDate(line.getAccount().getCompany());
-      }
-    }
-    return LocalDate.now();
   }
 
   @Override

@@ -35,7 +35,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -151,7 +151,7 @@ public class PurchaseOrderSupplierService {
         throw new AxelorException(
             purchaseOrderLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.SO_PURCHASE_1),
+            I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
             purchaseOrderLine.getProductName());
       }
 
@@ -174,7 +174,7 @@ public class PurchaseOrderSupplierService {
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur depuis le devis fournisseur : {} et le fournisseur : {}",
+        "Creation of a purchase order from : {} and the supplier : {}",
         parentPurchaseOrder.getPurchaseOrderSeq(),
         supplierPartner.getFullName());
 
@@ -215,7 +215,7 @@ public class PurchaseOrderSupplierService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
     LOG.debug(
-        "Création d'une ligne de commande fournisseur pour le produit : {}",
+        "Creation of a purchase order line for the product : {}",
         purchaseOrderLine.getProductName());
 
     return purchaseOrderLineService.createPurchaseOrderLine(

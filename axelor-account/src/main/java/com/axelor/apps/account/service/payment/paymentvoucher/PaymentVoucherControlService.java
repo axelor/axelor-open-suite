@@ -25,8 +25,9 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -35,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentVoucherControlService {
 
@@ -69,8 +71,8 @@ public class PaymentVoucherControlService {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           paymentVoucher.getRef());
     }
 
@@ -78,8 +80,8 @@ public class PaymentVoucherControlService {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           paymentVoucher.getRef());
     }
 
@@ -90,16 +92,16 @@ public class PaymentVoucherControlService {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     if (journal == null || paymentModeAccount == null) {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     if (journal.getEditReceiptOk()) {
@@ -129,8 +131,22 @@ public class PaymentVoucherControlService {
     return false;
   }
 
+  public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
+    if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
+      for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
+        if (!elementToPay
+            .getRemainingAmount()
+            .equals(elementToPay.getMoveLine().getAmountRemaining())) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   public boolean isReceiptDisplayed(PaymentVoucher paymentVoucher) {
-    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED) {
+    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED
+        && paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CANCELED) {
       return false;
     }
 
