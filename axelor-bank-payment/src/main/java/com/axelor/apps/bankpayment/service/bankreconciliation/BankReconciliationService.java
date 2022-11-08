@@ -77,6 +77,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -86,6 +87,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -1036,6 +1038,10 @@ public class BankReconciliationService {
                       .getInvoiceWatermark())
               .toString();
     }
+    BankPaymentConfig bankPaymentConfig =
+        Beans.get(BankPaymentConfigService.class)
+            .getBankPaymentConfig(bankReconciliation.getCompany());
+    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
     fileLink =
         ReportFactory.createReport(
                 IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
@@ -1046,6 +1052,12 @@ public class BankReconciliationService {
                 bankReconciliation.getCompany() != null
                     ? bankReconciliation.getCompany().getTimezone()
                     : null)
+            .addParam(
+                "BankReconciliationFromDate",
+                Date.valueOf(bankReconciliation.getFromDate().minusDays(dateMargin)))
+            .addParam(
+                "BankReconciliationToDate",
+                Date.valueOf(bankReconciliation.getToDate().plusDays(dateMargin)))
             .addParam("HeaderHeight", printingSettings.getPdfHeaderHeight())
             .addParam("Watermark", watermark)
             .addParam("FooterHeight", printingSettings.getPdfFooterHeight())
