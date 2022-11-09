@@ -511,7 +511,7 @@
         <panel-dashlet name="receivedEmailsPanel" title="Received emails"
           action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
       </panel>
-      <panel name="marketingCampaignPanel" title="Marketing Campaign" showIf="id != null"
+      <panel name="marketingCampaignPanel" title="Marketing campaigns" showIf="id != null"
         if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('marketing')">
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>
