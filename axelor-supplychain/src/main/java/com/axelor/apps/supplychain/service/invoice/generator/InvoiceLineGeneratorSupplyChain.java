@@ -321,7 +321,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setOutgoingStockMove(stockMove);
       }
     }
-
     if (saleOrderLine != null) {
       invoiceLine.setSaleOrderLine(saleOrderLine);
     }

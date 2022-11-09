@@ -1,0 +1,49 @@
+package com.axelor.apps.supplychain.service.invoice;
+
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
+import com.axelor.apps.tool.service.ListToolService;
+import com.google.inject.Inject;
+import java.util.List;
+
+public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyticServiceImpl {
+
+  @Inject
+  public InvoiceLineAnalyticSupplychainServiceImpl(
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AnalyticMoveLineService analyticMoveLineService,
+      AnalyticToolService analyticToolService,
+      AccountConfigService accountConfigService,
+      ListToolService listToolService,
+      AppAccountService appAccountService) {
+    super(
+        analyticAccountRepository,
+        accountAnalyticRulesRepository,
+        analyticMoveLineService,
+        analyticToolService,
+        accountConfigService,
+        listToolService,
+        appAccountService);
+    // TODO Auto-generated constructor stub
+  }
+
+  @Override
+  public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
+    List<AnalyticMoveLine> analyticMoveLineList =
+        super.createAnalyticDistributionWithTemplate(invoiceLine);
+
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      analyticMoveLine.setSaleOrderLine(invoiceLine.getSaleOrderLine());
+      analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());
+    }
+    return analyticMoveLineList;
+  }
+}
