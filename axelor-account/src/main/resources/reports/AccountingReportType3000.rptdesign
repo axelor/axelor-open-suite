@@ -754,6 +754,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">line</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">group</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">group</text-property>
+                    <text-property name="heading">group</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">columnName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">columnName</text-property>
@@ -850,46 +856,51 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">columnName</property>
+                        <property name="name">group</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">columnName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">columnRuleType</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">columnHidden</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">columnNotCompute</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">previousYear</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">lineName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">lineHidden</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">lineNotCompute</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">lineRuleType</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -934,62 +945,69 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">6</property>
+                    <property name="name">group</property>
+                    <property name="nativeName">group</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">columnName</property>
                     <property name="nativeName">columnName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">columnRuleType</property>
                     <property name="nativeName">columnRuleType</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">columnHidden</property>
                     <property name="nativeName">columnHidden</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">columnNotCompute</property>
                     <property name="nativeName">columnNotCompute</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">previousYear</property>
                     <property name="nativeName">previousYear</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">lineName</property>
                     <property name="nativeName">lineName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">13</property>
                     <property name="name">lineHidden</property>
                     <property name="nativeName">lineHidden</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">lineNotCompute</property>
                     <property name="nativeName">lineNotCompute</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">lineRuleType</property>
                     <property name="nativeName">lineRuleType</property>
                     <property name="dataType">integer</property>
@@ -1002,6 +1020,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ReportValue.resultn2,
 	ReportValue.accounting_report_config_line_column AS "column",
 	ReportValue.accounting_report_config_line AS "line",
+	ReportValue.parent_title AS "group",
 	ConfigColumn.label AS "columnName",
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	ConfigColumn.hidden AS "columnHidden",
@@ -1063,6 +1082,19 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                     <property name="levelType">dynamic</property>
                                     <property name="columnName">columnName</property>
                                     <expression name="displayColumnName" type="javascript">dataSetRow["columnName"]</expression>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Group" id="5976">
+                    <property name="defaultHierarchy">NewTabularHierarchy2</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy2" id="5977">
+                            <property name="levels">
+                                <tabular-level name="group" id="5978">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">group</property>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -2236,6 +2268,23 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                         <property name="columns">
                             <extended-item extensionName="CrosstabView" id="5846">
                                 <property name="views">
+                                    <extended-item extensionName="DimensionView" id="5979">
+                                        <property name="dimension">Group</property>
+                                        <property name="levels">
+                                            <extended-item extensionName="LevelView" name="NewLevel View2" id="5980">
+                                                <property name="level">Group/group</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="5981">
+                                                        <property name="content">
+                                                            <data name="group" id="5983">
+                                                                <property name="resultSetColumn">group</property>
+                                                            </data>
+                                                        </property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                    </extended-item>
                                     <extended-item extensionName="DimensionView" id="5847">
                                         <property name="dimension">Column</property>
                                         <property name="levels">
@@ -2257,6 +2306,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                             </extended-item>
                         </property>
                         <property name="header">
+                            <extended-item extensionName="CrosstabCell" id="5982"/>
                             <extended-item extensionName="CrosstabCell" id="5856"/>
                             <extended-item extensionName="CrosstabCell" id="5839"/>
                         </property>
@@ -2315,6 +2365,11 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                 <property name="name">previousYear</property>
                                 <expression name="expression" type="javascript">measure["previousYear"]</expression>
                                 <property name="dataType">boolean</property>
+                            </structure>
+                            <structure>
+                                <property name="name">group</property>
+                                <expression name="expression">dimension["Group"]["group"]</expression>
+                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                     </extended-item>

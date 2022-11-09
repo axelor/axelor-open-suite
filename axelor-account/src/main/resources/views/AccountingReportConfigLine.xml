@@ -46,19 +46,27 @@
         <field name="reportTypeColumn" showIf="reportTypeColumn != null"
           form-view="accounting-report-type-form" grid-view="accounting-report-type-grid"/>
       </panel>
-      <field name="typeSelect" validIf="typeSelect > 0"
-        onChange="action-accounting-report-config-line-record-type-select-onchange"/>
-      <panel name="ruleTypePanel" stacked="true" itemSpan="12">
+      <panel name="typePanel" stacked="true" itemSpan="12">
+        <field name="typeSelect" showIf="reportTypeColumn == null" validIf="typeSelect > 0"
+          selection-in="[1,2,3]"
+          onChange="action-accounting-report-config-line-record-type-select-onchange"/>
+        <field name="typeSelect" showIf="reportTypeColumn != null" validIf="typeSelect > 0"
+          onChange="action-accounting-report-config-line-record-type-select-onchange"/>
+      </panel>
+      <panel name="ruleTypePanel" stacked="true" itemSpan="12" hideIf="typeSelect == 4">
         <field name="ruleTypeSelect" showIf="reportTypeColumn == null"
-          validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3" selection-in="[1,2,3]"
+          requiredIf="typeSelect != 4" validIf="typeSelect == 4 || ruleTypeSelect > 0"
+          readonlyIf="typeSelect == 3" selection-in="[1,2,3]"
           onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
         <field name="ruleTypeSelect" showIf="reportTypeColumn != null"
-          validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3"
+          requiredIf="typeSelect != 4" validIf="typeSelect == 4 || ruleTypeSelect > 0"
+          readonlyIf="typeSelect == 3"
           onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
       </panel>
-      <field name="label" showIf="[1,2].includes(typeSelect)" requiredIf="typeSelect != 3"/>
+      <field name="label" showIf="[1,2].includes(typeSelect)"
+        requiredIf="[1,2].includes(typeSelect)"/>
       <field name="code" showIf="[1,2].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"
-        requiredIf="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
+        requiredIf="[1,2].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"/>
       <field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
       <panel name="percentagePanel" stacked="true" showIf="[2,3,4].includes(ruleTypeSelect)">
         <field name="percentageTotalLine" showIf="reportType != null"/>
@@ -79,10 +87,10 @@
         <field name="detailByAnalyticAccount" hideIf="detailByAccountType || detailByAccount"/>
       </panel>
       <field name="$helpCode" title="Account code" readonly="true"
-        showIf="ruleTypeSelect == 2" colSpan="12">
-        <viewer depends="ruleTypeSelect">
+        showIf="typeSelect == 4 || ruleTypeSelect == 2" colSpan="12">
+        <viewer depends="typeSelect,ruleTypeSelect">
 					<![CDATA[
-						<p ng-show="record.ruleTypeSelect == 2">
+						<p ng-show="record.typeSelect == 4 || record.ruleTypeSelect == 2">
 							<span x-translate>The account code field allows to add every account whose code will fulfill the given regular expression.</span><br>
 							<span x-translate>This regular expression must be of the SQL syntax. The most useful terms are :</span><br>
 							<span x-translate>% to match any character</span><br>
@@ -92,8 +100,9 @@
 					]]>
         </viewer>
       </field>
-      <field name="accountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
-      <field name="analyticAccountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
+      <field name="accountCode" showIf="typeSelect == 4 || ruleTypeSelect == 2" colSpan="12"/>
+      <field name="analyticAccountCode" showIf="typeSelect == 4 || ruleTypeSelect == 2"
+        colSpan="12"/>
       <field name="$helpRule" title="Rule" readonly="true" showIf="ruleTypeSelect == 3"
         colSpan="12">
         <viewer depends="ruleTypeSelect">
@@ -111,13 +120,14 @@
     </panel>
     <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
       field="accountTypeSet" colSpan="12" form-view="account-type-form"
-      grid-view="account-type-grid" showIf="ruleTypeSelect == 2"/>
+      grid-view="account-type-grid" showIf="[2,5].includes(ruleTypeSelect)"/>
     <panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet"
-      colSpan="12" form-view="account-form" grid-view="account-grid" showIf="ruleTypeSelect == 2"
+      colSpan="12" form-view="account-form" grid-view="account-grid"
+      showIf="typeSelect == 4 || ruleTypeSelect == 2"
       onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
     <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
       field="analyticAccountSet" colSpan="12" form-view="account-form" grid-view="account-grid"
-      showIf="ruleTypeSelect == 2"/>
+      showIf="typeSelect == 4 || ruleTypeSelect == 2"/>
 
   </form>
 

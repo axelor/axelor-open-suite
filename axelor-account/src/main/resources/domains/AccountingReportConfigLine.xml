@@ -16,7 +16,7 @@
     <integer name="typeSelect" title="Type"
       selection="accounting.report.config.line.type.select" required="true"/>
     <integer name="ruleTypeSelect" title="Rule type"
-      selection="accounting.report.config.line.rule.type.select" required="true"
+      selection="accounting.report.config.line.rule.type.select"
       help="Field to define if this query is to be used for accounting or reconcile during automatic proccesses. For the auto reconcile, a sequence must be defined."/>
     <integer name="resultSelect" title="Result" default="1"
       selection="accounting.report.config.line.sum.of.account.select"/>
@@ -47,6 +47,12 @@
       public static final int RULE_TYPE_SUM_OF_ACCOUNTS = 2;
       public static final int RULE_TYPE_CUSTOM_RULE = 3;
       public static final int RULE_TYPE_PERCENTAGE = 4;
+
+      // TYPE SELECT
+      public static final int TYPE_TITLE = 1;
+      public static final int TYPE_DETAIL = 2;
+      public static final int TYPE_SEPARATOR = 3;
+      public static final int TYPE_GROUP = 4;
 
       // RESULT SELECT
       public static final int RESULT_DEBIT_MINUS_CREDIT = 1;
