@@ -12,6 +12,8 @@
       <field name="displayCustomerDescriptionInOpportunity" widget="boolean-switch"/>
       <field name="isManageRecurrent" widget="boolean-switch"/>
       <field name="defaultRecurringDuration" showIf="isManageRecurrent"/>
+      <field name="isManageCatalogs" widget="boolean-switch"
+        help="This configuration enables catalog management. It allows you to add sales catalogs in pdf format that can be consulted from the application."/>
     </panel>
     <panel name="actionPanel">
       <button name="generateCRMConfigurationsBtn" title="Generate CRM configurations"
