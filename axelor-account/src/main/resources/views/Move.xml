@@ -102,7 +102,8 @@
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
-          <field name="description" colSpan="6" readonlyIf="$validatePeriod"/>
+          <field name="description" colSpan="6" readonlyIf="$validatePeriod"
+            onChange="action-account-move-group-set-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin-on-lines"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
@@ -558,6 +559,11 @@
     <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
 
+  <action-group name="action-account-move-group-set-description-on-lines">
+    <action name="action-account-move-method-description-is-empty"/>
+    <action name="action-account-move-method-set-description-on-lines"/>
+  </action-group>
+
   <action-group name="action-move-account-group-simulate">
     <action name="save"/>
     <action name="action-move-method-set-status-simulate"/>
@@ -590,6 +596,10 @@
 
   <action-method name="action-account-move-method-origin-is-empty">
     <call class="com.axelor.apps.account.web.MoveController" method="validateOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-description-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateDescription"/>
   </action-method>
 
   <!-- ACTION RECORD -->
@@ -758,6 +768,10 @@
 
   <action-method name="action-account-move-method-set-origin-on-lines">
     <call class="com.axelor.apps.account.web.MoveController" method="setOriginOnLines"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-set-description-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setDescriptionOnLines"/>
   </action-method>
 
   <action-method name="action-move-method-set-moveline-dates">

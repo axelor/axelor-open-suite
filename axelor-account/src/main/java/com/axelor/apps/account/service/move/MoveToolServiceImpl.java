@@ -461,6 +461,15 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
+  public void setDescriptionOnMoveLineList(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine != null) {
+        moveLine.setDescription(move.getDescription());
+      }
+    }
+  }
+
+  @Override
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
     if (period != null
         && period.getYear().getCompany() != null

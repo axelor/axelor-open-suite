@@ -165,4 +165,6 @@ public interface MoveToolService {
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
+
+  void setDescriptionOnMoveLineList(Move move);
 }
