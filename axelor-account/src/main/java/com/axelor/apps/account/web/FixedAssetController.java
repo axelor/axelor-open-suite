@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
@@ -50,11 +51,13 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Singleton
 public class FixedAssetController {
@@ -123,6 +126,29 @@ public class FixedAssetController {
     }
 
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
+
+    if (Stream.of(
+                fixedAsset.getFixedAssetLineList(),
+                fixedAsset.getFiscalFixedAssetLineList(),
+                fixedAsset.getIfrsFixedAssetLineList())
+            .flatMap(Collection::stream)
+            .anyMatch(
+                fixedAssetLine ->
+                    fixedAssetLine.getStatusSelect() != FixedAssetLineRepository.STATUS_REALIZED
+                        && fixedAssetLine.getDepreciationDate().isBefore(disposalDate))
+        || fixedAsset.getFixedAssetDerogatoryLineList().stream()
+            .anyMatch(
+                fixedAssetDerogatoryLine ->
+                    fixedAssetDerogatoryLine.getStatusSelect()
+                            != FixedAssetLineRepository.STATUS_REALIZED
+                        && fixedAssetDerogatoryLine.getDepreciationDate().isBefore(disposalDate))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .IMMO_FIXED_ASSET_DEPRECIATIONS_NOT_ACCOUNTED_BEFORE_DISPOSAL_DATE),
+          fixedAsset.getQty().toString());
+    }
 
     if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
         && disposalQty.compareTo(fixedAsset.getQty()) > 0) {

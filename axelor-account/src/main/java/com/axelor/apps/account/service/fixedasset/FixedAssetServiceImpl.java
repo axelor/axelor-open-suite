@@ -152,6 +152,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
       }
+      fixedAssetLineMoveService.generateDisposalMove(
+          fixedAsset, null, transferredReason, disposalDate);
     }
     List<FixedAssetLine> fixedAssetLineList =
         fixedAsset.getFixedAssetLineList().stream()
