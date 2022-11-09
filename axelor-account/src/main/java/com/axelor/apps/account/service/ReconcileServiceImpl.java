@@ -927,9 +927,9 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   protected Query<MoveLine> getMoveLineQuery(Reconcile reconcile, StringBuilder moveLineQueryStr) {
     return moveLineRepo
-            .all()
-            .filter(moveLineQueryStr.toString())
-            .bind("company", reconcile.getCompany());
+        .all()
+        .filter(moveLineQueryStr.toString())
+        .bind("company", reconcile.getCompany());
   }
 
   protected void computeMoveLineDomain(StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
@@ -955,7 +955,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     Account account = null;
     Partner partner = null;
 
-    if (otherMoveLine != null){
+    if (otherMoveLine != null) {
       account = otherMoveLine.getAccount();
       partner = otherMoveLine.getPartner();
     }

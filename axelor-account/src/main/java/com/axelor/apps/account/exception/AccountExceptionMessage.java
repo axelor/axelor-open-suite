@@ -105,6 +105,8 @@ public final class AccountExceptionMessage {
       "This move line %s can not be removed because it is linked to another piece named %s." /*)*/;
   public static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
+  public static final String MOVE_LINE_RECONCILE_LINE_NO_SELECTED = /*$$(*/
+      "No move lines to reconcile." /*)*/;
   public static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
