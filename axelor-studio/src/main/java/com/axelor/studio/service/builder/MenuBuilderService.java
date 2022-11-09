@@ -20,6 +20,7 @@ package com.axelor.studio.service.builder;
 import com.axelor.common.Inflector;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -201,5 +202,12 @@ public class MenuBuilderService {
 
   public String generateMenuBuilderName(String name) {
     return "studio-menu-" + name.toLowerCase().replaceAll("[ ]+", "-");
+  }
+
+  @CallMethod
+  public String checkAndGenerateName(String name) {
+    if (name == null) return "";
+    name = name.replaceAll("[^a-zA-Z0-9-. ]", "");
+    return Inflector.getInstance().dasherize(name.toLowerCase());
   }
 }
