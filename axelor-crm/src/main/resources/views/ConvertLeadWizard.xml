@@ -16,7 +16,7 @@
       <field name="$isCreateOpportunity" type="boolean" title="Create opportunity"
         colSpan="12"/>
       <panel name="opportunityDetailsPanel" colSpan="12" hidden="true"
-        showIf="$isCreateOpportunity" title="Opportunity informations">
+        showIf="$isCreateOpportunity" title="Opportunity information">
         <field name="$opportunity" showTitle="false" colSpan="12" canSelect="false"
           x-show-icons="false" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
           <editor x-show-titles="false"
