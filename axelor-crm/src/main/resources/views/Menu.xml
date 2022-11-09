@@ -72,7 +72,7 @@
   </action-view>
 
   <menuitem name="crm-root-catalog" parent="crm-root" title="Catalogs"
-    action="crm.root.catalogs" order="11"/>
+    action="crm.root.catalogs" order="11" if="__config__.app.getApp('crm')?.getIsManageCatalogs()"/>
 
   <action-view name="crm.root.catalogs" title="Catalogs"
     model="com.axelor.apps.crm.db.Catalog">
@@ -199,7 +199,7 @@
   </action-view>
 
   <menuitem name="crm-conf-catalog-type" parent="crm-conf" title="Catalogs type"
-    action="crm.conf.catalog.type"/>
+    action="crm.conf.catalog.type" if="__config__.app.getApp('crm')?.getIsManageCatalogs()"/>
 
   <action-view name="crm.conf.catalog.type" title="Catalogs type"
     model="com.axelor.apps.crm.db.CatalogType">

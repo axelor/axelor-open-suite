@@ -16,6 +16,7 @@
       title="Display customer description in opportunity"/>
     <boolean name="isManageRecurrent" title="Manage recurrent on opportunities"/>
     <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
+    <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
