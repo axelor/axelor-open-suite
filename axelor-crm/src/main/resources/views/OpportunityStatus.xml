@@ -13,6 +13,10 @@
     onNew="action-opportunity-status-method-set-attrs-on-new"
     onLoad="action-opportunity-status-method-set-attrs-on-new">
     <panel name="mainPanel">
+      <label colSpan="12"
+        title="These statuses are essential to the operation of the process, they can be renamed but cannot be deleted."
+        showIf="typeSelect == 1 || typeSelect == 2" hidden="true" css="label-bold"
+        name="opportunityStatusEssentialLabel"/>
       <field name="name"/>
       <field name="sequence"/>
       <field name="typeSelect"/>
