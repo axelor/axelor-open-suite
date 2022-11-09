@@ -733,7 +733,7 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
+        "(self.move.statusSelect = :statusAccounted OR self.move.statusSelect = :statusValidated)"
             + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
             + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
@@ -761,8 +761,8 @@ public class BankReconciliationService {
     BankPaymentConfig bankPaymentConfig =
         bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
 
-    params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
+    params.put("statusValidated", MoveRepository.STATUS_VALIDATED);
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
       int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
