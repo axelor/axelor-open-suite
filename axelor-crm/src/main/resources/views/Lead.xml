@@ -265,7 +265,7 @@
         if="__config__.app.getApp('base').getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
       <field name="lastEventDate" readonly="true"/>
-      <field name="nextScheduledEventDate"/>
+      <field name="nextScheduledEventDate" readonly="true"/>
       <field name="lostReason" showIf="leadStatus.isLost" colSpan="6"/>
       <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
       <field name="leadStatus.isLost" hidden="true"/>

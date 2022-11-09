@@ -676,7 +676,9 @@ public class EventServiceImpl implements EventService {
 
   protected void afterRealized(Event event) {
     this.updateLeadLastEventDate(event);
+    this.updateLeadScheduledEventDateAfterRealized(event);
     this.updatePartnerLastEventDate(event);
+    this.updatePartnerScheduledEventDateAfterRealized(event);
   }
 
   @Override
@@ -784,6 +786,52 @@ public class EventServiceImpl implements EventService {
             || lead.getNextScheduledEventDate().compareTo(event.getEndDateTime().toLocalDate())
                 > 0)) {
       lead.setNextScheduledEventDate(startDateTime.toLocalDate());
+    }
+  }
+
+  @Transactional
+  protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
+    Partner partner = event.getPartner();
+    if (partner != null && event.getStartDateTime() != null) {
+      List<Event> eventList =
+          eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch().stream()
+              .filter(
+                  e ->
+                      e != event
+                          && e.getStartDateTime() != null
+                          && e.getStatusSelect().equals(EventRepository.STATUS_PLANNED)
+                          && e.getStartDateTime().compareTo(event.getStartDateTime()) > 0)
+              .sorted(Comparator.comparing(Event::getStartDateTime))
+              .collect(Collectors.toList());
+      if (!eventList.isEmpty()) {
+        partner.setScheduledEventDate(eventList.get(0).getStartDateTime().toLocalDate());
+      } else {
+        partner.setScheduledEventDate(null);
+      }
+      partnerRepo.save(partner);
+    }
+  }
+
+  @Transactional
+  protected void updateLeadScheduledEventDateAfterRealized(Event event) {
+    Lead lead = event.getLead();
+    if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
+      List<Event> eventList =
+          lead.getEventList().stream()
+              .filter(
+                  e ->
+                      e != event
+                          && e.getStartDateTime() != null
+                          && e.getStatusSelect().equals(EventRepository.STATUS_PLANNED)
+                          && e.getStartDateTime().compareTo(event.getStartDateTime()) > 0)
+              .sorted(Comparator.comparing(Event::getStartDateTime))
+              .collect(Collectors.toList());
+      if (!eventList.isEmpty()) {
+        lead.setNextScheduledEventDate(eventList.get(0).getStartDateTime().toLocalDate());
+      } else {
+        lead.setNextScheduledEventDate(null);
+      }
+      leadRepo.save(lead);
     }
   }
 }
