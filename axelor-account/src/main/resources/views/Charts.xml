@@ -36,8 +36,8 @@
 	 left join self.partner as _partner
 	 where (self.company = :_company) and
 	 ((self.invoice.statusSelect = 3
-	  and self.invoice.operationTypeSelect = 2) or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.credit = 0))
+	  and self.invoice.operationTypeSelect = 1) or (self.moveLine.move.statusSelect = 3 and
+	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0))
 	 group by _partner.id, self.company.currency.symbol
 	 order by Amount desc
 
@@ -77,26 +77,26 @@
     title="Supplier amount in progress" css="report-box">
     <dataset type="jpql"><![CDATA[
 
-	  Select  CONCAT((select sum(self.companyAmountRemaining)
-	  from InvoiceTerm as self
-	  WHERE (self.company = :_company) and ((self.invoice.statusSelect = 3
-	  and self.invoice.operationTypeSelect = 1) or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0)))
-	- COALESCE((select sum(self.companyAmountRemaining)
-	  from InvoiceTerm as self
-	  WHERE (self.company = :_company) and ((self.invoice.statusSelect = 3
-	  and self.invoice.operationTypeSelect = 2) or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.credit = 0))), 0), self.company.currency.symbol) as total
-	from InvoiceTerm as self
+  Select  CONCAT((select sum(self.companyAmountRemaining)
+  from InvoiceTerm as self
+  WHERE (self.company = :_company) and ((self.moveLine.move.statusSelect in (2,3) and
+  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0 and self.moveLine.move.functionalOriginSelect = 4 )))
+- COALESCE((select sum(self.companyAmountRemaining)
+  from InvoiceTerm as self
+  WHERE (self.company = :_company) and ((self.moveLine.move.statusSelect in (2,3) and
+  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.credit = 0 and self.moveLine.move.functionalOriginSelect = 4))), 0), self.company.currency.symbol) as total
+from InvoiceTerm as self
 
-	  ]]></dataset>
+  ]]></dataset>
     <template><![CDATA[
 
-	  <div class="report-data">
-	    <h1>{{first.total | number : 2}}</h1>
-	  </div>
-	  ]]></template>
+  <div class="report-data">
+    <h1>{{first.total | number : 2}}</h1>
+  </div>
+  ]]></template>
   </custom>
+
+
 
   <custom name="report-delay-rate" title="Supplier's delay on payment" css="report-box">
     <dataset type="jpql"><![CDATA[
@@ -139,28 +139,30 @@
 
 	Select 100*(select sum(self.companyAmountRemaining)
 	 from InvoiceTerm as self
-	 WHERE ((self.invoice.statusSelect = 3 and self.isPaid != true
-	 and (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2))
-	 or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'receivable' and self.moveLine.credit = 0))
+	 WHERE self.isPaid != true
+	 and self.moveLine.move.statusSelect in (2,3) and
+	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0
+	  and self.moveLine.move.functionalOriginSelect = 4
 	  and self.dueDate <= :__date__) / (select sum(self.companyAmountRemaining)
 	 from InvoiceTerm as self
-	 WHERE ((self.invoice.statusSelect = 3 and self.isPaid != true
-	 and (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2))
-	 or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'receivable' and self.moveLine.credit = 0))) as total,
+	 WHERE self.isPaid != true
+	 and self.moveLine.move.statusSelect in (2,3) and
+	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0
+	  and self.moveLine.move.functionalOriginSelect = 4) as total,
 
 	  (select sum( :__date__ - self.dueDate)
 	 from InvoiceTerm as self
-	 WHERE ((self.invoice.statusSelect = 3 and self.isPaid != true
-	 and (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2))
-	 or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'receivable' and self.moveLine.credit = 0)) and self.dueDate <= :__date__) / (select count(id)
+	 WHERE self.isPaid != true
+	 and self.moveLine.move.statusSelect in (2,3) and
+	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0
+	  and self.moveLine.move.functionalOriginSelect = 4
+	  and self.dueDate <= :__date__) / (select count(self.id)
 	 from InvoiceTerm as self
-	 WHERE ((self.invoice.statusSelect = 3 and self.isPaid != true
-	 and (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2))
-	 or (self.moveLine.move.statusSelect = 3 and
-	  self.moveLine.account.accountType.technicalTypeSelect = 'receivable' and self.moveLine.credit = 0)) and self.dueDate <= :__date__) as avgdelay
+	 WHERE self.isPaid != true
+	 and self.moveLine.move.statusSelect in (2,3) and
+	  self.moveLine.account.accountType.technicalTypeSelect = 'payable' and self.moveLine.debit = 0
+	  and self.moveLine.move.functionalOriginSelect = 4
+	  and self.dueDate <= :__date__) as avgdelay
 	 FROM InvoiceTerm as self
 
 	 ]]></dataset>
@@ -223,32 +225,46 @@
     </search-fields>
     <dataset type="jpql"><![CDATA[
 
-	  SELECT
-	      SUM(self.companyAmountRemaining) AS amountRemaining,
-	      _reasonOfRefusalToPay.name AS reasonOfRefusalToPayName,
-	      _reasonOfRefusalToPay.id AS _reasonOfRefusalToPayNameId
-	  FROM
-	      InvoiceTerm self
-	  LEFT JOIN
-	      self.reasonOfRefusalToPay as _reasonOfRefusalToPay
+ SELECT
+     COUNT(DISTINCT self.id) AS amountRemaining,
+     _reasonOfRefusalToPay.name AS reasonOfRefusalToPayName,
+     _reasonOfRefusalToPay.id AS _reasonOfRefusalToPayNameId
+ FROM
+     InvoiceTerm self
+ LEFT JOIN
+     self.reasonOfRefusalToPay as _reasonOfRefusalToPay
+            LEFT JOIN
+              self.invoice as _invoice
+            LEFT JOIN
+              self.moveLine as _moveLine
+            LEFT JOIN
+              _moveLine.move as _move
+            LEFT JOIN
+              _moveLine.account as _account
+            LEFT JOIN
+              _account.accountType as _accountType
 
-	  WHERE
-	      self.invoice.statusSelect in (2,3) AND (:_company is null OR self.company = :_company)
-	      AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2) AND self.pfpValidateStatusSelect = 3
-	  GROUP BY
-	      _reasonOfRefusalToPay.id,
-	      _reasonOfRefusalToPay.name
+ WHERE
+     (:_company is null OR self.company = :_company) AND self.pfpValidateStatusSelect = 3
+     AND
+			((_invoice.statusSelect in (2,3) AND _invoice.operationTypeSelect in (1,2))
+			OR
+			(_move.statusSelect in (2,3) AND _accountType.technicalTypeSelect = 'payable' AND _moveLine.debit = 0))
+ GROUP BY
+     _reasonOfRefusalToPay.id,
+     _reasonOfRefusalToPay.name
 
-	  ORDER BY
-	      _reasonOfRefusalToPay.name
+ ORDER BY
+     _reasonOfRefusalToPay.name
 
-	  ]]></dataset>
+ ]]></dataset>
     <category key="reasonOfRefusalToPayName" type="text"/>
     <series key="amountRemaining" type="pie" title="Amount"/>
     <config name="colors" value="#f63,#28a745,#007bff,#ffc107,#6c757d,#6f42c1,#17a2b8"/>
     <config name="percent" value="true"/>
     <config name="onClick" value="account.root.payments.suppl.invoices.to.pay.from.chart"/>
   </chart>
+
 
   <action-view name="account.root.payments.suppl.invoices.to.pay.from.chart"
     model="com.axelor.apps.account.db.Invoice" title="Suppl. Invoices to pay">
@@ -744,45 +760,45 @@
   </chart>
 
   <chart name="chart.invoice.terms.customer.paymentMode.distribution.nbr"
-    onInit="action.account.chart.default.month.value"
-    title="Customer Payment mode distribution by transactions">
+    title="Customer Payment mode distribution by transactions"
+    onInit="action.account.chart.default.month.value">
     <search-fields>
-      <field type="string" name="monthSelect" title="Historical Period"
+      <field name="monthSelect" title="Historical Period" type="string"
         selection="account.year.period.duration.select" x-required="true"/>
     </search-fields>
-    <dataset type="jpql">
-	     <![CDATA[
-	     	SELECT
-	     		COUNT(self.id) AS total,
-	     		_paymentMode.name AS paymentMode
-	     	FROM
-	     		InvoiceTerm self
-            LEFT JOIN
-              self.moveLine as _moveLine
-            LEFT JOIN
-              _moveLine.move as _move
-            LEFT JOIN
-              _moveLine.account as _account
-            LEFT JOIN
-              _account.accountType as _accountType
-	     	LEFT JOIN
-	     		self.paymentMode AS _paymentMode
-	     	WHERE
-				self.isPaid = true AND ((self.invoice.statusSelect IN (2,3) and
-	  self.invoice.operationTypeSelect = 3) or (_move.statusSelect IN (2,3) and
-	  _accountType.technicalTypeSelect = 'receivable' and _moveLine.credit = 0))
-			AND
-				self.dueDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
-			AND
-				self.dueDate <= DATE(:todayDate)
-	     	GROUP BY
-	     		_paymentMode
+    <dataset type="jpql"><![CDATA[
 
-	    ]]>
-    </dataset>
+    	SELECT
+    		COUNT(self.id) AS total,
+    		_paymentMode.name AS paymentMode
+    	FROM
+    		InvoiceTerm self
+          LEFT JOIN
+            self.moveLine as _moveLine
+          LEFT JOIN
+            _moveLine.move as _move
+          LEFT JOIN
+            _moveLine.account as _account
+          LEFT JOIN
+            _account.accountType as _accountType
+    	LEFT JOIN
+    		self.paymentMode AS _paymentMode
+    	WHERE
+		self.isPaid = true AND ((_move.statusSelect IN (2,3) and
+ _accountType.technicalTypeSelect = 'receivable' and _moveLine.debit = 0)) AND _move.functionalOriginSelect = 5
+	AND
+		self.dueDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
+	AND
+		self.dueDate <= DATE(:todayDate)
+    	GROUP BY
+    		_paymentMode
+
+
+  ]]></dataset>
     <category key="paymentMode" type="text" title="Payment Mode"/>
     <series key="total" type="donut" title="Amount"/>
   </chart>
+
 
   <action-record name="action.account.chart.set.from.to.date.month"
     model="com.axelor.apps.account.db.Account">
@@ -797,76 +813,77 @@
   </action-record>
 
   <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount"
-    onInit="action.account.chart.default.month.value"
-    title="Customer Payment mode distribution by amount">
+    title="Customer Payment mode distribution by amount"
+    onInit="action.account.chart.default.month.value">
     <search-fields>
-      <field type="string" name="monthSelect" title="Historical Period"
+      <field name="monthSelect" title="Historical Period" type="string"
         selection="account.year.period.duration.select" x-required="true"/>
     </search-fields>
-    <dataset type="jpql">
-	     <![CDATA[
-	     	SELECT
-	     		SUM(self.paidAmount) AS total,
-	     		_paymentMode.name AS paymentMode
-	     	FROM
-	     		PaymentVoucher self
-	     	LEFT JOIN
-	     		self.paymentMode AS _paymentMode
-	     	WHERE
-				self.operationTypeSelect=3
-			AND
-				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
-			AND
-				self.paymentDate <= DATE(:todayDate)
-	     	GROUP BY
-	     		_paymentMode
+    <dataset type="jpql"><![CDATA[
 
-	    ]]>
-    </dataset>
+    	SELECT
+    		SUM(self.paidAmount) AS total,
+    		_paymentMode.name AS paymentMode
+    	FROM
+    		PaymentVoucher self
+    	LEFT JOIN
+    		self.paymentMode AS _paymentMode
+    	WHERE
+		self.operationTypeSelect=3
+	AND
+		self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
+	AND
+		self.paymentDate <= DATE(:todayDate)
+    	GROUP BY
+    		_paymentMode
+
+
+  ]]></dataset>
     <category key="paymentMode" type="text" title="Payment Mode"/>
     <series key="total" type="donut" title="Amount paid"/>
   </chart>
+
 
   <chart name="chart.invoice.terms.customer.paymentMode.distribution.amount"
-    onInit="action.account.chart.default.month.value"
-    title="Customer Payment mode distribution by amount">
+    title="Customer Payment mode distribution by amount"
+    onInit="action.account.chart.default.month.value">
     <search-fields>
-      <field type="string" name="monthSelect" title="Historical Period"
+      <field name="monthSelect" title="Historical Period" type="string"
         selection="account.year.period.duration.select" x-required="true"/>
     </search-fields>
-    <dataset type="jpql">
-	     <![CDATA[
-	     	SELECT
-	     		SUM(self.amount) AS total,
-	     		_paymentMode.name AS paymentMode
-	     	FROM
-	     		InvoiceTerm self
-            LEFT JOIN
-              self.moveLine as _moveLine
-            LEFT JOIN
-              _moveLine.move as _move
-            LEFT JOIN
-              _moveLine.account as _account
-            LEFT JOIN
-              _account.accountType as _accountType
-	     	LEFT JOIN
-	     		self.paymentMode AS _paymentMode
-	     	WHERE
-				self.isPaid = true AND ((self.invoice.statusSelect IN (2,3) and
-			  self.invoice.operationTypeSelect = 3) or (_move.statusSelect IN (2,3) and
-			  _accountType.technicalTypeSelect = 'receivable' and _moveLine.credit = 0))
-			AND
-				self.dueDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
-			AND
-				self.dueDate <= DATE(:todayDate)
-	     	GROUP BY
-	     		_paymentMode
+    <dataset type="jpql"><![CDATA[
 
-	    ]]>
-    </dataset>
+    	SELECT
+    		SUM(self.amount) AS total,
+    		_paymentMode.name AS paymentMode
+    	FROM
+    		InvoiceTerm self
+          LEFT JOIN
+            self.moveLine as _moveLine
+          LEFT JOIN
+            _moveLine.move as _move
+          LEFT JOIN
+            _moveLine.account as _account
+          LEFT JOIN
+            _account.accountType as _accountType
+    	LEFT JOIN
+    		self.paymentMode AS _paymentMode
+    	WHERE
+		self.isPaid = true AND (_move.statusSelect IN (2,3) and
+	  _accountType.technicalTypeSelect = 'receivable' and _moveLine.debit = 0) AND _move.functionalOriginSelect = 5
+	AND
+		self.dueDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
+	AND
+		self.dueDate <= DATE(:todayDate)
+    	GROUP BY
+    		_paymentMode
+
+
+  ]]></dataset>
     <category key="paymentMode" type="text" title="Payment Mode"/>
     <series key="total" type="donut" title="Amount paid"/>
   </chart>
+
 
   <action-record name="action.account.active.fiscal.year"
     model="com.axelor.apps.account.db.Move">

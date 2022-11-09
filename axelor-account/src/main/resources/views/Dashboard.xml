@@ -157,12 +157,12 @@
   </action-view>
 
   <action-view name="action-accounting-dashboard-report-delay-rate"
-    title="Dashboard delay rate">
+    title="Supplier's delay on payment">
     <view type="custom" name="report-delay-rate"/>
   </action-view>
 
   <action-view name="action-accounting-dashboard-invoice-terms-report-delay-rate"
-    title="Dashboard delay rate">
+    title="Supplier's delay on payment">
     <view type="custom" name="invoice-terms-report-delay-rate"/>
   </action-view>
 
