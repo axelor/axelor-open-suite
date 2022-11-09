@@ -335,7 +335,8 @@
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
-        <field name="description" colSpan="6"/>
+        <field name="description" colSpan="6"
+          onChange="action-account-move-group-set-description-on-lines"/>
         <field name="origin" colSpan="3"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
         <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
