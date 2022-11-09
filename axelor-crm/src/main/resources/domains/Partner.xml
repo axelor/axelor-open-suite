@@ -23,7 +23,6 @@
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Account owner" index="false" massUpdate="true"/>
     <string name="fixedPhone" title="Phone number"/>
-    <boolean name="isProspect" title="Customer prospect"/>
     <many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner"
       title="partner.manager" massUpdate="true" index="false"/>
 
