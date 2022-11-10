@@ -1042,9 +1042,8 @@
 
   <action-record name="action-move-line-record-set-currencyAmount"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
-    <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
-    <field name="currencyAmount" expr="eval: 0" if="(debit == 0 &amp;&amp; credit == 0)"/>
+    <field name="currencyAmount" expr="eval: (debit + credit) / currencyRate"
+      if="debit + credit != 0"/>
   </action-record>
 
   <action-record name="action-move-line-record-set-amount"

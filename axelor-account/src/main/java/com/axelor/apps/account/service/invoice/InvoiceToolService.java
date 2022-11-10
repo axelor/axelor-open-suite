@@ -318,6 +318,7 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingByUser(null);
     copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
+    copy.setHasPendingPayments(false);
   }
 
   /**

@@ -100,7 +100,7 @@
             grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-move-group-partner-onchange"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="companyBankDetails" canEdit="false" colSpan="3"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
