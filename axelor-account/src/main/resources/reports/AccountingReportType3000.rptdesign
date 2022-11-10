@@ -48,7 +48,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/sigma</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -62,9 +62,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">lmdpdlaa</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -125,9 +122,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -170,9 +164,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/sigma</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
