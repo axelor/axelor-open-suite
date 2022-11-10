@@ -45,27 +45,27 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-contract-line-method-create-distribution"/>
+          onChange="action-contract-line-group-analytic-template-onchange"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
@@ -78,6 +78,16 @@
   <action-group name="action-contract-line-group-onload">
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-method-hide-axis-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-analytic-template-onchange">
+    <action name="action-contract-line-method-create-distribution"/>
+    <action name="action-contract-line-method-set-required-analytic-accounts"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-analytic-axis-onchange">
+    <action name="action-contract-line-method-axis-create-analytic-line"/>
+    <action name="action-contract-line-method-set-required-analytic-accounts"/>
   </action-group>
 
   <action-attrs name="action-contract-line-attrs-hide-consumption-line"
@@ -151,27 +161,27 @@
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
           onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
-          onChange="action-contract-line-method-create-distribution"/>
+          onChange="action-contract-line-group-analytic-template-onchange"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
           onSelect="action-contract-line-method-set-axis-domain"
-          onChange="action-contract-line-method-axis-create-analytic-line"/>
+          onChange="action-contract-line-group-analytic-axis-onchange"/>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           colSpan="12" grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form"
@@ -238,6 +248,11 @@
 
   <action-method name="action-contract-line-method-hide-axis-analytic-account">
     <call class="com.axelor.apps.contract.web.ContractLineController" method="manageAxis"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-set-required-analytic-accounts">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setRequiredAnalyticAccount"/>
   </action-method>
 
 </object-views>
