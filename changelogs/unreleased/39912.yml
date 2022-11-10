@@ -1,0 +1,10 @@
+---
+title: "Mapper : UI improvement and changes"
+type: change
+description: |
+  Remove search fields column and replace 'Search' value from option 'Query'
+  Add query builder for value column when 'Value from' is 'Query'
+  Add 'Built-Ins Variables' option allow to select built in variables when 'Value from' is 'Context'
+  Add 'Condition' column with expression builder to create condition for selected field
+  Add 'Save' new boolean option for save the new or existing record by generated script
+  Display required fields in red
