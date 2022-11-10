@@ -42,9 +42,6 @@ public final class SupplychainExceptionMessage {
   public static final String PURCHASE_ORDER_TRADING_NAME_MISSING = /*$$(*/
       "The purchase order trading name is missing." /*)*/;
 
-  public static final String PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_INCORRECT = /*$$(*/
-      "The sum's amount of the budget distributions of the line %s does not match its company ex tax total" /*)*/;
-
   /** Sale order Invoice Service */
   public static final String SO_INVOICE_6 = /*$$(*/
       "Please, select a currency for the order %s" /*)*/;

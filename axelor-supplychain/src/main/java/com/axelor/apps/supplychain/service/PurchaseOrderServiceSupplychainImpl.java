@@ -541,7 +541,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  public void checkBudgetDistributionAmount(PurchaseOrder purchaseOrder) throws AxelorException {
+  public boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getBudgetDistributionList() != null
@@ -552,14 +552,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                   .reduce(BigDecimal.ZERO, BigDecimal::add);
           if (budgetDistributionTotalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal())
               != 0) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(
-                    SupplychainExceptionMessage.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_INCORRECT),
-                purchaseOrderLine.getFullName());
+            return false;
           }
         }
       }
     }
+    return true;
   }
 }

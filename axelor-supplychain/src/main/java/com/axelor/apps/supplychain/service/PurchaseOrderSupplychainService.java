@@ -89,7 +89,8 @@ public interface PurchaseOrderSupplychainService {
   /**
    * Check if budget distributions of the purchase order lines are correctly setted.
    *
+   * @return true if it is good, else false
    * @param purchaseOrder
    */
-  void checkBudgetDistributionAmount(PurchaseOrder purchaseOrder) throws AxelorException;
+  boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
 }
