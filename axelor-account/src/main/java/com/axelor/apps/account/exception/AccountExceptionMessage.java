@@ -1467,7 +1467,6 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
-
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE = /*$$(*/
       "At least one of the invoice term is selected in at least one payment voucher process %s. Thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms (only)." /*)*/;
 
@@ -1476,4 +1475,22 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
       "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
+
+  public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
+      "Custom report %s couldn't be computed (timeout)." /*)*/;
+
+  public static final String REPORT_TYPE_NOT_CUSTOM = /*$$(*/
+      "Report type %s is not of a custom type and thus cannot be computed as such." /*)*/;
+
+  public static final String REPORT_TYPE_NO_COLUMN = /*$$(*/
+      "Report type %s doesn't have any column." /*)*/;
+
+  public static final String REPORT_TYPE_NO_LINE = /*$$(*/
+      "Report type %s doesn't have any line." /*)*/;
+
+  public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
+      "Report type %s has intersecting column %s and line %s with different computation method." /*)*/;
+
+  public static final String REPORT_TYPE_INTERSECT_CUSTOM_RULE = /*$$(*/
+      "Report type %s has intersecting column %s and line %s with custom rules." /*)*/;
 }
