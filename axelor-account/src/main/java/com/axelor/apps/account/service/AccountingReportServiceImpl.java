@@ -239,6 +239,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+    } else if (accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      this.addParams(
+          "(self.move.partner.das2Activity is null OR self.account.serviceType is null)");
     }
 
     if (accountingReport.getPaymentMode() != null) {
