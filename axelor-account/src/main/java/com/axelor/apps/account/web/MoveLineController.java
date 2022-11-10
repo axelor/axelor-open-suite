@@ -749,6 +749,10 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
+      if (moveLine.getCredit().add(moveLine.getDebit()).compareTo(BigDecimal.ZERO) == 0) {
+        return;
+      }
+
       if (moveLine.getAccount() != null && moveLine.getAccount().getHasInvoiceTerm()) {
 
         if (moveLine.getMove() == null) {
