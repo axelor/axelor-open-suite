@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -79,4 +82,14 @@ public interface ContractLineService {
    * @return ContractLine filled with analytic move lines
    */
   ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
+
+  ContractLine analyzeContractLine(ContractLine contractLine, Contract contract, Company company)
+      throws AxelorException;
+
+  AnalyticMoveLine computeAnalyticMoveLine(
+      ContractLine contractLine,
+      Contract contract,
+      Company company,
+      AnalyticAccount analyticAccount)
+      throws AxelorException;
 }

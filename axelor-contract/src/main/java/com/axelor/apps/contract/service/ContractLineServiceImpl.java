@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -40,6 +42,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContractLineServiceImpl implements ContractLineService {
@@ -47,17 +50,20 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AccountManagementService accountManagementService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
+  protected AnalyticMoveLineServiceImpl analyticMoveLineService;
 
   @Inject
   public ContractLineServiceImpl(
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AnalyticMoveLineServiceImpl analyticMoveLineService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
+    this.analyticMoveLineService = analyticMoveLineService;
   }
 
   @Override
@@ -180,5 +186,68 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
+  }
+
+  @Override
+  public ContractLine analyzeContractLine(
+      ContractLine contractLine, Contract contract, Company company) throws AxelorException {
+    if (contractLine != null) {
+
+      if (contractLine.getAnalyticMoveLineList() == null) {
+        contractLine.setAnalyticMoveLineList(new ArrayList<>());
+      } else {
+        contractLine.getAnalyticMoveLineList().clear();
+      }
+
+      AnalyticMoveLine analyticMoveLine = null;
+
+      if (contractLine.getAxis1AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                contractLine, contract, company, contractLine.getAxis1AnalyticAccount());
+        contractLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (contractLine.getAxis2AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                contractLine, contract, company, contractLine.getAxis2AnalyticAccount());
+        contractLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (contractLine.getAxis3AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                contractLine, contract, company, contractLine.getAxis3AnalyticAccount());
+        contractLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (contractLine.getAxis4AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                contractLine, contract, company, contractLine.getAxis4AnalyticAccount());
+        contractLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (contractLine.getAxis5AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                contractLine, contract, company, contractLine.getAxis5AnalyticAccount());
+        contractLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+    }
+    return contractLine;
+  }
+
+  @Override
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      ContractLine contractLine,
+      Contract contract,
+      Company company,
+      AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine =
+        analyticMoveLineService.computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(contract.getStartDate());
+    analyticMoveLine.setAmount(contractLine.getExTaxTotal());
+
+    return analyticMoveLine;
   }
 }
