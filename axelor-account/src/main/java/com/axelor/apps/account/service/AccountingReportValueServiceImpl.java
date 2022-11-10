@@ -370,7 +370,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
         if (!Strings.isNullOrEmpty(parentTitle)) {
-          String[] tokens = code.split("_");
+          String[] tokens = code.split("__");
 
           if (tokens.length > 1 && tokens[1].equals(parentTitle)) {
             contextMap.put(
@@ -981,7 +981,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     if (Strings.isNullOrEmpty(parentTitle)) {
       return columnCode;
     } else {
-      return String.format("%s_%s", columnCode, parentTitle);
+      return String.format("%s__%s", columnCode, parentTitle);
     }
   }
 
