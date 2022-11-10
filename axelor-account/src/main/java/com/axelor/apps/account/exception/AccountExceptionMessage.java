@@ -1487,4 +1487,10 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_NO_LINE = /*$$(*/
       "Report type %s doesn't have any line." /*)*/;
+
+  public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
+      "Report type %s has intersecting column (%s) and line (%s) with different computation method." /*)*/;
+
+  public static final String REPORT_TYPE_INTERSECT_CUSTOM_RULE = /*$$(*/
+      "Report type %s has intersecting column (%s) and line (%s) with custom rules." /*)*/;
 }

@@ -239,7 +239,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       if (line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            AccountExceptionMessage.REPORT_TYPE_INTERSECT_CUSTOM_RULE,
+            accountingReport.getReportType().getName(),
+            column.getCode(),
+            line.getCode());
       } else if (line.getDetailByAccount()
           || line.getDetailByAccountType()
           || line.getDetailByAnalyticAccount()) {
@@ -416,7 +421,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Account groupAccount)
       throws AxelorException {
     if (!Objects.equals(column.getResultSelect(), line.getResultSelect())) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT,
+          accountingReport.getReportType().getName(),
+          column.getCode(),
+          line.getCode());
     }
 
     Set<Account> accountSet;
