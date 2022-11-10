@@ -40,7 +40,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,27 +194,6 @@ public class DebtRecoverySessionService {
     }
 
     return levelMax;
-  }
-
-  public Optional<Integer> getMinLevel(DebtRecovery debtRecovery) {
-
-    DebtRecoveryMethod debtRecoveryMethod = debtRecovery.getDebtRecoveryMethod();
-
-    if (debtRecoveryMethod != null
-        && debtRecoveryMethod.getDebtRecoveryMethodLineList() != null
-        && !debtRecoveryMethod.getDebtRecoveryMethodLineList().isEmpty()) {
-      int levelMin = debtRecoveryMethod.getDebtRecoveryMethodLineList().get(0).getSequence();
-      for (DebtRecoveryMethodLine debtRecoveryMethodLine :
-          debtRecoveryMethod.getDebtRecoveryMethodLineList()) {
-        int currentLevel = debtRecoveryMethodLine.getSequence();
-        if (currentLevel < levelMin) {
-          levelMin = currentLevel;
-        }
-      }
-      return Optional.of(levelMin);
-    }
-
-    return Optional.empty();
   }
 
   /**
