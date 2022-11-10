@@ -63,33 +63,16 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
 
   @Override
   public void updateStatus(StockMove stockMove, Integer targetStatus) throws AxelorException {
-    int currentStatus = stockMove.getStatusSelect();
-
-    if (currentStatus == targetStatus) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          "This stock move is already updated to status with value %d.",
-          currentStatus);
-    }
-
-    if (currentStatus == StockMoveRepository.STATUS_DRAFT
-        && targetStatus == StockMoveRepository.STATUS_PLANNED) {
+    if (targetStatus == StockMoveRepository.STATUS_PLANNED) {
       stockMoveService.plan(stockMove);
-    } else if (currentStatus == StockMoveRepository.STATUS_DRAFT
-        && targetStatus == StockMoveRepository.STATUS_REALIZED) {
-      stockMoveService.validate(stockMove);
-    } else if (currentStatus == StockMoveRepository.STATUS_PLANNED
-        && targetStatus == StockMoveRepository.STATUS_REALIZED) {
+    } else if (targetStatus == StockMoveRepository.STATUS_REALIZED) {
       stockMoveService.realize(stockMove);
-    } else if ((currentStatus == StockMoveRepository.STATUS_DRAFT
-            || currentStatus == StockMoveRepository.STATUS_PLANNED)
-        && targetStatus == StockMoveRepository.STATUS_CANCELED) {
+    } else if (targetStatus == StockMoveRepository.STATUS_CANCELED) {
       stockMoveService.cancel(stockMove);
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          "Workflow to update status from value %d to %d is not supported for stock move.",
-          currentStatus,
+          "Workflow to update status to value %d is not supported for stock move.",
           targetStatus);
     }
   }
