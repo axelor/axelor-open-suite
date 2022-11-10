@@ -419,26 +419,22 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
     }
 
-    Set<Account> accountSet = this.mergeSets(column.getAccountSet(), line.getAccountSet());
-    Set<AccountType> accountTypeSet =
-        this.mergeSets(column.getAccountTypeSet(), line.getAccountTypeSet());
-    Set<AnalyticAccount> analyticAccountSet =
-        this.mergeSets(column.getAnalyticAccountSet(), line.getAnalyticAccountSet());
+    Set<Account> accountSet;
+    Set<AccountType> accountTypeSet = null;
+    Set<AnalyticAccount> analyticAccountSet = null;
+    String parentTitle = null;
 
-    if (groupAccount != null) {
-      this.createValueFromMoveLine(
-          accountingReport,
-          column,
-          line,
-          valuesMapByColumn,
-          valuesMapByLine,
-          Sets.newHashSet(groupAccount),
-          null,
-          null,
-          groupAccount.getLabel(),
-          line.getLabel(),
-          line.getCode());
-    } else if (line.getDetailByAccount()) {
+    if (groupAccount == null) {
+      accountSet = this.mergeSets(column.getAccountSet(), line.getAccountSet());
+      accountTypeSet = this.mergeSets(column.getAccountTypeSet(), line.getAccountTypeSet());
+      analyticAccountSet =
+          this.mergeSets(column.getAnalyticAccountSet(), line.getAnalyticAccountSet());
+    } else {
+      accountSet = this.mergeSets(Sets.newHashSet(groupAccount), line.getAccountSet());
+      parentTitle = groupAccount.getLabel();
+    }
+
+    if (line.getDetailByAccount()) {
       int counter = 1;
 
       for (Account account : accountSet) {
@@ -513,7 +509,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountSet,
           accountTypeSet,
           analyticAccountSet,
-          null,
+          parentTitle,
           line.getLabel(),
           line.getCode());
     }
