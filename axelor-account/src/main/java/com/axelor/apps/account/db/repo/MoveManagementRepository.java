@@ -128,7 +128,6 @@ public class MoveManagementRepository extends MoveRepository {
   public void resetInvoiceTerm(InvoiceTerm invoiceTerm, InvoiceTermService invoiceTermService)
       throws AxelorException {
     invoiceTerm.setIsPaid(false);
-    invoiceTerm.setApplyFinancialDiscount(false);
     invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
     invoiceTerm.setIsSelectedOnPaymentSession(false);
     invoiceTerm.setDebtRecoveryBlockingOk(false);
