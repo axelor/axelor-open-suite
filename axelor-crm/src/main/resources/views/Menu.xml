@@ -27,7 +27,7 @@
   <action-view name="crm.root.prospects" title="Prospects"
     model="com.axelor.apps.base.db.Partner">
     <view type="cards" name="partner-cards"/>
-    <view type="grid" name="partner-customer-grid"/>
+    <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
