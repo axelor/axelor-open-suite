@@ -194,7 +194,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Account groupAccount)
       throws AxelorException {
     for (AccountingReportConfigLine column : columnList) {
-      String columnCode = this.getColumnCode(column.getCode(), groupAccount.getLabel());
+      String groupAccountLabel =
+          Optional.ofNullable(groupAccount).map(Account::getLabel).orElse(null);
+      String columnCode = this.getColumnCode(column.getCode(), groupAccountLabel);
 
       if (!valuesMapByColumn.containsKey(columnCode)) {
         valuesMapByColumn.put(columnCode, new HashMap<>());
