@@ -1404,8 +1404,7 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-method-check-name-in-archive"/>
     <action name="action-partner-attrs-change-name"/>
-    <action name="action-partner-method-set-social-network-url"
-      if="!__config__.app.isApp('crm')"/>
+    <action name="action-partner-method-set-social-network-url"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
   </action-group>
 
