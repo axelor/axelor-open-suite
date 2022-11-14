@@ -50,17 +50,18 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
   public List<ClosureAssistantLine> initClosureAssistantLines(ClosureAssistant closureAssistant)
       throws AxelorException {
     List<ClosureAssistantLine> closureAssistantLineList = new ArrayList<>();
-    for (int i = 2; i < 8; i++) {
-      ClosureAssistantLine closureAssistantLine = new ClosureAssistantLine(i - 1, null, i, false);
+    for (int i = 1; i < 8; i++) {
+      ClosureAssistantLine closureAssistantLine = new ClosureAssistantLine(i, null, i, false);
 
-      if (i != 2) {
+      if (i != 1) {
         closureAssistantLine.setIsPreviousLineValidated(false);
       } else {
         closureAssistantLine.setIsPreviousLineValidated(true);
       }
-      closureAssistantLine.setIsNextLineValidated(false);
+
       closureAssistantLineList.add(closureAssistantLine);
     }
+
     return closureAssistantLineList;
   }
 
@@ -86,6 +87,15 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
     }
     AccountingBatch accountingBatch = new AccountingBatch();
     switch (closureAssistantLine.getActionSelect()) {
+      case ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION:
+        accountingBatch =
+            accountingBatchService.createNewAccountingBatch(
+                AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF,
+                AuthUtils.getUser().getActiveCompany());
+        if (accountingBatch != null && accountingBatch.getId() != null) {
+          return this.getAccountingBatchView(accountingBatch.getId());
+        }
+        break;
       case ClosureAssistantLineRepository.ACTION_FIXED_ASSET_REALIZATION:
         accountingBatch =
             accountingBatchService.createNewAccountingBatch(
@@ -94,6 +104,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         if (accountingBatch != null && accountingBatch.getId() != null) {
           return this.getAccountingBatchView(accountingBatch.getId());
         }
+        break;
       case ClosureAssistantLineRepository.ACTION_MOVE_CONSISTENCY_CHECK:
         accountingBatch =
             accountingBatchService.createNewAccountingBatch(
@@ -102,7 +113,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         if (accountingBatch != null && accountingBatch.getId() != null) {
           return this.getAccountingBatchView(accountingBatch.getId());
         }
-        return null;
+        break;
       case ClosureAssistantLineRepository.ACTION_ACCOUNTING_REPORTS:
         return ActionView.define(I18n.get("Accounting report"))
             .model(AccountingReport.class.getName())
@@ -122,6 +133,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         if (accountingBatch != null && accountingBatch.getId() != null) {
           return this.getAccountingBatchView(accountingBatch.getId());
         }
+        break;
       case ClosureAssistantLineRepository.ACTION_FISCAL_YEAR_CLOSURE:
         return ActionView.define(I18n.get("Fiscal year"))
             .model(Year.class.getName())
@@ -132,6 +144,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
       default:
         return null;
     }
+    return null;
   }
 
   protected Map<String, Object> getAccountingBatchView(long id) {
